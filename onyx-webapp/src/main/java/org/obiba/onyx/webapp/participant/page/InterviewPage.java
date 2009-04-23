@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -32,6 +33,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.DialogBuilder;
+import org.obiba.onyx.core.reusable.Dialog.Option;
 import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -42,6 +44,7 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
@@ -96,9 +99,15 @@ public class InterviewPage extends BasePage {
 
       add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
 
-      final Dialog interviewLogsDialog = DialogBuilder.buildInfoDialog("interviewLogsDialog", "Interview Logs", new Label("content", "Interview logs not implemented yet")).getDialog();
-      interviewLogsDialog.setInitialHeight(100);
-      interviewLogsDialog.setInitialHeight(100);
+      final InterviewLogPanel interviewLogPanel;
+      final Dialog interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel = new InterviewLogPanel("content")).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").getDialog();
+      interviewLogsDialog.setInitialHeight(400);
+      interviewLogsDialog.setInitialWidth(700);
+      interviewLogPanel.setup(interviewLogsDialog);
+      interviewLogPanel.setInterviewPage(InterviewPage.this);
+      interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
+      interviewLogPanel.setMarkupId("interviewLogPanel");
+      interviewLogPanel.setOutputMarkupId(true);
       add(interviewLogsDialog);
 
       // Create modal comments window
@@ -118,7 +127,7 @@ public class InterviewPage extends BasePage {
         }
       });
 
-      CommentsLink viewCommentsIconLink = new CommentsLink("viewCommentsIconLink", commentsWindow);
+      ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink("viewCommentsIconLink", interviewLogsDialog, interviewLogPanel);
       viewCommentsIconLink.setMarkupId("viewCommentsIconLink");
       viewCommentsIconLink.setOutputMarkupId(true);
       add(viewCommentsIconLink);
@@ -129,7 +138,7 @@ public class InterviewPage extends BasePage {
       viewCommentsIconLink.add(commentIcon);
 
       // Add view interview comments action
-      add(viewComments = new CommentsLink("viewComments", commentsWindow));
+      add(viewComments = new ViewInterviewLogsLink("viewComments", interviewLogsDialog, interviewLogPanel));
 
       // Add create interview comments action
       add(addCommentDialog = createAddCommentDialog());
@@ -207,6 +216,8 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onViewLogs(AjaxRequestTarget target, String stage) {
+          interviewLogPanel.setStageName(stage);
+          interviewLogPanel.setInterviewPage(InterviewPage.this);
           interviewLogsDialog.show(target);
         }
 
@@ -244,8 +255,8 @@ public class InterviewPage extends BasePage {
     builder.setOptions(Dialog.Option.OK_CANCEL_OPTION);
 
     Dialog dialog = builder.getDialog();
-    dialog.setInitialHeight(534);
-    dialog.setInitialWidth(490);
+    dialog.setInitialHeight(420);
+    dialog.setInitialWidth(375);
     dialog.setWindowClosedCallback(new WindowClosedCallback() {
 
       private static final long serialVersionUID = 1L;
@@ -256,41 +267,70 @@ public class InterviewPage extends BasePage {
           activeInterviewService.doAction(null, comment);
           InterviewPage.this.updateCommentsCount();
           target.addComponent(InterviewPage.this.commentsCount);
-        } else if(status.equals(Status.ERROR)) {
-          // TODO: Display in a FeedbackWindow.
-          System.err.println("<CommentValidationError>");
         }
+        dialogContent.clearCommentField();
       }
     });
 
     return dialog;
   }
 
-  private class CommentsLink extends AjaxLink {
-
-    private static final long serialVersionUID = 1L;
-
-    private final ModalWindow commentsWindow;
-
-    private CommentsLink(String id, ModalWindow commentsWindow) {
-      super(id);
-      this.commentsWindow = commentsWindow;
-    }
-
-    public void onClick(AjaxRequestTarget target) {
-      commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow, null) {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void onAddComments(AjaxRequestTarget target) {
-          InterviewPage.this.updateCommentsCount();
-          target.addComponent(InterviewPage.this.commentsCount);
-        }
-
-      });
-      commentsWindow.show(target);
-    }
+  public void updateCommentCount(AjaxRequestTarget target) {
+    InterviewPage.this.updateCommentsCount();
+    target.addComponent(InterviewPage.this.commentsCount);
   }
+
+  private class ViewInterviewLogsLink extends AjaxLink {
+
+    private static final long serialVersionUID = -2193340839515835159L;
+
+    private Dialog interviewLogsDialog;
+
+    private InterviewLogPanel interviewLogPanel;
+
+    public ViewInterviewLogsLink(String id, Dialog interviewLogsDialog, InterviewLogPanel interviewLogPanel) {
+      super(id);
+      this.interviewLogsDialog = interviewLogsDialog;
+      this.interviewLogPanel = interviewLogPanel;
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      interviewLogPanel.setStageName(null);
+      interviewLogPanel.setInterviewPage(InterviewPage.this);
+      interviewLogsDialog.show(target);
+
+    }
+
+  }
+
+  // private class CommentsLink extends AjaxLink {
+  //
+  // private static final long serialVersionUID = 1L;
+  //
+  // private final ModalWindow commentsWindow;
+  //
+  // private CommentsLink(String id, ModalWindow commentsWindow) {
+  // super(id);
+  // this.commentsWindow = commentsWindow;
+  // }
+  //
+  // public void onClick(AjaxRequestTarget target) {
+  // commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow, null) {
+  // private static final long serialVersionUID = 1L;
+  //
+  // @Override
+  // public void onAddComments(AjaxRequestTarget target) {
+  // InterviewPage.this.updateCommentsCount();
+  //
+  // target.addComponent(InterviewPage.this.commentsCount);
+  //
+  // }
+  //
+  // });
+  // commentsWindow.show(target);
+  // }
+  // }
 
   @SuppressWarnings("serial")
   private class ActiveInterviewModel implements Serializable {

@@ -29,6 +29,8 @@ public class AddCommentPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
+  private TextArea commentField;
+
   //
   // Constructors
   //
@@ -47,9 +49,16 @@ public class AddCommentPanel extends Panel {
   private void initPanel() {
     add(new MultiLineLabel("instructions", new ResourceModel("AnonymousComments")));
 
-    TextArea commentField = new TextArea("comment", new PropertyModel(getModelObject(), "comment"));
+    commentField = new TextArea("comment", new PropertyModel(getModelObject(), "comment"));
     commentField.add(new RequiredFormFieldBehavior());
     commentField.add(new StringValidator.MaximumLengthValidator(2000));
+
     add(commentField);
+
+  }
+
+  public void clearCommentField() {
+    ((Action) getModelObject()).setComment("");
+    commentField.clearInput();
   }
 }

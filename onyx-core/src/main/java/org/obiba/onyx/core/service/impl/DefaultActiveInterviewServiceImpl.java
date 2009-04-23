@@ -60,17 +60,14 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     this.moduleRegistry = moduleRegistry;
   }
 
-  
   public Participant getParticipant() {
     return interviewManager.getInterviewedParticipant();
   }
 
-  
   public Interview getInterview() {
     return getParticipant().getInterview();
   }
 
-  
   public User getOperator() {
     return userSessionService.getUser();
   }
@@ -109,7 +106,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return exec;
   }
 
-  
   public IStageExecution getStageExecution(String stageName) {
     Stage stage = moduleRegistry.getStage(stageName);
     if(stage == null) {
@@ -119,7 +115,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return getStageExecution(stage);
   }
 
-  
   public Stage getInteractiveStage() {
     // Return the first stage that is interactive
     // Does not check that only one stage is interactive.
@@ -163,14 +158,18 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
   }
 
-  
-  public List<Action> getInterviewComments() {
+  public List<Action> getInterviewActions() {
     Action template = new Action();
     template.setInterview(getInterview());
     List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false));
+
+    return actions;
+  }
+
+  public List<Action> getInterviewComments() {
     List<Action> comments = new ArrayList<Action>();
 
-    for(Action action : actions) {
+    for(Action action : getInterviewActions()) {
       if(action.getComment() != null) {
         comments.add(action);
       }
@@ -179,7 +178,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return comments;
   }
 
-  
   public Action getStatusAction() {
     Interview interview = getInterview();
     Action template = new Action();
@@ -200,7 +198,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       return null;
   }
 
-  
   private Map<String, StageExecutionContext> getStageContexts() {
     return interviewManager.getStageContexts();
   }
@@ -209,12 +206,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     getStageContexts().put(exec.getStage().getName(), exec);
   }
 
-  
   public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage) {
     return getStageContexts().get(stage.getName());
   }
 
-  
   public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant) {
     return Collections.unmodifiableCollection(getStageContexts().values());
   }

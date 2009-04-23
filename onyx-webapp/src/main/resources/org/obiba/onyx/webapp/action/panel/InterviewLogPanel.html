@@ -1,0 +1,36 @@
+<wicket:panel>
+
+  <div wicket:id="addCommentDialog" />
+
+<table class="entityTable">
+  <thead>
+    <tr>
+      <th wicket:id="date-title">[Date]</th>
+      <th wicket:id="stage-title">[Stage]</th>
+      <th wicket:id="action-title">[Action]</th>
+      <th wicket:id="author-title">[Author]</th>
+      <th wicket:id="reason-title">[Reason]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <span wicket:id="table"><span wicket:id="rows"></span></span>
+  </tbody>
+</table>
+</wicket:panel>
+
+<wicket:fragment wicket:id="tableRow">
+  <tr wicket:id="tableRowClass">
+    <td><span wicket:id="dateTime"></span></td><td><span wicket:id="stage"></span></td><td><span wicket:id="action"></span></td><td><span wicket:id="author"></span></td><td><span wicket:id="reason"></span></td>
+  </tr>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="commentRow">
+  <tr wicket:id="commentRowClass">
+    <td><span wicket:id="dateTime"></span></td><td><span wicket:id="stage"></span></td><td><span wicket:id="action"></span></td><td><span wicket:id="author"></span></td><td><span wicket:id="reason"></span></td>
+  </tr>
+  <tr wicket:id="commentRowClassTwo">
+    <td colspan="5">
+      <img wicket:id="commentIcon" /><span wicket:id="comment"></span>
+    </td>
+  </tr>
+</wicket:fragment>

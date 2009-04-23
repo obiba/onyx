@@ -124,6 +124,19 @@ div.wicket-modal div.onyx .unlockInterview-panel-content {
   	margin-left:12px;
 }
 
+div.wicket-modal div.onyx .interview-log-panel-content {
+    height:350px;
+    width:660px;
+    overflow: auto;
+    margin-left: 10px;
+}
+
+div.wicket-modal div.onyx .add-comment-panel-content {
+    height:368px;
+    width:300px;
+    margin-left: 10px;
+}
+
 div.wicket-modal div.onyx h2 {
 	width:339px;
 	margin-left:4px;

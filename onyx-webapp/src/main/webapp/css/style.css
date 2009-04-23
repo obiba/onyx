@@ -1471,16 +1471,19 @@ ul#interviewMenuBar li a span {
   padding:3px 50px 2px;
 }
 
-#commentInstructions,
-#commentText {
+#commentInstructions, #commentText {
   color: #000000;
   font-weight: bold;	
 }
 
 #commentText {
-  display: block;
-  height: 85%;
-  width: 100%;	
+    height:288px;
+    width:329px;
+    overflow: auto;
 }
 
 /******************* End InterviewPage *********************************************/
+
+#commentIcon {
+  margin-right: 5px;
+}

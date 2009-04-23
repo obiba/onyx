@@ -237,7 +237,7 @@ public abstract class StageSelectionPanel extends Panel {
 
               @Override
               public void onViewComments(AjaxRequestTarget target) {
-                StageSelectionPanel.this.onViewComments(target, stageName);
+                StageSelectionPanel.this.onViewLogs(target, stageName);
               }
 
               @Override

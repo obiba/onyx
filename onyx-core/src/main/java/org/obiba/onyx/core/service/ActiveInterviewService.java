@@ -77,11 +77,16 @@ public interface ActiveInterviewService {
   public void setStatus(InterviewStatus status);
 
   /**
-   * Get a list of all the comments for the current interview.
-   * 
-   * @return The list of comment
+   * Return a list of all the actions associated with the current interview that contain comments.
+   * @return A list of actions that contain comments.
    */
   public List<Action> getInterviewComments();
+
+  /**
+   * Return a complete list of actions associated with the current interview.
+   * @return A list of all actions.
+   */
+  public List<Action> getInterviewActions();
 
   /**
    * Get the {@link Action} associated to interview status.

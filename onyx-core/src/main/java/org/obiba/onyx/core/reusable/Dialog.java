@@ -25,11 +25,17 @@ import org.apache.wicket.model.StringResourceModel;
 /**
  * Reusable class extending ModalWindow to predefine dialog boxes Title with possibility of adding an icon, scrollable
  * content, predefined customizable buttons
+ * 
+ * To determine which button has been pressed, implement the {@code closeButtonCallback}. Inside the callback check the
+ * value of {@code status} using {@code getStatus()} to determine which button the user clicked. If the user actions
+ * does not cause the {@code Dialog} to close then the calling client must call {@code resetStatus()} after handling the
+ * mouse click in order to accurately read the next mouse click.
  */
 public class Dialog extends ModalWindow {
 
   private static final long serialVersionUID = 928252608995728804L;
 
+  /** The user's most recent mouse click action. */
   private Status status;
 
   private Type type;
@@ -48,8 +54,24 @@ public class Dialog extends ModalWindow {
     WARNING, INFO, ERROR, PLAIN
   }
 
+  /**
+   * Mouse click actions the {@code Dialog} keeps track of.
+   */
   public enum Status {
-    SUCCESS, ERROR, YES, NO, CANCELLED, CLOSED
+    /** Window dressing "X" button clicked. User closed window. */
+    WINDOW_CLOSED,
+    /** "OK" button clicked. Form submission without errors. */
+    SUCCESS,
+    /** "OK" button clicked. Form submission with errors. */
+    ERROR,
+    /** "Yes" button clicked. */
+    YES,
+    /** "No" button clicked. */
+    NO,
+    /** "Cancel" button clicked. */
+    CANCELLED,
+    /** "Close" button clicked. */
+    CLOSED
   }
 
   public Dialog(String id) {
@@ -213,6 +235,7 @@ public class Dialog extends ModalWindow {
   @Override
   public void show(AjaxRequestTarget target) {
     super.show(target);
+    resetStatus();
 
     if(type != null && type.equals(Type.ERROR)) {
       target.appendJavascript("$(document).ready(function () {$('.onyx-feedback .w_captionText').each(function() {$(this).addClass('ui-state-error');});});");
@@ -264,6 +287,10 @@ public class Dialog extends ModalWindow {
 
   public void setStatus(Status status) {
     this.status = status;
+  }
+
+  public void resetStatus() {
+    status = Status.WINDOW_CLOSED;
   }
 
   public void setWindowClosedCallback(WindowClosedCallback windowClosedCallback) {
