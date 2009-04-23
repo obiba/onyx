@@ -116,6 +116,20 @@ public class ComputingDataSourceTest {
   }
 
   @Test
+  public void testRoundValueFunction() {
+    Participant participant = new Participant();
+    ComputingDataSource computing = new ComputingDataSource(DataType.DECIMAL, "Round[$1, $2]");
+    computing.setAlgorithmEvaluator(MathEclipseEvaluator.getInstance());
+    computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(1)));
+    computing.addDataSource(new FixedDataSource(DataBuilder.buildDecimal(105.30000000000001)));
+
+    Data data = computing.getData(participant);
+
+    Assert.assertEquals(DataType.DECIMAL, data.getType());
+    Assert.assertEquals(105.3d, (Double) data.getValue());
+  }
+
+  @Test
   public void testArithmeticAndCompare() {
     Participant participant = new Participant();
     ComputingDataSource computing = new ComputingDataSource(DataType.BOOLEAN, "$1 + $2 > 4.0");
