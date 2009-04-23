@@ -251,6 +251,8 @@ public class InterviewPage extends BasePage {
 
   private Dialog createAddCommentDialog() {
     final AddCommentPanel dialogContent = new AddCommentPanel("content");
+    dialogContent.add(new AttributeModifier("class", true, new Model("obiba-content add-comment-panel-content")));
+
     DialogBuilder builder = DialogBuilder.buildDialog("addCommentDialog", new ResourceModel("AddComment"), dialogContent);
     builder.setOptions(Dialog.Option.OK_CANCEL_OPTION);
 
