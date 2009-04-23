@@ -23,7 +23,6 @@ import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -47,6 +46,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
+import org.obiba.onyx.webapp.participant.panel.AddCommentWindow;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
 import org.obiba.onyx.webapp.participant.panel.InterviewMenuBar;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
@@ -249,16 +249,11 @@ public class InterviewPage extends BasePage {
     commentsCount.setOutputMarkupId(true);
   }
 
-  private Dialog createAddCommentDialog() {
+  private AddCommentWindow createAddCommentDialog() {
+    AddCommentWindow dialog = new AddCommentWindow("addCommentDialog");
     final AddCommentPanel dialogContent = new AddCommentPanel("content");
-    dialogContent.add(new AttributeModifier("class", true, new Model("obiba-content add-comment-panel-content")));
+    dialog.setContent(dialogContent);
 
-    DialogBuilder builder = DialogBuilder.buildDialog("addCommentDialog", new ResourceModel("AddComment"), dialogContent);
-    builder.setOptions(Dialog.Option.OK_CANCEL_OPTION);
-
-    Dialog dialog = builder.getDialog();
-    dialog.setInitialHeight(420);
-    dialog.setInitialWidth(375);
     dialog.setWindowClosedCallback(new WindowClosedCallback() {
 
       private static final long serialVersionUID = 1L;

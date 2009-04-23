@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -27,11 +26,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.reusable.Dialog;
-import org.obiba.onyx.core.reusable.DialogBuilder;
 import org.obiba.onyx.core.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.reusable.Dialog.WindowClosedCallback;
@@ -40,6 +37,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
+import org.obiba.onyx.webapp.participant.panel.AddCommentWindow;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -284,16 +282,11 @@ public class InterviewLogPanel extends Panel {
 
   }
 
-  private Dialog createAddCommentDialog() {
+  private AddCommentWindow createAddCommentDialog() {
+
+    AddCommentWindow dialog = new AddCommentWindow("addCommentDialog");
     final AddCommentPanel dialogContent = new AddCommentPanel("content");
-    dialogContent.add(new AttributeModifier("class", true, new Model("obiba-content add-comment-panel-content")));
-
-    DialogBuilder builder = DialogBuilder.buildDialog("addCommentDialog", new ResourceModel("AddComment"), dialogContent);
-    builder.setOptions(Dialog.Option.OK_CANCEL_OPTION);
-
-    Dialog dialog = builder.getDialog();
-    dialog.setInitialHeight(420);
-    dialog.setInitialWidth(375);
+    dialog.setContent(dialogContent);
 
     dialog.setWindowClosedCallback(new WindowClosedCallback() {
 
@@ -303,7 +296,6 @@ public class InterviewLogPanel extends Panel {
         if(status.equals(Status.WINDOW_CLOSED) || status.equals(Status.SUCCESS) || status.equals(Status.CANCELLED)) {
           dialogContent.clearCommentField();
         }
-
         modalWindow.resetStatus();
       }
 
