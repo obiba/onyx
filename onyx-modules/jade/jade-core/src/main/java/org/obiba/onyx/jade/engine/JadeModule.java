@@ -158,14 +158,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-    if(actionVariableProvider.isActionVariable(variable)) {
-      Variable typeVariable = instrumentTypeToVariableMappingStrategy.getInstrumentTypeVariable(variable);
-      // stage name is the instrument type name
-      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, typeVariable.getName());
-    } else {
-      varData.addData(instrumentTypeToVariableMappingStrategy.getData(participant, variable));
-    }
-
+    varData.addData(instrumentTypeToVariableMappingStrategy.getData(participant, variable));
+    
     return varData;
   }
 
@@ -173,9 +167,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     List<Variable> entities = new ArrayList<Variable>();
 
     for(InstrumentType type : instrumentService.getInstrumentTypes().values()) {
-      Variable typeVariable = instrumentTypeToVariableMappingStrategy.getVariable(type);
-      typeVariable.addVariable(actionVariableProvider.createActionVariable(true));
-      entities.add(typeVariable);
+      entities.add(instrumentTypeToVariableMappingStrategy.getVariable(type));
     }
 
     return entities;

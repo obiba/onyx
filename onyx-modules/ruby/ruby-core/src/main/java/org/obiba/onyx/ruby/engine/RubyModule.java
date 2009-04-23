@@ -283,13 +283,8 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-
-    if(actionVariableProvider.isActionVariable(variable)) {
-      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getName());
-    } else {
-      varData = tubeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData);
-    }
-
+    varData = tubeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData);
+    
     return varData;
   }
 
@@ -302,8 +297,6 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
       entity.addVariable(tubeToVariableMappingStrategy.getParticipantTubeRegistrationVariable());
       entity.addVariable(tubeToVariableMappingStrategy.getRegisteredParticipantTubeVariable());
-
-      entity.addVariable(actionVariableProvider.createActionVariable(true));
     }
 
     return variables;
