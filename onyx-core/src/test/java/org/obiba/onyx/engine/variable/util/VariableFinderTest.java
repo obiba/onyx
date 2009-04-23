@@ -42,9 +42,9 @@ public class VariableFinderTest {
     // users
 
     parent = root.addVariable("Admin/User", variablePathNamingStrategy.getPathSeparator());
-
-    parent.addVariable(new Variable("login").setDataType(DataType.TEXT).setKey("user"));
-    parent.addVariable(new Variable("name").setDataType(DataType.TEXT)).addReference("user");
+    parent.setDataType(DataType.TEXT).setRepeatable(true);
+    parent.addVariable(new Variable("login").setDataType(DataType.TEXT));
+    parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
 
     // participants
 
@@ -90,7 +90,7 @@ public class VariableFinderTest {
 
     parent = root.addVariable("StandingHeight", variablePathNamingStrategy.getPathSeparator());
 
-    parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT).setKey("user"));
+    parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL));
     parent.addVariable(new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL));
   }
@@ -103,17 +103,9 @@ public class VariableFinderTest {
     log.debug("\n" + VariableStreamer.toXML(root));
 
     VariableFinder finder = VariableFinder.getInstance(root, variablePathNamingStrategy);
-    Assert.assertEquals(12, finder.filterVariables(VariableFinder.ALL_VARIABLES_XPATH).size());
+    Assert.assertEquals(13, finder.filterVariables(VariableFinder.ALL_VARIABLES_XPATH).size());
     log.debug("===============");
-    Assert.assertEquals(5, finder.filterVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
-    log.debug("===============");
-    Assert.assertEquals(2, finder.filterKeyVariables("user").size());
-    log.debug("===============");
-    Assert.assertEquals(1, finder.filterReferenceVariables("user").size());
-    log.debug("===============");
-    Assert.assertEquals(1, finder.filterReferenceVariables("name", "user").size());
-    log.debug("===============");
-    Assert.assertEquals(0, finder.filterReferenceVariables("email", "user").size());
+    Assert.assertEquals(6, finder.filterVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
     log.debug("===============");
     Assert.assertEquals(7, finder.filterComplementVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
     log.info("===============");

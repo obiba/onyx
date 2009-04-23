@@ -47,8 +47,6 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
   private static final String REGISTERED_PARTICIPANT_TUBE = "RegisteredParticipantTube";
 
-  private static final String TUBE_KEY = "tube";
-
   private static final String BARCODE = "barcode";
 
   private static final String REGISTRATION_TIME = "registrationTime";
@@ -86,13 +84,11 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
   public Variable getRegisteredParticipantTubeVariable() {
 
-    Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE);
-
-    tubeVariable.addVariable(new Variable(TUBE_KEY).setDataType(DataType.INTEGER).setKey(TUBE_KEY));
-    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
-    tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE)).addReference(TUBE_KEY);
-    tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
-    tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
+    Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
+    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+    tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE));
+    tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
+    tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));
 
     return tubeVariable;
   }
@@ -124,15 +120,15 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
           varData.addData(DataBuilder.buildText(ci.getType().toString()));
         }
       }
-    } else if(variable.getParent().getName().equals(REGISTERED_PARTICIPANT_TUBE)) {
+    } else if(variable.getParent().getName().equals(REGISTERED_PARTICIPANT_TUBE) || variable.getName().equals(REGISTERED_PARTICIPANT_TUBE)) {
       RegisteredParticipantTube template = new RegisteredParticipantTube();
       template.setParticipantTubeRegistration(tubeRegistration);
 
       for(RegisteredParticipantTube registeredTube : queryService.match(template)) {
         List<Data> datas = new ArrayList<Data>();
 
-        if(variable.getName().equals(TUBE_KEY)) {
-          varData.addData(DataBuilder.build(registeredTube.getId()));
+        if(variable.getName().equals(REGISTERED_PARTICIPANT_TUBE)) {
+          varData.addData(DataBuilder.buildText(registeredTube.getId().toString()));
         } else if(variable.getName().equals(BARCODE)) {
           datas.add(DataBuilder.build(registeredTube.getBarcode()));
         } else if(variable.getName().equals(COMMENT) && registeredTube.getComment() != null) {
@@ -146,8 +142,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
         }
 
         if(datas.size() > 0) {
-
-          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, TUBE_KEY, registeredTube.getId().toString()));
+          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, REGISTERED_PARTICIPANT_TUBE, registeredTube.getId().toString()));
           varData.addVariableData(childVarData);
           for(Data data : datas) {
             childVarData.addData(data);

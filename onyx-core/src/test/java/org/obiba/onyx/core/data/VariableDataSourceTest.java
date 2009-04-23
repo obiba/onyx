@@ -135,7 +135,6 @@ public class VariableDataSourceTest {
       for(String key : variableDatas.keySet()) {
         if(!key.contains(path) || variableDatas.get(key) == null) continue;
         Variable variable = new Variable(path);
-        variable.setKey(path);
         variable.setUnit(variableUnits.get(path));
         variable.setDataType(variableDatas.get(key).getType());
         return variable;

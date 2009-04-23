@@ -62,6 +62,8 @@ public class VariableStreamer {
 
   private static final String MULTIPLE = "Multiple";
 
+  private static final String REPEATABLE = "Repeatable";
+
   /**
    * The de-serializer.
    */
@@ -239,28 +241,16 @@ public class VariableStreamer {
       String[] nextLine = new String[7];
       nextLine[0] = variablePathNamingStrategy.getPath(variable);
       nextLine[1] = variable.getName();
-      nextLine[2] = variable.getKey();
-      nextLine[3] = getReferences(variable);
-      nextLine[4] = getCategories(variable, "\n");
-      nextLine[5] = variable.getDataType().toString();
-      nextLine[6] = variable.getUnit();
+      nextLine[2] = getCategories(variable, "\n");
+      nextLine[3] = variable.getDataType().toString();
+      nextLine[4] = variable.getUnit();
+      nextLine[5] = Boolean.toString(variable.isMultiple());
+      nextLine[6] = Boolean.toString(variable.isRepeatable());
       writer.writeNext(nextLine);
     }
     for(Variable child : variable.getVariables()) {
       csvWrite(writer, child, variablePathNamingStrategy);
     }
-  }
-
-  private static String getReferences(Variable variable) {
-    String value = "";
-    for(String reference : variable.getReferences()) {
-      if(value.length() != 0) {
-        value += "," + reference;
-      } else {
-        value = reference;
-      }
-    }
-    return value;
   }
 
   private static String getCategories(Variable variable, String separator) {
@@ -296,17 +286,15 @@ public class VariableStreamer {
     cell = row.createCell(1);
     cell.setCellValue(new HSSFRichTextString(NAME));
     cell = row.createCell(2);
-    cell.setCellValue(new HSSFRichTextString(KEY));
-    cell = row.createCell(3);
-    cell.setCellValue(new HSSFRichTextString(REFERENCES));
-    cell = row.createCell(4);
     cell.setCellValue(new HSSFRichTextString(CATEGORIES));
-    cell = row.createCell(5);
+    cell = row.createCell(3);
     cell.setCellValue(new HSSFRichTextString(TYPE));
-    cell = row.createCell(6);
+    cell = row.createCell(4);
     cell.setCellValue(new HSSFRichTextString(UNIT));
-    cell = row.createCell(7);
+    cell = row.createCell(5);
     cell.setCellValue(new HSSFRichTextString(MULTIPLE));
+    cell = row.createCell(6);
+    cell.setCellValue(new HSSFRichTextString(REPEATABLE));
 
     HSSFRichTextString str = new HSSFRichTextString();
     str.clearFormatting();
@@ -335,19 +323,19 @@ public class VariableStreamer {
       cell = row.createCell(1);
       cell.setCellValue(new HSSFRichTextString(variable.getName()));
       cell = row.createCell(2);
-      cell.setCellValue(new HSSFRichTextString(variable.getKey()));
-      cell = row.createCell(3);
-      cell.setCellValue(new HSSFRichTextString(getReferences(variable)));
-      cell = row.createCell(4);
       cell.setCellStyle(categoryTextStyle);
       cell.setCellValue(new HSSFRichTextString(getCategories(variable, "\n")));
-      cell = row.createCell(5);
+      cell = row.createCell(3);
       cell.setCellValue(new HSSFRichTextString(variable.getDataType().toString()));
-      cell = row.createCell(6);
+      cell = row.createCell(4);
       cell.setCellValue(new HSSFRichTextString(variable.getUnit()));
       if(variable.isMultiple()) {
-        cell = row.createCell(7);
-        cell.setCellValue(new HSSFRichTextString("x"));
+        cell = row.createCell(5);
+        cell.setCellValue(new HSSFRichTextString("true"));
+      }
+      if(variable.isRepeatable()) {
+        cell = row.createCell(6);
+        cell.setCellValue(new HSSFRichTextString("true"));
       }
       rowCount++;
     }

@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
@@ -30,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Onyx system variable provider: participant, user, action, interview related variables.
  */
-public class OnyxVariableProvider implements IVariableProvider, IActionVariableProvider {
+public class OnyxVariableProvider implements IVariableProvider {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(OnyxVariableProvider.class);
@@ -71,8 +70,6 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String ACTION_KEY = "action";
 
-  public static final String ACTIONS = "actions";
-
   public static final String ACTION_USER = "user";
 
   public static final String ACTION_STAGE = "stage";
@@ -89,18 +86,12 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   private ParticipantService participantService;
 
-  private EntityQueryService queryService;
-
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
   }
 
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
-  }
-
-  public void setQueryService(EntityQueryService queryService) {
-    this.queryService = queryService;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -151,8 +142,34 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
           varData.addData(DataBuilder.buildText(interview.getStatus().toString()));
         }
       }
-    } else if(isActionVariable(variable)) {
-      varData = getActionVariableData(participant, variable, variablePathNamingStrategy, varData, null);
+    } else if(variable.getParent().getName().equals(ACTION) || variable.getName().equals(ACTION)) {
+      List<Action> actions = participantService.getActions(participant);
+
+      for(Action action : actions) {
+        Data data = null;
+        if(variable.getName().equals(ACTION)) {
+          varData.addData(DataBuilder.buildText(action.getId().toString()));
+        } else if(variable.getName().equals(ACTION_USER) && action.getUser() != null) {
+          data = DataBuilder.buildText(action.getUser().getLogin());
+        } else if(variable.getName().equals(ACTION_STAGE) && action.getStage() != null) {
+          data = DataBuilder.buildText(action.getStage());
+        } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
+          data = DataBuilder.buildText(action.getActionType().toString());
+        } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
+          // make a copy of the date as it will be dumped several times and we do not want xstream to reference it
+          data = DataBuilder.buildDate((Date) action.getDateTime().clone());
+        } else if(variable.getName().equals(ACTION_COMMENT) && action.getComment() != null) {
+          data = DataBuilder.buildText(action.getComment());
+        } else if(variable.getName().equals(ACTION_EVENT_REASON) && action.getEventReason() != null) {
+          data = DataBuilder.buildText(action.getEventReason());
+        }
+
+        if(data != null) {
+          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, ACTION, action.getId().toString()));
+          varData.addVariableData(childVarData);
+          childVarData.addData(data);
+        }
+      }
     }
 
     return varData;
@@ -184,82 +201,15 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     entity.addVariable(new Variable(END_DATE).setDataType(DataType.DATE));
     entity.addVariable(new Variable(INTERVIEW_STATUS).setDataType(DataType.TEXT));
 
-    admin.addVariable(createActionVariable(false));
+    entity = admin.addVariable(new Variable(OnyxVariableProvider.ACTION).setDataType(DataType.TEXT).setRepeatable(true));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_STAGE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_TYPE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_DATE_TIME).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_COMMENT).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_EVENT_REASON).setDataType(DataType.TEXT));
 
     return variables;
-  }
-
-  public boolean isActionVariable(Variable variable) {
-    return variable.getName().equals(ACTIONS) || variable.getParent().getName().equals(ACTION);
-  }
-
-  /**
-   * Get the action variable data, restricted to a stage or not.
-   * @param participant
-   * @param variable
-   * @param variablePathNamingStrategy
-   * @param varData
-   * @param stage if null, get all actions
-   * @return
-   */
-  public VariableData getActionVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData, String stage) {
-    if(!isActionVariable(variable)) {
-      throw new IllegalArgumentException("Not a Action variable: " + variablePathNamingStrategy.getPath(variable));
-    }
-
-    List<Action> actions;
-    if(stage == null) {
-      actions = participantService.getActions(participant);
-    } else {
-      actions = participantService.getActions(participant, stage);
-    }
-
-    for(Action action : actions) {
-      Data data = null;
-      if(variable.getName().equals(ACTIONS)) {
-        varData.addData(DataBuilder.build(action.getId()));
-      } else if(variable.getName().equals(ACTION_USER) && action.getUser() != null) {
-        data = DataBuilder.buildText(action.getUser().getLogin());
-      } else if(variable.getName().equals(ACTION_STAGE) && action.getStage() != null) {
-        data = DataBuilder.buildText(action.getStage());
-      } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
-        data = DataBuilder.buildText(action.getActionType().toString());
-      } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
-        // make a copy of the date as it will be dumped several times and we do not want xstream to reference it
-        data = DataBuilder.buildDate((Date) action.getDateTime().clone());
-      } else if(variable.getName().equals(ACTION_COMMENT) && action.getComment() != null) {
-        data = DataBuilder.buildText(action.getComment());
-      } else if(variable.getName().equals(ACTION_EVENT_REASON) && action.getEventReason() != null) {
-        data = DataBuilder.buildText(action.getEventReason());
-      }
-
-      if(data != null) {
-        VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, ACTION_KEY, action.getId().toString()));
-        varData.addVariableData(childVarData);
-        childVarData.addData(data);
-      }
-    }
-
-    return varData;
-  }
-
-  public Variable createActionVariable(boolean primaryKeyOnly) {
-    Variable actionVariable;
-
-    if(primaryKeyOnly) {
-      actionVariable = new Variable(OnyxVariableProvider.ACTIONS).setDataType(DataType.INTEGER).setKey(ACTION_KEY);
-    } else {
-      actionVariable = new Variable(OnyxVariableProvider.ACTION);
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTIONS).setDataType(DataType.INTEGER).setKey(ACTION_KEY));
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_STAGE).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_TYPE).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_DATE_TIME).setDataType(DataType.DATE)).addReference(ACTION_KEY);
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_COMMENT).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_EVENT_REASON).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
-    }
-
-    return actionVariable;
   }
 
 }

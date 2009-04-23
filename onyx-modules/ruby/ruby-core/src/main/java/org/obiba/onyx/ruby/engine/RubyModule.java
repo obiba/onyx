@@ -24,7 +24,6 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
@@ -64,8 +63,6 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   //
 
   private ApplicationContext applicationContext;
-
-  private IActionVariableProvider actionVariableProvider;
 
   private ActiveInterviewService activeInterviewService;
 
@@ -140,10 +137,6 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   //
   // Methods
   //
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
-  }
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;

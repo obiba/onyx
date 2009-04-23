@@ -49,10 +49,7 @@ public class Variable implements Serializable {
   private Boolean multiple;
 
   @XStreamAsAttribute
-  private String key;
-
-  @XStreamImplicit(itemFieldName = "reference")
-  private List<String> references;
+  private Boolean repeatable;
 
   /**
    * 
@@ -118,6 +115,32 @@ public class Variable implements Serializable {
   }
 
   /**
+   * Get if a variable can have several occurrences, repeating the contained variables.
+   * @return
+   */
+  public Boolean getRepeatable() {
+    return repeatable;
+  }
+
+  /**
+   * Get if a variable can have several occurrences, repeating the contained variables.
+   * @return
+   */
+  public boolean isRepeatable() {
+    return repeatable != null ? repeatable : false;
+  }
+
+  /**
+   * Set the variable being repeatable.
+   * @param repeatable
+   * @return this for chaining
+   */
+  public Variable setRepeatable(Boolean repeatable) {
+    this.repeatable = repeatable;
+    return this;
+  }
+
+  /**
    * Get data unit.
    * @return
    */
@@ -133,58 +156,6 @@ public class Variable implements Serializable {
   public Variable setUnit(String unit) {
     this.unit = unit;
     return this;
-  }
-
-  /**
-   * Get the associated key, for use in key/values parameters of variable path.
-   * @return
-   */
-  public String getKey() {
-    return key;
-  }
-
-  /**
-   * Set the associated key, for use in key/values parameters of variable path.
-   * @param key
-   * @return this for chaining
-   */
-  public Variable setKey(String key) {
-    this.key = key;
-    // if the variable represents a key, it is expected to have multiple data
-    if(key != null && key.trim().length() > 0) {
-      multiple = Boolean.TRUE;
-    }
-    return this;
-  }
-
-  /**
-   * Get the variables keys the current variable is depending on.
-   * @return
-   */
-  public List<String> getReferences() {
-    return references != null ? references : (references = new ArrayList<String>());
-  }
-
-  /**
-   * Add a variable key as a reference for the current variable.
-   * @param key
-   */
-  public void addReference(String key) {
-    if(key != null) {
-      getReferences().add(key);
-    }
-  }
-
-  /**
-   * Add a list of variable keys as references for the current variable.
-   * @param keys
-   */
-  public void addReferences(String... keys) {
-    if(keys != null) {
-      for(String key : keys) {
-        getReferences().add(key);
-      }
-    }
   }
 
   /**
