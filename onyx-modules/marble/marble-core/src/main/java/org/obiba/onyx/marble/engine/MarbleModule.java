@@ -95,6 +95,10 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     this.applicationContext = applicationContext;
   }
 
+  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
+    this.actionVariableProvider = actionVariableProvider;
+  }
+
   public void setConsentService(ConsentService consentService) {
     this.consentService = consentService;
   }

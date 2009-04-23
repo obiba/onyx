@@ -56,6 +56,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   private IQuestionToVariableMappingStrategy questionToVariableMappingStrategy;
 
+  private IActionVariableProvider actionVariableProvider;
+
   public String getName() {
     return "quartz";
   }
@@ -104,6 +106,10 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
     this.questionnaireParticipantService = questionnaireParticipantService;
+  }
+
+  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
+    this.actionVariableProvider = actionVariableProvider;
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {

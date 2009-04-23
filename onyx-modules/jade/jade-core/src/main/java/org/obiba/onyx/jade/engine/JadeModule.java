@@ -49,6 +49,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
+  private IActionVariableProvider actionVariableProvider;
+
   private DatabaseSeed databaseSeed;
 
   private List<Stage> stages;
@@ -136,6 +138,10 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   public void setDatabaseSeed(DatabaseSeed databaseSeed) {
     this.databaseSeed = databaseSeed;
+  }
+
+  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
+    this.actionVariableProvider = actionVariableProvider;
   }
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
