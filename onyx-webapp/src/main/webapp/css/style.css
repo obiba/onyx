@@ -11,6 +11,10 @@ body {
   height: 100%;
 }
 
+input, select, textarea {
+    border: solid 1px #cccccc;
+}
+
 A:link {
 	COLOR: #D85D03; text-decoration: none;
 }
@@ -468,6 +472,10 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
   padding-top: 5px;
 }
 
+.obiba-content{
+  font-size:11px;
+}
+
 /*************** End Dialog ********************/
 
 /*************** Wizard ********************/
@@ -642,7 +650,7 @@ td.keyValueTableValue input{
 }
 
 td.keyValueTableValue select{
-	width: 222px;
+	width: 220px;
 }
 
 /*******************END KEY VALUE TABLE LAYOUT********************************/
