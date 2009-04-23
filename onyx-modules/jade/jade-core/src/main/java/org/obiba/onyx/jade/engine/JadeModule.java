@@ -22,7 +22,6 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
@@ -48,8 +47,6 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   private InstrumentService instrumentService;
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
-
-  private IActionVariableProvider actionVariableProvider;
 
   private DatabaseSeed databaseSeed;
 
@@ -138,10 +135,6 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   public void setDatabaseSeed(DatabaseSeed databaseSeed) {
     this.databaseSeed = databaseSeed;
-  }
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
   }
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {

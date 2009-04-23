@@ -22,7 +22,6 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
@@ -49,8 +48,6 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
   private ApplicationContext applicationContext;
 
   private ConsentService consentService;
-
-  private IActionVariableProvider actionVariableProvider;
 
   private List<Stage> stages;
 
@@ -95,10 +92,6 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
-  }
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
   }
 
   public void setConsentService(ConsentService consentService) {

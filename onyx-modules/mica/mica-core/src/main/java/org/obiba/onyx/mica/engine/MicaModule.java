@@ -23,7 +23,6 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
@@ -48,8 +47,6 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
   private ApplicationContext applicationContext;
 
   private ActiveInterviewService activeInterviewService;
-
-  private IActionVariableProvider actionVariableProvider;
 
   private EntityQueryService queryService;
 
@@ -123,10 +120,6 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
-  }
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
   }
 
   public void setQueryService(EntityQueryService queryService) {
