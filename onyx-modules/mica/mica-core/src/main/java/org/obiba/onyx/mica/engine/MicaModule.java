@@ -136,19 +136,15 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
 
-    if(actionVariableProvider.isActionVariable(variable)) {
-      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getName());
-    } else {
-      Conclusion conclusion = new Conclusion();
-      conclusion.setInterview(participant.getInterview());
-      conclusion = queryService.matchOne(conclusion);
+    Conclusion conclusion = new Conclusion();
+    conclusion.setInterview(participant.getInterview());
+    conclusion = queryService.matchOne(conclusion);
 
-      if(conclusion != null) {
-        if(variable.getName().equals(ACCEPTED_ATTRIBUTE)) {
-          varData.addData(DataBuilder.buildBoolean(conclusion.isAccepted()));
-        } else if(variable.getName().equals(BARCODE_ATTRIBUTE)) {
-          varData.addData(DataBuilder.buildBoolean(conclusion.getBarcode()));
-        }
+    if(conclusion != null) {
+      if(variable.getName().equals(ACCEPTED_ATTRIBUTE)) {
+        varData.addData(DataBuilder.buildBoolean(conclusion.isAccepted()));
+      } else if(variable.getName().equals(BARCODE_ATTRIBUTE)) {
+        varData.addData(DataBuilder.buildBoolean(conclusion.getBarcode()));
       }
     }
 
@@ -164,8 +160,6 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
 
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
       stageVariable.addVariable(new Variable(BARCODE_ATTRIBUTE).setDataType(DataType.TEXT));
-
-      stageVariable.addVariable(actionVariableProvider.createActionVariable(true));
     }
     return variables;
   }

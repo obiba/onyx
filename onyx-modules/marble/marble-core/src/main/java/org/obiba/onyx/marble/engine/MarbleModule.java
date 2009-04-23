@@ -109,23 +109,19 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
 
-    if(actionVariableProvider.isActionVariable(variable)) {
-      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getName());
-    } else {
-      // get participant's consent
-      Consent consent = consentService.getConsent(participant.getInterview());
+    // get participant's consent
+    Consent consent = consentService.getConsent(participant.getInterview());
 
-      if(consent != null) {
-        String varName = variable.getName();
-        if(varName.equals(ACCEPTED_ATTRIBUTE) && consent.isAccepted() != null) {
-          varData.addData(DataBuilder.buildBoolean(consent.isAccepted()));
-        } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
-          varData.addData(DataBuilder.buildText(consent.getLocale().toString()));
-        } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
-          varData.addData(DataBuilder.buildText(consent.getMode().toString()));
-        } else if(varName.equals(PDF_ATTRIBUTE) && consent.getPdfForm() != null) {
-          varData.addData(DataBuilder.buildBinary(new ByteArrayInputStream(consent.getPdfForm())));
-        }
+    if(consent != null) {
+      String varName = variable.getName();
+      if(varName.equals(ACCEPTED_ATTRIBUTE) && consent.isAccepted() != null) {
+        varData.addData(DataBuilder.buildBoolean(consent.isAccepted()));
+      } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
+        varData.addData(DataBuilder.buildText(consent.getLocale().toString()));
+      } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
+        varData.addData(DataBuilder.buildText(consent.getMode().toString()));
+      } else if(varName.equals(PDF_ATTRIBUTE) && consent.getPdfForm() != null) {
+        varData.addData(DataBuilder.buildBinary(new ByteArrayInputStream(consent.getPdfForm())));
       }
     }
 
@@ -143,8 +139,6 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
       stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
       stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA));
-
-      stageVariable.addVariable(actionVariableProvider.createActionVariable(true));
     }
 
     return variables;

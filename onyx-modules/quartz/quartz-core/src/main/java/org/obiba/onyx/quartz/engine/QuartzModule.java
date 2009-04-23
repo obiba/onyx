@@ -182,10 +182,6 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
         Questionnaire questionnaire = bundle.getQuestionnaire();
         log.info("getVariables from questionnaire {}", questionnaire.getName());
         Variable questionnaireVariable = questionToVariableMappingStrategy.getVariable(questionnaire);
-
-        // always add action variables, cannot be changed as it is onyx specific
-        questionnaireVariable.addVariable(actionVariableProvider.createActionVariable(true));
-
         entities.add(questionnaireVariable);
         for(Page page : questionnaire.getPages()) {
           for(Question question : page.getQuestions()) {
@@ -206,12 +202,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaireVariable.getName());
     if(bundle != null) {
       Questionnaire questionnaire = bundle.getQuestionnaire();
-
-      if(actionVariableProvider.isActionVariable(variable)) {
-        varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, questionnaire.getName());
-      } else {
-        varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
-      }
+      varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
     }
 
     return varData;
