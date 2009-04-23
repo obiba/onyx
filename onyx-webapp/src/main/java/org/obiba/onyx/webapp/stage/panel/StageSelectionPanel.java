@@ -365,7 +365,7 @@ public abstract class StageSelectionPanel extends Panel {
       if(endTime != null) {
         int daysBetween = DateUtil.getDaysBetween(startTime, endTime);
 
-        formattedEndTime = userSessionService.getTimeFormat().format(startTime);
+        formattedEndTime = userSessionService.getTimeFormat().format(endTime);
         if(daysBetween != 0) {
           formattedEndTime += " +" + daysBetween;
         }
