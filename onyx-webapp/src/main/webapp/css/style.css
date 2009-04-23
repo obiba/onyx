@@ -1245,6 +1245,10 @@ img.obiba-button {
   margin-bottom: 15px;
 }
 
+#participantPageActions #enrollAndUpdateActions > div:empty {
+  margin-bottom: 0px !important;
+}
+
 #participantPageActions #exportAction {
   float: right;
   margin-top: 5px;
