@@ -70,7 +70,10 @@ Resizer = {}
 
 Resizer.resize  = function(id, offsetBottom) {
 	//resize the html according to the size of the window 
-	document.getElementById(id).style.height=parseInt(WindowUtil.pageHeight()-offsetBottom-document.getElementById(id).offsetTop)+"px";
+	var elementToResize = document.getElementById(id);
+	if(elementToResize != null) {
+		elementToResize.style.height=parseInt(WindowUtil.pageHeight()-offsetBottom-elementToResize.offsetTop)+"px";
+	}
 }
 
 // Resize the content wrapper to fill the window.
