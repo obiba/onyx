@@ -21,7 +21,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
@@ -30,8 +29,6 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
-import org.obiba.onyx.core.domain.user.Role;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
@@ -77,7 +74,6 @@ public class OnyxVariableProviderTest {
     variableProvider = new OnyxVariableProvider();
     ((OnyxVariableProvider) variableProvider).setParticipantMetadata(participantMetadataMock);
     ((OnyxVariableProvider) variableProvider).setParticipantService(participantServiceMock);
-    ((OnyxVariableProvider) variableProvider).setQueryService(queryServiceMock);
 
     variablePathNamingStrategy = new DefaultVariablePathNamingStrategy();
   }
@@ -173,9 +169,9 @@ public class OnyxVariableProviderTest {
   public void testAction() {
     Variable root = createVariable();
 
-    Variable variable = root.getVariable(OnyxVariableProvider.ADMIN).getVariable(OnyxVariableProvider.ACTION).getVariable(OnyxVariableProvider.ACTIONS);
+    Variable variable = root.getVariable(OnyxVariableProvider.ADMIN).getVariable(OnyxVariableProvider.ACTION);
     Assert.assertNotNull(variable);
-    Assert.assertEquals(OnyxVariableProvider.ACTION_KEY, variable.getKey());
+    Assert.assertTrue(variable.isRepeatable());
 
     Participant participant = new Participant();
     List<Action> actions = new ArrayList<Action>();
@@ -196,10 +192,10 @@ public class OnyxVariableProviderTest {
     VariableData varData = variableProvider.getVariableData(participant, variable, variablePathNamingStrategy);
     Assert.assertNotNull(varData);
     Assert.assertEquals(2, varData.getDatas().size());
-    Assert.assertEquals(DataType.INTEGER, varData.getDatas().get(0).getType());
+    Assert.assertEquals(DataType.TEXT, varData.getDatas().get(0).getType());
     Assert.assertEquals("1", varData.getDatas().get(0).getValueAsString());
 
-    Assert.assertEquals(DataType.INTEGER, varData.getDatas().get(1).getType());
+    Assert.assertEquals(DataType.TEXT, varData.getDatas().get(1).getType());
     Assert.assertEquals("2", varData.getDatas().get(1).getValueAsString());
 
     verify(participantServiceMock);
@@ -211,8 +207,7 @@ public class OnyxVariableProviderTest {
 
     Variable variable = root.getVariable(OnyxVariableProvider.ADMIN).getVariable(OnyxVariableProvider.ACTION).getVariable(OnyxVariableProvider.ACTION_COMMENT);
     Assert.assertNotNull(variable);
-    Assert.assertEquals(1, variable.getReferences().size());
-    Assert.assertEquals(OnyxVariableProvider.ACTION_KEY, variable.getReferences().get(0));
+    Assert.assertTrue(variable.getParent().isRepeatable());
 
     Participant participant = new Participant();
     List<Action> actions = new ArrayList<Action>();
@@ -237,13 +232,13 @@ public class OnyxVariableProviderTest {
     Assert.assertEquals(2, varData.getVariableDatas().size());
 
     VariableData subVarData = varData.getVariableDatas().get(0);
-    Assert.assertEquals("/Root/Admin/Action/comment?action=1", subVarData.getVariablePath());
+    Assert.assertEquals("/Root/Admin/Action/comment?Action=1", subVarData.getVariablePath());
     Assert.assertEquals(1, subVarData.getDatas().size());
     Assert.assertEquals(DataType.TEXT, subVarData.getDatas().get(0).getType());
     Assert.assertEquals("toto", subVarData.getDatas().get(0).getValueAsString());
 
     subVarData = varData.getVariableDatas().get(1);
-    Assert.assertEquals("/Root/Admin/Action/comment?action=2", subVarData.getVariablePath());
+    Assert.assertEquals("/Root/Admin/Action/comment?Action=2", subVarData.getVariablePath());
     Assert.assertEquals(1, subVarData.getDatas().size());
     Assert.assertEquals(DataType.TEXT, subVarData.getDatas().get(0).getType());
     Assert.assertEquals("tata", subVarData.getDatas().get(0).getValueAsString());

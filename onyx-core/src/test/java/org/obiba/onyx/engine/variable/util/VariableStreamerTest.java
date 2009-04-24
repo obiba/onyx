@@ -43,9 +43,9 @@ public class VariableStreamerTest {
     // users
 
     parent = root.addVariable("Admin/User", variablePathNamingStrategy.getPathSeparator());
-
-    parent.addVariable(new Variable("login").setDataType(DataType.TEXT).setKey("user"));
-    parent.addVariable(new Variable("name").setDataType(DataType.TEXT)).addReference("user");
+    parent.setDataType(DataType.TEXT).setRepeatable(true);
+    parent.addVariable(new Variable("login").setDataType(DataType.TEXT));
+    parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
 
     // participants
 
@@ -91,7 +91,7 @@ public class VariableStreamerTest {
 
     parent = root.addVariable("StandingHeight", variablePathNamingStrategy.getPathSeparator());
 
-    parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT).setKey("user"));
+    parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL));
     parent.addVariable(new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL));
   }
