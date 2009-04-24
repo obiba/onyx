@@ -9,9 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.stage.panel;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -19,9 +19,9 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
-import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
@@ -32,16 +32,17 @@ public class StageMenuBar extends MenuBar {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  private ModalWindow participantDetailsModalWindow;
+  private Dialog participantDetailsModalWindow;
 
   public StageMenuBar(String id, IModel stageModel) {
     super(id);
 
-    participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
-    participantDetailsModalWindow.setCssClassName("onyx");
+    participantDetailsModalWindow = new Dialog("participantDetailsModalWindow");
     participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    participantDetailsModalWindow.setInitialHeight(300);
-    participantDetailsModalWindow.setInitialWidth(400);
+    participantDetailsModalWindow.setInitialHeight(530);
+    participantDetailsModalWindow.setInitialWidth(507);
+    participantDetailsModalWindow.setType(Dialog.Type.PLAIN);
+    participantDetailsModalWindow.setOptions(Dialog.Option.CLOSE_OPTION);
     add(participantDetailsModalWindow);
 
     Participant participant = activeInterviewService.getParticipant();
@@ -55,7 +56,9 @@ public class StageMenuBar extends MenuBar {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel(ParticipantModalPanel.CONTENT_PANEL_ID, new Model(activeInterviewService.getParticipant())), participantDetailsModalWindow));
+        ParticipantPanel component = new ParticipantPanel("content", new Model(activeInterviewService.getParticipant()));
+        component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
+        participantDetailsModalWindow.setContent(component);
         participantDetailsModalWindow.show(target);
       }
     };

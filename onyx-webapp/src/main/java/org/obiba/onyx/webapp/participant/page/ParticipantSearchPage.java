@@ -241,7 +241,6 @@ public class ParticipantSearchPage extends BasePage {
 
   private Dialog createParticipantDialog(String id) {
     Dialog participantDialog = new Dialog(id);
-    participantDialog.setCssClassName("onyx");
     participantDialog.setTitle(new StringResourceModel("Participant", this, null));
     participantDialog.setInitialHeight(530);
     participantDialog.setInitialWidth(507);
@@ -576,7 +575,9 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          participantDetailsModalWindow.setContent(new ParticipantPanel("content", getModel()));
+          ParticipantPanel component = new ParticipantPanel("content", getModel());
+          component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
+          participantDetailsModalWindow.setContent(component);
           participantDetailsModalWindow.show(target);
         }
       };

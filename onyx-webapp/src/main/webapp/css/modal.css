@@ -95,10 +95,6 @@ div.wicket-modal div.onyx span.w_captionText  {
   height:20px;
 }
 
-div.wicket-modal div.onyx td.keyValueTableKey {
-	width: 25%;
-}
-
 div.wicket-modal div.onyx tr.ui-state-disabled td.keyValueTableKey {
 	color: #CCCCCC;
 }

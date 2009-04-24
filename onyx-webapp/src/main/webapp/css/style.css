@@ -167,6 +167,13 @@ div.banner {
   font-size: 12px;
 }
 
+
+#contentWrapper td.keyValueTableValue,
+#contentWrapper td.keyValueTableValueEven,
+#contentWrapper td.keyValueTableValueOdd {
+	padding-left:10px;
+}
+
 .base-ajax-indicator {
 	background-color: #E97723;
 	color: #ffffff;
@@ -614,9 +621,9 @@ td.keyValueTableHeader {
 }
 
 td.keyValueTableKey {
+	min-width:75px;
 	color: #666666;
 	background-color: #FFFFFF;
-	//padding: 2px 5px;
 	text-align: left;
 }
 
@@ -634,8 +641,9 @@ td.keyValueTableValueOdd {
 	color: #000000;
 	background-color: #FFFFFF;
 	font-weight: bold;
-	//padding: 2px 5px;
+	font-size:12px;
 	text-align: left;
+	padding-left:10px;
 }
 
 td.keyValueTableValue input, td.keyValueTableValue select,
