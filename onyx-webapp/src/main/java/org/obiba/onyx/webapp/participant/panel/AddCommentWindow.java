@@ -28,7 +28,7 @@ public class AddCommentWindow extends Dialog {
 
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
-    setOptions(Dialog.Option.OK_CANCEL_OPTION);
+    setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
     setTitle(new ResourceModel("AddComment"));
   }
 
