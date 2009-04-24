@@ -392,21 +392,6 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new PropertyColumn(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
       columns.add(new PropertyColumn(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
       columns.add(new PropertyColumn(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
-      columns.add(new AbstractColumn(new StringResourceModel("Gender", ParticipantSearchPage.this, null), "gender") {
-
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId, new StringResourceModel("Gender.${gender}", ParticipantSearchPage.this, new Model(new GenderObject(rowModel)))));
-        }
-
-      });
-      columns.add(new AbstractColumn(new StringResourceModel("BirthDate", ParticipantSearchPage.this, null), "birthDate") {
-
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId, DateModelUtils.getDateModel(new PropertyModel(ParticipantListColumnProvider.this, "dateFormat"), new PropertyModel(rowModel, "birthDate"))));
-        }
-
-      });
-
       columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
