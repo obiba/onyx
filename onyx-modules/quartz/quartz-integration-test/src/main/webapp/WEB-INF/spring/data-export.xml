@@ -6,12 +6,14 @@
     <property name="exportDestinations" ref="onyxDataExportDestinations" />
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />
+    <property name="sessionFactory" ref="sessionFactory"/>
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
         <property name="targetBeanName" value="userSessionService" />
       </bean>
     </property>
     <property name="configDirectory" value="${org.obiba.onyx.config.path}" />
+    <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
     <property name="exportStrategy">
       <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
         <property name="chainedStrategies">
