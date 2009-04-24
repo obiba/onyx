@@ -247,6 +247,9 @@ public class EditParticipantPanel extends Panel {
     // set recruitmentType for participant to volunteer if it is null
     if(participant.getRecruitmentType() == null) {
       participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
+    }
+
+    if(participant.getExported() == null) {
       participant.setExported(false);
     }
     if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
@@ -268,8 +271,6 @@ public class EditParticipantPanel extends Panel {
       add(new RowFragment(BARCODE, getModel(), "ParticipantCode", BARCODE));
       add(new RowFragment(FIRST_NAME, getModel(), "FirstName", FIRST_NAME));
       add(new RowFragment(LAST_NAME, getModel(), "LastName", LAST_NAME));
-      add(new RowFragment(GENDER, getModel(), "Gender", GENDER));
-      add(new RowFragment(BIRTH_DATE, getModel(), "BirthDate", BIRTH_DATE));
     } else {
       add(new EmptyPanel(BARCODE));
 
@@ -280,15 +281,16 @@ public class EditParticipantPanel extends Panel {
       FormComponent lastName = new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
       lastName.add(new StringValidator.MaximumLengthValidator(250));
       add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", lastName));
-      add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
-
-      // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
-      FormComponent birthDate = createBirthDateField();
-      Calendar calendar = Calendar.getInstance();
-      calendar.add(Calendar.YEAR, -130);
-      birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
-      add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
     }
+
+    add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
+
+    // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
+    FormComponent birthDate = createBirthDateField();
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.YEAR, -130);
+    birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
+    add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
 
     add(new AttributeGroupsFragment("configuredAttributeGroups", getModel()));
 
@@ -585,7 +587,8 @@ public class EditParticipantPanel extends Panel {
 
           item.add(field);
         } else {
-          item.add(new Label("field", new Model(participant.getConfiguredAttributeValue(attribute.getName()))));
+          String value = (participant.getConfiguredAttributeValue(attribute.getName()) != null) ? participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString() : null;
+          item.add(new Label("field", new Model(value)));
         }
       }
     }

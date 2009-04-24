@@ -65,6 +65,7 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.participant.panel.ConfirmExportPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
@@ -114,6 +115,8 @@ public class ParticipantSearchPage extends BasePage {
 
   private static final int DEFAULT_INITIAL_WIDTH = 400;
 
+  private ModalWindow confirmExportModalWindow;
+
   private UpdateParticipantListWindow updateParticipantListWindow;
 
   @SuppressWarnings("serial")
@@ -123,13 +126,20 @@ public class ParticipantSearchPage extends BasePage {
     add(participantDetailsModalWindow = createParticipantDialog("participantDetailsModalWindow"));
     add(editParticipantDetailsModalWindow = createParticipantDialog("editParticipantDetailsModalWindow"));
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
-    editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION, "Save");
+    editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION);
 
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
     unlockInterviewWindow.setOptions(Dialog.Option.YES_NO_CANCEL_OPTION);
     unlockInterviewWindow.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     unlockInterviewWindow.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+
+    confirmExportModalWindow = new ModalWindow("confirmExportModalWindow");
+    confirmExportModalWindow.setCssClassName("onyx");
+    confirmExportModalWindow.setTitle(new ResourceModel("ConfirmExport"));
+    confirmExportModalWindow.setResizable(false);
+    confirmExportModalWindow.setUseInitialHeight(false);
+    add(confirmExportModalWindow);
 
     unlockInterviewWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
@@ -498,15 +508,31 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          try {
-            onyxDataExport.exportCompletedInterviews();
-          } catch(Exception e) {
-            log.error("Error on data export.", e);
-          }
+          final Model acceptModel = new Model();
+          confirmExportModalWindow.setContent(new ConfirmExportPanel("content", acceptModel));
+          confirmExportModalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void onClose(AjaxRequestTarget target) {
+              // This method is called after the confirm dialog is closed.
+              // This fixes part of ONYX-445. Ideally, the actual export would be done in a background thread
+              // so that the current request could terminate properly instead of idling during the export.
+              Boolean accepted = (Boolean) acceptModel.getObject();
+              if(accepted != null && accepted == true) {
+                try {
+                  onyxDataExport.exportCompletedInterviews();
+                } catch(Exception e) {
+                  log.error("Error on data export.", e);
+                }
+              }
+            };
+          });
+          confirmExportModalWindow.show(target);
         }
 
       };
-      // exportLink.setVisible(((OnyxApplication) OnyxApplication.get()).isDevelopmentMode());
+
       add(exportLink);
     }
   }
@@ -659,7 +685,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public boolean isVisible() {
           // Visible if participant has been received and some attributes are editable.
-          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionConfiguredAttribute();
+          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute();
         }
       };
       link.add(new Label("label", new ResourceModel("Edit")));

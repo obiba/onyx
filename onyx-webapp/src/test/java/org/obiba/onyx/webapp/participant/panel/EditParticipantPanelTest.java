@@ -117,11 +117,11 @@ public class EditParticipantPanelTest implements Serializable {
     formTester.select("editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", 3);
     formTester.setValue("editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", "Peel street");
 
-    // test EditParticipantPanel in EDIT mode => no editable field
+    // test EditParticipantPanel in EDIT mode => no editable field (except gender and birthdate)
     tester.assertComponent("panel:editParticipantForm:editParticipantPanel:firstName:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:editParticipantPanel:lastName:value", Label.class);
-    tester.assertComponent("panel:editParticipantForm:editParticipantPanel:gender:value", Label.class);
-    tester.assertComponent("panel:editParticipantForm:editParticipantPanel:birthDate:value", Label.class);
+    tester.assertComponent("panel:editParticipantForm:editParticipantPanel:gender:gender", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:editParticipantPanel:birthDate:value", DateTextField.class);
     tester.assertInvisible("panel:editParticipantForm:editParticipantPanel:assignCodeToParticipantPanel");
 
     tester.assertComponent("panel:editParticipantForm:editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", DropDownChoice.class);

@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
-import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
+import org.obiba.onyx.webapp.home.page.HomePage;
 
 public class InterviewMenuBar extends MenuBar {
 
@@ -33,7 +33,7 @@ public class InterviewMenuBar extends MenuBar {
       @Override
       public void onClick() {
         interviewManager.releaseInterview();
-        setResponsePage(ParticipantSearchPage.class);
+        setResponsePage(HomePage.class);
       }
     };
     add(link);

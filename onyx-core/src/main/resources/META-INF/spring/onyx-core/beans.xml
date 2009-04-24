@@ -84,6 +84,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="onyxVariableProvider" class="org.obiba.onyx.engine.variable.OnyxVariableProvider">
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="participantService" ref="participantService" />
+    <property name="applicationConfigurationService" ref="appConfigService" />
+    <property name="version" ref="version"/>
   </bean>
 
   <bean id="onyxKeyStore" class="org.obiba.onyx.crypt.OnyxKeyStore" init-method="open" destroy-method="close">

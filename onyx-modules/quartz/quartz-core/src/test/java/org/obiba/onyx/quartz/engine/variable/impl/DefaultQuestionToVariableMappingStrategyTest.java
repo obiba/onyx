@@ -83,6 +83,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
 
     Variable questionVariable = questionnaireVariable.getVariable("Q1");
     Assert.assertEquals("Q1", questionVariable.getName());
+    Assert.assertTrue(questionVariable.isMultiple());
     Assert.assertEquals(3, questionVariable.getCategories().size());
     Assert.assertEquals("1", questionVariable.getCategories().get(0).getName());
     Assert.assertEquals("2", questionVariable.getCategories().get(1).getName());
@@ -93,6 +94,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
 
     questionVariable = questionnaireVariable.getVariable("Q2");
     Assert.assertEquals("Q2", questionVariable.getName());
+    Assert.assertFalse(questionVariable.isMultiple());
     Assert.assertEquals(4, questionVariable.getCategories().size());
     Assert.assertEquals(6, questionVariable.getVariables().size());
 
@@ -498,7 +500,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
-    builder.withSection("SB").withSection("GENDER").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
+    builder.withSection("SB").withSection("GENDER").withPage("P1").withQuestion("Q1", true).withCategories("1", "2", "3");
     builder.withSection("S1").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
     builder.inQuestion("Q2").withCategory("2").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
     builder.inQuestion("Q2").withCategory("3").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE).withOpenAnswerDefinition("OPEN_YEAR", DataType.INTEGER);

@@ -193,7 +193,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
   }
 
   protected void init() {
-    log.info("Onyx Web Application is starting");
+    log.info("Onyx Web Application [{}] is starting", getServletContext().getContextPath());
     super.init();
 
     createApplicationContext();
@@ -220,12 +220,12 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
 
-    log.info("Onyx Web Application v{} has started", this.getVersion());
+    log.info("Onyx Web Application [{}] v{} has started", getServletContext().getContextPath(), this.getVersion());
   }
 
   @Override
   protected void onDestroy() {
-    log.info("Onyx Web Application is stoping");
+    log.info("Onyx Web Application [{}] is stoping", getServletContext().getContextPath());
     forEachListeners(new IListenerCallback() {
       public void handleListener(String beanName, WebApplicationStartupListener listener) {
         listener.shutdown(OnyxApplication.this);
@@ -239,7 +239,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     applicationContext.destroy();
     log.info("Destroying Web Application sessions");
     getSessionStore().destroy();
-    log.info("Onyx Web Application has been stopped");
+    log.info("Onyx Web Application [{}] has been stopped", getServletContext().getContextPath());
     super.onDestroy();
   }
 

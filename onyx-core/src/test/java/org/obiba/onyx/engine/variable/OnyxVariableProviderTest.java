@@ -86,7 +86,7 @@ public class OnyxVariableProviderTest {
     Assert.assertEquals(1, root.getVariables().size());
     Variable variable = root.getVariable(OnyxVariableProvider.ADMIN);
     Assert.assertNotNull(variable);
-    Assert.assertEquals(3, variable.getVariables().size());
+    Assert.assertEquals(5, variable.getVariables().size());
 
     Variable subVar = variable.getVariable(OnyxVariableProvider.PARTICIPANT);
     Assert.assertNotNull(subVar);
@@ -97,6 +97,12 @@ public class OnyxVariableProviderTest {
     Assert.assertNotNull(subVar);
 
     subVar = variable.getVariable(OnyxVariableProvider.ACTION);
+    Assert.assertNotNull(subVar);
+
+    subVar = variable.getVariable(OnyxVariableProvider.ONYX_VERSION);
+    Assert.assertNotNull(subVar);
+
+    subVar = variable.getVariable(OnyxVariableProvider.APPLICATION_CONFIGURATION);
     Assert.assertNotNull(subVar);
   }
 

@@ -156,6 +156,10 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
           // do not fire event if category was already selected
           if(activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
             openField.focusField(target);
+
+            // persist data for category
+            activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
+
             fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
           }
         }
