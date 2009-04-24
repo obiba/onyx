@@ -21,6 +21,7 @@ abstract public class ViewCommentsActionPanel extends Panel {
 
   public ViewCommentsActionPanel(String id) {
     super(id);
+
     AjaxLink viewLogs = new AjaxLink("viewLogs") {
 
       private static final long serialVersionUID = 1L;
@@ -31,6 +32,7 @@ abstract public class ViewCommentsActionPanel extends Panel {
     };
     viewLogs.add(new ContextImage("viewLogsImg", new Model("icons/loupe_button.png")));
     add(viewLogs);
+    viewLogs.setVisible(logEntryExists());
 
     AjaxLink viewComments = new AjaxLink("viewComments") {
 
@@ -42,11 +44,16 @@ abstract public class ViewCommentsActionPanel extends Panel {
     };
     viewComments.add(new ContextImage("viewCommentsImg", new Model("icons/note.png")));
     add(viewComments);
+    viewComments.setVisible(commentEntryExists());
 
   }
 
   public abstract void onViewComments(AjaxRequestTarget target);
 
   public abstract void onViewLogs(AjaxRequestTarget target);
+
+  public abstract boolean commentEntryExists();
+
+  public abstract boolean logEntryExists();
 
 }

@@ -216,21 +216,19 @@ public abstract class StageSelectionPanel extends Panel {
 
       columns.add(new AbstractColumn(new ResourceModel("Log")) {
 
+        List<Action> interviewComments;
+
+        List<Action> interviewActions;
+
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          List<Action> interviewComments = activeInterviewService.getInterviewComments();
+          interviewComments = activeInterviewService.getInterviewComments();
+          interviewActions = activeInterviewService.getInterviewActions();
           Stage stage = (Stage) rowModel.getObject();
 
           final String stageName = stage.getName();
-          boolean foundActionComments = false;
-          for(Action action : interviewComments) {
-            if(action.getStage() != null && action.getStage().equals(stageName)) {
-              foundActionComments = true;
-              break;
-            }
-          }
 
-          // Show link only if there are existing comments for the selected Stage
-          if(foundActionComments) {
+          // Show link only if there are existing log entries for the selected Stage
+          if(logEntryExistsForStage(stageName)) {
             cellItem.add(new ViewCommentsActionPanel(componentId) {
 
               private static final long serialVersionUID = 1L;
@@ -245,11 +243,39 @@ public abstract class StageSelectionPanel extends Panel {
                 StageSelectionPanel.this.onViewLogs(target, stageName);
               }
 
+              @Override
+              public boolean commentEntryExists() {
+                return logCommentExistsForStage(stageName);
+              }
+
+              @Override
+              public boolean logEntryExists() {
+                return logEntryExistsForStage(stageName);
+              }
+
             });
 
           } else {
             cellItem.add(new Label(componentId, ""));
           }
+        }
+
+        private boolean logEntryExistsForStage(String stageName) {
+          for(Action action : interviewActions) {
+            if(action.getStage() != null && action.getStage().equals(stageName)) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        private boolean logCommentExistsForStage(String stageName) {
+          for(Action action : interviewComments) {
+            if(action.getStage() != null && action.getStage().equals(stageName)) {
+              return true;
+            }
+          }
+          return false;
         }
 
       });
