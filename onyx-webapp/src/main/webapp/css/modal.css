@@ -95,6 +95,11 @@ div.wicket-modal div.onyx span.w_captionText  {
   height:20px;
 }
 
+/*************** Table in Modal Window Style ********************/
+div.wicket-modal div.onyx table.keyValueTable {
+	border-spacing:2px;
+}
+
 div.wicket-modal div.onyx tr.ui-state-disabled td.keyValueTableKey {
 	color: #CCCCCC;
 }
@@ -106,6 +111,7 @@ div.wicket-modal div.onyx td.keyValueTableValue input{
 div.wicket-modal div.onyx td.keyValueTableValue select{
 	width: 220px;
 }
+/*************** END Table in Modal Window Style ********************/
 
 div.wicket-modal div.onyx .window-action-content {
   	height:349px;

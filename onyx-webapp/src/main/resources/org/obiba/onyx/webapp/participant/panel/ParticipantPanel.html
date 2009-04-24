@@ -1,3 +1,23 @@
 <wicket:panel>
 	<span wicket:id="participant" />
+	<span wicket:id="configuredAttributeGroups" />
 </wicket:panel>
+
+<wicket:fragment wicket:id="attributeGroupsFragment">
+  <div wicket:id="groupRepeater">
+  <h2 class="h2-short"><span wicket:id="groupName" /></h2>
+    
+	<table>
+	  <tbody>
+	    <span wicket:id="group" />
+      </tbody>
+	</table>
+  </div>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="attributeGroupFragment">
+  <tr wicket:id="attributeRepeater">
+    <td class="keyValueTableKey"><span wicket:id="label"/></td>
+    <td class="keyValueTableValue"><span wicket:id="field"/></td>
+  </tr>
+</wicket:fragment>
