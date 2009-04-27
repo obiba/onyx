@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -28,6 +30,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.Strings;
 import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.core.reusable.Dialog.Status;
@@ -197,7 +200,11 @@ public class InterviewLogPanel extends Panel {
       WebMarkupContainer webMarkupContainerTwo = new WebMarkupContainer("commentRowClassTwo");
       add(webMarkupContainerTwo);
       webMarkupContainerTwo.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
-      webMarkupContainerTwo.add(new Label("comment", action.getComment()));
+      CharSequence escapedComment = Strings.escapeMarkup(action.getComment());
+      Label comment = new Label("comment", textToMultiLineHtml(escapedComment.toString()));
+      comment.setEscapeModelStrings(false);
+      comment.add(new AttributeAppender("class", true, new Model("log-comment"), " "));
+      webMarkupContainerTwo.add(comment);
 
       ContextImage commentIcon = new ContextImage("commentIcon", new Model("icons/note.png"));
       commentIcon.setMarkupId("commentIcon");
@@ -205,6 +212,13 @@ public class InterviewLogPanel extends Panel {
       webMarkupContainerTwo.add(commentIcon);
 
     }
+  }
+
+  private String textToMultiLineHtml(String text) {
+    Pattern pattern = Pattern.compile("[\\r\\n]");
+    Matcher matcher = pattern.matcher(text);
+    String output = matcher.replaceAll("<br/>");
+    return output;
   }
 
   private String getOddEvenCssClass(int row) {

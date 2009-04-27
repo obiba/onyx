@@ -1517,3 +1517,8 @@ ul#interviewMenuBar li a span {
   margin-right: 5px;
   border-style: none;
 }
+
+.log-comment {
+  white-space: normal;
+  padding-right: 20px;
+ }
