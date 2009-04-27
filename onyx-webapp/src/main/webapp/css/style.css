@@ -1453,6 +1453,10 @@ div#participantPageSearchResults #newNavigator em {
   background: url('../icons/completed.png') no-repeat center left;
 }
 
+#interviewPageStages td > span.obiba-state.obiba-state-skipped {
+  background: url('../icons/cancelled.png') no-repeat center left;
+}
+
 #interviewPageStages table.entityTable {
   border-bottom:1px solid #C65F02;
 }
