@@ -78,26 +78,11 @@ public class InterviewPage extends BasePage {
 
   AjaxLink viewComments;
 
-  final InterviewLogPanel interviewLogPanel;
-
-  final Dialog interviewLogsDialog;
-
   @SpringBean
   private InterviewManager interviewManager;
 
   public InterviewPage() {
     super();
-
-    interviewLogPanel = new InterviewLogPanel("content", 329);
-    interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").setFormCssClass("interview-log-dialog-form").getDialog();
-    interviewLogsDialog.setInitialHeight(400);
-    interviewLogsDialog.setInitialWidth(700);
-    interviewLogPanel.setup(interviewLogsDialog);
-    interviewLogPanel.setInterviewPage(InterviewPage.this);
-    interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
-    interviewLogPanel.setMarkupId("interviewLogPanel");
-    interviewLogPanel.setOutputMarkupId(true);
-    add(interviewLogsDialog);
 
     if(activeInterviewService.getParticipant() == null || activeInterviewService.getInterview() == null) {
       setResponsePage(WebApplication.get().getHomePage());
@@ -109,6 +94,19 @@ public class InterviewPage extends BasePage {
       //
       remove("menuBar");
       add(new InterviewMenuBar("menuBar"));
+
+      final InterviewLogPanel interviewLogPanel;
+      final Dialog interviewLogsDialog;
+      interviewLogPanel = new InterviewLogPanel("content", 329);
+      interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").setFormCssClass("interview-log-dialog-form").getDialog();
+      interviewLogsDialog.setInitialHeight(400);
+      interviewLogsDialog.setInitialWidth(700);
+      interviewLogPanel.setup(interviewLogsDialog);
+      interviewLogPanel.setInterviewPage(InterviewPage.this);
+      interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
+      interviewLogPanel.setMarkupId("interviewLogPanel");
+      interviewLogPanel.setOutputMarkupId(true);
+      add(interviewLogsDialog);
 
       Participant participant = activeInterviewService.getParticipant();
 
@@ -131,12 +129,12 @@ public class InterviewPage extends BasePage {
         }
       });
 
-      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink");
+      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink", interviewLogsDialog, interviewLogPanel);
       add(viewCommentsIconLink);
       ContextImage commentIcon = createContextImage("commentIcon", "icons/note.png");
       viewCommentsIconLink.add(commentIcon);
 
-      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink");
+      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink", interviewLogsDialog, interviewLogPanel);
       add(viewLogIconLink);
       ContextImage logIcon = createContextImage("logIcon", "icons/loupe_button.png");
       viewLogIconLink.add(logIcon);
@@ -365,8 +363,8 @@ public class InterviewPage extends BasePage {
     }
   }
 
-  private ViewInterviewLogsLink createIconLink(String id) {
-    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, interviewLogsDialog, interviewLogPanel);
+  private ViewInterviewLogsLink createIconLink(String id, Dialog dialog, InterviewLogPanel interviewLogPanel) {
+    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel);
     viewCommentsIconLink.setMarkupId(id);
     viewCommentsIconLink.setOutputMarkupId(true);
     return viewCommentsIconLink;
