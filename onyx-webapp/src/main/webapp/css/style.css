@@ -1419,6 +1419,10 @@ div#participantPageSearchResults #newNavigator em {
   top: 4px;
 }
 
+#interviewPageLog div {
+  margin-bottom: 15px;
+}
+
 #interviewPageStages table.entityTable tr > th:first-child,
 #interviewPageStages table.entityTable tr > td:first-child {
   text-align: right;
@@ -1509,6 +1513,7 @@ ul#interviewMenuBar li a span {
 
 /******************* End InterviewPage *********************************************/
 
-#commentIcon {
+#commentIcon, #logIcon {
   margin-right: 5px;
+  border-style: none;
 }

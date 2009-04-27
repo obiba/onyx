@@ -78,11 +78,26 @@ public class InterviewPage extends BasePage {
 
   AjaxLink viewComments;
 
+  final InterviewLogPanel interviewLogPanel;
+
+  final Dialog interviewLogsDialog;
+
   @SpringBean
   private InterviewManager interviewManager;
 
   public InterviewPage() {
     super();
+
+    interviewLogPanel = new InterviewLogPanel("content", 329);
+    interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").setFormCssClass("interview-log-dialog-form").getDialog();
+    interviewLogsDialog.setInitialHeight(400);
+    interviewLogsDialog.setInitialWidth(700);
+    interviewLogPanel.setup(interviewLogsDialog);
+    interviewLogPanel.setInterviewPage(InterviewPage.this);
+    interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
+    interviewLogPanel.setMarkupId("interviewLogPanel");
+    interviewLogPanel.setOutputMarkupId(true);
+    add(interviewLogsDialog);
 
     if(activeInterviewService.getParticipant() == null || activeInterviewService.getInterview() == null) {
       setResponsePage(WebApplication.get().getHomePage());
@@ -98,17 +113,6 @@ public class InterviewPage extends BasePage {
       Participant participant = activeInterviewService.getParticipant();
 
       add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
-
-      final InterviewLogPanel interviewLogPanel;
-      final Dialog interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel = new InterviewLogPanel("content", 329)).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").setFormCssClass("interview-log-dialog-form").getDialog();
-      interviewLogsDialog.setInitialHeight(400);
-      interviewLogsDialog.setInitialWidth(700);
-      interviewLogPanel.setup(interviewLogsDialog);
-      interviewLogPanel.setInterviewPage(InterviewPage.this);
-      interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
-      interviewLogPanel.setMarkupId("interviewLogPanel");
-      interviewLogPanel.setOutputMarkupId(true);
-      add(interviewLogsDialog);
 
       // Create modal comments window
       final ModalWindow commentsWindow;
@@ -127,18 +131,19 @@ public class InterviewPage extends BasePage {
         }
       });
 
-      ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink("viewCommentsIconLink", interviewLogsDialog, interviewLogPanel);
-      viewCommentsIconLink.setMarkupId("viewCommentsIconLink");
-      viewCommentsIconLink.setOutputMarkupId(true);
+      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink");
       add(viewCommentsIconLink);
-
-      ContextImage commentIcon = new ContextImage("commentIcon", new Model("icons/note.png"));
-      commentIcon.setMarkupId("commentIcon");
-      commentIcon.setOutputMarkupId(true);
+      ContextImage commentIcon = createContextImage("commentIcon", "icons/note.png");
       viewCommentsIconLink.add(commentIcon);
+
+      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink");
+      add(viewLogIconLink);
+      ContextImage logIcon = createContextImage("logIcon", "icons/loupe_button.png");
+      viewLogIconLink.add(logIcon);
 
       // Add view interview comments action
       add(viewComments = new ViewInterviewLogsLink("viewComments", interviewLogsDialog, interviewLogPanel));
+      add(new ViewInterviewLogsLink("viewLog", interviewLogsDialog, interviewLogPanel));
 
       // Add create interview comments action
       add(addCommentDialog = createAddCommentDialog());
@@ -360,4 +365,17 @@ public class InterviewPage extends BasePage {
     }
   }
 
+  private ViewInterviewLogsLink createIconLink(String id) {
+    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, interviewLogsDialog, interviewLogPanel);
+    viewCommentsIconLink.setMarkupId(id);
+    viewCommentsIconLink.setOutputMarkupId(true);
+    return viewCommentsIconLink;
+  }
+
+  private ContextImage createContextImage(String id, String image) {
+    ContextImage commentIcon = new ContextImage(id, new Model(image));
+    commentIcon.setMarkupId(id);
+    commentIcon.setOutputMarkupId(true);
+    return commentIcon;
+  }
 }
