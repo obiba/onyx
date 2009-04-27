@@ -73,6 +73,11 @@ public class DialogBuilder {
     return this;
   }
 
+  public DialogBuilder setFormCssClass(String formCssClass) {
+    dialog.setFormCssClass(formCssClass);
+    return this;
+  }
+
   private DialogBuilder setTitle(String title) {
     dialog.setTitle(title);
     return this;

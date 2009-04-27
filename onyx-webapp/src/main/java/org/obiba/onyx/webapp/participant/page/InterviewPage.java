@@ -100,7 +100,7 @@ public class InterviewPage extends BasePage {
       add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
 
       final InterviewLogPanel interviewLogPanel;
-      final Dialog interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel = new InterviewLogPanel("content", 329)).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").getDialog();
+      final Dialog interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel = new InterviewLogPanel("content", 329)).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").setFormCssClass("interview-log-dialog-form").getDialog();
       interviewLogsDialog.setInitialHeight(400);
       interviewLogsDialog.setInitialWidth(700);
       interviewLogPanel.setup(interviewLogsDialog);
