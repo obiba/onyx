@@ -168,9 +168,9 @@ function styleParticipantSearchNavigationBar() {
 	$('#newNavigatorLabel').remove();
 	$('#newNavigator').remove();
 	$('.entityTable tr.navigation div.navigatorLabel > span').attr( 'id', 'newNavigatorLabel' );
-	$('.entityTable tr.navigation div.navigator > span').attr( 'id', 'newNavigator' );		
-	$('.entityTable tr.navigation div.navigatorLabel > span').insertBefore('div#participantPageSearchResults h1.results-list');
+	$('.entityTable tr.navigation div.navigator > span').attr( 'id', 'newNavigator' );
 	$('.entityTable tr.navigation div.navigator > span').insertBefore('div#participantPageSearchResults h1.results-list');
+	$('.entityTable tr.navigation div.navigatorLabel > span').insertBefore('div#participantPageSearchResults h1.results-list');
 	$('.entityTable tr.navigation').empty();
 }
         
