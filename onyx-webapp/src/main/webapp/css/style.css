@@ -1422,7 +1422,7 @@ div#participantPageSearchResults #newNavigator em {
 #interviewPageStages table.entityTable tr > th:first-child,
 #interviewPageStages table.entityTable tr > td:first-child {
   text-align: right;
-  width: 2.5%;  
+  width: 4%;  
 }
 
 #interviewPageStages td > span.obiba-state {
