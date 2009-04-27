@@ -526,16 +526,30 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
+    private class StatusModel extends PropertyModel {
+
+      private static final long serialVersionUID = 1L;
+
+      public StatusModel(Object modelObject, String expression) {
+        super(modelObject, expression);
+      }
+
+      @Override
+      public Object getObject() {
+        if(super.getObject() != null) {
+          return "obiba-state-" + super.getObject().toString().toLowerCase().replace("_", "");
+        }
+        return "";
+      }
+    }
+
+    @SuppressWarnings("serial")
     public InterviewStatusFragment(String id, IModel participantModel) {
       super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
 
       Label statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(participantModel, "interview"), ""));
       add(statusLabel);
-      Object interviewStatus = (new PropertyModel(participantModel, "interview.status")).getObject();
-      if(interviewStatus != null) {
-        String standardisedCssClassName = "obiba-state-" + interviewStatus.toString().toLowerCase().replace("_", "");
-        statusLabel.add(new AttributeAppender("class", new Model(standardisedCssClassName), " "));
-      }
+      statusLabel.add(new AttributeAppender("class", new StatusModel(participantModel, "interview.status"), " "));
     }
   }
 
