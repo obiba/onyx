@@ -39,6 +39,8 @@ import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
 import org.obiba.onyx.webapp.participant.panel.AddCommentWindow;
 import org.obiba.onyx.wicket.StageModel;
+import org.obiba.onyx.wicket.behavior.ScrollToBottomBehaviour;
+import org.obiba.onyx.wicket.behavior.ScrollableTableBodyBehaviour;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -77,11 +79,13 @@ public class InterviewLogPanel extends Panel {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
-  public InterviewLogPanel(String id) {
+  public InterviewLogPanel(String id, final int tableBodyHeight) {
     super(id);
+    add(new ScrollableTableBodyBehaviour(tableBodyHeight));
     addTableTitleComponents();
 
     addInterviewLogComponent();
+
   }
 
   private void addTableTitleComponents() {
@@ -310,11 +314,13 @@ public class InterviewLogPanel extends Panel {
           Action comment = (Action) dialogContent.getModelObject();
           activeInterviewService.doAction(null, comment);
           interviewPage.updateCommentCount(target);
+
+          // Scroll to bottom of log to make the recently added comment visible.
+          InterviewLogPanel.this.add(new ScrollToBottomBehaviour("#interviewLogPanel tbody"));
+
           InterviewLogPanel.this.showAll();
           InterviewLogPanel.this.addInterviewLogComponent();
           target.addComponent(InterviewLogPanel.this);
-          // Scroll to bottom of log to make the recently added comment visible.
-          target.appendJavascript("$('#interviewLogPanel').attr({ scrollTop: $('#interviewLogPanel').attr('scrollHeight') });");
         }
 
         return true;
@@ -324,4 +330,5 @@ public class InterviewLogPanel extends Panel {
 
     return dialog;
   }
+
 }
