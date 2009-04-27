@@ -144,7 +144,8 @@ public class ParticipantPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
         item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
-        item.add(new Label("field", new Model(participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString())));
+        String value = (participant.getConfiguredAttributeValue(attribute.getName()) != null) ? participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString() : null;
+        item.add(new Label("field", new Model(value)));
       }
     }
   }
