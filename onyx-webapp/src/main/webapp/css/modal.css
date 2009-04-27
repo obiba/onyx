@@ -128,11 +128,22 @@ div.wicket-modal div.onyx .unlockInterview-panel-content {
 }
 
 div.wicket-modal div.onyx .interview-log-panel-content {
-    height:350px;
-    width:660px;
-    overflow: auto;
-    margin-left: 10px;
+  height: 350px;
+  width: 660px;
+  margin-left: 10px;
 }
+
+div.wicket-modal div.onyx .interview-log-panel-content tbody {
+  max-height: 329px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#interviewLogsDialog #yesButton {
+  float: left;
+  margin-left: 20px; 
+}
+
 
 div.wicket-modal div.onyx .add-comment-panel-content {
     height:371px;

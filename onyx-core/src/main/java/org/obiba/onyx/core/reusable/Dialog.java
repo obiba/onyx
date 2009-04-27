@@ -83,6 +83,9 @@ public class Dialog extends ModalWindow {
     form = new Form("form");
     form.add(new WebMarkupContainer(getContentId()));
 
+    form.setMarkupId(id);
+    form.setOutputMarkupId(true);
+
     AjaxButton okButton = new AjaxButton("ok", form) {
 
       @Override
@@ -99,6 +102,8 @@ public class Dialog extends ModalWindow {
 
     };
     okButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Ok", this, null)));
+    okButton.setMarkupId("okButton");
+    okButton.setOutputMarkupId(true);
     form.add(okButton);
 
     AjaxLink cancelButton = new AjaxLink("cancel") {
@@ -111,6 +116,8 @@ public class Dialog extends ModalWindow {
 
     };
     cancelButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Cancel", this, null)));
+    cancelButton.setMarkupId("cancelButton");
+    cancelButton.setOutputMarkupId(true);
     form.add(cancelButton);
 
     AjaxLink yesButton = new AjaxLink("yes") {
@@ -123,6 +130,8 @@ public class Dialog extends ModalWindow {
 
     };
     yesButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Yes", this, null)));
+    yesButton.setMarkupId("yesButton");
+    yesButton.setOutputMarkupId(true);
     form.add(yesButton);
 
     AjaxLink noButton = new AjaxLink("no") {
@@ -135,6 +144,8 @@ public class Dialog extends ModalWindow {
 
     };
     noButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.No", this, null)));
+    noButton.setMarkupId("noButton");
+    noButton.setOutputMarkupId(true);
     form.add(noButton);
 
     AjaxLink closeButton = new AjaxLink("close") {
@@ -147,6 +158,8 @@ public class Dialog extends ModalWindow {
 
     };
     closeButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Close", this, null)));
+    closeButton.setMarkupId("closeButton");
+    closeButton.setOutputMarkupId(true);
     form.add(closeButton);
 
     this.setWindowClosedCallback(new WindowClosedCallback() {
