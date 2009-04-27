@@ -448,7 +448,7 @@ div.form-button {
 .obiba-quartz-nav-admin {
 	position: fixed;
 	top: 10px;
-	left: 15px;
+	right: 15px;
 }
 
 .form-button input.obiba-nav-prev {
