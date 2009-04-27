@@ -126,7 +126,7 @@ public class ParticipantSearchPage extends BasePage {
     add(participantDetailsModalWindow = createParticipantDialog("participantDetailsModalWindow"));
     add(editParticipantDetailsModalWindow = createParticipantDialog("editParticipantDetailsModalWindow"));
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
-    editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION);
+    editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION, "Save");
 
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
