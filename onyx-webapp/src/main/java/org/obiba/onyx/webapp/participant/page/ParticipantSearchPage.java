@@ -33,6 +33,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -748,6 +749,12 @@ public class ParticipantSearchPage extends BasePage {
       }
     }
 
+  }
+
+  @Override
+  public void renderHead(IHeaderResponse response) {
+    super.renderHead(response);
+    response.renderOnLoadJavascript("styleParticipantSearchNavigationBar();");
   }
 
   @Override
