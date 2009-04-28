@@ -1500,12 +1500,12 @@ ul#interviewMenuBar li a span {
   padding:3px 50px 2px;
 }
 
-#commentInstructions, #commentText {
+#commentInstructions, .comment-text {
   color: #000000;
   font-weight: bold;	
 }
 
-#commentText {
+.comment-text {
     height:288px;
     width:329px;
     overflow: auto;
