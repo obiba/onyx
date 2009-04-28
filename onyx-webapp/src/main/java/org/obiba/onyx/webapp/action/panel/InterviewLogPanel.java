@@ -285,6 +285,8 @@ public class InterviewLogPanel extends Panel {
           // Redraw, but show all log entries.
           showAll();
           addInterviewLogComponent();
+          // Disable Show All Button
+          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
           target.addComponent(InterviewLogPanel.this);
           modalWindow.resetStatus();
           return false;
@@ -331,6 +333,8 @@ public class InterviewLogPanel extends Panel {
 
           // Scroll to bottom of log to make the recently added comment visible.
           InterviewLogPanel.this.add(new ScrollToBottomBehaviour("#interviewLogPanel tbody"));
+          // Disable Show All Button
+          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
 
           InterviewLogPanel.this.showAll();
           InterviewLogPanel.this.addInterviewLogComponent();

@@ -140,8 +140,30 @@ public class InterviewPage extends BasePage {
       viewLogIconLink.add(logIcon);
 
       // Add view interview comments action
-      add(viewComments = new ViewInterviewLogsLink("viewComments", interviewLogsDialog, interviewLogPanel));
-      add(new ViewInterviewLogsLink("viewLog", interviewLogsDialog, interviewLogPanel));
+      add(viewComments = new ViewInterviewLogsLink("viewComments", interviewLogsDialog, interviewLogPanel) {
+
+        private static final long serialVersionUID = -5561038138085317724L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          // Disable Show All Button
+          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+          super.onClick(target);
+        }
+
+      });
+      add(new ViewInterviewLogsLink("viewLog", interviewLogsDialog, interviewLogPanel) {
+
+        private static final long serialVersionUID = -5561038138085317724L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          // Disable Show All Button
+          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+          super.onClick(target);
+        }
+
+      });
 
       // Add create interview comments action
       add(addCommentDialog = createAddCommentDialog());
@@ -364,7 +386,18 @@ public class InterviewPage extends BasePage {
   }
 
   private ViewInterviewLogsLink createIconLink(String id, Dialog dialog, InterviewLogPanel interviewLogPanel) {
-    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel);
+    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel) {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        // Disable Show All Button
+        target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+        super.onClick(target);
+      }
+
+    };
     viewCommentsIconLink.setMarkupId(id);
     viewCommentsIconLink.setOutputMarkupId(true);
     return viewCommentsIconLink;
