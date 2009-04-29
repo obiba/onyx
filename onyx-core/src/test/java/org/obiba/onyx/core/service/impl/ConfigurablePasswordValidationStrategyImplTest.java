@@ -266,7 +266,6 @@ public class ConfigurablePasswordValidationStrategyImplTest {
   public void testGetAllowedCharacterGroupsAsPrintableString() {
     ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).setAllowedCharacterGroups(new String[] { "A-Z", "a-z", "0-9" });
     String actual = ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).getAllowedCharacterGroupsAsPrintableString();
-    System.out.println(actual);
     Assert.assertEquals("[A-Z],[a-z],[0-9]", actual);
   }
 
@@ -274,7 +273,6 @@ public class ConfigurablePasswordValidationStrategyImplTest {
   public void testGetAllowedCharacterGroupsAsPrintableStringWithIndividualCharacters() {
     ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).setAllowedCharacterGroups(new String[] { "[()&]", "A-Z", "a-z", "0-9", "[[^@#]" });
     String actual = ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).getAllowedCharacterGroupsAsPrintableString();
-    System.out.println(actual);
     Assert.assertEquals("[()&],[[^@#],[A-Z],[a-z],[0-9]", actual);
   }
 
@@ -282,7 +280,6 @@ public class ConfigurablePasswordValidationStrategyImplTest {
   public void testGetAllowedCharacterGroupsAsPrintableStringWithIndividualCharactersOnly() {
     ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).setAllowedCharacterGroups(new String[] { "[()&]", "[[^@#]" });
     String actual = ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).getAllowedCharacterGroupsAsPrintableString();
-    System.out.println(actual);
     Assert.assertEquals("[()&],[[^@#]", actual);
   }
 
