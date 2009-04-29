@@ -9,12 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
-import org.apache.wicket.markup.html.link.AbstractLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
-import org.obiba.onyx.webapp.home.page.HomePage;
 
 public class InterviewMenuBar extends MenuBar {
 
@@ -25,18 +22,6 @@ public class InterviewMenuBar extends MenuBar {
 
   public InterviewMenuBar(String id) {
     super(id);
-
-    AbstractLink link = new Link("exitLink") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onClick() {
-        interviewManager.releaseInterview();
-        setResponsePage(HomePage.class);
-      }
-    };
-    add(link);
   }
 
   protected void buildMenus() {

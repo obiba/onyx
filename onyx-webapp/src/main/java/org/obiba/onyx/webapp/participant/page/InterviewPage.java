@@ -255,19 +255,23 @@ public class InterviewPage extends BasePage {
 
       });
 
-      AjaxLink exitLink = new AjaxLink("exitInterview") {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          interviewManager.releaseInterview();
-          setResponsePage(HomePage.class);
-        }
-      };
-      add(exitLink);
-
+      addExitLink("exitInterviewTop");
+      addExitLink("exitInterview");
     }
+  }
+
+  private void addExitLink(String id) {
+    AjaxLink exitLink = new AjaxLink(id) {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        interviewManager.releaseInterview();
+        setResponsePage(HomePage.class);
+      }
+    };
+    add(exitLink);
   }
 
   public void updateCommentsCount() {

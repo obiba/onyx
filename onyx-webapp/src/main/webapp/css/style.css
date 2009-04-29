@@ -1465,9 +1465,13 @@ div#participantPageSearchResults #newNavigator em {
   border-bottom:1px solid #C65F02;
 }
 
-#interviewPageStages #exitInterview {
+#exitInterview {
   position:relative;
   text-align:center;
+  top:10px;  
+}
+
+#interviewPageStages #exitInterview {
   top:18px;  
 }
 
@@ -1476,7 +1480,7 @@ ul#interviewMenuBar li {
 }
 
 ul#interviewMenuBar li > div {
-  padding-left:63px !important;
+  text-align: center;
 }
 
 ul#interviewMenuBar li a {
@@ -1492,12 +1496,8 @@ ul#interviewMenuBar li a {
 }
 
 ul#interviewMenuBar li a span {
-  font-size: 8px;
+  font-size: 12px;
   padding-right:5px;
-}
-
-#interviewPageStages #exitInterview a.obiba-button:link, #interviewPageStages #exitInterview a.obiba-button:visited, #interviewPageStages #exitInterview a.obiba-button:active, #interviewPageStages #exitInterview a.obiba-button:hover {
-  padding:3px 50px 2px;
 }
 
 #commentInstructions, .comment-text {
