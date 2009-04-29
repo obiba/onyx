@@ -45,6 +45,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
 import org.obiba.onyx.webapp.participant.panel.AddCommentWindow;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
@@ -261,7 +262,7 @@ public class InterviewPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           interviewManager.releaseInterview();
-          setResponsePage(ParticipantSearchPage.class);
+          setResponsePage(HomePage.class);
         }
       };
       add(exitLink);
