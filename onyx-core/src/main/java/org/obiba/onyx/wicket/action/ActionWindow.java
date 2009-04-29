@@ -71,7 +71,7 @@ public abstract class ActionWindow extends Dialog {
 
         ActionDefinitionPanel pane = ActionWindow.this.getContent();
 
-        if(status != null && !status.equals(Dialog.Status.CANCELLED)) {
+        if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
           Action action = pane.getAction();
           log.debug("action=" + action);
           Stage stage = null;
