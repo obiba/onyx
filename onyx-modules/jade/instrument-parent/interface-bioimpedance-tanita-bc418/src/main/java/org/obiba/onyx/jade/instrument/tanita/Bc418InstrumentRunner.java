@@ -172,9 +172,6 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
         }
       }
 
-      String wAge;
-      wAge = "D4" + inputData.get("INPUT_PARTICIPANT_AGE").getValueAsString() + "\r\n";
-
       // Send commands and receives response
 
       // Send the units of measurement
@@ -210,7 +207,16 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       }
 
       // Send age
-      wResponse = sendReceive(wAge);
+      String inputAgeStr = inputData.get("INPUT_PARTICIPANT_AGE").getValueAsString();
+      int inputAge = Integer.parseInt(inputAgeStr);
+      log.info("Input age is {}", inputAgeStr);
+      if(inputAge < 7 || inputAge > 99) {
+        log.error("The input age is outside the range supported by the Tanita BC418.  Input age has to be in the following interval: [7,99]");
+      }
+
+      // Age is sent to Tanita has to be two bytes long, so we have to add zero at the beginning if age between 7 and 9.
+      wResponse = sendReceive("D4" + (inputAge < 10 ? "0" + inputAgeStr : inputAgeStr) + "\r\n");
+
       if(!wResponse.equals("D4")) {
         throw new RuntimeException("Error when setting age");
       }
