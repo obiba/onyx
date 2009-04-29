@@ -21,7 +21,11 @@ import org.obiba.onyx.core.service.IPasswordValidationStrategy;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- *
+ * A configurable password validation class used to validate and generate passwords. Set {@code allowedCharacterGroups}
+ * to a list of characters allowed in the password. "A-Z" indicates a range and "[abcdef!@]" indicates a list of
+ * characters, not including the square brackets. (Use "[[]" to include a square bracket.) Each range or list is a
+ * "group" of characters. For example "[abc[def!@]" includes the square bracked character along with "abcdef!@". Set
+ * {@code minimumCharacterGroupUsage} to indicate the minimum number of "groups" that must be present in a password.
  */
 public class ConfigurablePasswordValidationStrategyImpl extends AbstractPasswordLengthValidationStrategy implements IPasswordValidationStrategy {
 
@@ -35,6 +39,18 @@ public class ConfigurablePasswordValidationStrategyImpl extends AbstractPassword
   private Pattern characterRangePattern = Pattern.compile("^(.)-(.)$"); // Match A-Z, 0-9, etc.
 
   private int minimumCharacterGroupsUsage = 3;
+
+  public void setPreventUserAttributeUsage(boolean preventUserAttributeUsage) {
+    this.preventUserAttributeUsage = preventUserAttributeUsage;
+  }
+
+  public void setAllowedCharacterGroups(String[] allowedCharacterGroups) {
+    this.allowedCharacterGroups = allowedCharacterGroups;
+  }
+
+  public void setMinimumCharacterGroupsUsage(int minimumCharacterGroupsUsage) {
+    this.minimumCharacterGroupsUsage = minimumCharacterGroupsUsage;
+  }
 
   public String generatePassword(User user) {
     Random generator = new Random();
@@ -125,18 +141,6 @@ public class ConfigurablePasswordValidationStrategyImpl extends AbstractPassword
     if(characterGroupsUsed < minimumCharacterGroupsUsage) {
       list.add(createErrorMessage(PasswordValidationErrors.MINIMUM_CHARACTER_GROUP_USAGE_NOT_MET, new String[] { "" + minimumCharacterGroupsUsage, getAllowedCharacterGroupsAsPrintableString() }));
     }
-  }
-
-  public void setPreventUserAttributeUsage(boolean preventUserAttributeUsage) {
-    this.preventUserAttributeUsage = preventUserAttributeUsage;
-  }
-
-  public void setAllowedCharacterGroups(String[] allowedCharacterGroups) {
-    this.allowedCharacterGroups = allowedCharacterGroups;
-  }
-
-  public void setMinimumCharacterGroupsUsage(int minimumCharacterGroupsUsage) {
-    this.minimumCharacterGroupsUsage = minimumCharacterGroupsUsage;
   }
 
   /**
@@ -239,7 +243,9 @@ public class ConfigurablePasswordValidationStrategyImpl extends AbstractPassword
       Matcher rangeMatcher = characterRangePattern.matcher(allowedCharacterGroups[i]); // Match A-Z, 0-9, etc.
       Matcher characterListMatcher = characterListPattern.matcher(allowedCharacterGroups[i]); // Match [()&], [[^@#]]
       if(rangeMatcher.matches()) {
-        escapedAllowedCharacterGroups[i] = allowedCharacterGroups[i];
+        String startRangeCharacter = Pattern.quote(rangeMatcher.group(1));
+        String endRangeCharacter = Pattern.quote(rangeMatcher.group(2));
+        escapedAllowedCharacterGroups[i] = startRangeCharacter + "-" + endRangeCharacter;
       } else if(characterListMatcher.matches()) {
         String characterList = characterListMatcher.group(1);
         escapedAllowedCharacterGroups[i] = Pattern.quote(characterList);

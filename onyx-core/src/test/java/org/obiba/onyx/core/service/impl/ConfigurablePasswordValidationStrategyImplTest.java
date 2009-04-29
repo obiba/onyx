@@ -23,9 +23,6 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.IPasswordValidationStrategy;
 import org.springframework.context.MessageSourceResolvable;
 
-/**
- *
- */
 public class ConfigurablePasswordValidationStrategyImplTest {
 
   private IPasswordValidationStrategy passwordStrategy;
@@ -287,6 +284,15 @@ public class ConfigurablePasswordValidationStrategyImplTest {
     String actual = ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).getAllowedCharacterGroupsAsPrintableString();
     System.out.println(actual);
     Assert.assertEquals("[()&],[[^@#]", actual);
+  }
+
+  @Test
+  public void testValidatePasswordWithRangeOfSpecialCharacters() {
+    ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).setMinimumSize(3);
+    ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).setMinimumCharacterGroupsUsage(3);
+    ((ConfigurablePasswordValidationStrategyImpl) passwordStrategy).setAllowedCharacterGroups(new String[] { "$-&", "[-`", "0-9" });
+    List<MessageSourceResolvable> messageList = passwordStrategy.validatePassword(user, "%[0");
+    Assert.assertTrue(messageList.size() == 0); // No error messages. Passed.
   }
 
   /**
