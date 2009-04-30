@@ -494,11 +494,21 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .form-button {
-  border-top: 2px solid #ccc;
+  border-top:1px solid #C65F02;
   height: 40px;
-  padding-right: 20px;
-  padding-top: 20px;
-  text-align: right;
+  margin-left:20px;
+  margin-right:20px;
+  padding-left:10px;
+  padding-right:10px;
+  padding-top:20px;
+}
+
+.form-button .obiba-nav-left {
+	float: left;
+}
+
+.form-button .obiba-nav-right {
+	float: right;
 }
 
 .wizard-title {

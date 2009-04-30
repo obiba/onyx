@@ -9,7 +9,7 @@
 }
 
 .page {
-	padding-top: 20px;
+	padding-top: 10px;
 }
 
 .section {
@@ -23,7 +23,13 @@
 }
 
 .questions {
-	padding-bottom:10px;
+	padding-bottom:25px;
+	border-bottom: 1px solid #C65F02;
+	margin-bottom:7px;
+}
+
+.questions:last-child {
+	border-bottom: 0px !important;
 }
 
 .obiba-quartz-boilerplate {
@@ -31,13 +37,14 @@
 	line-height:1.4;
 }
 
-.question {
+.question {	
 }
 
 .question > div.label {
 	font-weight: bold;
 	padding-bottom:5px;
 	padding-top:5px;
+	text-indent: 10px;
 }
 
 .help-toggle {
@@ -79,6 +86,7 @@
 .instructions {
 	font-style: italic;
 	padding-bottom:5px;
+	text-indent: 10px;
 }
 
 .caption {
@@ -89,14 +97,25 @@
 .specifications {
 	padding-bottom:5px;
 	padding-top:5px;
+	font-style: italic;
+	text-indent: 10px;
+}
+
+.specifications:before {
+    content: "*";
 }
 
 .categories {
 	padding-left:15px;
+	padding-top:10px;
+	padding-bottom:3px;
+	border-top:1px solid #C65F02;
+	margin-top: 7px;
 }
 
 .categories td.category {
-	padding-right:10px;
+	padding-right:20px;
+	padding-bottom:3px;
 }
 
 .category .label {

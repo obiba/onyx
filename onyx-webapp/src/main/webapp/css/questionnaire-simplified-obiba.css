@@ -431,8 +431,11 @@ table.obiba-quartz-array {
 }
 
 div.form-button {
+  border-top:2px solid #ccc;
   height: 50px;
   padding-top: 10px;
+  margin-left:0px;
+  margin-right:0px;
 }
 
 .form-button input.obiba-quartz-nav {
