@@ -13,7 +13,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog;
 
 public class AddCommentWindow extends Dialog {
 

@@ -10,9 +10,9 @@
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
 

@@ -7,6 +7,7 @@
 	  
 	  <div class="separator"/>
 	  <div class="modal_footer">
+	  	<span wicket:id="customOptions" />
     	<input type="button" class="obiba-button ui-corner-all obiba-button-yes" wicket:id="yes" />
     	<input type="button" class="obiba-button ui-corner-all obiba-button-no" wicket:id="no" />
     	<input type="submit" class="obiba-button ui-corner-all obiba-button-ok" wicket:id="ok" />
@@ -16,3 +17,7 @@
 	</form>
   </div>  
 </wicket:panel>
+
+<wicket:fragment wicket:id="optionListFragment">
+  <input type="button" class="obiba-button ui-corner-all" wicket:id="link" />
+</wicket:fragment>

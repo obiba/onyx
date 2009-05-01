@@ -19,10 +19,10 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public class StageMenuBar extends MenuBar {

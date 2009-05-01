@@ -7,9 +7,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.reusable;
+package org.obiba.onyx.wicket.reusable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -20,8 +22,12 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
 /**
  * Reusable class extending ModalWindow to predefine dialog boxes Title with possibility of adding an icon, scrollable
@@ -46,6 +52,8 @@ public class Dialog extends ModalWindow {
   private CloseButtonCallback closeButtonCallback;
 
   private WindowClosedCallback windowClosedCallback;
+
+  private List<AjaxLink> customOptions = new ArrayList<AjaxLink>();
 
   public enum Option {
     YES_OPTION, NO_OPTION, OK_OPTION, CANCEL_OPTION, CLOSE_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION, OK_CANCEL_OPTION
@@ -228,7 +236,7 @@ public class Dialog extends ModalWindow {
     int i = 0;
     for(String label : labels) {
       if(i >= componentIds.length) break;
-      form.get(componentIds[i]).add(new AttributeModifier("value", true, new StringResourceModel("Dialog." + label, this, null)));
+      form.get(componentIds[i]).add(new AttributeModifier("value", true, new SpringStringResourceModel("Dialog." + label)));
       i++;
     }
   }
@@ -237,6 +245,12 @@ public class Dialog extends ModalWindow {
   public void show(AjaxRequestTarget target) {
     super.show(target);
     resetStatus();
+
+    if(customOptions.size() > 0) {
+      form.addOrReplace(new OptionListFragment("customOptions"));
+    } else {
+      form.addOrReplace(new EmptyPanel("customOptions"));
+    }
 
     if(type != null && type.equals(Type.ERROR)) {
       target.appendJavascript("$(document).ready(function () {$('.onyx-feedback .w_captionText').each(function() {$(this).addClass('ui-state-error');});});");
@@ -349,6 +363,27 @@ public class Dialog extends ModalWindow {
   public void setFormCssClass(String formCssClass) {
     if(form != null) {
       form.add(new AttributeModifier("class", true, new Model(formCssClass)));
+    }
+  }
+
+  public void addCustomOption(AjaxLink link, String label) {
+    link.add(new AttributeModifier("value", true, new SpringStringResourceModel("Dialog." + label)));
+    customOptions.add(link);
+  }
+
+  private class OptionListFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    public OptionListFragment(String id) {
+      super(id, "optionListFragment", Dialog.this);
+      RepeatingView repeater = new RepeatingView("link");
+
+      for(AjaxLink option : customOptions) {
+        // option.setMarkupId(repeater.newChildId());
+        repeater.add(option);
+      }
+
+      add(repeater);
     }
   }
 }

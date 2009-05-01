@@ -15,8 +15,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
-import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.webapp.OnyxApplication;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
  * 

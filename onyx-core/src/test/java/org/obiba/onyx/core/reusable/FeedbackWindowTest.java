@@ -19,6 +19,7 @@ import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 public class FeedbackWindowTest {
 

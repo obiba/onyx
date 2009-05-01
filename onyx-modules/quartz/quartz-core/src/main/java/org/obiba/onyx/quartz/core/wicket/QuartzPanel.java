@@ -13,7 +13,6 @@ import java.util.Locale;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -24,6 +23,7 @@ import org.obiba.onyx.quartz.core.wicket.wizard.QuestionnaireWizardPanel;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
  * Quartz widget entry point.

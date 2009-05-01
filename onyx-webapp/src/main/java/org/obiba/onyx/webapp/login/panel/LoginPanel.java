@@ -22,11 +22,11 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
-import org.obiba.onyx.core.reusable.Dialog;
-import org.obiba.onyx.core.reusable.DialogBuilder;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession.AuthenticateErrorCode;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
 
 public class LoginPanel extends SignInPanel {
 

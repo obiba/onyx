@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.reusable;
+package org.obiba.onyx.wicket.reusable;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.IModel;

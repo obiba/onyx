@@ -22,10 +22,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

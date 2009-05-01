@@ -9,8 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket;
 
-import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
  * An interface to inject to stage module component some usefull tools.
