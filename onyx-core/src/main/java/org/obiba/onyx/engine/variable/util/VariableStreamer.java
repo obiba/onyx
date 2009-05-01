@@ -52,8 +52,6 @@ public class VariableStreamer {
 
   private static final String KEY = "Key";
 
-  private static final String REFERENCES = "References";
-
   private static final String CATEGORIES = "Categories";
 
   private static final String TYPE = "Type";
@@ -220,7 +218,7 @@ public class VariableStreamer {
 
   public static void toCSV(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
     CSVWriter writer = new CSVWriter(new OutputStreamWriter(os));
-    writer.writeNext(new String[] { PATH, NAME, KEY, REFERENCES, CATEGORIES, TYPE, UNIT });
+    writer.writeNext(new String[] { PATH, NAME, CATEGORIES, TYPE, UNIT, MULTIPLE, REPEATABLE, KEY });
     csvWrite(writer, variable, variablePathNamingStrategy);
     try {
       writer.close();
@@ -295,6 +293,8 @@ public class VariableStreamer {
     cell.setCellValue(new HSSFRichTextString(MULTIPLE));
     cell = row.createCell(6);
     cell.setCellValue(new HSSFRichTextString(REPEATABLE));
+    cell = row.createCell(7);
+    cell.setCellValue(new HSSFRichTextString(KEY));
 
     HSSFRichTextString str = new HSSFRichTextString();
     str.clearFormatting();
@@ -337,6 +337,8 @@ public class VariableStreamer {
         cell = row.createCell(6);
         cell.setCellValue(new HSSFRichTextString("true"));
       }
+      cell = row.createCell(7);
+      cell.setCellValue(new HSSFRichTextString(variable.getKey()));
       rowCount++;
     }
     for(Variable child : variable.getVariables()) {
