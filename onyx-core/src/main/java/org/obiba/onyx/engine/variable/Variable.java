@@ -51,6 +51,9 @@ public class Variable implements Serializable {
   @XStreamAsAttribute
   private Boolean repeatable;
 
+  @XStreamAsAttribute
+  private String key;
+
   /**
    * 
    * @param name
@@ -155,6 +158,23 @@ public class Variable implements Serializable {
    */
   public Variable setUnit(String unit) {
     this.unit = unit;
+    return this;
+  }
+
+  /**
+   * Get the participant key owner name. If null, the data of this variable is not a participant key.
+   * @return the key owner name
+   */
+  public String getKey() {
+    return key;
+  }
+
+  /**
+   * Set the participant key owner name.
+   * @param key
+   */
+  public Variable setKey(String key) {
+    this.key = key;
     return this;
   }
 
