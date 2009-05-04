@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -42,6 +43,7 @@ import org.obiba.onyx.wicket.behavior.ScrollToBottomBehaviour;
 import org.obiba.onyx.wicket.behavior.ScrollableTableBodyBehaviour;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.OptionSide;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -276,26 +278,36 @@ public class InterviewLogPanel extends Panel {
   @SuppressWarnings("serial")
   private void addDialogActionButtons(final Dialog modalWindow) {
 
+    modalWindow.addOption("ShowAll", OptionSide.LEFT, new AjaxLink("showAll") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modalWindow.setStatus(Status.OTHER);
+        // Redraw, but show all log entries.
+        showAll();
+        addInterviewLogComponent();
+        // Disable Show All Button
+        target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
+        target.addComponent(InterviewLogPanel.this);
+      }
+
+    }, "showAll");
+
+    modalWindow.addOption("Add", OptionSide.RIGHT, new AjaxLink("add") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modalWindow.setStatus(Status.OTHER);
+        addCommentDialog.show(target);
+      }
+
+    });
+
     modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        if(status.equals(Status.WINDOW_CLOSED)) {
-          return true;
-        } else if(status.equals(Status.YES)) {
-          // Redraw, but show all log entries.
-          showAll();
-          addInterviewLogComponent();
-          // Disable Show All Button
-          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
-          target.addComponent(InterviewLogPanel.this);
-          modalWindow.resetStatus();
-          return false;
-        } else if(status.equals(Status.NO)) {
-          // Add a new comment.
-          addCommentDialog.show(target);
-          return false;
-        }
-        return true;
+        if(status.equals(Status.CLOSED) || status.equals(Status.WINDOW_CLOSED)) return true;
+        return false;
       }
 
     });
@@ -334,7 +346,7 @@ public class InterviewLogPanel extends Panel {
           // Scroll to bottom of log to make the recently added comment visible.
           InterviewLogPanel.this.add(new ScrollToBottomBehaviour("#interviewLogPanel tbody"));
           // Disable Show All Button
-          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+          target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
 
           InterviewLogPanel.this.showAll();
           InterviewLogPanel.this.addInterviewLogComponent();

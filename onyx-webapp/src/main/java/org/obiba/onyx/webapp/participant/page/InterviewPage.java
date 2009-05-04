@@ -99,7 +99,7 @@ public class InterviewPage extends BasePage {
       final InterviewLogPanel interviewLogPanel;
       final Dialog interviewLogsDialog;
       interviewLogPanel = new InterviewLogPanel("content", 329);
-      interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.YES_NO_CANCEL_OPTION, "ShowAll", "Add", "Close").setFormCssClass("interview-log-dialog-form").getDialog();
+      interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.CLOSE_OPTION).setFormCssClass("interview-log-dialog-form").getDialog();
       interviewLogsDialog.setInitialHeight(400);
       interviewLogsDialog.setInitialWidth(700);
       interviewLogPanel.setup(interviewLogsDialog);
@@ -148,7 +148,7 @@ public class InterviewPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           // Disable Show All Button
-          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+          target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
           super.onClick(target);
         }
 
@@ -160,7 +160,7 @@ public class InterviewPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           // Disable Show All Button
-          target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+          target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
           super.onClick(target);
         }
 
@@ -394,7 +394,7 @@ public class InterviewPage extends BasePage {
       @Override
       public void onClick(AjaxRequestTarget target) {
         // Disable Show All Button
-        target.appendJavascript("$('.obiba-button-yes').attr('disabled','true');$('.obiba-button-yes').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-yes').css('border-color','rgba(0, 0, 0, 0.2)');");
+        target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
         super.onClick(target);
       }
 

@@ -53,7 +53,9 @@ public class Dialog extends ModalWindow {
 
   private WindowClosedCallback windowClosedCallback;
 
-  private List<AjaxLink> customOptions = new ArrayList<AjaxLink>();
+  private List<AjaxLink> customOptionsLeft = new ArrayList<AjaxLink>();
+
+  private List<AjaxLink> customOptionsRight = new ArrayList<AjaxLink>();
 
   public enum Option {
     YES_OPTION, NO_OPTION, OK_OPTION, CANCEL_OPTION, CLOSE_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION, OK_CANCEL_OPTION
@@ -61,6 +63,10 @@ public class Dialog extends ModalWindow {
 
   public enum Type {
     WARNING, INFO, ERROR, PLAIN
+  }
+
+  public enum OptionSide {
+    LEFT, RIGHT
   }
 
   /**
@@ -80,7 +86,9 @@ public class Dialog extends ModalWindow {
     /** "Cancel" button clicked. */
     CANCELLED,
     /** "Close" button clicked. */
-    CLOSED
+    CLOSED,
+    /** Other option clicked */
+    OTHER
   }
 
   public Dialog(String id) {
@@ -246,10 +254,16 @@ public class Dialog extends ModalWindow {
     super.show(target);
     resetStatus();
 
-    if(customOptions.size() > 0) {
-      form.addOrReplace(new OptionListFragment("customOptions"));
+    if(customOptionsLeft.size() > 0) {
+      form.addOrReplace(new OptionListFragment("customOptionsLeft", customOptionsLeft));
     } else {
-      form.addOrReplace(new EmptyPanel("customOptions"));
+      form.addOrReplace(new EmptyPanel("customOptionsLeft"));
+    }
+
+    if(customOptionsRight.size() > 0) {
+      form.addOrReplace(new OptionListFragment("customOptionsRight", customOptionsRight));
+    } else {
+      form.addOrReplace(new EmptyPanel("customOptionsRight"));
     }
 
     if(type != null && type.equals(Type.ERROR)) {
@@ -366,20 +380,26 @@ public class Dialog extends ModalWindow {
     }
   }
 
-  public void addCustomOption(AjaxLink link, String label) {
+  public void addOption(String label, OptionSide side, AjaxLink link, String... name) {
     link.add(new AttributeModifier("value", true, new SpringStringResourceModel("Dialog." + label)));
-    customOptions.add(link);
+    if(name.length > 0) link.add(new AttributeModifier("name", true, new Model(name[0])));
+
+    if(side.equals(OptionSide.LEFT)) {
+      link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all left")));
+      customOptionsLeft.add(link);
+    } else {
+      customOptionsRight.add(link);
+    }
   }
 
   private class OptionListFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public OptionListFragment(String id) {
+    public OptionListFragment(String id, List<AjaxLink> customOptions) {
       super(id, "optionListFragment", Dialog.this);
       RepeatingView repeater = new RepeatingView("link");
 
       for(AjaxLink option : customOptions) {
-        // option.setMarkupId(repeater.newChildId());
         repeater.add(option);
       }
 

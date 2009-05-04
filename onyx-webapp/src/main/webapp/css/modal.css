@@ -139,11 +139,10 @@ div.wicket-modal div.onyx .interview-log-panel-content tbody {
   overflow-x: hidden;
 }
 
-.interview-log-dialog-form .obiba-button-yes {
+.left {
   float: left;
   margin-left: 20px; 
 }
-
 
 div.wicket-modal div.onyx .add-comment-panel-content {
     height:371px;
