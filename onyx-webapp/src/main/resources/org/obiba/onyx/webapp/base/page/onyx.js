@@ -173,6 +173,16 @@ function styleParticipantSearchNavigationBar() {
 	$('.entityTable tr.navigation div.navigatorLabel > span').insertBefore('div#participantPageSearchResults h1.results-list');
 	$('.entityTable tr.navigation').empty();
 }
+
+//////////////////////////////////////////////////////////////////////
+// Tubes scanned count label styling
+//////////////////////////////////////////////////////////////////////
+function styleTubesScannedLabel() {	   
+	$('.entityTable tr.titleToolbar > td > div.title').attr( 'id', 'tubesScannedLabel' );
+	$('#tubesScannedLabel').prependTo('#anonymousComments');
+	$('#rubyPanel #wizardContent div.wizard-title').remove();
+	$('.entityTable tr.titleToolbar').remove();
+}
         
 //////////////////////////////////////////////////////////////////////
 // JQuery Layout

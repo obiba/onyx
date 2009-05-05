@@ -9,11 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -30,9 +27,6 @@ public class TubeRegistrationPanel extends Panel {
   // Instance Variables
   //
 
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
-
   @SpringBean
   private TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
@@ -46,10 +40,6 @@ public class TubeRegistrationPanel extends Panel {
     setOutputMarkupId(true);
 
     add(new TubeBarcodePanel("tubeBarcodePanel"));
-
-    add(new Label("scannedPrimaryTubes", new SpringStringResourceModel("Ruby.ScannedPrimaryTubes")));
-
-    Participant participant = activeInterviewService.getParticipant();
-    add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new SpringStringResourceModel("Ruby.RegisteredParticipantTubeList", new Object[] { participant.getFullName() }, null)));
+    add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new SpringStringResourceModel("Ruby.RegisteredParticipantTubeList")));
   }
 }

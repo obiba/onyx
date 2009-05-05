@@ -12,6 +12,7 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -21,10 +22,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
+import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
+import org.obiba.onyx.ruby.core.domain.Remark;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
-import org.obiba.onyx.ruby.core.wicket.tube.CommentPanel;
-import org.obiba.onyx.ruby.core.wicket.tube.RemarkSelectorPanel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
@@ -57,11 +58,12 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
 
   @SuppressWarnings("serial")
   public RegisteredParticipantTubeColumnProvider(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
-    addDeleteColumn();
     addBarcodeColumn();
     addBarcodePartColumns(tubeRegistrationConfiguration);
     addRemarkColumn(tubeRegistrationConfiguration);
     addCommentColumn();
+    addEditColumn();
+    addDeleteColumn();
   }
 
   //
@@ -87,18 +89,6 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   //
   // Methods
   //
-
-  private void addDeleteColumn() {
-    columns.add(new AbstractColumn(new Model("")) {
-      private static final long serialVersionUID = 1L;
-
-      public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        cellItem.add(new DeleteBarcodePanel(componentId, rowModel));
-      }
-    });
-
-    firstBarcodePartColumnIndex++;
-  }
 
   private void addBarcodeColumn() {
     columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Barcode")) {
@@ -131,27 +121,63 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
     return firstBarcodePartColumnIndex;
   }
 
-  private void addRemarkColumn(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
-    final TubeRegistrationConfiguration finalTubeRegConf = tubeRegistrationConfiguration;
+  private void addRemarkColumn(final TubeRegistrationConfiguration tubeRegistrationConfiguration) {
 
     columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Remark")) {
       private static final long serialVersionUID = 1L;
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        cellItem.add(new RemarkSelectorPanel(componentId, rowModel, finalTubeRegConf));
+
+        Set<String> tubeRemarks = ((RegisteredParticipantTube) rowModel.getObject()).getRemarks();
+        List<Remark> configuredRemarks = tubeRegistrationConfiguration.getAvailableRemarks();
+        StringBuffer remarksLabel = new StringBuffer();
+
+        int i = 1;
+        for(Remark remark : configuredRemarks) {
+          if(tubeRemarks.contains(remark.getCode())) {
+            remarksLabel.append((new SpringStringResourceModel(remark.getCode()).getString()));
+            if(i++ < tubeRemarks.size()) {
+              remarksLabel.append(", ");
+            }
+          }
+        }
+
+        cellItem.add(new Label(componentId, remarksLabel.toString()));
       }
     });
 
   }
 
   private void addCommentColumn() {
+
     columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Comment")) {
       private static final long serialVersionUID = 1L;
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        cellItem.add(new CommentPanel(componentId, rowModel));
+        cellItem.add(new Label(componentId, ((RegisteredParticipantTube) rowModel.getObject()).getComment()));
       }
     });
 
   }
+
+  private void addEditColumn() {
+    columns.add(new AbstractColumn(new Model("")) {
+      private static final long serialVersionUID = 1L;
+
+      public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        cellItem.add(new EditBarcodePanel(componentId, rowModel));
+      }
+    });
+  }
+
+  private void addDeleteColumn() {
+    columns.add(new AbstractColumn(new Model("")) {
+      private static final long serialVersionUID = 1L;
+
+      public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        cellItem.add(new DeleteBarcodePanel(componentId, rowModel));
+      }
+    });
+  }
+
 }

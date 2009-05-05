@@ -10,15 +10,16 @@
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.IHeaderContributor;
+import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
-import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
-public class TubeRegistrationStep extends WizardStepPanel {
+public class TubeRegistrationStep extends WizardStepPanel implements IHeaderContributor {
   //
   // Constants
   //
@@ -40,7 +41,7 @@ public class TubeRegistrationStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), new SpringStringResourceModel("Ruby.TubeRegistrationTitle")));
+    add(new EmptyPanel(getTitleId()));
 
     add(new TubeRegistrationPanel(getContentId()));
   }
@@ -74,4 +75,9 @@ public class TubeRegistrationStep extends WizardStepPanel {
   private boolean hasContraindications() {
     return activeTubeRegistrationService.hasContraindications(Contraindication.Type.OBSERVED) || activeTubeRegistrationService.hasContraindications(Contraindication.Type.ASKED);
   }
+
+  public void renderHead(IHeaderResponse response) {
+    response.renderOnLoadJavascript("styleTubesScannedLabel();");
+  }
+
 }

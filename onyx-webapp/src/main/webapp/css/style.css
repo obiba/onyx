@@ -1532,3 +1532,85 @@ ul#interviewMenuBar li a span {
   white-space: normal;
   padding-right: 20px;
  }
+ 
+/******************* Sample Collection *********************************************/
+ 
+#rubyPanel #wizardContent {
+  padding-left:0px;
+  padding-right:0px;
+  margin:20px;
+}
+
+#rubyPanel #wizardContent table.entityTable td {
+  font-weight:normal;
+  padding:6px;  
+}
+
+#rubyPanel #wizardContent table.entityTable {
+  border-right:1px solid #C65F02;
+  border-left:1px solid #C65F02;
+  border-bottom:1px solid #C65F02;
+}
+
+#rubyPanel #wizardContent table.entityTable th {
+  border-top:1px solid #CCCCCC;
+}
+
+#rubyPanel #wizardContent #tubeBarcodePanel {
+  border-top:1px solid #C65F02;
+  border-right:1px solid #C65F02;
+  border-left:1px solid #C65F02; 
+  padding:8px;  
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel > div {
+ display: inline; 
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel > div {
+ display: inline; 
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel > div > span {
+ display: table-cell; 
+ width:230px; 
+ background:transparent url(../icons/completed.png) no-repeat scroll 165px center; 
+}
+
+#rubyPanel #wizardContent #tubeBarcodePanel li {
+  background-image:none;
+  padding:0px;  
+}
+
+#rubyPanel #wizardContent #tubeBarcodePanel ul {
+ padding:0px;
+ margin-bottom:0px;
+ margin-top:0px !important; 
+}
+
+#rubyPanel #wizardContent .wizard-content {
+  padding-top:0px;
+}
+
+#rubyPanel #wizardContent .wizard-content table:first-child {
+  border-spacing:0px;
+}
+
+#rubyPanel #wizardContent .wizard-content table:first-child td:first-child {
+  padding: 0px;
+}
+
+#rubyPanel #wizardFooter {
+  border-top:0px;
+}
+
+#tubesScannedLabel {
+  font-weight:bold;
+  padding-right:25px;
+}
+
+#anonymousComments {
+  margin:0px;
+  padding:0 10px 10px;  
+}
+/******************* End Sample Collection *********************************************/

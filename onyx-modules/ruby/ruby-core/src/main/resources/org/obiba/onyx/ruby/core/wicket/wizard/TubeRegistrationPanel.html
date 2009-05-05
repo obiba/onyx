@@ -1,21 +1,20 @@
 <wicket:panel>
   <table style="width: 100%">
+  	<tr>
+  		<td>
+  			<p id="anonymousComments">
+				<wicket:message key="Ruby.AnonymousComments" />
+			</p>
+		</td>
+  	</tr>
     <tr>
-      <td>
-        <fieldset>
-          <div wicket:id="tubeBarcodePanel"/>
-        </fieldset>
-      </td>
+		<td>
+	  		<div id="tubeBarcodePanel" wicket:id="tubeBarcodePanel"/>
+	  	</td>
     </tr>
     <tr>
       <td>
-        <fieldset>
-          <legend><span wicket:id="scannedPrimaryTubes" /></legend>
-          <p>
-          	<wicket:message key="Ruby.AnonymousComments" />
-          </p>
-          <div wicket:id="list" />
-        </fieldset>
+	    <div wicket:id="list" />
       </td>
     </tr>
   </table>

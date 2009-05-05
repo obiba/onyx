@@ -52,9 +52,9 @@ public class RegisteredParticipantTubeColumnProviderTest {
   public void testGetFirstBarcodePartColumnIndex() {
     RegisteredParticipantTubeColumnProvider columnProvider = new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration);
 
-    // The index of the first barcode part column should 2 (since the first
-    // two columns are the Delete column and the Barcode column).
-    Assert.assertEquals(2, columnProvider.getFirstBarcodePartColumnIndex());
+    // The index of the first barcode part column should 1 (since the first
+    // column is the Barcode column).
+    Assert.assertEquals(1, columnProvider.getFirstBarcodePartColumnIndex());
   }
 
   //

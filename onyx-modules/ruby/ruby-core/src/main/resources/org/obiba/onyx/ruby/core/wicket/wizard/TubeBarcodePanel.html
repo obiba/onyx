@@ -1,7 +1,9 @@
 <wicket:panel>
+
     <div wicket:id="feedback" class="feedback" />
     
-	<form wicket:id="tubeBarcodeForm" style="margin-top:1%; margin-bottom:1%" autocomplete="off">
+	<form wicket:id="tubeBarcodeForm" autocomplete="off">
+	  <span wicket:id="feedbackPanel"/>
 	  <label for="tubeBarcode"><span wicket:id="tubeBarcodeLabel">Tube barcode</span></label>
 	  <input wicket:id="tubeBarcode" id="tubeBarcode" type="text" size="20"/>
 	  <input type="submit" wicket:id="submit" style="display:none">      

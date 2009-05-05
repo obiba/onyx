@@ -79,6 +79,8 @@ public class TubeBarcodePanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
+    FeedbackPanel feedbackPanel;
+
     //
     // Constructors
     //
@@ -88,6 +90,11 @@ public class TubeBarcodePanel extends Panel {
 
       addSubmitLink();
       addTubeBarcodeLabelAndField();
+
+      feedbackPanel = new FeedbackPanel("feedbackPanel");
+      feedbackPanel.setOutputMarkupId(true);
+      feedbackPanel.setOutputMarkupPlaceholderTag(true);
+      add(feedbackPanel);
     }
 
     //
@@ -109,6 +116,8 @@ public class TubeBarcodePanel extends Panel {
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form form) {
+          feedbackPanel.setVisible(true);
+
           String barcode = tubeBarcode.getModelObjectAsString();
 
           if(barcode.trim().length() != 0) {
@@ -126,12 +135,15 @@ public class TubeBarcodePanel extends Panel {
           }
 
           target.addComponent(TubeBarcodePanel.this.getParent());
+          target.appendJavascript("styleTubesScannedLabel();");
         }
 
         @Override
         protected void onError(AjaxRequestTarget target, Form form) {
+          feedbackPanel.setVisible(false);
           feedbackWindow.setContent(new FeedbackPanel("content"));
           feedbackWindow.show(target);
+          target.appendJavascript("styleTubesScannedLabel();");
         }
       };
 
