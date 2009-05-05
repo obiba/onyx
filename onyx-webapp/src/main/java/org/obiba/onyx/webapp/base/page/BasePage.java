@@ -27,15 +27,21 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 
-public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware {
+public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware, ConfirmationDialogProvider {
 
   @SpringBean
   UserSessionService userSessionService;
 
+  private final ConfirmationDialog reusableConfirmationDialog = new ConfirmationDialog("reusable-confirmation-dialog");
+
   public BasePage() {
     super();
+
+    add(reusableConfirmationDialog);
 
     ContextImage img = new ContextImage("logo", new Model("images/logo/logo_on_dark.png"));
     img.setMarkupId("logo");
@@ -84,6 +90,10 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
   public void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
     setResponsePage(getPage());
+  }
+
+  public ConfirmationDialog getConfirmationDialog() {
+    return reusableConfirmationDialog;
   }
 
 }

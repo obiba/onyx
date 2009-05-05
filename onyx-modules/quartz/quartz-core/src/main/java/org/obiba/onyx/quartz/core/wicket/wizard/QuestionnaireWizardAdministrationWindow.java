@@ -11,12 +11,19 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import java.util.Locale;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 
 /**
  * Container of action buttons based on the ones defined by the wizard form.
@@ -79,8 +86,23 @@ public class QuestionnaireWizardAdministrationWindow extends Dialog {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        setStatus(Status.CLOSED);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) QuestionnaireWizardAdministrationWindow.this.close(target);
+        Label label = new Label("content", new StringResourceModel("ConfirmCancellationOfQuestionnaire", this, null));
+        label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+
+        ConfirmationDialog confirmationDialog = ((ConfirmationDialogProvider) getPage()).getConfirmationDialog();
+        confirmationDialog.setContent(label);
+        confirmationDialog.setTitle(new StringResourceModel("ConfirmCancellationOfQuestionnaireTitle", this, null));
+        confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+          private static final long serialVersionUID = -6691702933562884991L;
+
+          public void onYesButtonClicked(AjaxRequestTarget target) {
+            setStatus(Status.CLOSED);
+            if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) QuestionnaireWizardAdministrationWindow.this.close(target);
+          }
+
+        });
+        confirmationDialog.show(target);
       }
     };
     addOption("CancelQuestionnaire", OptionSide.RIGHT, cancelLink, "cancelQuestionnaire");

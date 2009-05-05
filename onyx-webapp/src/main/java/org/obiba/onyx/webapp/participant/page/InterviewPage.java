@@ -49,8 +49,10 @@ import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
@@ -209,7 +211,22 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          interviewActionWindow.show(target, null, cancelInterviewDef);
+          Label label = new Label("content", new StringResourceModel("ConfirmCancellationOfInterview", InterviewPage.this, null));
+          label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+          ConfirmationDialog confirmationDialog = getConfirmationDialog();
+
+          confirmationDialog.setContent(label);
+          confirmationDialog.setTitle(new StringResourceModel("ConfirmCancellationOfInterviewTitle", this, null));
+          confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+            private static final long serialVersionUID = -6691702933562884991L;
+
+            public void onYesButtonClicked(AjaxRequestTarget target) {
+              interviewActionWindow.show(target, null, cancelInterviewDef);
+            }
+
+          });
+          confirmationDialog.show(target);
         }
 
         @Override
