@@ -53,9 +53,9 @@ public class Dialog extends ModalWindow {
 
   private WindowClosedCallback windowClosedCallback;
 
-  private List<AjaxLink> customOptionsLeft = new ArrayList<AjaxLink>();
+  private List<Object> customOptionsLeft = new ArrayList<Object>();
 
-  private List<AjaxLink> customOptionsRight = new ArrayList<AjaxLink>();
+  private List<Object> customOptionsRight = new ArrayList<Object>();
 
   public enum Option {
     YES_OPTION, NO_OPTION, OK_OPTION, CANCEL_OPTION, CLOSE_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION, OK_CANCEL_OPTION
@@ -388,19 +388,33 @@ public class Dialog extends ModalWindow {
       link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all left")));
       customOptionsLeft.add(link);
     } else {
+      link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all right")));
       customOptionsRight.add(link);
+    }
+  }
+
+  public void addSubmitOption(String label, OptionSide side, AjaxButton button, String... name) {
+    button.add(new AttributeModifier("value", true, new SpringStringResourceModel("Dialog." + label)));
+    if(name.length > 0) button.add(new AttributeModifier("name", true, new Model(name[0])));
+
+    if(side.equals(OptionSide.LEFT)) {
+      button.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all left")));
+      customOptionsLeft.add(button);
+    } else {
+      customOptionsRight.add(button);
     }
   }
 
   private class OptionListFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public OptionListFragment(String id, List<AjaxLink> customOptions) {
+    public OptionListFragment(String id, List<Object> customOptions) {
       super(id, "optionListFragment", Dialog.this);
       RepeatingView repeater = new RepeatingView("link");
 
-      for(AjaxLink option : customOptions) {
-        repeater.add(option);
+      for(Object option : customOptions) {
+        if(option instanceof AjaxLink) repeater.add((AjaxLink) option);
+        if(option instanceof AjaxButton) repeater.add((AjaxButton) option);
       }
 
       add(repeater);

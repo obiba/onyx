@@ -328,7 +328,7 @@ public abstract class WizardForm extends Form {
     return "step";
   }
 
-  private class WizardButtonDisableBehavior extends AttributeAppender {
+  protected class WizardButtonDisableBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;
 

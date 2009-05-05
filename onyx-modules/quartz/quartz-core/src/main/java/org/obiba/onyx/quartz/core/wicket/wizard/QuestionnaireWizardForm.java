@@ -15,7 +15,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -33,6 +33,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -77,11 +80,9 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   protected boolean modalFeedback;
 
-  protected ModalWindow adminWindow;
+  protected QuestionnaireWizardAdministrationWindow adminWindow;
 
   protected ProgressBarPanel progressBar;
-
-  private QuestionnaireWizardAdministrationPanel adminPanel;
 
   private boolean adminWindowClosed = false;
 
@@ -107,15 +108,17 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     createModalAdministrationPanel();
 
+    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
+
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {
       private static final long serialVersionUID = 0L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        adminPanel.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible());
-        adminPanel.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible());
-        adminPanel.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible());
+        adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible(), buttonDisableBehavior);
         adminWindow.show(target);
       }
 
@@ -128,47 +131,35 @@ public class QuestionnaireWizardForm extends WizardForm {
   @SuppressWarnings("serial")
   private void createModalAdministrationPanel() {
     // Create modal feedback window
-    adminWindow = new ModalWindow("adminWindow");
-    adminWindow.setCssClassName("onyx");
-    adminWindow.setMinimalHeight(50);
-    adminWindow.setInitialHeight(50);
-    adminWindow.setInitialWidth(450);
+    adminWindow = new QuestionnaireWizardAdministrationWindow("adminWindow");
 
-    adminPanel = new QuestionnaireWizardAdministrationPanel(adminWindow.getContentId(), QuestionnaireWizardForm.this, adminWindow);
-    adminWindow.setContent(adminPanel);
+    adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
-    adminWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-
-      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
         adminWindowClosed = true;
         return true;
       }
 
     });
 
-    adminWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-
-      public void onClose(AjaxRequestTarget target) {
-        if(!adminWindowClosed) {
-          switch(adminPanel.getActionSelected()) {
-          case INTERRUPT:
-            onInterrupt(target);
-            break;
-          case FINISH_SUBMIT:
-            onFinishSubmit(target, QuestionnaireWizardForm.this);
-            break;
-          case FINISH_ERROR:
-            onFinishError(target, QuestionnaireWizardForm.this);
-            break;
-          case CANCEL:
-            onCancelClick(target);
-          }
+    adminWindow.setWindowClosedCallback(new WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Status status) {
+        switch(status) {
+        case OTHER:
+          onInterrupt(target);
+          break;
+        case SUCCESS:
+          onFinishSubmit(target, QuestionnaireWizardForm.this);
+          break;
+        case ERROR:
+          onFinishError(target, QuestionnaireWizardForm.this);
+          break;
+        case CLOSED:
+          onCancelClick(target);
         }
-        adminWindowClosed = false;
       }
-
     });
-
+    adminWindowClosed = false;
     add(adminWindow);
   }
 
