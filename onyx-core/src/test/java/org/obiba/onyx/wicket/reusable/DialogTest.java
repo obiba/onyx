@@ -7,15 +7,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.reusable;
+package org.obiba.onyx.wicket.reusable;
 
+import org.apache.wicket.Page;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog.OptionSide;
+import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
+import org.obiba.wicket.test.MockSpringApplication;
 
 /**
  * 
@@ -26,7 +31,14 @@ public class DialogTest {
 
   @Before
   public void setUp() {
-    tester = new WicketTester();
+    ExtendedApplicationContextMock mockCtx = new ExtendedApplicationContextMock();
+
+    MockSpringApplication application = new MockSpringApplication();
+    application.setApplicationContext(mockCtx);
+    application.setHomePage(Page.class);
+
+    tester = new WicketTester(application);
+    // tester = new WicketTester();
   }
 
   @Test
@@ -83,5 +95,30 @@ public class DialogTest {
     tester.clickLink("panel:openDialog");
 
     tester.assertComponent("panel:dialog:content:form:content", Label.class);
+  }
+
+  @Test
+  public void testShowDialogCustomOption() {
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      public Panel getTestPanel(String panelId) {
+        return new DialogPanel(panelId, "Show", OptionSide.LEFT, new AjaxLink("showLink") {
+
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+          }
+
+        });
+      }
+    });
+    tester.clickLink("panel:openDialog");
+    tester.dumpPage();
+
+    // tester.assertVisible("panel:dialog:content:form:ok");
   }
 }

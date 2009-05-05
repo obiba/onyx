@@ -7,14 +7,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.reusable;
+package org.obiba.onyx.wicket.reusable;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.Dialog.OptionSide;
 
 public class DialogPanel extends Panel {
 
@@ -60,6 +59,22 @@ public class DialogPanel extends Panel {
 
     final Dialog dialog = new Dialog("dialog");
     dialog.setContent(component);
+
+    add(dialog);
+    add(new AjaxLink("openDialog") {
+      private static final long serialVersionUID = 1L;
+
+      public void onClick(AjaxRequestTarget target) {
+        dialog.show(target);
+      }
+    });
+  }
+
+  public DialogPanel(String id, String label, OptionSide side, AjaxLink ajaxLink) {
+    super(id);
+
+    final Dialog dialog = new Dialog("dialog");
+    dialog.addOption(label, side, ajaxLink);
 
     add(dialog);
     add(new AjaxLink("openDialog") {
