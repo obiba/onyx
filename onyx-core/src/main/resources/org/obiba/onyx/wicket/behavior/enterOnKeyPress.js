@@ -14,7 +14,7 @@ function submitForm(event, elementId){
   }
   
   if (code == 13){
-    document.getElementById(elementId).click();
+    $('#' + elementId).click();
     return false;
   } else {
     return true;

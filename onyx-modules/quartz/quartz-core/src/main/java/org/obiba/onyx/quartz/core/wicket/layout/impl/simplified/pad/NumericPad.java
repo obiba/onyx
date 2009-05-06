@@ -33,6 +33,8 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
+import org.obiba.onyx.wicket.behavior.FocusBehavior;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.obiba.onyx.wicket.link.AjaxImageSubmitLink;
@@ -83,6 +85,8 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     // Add the other wicket components.
     Form padForm = new Form("form");
     padForm.add(valuePressed);
+    valuePressed.getField().setOutputMarkupId(true);
+    valuePressed.getField().add(new FocusBehavior());
 
     padForm.add(new Label("category", labelModel));
     padForm.add(new Label("unit", new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel")));
@@ -202,6 +206,10 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       }
 
     };
+    link.setOutputMarkupId(true);
+    link.getLink().setOutputMarkupId(true);
+    valuePressed.add(new EnterOnKeyPressBehaviour(link.getLink()));
+
     link.getLink().add(new NoDragBehavior());
     return link;
   }
