@@ -30,6 +30,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategoryEscapeBehavior;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
@@ -129,6 +130,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
           item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup));
+          item.add(new QuestionCategoryEscapeBehavior());
         }
       }
 

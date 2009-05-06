@@ -131,6 +131,18 @@ div.open {
 	float:left;
 }
 
+.obiba-quartz-escape-category {
+	padding-top: 8px;
+}
+
+.obiba-quartz-escape-category > span{
+	border-top: 1px #666666 dotted;
+	padding-top: 6px;
+	display: block;
+	width: 100%;
+	min-width: 167px;
+}
+
 table.array {
 	padding-bottom:5px;
 }
