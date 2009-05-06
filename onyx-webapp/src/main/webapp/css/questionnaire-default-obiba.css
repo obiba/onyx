@@ -57,13 +57,13 @@
 }
 
 .comment-add {
-	background:transparent url(../images/icons/16X16/message_add.gif) no-repeat scroll center top;
+	background:transparent url(../icons/note_b_add.png) no-repeat scroll center top;
 	padding-left:10px;
 	padding-right:10px;
 }
 
 .comment-edit {
-	background:transparent url(../images/icons/16X16/message_edit.gif) no-repeat scroll center top;
+	background:transparent url(../icons/note_b_mod.png) no-repeat scroll center top;
 	padding-left:10px;
 	padding-right:10px;
 }
