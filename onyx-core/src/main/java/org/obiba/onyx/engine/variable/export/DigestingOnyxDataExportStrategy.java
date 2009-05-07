@@ -10,7 +10,6 @@
 
 package org.obiba.onyx.engine.variable.export;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
@@ -22,6 +21,8 @@ import java.security.NoSuchAlgorithmException;
 public class DigestingOnyxDataExportStrategy implements IChainingOnyxDataExportStrategy {
 
   private IOnyxDataExportStrategy delegate;
+
+  private ChainingSupport chainingSupport;
 
   private String digestType = "SHA-512";
 
@@ -35,6 +36,7 @@ public class DigestingOnyxDataExportStrategy implements IChainingOnyxDataExportS
 
   public void setDelegate(IOnyxDataExportStrategy delegate) {
     this.delegate = delegate;
+    chainingSupport = new ChainingSupport(delegate);
   }
 
   public void setDigestType(String digestType) {
@@ -73,12 +75,8 @@ public class DigestingOnyxDataExportStrategy implements IChainingOnyxDataExportS
 
   protected void addDigest() {
     byte[] entryDigest = getDigest().digest();
-    OutputStream os = delegate.newEntry(currentEntryName + entrySuffix);
     try {
-      os.write(entryDigest);
-      os.flush();
-    } catch(IOException e) {
-      throw new RuntimeException(e);
+      chainingSupport.addEntry(currentEntryName + entrySuffix, entryDigest);
     } finally {
       currentEntryName = null;
       digestStream = null;

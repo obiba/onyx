@@ -9,9 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.AlgorithmParameters;
@@ -22,7 +24,7 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -75,7 +77,9 @@ public class StrategyIntegrationTest {
     digestStrategy.setDelegate(zipStrategy);
 
     // The result is a Zip file
-    ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
+    File tempFile = File.createTempFile("test", ".zip");
+    tempFile.deleteOnExit();
+    FileOutputStream zipStream = new FileOutputStream(tempFile);
 
     StringBuilder outputName = new StringBuilder();
     outputName.append(context.getExportYear()).append('-').append(zeroPad(context.getExportMonth(), 2)).append('-').append(zeroPad(context.getExportDay(), 2)).append("T").append(zeroPad(context.getExportHour(), 2)).append('h').append(zeroPad(context.getExportMinute(), 2)).append('m').append(zeroPad(context.getExportSecond(), 2)).append('.').append(zeroPad(context.getExportMillisecond(), 3)).append(".zip");
@@ -92,9 +96,9 @@ public class StrategyIntegrationTest {
     digestStrategy.terminate(context);
     EasyMock.verify(mockDelegate);
 
-    ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipStream.toByteArray()));
+    ZipFile zipFile = new ZipFile(tempFile);
     for(TestDigestAndZipEntry entry : entries) {
-      entry.verify(zis);
+      entry.verify(zipFile);
     }
 
   }
@@ -102,7 +106,7 @@ public class StrategyIntegrationTest {
   @Test
   public void testEncryptAndDigestAndZip() throws NoSuchAlgorithmException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 
-    TestEncryptAndDigestAndZipEntry[] entries = { new TestEncryptAndDigestAndZipEntry("First Entry"), new TestEncryptAndDigestAndZipEntry("Second Entry"), new TestEncryptAndDigestAndZipEntry("Third Entry") };
+    TestEncryptAndDigestAndZipEntry[] entries = { new TestEncryptAndDigestAndZipEntry("12345.xml"), new TestEncryptAndDigestAndZipEntry("54321.xml"), new TestEncryptAndDigestAndZipEntry("67890.xml") };
 
     // Pipeline is encrypting -> digesting -> zip -> mock
     // This should create a zip file containing two entries for each call to newEntry on "digesting".
@@ -115,7 +119,9 @@ public class StrategyIntegrationTest {
     encryptStrategy.setPublicKeyFactory(mockKeyFactory);
 
     // The result is a Zip file
-    ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
+    File tempFile = File.createTempFile("test", ".zip");
+    tempFile.deleteOnExit();
+    FileOutputStream zipStream = new FileOutputStream(tempFile);
 
     StringBuilder outputName = new StringBuilder();
     outputName.append(context.getExportYear()).append('-').append(zeroPad(context.getExportMonth(), 2)).append('-').append(zeroPad(context.getExportDay(), 2)).append("T").append(zeroPad(context.getExportHour(), 2)).append('h').append(zeroPad(context.getExportMinute(), 2)).append('m').append(zeroPad(context.getExportSecond(), 2)).append('.').append(zeroPad(context.getExportMillisecond(), 3)).append(".zip");
@@ -132,50 +138,63 @@ public class StrategyIntegrationTest {
     encryptStrategy.terminate(context);
     EasyMock.verify(mockDelegate);
 
-    ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipStream.toByteArray()));
-    byte[] keyData = readDigestedZipEntryData("encryption.key", zis);
-    byte[] ivData = readDigestedZipEntryData("encryption.iv", zis);
-    byte[] paramData = readDigestedZipEntryData("encryption.parameters", zis);
+    ZipFile zipFile = new ZipFile(tempFile);
+    byte[] paramData = readDigestedZipEntryData(EncryptingOnyxDataExportStrategy.ENCRYPTION_DATA_XML_ENTRY, zipFile);
+    EncryptionData ed = EncryptionData.fromXml(paramData);
 
     for(TestEncryptAndDigestAndZipEntry entry : entries) {
-      entry.verify(createCipher(keyData, paramData), zis);
+      entry.verify(createCipher(ed), zipFile);
     }
 
   }
 
-  private byte[] readDigestedZipEntryData(String name, ZipInputStream zis) throws IOException {
+  private byte[] readDigestedZipEntryData(String name, ZipFile zis) throws IOException {
     byte[] entryData = readZipEntry(name, zis);
     readZipEntry(name + ".sha512", zis);
     return entryData;
   }
 
-  private byte[] readZipEntry(String name, ZipInputStream zis) throws IOException {
-    ZipEntry keyEntry = zis.getNextEntry();
-    Assert.assertEquals(name, keyEntry.getName());
+  private byte[] readZipEntry(String name, ZipFile zis) throws IOException {
+    ZipEntry keyEntry = zis.getEntry(name);
+    Assert.assertNotNull(keyEntry);
 
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    byte[] buffer = new byte[4096];
-    int count = 0;
-    while((count = zis.read(buffer)) != -1) {
-      baos.write(buffer, 0, count);
+    InputStream entryStream = zis.getInputStream(keyEntry);
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      byte[] buffer = new byte[4096];
+      int count = 0;
+      while((count = entryStream.read(buffer)) != -1) {
+        baos.write(buffer, 0, count);
+      }
+      return baos.toByteArray();
+    } finally {
+      entryStream.close();
     }
-    return baos.toByteArray();
   }
 
-  private Cipher createCipher(byte[] keyData, byte[] parameterData) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+  private Cipher createCipher(EncryptionData ed) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
     // Re-create the SecretKey from its encoded bytes.
+    byte[] keyData = ed.getEntry(EncryptingOnyxDataExportStrategy.SECRET_KEY);
+    byte[] paramData = ed.getEntry(EncryptingOnyxDataExportStrategy.ALGORITHM_PARAMETERS);
+    String transformation = ed.getEntry(EncryptingOnyxDataExportStrategy.CIPHER_TRANSFORMATION);
+
+    int algorithmEnd = transformation.indexOf('/');
+    String algorithm = transformation;
+    if(algorithmEnd != -1) {
+      algorithm = transformation.substring(0, algorithmEnd);
+    }
 
     // Unwrap the keyData
     Cipher unWrapCipher = Cipher.getInstance(keyPair.getPrivate().getAlgorithm());
     unWrapCipher.init(Cipher.UNWRAP_MODE, keyPair.getPrivate());
-    SecretKey sk = (SecretKey) unWrapCipher.unwrap(keyData, "AES", Cipher.SECRET_KEY);
+    SecretKey sk = (SecretKey) unWrapCipher.unwrap(keyData, algorithm, Cipher.SECRET_KEY);
 
     // Re-create the Algorithm parameters from its encoded bytes.
-    AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
-    parameters.init(parameterData);
+    AlgorithmParameters parameters = AlgorithmParameters.getInstance(algorithm);
+    parameters.init(paramData);
 
     // Re-create the Cipher (same key + parameters), but in DECRYPT_MODE
-    Cipher cipher = Cipher.getInstance("AES/CFB/PKCS5PADDING");
+    Cipher cipher = Cipher.getInstance(transformation);
     cipher.init(Cipher.DECRYPT_MODE, sk, parameters);
     return cipher;
   }
@@ -215,7 +234,7 @@ public class StrategyIntegrationTest {
       digestingStream.flush();
     }
 
-    public void verify(ZipInputStream zis) throws IOException {
+    public void verify(ZipFile zis) throws IOException {
       byte[] entryData = readZipEntry(name, zis);
       Assert.assertArrayEquals(testData, entryData);
       byte[] digestData = readZipEntry(name + ".sha512", zis);
@@ -244,7 +263,7 @@ public class StrategyIntegrationTest {
       os.flush();
     }
 
-    public void verify(Cipher cipher, ZipInputStream zis) throws IOException, IllegalBlockSizeException, BadPaddingException {
+    public void verify(Cipher cipher, ZipFile zis) throws IOException, IllegalBlockSizeException, BadPaddingException {
       byte[] entryData = readDigestedZipEntryData(name, zis);
       Assert.assertArrayEquals(testData, cipher.doFinal(entryData));
     }
