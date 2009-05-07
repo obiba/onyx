@@ -24,9 +24,6 @@ public class Category extends Variable {
   private String alt;
 
   @XStreamAsAttribute
-  private Boolean missing;
-
-  @XStreamAsAttribute
   private Boolean escape;
 
   public Category(String name) {
@@ -44,19 +41,6 @@ public class Category extends Variable {
 
   public void setAlternateName(String alternateName) {
     this.alt = alternateName;
-  }
-
-  public Boolean getMissing() {
-    return missing;
-  }
-
-  public Category setMissing(Boolean missing) {
-    if(missing == null || !missing) {
-      this.missing = null;
-    } else {
-      this.missing = missing;
-    }
-    return this;
   }
 
   public Boolean getEscape() {

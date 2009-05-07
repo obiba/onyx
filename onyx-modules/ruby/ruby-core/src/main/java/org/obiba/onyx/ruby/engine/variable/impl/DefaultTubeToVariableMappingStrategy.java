@@ -85,7 +85,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   public Variable getRegisteredParticipantTubeVariable() {
 
     Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
-    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey("ruby"));
     tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE));
     tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
     tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));

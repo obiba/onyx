@@ -152,7 +152,7 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
       variables.add(stageVariable);
 
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
-      stageVariable.addVariable(new Variable(BARCODE_ATTRIBUTE).setDataType(DataType.TEXT));
+      stageVariable.addVariable(new Variable(BARCODE_ATTRIBUTE).setDataType(DataType.TEXT).setKey("balsac"));
     }
     return variables;
   }

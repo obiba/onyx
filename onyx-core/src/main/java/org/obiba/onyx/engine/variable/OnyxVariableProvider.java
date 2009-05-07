@@ -229,7 +229,7 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity.addVariable(new Variable(STUDY_NAME).setDataType(DataType.TEXT));
 
     entity = admin.addVariable(new Variable(PARTICIPANT));
-    entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey("onyx"));
     entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(APPOINTMENT_DATE).setDataType(DataType.DATE));
     entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT));
