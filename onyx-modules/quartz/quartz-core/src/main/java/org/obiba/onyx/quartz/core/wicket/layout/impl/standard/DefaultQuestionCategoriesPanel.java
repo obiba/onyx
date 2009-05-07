@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -30,7 +31,6 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategoryEscapeBehavior;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
@@ -130,7 +130,6 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
           item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup));
-          item.add(new QuestionCategoryEscapeBehavior());
         }
       }
 
@@ -158,6 +157,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
           item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup.getModel()));
+          item.add(new AttributeModifier("class", true, new Model("obiba-quartz-checkbox-category")));
         }
       }
 
