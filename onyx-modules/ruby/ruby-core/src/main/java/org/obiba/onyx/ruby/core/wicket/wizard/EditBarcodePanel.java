@@ -9,28 +9,64 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
+import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.obiba.onyx.ruby.core.wicket.tube.EditSamplePanel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
 
 public class EditBarcodePanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public EditBarcodePanel(String id, IModel model) {
-    super(id, model);
+  Dialog editSampleDialog;
+
+  public EditBarcodePanel(String id, IModel rowModel, TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+    super(id, rowModel);
     addEditLink();
+    addEditDialog(tubeRegistrationConfiguration);
+  }
+
+  @SuppressWarnings("serial")
+  private void addEditDialog(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+    EditSamplePanel editSamplePanel = new EditSamplePanel("content", getModel(), tubeRegistrationConfiguration);
+    editSampleDialog = DialogBuilder.buildDialog("editSampleDialog", new ResourceModel("Edit"), editSamplePanel).getDialog();
+    editSampleDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
+
+    editSampleDialog.setCloseButtonCallback(new CloseButtonCallback() {
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+
+        switch(status) {
+        case SUCCESS:
+          target.addComponent(EditBarcodePanel.this.findParent(OnyxEntityList.class));
+          break;
+        }
+        return true;
+
+      }
+
+    });
+
+    add(editSampleDialog);
   }
 
   @SuppressWarnings("serial")
   private void addEditLink() {
-    Link editLink = new Link("link") {
+    AjaxLink editLink = new AjaxLink("link") {
 
       @Override
-      public void onClick() {
-        System.out.println("Edit not implemented!");
+      public void onClick(AjaxRequestTarget target) {
+        editSampleDialog.show(target);
       }
 
     };

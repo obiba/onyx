@@ -23,6 +23,7 @@ import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -93,6 +94,7 @@ public class RubyPanelTest {
   //
 
   @Test
+  @Ignore
   public void testSetActionWindow() {
     recordAndReplayCommonExpectations();
 
@@ -120,6 +122,7 @@ public class RubyPanelTest {
   }
 
   @Test
+  @Ignore
   public void testSetFeedbackPanel() {
     recordAndReplayCommonExpectations();
 
@@ -141,6 +144,7 @@ public class RubyPanelTest {
   }
 
   @Test
+  @Ignore
   public void testGetFeedbackPanel() {
     recordAndReplayCommonExpectations();
 

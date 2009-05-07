@@ -129,13 +129,13 @@ public class TubeBarcodePanel extends Panel {
               }
               tubeBarcode.getModel().setObject("");
             } else {
+              target.addComponent(findParent(TubeRegistrationStep.class));
               info((new SpringStringResourceModel("Ruby.SuccessfullyRegisteredTube")).getString());
               tubeBarcode.getModel().setObject("");
             }
           }
 
           target.addComponent(TubeBarcodePanel.this.getParent());
-          target.appendJavascript("styleTubesScannedLabel();");
         }
 
         @Override
@@ -143,7 +143,6 @@ public class TubeBarcodePanel extends Panel {
           feedbackPanel.setVisible(false);
           feedbackWindow.setContent(new FeedbackPanel("content"));
           feedbackWindow.show(target);
-          target.appendJavascript("styleTubesScannedLabel();");
         }
       };
 

@@ -1367,7 +1367,8 @@ div#participantPageSearchResults #newNavigator em {
 /******************* Global List Styling *******************************************/
 
 #participantPageSearchResults table.entityTable tr.titleToolbar,
-#interviewPageStages table.entityTable tr.titleToolbar {
+#interviewPageStages table.entityTable tr.titleToolbar,
+#rubyPanel table.entityTable tr.titleToolbar {
   display: none;	
 }
 
@@ -1538,43 +1539,42 @@ ul#interviewMenuBar li a span {
 #rubyPanel #wizardContent {
   padding-left:0px;
   padding-right:0px;
-  margin:20px;
+  margin:20px 20px 0;
+  border:1px solid #C65F02;
 }
 
 #rubyPanel #wizardContent table.entityTable td {
   font-weight:normal;
-  padding:6px;  
-}
-
-#rubyPanel #wizardContent table.entityTable {
-  border-right:1px solid #C65F02;
-  border-left:1px solid #C65F02;
-  border-bottom:1px solid #C65F02;
+  padding:6px !important;  
 }
 
 #rubyPanel #wizardContent table.entityTable th {
   border-top:1px solid #CCCCCC;
+  padding-left:8px;  
 }
 
 #rubyPanel #wizardContent #tubeBarcodePanel {
   border-top:1px solid #C65F02;
-  border-right:1px solid #C65F02;
-  border-left:1px solid #C65F02; 
   padding:8px;  
 }
 
 #rubyPanel #wizardContent  #tubeBarcodePanel > div {
- display: inline; 
+  display: inline; 
 }
 
 #rubyPanel #wizardContent  #tubeBarcodePanel > div {
- display: inline; 
+  display: inline; 
 }
 
-#rubyPanel #wizardContent  #tubeBarcodePanel > div > span {
- display: table-cell; 
- width:230px; 
- background:transparent url(../icons/completed.png) no-repeat scroll 165px center; 
+#rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel {
+  width:230px;
+  display:table-cell;
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel > span {
+  display: table-cell; 
+  background:transparent url(../icons/completed.png) no-repeat scroll 165px center; 
+  width:230px;  
 }
 
 #rubyPanel #wizardContent #tubeBarcodePanel li {
@@ -1600,6 +1600,12 @@ ul#interviewMenuBar li a span {
   padding: 0px;
 }
 
+#rubyPanel #wizardContent .wizard-title {
+  padding-bottom:8px;
+  padding-top:8px;
+  padding-left:10px;  
+}
+
 #rubyPanel #wizardFooter {
   border-top:0px;
 }
@@ -1607,10 +1613,12 @@ ul#interviewMenuBar li a span {
 #tubesScannedLabel {
   font-weight:bold;
   padding-right:25px;
+  display:inline;  
 }
 
 #anonymousComments {
   margin:0px;
-  padding:0 10px 10px;  
+  padding:0 30px; 
+  font-weight:normal;
 }
 /******************* End Sample Collection *********************************************/

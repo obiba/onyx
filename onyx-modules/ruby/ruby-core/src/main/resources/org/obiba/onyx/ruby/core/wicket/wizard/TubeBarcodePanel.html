@@ -2,8 +2,10 @@
 
     <div wicket:id="feedback" class="feedback" />
     
-	<form wicket:id="tubeBarcodeForm" autocomplete="off">
-	  <span wicket:id="feedbackPanel"/>
+	<form wicket:id="tubeBarcodeForm" autocomplete="off" style="display:inline">
+	  <span id="feedbackPanel">
+	  	<span wicket:id="feedbackPanel"/>
+	  </span>
 	  <label for="tubeBarcode"><span wicket:id="tubeBarcodeLabel">Tube barcode</span></label>
 	  <input wicket:id="tubeBarcode" id="tubeBarcode" type="text" size="20"/>
 	  <input type="submit" wicket:id="submit" style="display:none">      

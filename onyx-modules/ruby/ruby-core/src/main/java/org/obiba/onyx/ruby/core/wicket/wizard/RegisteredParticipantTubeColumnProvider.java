@@ -62,7 +62,7 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
     addBarcodePartColumns(tubeRegistrationConfiguration);
     addRemarkColumn(tubeRegistrationConfiguration);
     addCommentColumn();
-    addEditColumn();
+    addEditColumn(tubeRegistrationConfiguration);
     addDeleteColumn();
   }
 
@@ -160,12 +160,12 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
 
   }
 
-  private void addEditColumn() {
+  private void addEditColumn(final TubeRegistrationConfiguration tubeRegistrationConfiguration) {
     columns.add(new AbstractColumn(new Model("")) {
       private static final long serialVersionUID = 1L;
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        cellItem.add(new EditBarcodePanel(componentId, rowModel));
+        cellItem.add(new EditBarcodePanel(componentId, rowModel, tubeRegistrationConfiguration));
       }
     });
   }
