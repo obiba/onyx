@@ -1621,4 +1621,53 @@ ul#interviewMenuBar li a span {
   padding:0 30px; 
   font-weight:normal;
 }
+
+#editSamplePanel {
+  height:355px;
+}
+
+#editSamplePanel #barcodeParts {
+    height:80px
+}
+
+#editSamplePanel textarea {
+  width:289px;
+}
+
+#editSamplePanel select {
+  width:291px;
+}
+
+#editSamplePanel table td {
+  vertical-align:top;
+  padding-top:5px;
+}
+
+#editSamplePanel table td > div {
+  width:60px;
+}
+
+#editSamplePanel #barcodeParts {
+  height:70px;
+  margin-left:-4px;
+  margin-top:-6px;  
+  width:358px;
+  overflow-y:auto;
+}
+ 
+#editSamplePanel #barcodeParts td {
+  height:20px;
+  width:61px;  
+}
+
+#editSamplePanel .value{
+  font-weight:bold;
+  font-size:12px;
+  color:#000000;
+}
+
+#editSamplePanel select option {
+  font-weight:bold;
+  font-size:12px;
+}
 /******************* End Sample Collection *********************************************/

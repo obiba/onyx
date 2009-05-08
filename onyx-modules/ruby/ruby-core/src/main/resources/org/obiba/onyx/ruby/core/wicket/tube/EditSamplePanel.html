@@ -1,20 +1,30 @@
-<wicket:panel>    
-	<table>
-		<tr>
-			<td><span wicket:id="barcodeLabel"/></td>
-			<td><span wicket:id="barcode"/></td>
-		</tr>
-		<tr wicket:id="barcodeParts">
-			<td><span wicket:id="barcodePartLabel"/></td>
-			<td><span wicket:id="barcodePart"/></td>
-		</tr>		
-		<tr>
-			<td><span wicket:id="remarkLabel"/></td>
-			<td><span wicket:id="remark"/></td>
-		</tr>
-		<tr>
-			<td><span wicket:id="commentLabel"/></td>
-			<td><span wicket:id="comment"/></td>
-		</tr>		
-	</table>
+<wicket:panel>   
+	<div id="editSamplePanel"> 
+		<table>
+			<tr>
+				<td><div wicket:id="barcodeLabel"/></td>
+				<td><span class="value" wicket:id="barcode"/></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="barcodeParts">
+						<table>
+							<tr wicket:id="barcodeParts">
+								<td><div wicket:id="barcodePartLabel"/></td>
+								<td><span class="value" wicket:id="barcodePart"/></td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top"><div wicket:id="remarkLabel"/></td>
+				<td><span class="value" wicket:id="remark"/></td>
+			</tr>
+			<tr>
+				<td valign="top"><div wicket:id="commentLabel"/></td>
+				<td><span wicket:id="comment"/></td>
+			</tr>		
+		</table>
+	</div>
 </wicket:panel>

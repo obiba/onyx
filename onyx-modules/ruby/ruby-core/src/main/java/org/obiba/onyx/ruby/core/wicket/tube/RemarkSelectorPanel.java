@@ -86,7 +86,7 @@ public class RemarkSelectorPanel extends Panel {
 
     });
 
-    listRemarks.setMaxRows(3);
+    listRemarks.setMaxRows(4);
 
     add(listRemarks);
   }

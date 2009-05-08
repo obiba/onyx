@@ -41,6 +41,8 @@ public class EditBarcodePanel extends Panel {
     EditSamplePanel editSamplePanel = new EditSamplePanel("content", getModel(), tubeRegistrationConfiguration);
     editSampleDialog = DialogBuilder.buildDialog("editSampleDialog", new ResourceModel("Edit"), editSamplePanel).getDialog();
     editSampleDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
+    editSampleDialog.setInitialHeight(400);
+    editSampleDialog.setInitialWidth(400);
 
     editSampleDialog.setCloseButtonCallback(new CloseButtonCallback() {
 
