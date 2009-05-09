@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -69,21 +67,6 @@ public class RemarkSelectorPanel extends Panel {
         Remark remark = (Remark) object;
         return remark.getCode();
       }
-    });
-
-    listRemarks.add(new AjaxFormComponentUpdatingBehavior("onblur") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) getModelObject();
-        activeTubeRegistrationService.setTubeRemark(registeredParticipantTube.getBarcode(), selectedRemark);
-
-        // Update component
-        target.addComponent(RemarkSelectorPanel.this);
-      }
-
     });
 
     listRemarks.setMaxRows(4);

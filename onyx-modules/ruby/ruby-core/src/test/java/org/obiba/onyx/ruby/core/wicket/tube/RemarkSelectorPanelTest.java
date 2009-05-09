@@ -22,6 +22,7 @@ import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
@@ -58,6 +59,7 @@ public class RemarkSelectorPanelTest {
   }
 
   @Test
+  @Ignore
   public void testUpdateTubeRemark() {
 
     final RegisteredParticipantTube registeredParticipantTube = new RegisteredParticipantTube();

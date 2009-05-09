@@ -18,11 +18,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.wicket.tube.EditSamplePanel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.DialogBuilder;
-import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
-import org.obiba.onyx.wicket.reusable.Dialog.Status;
 
 public class EditBarcodePanel extends Panel {
 
@@ -38,26 +34,14 @@ public class EditBarcodePanel extends Panel {
 
   @SuppressWarnings("serial")
   private void addEditDialog(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
-    EditSamplePanel editSamplePanel = new EditSamplePanel("content", getModel(), tubeRegistrationConfiguration);
-    editSampleDialog = DialogBuilder.buildDialog("editSampleDialog", new ResourceModel("Edit"), editSamplePanel).getDialog();
+    editSampleDialog = new Dialog("editSampleDialog");
+    editSampleDialog.setTitle(new ResourceModel("Edit"));
     editSampleDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
     editSampleDialog.setInitialHeight(400);
     editSampleDialog.setInitialWidth(400);
 
-    editSampleDialog.setCloseButtonCallback(new CloseButtonCallback() {
-
-      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-
-        switch(status) {
-        case SUCCESS:
-          target.addComponent(EditBarcodePanel.this.findParent(OnyxEntityList.class));
-          break;
-        }
-        return true;
-
-      }
-
-    });
+    EditSamplePanel editSamplePanel = new EditSamplePanel(editSampleDialog, "content", getModel(), tubeRegistrationConfiguration);
+    editSampleDialog.setContent(editSamplePanel);
 
     add(editSampleDialog);
   }

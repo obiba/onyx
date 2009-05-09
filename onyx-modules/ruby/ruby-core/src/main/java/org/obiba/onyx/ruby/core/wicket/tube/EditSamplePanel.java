@@ -9,60 +9,102 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.tube;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.obiba.onyx.ruby.core.domain.BarcodePart;
-import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.ruby.core.wicket.wizard.TubeRegistrationPanel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.wicket.model.MessageSourceResolvableStringModel;
-import org.springframework.context.MessageSourceResolvable;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
 
 public class EditSamplePanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public EditSamplePanel(String id, IModel rowModel, TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+  @SpringBean
+  ActiveTubeRegistrationService activeTubeRegistrationService;
+
+  private CommentPanel commentPanel;
+
+  private RemarkSelectorPanel remarkPanel;
+
+  private FeedbackWindow feedbackWindow;
+
+  public EditSamplePanel(Dialog editSampleDialog, String id, IModel rowModel, TubeRegistrationConfiguration tubeRegistrationConfiguration) {
     super(id, rowModel);
+
     add(new Label("barcodeLabel", new SpringStringResourceModel("Ruby.Barcode")));
     add(new Label("barcode", new PropertyModel(rowModel, "barcode")));
+
     add(new Label("remarkLabel", new SpringStringResourceModel("Ruby.Remark")));
-    add(new RemarkSelectorPanel("remark", rowModel, tubeRegistrationConfiguration));
+    add(remarkPanel = new RemarkSelectorPanel("remark", rowModel, tubeRegistrationConfiguration));
+
     add(new Label("commentLabel", new SpringStringResourceModel("Ruby.Comment")));
-    add(new CommentPanel("comment", rowModel));
-    addBarcodeParts(rowModel, tubeRegistrationConfiguration);
+    add(commentPanel = new CommentPanel("comment", rowModel));
+
+    add(new BarcodePartsPanel("barcodeParts", rowModel, tubeRegistrationConfiguration));
+
+    addFeedbackWindow();
+    addDialogCallbacks(editSampleDialog);
 
   }
 
-  private void addBarcodeParts(IModel rowModel, TubeRegistrationConfiguration tubeRegistrationConfiguration) {
-    BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
+  private void addFeedbackWindow() {
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
+  }
 
-    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
-    String barcode = registeredParticipantTube.getBarcode();
-    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
+  @SuppressWarnings("serial")
+  private void addDialogCallbacks(Dialog editSampleDialog) {
+    editSampleDialog.setCloseButtonCallback(new CloseButtonCallback() {
 
-    List<BarcodePart> barcodePartList = barcodeStructure.parseBarcode(barcode, errors);
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
 
-    RepeatingView barcodeParts = new RepeatingView("barcodeParts");
-    WebMarkupContainer container;
+        switch(status) {
+        case SUCCESS:
+          updateSample();
+          target.addComponent(EditSamplePanel.this.findParent(TubeRegistrationPanel.class));
+          break;
+        case ERROR:
+          displayFeedbackWindow(target);
+          return false;
 
-    for(BarcodePart barcodePart : barcodePartList) {
-      if(barcodePart.getPartTitle() != null) {
-        container = new WebMarkupContainer(barcodeParts.newChildId());
-        container.add(new Label("barcodePart", new MessageSourceResolvableStringModel(barcodePart.getPartLabel())));
-        container.add(new Label("barcodePartLabel", new SpringStringResourceModel(barcodePart.getPartTitle().getCodes()[0])));
-        barcodeParts.add(container);
+        }
+        return true;
+
       }
+
+    });
+
+  }
+
+  private void updateSample() {
+    String comment = commentPanel.getCommentField().getModelObjectAsString();
+
+    if(comment != null && comment.trim().length() == 0) {
+      comment = null;
     }
 
-    add(barcodeParts);
+    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) getModelObject();
+    String participantBarcode = registeredParticipantTube.getBarcode();
+    activeTubeRegistrationService.setTubeComment(participantBarcode, comment);
+    activeTubeRegistrationService.setTubeRemark(participantBarcode, remarkPanel.getSelectedRemark());
+
   }
+
+  private void displayFeedbackWindow(AjaxRequestTarget target) {
+    feedbackWindow.setContent(new FeedbackPanel("content"));
+    feedbackWindow.show(target);
+  }
+
 }
