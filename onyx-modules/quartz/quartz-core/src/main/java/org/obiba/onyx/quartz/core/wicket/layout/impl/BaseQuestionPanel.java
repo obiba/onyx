@@ -13,7 +13,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -25,6 +24,9 @@ import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.wicket.reusable.AddCommentWindow;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.toggle.ToggleLink;
 
 /**
@@ -102,9 +104,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
   private void addCommentModalWindow(Question question) {
 
     // Create modal comments window
-    final ModalWindow commentWindow;
-    add(commentWindow = new ModalWindow("addCommentModal"));
-    commentWindow.setCssClassName("onyx");
+    final AddCommentWindow commentWindow;
+    add(commentWindow = new AddCommentWindow("addCommentModal"));
 
     final IModel commentWindowTitleModel = new LoadableDetachableModel() {
 
@@ -113,29 +114,14 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
         String title = (new StringResourceModel("CommentsWindow", BaseQuestionPanel.this, null)).getString() + " - " + new QuestionnaireStringResourceModel(BaseQuestionPanel.this.getModel(), "label").getString();
 
         // Question label is truncated if too long for Modal Window title bar.
-        if(title.length() > 60) {
-          title = title.substring(0, 60) + "...";
+        if(title.length() > 50) {
+          title = title.substring(0, 50) + "...";
         }
 
         return title;
       }
 
     };
-    commentWindow.setInitialHeight(220);
-    commentWindow.setInitialWidth(550);
-    commentWindow.setResizable(false);
-
-    commentWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        // same as cancel
-        return true;
-      }
-    });
-
-    commentWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-      public void onClose(AjaxRequestTarget target) {
-      }
-    });
 
     final WebMarkupContainer imageLink = new WebMarkupContainer("comment-action");
     imageLink.setOutputMarkupId(true);
@@ -164,13 +150,30 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       // Add comment action link.
       imageLink.add(new AjaxLink("addComment") {
         public void onClick(AjaxRequestTarget target) {
-          commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel(), target) {
+          final QuestionCommentModalPanel contentPanel = new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel()) {
 
             protected void onAddComment(AjaxRequestTarget target) {
               target.addComponent(imageLink);
             }
 
+          };
+
+          commentWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
+            public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+
+              if(status.equals(Status.SUCCESS)) {
+                activeQuestionnaireAdministrationService.setComment((Question) contentPanel.getModelObject(), contentPanel.getComment());
+                contentPanel.onAddComment(target);
+                commentWindow.close(target);
+              } else if(status.equals(Status.ERROR)) {
+                contentPanel.displayFeedback(target);
+                return false;
+              }
+              return true;
+            }
           });
+
+          commentWindow.setContent(contentPanel);
           commentWindow.setTitle(commentWindowTitleModel);
           commentWindow.show(target);
         }

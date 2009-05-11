@@ -1,20 +1,16 @@
 <wicket:panel>
         
     <span wicket:id="feedback"/>
-
+	<span id="commentInstructions">
+		<p>
+			<wicket:message key="AddNewComments" />
+		</p>
+		<p>
+			<wicket:message key="AnonymousComments" />
+		</p>
+	</span>
 	<p>
-		<wicket:message key="AddNewComments" />
-	</p>
-	<p>
-		<wicket:message key="AnonymousComments" />
-	</p>
-	<p>
-		<form wicket:id="commentForm" autocomplete="off">
-			<textarea cols="50" rows="5" wicket:id="newComment" name="newComment"></textarea><br>
-			  
-		    <input type="submit" wicket:id="saveComment" wicket:message="value:Save"> 		
-		    <input type="button" wicket:id="cancelComment" wicket:message="value:cancel">	
-		</form>
+			<textarea cols="40" rows="16" wicket:id="newComment" name="newComment"></textarea>
 	</p>
    	       	    
 </wicket:panel>    

@@ -9,11 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -24,6 +22,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.wicket.behavior.FocusBehavior;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 public abstract class QuestionCommentModalPanel extends Panel {
 
@@ -32,69 +32,24 @@ public abstract class QuestionCommentModalPanel extends Panel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private ModalWindow commentWindow;
-
-  private FeedbackPanel feedback;
+  private FeedbackWindow feedbackWindow;
 
   private String comment;
 
-  public QuestionCommentModalPanel(String id, ModalWindow commentWindow, IModel questionModel, AjaxRequestTarget target) {
+  public QuestionCommentModalPanel(String id, ModalWindow commentWindow, IModel questionModel) {
     super(id, questionModel);
-    this.commentWindow = commentWindow;
-
     setComment(activeQuestionnaireAdministrationService.getComment((Question) getModelObject()));
 
-    add(feedback = new FeedbackPanel("feedback"));
-    feedback.setOutputMarkupId(true);
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
 
-    add(new CommentForm("commentForm", target));
-
-  }
-
-  private class CommentForm extends Form {
-
-    private static final long serialVersionUID = 1L;
-
-    @SuppressWarnings("serial")
-    public CommentForm(String id, AjaxRequestTarget target) {
-      super(id);
-
-      setModel(new Model(QuestionCommentModalPanel.this));
-
-      // field is not required as comment may be removed
-      final TextArea newComment = new TextArea("newComment", new PropertyModel(getModel(), "comment"));
-      newComment.setOutputMarkupId(true);
-      target.focusComponent(newComment);
-      // see QuestionAnswer.comment column length
-      newComment.add(new StringValidator.MaximumLengthValidator(2000));
-      add(newComment);
-
-      // Save a new comment.
-      add(new AjaxButton("saveComment", this) {
-
-        protected void onSubmit(AjaxRequestTarget target, Form form) {
-          activeQuestionnaireAdministrationService.setComment((Question) QuestionCommentModalPanel.this.getModelObject(), comment);
-          QuestionCommentModalPanel.this.onAddComment(target);
-          commentWindow.close(target);
-        }
-
-        protected void onError(AjaxRequestTarget target, Form form) {
-          target.addComponent(feedback);
-        }
-
-      });
-
-      // Cancel comment.
-      add(new AjaxLink("cancelComment") {
-
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          commentWindow.close(target);
-        }
-
-      });
-
-    }
+    TextArea newComment = new TextArea("newComment", new PropertyModel(QuestionCommentModalPanel.this, "comment"));
+    newComment.setOutputMarkupId(true);
+    newComment.add(new AttributeModifier("class", true, new Model("comment-text")));
+    newComment.add(new FocusBehavior());
+    newComment.add(new StringValidator.MaximumLengthValidator(2000));
+    add(newComment);
   }
 
   public String getComment() {
@@ -105,6 +60,15 @@ public abstract class QuestionCommentModalPanel extends Panel {
 
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  public void displayFeedback(AjaxRequestTarget target) {
+    feedbackWindow.setContent(new FeedbackPanel("content"));
+    feedbackWindow.show(target);
+  }
+
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
   }
 
 }

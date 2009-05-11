@@ -15,6 +15,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -40,6 +41,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.QuartzPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionnaireUIFactoryRegistrationListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCommentModalPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.test.provider.AnswerProvider;
 import org.obiba.wicket.test.MockSpringApplication;
@@ -271,11 +273,15 @@ public abstract class AbstractQuestionnaireTest {
     wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:comment-action:addComment", "onclick");
 
     // Set comment in form.
-    FormTester commentForm = wicketTester.newFormTester("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:commentForm");
-    commentForm.setValue("newComment", comment);
+    FormTester commentForm = wicketTester.newFormTester("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:form");
+    commentForm.setValue("content:newComment", comment);
+
+    // Replace the feedback form with an EmptyPanel to allow ok button to submit the form
+    QuestionCommentModalPanel modalPanel = (QuestionCommentModalPanel) wicketTester.getComponentFromLastRenderedPage("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:form:content");
+    modalPanel.getFeedbackWindow().replaceWith(new EmptyPanel("feedback"));
 
     // Submit comment.
-    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:commentForm:saveComment", "onclick");
+    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:form:ok", "onclick");
 
     // Make sure that comment is saved.
     Assert.assertEquals(comment, activeQuestionnaireAdministrationService.getComment(question));

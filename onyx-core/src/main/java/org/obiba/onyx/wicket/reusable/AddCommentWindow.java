@@ -7,13 +7,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.webapp.participant.panel;
+package org.obiba.onyx.wicket.reusable;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.obiba.onyx.wicket.reusable.Dialog;
 
 public class AddCommentWindow extends Dialog {
 
