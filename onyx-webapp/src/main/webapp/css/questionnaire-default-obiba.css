@@ -33,8 +33,18 @@
 }
 
 .obiba-quartz-boilerplate {
-	font-weight: bold;
-	line-height:1.4;
+	font-weight:bold;
+}
+
+.categories .questions > .obiba-quartz-boilerplate {
+	background: transparent url(../icons/bullet_orange.png) no-repeat scroll left center;
+	margin-left:20px;
+	margin-top:10px;
+	padding-left:15px;
+}
+
+.categories > .questions {
+	border-bottom: 0px;
 }
 
 .question {	
