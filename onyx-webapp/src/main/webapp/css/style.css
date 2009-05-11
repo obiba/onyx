@@ -1622,32 +1622,32 @@ ul#interviewMenuBar li a span {
   font-weight:normal;
 }
 
-#editSamplePanel {
+.editSamplePanel {
   height:355px;
 }
 
-#editSamplePanel #barcodeParts {
+.editSamplePanel #barcodeParts {
     height:80px
 }
 
-#editSamplePanel textarea {
+.editSamplePanel textarea {
   width:289px;
 }
 
-#editSamplePanel select {
+.editSamplePanel select {
   width:291px;
 }
 
-#editSamplePanel table td {
+.editSamplePanel table td {
   vertical-align:top;
   padding-top:5px;
 }
 
-#editSamplePanel table td > div {
+.editSamplePanel table td > div {
   width:60px;
 }
 
-#editSamplePanel #barcodeParts {
+.editSamplePanel #barcodeParts {
   height:70px;
   margin-left:-4px;
   margin-top:-6px;  
@@ -1655,19 +1655,33 @@ ul#interviewMenuBar li a span {
   overflow-y:auto;
 }
  
-#editSamplePanel #barcodeParts td {
+.editSamplePanel #barcodeParts td {
   height:20px;
   width:61px;  
 }
 
-#editSamplePanel .value{
+.editSamplePanel .value{
   font-weight:bold;
   font-size:12px;
   color:#000000;
 }
 
-#editSamplePanel select option {
+.editSamplePanel select option {
   font-weight:bold;
   font-size:12px;
+}
+
+.editSamplePanel select option{
+  padding:2px;
+  padding-left:15px;
+  margin-left:5px;
+}
+
+.editSamplePanel select option.ui-state-highlight {
+  background-image:url(../icons/selected.png) !important;
+  background-position: left;
+  padding-left:15px !important;
+}
+  
 }
 /******************* End Sample Collection *********************************************/

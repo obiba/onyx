@@ -25,6 +25,7 @@ import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 
 public class EditSamplePanel extends Panel {
 
@@ -65,7 +66,17 @@ public class EditSamplePanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private void addDialogCallbacks(Dialog editSampleDialog) {
+  private void addDialogCallbacks(final Dialog editSampleDialog) {
+    editSampleDialog.setWindowClosedCallback(new WindowClosedCallback() {
+
+      public void onClose(AjaxRequestTarget target, Status status) {
+        if(status.equals(Status.SUCCESS)) {
+          target.addComponent(EditSamplePanel.this.findParent(TubeRegistrationPanel.class));
+        }
+      }
+
+    });
+
     editSampleDialog.setCloseButtonCallback(new CloseButtonCallback() {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
@@ -73,7 +84,6 @@ public class EditSamplePanel extends Panel {
         switch(status) {
         case SUCCESS:
           updateSample();
-          target.addComponent(EditSamplePanel.this.findParent(TubeRegistrationPanel.class));
           break;
         case ERROR:
           displayFeedbackWindow(target);

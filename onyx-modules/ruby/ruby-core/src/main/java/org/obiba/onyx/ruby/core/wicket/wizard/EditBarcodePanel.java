@@ -53,6 +53,7 @@ public class EditBarcodePanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         editSampleDialog.show(target);
+        target.appendJavascript("styleSelectedTubeRemark();");
       }
 
     };

@@ -220,3 +220,14 @@ $(document).ready(function () {
 	  $(this).addClass('ui-corner-all');
 	});
 });
+
+//////////////////////////////////////////////////////////////////////
+// Edit Sample Dialog Styling
+//////////////////////////////////////////////////////////////////////
+function styleSelectedTubeRemark() { 
+	$(".editSamplePanel select").children('not(option:selected)').removeClass('ui-state-highlight');
+	$(".editSamplePanel select").children('option:selected').addClass('ui-state-highlight');
+}
+
+
+
