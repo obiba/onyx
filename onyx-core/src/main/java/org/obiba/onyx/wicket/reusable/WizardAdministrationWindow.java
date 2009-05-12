@@ -90,6 +90,7 @@ public class WizardAdministrationWindow extends Dialog {
   }
 
   public void setCancelStage(String label, AjaxLink cancelLink) {
+    this.cancelLink = cancelLink;
     addOption(label, OptionSide.RIGHT, cancelLink, "cancelStage");
   }
 

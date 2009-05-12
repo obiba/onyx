@@ -16,6 +16,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -32,7 +33,11 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
@@ -80,7 +85,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   protected boolean modalFeedback;
 
-  protected QuestionnaireWizardAdministrationWindow adminWindow;
+  protected WizardAdministrationWindow adminWindow;
 
   protected ProgressBarPanel progressBar;
 
@@ -117,7 +122,7 @@ public class QuestionnaireWizardForm extends WizardForm {
       @Override
       public void onClick(AjaxRequestTarget target) {
         adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
-        adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
         adminWindow.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible(), buttonDisableBehavior);
         adminWindow.show(target);
       }
@@ -131,7 +136,35 @@ public class QuestionnaireWizardForm extends WizardForm {
   @SuppressWarnings("serial")
   private void createModalAdministrationPanel() {
     // Create modal feedback window
-    adminWindow = new QuestionnaireWizardAdministrationWindow("adminWindow");
+    adminWindow = new WizardAdministrationWindow("adminWindow");
+
+    AjaxLink cancelLink = new AjaxLink("cancelStage") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        Label label = new Label("content", new StringResourceModel("ConfirmCancellationOfQuestionnaire", this, null));
+        label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+
+        ConfirmationDialog confirmationDialog = ((ConfirmationDialogProvider) getPage()).getConfirmationDialog();
+        confirmationDialog.setContent(label);
+        confirmationDialog.setTitle(new StringResourceModel("ConfirmCancellationOfQuestionnaireTitle", this, null));
+        confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+          private static final long serialVersionUID = -6691702933562884991L;
+
+          public void onYesButtonClicked(AjaxRequestTarget target) {
+            adminWindow.setStatus(Status.CLOSED);
+            if(adminWindow.getCloseButtonCallback() == null || (adminWindow.getCloseButtonCallback() != null && adminWindow.getCloseButtonCallback().onCloseButtonClicked(target, adminWindow.getStatus()))) adminWindow.close(target);
+          }
+
+        });
+        confirmationDialog.show(target);
+      }
+    };
+
+    adminWindow.setCancelStage("CancelQuestionnaire", cancelLink);
 
     adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
