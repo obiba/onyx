@@ -141,7 +141,12 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
   private Variable getCategoryVariable(QuestionCategory questionCategory) {
     Variable categoryVariable = null;
 
-    categoryVariable = new Category(questionCategory.getCategory().getName(), questionCategory.getExportName()).setEscape(questionCategory.getCategory().isEscape());
+    String alt = questionCategory.getExportName();
+    if(alt == null || alt.trim().length() == 0) {
+      alt = Integer.toString(questionCategory.getQuestion().getQuestionCategories().indexOf(questionCategory) + 1);
+    }
+
+    categoryVariable = new Category(questionCategory.getCategory().getName(), alt).setEscape(questionCategory.getCategory().isEscape());
 
     // one variable to show if category is selected or not
     categoryVariable.setDataType(DataType.BOOLEAN);
