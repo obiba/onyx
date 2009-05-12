@@ -14,6 +14,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -29,6 +30,10 @@ import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -72,6 +77,10 @@ public class RubyWizardForm extends WizardForm {
 
   private FeedbackWindow feedbackWindow;
 
+  protected WizardAdministrationWindow adminWindow;
+
+  private boolean adminWindowClosed = false;
+
   private boolean resuming;
 
   //
@@ -88,30 +97,27 @@ public class RubyWizardForm extends WizardForm {
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
     tubeRegistrationStep = new TubeRegistrationStep(getStepId());
     validationStep = new ValidationStep(getStepId());
-  }
 
-  //
-  // WizardForm Methods
-  //
+    createModalAdministrationPanel();
 
-  public void onCancel(AjaxRequestTarget target) {
-    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
-    ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
-    if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
-    }
-  }
+    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
 
-  public void onFinish(AjaxRequestTarget target, Form form) {
-    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
-    ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
-    if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
-    }
-  }
+    // admin button
+    AjaxLink link = new AjaxLink("adminLink") {
+      private static final long serialVersionUID = 0L;
 
-  public void onError(AjaxRequestTarget target, Form form) {
-    showFeedbackWindow(target);
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
+        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible(), buttonDisableBehavior);
+        adminWindow.show(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Administration", this, null)));
+    link.add(new AttributeAppender("class", new Model("ui-corner-all"), " "));
+    add(link);
   }
 
   @Override
@@ -221,6 +227,67 @@ public class RubyWizardForm extends WizardForm {
     }
 
     return startStep;
+  }
+
+  @SuppressWarnings("serial")
+  private void createModalAdministrationPanel() {
+    // Create modal feedback window
+    adminWindow = new WizardAdministrationWindow("adminWindow");
+
+    adminWindow.setCancelStage("CancelSampleCollection");
+
+    adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+        adminWindowClosed = true;
+        return true;
+      }
+
+    });
+
+    adminWindow.setWindowClosedCallback(new WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Status status) {
+        switch(status) {
+        case OTHER:
+          onInterrupt(target);
+          break;
+        case SUCCESS:
+          onFinishSubmit(target, RubyWizardForm.this);
+          break;
+        case ERROR:
+          onFinishError(target, RubyWizardForm.this);
+          break;
+        case CLOSED:
+          onCancelClick(target);
+        }
+      }
+    });
+    adminWindowClosed = false;
+    add(adminWindow);
+  }
+
+  //
+  // WizardForm Methods
+  //
+
+  public void onCancel(AjaxRequestTarget target) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef);
+    }
+  }
+
+  public void onFinish(AjaxRequestTarget target, Form form) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef);
+    }
+  }
+
+  public void onError(AjaxRequestTarget target, Form form) {
+    showFeedbackWindow(target);
   }
 
   public void onInterrupt(AjaxRequestTarget target) {
