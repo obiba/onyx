@@ -18,10 +18,16 @@ div.wicket-modal {
 
 /*************** Onyx Style Modal Window ********************/
 
-div.modal_footer {
+div.modal-footer {
   text-align: right;
   padding-right: 20px;
   padding-top: 9px;
+}
+
+div.wizard-modal-footer {
+  text-align: center !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
 }
 
 div.wicket-mask-dark {

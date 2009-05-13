@@ -108,6 +108,7 @@ public class WizardAdministrationWindow extends Dialog {
   public void show(AjaxRequestTarget target) {
     setOptionsToShow();
     target.appendJavascript("$('.separator').css('border-top', '0');");
+    target.appendJavascript("$('.modal-footer').removeClass('modal-footer').addClass('wizard-modal-footer');");
     super.show(target);
   };
 
