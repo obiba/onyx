@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -38,7 +38,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
 /**
- * 
+ *
  */
 public class VariableReportContributor implements ModuleReportContributor {
 
@@ -75,8 +75,8 @@ public class VariableReportContributor implements ModuleReportContributor {
       AcroFields form = stamper.getAcroFields();
 
       Participant participant = activeInterviewService.getParticipant();
-      setParticipantDataFields(participant, form);
       setVariableDataFields(participant, form);
+      setParticipantDataFields(participant, form);
 
       stamper.setFormFlattening(true);
 
