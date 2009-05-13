@@ -30,6 +30,8 @@ public class WizardAdministrationWindow extends Dialog {
 
   private AjaxLink cancelLink;
 
+  private String cancelLabel = "CancelStage";
+
   /**
    * @param id
    */
@@ -41,7 +43,44 @@ public class WizardAdministrationWindow extends Dialog {
 
     setOptions(Dialog.Option.CANCEL_OPTION);
 
-    finishLink = new AjaxButton("finish") {
+    createFinishLink(null);
+
+    interruptLink = new AjaxLink("interrupt") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        setStatus(Status.OTHER);
+        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
+      }
+
+    };
+
+    cancelLink = new AjaxLink("cancelStage") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        setStatus(Status.CLOSED);
+        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
+      }
+    };
+  }
+
+  public void setCancelLink(String label) {
+    setCancelLink(label, null);
+  }
+
+  public void setCancelLink(String label, AjaxLink cancelLink) {
+    if(cancelLink != null) this.cancelLink = cancelLink;
+    this.cancelLabel = label;
+  }
+
+  public void createFinishLink(Form form) {
+    if(form == null) form = getForm();
+    finishLink = new AjaxButton("finish", form) {
 
       private static final long serialVersionUID = 1L;
 
@@ -57,45 +96,17 @@ public class WizardAdministrationWindow extends Dialog {
         if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
       }
     };
+  }
+
+  public void setOptionsToShow() {
     addSubmitOption("Finish", OptionSide.RIGHT, finishLink, "finish");
-
-    interruptLink = new AjaxLink("interrupt") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        setStatus(Status.OTHER);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
-      }
-
-    };
     addOption("Interrupt", OptionSide.RIGHT, interruptLink, "interrupt");
-  }
-
-  public void setCancelStage(String label) {
-
-    cancelLink = new AjaxLink("cancelStage") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        setStatus(Status.CLOSED);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
-      }
-    };
-
-    addOption(label, OptionSide.RIGHT, cancelLink, "cancelStage");
-  }
-
-  public void setCancelStage(String label, AjaxLink cancelLink) {
-    this.cancelLink = cancelLink;
-    addOption(label, OptionSide.RIGHT, cancelLink, "cancelStage");
+    addOption(cancelLabel, OptionSide.RIGHT, cancelLink, "cancelStage");
   }
 
   @Override
   public void show(AjaxRequestTarget target) {
+    setOptionsToShow();
     target.appendJavascript("$('.separator').css('border-top', '0');");
     super.show(target);
   };

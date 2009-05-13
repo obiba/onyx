@@ -1,0 +1,25 @@
+<wicket:panel>
+	<form wicket:id="form" class="wizard" autocomplete="off">
+	    <div id="wizardContent" class="form-data obiba-scrollable">
+			<span wicket:id="step" />		
+		</div>
+		<div id="wizardFooter" class="form-button">
+			<span class="obiba-nav-left">
+				<input type="button" class="obiba-button obiba-quartz-nav-admin" wicket:id="adminLink"/>
+			</span>
+			<span class="obiba-nav-right">
+				<input type="button" class="obiba-button obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
+				<input type="button" class="obiba-button obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
+			</span>
+			<span style="display: none;">
+				<input type="submit" class="obiba-button obiba-nav-finish" wicket:id="finish" style="display:none;"/>
+				<input type="button" class="obiba-button obiba-nav-cancel" wicket:id="cancelLink"/>
+			</span>
+		</div>
+		<div wicket:id="adminWindow" ></div>
+	</form>	
+	<script language="JavaScript">
+		WindowUtil.attachEvent("load", Resizer.resizeWizard);
+		WindowUtil.attachEvent("resize", Resizer.resizeWizard);				
+	</script>	
+</wicket:panel>

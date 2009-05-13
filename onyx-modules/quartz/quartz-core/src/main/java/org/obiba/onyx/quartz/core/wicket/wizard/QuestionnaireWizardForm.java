@@ -164,7 +164,7 @@ public class QuestionnaireWizardForm extends WizardForm {
       }
     };
 
-    adminWindow.setCancelStage("CancelQuestionnaire", cancelLink);
+    adminWindow.setCancelLink("CancelQuestionnaire", cancelLink);
 
     adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
 

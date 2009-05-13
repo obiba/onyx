@@ -234,7 +234,7 @@ public class RubyWizardForm extends WizardForm {
     // Create modal feedback window
     adminWindow = new WizardAdministrationWindow("adminWindow");
 
-    adminWindow.setCancelStage("CancelSampleCollection");
+    adminWindow.setCancelLink("CancelSampleCollection");
 
     adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
