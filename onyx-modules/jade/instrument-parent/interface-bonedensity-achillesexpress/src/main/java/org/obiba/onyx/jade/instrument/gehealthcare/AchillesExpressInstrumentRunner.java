@@ -12,8 +12,10 @@ package org.obiba.onyx.jade.instrument.gehealthcare;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -124,11 +126,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
   }
 
   @SuppressWarnings("unchecked")
-  private Map<String, Data> retrieveDeviceData() {
+  private List<Map<String, Data>> retrieveDeviceData() {
 
     log.info("retrieveDeviceData");
 
-    return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, appversion, roi_x, roi_y, roi_s, patients.Chart_Num, patients.FName, patients.LName, patients.Sex, patients.DOB from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
+    return (List<Map<String, Data>>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, appversion, roi_x, roi_y, roi_s, patients.Chart_Num, patients.FName, patients.LName, patients.Sex, patients.DOB from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
 
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
@@ -140,9 +142,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
       public Object extractData(ResultSet rs) throws SQLException {
 
-        Map<String, Data> boneDensityData = new HashMap<String, Data>();
+        List<Map<String, Data>> boneDensityDataList = new ArrayList<Map<String, Data>>();
 
-        if(rs.next()) {
+        while(rs.next()) {
+          Map<String, Data> boneDensityData = new HashMap<String, Data>();
+
           boneDensityData.put("OUTPUT_PARTICIPANT_BARCODE", DataBuilder.buildText(rs.getString("Chart_Num")));
           boneDensityData.put("OUTPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText(rs.getString("FName")));
           boneDensityData.put("OUTPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText(rs.getString("LName")));
@@ -170,9 +174,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
           boneDensityData.put("RES_REGION_INTERSECTION_Y_COOR", DataBuilder.buildInteger(rs.getLong("roi_y")));
           boneDensityData.put("RES_REGION_INTERSECTION_Z_COOR", DataBuilder.buildInteger(rs.getLong("roi_s")));
           boneDensityData.put("RES_STIFFNESS_INDEX_GRAPH", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap")));
+
+          boneDensityDataList.add(boneDensityData);
         }
 
-        return boneDensityData;
+        return boneDensityDataList;
 
       }
 
@@ -197,9 +203,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
     log.info("Launching Achilles Express software");
     externalAppHelper.launch();
     log.info("Retrieving measurements");
-    Map<String, Data> data = retrieveDeviceData();
+    List<Map<String, Data>> dataList = retrieveDeviceData();
     log.info("Sending data to server");
-    sendDataToServer(data);
+    for(Map<String, Data> dataMap : dataList) {
+      sendDataToServer(dataMap);
+    }
   }
 
   public void shutdown() {

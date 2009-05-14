@@ -15,6 +15,23 @@
       <type>OBSERVED</type>
     </contraIndication>
   </contraindications>
+  
+  <expectedMeasureCount class="computingDataSource">
+    <dataType>INTEGER</dataType>
+    <expression>If[Equal[$1, 0] || Equal[$2, 0], 2, If[Abs[$1 - $2] &lt; 5, 2, 3]]</expression>
+    <dataSources>
+      <instrumentParameterDataSource>
+        <instrumentType>BoneDensity</instrumentType>
+        <parameterCode>RES_STIFFNESS_INDEX</parameterCode>
+        <measure>1</measure>
+      </instrumentParameterDataSource>
+      <instrumentParameterDataSource>
+        <instrumentType>BoneDensity</instrumentType>
+        <parameterCode>RES_STIFFNESS_INDEX</parameterCode>
+        <measure>2</measure>
+      </instrumentParameterDataSource>
+    </dataSources>
+  </expectedMeasureCount>
 
   <instrumentParameters>
     <!-- <interpretative>(remove)
