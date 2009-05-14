@@ -517,9 +517,30 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .wizard-content {
-  padding-top: 20px;
+  padding-top: 5px;
   margin-top:0px;
   margin-bottom:0px;
+}
+
+.wizard-body {
+  	border-top:1px solid #C65F02;
+	margin-top:5px;
+	padding-top:15px;
+}
+
+.wizard-separator {
+	border-top:1px dotted #666666;
+	margin-top:11px;
+	padding-bottom:7px;
+	width:250px;
+}
+
+.wizard-instructions {
+	font-style:italic;	
+}
+
+.wizard-radio {
+	line-height: 25px;
 }
 
 /*************** End Wizard ********************/

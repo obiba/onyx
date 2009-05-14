@@ -1,13 +1,12 @@
 <wicket:panel>
-
-	<p>
-		<wicket:message key="ConsentModeSelection" />
-	</p>
-	<span wicket:id="consentMode"/>
-	<p>
-		<wicket:message key="ConsentLanguageSelection" />
-	</p>
-	<p>
-		<select wicket:id="consentLanguage"/>
-	</p>
+	<div class="wizard-instructions">
+		<wicket:message key="ConsentModeSelection" /> 		
+	</div>
+	<div class="wizard-body">
+		<span wicket:id="consentMode"  class="wizard-radio"/>
+		<div class="wizard-separator"/>
+		<p>
+			<wicket:message key="ConsentLanguageSelection" />&nbsp;&nbsp;<select wicket:id="consentLanguage"/>
+		</p>
+	</div>
 </wicket:panel>
