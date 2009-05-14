@@ -230,7 +230,7 @@
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>/Onyx/Weight/CALC_AVG_WEIGHT</variablePath>
+              <variablePath>/Onyx/Weight/RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
