@@ -38,8 +38,8 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
   @SuppressWarnings("unchecked")
   public void convert(ActiveInstrumentRunService activeInstrumentRunService, InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 
-    InstrumentParameter sourceParameter = activeInstrumentRunService.getParameterByCode(sourceInstrumentRunValue.getInstrumentParameter());
-    InstrumentParameter targetParameter = activeInstrumentRunService.getParameterByCode(targetInstrumentRunValue.getInstrumentParameter());
+    InstrumentParameter sourceParameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(sourceInstrumentRunValue.getInstrumentParameter());
+    InstrumentParameter targetParameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(targetInstrumentRunValue.getInstrumentParameter());
 
     log.debug("Converting parameters from source {} to target {}", sourceParameter, targetParameter);
 
@@ -60,7 +60,7 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
 
     double newValue = sourceUnit.getConverterTo(targetUnit).convert(sourceValue);
 
-    switch(activeInstrumentRunService.getParameterByCode(targetInstrumentRunValue.getInstrumentParameter()).getDataType()) {
+    switch(activeInstrumentRunService.getInstrumentType().getInstrumentParameter(targetInstrumentRunValue.getInstrumentParameter()).getDataType()) {
     case DECIMAL:
       targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
       break;
@@ -75,8 +75,8 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
 
   public void convert(InstrumentService instrumentService, InstrumentType instrumentType, InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 
-    InstrumentParameter sourceParameter = instrumentService.getParameterByCode(instrumentType, sourceInstrumentRunValue.getInstrumentParameter());
-    InstrumentParameter targetParameter = instrumentService.getParameterByCode(instrumentType, targetInstrumentRunValue.getInstrumentParameter());
+    InstrumentParameter sourceParameter = instrumentType.getInstrumentParameter(sourceInstrumentRunValue.getInstrumentParameter());
+    InstrumentParameter targetParameter = instrumentType.getInstrumentParameter(targetInstrumentRunValue.getInstrumentParameter());
 
     log.debug("Converting parameters from source {} to target {}", sourceParameter, targetParameter);
 
@@ -97,7 +97,7 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
 
     double newValue = sourceUnit.getConverterTo(targetUnit).convert(sourceValue);
 
-    switch(instrumentService.getParameterByCode(instrumentType, targetInstrumentRunValue.getInstrumentParameter()).getDataType()) {
+    switch(targetParameter.getDataType()) {
     case DECIMAL:
       targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
       break;

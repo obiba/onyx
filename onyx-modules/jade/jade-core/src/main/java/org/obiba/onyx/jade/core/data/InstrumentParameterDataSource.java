@@ -32,6 +32,8 @@ public class InstrumentParameterDataSource implements IDataSource {
 
   private String parameterCode;
 
+  private Integer measure;
+
   private InstrumentRunService instrumentRunService;
 
   private InstrumentService instrumentService;
@@ -51,8 +53,8 @@ public class InstrumentParameterDataSource implements IDataSource {
 
     if(participant == null) return null;
 
-    InstrumentParameter param = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
-    InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValueFromLastRun(participant, instrumentService.getInstrumentType(instrumentType), parameterCode);
+    InstrumentParameter param = instrumentService.getInstrumentType(instrumentType).getInstrumentParameter(parameterCode);
+    InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValueFromLastRun(participant, instrumentService.getInstrumentType(instrumentType), parameterCode, measure);
 
     if(runValue != null) {
       data = runValue.getData(param.getDataType());
@@ -64,7 +66,7 @@ public class InstrumentParameterDataSource implements IDataSource {
   public String getUnit() {
     String unit = null;
 
-    InstrumentParameter param = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
+    InstrumentParameter param = instrumentService.getInstrumentType(instrumentType).getInstrumentParameter(parameterCode);
     if(param != null) {
       unit = param.getMeasurementUnit();
     }

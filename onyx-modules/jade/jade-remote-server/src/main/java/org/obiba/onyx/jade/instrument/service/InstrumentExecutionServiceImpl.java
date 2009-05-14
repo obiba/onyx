@@ -66,8 +66,8 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public Map<String, Data> getInputParametersValue(String... parameters) {
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
     for(String parameterCode : parameters) {
-      InstrumentParameter inputParameter = activeInstrumentRunService.getParameterByCode(parameterCode);
-      InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInputInstrumentRunValue(parameterCode);
+      InstrumentParameter inputParameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
+      InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInstrumentRunValue(parameterCode);
       inputParametersValue.put(parameterCode, inputParameterValue.getData(inputParameter.getDataType()));
     }
     log.info("getInputParametersValue({})={}", parameters, inputParametersValue);
@@ -77,7 +77,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public Map<String, String> getInputParametersVendorNames(String... parameters) {
     Map<String, String> inputParametersVendorName = new HashMap<String, String>();
     for(String parameterCode : parameters) {
-      InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+      InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
       inputParametersVendorName.put(parameterCode, parameter.getVendorName());
     }
     log.info("getInputParametersVendorNames({})={}", parameters, inputParametersVendorName);
@@ -85,37 +85,54 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public Data getInputParameterValue(String parameterCode) {
-    InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
-    return activeInstrumentRunService.getInputInstrumentRunValue(parameterCode).getData(parameter.getDataType());
+    InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
+    return activeInstrumentRunService.getInstrumentRunValue(parameterCode).getData(parameter.getDataType());
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {
-    for(Map.Entry<String, Data> entry : values.entrySet()) {
-      addOutputParameterValue(entry.getKey(), entry.getValue());
+    if(!activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+      for(Map.Entry<String, Data> entry : values.entrySet()) {
+        String paramName = entry.getKey();
+        InstrumentParameter parameter = getInstrumentParameter(paramName);
+        updateParameterValue(parameter, entry.getValue());
+      }
+    } else {
+      activeInstrumentRunService.addMeasure(values);
     }
   }
 
   public void addOutputParameterValue(String name, Data value) {
-    log.info("addOutputParameterValue({}, {})", name, value);
+    log.debug("addOutputParameterValue({}, {})", name, value);
+    updateParameterValue(getInstrumentParameter(name), value);
+  }
 
-    // Lookup the parameter using it's code
-    InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(name);
-    if(parameter == null || parameter instanceof InstrumentOutputParameter == false) {
-      // Lookup the paramater using it's vendor name
-      parameter = activeInstrumentRunService.getParameterByVendorName(name);
-    }
+  private void updateParameterValue(InstrumentParameter parameter, Data value) {
+    InstrumentRunValue outputParameterValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(parameter);
+    outputParameterValue.setData(value);
+    activeInstrumentRunService.update(outputParameterValue);
+  }
+
+  private InstrumentParameter getInstrumentParameter(String name) {
+    InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(name);
 
     // Test if no parameter found for the given name
     if(parameter == null || parameter instanceof InstrumentOutputParameter == false) {
       throw new IllegalArgumentException("No output parameter with name: " + name);
     }
-    InstrumentRunValue outputParameterValue = activeInstrumentRunService.getInstrumentRunValue(parameter);
-    outputParameterValue.setData(value);
-    activeInstrumentRunService.update(outputParameterValue);
+
+    return parameter;
   }
 
   public void instrumentRunnerError(Exception error) {
     activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.IN_ERROR);
+  }
+
+  public int getCurrentMeasureCount() {
+    return activeInstrumentRunService.getCurrentMeasureCount();
+  }
+
+  public int getExpectedMeasureCount() {
+    return activeInstrumentRunService.getInstrumentType().getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
   }
 
 }

@@ -46,6 +46,7 @@ public class ConclusionStep extends WizardStepPanel {
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepInNext(form, target);
+    activeInstrumentRunService.computeOutputParameters();
     setContent(target, new ConclusionPanel(getContentId()));
   }
 

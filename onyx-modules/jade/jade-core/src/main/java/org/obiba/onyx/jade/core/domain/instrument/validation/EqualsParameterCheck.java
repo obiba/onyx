@@ -63,12 +63,12 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     // Get the other parameter's value.
     //
     log.debug("Retrieving parameter value : {}", parameterCode);
-    InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
-    InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(otherParameter);
+
+    InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(parameterCode);
     Data otherData = null;
 
     if(otherRunValue != null) {
-      InstrumentParameter otherParam = activeRunService.getParameterByCode(otherRunValue.getInstrumentParameter());
+      InstrumentParameter otherParam = activeRunService.getInstrumentType().getInstrumentParameter(otherRunValue.getInstrumentParameter());
 
       if(!otherParam.getDataType().equals(paramData.getType())) {
         InstrumentRunValue targetRunValue = new InstrumentRunValue();
@@ -77,6 +77,7 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
         converter.convert(activeRunService, targetRunValue, otherRunValue);
         otherData = targetRunValue.getData(paramData.getType());
       } else {
+        InstrumentParameter otherParameter = activeRunService.getInstrumentType().getInstrumentParameter(parameterCode);
         otherData = otherRunValue.getData(otherParameter.getDataType());
         log.debug("Value is : {}", otherRunValue.getData(otherParameter.getDataType()));
       }
@@ -95,7 +96,7 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
   }
 
   protected Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
-    InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
+    InstrumentParameter otherParameter = activeRunService.getInstrumentType().getInstrumentParameter(parameterCode);
     return new Object[] { checkedParameter.getLabel(), otherParameter.getLabel() };
   }
 

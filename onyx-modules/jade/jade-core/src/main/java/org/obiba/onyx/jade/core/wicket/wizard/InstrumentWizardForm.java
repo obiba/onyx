@@ -19,7 +19,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -39,9 +38,6 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean
-  private InstrumentService instrumentService;
 
   private WizardStepPanel instrumentSelectionStep;
 
@@ -149,9 +145,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there input parameters with input source that requires user provisioning ?
     // or interpretative questions
-    log.debug("instrumentInterpretativeParameters.count={}", activeInstrumentRunService.getInterpretativeParameters().size());
-    log.debug("instrumentInputParameters.count={}", activeInstrumentRunService.getInputParameters(false));
-    if(activeInstrumentRunService.hasInterpretativeParameter() || activeInstrumentRunService.hasInputParameter(false)) {
+    log.debug("instrumentInterpretativeParameters.count={}", instrumentType.getInterpretativeParameters().size());
+    log.debug("instrumentInputParameters.count={}", instrumentType.getInputParameters(false));
+    if(instrumentType.hasInterpretativeParameter() || instrumentType.hasInputParameter(false)) {
       if(startStep == null) {
         startStep = inputParametersStep;
         lastStep = startStep;
@@ -166,8 +162,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there output parameters that are to be captured automatically from instrument (i.e. requires instrument
     // launch) ?
-    log.debug("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrumentType));
-    if(instrumentService.isInteractiveInstrument(instrumentType)) {
+    log.debug("instrument.isInteractive={}", instrumentType.isInteractive());
+    if(instrumentType.isInteractive()) {
       if(startStep == null) {
         startStep = instrumentLaunchStep;
         lastStep = startStep;
@@ -181,8 +177,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     // are there output parameters that are to be captured manually from instrument ?
-    log.debug("instrumentOutputParameters.MANUAL.count={}", activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
-    if(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
+    log.debug("instrumentOutputParameters.MANUAL.count={}", instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
+    if(instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
       if(startStep == null) {
         startStep = outputParametersStep;
         lastStep = startStep;

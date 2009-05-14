@@ -155,7 +155,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/Onyx/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
+          <variablePath>/Onyx/StandingHeight/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
@@ -187,7 +187,7 @@
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
             <stageName>Impedance310</stageName>
-            <variablePath>/Onyx/Impedance310/Output/RES_WEIGHT</variablePath>
+            <variablePath>/Onyx/Impedance310/CALC_AVG_WEIGHT</variablePath>
           </stageDependencyCondition>
         </inverseCondition>
       </conditions>
@@ -219,18 +219,18 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/Onyx/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
+          <variablePath>/Onyx/StandingHeight/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedance310</stageName>
-              <variablePath>/Onyx/Impedance310/Output/RES_WEIGHT</variablePath>
+              <variablePath>/Onyx/Impedance310/CALC_AVG_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>/Onyx/Weight/Output/RES_WEIGHT</variablePath>
+              <variablePath>/Onyx/Weight/CALC_AVG_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -299,11 +299,11 @@
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/Onyx/BloodPressure/Output/CALC_AVG_SYSTOLIC_BP</variablePath>
+          <variablePath>/Onyx/BloodPressure/CALC_AVG_SYSTOLIC_BP</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/Onyx/BloodPressure/Output/CALC_AVG_DIASTOLIC_BP</variablePath>
+          <variablePath>/Onyx/BloodPressure/CALC_AVG_DIASTOLIC_BP</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>

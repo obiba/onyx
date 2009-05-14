@@ -13,15 +13,17 @@ import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
@@ -62,11 +64,9 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
   public static final String OTHER_CONTRAINDICATION = "otherContraindication";
 
-  public static final String INPUT = "Input";
+  public static final String MEASURE = "Measure";
 
-  public static final String OUTPUT = "Output";
-
-  public static final String INTERPRETIVE = "Interpretive";
+  public static final String TIME = "time";
 
   private InstrumentRunService instrumentRunService;
 
@@ -106,98 +106,119 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
     if(parameters.size() > 0) {
       for(InstrumentParameter parameter : parameters) {
-        Variable parameterType;
-        if(parameter instanceof InstrumentInputParameter) {
-          parameterType = typeVariable.getVariable(INPUT);
-          if(parameterType == null) {
-            parameterType = new Variable(INPUT);
-            typeVariable.addVariable(parameterType);
+        Variable paramVariable = new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit());
+        if(type.isRepeatable() && parameter instanceof InstrumentOutputParameter && !parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+          Variable measureVariable = typeVariable.getVariable(MEASURE);
+          if(measureVariable == null) {
+            measureVariable = typeVariable.addVariable(new Variable(MEASURE).setDataType(DataType.TEXT).setRepeatable(true));
+            measureVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
+            measureVariable.addVariable(new Variable(TIME).setDataType(DataType.DATE));
           }
-        } else if(parameter instanceof InstrumentOutputParameter) {
-          parameterType = typeVariable.getVariable(OUTPUT);
-          if(parameterType == null) {
-            parameterType = new Variable(OUTPUT);
-            typeVariable.addVariable(parameterType);
-          }
-        } else if(parameter instanceof InterpretativeParameter) {
-          parameterType = typeVariable.getVariable(INTERPRETIVE);
-          if(parameterType == null) {
-            parameterType = new Variable(INTERPRETIVE);
-            typeVariable.addVariable(parameterType);
-          }
+          measureVariable.addVariable(paramVariable);
         } else {
-          throw new IllegalStateException("Unknown instrument parameter type: " + parameter.getClass().getSimpleName());
+          typeVariable.addVariable(paramVariable);
         }
-        parameterType.addVariable(new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit()));
       }
     }
     return typeVariable;
   }
 
-  public Data getData(Participant participant, Variable variable) {
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData) {
     // variable is expected to be a terminal one
     if(variable == null || variable.getDataType() == null) {
-      return null;
+      return varData;
     }
-
-    Data rval = null;
 
     if(variable.getParent().getName().equals(INSTRUMENT)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null && run.getInstrument() != null) {
         Instrument instrument = run.getInstrument();
         if(variable.getName().equals(NAME) && instrument.getName() != null) {
-          rval = DataBuilder.buildText(instrument.getName());
+          varData.addData(DataBuilder.buildText(instrument.getName()));
         } else if(variable.getName().equals(VENDOR) && instrument.getVendor() != null) {
-          rval = DataBuilder.buildText(instrument.getVendor());
+          varData.addData(DataBuilder.buildText(instrument.getVendor()));
         } else if(variable.getName().equals(MODEL) && instrument.getModel() != null) {
-          rval = DataBuilder.buildText(instrument.getModel());
+          varData.addData(DataBuilder.buildText(instrument.getModel()));
         } else if(variable.getName().equals(SERIAL_NUMBER) && instrument.getSerialNumber() != null) {
-          rval = DataBuilder.buildText(instrument.getSerialNumber());
+          varData.addData(DataBuilder.buildText(instrument.getSerialNumber()));
         } else if(variable.getName().equals(BARCODE) && instrument.getBarcode() != null) {
-          rval = DataBuilder.buildText(instrument.getBarcode());
+          varData.addData(DataBuilder.buildText(instrument.getBarcode()));
         }
       }
     } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         if(variable.getName().equals(CONTRAINDICATION_CODE) && run.getContraindication() != null) {
-          rval = DataBuilder.buildText(run.getContraindication());
+          varData.addData(DataBuilder.buildText(run.getContraindication()));
         } else if(variable.getName().equals(CONTRAINDICATION_TYPE) && run.getContraindication() != null) {
           InstrumentType instrumentType = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
-          Contraindication contraindication = instrumentService.getContraindication(instrumentType, run.getContraindication());
-          rval = DataBuilder.buildText(contraindication.getType().toString());
+          Contraindication contraindication = instrumentType.getContraindication(run.getContraindication());
+          varData.addData(DataBuilder.buildText(contraindication.getType().toString()));
         }
       }
     } else if(variable.getParent().getName().equals(INSTRUMENT_RUN)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         if(variable.getName().equals(USER) && run.getUser() != null) {
-          rval = DataBuilder.buildText(run.getUser().getLogin());
+          varData.addData(DataBuilder.buildText(run.getUser().getLogin()));
         } else if(variable.getName().equals(TIMESTART) && run.getTimeStart() != null) {
-          rval = DataBuilder.buildDate(run.getTimeStart());
+          varData.addData(DataBuilder.buildDate(run.getTimeStart()));
         } else if(variable.getName().equals(TIMEEND) && run.getTimeEnd() != null) {
-          rval = DataBuilder.buildDate(run.getTimeEnd());
+          varData.addData(DataBuilder.buildDate(run.getTimeEnd()));
         } else if(variable.getName().equals(OTHER_CONTRAINDICATION) && run.getOtherContraindication() != null) {
-          rval = DataBuilder.buildText(run.getOtherContraindication());
+          varData.addData(DataBuilder.buildText(run.getOtherContraindication()));
         }
       }
-    } else if(variable.getParent().getName().equals(INPUT) || variable.getParent().getName().equals(OUTPUT) || variable.getParent().getName().equals(INTERPRETIVE)) {
+    } else if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE)) {
+      InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
+      InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
+      List<Measure> measures = run.getMeasures();
+
+      int measurePosition = 1;
+      for(Measure measure : measures) {
+        Data data = null;
+
+        if(variable.getName().equals(MEASURE)) {
+          varData.addData(DataBuilder.buildText(measure.getId().toString()));
+        } else if(variable.getName().equals(USER) && measure.getUser() != null) {
+          data = DataBuilder.buildText(measure.getUser().getLogin());
+        } else if(variable.getName().equals(TIME) && measure.getTime() != null) {
+          data = DataBuilder.buildDate(measure.getTime());
+        } else {
+          // variable name is the parameter name
+          String parameterCode = variable.getName();
+          InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
+          InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
+          if(runValue != null) {
+            data = runValue.getData(parameter.getDataType());
+          }
+        }
+
+        if(data != null) {
+          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, MEASURE, measure.getId().toString()));
+          varData.addVariableData(childVarData);
+          childVarData.addData(data);
+        }
+
+        measurePosition++;
+      }
+
+    } else {
       String parameterCode = variable.getName();
       String instrumentTypeName = getInstrumentTypeVariable(variable).getName();
 
       InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
       if(type == null) return null;
 
-      InstrumentParameter parameter = instrumentService.getParameterByCode(type, parameterCode);
-      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode);
+      InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
+      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, null);
 
       if(runValue != null) {
-        rval = runValue.getData(parameter.getDataType());
+        varData.addData(runValue.getData(parameter.getDataType()));
       }
     }
 
-    return rval;
+    return varData;
   }
 
   private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {

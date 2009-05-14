@@ -77,7 +77,6 @@ public class OutputParametersStep extends WizardStepPanel {
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutNext(form, target);
     instrumentOutputParameterPanel.saveOutputInstrumentRunValues();
-    activeInstrumentRunService.computeOutputParameters();
 
     List<InstrumentOutputParameter> paramsWithWarnings = activeInstrumentRunService.getParametersWithWarning();
 

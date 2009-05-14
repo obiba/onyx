@@ -24,6 +24,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.impl.DefaultInstrumentRunServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,31 +79,47 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     return (InstrumentRun) criteria.setMaxResults(1).uniqueResult();
   }
 
-  public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterCode) {
+  public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterCode, Integer measurePosition) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null instrument type.");
     if(parameterCode == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null parameter.");
 
-    InstrumentRunValue runValue = null;
     InstrumentRun run = getLastCompletedInstrumentRun(participant, instrumentType);
 
-    if(run != null) {
-      log.debug("Run.id={} Param.code={}", run.getId(), parameterCode);
-      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter", Operation.eq, parameterCode).getCriteria().uniqueResult();
-    }
-
-    return runValue;
+    return getInstrumentRunValue(run, participant, instrumentType, parameterCode, measurePosition);
   }
 
-  public InstrumentRunValue findInstrumentRunValueFromLastRun(Participant participant, InstrumentType instrumentType, String parameterCode) {
+  public InstrumentRunValue findInstrumentRunValueFromLastRun(Participant participant, InstrumentType instrumentType, String parameterCode, Integer measurePosition) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null instrument type.");
     if(parameterCode == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null parameter.");
 
-    InstrumentRunValue runValue = null;
     InstrumentRun run = getLastInstrumentRun(participant, instrumentType);
+
+    return getInstrumentRunValue(run, participant, instrumentType, parameterCode, measurePosition);
+  }
+
+  private InstrumentRunValue getInstrumentRunValue(InstrumentRun run, Participant participant, InstrumentType instrumentType, String parameterCode, Integer measurePosition) {
+    InstrumentRunValue runValue = null;
 
     if(run != null) {
       log.debug("Run.id={} Param.code={}", run.getId(), parameterCode);
-      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter", Operation.eq, parameterCode).getCriteria().uniqueResult();
+      AssociationCriteria assoCriteria = AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentParameter", Operation.eq, parameterCode);
+      if(measurePosition == null) {
+        assoCriteria.add("instrumentRun", Operation.eq, run);
+      } else {
+        // find the measure from its position
+        Measure measure = new Measure();
+        measure.setInstrumentRun(run);
+
+        List<Measure> measures = getPersistenceManager().match(measure);
+        if(measurePosition <= measures.size()) {
+          measure = measures.get(measurePosition - 1);
+          assoCriteria.add("measure", Operation.eq, measure);
+        } else {
+          log.warn("No run value at: InstrumentType={} Param.code={} Measure.position={}", new Object[] { instrumentType.getName(), parameterCode, measurePosition });
+          return null;
+        }
+      }
+      runValue = (InstrumentRunValue) assoCriteria.getCriteria().uniqueResult();
     }
 
     return runValue;

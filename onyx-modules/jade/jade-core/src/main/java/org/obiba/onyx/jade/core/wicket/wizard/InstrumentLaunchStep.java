@@ -14,10 +14,13 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -85,19 +88,38 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         error(getString("InstrumentApplicationError"));
         setNextStep(null);
       } else {
-        List<InstrumentOutputParameter> outputParams = activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
+        InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+
+        List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
 
         boolean completed = true;
 
-        for(InstrumentOutputParameter param : outputParams) {
-          InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-          Data data = runValue.getData(param.getDataType());
-          if(data == null || data.getValue() == null) {
-            log.warn("Missing value for the following output parameter: {}", param.getVendorName());
-            error(getString("NoInstrumentDataSaveThem"));
-            setNextStep(null);
+        if(!instrumentType.isRepeatable()) {
+          for(InstrumentOutputParameter param : outputParams) {
+            InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
+            if(runValue == null) {
+              completed = false;
+            } else {
+              Data data = runValue.getData(param.getDataType());
+              if(data == null || data.getValue() == null) {
+                completed = false;
+              }
+            }
+            if(!completed) {
+              log.warn("Missing value for the following output parameter: {}", param.getVendorName());
+              error(getString("NoInstrumentDataSaveThem"));
+              setNextStep(null);
+              break;
+            }
+          }
+        } else {
+          // minimum is having the expected count of repeatable measures
+          int currentCount = activeInstrumentRunService.getInstrumentRun().getMeasureCount();
+          int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
+          if(currentCount < expectedCount) {
             completed = false;
-            break;
+            error(getString("MissingMeasure", new Model(new ValueMap("count=" + (expectedCount - currentCount)))));
+            setNextStep(null);
           }
         }
 
@@ -137,13 +159,20 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           continue;
         }
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-        Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
+        boolean checkFailed = false;
+        for(InstrumentRunValue runValue : activeInstrumentRunService.getInstrumentRunValues(param.getCode())) {
 
-        if(!integrityCheck.checkParameterValue(param, paramData, null, activeInstrumentRunService)) {
-          failedChecks.add(integrityCheck);
-          MessageSourceResolvable resolvable = integrityCheck.getDescription(param, activeInstrumentRunService);
-          error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+          Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
+
+          if(!integrityCheck.checkParameterValue(param, paramData, null, activeInstrumentRunService)) {
+            failedChecks.add(integrityCheck);
+            MessageSourceResolvable resolvable = integrityCheck.getDescription(param, activeInstrumentRunService);
+            error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+            checkFailed = true;
+          }
+        }
+
+        if(checkFailed) {
           break; // stop checking parameter after first failure (but continue checking other parameters!)
         }
       }

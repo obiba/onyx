@@ -101,8 +101,7 @@ public class ParameterSpreadCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -133,8 +132,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to MINIMUM value within spread.
     Data checkedDataMin = DataBuilder.buildInteger(95l);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -149,8 +147,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to MAXIMUM value within spread.
     Data checkedDataMax = DataBuilder.buildInteger(105l);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -181,8 +178,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to LESS than the minimum value in spread.
     Data checkedDataMin = DataBuilder.buildInteger(94l);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -197,8 +193,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to MORE than the maximum value in spread.
     Data checkedDataMax = DataBuilder.buildInteger(106l);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -229,8 +224,7 @@ public class ParameterSpreadCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -261,8 +255,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to MINIMUM value within spread.
     Data checkedDataMin = DataBuilder.buildDecimal(95.0);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -277,8 +270,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to MAXIMUM value within spread.
     Data checkedDataMax = DataBuilder.buildDecimal(105.0);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -309,8 +301,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to LESS than the minimum value in spread.
     Data checkedDataMin = DataBuilder.buildDecimal(94.0);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);
@@ -325,8 +316,7 @@ public class ParameterSpreadCheckTest {
     // Test with checked parameter's run value set to MORE than the maximum value in spread.
     Data checkedDataMax = DataBuilder.buildDecimal(106.0);
 
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
     expect(activeInstrumentRunServiceMock.getParticipant()).andReturn(participant);
 
     replay(activeInstrumentRunServiceMock);

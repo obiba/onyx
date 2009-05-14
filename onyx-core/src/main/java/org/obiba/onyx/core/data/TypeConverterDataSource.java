@@ -32,6 +32,9 @@ public class TypeConverterDataSource extends AbstractDataSourceDataModifier {
   protected Data modify(Data data, Participant participant) {
 
     if(data == null) return null;
+
+    if(type.equals(data.getType())) return data;
+
     String value = data.getValueAsString();
     if(value == null || value.length() == 0) return null;
 

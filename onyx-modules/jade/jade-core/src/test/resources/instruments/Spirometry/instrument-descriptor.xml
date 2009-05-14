@@ -3,9 +3,13 @@
 
   <name>Spirometry</name>
 
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount>
+
   <instrumentParameters>
 
-    <input id="id">
+    <input>
       <vendorName>ID</vendorName>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
@@ -16,7 +20,7 @@
 
     </input>
 
-    <input id="last_name_in">
+    <input>
       <vendorName>LastName</vendorName>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
@@ -26,7 +30,7 @@
       </dataSource>
     </input>
 
-    <input id="first_name_in">
+    <input>
       <vendorName>FirstName</vendorName>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
@@ -36,7 +40,7 @@
       </dataSource>
     </input>
 
-    <input id="birth_date_in">
+    <input>
       <vendorName>BirthDate</vendorName>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
@@ -47,7 +51,7 @@
       </dataSource>
     </input>
 
-    <input id="gender_in">
+    <input>
       <vendorName>Gender</vendorName>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
@@ -57,7 +61,7 @@
       </dataSource>
     </input>
 
-    <input id="ethnic_group">
+    <input>
       <vendorName>EthnicGroup</vendorName>
       <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>INTEGER</dataType>
@@ -67,7 +71,7 @@
       </dataSource>
     </input>
 
-    <input id="height">
+    <input>
       <vendorName>Height</vendorName>
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
@@ -79,7 +83,7 @@
       </dataSource>
     </input>
 
-    <input id="weight">
+    <input>
       <vendorName>Weight</vendorName>
       <code>INPUT_PARTICIPANT_WEIGHT</code>
       <measurementUnit>kg</measurementUnit>
@@ -103,7 +107,7 @@
       </dataSource>
     </input>
 
-    <output id="fvc">
+    <output>
       <vendorName>FVC</vendorName>
       <code>RES_MEASURED_FVC</code>
       <dataType>DECIMAL</dataType>
@@ -111,7 +115,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev1">
+    <output>
       <vendorName>FEV1</vendorName>
       <code>RES_MEASURED_FEV1</code>
       <dataType>DECIMAL</dataType>
@@ -119,7 +123,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev1_fvc">
+    <output>
       <vendorName>FEV1_FVC</vendorName>
       <code>RES_MEASURED_FEV1_FVC</code>
       <dataType>DECIMAL</dataType>
@@ -127,7 +131,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="fev6">
+    <output>
       <vendorName>FEV6</vendorName>
       <code>RES_MEASURED_FEV6</code>
       <dataType>DECIMAL</dataType>
@@ -135,7 +139,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev1_fev6">
+    <output>
       <vendorName>FEV1_FEV6</vendorName>
       <code>RES_MEASURED_FEV1_FEV6</code>
       <dataType>DECIMAL</dataType>
@@ -143,7 +147,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="pef">
+    <output>
       <vendorName>PEF</vendorName>
       <code>RES_MEASURED_PEF</code>
       <dataType>DECIMAL</dataType>
@@ -151,7 +155,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fef2575">
+    <output>
       <vendorName>FEF2575</vendorName>
       <code>RES_MEASURED_FEF2575</code>
       <dataType>DECIMAL</dataType>
@@ -159,7 +163,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fev3">
+    <output>
       <vendorName>FEV3</vendorName>
       <code>RES_MEASURED_FEV3</code>
       <dataType>DECIMAL</dataType>
@@ -167,7 +171,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev3_fvc">
+    <output>
       <vendorName>FEV3_FVC</vendorName>
       <code>RES_MEASURED_FEV3_FVC</code>
       <dataType>DECIMAL</dataType>
@@ -175,7 +179,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="ela">
+    <output>
       <vendorName>ELA</vendorName>
       <code>RES_MEASURED_ELA</code>
       <dataType>INTEGER</dataType>
@@ -183,7 +187,7 @@
       <measurementUnit>year</measurementUnit>
     </output>
 
-    <output id="fet">
+    <output>
       <vendorName>FET</vendorName>
       <code>RES_MEASURED_FET</code>
       <dataType>DECIMAL</dataType>
@@ -191,7 +195,7 @@
       <measurementUnit>s</measurementUnit>
     </output>
 
-    <output id="fef25">
+    <output>
       <vendorName>FEF25</vendorName>
       <code>RES_MEASURED_FEF25</code>
       <dataType>DECIMAL</dataType>
@@ -199,7 +203,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fef50">
+    <output>
       <vendorName>FEF50</vendorName>
       <code>RES_MEASURED_FEF50</code>
       <dataType>DECIMAL</dataType>
@@ -207,7 +211,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fef75">
+    <output>
       <vendorName>FEF75</vendorName>
       <code>RES_MEASURED_FEF75</code>
       <dataType>DECIMAL</dataType>
@@ -215,7 +219,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="evol">
+    <output>
       <vendorName>EVol</vendorName>
       <code>RES_MEASURED_EVOL</code>
       <dataType>DECIMAL</dataType>
@@ -223,7 +227,7 @@
       <measurementUnit>mL</measurementUnit>
     </output>
 
-    <output id="fivc">
+    <output>
       <vendorName>FIVC</vendorName>
       <code>RES_MEASURED_FIVC</code>
       <dataType>DECIMAL</dataType>
@@ -231,7 +235,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fiv1">
+    <output>
       <vendorName>FIV1</vendorName>
       <code>RES_MEASURED_FIV1</code>
       <dataType>DECIMAL</dataType>
@@ -239,7 +243,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fiv1_fivc">
+    <output>
       <vendorName>FIV1_FIVC</vendorName>
       <code>RES_MEASURED_FIV1_FIVC</code>
       <dataType>DECIMAL</dataType>
@@ -247,7 +251,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="pif">
+    <output>
       <vendorName>PIF</vendorName>
       <code>RES_MEASURED_PIF</code>
       <dataType>DECIMAL</dataType>
@@ -255,7 +259,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fvc_pred">
+    <output>
       <vendorName>FVC_pred</vendorName>
       <code>RES_PRED_FVC</code>
       <dataType>DECIMAL</dataType>
@@ -263,7 +267,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev1_pred">
+    <output>
       <vendorName>FEV1_pred</vendorName>
       <code>RES_PRED_FEV1</code>
       <dataType>DECIMAL</dataType>
@@ -271,7 +275,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev1_fvc_pred">
+    <output>
       <vendorName>FEV1_FVC_pred</vendorName>
       <code>RES_PRED_FEV1_FVC</code>
       <dataType>DECIMAL</dataType>
@@ -279,7 +283,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="fev6_pred">
+    <output>
       <vendorName>FEV6_pred</vendorName>
       <code>RES_PRED_FEV6</code>
       <dataType>DECIMAL</dataType>
@@ -287,7 +291,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev1_fev6_pred">
+    <output>
       <vendorName>FEV1_FEV6_pred</vendorName>
       <code>RES_PRED_FEV1_FEV6</code>
       <dataType>DECIMAL</dataType>
@@ -295,7 +299,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="pef_pred">
+    <output>
       <vendorName>PEF_pred</vendorName>
       <code>RES_PRED_PEF</code>
       <dataType>DECIMAL</dataType>
@@ -303,7 +307,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fef2575_pred">
+    <output>
       <vendorName>FEF2575_pred</vendorName>
       <code>RES_PRED_FEF2575</code>
       <dataType>DECIMAL</dataType>
@@ -311,7 +315,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fev3_pred">
+    <output>
       <vendorName>FEV3_pred</vendorName>
       <code>RES_PRED_FEV3</code>
       <dataType>DECIMAL</dataType>
@@ -319,7 +323,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fev3_fvc_pred">
+    <output>
       <vendorName>FEV3_FVC_pred</vendorName>
       <code>RES_PRED_FEV3_FVC</code>
       <dataType>DECIMAL</dataType>
@@ -327,7 +331,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="ela_pred">
+    <output>
       <vendorName>ELA_pred</vendorName>
       <code>RES_PRED_ELA</code>
       <dataType>INTEGER</dataType>
@@ -335,7 +339,7 @@
       <measurementUnit>year</measurementUnit>
     </output>
 
-    <output id="fet_pred">
+    <output>
       <vendorName>FET_pred</vendorName>
       <code>RES_PRED_FET</code>
       <dataType>DECIMAL</dataType>
@@ -343,7 +347,7 @@
       <measurementUnit>s</measurementUnit>
     </output>
 
-    <output id="fef25_pred">
+    <output>
       <vendorName>FEF25_pred</vendorName>
       <code>RES_PRED_FEF25</code>
       <dataType>DECIMAL</dataType>
@@ -351,7 +355,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fef50_pred">
+    <output>
       <vendorName>FEF50_pred</vendorName>
       <code>RES_PRED_FEF50</code>
       <dataType>DECIMAL</dataType>
@@ -359,7 +363,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fef75_pred">
+    <output>
       <vendorName>FEF75_pred</vendorName>
       <code>RES_PRED_FEF75</code>
       <dataType>DECIMAL</dataType>
@@ -367,7 +371,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="evol_pred">
+    <output>
       <vendorName>EVol_pred</vendorName>
       <code>RES_PRED_EVOL</code>
       <dataType>DECIMAL</dataType>
@@ -375,7 +379,7 @@
       <measurementUnit>mL</measurementUnit>
     </output>
 
-    <output id="fivc_pred">
+    <output>
       <vendorName>FIVC_pred</vendorName>
       <code>RES_PRED_FIVC</code>
       <dataType>DECIMAL</dataType>
@@ -383,7 +387,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fiv1_pred">
+    <output>
       <vendorName>FIV1_pred</vendorName>
       <code>RES_PRED_FIV1</code>
       <dataType>DECIMAL</dataType>
@@ -391,7 +395,7 @@
       <measurementUnit>L</measurementUnit>
     </output>
 
-    <output id="fiv1_fivc_pred">
+    <output>
       <vendorName>FIV1_FIVC_pred</vendorName>
       <code>RES_PRED_FIV1_FIVC</code>
       <dataType>DECIMAL</dataType>
@@ -399,7 +403,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="pif_pred">
+    <output>
       <vendorName>PIF_pred</vendorName>
       <code>RES_PRED_PIF</code>
       <dataType>DECIMAL</dataType>
@@ -407,7 +411,7 @@
       <measurementUnit>L/s</measurementUnit>
     </output>
 
-    <output id="fvc_image">
+    <output>
       <vendorName>FVCImage</vendorName>
       <code>RES_FVC_IMAGE</code>
       <dataType>DATA</dataType>

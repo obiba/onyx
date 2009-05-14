@@ -66,9 +66,11 @@ public class EqualsParameterCheckTest {
 
     checkedParameter = new InstrumentOutputParameter();
     checkedParameter.setCode("checkedParamName");
+    instrumentType.addInstrumentParameter(checkedParameter);
 
     otherParameter = new InstrumentInputParameter();
     otherParameter.setCode("otherParamName");
+    instrumentType.addInstrumentParameter(otherParameter);
 
     equalsParameterCheck.setParameterCode(otherParameter.getCode());
 
@@ -95,8 +97,8 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter).atLeastOnce();
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).atLeastOnce();
 
     replay(activeInstrumentRunServiceMock);
 
@@ -123,8 +125,8 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter).atLeastOnce();
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).atLeastOnce();
 
     replay(activeInstrumentRunServiceMock);
 
@@ -148,8 +150,8 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter).atLeastOnce();
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter.getCode())).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).atLeastOnce();
 
     replay(activeInstrumentRunServiceMock);
     equalsParameterCheck.setOperator(ComparisonOperator.LESSER);

@@ -88,7 +88,10 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
     output.put("Age", getIntegerValue(ageTxt.getText()));
 
     instrumentExecutionService.addOutputParameterValues(output);
+    clearTanitaData();
     log.info("Sending output of Tanita TBF-310 to server done...");
-    exitUI();
+    if(instrumentExecutionService.getExpectedMeasureCount() <= instrumentExecutionService.getCurrentMeasureCount()) {
+      exitUI();
+    }
   }
 }

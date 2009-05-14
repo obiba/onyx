@@ -58,8 +58,7 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
       //
       // Get the other parameter's value.
       //
-      InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
-      InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(otherParameter);
+      InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(parameterCode);
 
       Data otherData = null;
       if(otherRunValue != null) {
@@ -103,7 +102,7 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
   }
 
   protected Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
-    InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
+    InstrumentParameter otherParameter = activeRunService.getInstrumentType().getInstrumentParameter(parameterCode);
     if(percent != null && offset == null) {
       return new Object[] { checkedParameter.getLabel(), otherParameter.getLabel(), percent };
     } else if(percent == null && offset != null) {

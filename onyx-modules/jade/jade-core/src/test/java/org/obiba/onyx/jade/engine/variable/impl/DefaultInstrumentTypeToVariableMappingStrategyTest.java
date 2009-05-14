@@ -18,15 +18,20 @@ import junit.framework.Assert;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
@@ -56,11 +61,15 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   private InstrumentType instrumentType;
 
+  private InstrumentType repeatableInstrumentType;
+
   private InstrumentParameter inputParam;
 
   private InstrumentParameter outputParam;
 
   private InstrumentParameter interParam;
+
+  IVariablePathNamingStrategy variablePathNamingStrategy;
 
   @Before
   public void setUp() {
@@ -75,24 +84,56 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     ((DefaultInstrumentTypeToVariableMappingStrategy) instrumentTypeToVariableMappingStrategy).setInstrumentService(instrumentServiceMock);
 
     instrumentType = createInstrumentType();
+
+    repeatableInstrumentType = createRepeatableInstrumentType();
+
+    variablePathNamingStrategy = new DefaultVariablePathNamingStrategy();
   }
 
   @Test
   public void testVariable() {
-    Variable root = createInstrumentTypeVariable();
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
     Assert.assertEquals(1, root.getVariables().size());
     Variable var = root.getVariable(instrumentType.getName());
     Assert.assertNotNull(var);
-    Assert.assertEquals(4, var.getVariables().size());
+    Assert.assertEquals(5, var.getVariables().size());
 
-    Variable subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INPUT);
+    Variable subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.MEASURE);
+    Assert.assertNull(subVar);
+
+    subVar = var.getVariable("OUTPUT_PARAM");
     Assert.assertNotNull(subVar);
 
-    subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.OUTPUT);
+    subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN);
     Assert.assertNotNull(subVar);
+    Assert.assertEquals(6, subVar.getVariables().size());
 
-    subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INTERPRETIVE);
+    Variable subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION);
+    Assert.assertNotNull(subSubVar);
+
+    subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT);
+    Assert.assertNotNull(subSubVar);
+  }
+
+  @Test
+  public void testRepeatableVariable() {
+    Variable root = createInstrumentTypeVariable(repeatableInstrumentType);
+    log.info(VariableStreamer.toXML(root));
+
+    Assert.assertEquals(1, root.getVariables().size());
+    Variable var = root.getVariable(repeatableInstrumentType.getName());
+    Assert.assertNotNull(var);
+    Assert.assertEquals(6, var.getVariables().size());
+
+    Variable subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.MEASURE);
+    Assert.assertNotNull(subVar);
+    Assert.assertTrue(subVar.isRepeatable());
+    Assert.assertEquals(3, subVar.getVariables().size());
+    Assert.assertNotNull(subVar.getVariable("OUTPUT_PARAM"));
+
+    subVar = var.getVariable("CALC_OUTPUT_PARAM");
     Assert.assertNotNull(subVar);
 
     subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN);
@@ -108,10 +149,10 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testInstrumentInputParameter() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
-    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INPUT).getVariable("INPUT_PARAM");
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable("INPUT_PARAM");
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -120,12 +161,11 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     runValue.setData(DataBuilder.buildText("coucou"));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentServiceMock.getParameterByCode(instrumentType, inputParam.getCode())).andReturn(inputParam);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INPUT_PARAM")).andReturn(runValue);
+    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INPUT_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
@@ -137,10 +177,10 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testInstrumentOutputParameter() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
-    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.OUTPUT).getVariable("OUTPUT_PARAM");
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable("OUTPUT_PARAM");
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -149,12 +189,11 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     runValue.setData(DataBuilder.buildInteger(123l));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentServiceMock.getParameterByCode(instrumentType, outputParam.getCode())).andReturn(outputParam);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "OUTPUT_PARAM")).andReturn(runValue);
+    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "OUTPUT_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
@@ -166,10 +205,10 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testInstrumentInterpretiveParameter() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
-    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INTERPRETIVE).getVariable("INTERPRETIVE_PARAM");
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable("INTERPRETIVE_PARAM");
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -178,12 +217,11 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     runValue.setData(DataBuilder.buildText("coucou"));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentServiceMock.getParameterByCode(instrumentType, interParam.getCode())).andReturn(interParam);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INTERPRETIVE_PARAM")).andReturn(runValue);
+    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INTERPRETIVE_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
@@ -195,8 +233,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testInstrumentRun() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
     Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.USER);
     Assert.assertNotNull(variable);
@@ -212,7 +250,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
@@ -224,8 +262,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testInstrument() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
     Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
     Assert.assertNotNull(variable);
@@ -240,7 +278,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
@@ -252,8 +290,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testContraindication() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
     Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION_CODE);
     Assert.assertNotNull(variable);
@@ -268,7 +306,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
@@ -280,8 +318,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   @Test
   public void testNoContraindication() {
-    Variable root = createInstrumentTypeVariable();
-    log.info(VariableStreamer.toXML(root));
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
 
     Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION_CODE);
     Assert.assertNotNull(variable);
@@ -295,17 +333,16 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
-    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+    Assert.assertEquals(0, instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().size());
 
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
-    Assert.assertNull(data);
   }
 
-  private Variable createInstrumentTypeVariable() {
+  private Variable createInstrumentTypeVariable(InstrumentType type) {
     Variable variable = new Variable("Root");
-    variable.addVariable(instrumentTypeToVariableMappingStrategy.getVariable(instrumentType));
+    variable.addVariable(instrumentTypeToVariableMappingStrategy.getVariable(type));
     return variable;
   }
 
@@ -330,6 +367,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     outputParam = new InstrumentOutputParameter();
     outputParam.setCode("OUTPUT_PARAM");
+    outputParam.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
     outputParam.setDataType(DataType.INTEGER);
     type.addInstrumentParameter(outputParam);
 
@@ -337,6 +375,20 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     interParam.setCode("INTERPRETIVE_PARAM");
     interParam.setDataType(DataType.TEXT);
     type.addInstrumentParameter(interParam);
+
+    return type;
+  }
+
+  private InstrumentType createRepeatableInstrumentType() {
+    InstrumentType type = createInstrumentType();
+
+    InstrumentOutputParameter outputParam = new InstrumentOutputParameter();
+    outputParam.setCode("CALC_OUTPUT_PARAM");
+    outputParam.setCaptureMethod(InstrumentParameterCaptureMethod.COMPUTED);
+    outputParam.setDataType(DataType.INTEGER);
+    type.addInstrumentParameter(outputParam);
+
+    type.setExpectedMeasureCount(new FixedDataSource(DataBuilder.buildInteger(2)));
 
     return type;
   }

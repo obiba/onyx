@@ -24,6 +24,12 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
   private static final Logger log = LoggerFactory.getLogger(DefaultInstrumentRunServiceImpl.class);
 
   public void setInstrumentRunStatus(InstrumentRun run, InstrumentRunStatus status) {
+    // if(status.equals(InstrumentRunStatus.CANCELED)) {
+    // getPersistenceManager().delete(run);
+    // } else {
+    // run.setStatus(status);
+    // getPersistenceManager().save(run);
+    // }
     run.setStatus(status);
     getPersistenceManager().save(run);
   }

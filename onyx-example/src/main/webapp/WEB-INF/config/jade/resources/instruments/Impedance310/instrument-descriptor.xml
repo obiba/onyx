@@ -31,6 +31,27 @@
     </contraIndication>
 
   </contraindications>   -->
+  
+  <expectedMeasureCount class="computingDataSource">
+    <dataType>INTEGER</dataType>
+    <expression>If[Equal[$1, 0] || Equal[$2, 0], 2, If[Abs[$1 - $2] &lt; 0.1, 2, 3]]</expression>
+    <dataSources>
+      <instrumentParameterDataSource>
+        <instrumentType>Impedance310</instrumentType>
+        <parameterCode>RES_WEIGHT</parameterCode>
+        <measure>1</measure>
+      </instrumentParameterDataSource>
+      <instrumentParameterDataSource>
+        <instrumentType>Impedance310</instrumentType>
+        <parameterCode>RES_WEIGHT</parameterCode>
+        <measure>2</measure>
+      </instrumentParameterDataSource>
+    </dataSources>
+  </expectedMeasureCount>
+  
+  <!--expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount-->
 
   <instrumentParameters>
     <!--   <interpretative>   commented out
@@ -208,5 +229,39 @@
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
+    
+    <output>
+      <code>CALC_AVG_WEIGHT</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        <unit>kg</unit>
+        
+        <expression>
+          If[Equal[$3, 0], ($1 + $2)/2, ($1 + $2 + $3)/3]
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_WEIGHT</parameterCode>
+            <measure>1</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_WEIGHT</parameterCode>
+            <measure>2</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_WEIGHT</parameterCode>
+            <measure>3</measure>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+    
   </instrumentParameters>
 </instrumentType>

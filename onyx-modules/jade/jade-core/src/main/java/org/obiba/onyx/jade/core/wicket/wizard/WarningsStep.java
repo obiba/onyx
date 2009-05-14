@@ -68,9 +68,12 @@ public class WarningsStep extends WizardStepPanel {
 
     for(InstrumentOutputParameter param : paramsWithWarnings) {
       // Get the parameter's run value.
-      InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+      InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
 
-      String valueAsString = runValue.getData(param.getDataType()).getValueAsString();
+      String valueAsString = "";
+      if(runValue != null) {
+        valueAsString = runValue.getData(param.getDataType()).getValueAsString();
+      }
       if(valueAsString == null) {
         valueAsString = "";
       }

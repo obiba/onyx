@@ -32,6 +32,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
@@ -69,13 +70,15 @@ public class InstrumentOutputParameterPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    if(!activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+
+    if(!instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
       add(new EmptyPanel("outputs"));
     } else {
       add(new OutputFragment("outputs"));
     }
 
-    if(!activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+    if(!instrumentType.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC)) {
       add(new EmptyPanel("inputs"));
     } else {
       add(new InputFragment("inputs"));
@@ -102,11 +105,11 @@ public class InstrumentOutputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(InstrumentOutputParameter param : activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+      for(InstrumentOutputParameter param : activeInstrumentRunService.getInstrumentType().getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+        InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
         final String paramCode = param.getCode();
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         outputRunValueModels.add(runValueModel);
@@ -137,7 +140,7 @@ public class InstrumentOutputParameterPanel extends Panel {
           field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit()) {
             @Override
             public boolean isRequired() {
-              return activeInstrumentRunService.getParameterByCode(paramCode).isRequired(activeInstrumentRunService.getParticipant());
+              return activeInstrumentRunService.getInstrumentType().getInstrumentParameter(paramCode).isRequired(activeInstrumentRunService.getParticipant());
             }
           };
 
@@ -176,11 +179,11 @@ public class InstrumentOutputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+      for(InstrumentInputParameter param : activeInstrumentRunService.getInstrumentType().getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+        InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
 
         IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);

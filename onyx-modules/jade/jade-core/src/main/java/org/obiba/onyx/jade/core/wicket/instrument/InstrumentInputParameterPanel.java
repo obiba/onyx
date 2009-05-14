@@ -42,7 +42,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.data.Data;
@@ -73,9 +72,6 @@ public class InstrumentInputParameterPanel extends Panel {
   private EntityQueryService queryService;
 
   @SpringBean
-  private InstrumentService instrumentService;
-
-  @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
   private List<RadioGroup> interpretativeRadioGroups = new ArrayList<RadioGroup>();
@@ -88,20 +84,21 @@ public class InstrumentInputParameterPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    if(!activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.ASKED)) {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+
+    if(!instrumentType.hasInterpretativeParameter(ParticipantInteractionType.ASKED)) {
       add(new EmptyPanel("askedInputs"));
     } else {
-      add(new InterpretativeFragment("askedInputs", activeInstrumentRunService.getInterpretativeParameters(ParticipantInteractionType.ASKED), ParticipantInteractionType.ASKED));
+      add(new InterpretativeFragment("askedInputs", activeInstrumentRunService.getInstrumentType().getInterpretativeParameters(ParticipantInteractionType.ASKED), ParticipantInteractionType.ASKED));
     }
 
-    if(!activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED)) {
+    if(!instrumentType.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED)) {
       add(new EmptyPanel("observedInputs"));
     } else {
-      add(new InterpretativeFragment("observedInputs", activeInstrumentRunService.getInterpretativeParameters(ParticipantInteractionType.OBSERVED), ParticipantInteractionType.OBSERVED));
+      add(new InterpretativeFragment("observedInputs", instrumentType.getInterpretativeParameters(ParticipantInteractionType.OBSERVED), ParticipantInteractionType.OBSERVED));
     }
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
-    List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrumentType, false);
+    List<InstrumentInputParameter> instrumentInputParameters = instrumentType.getInputParameters(false);
 
     if(instrumentInputParameters.isEmpty()) {
       add(new EmptyPanel("inputs"));
@@ -118,7 +115,7 @@ public class InstrumentInputParameterPanel extends Panel {
   private void saveInterpretativeInstrumentRunValues() {
     for(RadioGroup rg : interpretativeRadioGroups) {
       InterpretativeSelection selection = (InterpretativeSelection) rg.getModelObject();
-      InstrumentRunValue runValue = activeInstrumentRunService.getInterpretativeInstrumentRunValue(selection.getParameterName());
+      InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(selection.getParameterName());
       runValue.setData(new Data(DataType.TEXT, selection.getSelectionKey()));
       activeInstrumentRunService.update(runValue);
     }
@@ -152,7 +149,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
         item.add(new Label("label", new MessageSourceResolvableStringModel(param.getLabel())));
 
-        Data data = activeInstrumentRunService.getInstrumentRunValue(param).getData(param.getDataType());
+        Data data = activeInstrumentRunService.getOrCreateInstrumentRunValue(param).getData(param.getDataType());
         final String defaultDataValue = data != null ? data.getValueAsString() : null;
 
         // radio group without default selection
@@ -240,7 +237,7 @@ public class InstrumentInputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+        InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 

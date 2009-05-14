@@ -50,6 +50,9 @@ public class InstrumentTypeFactoryBeanTest {
   public void testInstrumentParameters() {
 
     InstrumentType spirometryInstrumentType = instrumentTypes.get("Spirometry");
+
+    Assert.assertEquals(2, spirometryInstrumentType.getExpectedMeasureCount(null));
+
     List<InstrumentParameter> sprirometryParameters = spirometryInstrumentType.getInstrumentParameters();
     Map<String, InstrumentParameter> sprirometryParameterMap = new HashMap<String, InstrumentParameter>();
     for(InstrumentParameter spirometryParameter : sprirometryParameters) {

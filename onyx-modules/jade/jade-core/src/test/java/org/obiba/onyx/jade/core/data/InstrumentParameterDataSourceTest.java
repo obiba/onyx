@@ -57,11 +57,9 @@ public class InstrumentParameterDataSourceTest {
     InstrumentParameterDataSource parameterDataSource = initInstrumentParameterDataSource();
 
     InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
-    InstrumentOutputParameter param = new InstrumentOutputParameter();
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentServiceMock.getParameterByCode(instrumentType, PARAMETER_CODE)).andReturn(param).anyTimes();
-    expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun(participant, instrumentType, PARAMETER_CODE)).andReturn(null);
+    expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun(participant, instrumentType, PARAMETER_CODE, null)).andReturn(null);
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
@@ -79,11 +77,12 @@ public class InstrumentParameterDataSourceTest {
 
     InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
     InstrumentOutputParameter param = new InstrumentOutputParameter();
+    param.setCode(PARAMETER_CODE);
     param.setDataType(DataType.INTEGER);
+    instrumentType.addInstrumentParameter(param);
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentServiceMock.getParameterByCode(instrumentType, PARAMETER_CODE)).andReturn(param).anyTimes();
-    expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(createRunValue());
+    expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject(), (Integer) EasyMock.anyObject())).andReturn(createRunValue());
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
@@ -101,10 +100,11 @@ public class InstrumentParameterDataSourceTest {
 
     InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
     InstrumentOutputParameter param = new InstrumentOutputParameter();
+    param.setCode(PARAMETER_CODE);
     param.setMeasurementUnit("cm");
+    instrumentType.addInstrumentParameter(param);
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentServiceMock.getParameterByCode(instrumentType, PARAMETER_CODE)).andReturn(param).anyTimes();
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);

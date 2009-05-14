@@ -24,6 +24,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -80,7 +81,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     // get all the input run values that requires manual capture
     boolean manualCaptureRequired = false;
-    for(InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+    for(InstrumentInputParameter param : instrumentType.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
 
       final String paramCode = param.getCode();
 
@@ -95,12 +96,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
         item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
           public Object getObject() {
-            InstrumentInputParameter param = (InstrumentInputParameter) instrumentService.getParameterByCode(activeInstrumentRunService.getInstrumentType(), paramCode);
-            InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+            InstrumentInputParameter param = (InstrumentInputParameter) activeInstrumentRunService.getInstrumentType().getInstrumentParameter(paramCode);
+            InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(paramCode);
             ValueMap map = new ValueMap();
             map.put("description", new MessageSourceResolvableStringModel(param.getLabel()).getObject());
-            if(runValue.getData(param.getDataType()) != null && runValue.getData(param.getDataType()).getValue() != null) {
-              map.put("value", new SpringStringResourceModel(runValue.getData(param.getDataType()).getValueAsString()).getString());
+            Data data = runValue.getData(param.getDataType());
+            if(data != null && data.getValue() != null) {
+              map.put("value", new SpringStringResourceModel(data.getValueAsString()).getString());
               String unit = param.getMeasurementUnit();
               if(unit == null) {
                 unit = "";

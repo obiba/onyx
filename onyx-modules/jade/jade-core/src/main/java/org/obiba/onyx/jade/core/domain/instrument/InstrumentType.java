@@ -12,7 +12,11 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.TypeConverterDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.util.data.DataType;
 
 public class InstrumentType {
 
@@ -21,6 +25,8 @@ public class InstrumentType {
   private String name;
 
   private String description;
+
+  private IDataSource expectedMeasureCount;
 
   private List<InstrumentParameter> instrumentParameters;
 
@@ -48,6 +54,33 @@ public class InstrumentType {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public IDataSource getExpectedMeasureCount() {
+    return expectedMeasureCount;
+  }
+
+  public void setExpectedMeasureCount(IDataSource expectedMeasureCount) {
+    this.expectedMeasureCount = expectedMeasureCount;
+  }
+
+  /**
+   * Get the count of repeatable measures for the given participant, default count is 1.
+   * @param participant
+   * @return
+   */
+  public int getExpectedMeasureCount(Participant participant) {
+    if(expectedMeasureCount == null) {
+      return 1;
+    } else {
+      TypeConverterDataSource conv = new TypeConverterDataSource(expectedMeasureCount, DataType.INTEGER);
+      String count = conv.getData(participant).getValueAsString();
+      if(count == null) {
+        return 1;
+      } else {
+        return Integer.parseInt(count);
+      }
+    }
   }
 
   public List<Contraindication> getContraindications() {
@@ -83,6 +116,34 @@ public class InstrumentType {
   }
 
   /**
+   * Get the instrument parameter searching by the code, and if not found, searching by the vendor name.
+   * @param name
+   * @return null if not found.
+   */
+  public InstrumentParameter getInstrumentParameter(String name) {
+    // Lookup the parameter using it's code
+    InstrumentParameter parameter = null;
+    for(InstrumentParameter param : getInstrumentParameters()) {
+      if(name.equals(param.getCode()) == true) {
+        parameter = param;
+        break;
+      }
+    }
+
+    if(parameter == null) {
+      // Lookup the parameter using it's vendor name
+      for(InstrumentParameter param : getInstrumentParameters()) {
+        if(name.equals(param.getVendorName()) == true) {
+          parameter = param;
+          break;
+        }
+      }
+    }
+
+    return parameter;
+  }
+
+  /**
    * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a
    * data source.
    * 
@@ -92,17 +153,164 @@ public class InstrumentType {
    */
   @SuppressWarnings("unchecked")
   public <T extends InstrumentParameter> List<T> getInstrumentParameters(Class<T> parameterType, boolean hasDataSource) {
-    List<T> inputParameters = new ArrayList<T>();
+    List<T> parameters = new ArrayList<T>();
 
     for(InstrumentParameter parameter : getInstrumentParameters()) {
       if(parameterType.isInstance(parameter)) {
         if(!(parameter.getDataSource() != null ^ hasDataSource)) {
-          inputParameters.add((T) parameter);
+          parameters.add((T) parameter);
+        }
+      }
+    }
+
+    return parameters;
+  }
+
+  public boolean hasInterpretativeParameter(ParticipantInteractionType type) {
+    return !getInterpretativeParameters(type).isEmpty();
+  }
+
+  public List<InterpretativeParameter> getInterpretativeParameters(ParticipantInteractionType type) {
+    List<InterpretativeParameter> interpretativeParameters = new ArrayList<InterpretativeParameter>();
+
+    for(InstrumentParameter parameter : getInstrumentParameters()) {
+      if(parameter instanceof InterpretativeParameter) {
+        InterpretativeParameter interpretativeParameter = (InterpretativeParameter) parameter;
+
+        if(type == null || interpretativeParameter.getType().equals(type)) {
+          interpretativeParameters.add(interpretativeParameter);
+        }
+      }
+    }
+
+    return interpretativeParameters;
+  }
+
+  public boolean hasInterpretativeParameter() {
+    return !getInterpretativeParameters(null).isEmpty();
+  }
+
+  public List<InterpretativeParameter> getInterpretativeParameters() {
+    return getInterpretativeParameters(null);
+  }
+
+  public boolean hasInputParameter(boolean readOnly) {
+    return !getInputParameters(readOnly).isEmpty();
+  }
+
+  public List<InstrumentInputParameter> getInputParameters(boolean readOnly) {
+    return getInstrumentParameters(InstrumentInputParameter.class, readOnly);
+  }
+
+  public boolean hasInputParameter(InstrumentParameterCaptureMethod captureMethod) {
+    return !getInputParameters(captureMethod).isEmpty();
+  }
+
+  public List<InstrumentInputParameter> getInputParameters(InstrumentParameterCaptureMethod captureMethod) {
+    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
+
+    for(InstrumentParameter parameter : getInstrumentParameters()) {
+      if(parameter instanceof InstrumentInputParameter) {
+        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
+        InstrumentParameterCaptureMethod inputParameterCaptureMethod = inputParameter.getCaptureMethod();
+
+        if(inputParameterCaptureMethod.equals(captureMethod)) {
+          inputParameters.add(inputParameter);
         }
       }
     }
 
     return inputParameters;
+  }
+
+  public boolean hasInputParameter() {
+    return !getInputParameters().isEmpty();
+  }
+
+  public List<InstrumentInputParameter> getInputParameters() {
+    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
+
+    for(InstrumentParameter parameter : getInstrumentParameters()) {
+      if(parameter instanceof InstrumentInputParameter) {
+        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
+        inputParameters.add(inputParameter);
+      }
+    }
+
+    return inputParameters;
+  }
+
+  public boolean hasOutputParameter(InstrumentParameterCaptureMethod captureMethod) {
+    return !getOutputParameters(captureMethod).isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters(InstrumentParameterCaptureMethod captureMethod) {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    for(InstrumentOutputParameter parameter : getOutputParameters()) {
+      if(parameter.getCaptureMethod().equals(captureMethod)) {
+        outputParameters.add(parameter);
+      }
+    }
+
+    return outputParameters;
+  }
+
+  public boolean hasOutputParameter(boolean automatic) {
+    return !getOutputParameters(automatic).isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters(boolean automatic) {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    if(automatic) {
+      outputParameters = getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
+    } else {
+      for(InstrumentParameterCaptureMethod captureMethod : InstrumentParameterCaptureMethod.values()) {
+        if(!captureMethod.equals(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+          outputParameters.addAll(getOutputParameters(captureMethod));
+        }
+      }
+    }
+
+    return outputParameters;
+  }
+
+  public boolean hasOutputParameter() {
+    return !getOutputParameters().isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters() {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    for(InstrumentParameter parameter : getInstrumentParameters()) {
+      if(parameter instanceof InstrumentOutputParameter) {
+        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
+        outputParameters.add(outputParameter);
+      }
+    }
+
+    return outputParameters;
+  }
+
+  /**
+   * Shall we expect data from a remote instrument application ?
+   * @param instrument
+   * @return
+   */
+  public boolean isInteractive() {
+    return !getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).isEmpty();
+  }
+
+  public Contraindication getContraindication(String contraindicationCode) {
+    for(Contraindication ci : getContraindications()) {
+      if(ci.getCode().equals(contraindicationCode)) return ci;
+    }
+    return null;
+  }
+
+  public boolean isRepeatable() {
+    return expectedMeasureCount != null;
   }
 
   @Override

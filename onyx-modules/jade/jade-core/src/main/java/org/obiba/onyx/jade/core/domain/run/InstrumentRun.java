@@ -40,6 +40,9 @@ public class InstrumentRun extends AbstractEntity {
   private Participant participant;
 
   @OneToMany(mappedBy = "instrumentRun")
+  private List<Measure> measures;
+
+  @OneToMany(mappedBy = "instrumentRun")
   private List<InstrumentRunValue> instrumentRunValues;
 
   /**
@@ -87,6 +90,14 @@ public class InstrumentRun extends AbstractEntity {
 
   public void setInstrument(Instrument instrument) {
     this.instrument = instrument;
+  }
+
+  public List<Measure> getMeasures() {
+    return measures != null ? measures : (measures = new ArrayList<Measure>());
+  }
+
+  public int getMeasureCount() {
+    return getMeasures().size();
   }
 
   public List<InstrumentRunValue> getInstrumentRunValues() {

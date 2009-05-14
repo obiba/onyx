@@ -37,6 +37,10 @@ public class InstrumentRunValue extends AbstractEntity {
   @JoinColumn(name = "instrument_run_id")
   private InstrumentRun instrumentRun;
 
+  @ManyToOne
+  @JoinColumn(name = "measure_id")
+  private Measure measure;
+
   /**
    * Instrument parameter code.
    */
@@ -70,6 +74,14 @@ public class InstrumentRunValue extends AbstractEntity {
 
   public void setInstrumentRun(InstrumentRun instrumentRun) {
     this.instrumentRun = instrumentRun;
+  }
+
+  public Measure getMeasure() {
+    return measure;
+  }
+
+  public void setMeasure(Measure measure) {
+    this.measure = measure;
   }
 
   /**

@@ -154,34 +154,31 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     parameter = new InstrumentOutputParameter();
     parameter.setCode(parameterCode1);
     parameter.setVendorName(vendorName1);
-    expect(instrumentService.getParameterByCode(instrumentType, parameterCode1)).andReturn(parameter);
 
     String parameterCode2 = "OUTPUT_DIASTOLIC_PRESSURE";
     String vendorName2 = "DP";
     parameter = new InstrumentOutputParameter();
     parameter.setCode(parameterCode2);
     parameter.setVendorName(vendorName2);
-    expect(instrumentService.getParameterByCode(instrumentType, parameterCode2)).andReturn(parameter);
 
     String parameterCode3 = "bogus";
     parameter = new InstrumentOutputParameter();
     parameter.setCode(parameterCode3);
-    expect(instrumentService.getParameterByCode(instrumentType, parameterCode3)).andReturn(null);
 
     replay(instrumentService);
 
     // Look up a parameter by its code.
-    parameter = activeInstrumentRunService.getParameterByCode(parameterCode1);
+    parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode1);
     Assert.assertEquals(parameterCode1, parameter.getCode());
     Assert.assertEquals(vendorName1, parameter.getVendorName()); // cross-check vendor name
 
     // Look up another parameter. (In case query always returns the same parameter...)
-    parameter = activeInstrumentRunService.getParameterByCode(parameterCode2);
+    parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode2);
     Assert.assertEquals(parameterCode2, parameter.getCode());
     Assert.assertEquals(vendorName2, parameter.getVendorName()); // cross-check vendor name
 
     // Now look up a bogus parameter.
-    parameter = activeInstrumentRunService.getParameterByCode(parameterCode3);
+    parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode3);
     Assert.assertNull(parameter);
   }
 
@@ -199,19 +196,19 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
     // Look up a parameter by its code.
     String vendorName = "SP";
-    InstrumentParameter parameter = activeInstrumentRunService.getParameterByVendorName(vendorName);
+    InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(vendorName);
     Assert.assertEquals(vendorName, parameter.getVendorName());
     Assert.assertEquals("OUTPUT_SYSTOLIC_PRESSURE", parameter.getCode()); // cross-check code
 
     // Look up another parameter. (In case query always returns the same parameter...)
     vendorName = "DP";
-    parameter = activeInstrumentRunService.getParameterByVendorName(vendorName);
+    parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(vendorName);
     Assert.assertEquals(vendorName, parameter.getVendorName());
     Assert.assertEquals("OUTPUT_DIASTOLIC_PRESSURE", parameter.getCode()); // cross-check code
 
     // Now look up a bogus parameter.
     vendorName = "bogus";
-    parameter = activeInstrumentRunService.getParameterByVendorName(vendorName);
+    parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(vendorName);
     Assert.assertNull(parameter);
   }
 
@@ -229,8 +226,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify that the OBSERVED InterpretativeParameter is detected.
-    Assert.assertFalse(activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.ASKED));
-    Assert.assertTrue(activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED));
+    Assert.assertFalse(instrumentType.hasInterpretativeParameter(ParticipantInteractionType.ASKED));
+    Assert.assertTrue(instrumentType.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED));
 
     resetMocks();
     activeInstrumentRunService.reset();
@@ -243,8 +240,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify that no InterpretativeParameters are detected.
-    Assert.assertFalse(activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.ASKED));
-    Assert.assertFalse(activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED));
+    Assert.assertFalse(instrumentType.hasInterpretativeParameter(ParticipantInteractionType.ASKED));
+    Assert.assertFalse(instrumentType.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED));
   }
 
   @Test
@@ -261,8 +258,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify the number of ASKED and OBSERVED InterpretativeParameters.
-    Assert.assertEquals(0, activeInstrumentRunService.getInterpretativeParameters(ParticipantInteractionType.ASKED).size());
-    Assert.assertEquals(1, activeInstrumentRunService.getInterpretativeParameters(ParticipantInteractionType.OBSERVED).size());
+    Assert.assertEquals(0, instrumentType.getInterpretativeParameters(ParticipantInteractionType.ASKED).size());
+    Assert.assertEquals(1, instrumentType.getInterpretativeParameters(ParticipantInteractionType.OBSERVED).size());
   }
 
   @Test
@@ -279,8 +276,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForInputParameterTests(instrumentType, 7, 0);
 
     // Verify that the READONLY InstrumentInputParameters are detected.
-    Assert.assertTrue(activeInstrumentRunService.hasInputParameter(true));
-    Assert.assertFalse(activeInstrumentRunService.hasInputParameter(false));
+    Assert.assertTrue(instrumentType.hasInputParameter(true));
+    Assert.assertFalse(instrumentType.hasInputParameter(false));
 
     resetMocks();
     activeInstrumentRunService.reset();
@@ -293,8 +290,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForInputParameterTests(instrumentType, 0, 0);
 
     // Verify that no InstrumentInputParameters are detected.
-    Assert.assertFalse(activeInstrumentRunService.hasInputParameter(true));
-    Assert.assertFalse(activeInstrumentRunService.hasInputParameter(false));
+    Assert.assertFalse(instrumentType.hasInputParameter(true));
+    Assert.assertFalse(instrumentType.hasInputParameter(false));
   }
 
   @Test
@@ -311,8 +308,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForInputParameterTests(instrumentType, 7, 0);
 
     // Verify the number of READONLY and NON-READONLY InputParameters.
-    Assert.assertEquals(7, activeInstrumentRunService.getInputParameters(true).size());
-    Assert.assertEquals(0, activeInstrumentRunService.getInputParameters(false).size());
+    Assert.assertEquals(7, instrumentType.getInputParameters(true).size());
+    Assert.assertEquals(0, instrumentType.getInputParameters(false).size());
   }
 
   @Test
@@ -329,9 +326,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify that the AUTOMATIC and MANUAL InstrumentInputParameters are detected.
-    Assert.assertTrue(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
-    Assert.assertTrue(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.MANUAL));
-    Assert.assertFalse(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.COMPUTED));
+    Assert.assertTrue(instrumentType.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
+    Assert.assertTrue(instrumentType.hasInputParameter(InstrumentParameterCaptureMethod.MANUAL));
+    Assert.assertFalse(instrumentType.hasInputParameter(InstrumentParameterCaptureMethod.COMPUTED));
   }
 
   @Test
@@ -348,9 +345,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify the number of InstrumentInputParameters by capture method.
-    Assert.assertEquals(5, activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).size());
-    Assert.assertEquals(2, activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
-    Assert.assertEquals(0, activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.COMPUTED).size());
+    Assert.assertEquals(5, instrumentType.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).size());
+    Assert.assertEquals(2, instrumentType.getInputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
+    Assert.assertEquals(0, instrumentType.getInputParameters(InstrumentParameterCaptureMethod.COMPUTED).size());
   }
 
   @Test
@@ -367,7 +364,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify that the InstrumentInputParameters are detected.
-    Assert.assertTrue(activeInstrumentRunService.hasInputParameter());
+    Assert.assertTrue(instrumentType.hasInputParameter());
   }
 
   @Test
@@ -384,7 +381,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify the number of InstrumentInputParameters.
-    Assert.assertEquals(7, activeInstrumentRunService.getInputParameters().size());
+    Assert.assertEquals(7, instrumentType.getInputParameters().size());
   }
 
   @Test
@@ -401,9 +398,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify that the MANUAL and COMPUTED InstrumentOutputParameters are detected.
-    Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
-    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL));
-    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.COMPUTED));
+    Assert.assertFalse(instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
+    Assert.assertTrue(instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL));
+    Assert.assertTrue(instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.COMPUTED));
   }
 
   @Test
@@ -420,9 +417,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify the number InstrumentOutputParameters by capture method.
-    Assert.assertEquals(0, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).size());
-    Assert.assertEquals(2, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
-    Assert.assertEquals(1, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED).size());
+    Assert.assertEquals(0, instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).size());
+    Assert.assertEquals(2, instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
+    Assert.assertEquals(1, instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED).size());
   }
 
   @Test
@@ -439,8 +436,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify that the InstrumentOutputParameters are detected.
-    Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(true));
-    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(false));
+    Assert.assertFalse(instrumentType.hasOutputParameter(true));
+    Assert.assertTrue(instrumentType.hasOutputParameter(false));
   }
 
   @Test
@@ -457,8 +454,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify the number InstrumentOutputParameters by capture method.
-    Assert.assertEquals(0, activeInstrumentRunService.getOutputParameters(true).size());
-    Assert.assertEquals(3, activeInstrumentRunService.getOutputParameters(false).size());
+    Assert.assertEquals(0, instrumentType.getOutputParameters(true).size());
+    Assert.assertEquals(3, instrumentType.getOutputParameters(false).size());
   }
 
   @Test
@@ -475,7 +472,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     initInstrumentServiceMock(instrumentType);
 
     // Verify that the InstrumentOutputParameters are detected.
-    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter());
+    Assert.assertTrue(instrumentType.hasOutputParameter());
   }
 
   // @Test
@@ -584,35 +581,23 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     for(int i = 0; i < readOnlyParamCount; i++) {
       readOnlyInputParams.add(new InstrumentInputParameter());
     }
-    expect(instrumentService.getInstrumentInputParameter(instrumentType, true)).andReturn(readOnlyInputParams);
 
     List<InstrumentInputParameter> nonReadOnlyInputParams = new ArrayList<InstrumentInputParameter>();
     for(int i = 0; i < nonReadOnlyParamCount; i++) {
       nonReadOnlyInputParams.add(new InstrumentInputParameter());
     }
-    expect(instrumentService.getInstrumentInputParameter(instrumentType, false)).andReturn(nonReadOnlyInputParams);
-
-    replay(instrumentService);
   }
 
   private void initInstrumentServiceMockForOutputParameterTests(InstrumentType instrumentType) {
     // Record common instrumentService expectations.
     initInstrumentServiceMock(instrumentType, false);
 
-    // Record/replay specific instrumentService expectations.
-    List<InstrumentOutputParameter> autoOutputParams = new ArrayList<InstrumentOutputParameter>();
-    expect(instrumentService.getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.AUTOMATIC)).andReturn(autoOutputParams);
-
     List<InstrumentOutputParameter> manualOutputParams = new ArrayList<InstrumentOutputParameter>();
     manualOutputParams.add(new InstrumentOutputParameter());
     manualOutputParams.add(new InstrumentOutputParameter());
-    expect(instrumentService.getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.MANUAL)).andReturn(manualOutputParams);
 
     List<InstrumentOutputParameter> computedOutputParams = new ArrayList<InstrumentOutputParameter>();
     computedOutputParams.add(new InstrumentOutputParameter());
-    expect(instrumentService.getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.COMPUTED)).andReturn(computedOutputParams);
-
-    replay(instrumentService);
   }
 
   private InstrumentParameter getInstrumentParameter(InstrumentType instrumentType, String parameterCode) {

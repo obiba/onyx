@@ -32,9 +32,9 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -58,9 +58,6 @@ public class InstrumentRunPanel extends Panel {
 
   @SpringBean
   private InstrumentRunService instrumentRunService;
-
-  @SpringBean
-  private InstrumentService instrumentService;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -125,40 +122,41 @@ public class InstrumentRunPanel extends Panel {
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
     }
 
-    boolean isInteractive = instrumentService.isInteractiveInstrument(instrumentService.getInstrumentType(run.getInstrumentType()));
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    boolean isInteractive = instrumentType.hasInterpretativeParameter();
 
-    if(activeInstrumentRunService.hasInterpretativeParameter()) {
-      add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), activeInstrumentRunService.getInterpretativeParameters()));
+    if(isInteractive) {
+      add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), instrumentType.getInterpretativeParameters()));
     } else {
       add(new EmptyPanel("interpretatives"));
     }
 
-    if(isInteractive) {
-      if(activeInstrumentRunService.hasInputParameter()) {
-        add(getKeyValueDataPanel("inputs", new StringResourceModel("InstrumentInputs", this, null), activeInstrumentRunService.getInputParameters()));
+    if(instrumentType.isInteractive()) {
+      if(instrumentType.hasInputParameter()) {
+        add(getKeyValueDataPanel("inputs", new StringResourceModel("InstrumentInputs", this, null), instrumentType.getInputParameters()));
       } else {
         add(new EmptyPanel("inputs"));
       }
       add(new EmptyPanel("operatorAutoInputs"));
     } else {
       // Manual Inputs
-      if(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
-        add(getKeyValueDataPanel("inputs", new StringResourceModel("OperatorInputs", this, null), activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)));
+      if(instrumentType.hasInputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
+        add(getKeyValueDataPanel("inputs", new StringResourceModel("OperatorInputs", this, null), instrumentType.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)));
       } else {
         add(new EmptyPanel("inputs"));
       }
 
       // Automatic Inputs
-      if(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC)) {
-        add(getKeyValueDataPanel("operatorAutoInputs", new StringResourceModel("StandardInputs", this, null), activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)));
+      if(instrumentType.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+        add(getKeyValueDataPanel("operatorAutoInputs", new StringResourceModel("StandardInputs", this, null), instrumentType.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)));
       } else {
         add(new EmptyPanel("operatorAutoInputs"));
       }
     }
 
-    if(activeInstrumentRunService.hasOutputParameter()) {
+    if(instrumentType.hasOutputParameter()) {
       String key = isInteractive ? "InstrumentOutputs" : "OperatorOutputs";
-      add(getKeyValueDataPanel("outputs", new StringResourceModel(key, this, null), activeInstrumentRunService.getOutputParameters()));
+      add(getKeyValueDataPanel("outputs", new StringResourceModel(key, this, null), instrumentType.getOutputParameters()));
     } else {
       add(new EmptyPanel("outputs"));
     }
@@ -177,44 +175,70 @@ public class InstrumentRunPanel extends Panel {
     InstrumentRun run = (InstrumentRun) getModelObject();
     for(Object parameter : parameters) {
       InstrumentParameter param = (InstrumentParameter) parameter;
-      InstrumentRunValue runValue = run.getInstrumentRunValue(param);
 
-      // do not show COMPUTED values or misssing values
-      if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+      if(!activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+        InstrumentRunValue runValue = run.getInstrumentRunValue(param);
 
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new MessageSourceResolvableStringModel(param.getLabel()));
-
-        Data data = runValue.getData(param.getDataType());
-        Label value;
-        if(data != null && data.getValue() != null) {
-
-          // Apply formatter on output if one has been defined.
-          String formatStr = param.getDisplayFormat();
-          String formattedOutput;
-          if(formatStr != null) {
-            formattedOutput = formatOutput(param, runValue, formatStr);
-          } else {
-            formattedOutput = data.getValueAsString();
-          }
-
-          if(param instanceof InterpretativeParameter) {
-            value = new Label(KeyValueDataPanel.getRowValueId(), new StringResourceModel(formattedOutput, this, null));
-          } else {
-            String unit = param.getMeasurementUnit();
-            if(unit == null) {
-              unit = "";
-            }
-            value = new Label(KeyValueDataPanel.getRowValueId(), new SpringStringResourceModel(formattedOutput).getString() + " " + unit);
-          }
-        } else {
-          value = new Label(KeyValueDataPanel.getRowValueId());
+        // do not show COMPUTED values or misssing values
+        if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+          addRow(kvPanel, param, runValue, null);
         }
-
-        kvPanel.addRow(label, value);
+      } else {
+        int pos = 1;
+        for(Measure measure : run.getMeasures()) {
+          for(InstrumentRunValue runValue : measure.getInstrumentRunValues()) {
+            if(runValue.getInstrumentParameter().equals(param.getCode())) {
+              addRow(kvPanel, param, runValue, pos);
+            }
+          }
+          pos++;
+        }
       }
     }
 
     return kvPanel;
+  }
+
+  @SuppressWarnings("serial")
+  private void addRow(KeyValueDataPanel kvPanel, InstrumentParameter param, InstrumentRunValue runValue, final Integer measurePosition) {
+    Label label = new Label(KeyValueDataPanel.getRowKeyId(), new MessageSourceResolvableStringModel(param.getLabel()) {
+      @Override
+      public Object getObject() {
+        if(measurePosition != null) {
+          return super.getObject() + " " + measurePosition;
+        } else {
+          return super.getObject();
+        }
+      }
+    });
+
+    Data data = runValue.getData(param.getDataType());
+    Label value;
+    if(data != null && data.getValue() != null) {
+
+      // Apply formatter on output if one has been defined.
+      String formatStr = param.getDisplayFormat();
+      String formattedOutput;
+      if(formatStr != null) {
+        formattedOutput = formatOutput(param, runValue, formatStr);
+      } else {
+        formattedOutput = data.getValueAsString();
+      }
+
+      if(param instanceof InterpretativeParameter) {
+        value = new Label(KeyValueDataPanel.getRowValueId(), new StringResourceModel(formattedOutput, this, null));
+      } else {
+        String unit = param.getMeasurementUnit();
+        if(unit == null) {
+          unit = "";
+        }
+        value = new Label(KeyValueDataPanel.getRowValueId(), new SpringStringResourceModel(formattedOutput).getString() + " " + unit);
+      }
+    } else {
+      value = new Label(KeyValueDataPanel.getRowValueId());
+    }
+
+    kvPanel.addRow(label, value);
   }
 
   private String formatOutput(InstrumentParameter param, InstrumentRunValue runValue, String formatStr) {

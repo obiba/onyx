@@ -10,9 +10,10 @@
 package org.obiba.onyx.jade.engine.variable;
 
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.util.data.Data;
 
 /**
  * Defines the way instrument types will be expressed in terms of variables. It is also responsible for retrieving
@@ -35,10 +36,12 @@ public interface IInstrumentTypeToVariableMappingStrategy {
   public Variable getVariable(InstrumentType type);
 
   /**
-   * Get the instrument run data for the variable and participant.
+   * Get the registered data for the variable.
    * @param participant
    * @param variable
+   * @param variablePathNamingStrategy
+   * @param varData
    * @return
    */
-  public Data getData(Participant participant, Variable variable);
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData);
 }

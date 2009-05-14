@@ -106,6 +106,8 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
 
   protected JButton saveDataBtn;
 
+  protected MeasureCountLabel measureCountLabel;
+
   // Interface components dimension
   protected int appWindowWidth;
 
@@ -130,6 +132,21 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
       this.setHorizontalAlignment(JTextField.RIGHT);
       this.setPreferredSize(new Dimension(30, 0));
     }
+  }
+
+  class MeasureCountLabel extends JLabel {
+
+    private static final long serialVersionUID = 1L;
+
+    public MeasureCountLabel() {
+      super();
+    }
+
+    @Override
+    public String getText() {
+      return tanitaResourceBundle.getString("MeasureCount.Measures") + ": " + instrumentExecutionService.getCurrentMeasureCount() + " " + tanitaResourceBundle.getString("MeasureCount.saved") + ", " + instrumentExecutionService.getExpectedMeasureCount() + " " + tanitaResourceBundle.getString("MeasureCount.expected") + ".";
+    }
+
   }
 
   // Serial port configuration
@@ -179,7 +196,7 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
 
     // Initialize interface components size
     appWindowWidth = 525;
-    appWindowHeight = 260;
+    appWindowHeight = 300;
     gridCol = 2;
 
     // Initialize serial port.
@@ -415,6 +432,26 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
    */
   abstract protected void setTanitaData(String[] pOutputData);
 
+  protected void clearTanitaData() {
+    bodyTypeTxt.setText("");
+    genderTxt.setText("");
+
+    heightTxt.setText("");
+    weightTxt.setText("");
+    impedanceTxt.setText("");
+    fatPctTxt.setText("");
+    fatMassTxt.setText("");
+    ffmTxt.setText("");
+    tbwTxt.setText("");
+    ageTxt.setText("");
+    bmiTxt.setText("");
+    bmrTxt.setText("");
+
+    saveDataBtn.setEnabled(false);
+
+    measureCountLabel.repaint();
+  }
+
   abstract protected void sendOutputToServer();
 
   /**
@@ -456,6 +493,22 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
       uiLock.notify();
     }
     shutdown = true;
+  }
+
+  /**
+   * Build results sub panel
+   */
+  protected JPanel buildMeasureCountSubPanel() {
+    // Add the results sub panel.
+    JPanel wMeasureCountPanel = new JPanel();
+
+    wMeasureCountPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    wMeasureCountPanel.setLayout(new BoxLayout(wMeasureCountPanel, BoxLayout.X_AXIS));
+    wMeasureCountPanel.setBackground(new Color(206, 231, 255));
+
+    wMeasureCountPanel.add(measureCountLabel = new MeasureCountLabel());
+
+    return (wMeasureCountPanel);
   }
 
   /**
@@ -534,6 +587,7 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
     wMainPanel.setBackground(new Color(206, 231, 255));
     wMainPanel.setLayout(new BoxLayout(wMainPanel, BoxLayout.Y_AXIS));
     wMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    wMainPanel.add(buildMeasureCountSubPanel());
     wMainPanel.add(buildResultSubPanel());
     wMainPanel.add(buildActionButtonSubPanel());
 

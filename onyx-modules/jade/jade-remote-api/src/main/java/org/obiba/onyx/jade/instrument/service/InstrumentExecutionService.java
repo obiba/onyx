@@ -39,6 +39,10 @@ public interface InstrumentExecutionService {
 
   public String getParticipantGender();
 
+  public int getExpectedMeasureCount();
+
+  public int getCurrentMeasureCount();
+
   public Map<String, Data> getInputParametersValue(String... parameters);
 
   public Map<String, String> getInputParametersVendorNames(String... parameters);

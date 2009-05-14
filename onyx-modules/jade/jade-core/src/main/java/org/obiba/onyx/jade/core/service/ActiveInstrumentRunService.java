@@ -10,21 +10,19 @@
 package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
-import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.util.data.Data;
 
 public interface ActiveInstrumentRunService extends IContraindicatable {
 
@@ -58,55 +56,17 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    */
   public InstrumentType getInstrumentType();
 
+  /**
+   * Set the instrument used for performing the measure.
+   * @param instrument
+   */
   public void setInstrument(Instrument instrument);
 
+  /**
+   * Get the instrument used for performing the measure.
+   * @return
+   */
   public Instrument getInstrument();
-
-  /**
-   * Returns the instance of {@InstrumentParameter} for the specified {@code code} or null if none exist.
-   * @param code
-   * @return
-   */
-  public InstrumentParameter getParameterByCode(String code);
-
-  /**
-   * Returns the instance of {@InstrumentParameter} for the specified {@code vendorName} or null if none exist.
-   * @param vendorName
-   * @return
-   */
-  public InstrumentParameter getParameterByVendorName(String name);
-
-  public boolean hasInterpretativeParameter(ParticipantInteractionType type);
-
-  public List<InterpretativeParameter> getInterpretativeParameters(ParticipantInteractionType type);
-
-  public boolean hasInterpretativeParameter();
-
-  public List<InterpretativeParameter> getInterpretativeParameters();
-
-  public boolean hasInputParameter(boolean readOnly);
-
-  public List<InstrumentInputParameter> getInputParameters(boolean readOnly);
-
-  public boolean hasInputParameter(InstrumentParameterCaptureMethod captureMethod);
-
-  public List<InstrumentInputParameter> getInputParameters(InstrumentParameterCaptureMethod captureMethod);
-
-  public boolean hasInputParameter();
-
-  public List<InstrumentInputParameter> getInputParameters();
-
-  public boolean hasOutputParameter(InstrumentParameterCaptureMethod captureMethod);
-
-  public List<InstrumentOutputParameter> getOutputParameters(InstrumentParameterCaptureMethod captureMethod);
-
-  public boolean hasOutputParameter(boolean automatic);
-
-  public List<InstrumentOutputParameter> getOutputParameters(boolean automatic);
-
-  public boolean hasOutputParameter();
-
-  public List<InstrumentOutputParameter> getOutputParameters();
 
   public boolean hasParameterWithWarning();
 
@@ -155,40 +115,29 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public void computeOutputParameters();
 
   /**
-   * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentOutputParameter} of the
-   * current {@code InstrumentRun}.
-   * @param parameterCode
+   * Get the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current {@code InstrumentRun}.
+   * @param code
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getOutputInstrumentRunValue(String code);
+  public InstrumentRunValue getInstrumentRunValue(String code);
 
   /**
-   * Get (or create it if needed) the {@code InstrumentRunValue} for the {@code InstrumentOutputParameter} with the
-   * specified {@code vendorName} attribute of the current {@code InstrumentRun}.
-   * @param parameterVendorName the {@code vendorName} of the parameter to lookup
-   * @return null if current instrument run is null
+   * Get the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current {@code InstrumentRun}.
+   * @param code
+   * @return empty list if none
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String name);
+  public List<InstrumentRunValue> getInstrumentRunValues(String code);
 
   /**
-   * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentInputParameter} of the
-   * current {@code InstrumentRun}.
-   * @param parameterCode
+   * Get or create the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current
+   * {@code InstrumentRun}.
+   * @param code
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getInputInstrumentRunValue(String code);
-
-  /**
-   * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentInterpretativeParameter}
-   * of the current {@code InstrumentRun}.
-   * @param parameterCode
-   * @return null if current instrument run is null
-   * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
-   */
-  public InstrumentRunValue getInterpretativeInstrumentRunValue(String code);
+  public InstrumentRunValue getOrCreateInstrumentRunValue(String code);
 
   /**
    * Get (or create it if needed) the {@code InstrumentRunValue} for the specified {@code InstrumentParameter} of the
@@ -197,10 +146,21 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @param parameter the {@code InstrumentParameter} for which to obtain the value of the current run
    * @return the {@code InstrumentRunValue}
    */
-  public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter);
+  public InstrumentRunValue getOrCreateInstrumentRunValue(InstrumentParameter parameter);
 
   /**
    * Sets the InstrumentRunValue for input parameters list (used for readonly input parameters)
    */
   public String updateReadOnlyInputParameterRunValue();
+
+  /**
+   * @param repeatableData
+   */
+  public void addMeasure(Map<String, Data> repeatableData);
+
+  /**
+   * Get the count of measures (repeatable or not).
+   * @return
+   */
+  public int getCurrentMeasureCount();
 }

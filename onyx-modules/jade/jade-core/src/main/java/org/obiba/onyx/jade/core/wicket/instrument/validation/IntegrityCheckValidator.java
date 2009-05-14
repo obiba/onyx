@@ -87,7 +87,7 @@ public class IntegrityCheckValidator extends AbstractValidator {
   }
 
   protected InstrumentParameter getCheckedParameter() {
-    return this.activeInstrumentRunService.getParameterByCode(checkedParameterCode);
+    return this.activeInstrumentRunService.getInstrumentType().getInstrumentParameter(checkedParameterCode);
   }
 
   class IntegrityCheckValidationError implements IValidationError, Serializable {
