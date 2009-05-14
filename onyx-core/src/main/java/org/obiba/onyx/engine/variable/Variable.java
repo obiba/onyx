@@ -310,7 +310,20 @@ public class Variable implements Serializable {
   public Variable addCategory(String categoryName) {
     if(categoryName != null && categoryName.length() != 0) {
       Category category = new Category(categoryName);
-      getCategories().add(category);
+      getVariables().add(category);
+      category.setParent(this);
+    }
+    return this;
+  }
+
+  /**
+   * Add a {@link Category}.
+   * @param category
+   * @return this for chaining
+   */
+  public Variable addCategory(Category category) {
+    if(category != null) {
+      getVariables().add(category);
       category.setParent(this);
     }
     return this;
@@ -324,6 +337,20 @@ public class Variable implements Serializable {
   public Variable addCategories(String... categories) {
     if(categories != null) {
       for(String category : categories) {
+        addCategory(category);
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Add a simple set of {@link Category}.
+   * @param categories
+   * @return this for chaining
+   */
+  public Variable addCategories(Category... categories) {
+    if(categories != null) {
+      for(Category category : categories) {
         addCategory(category);
       }
     }

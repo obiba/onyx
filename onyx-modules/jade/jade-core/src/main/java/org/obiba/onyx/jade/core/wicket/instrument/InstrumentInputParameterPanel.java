@@ -64,10 +64,6 @@ public class InstrumentInputParameterPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstrumentInputParameterPanel.class);
 
-  private static final String YES = "Yes";
-
-  private static final String NO = "No";
-
   @SpringBean
   private EntityQueryService queryService;
 
@@ -157,7 +153,7 @@ public class InstrumentInputParameterPanel extends Panel {
         interpretativeRadioGroups.add(radioGroup);
         radioGroup.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
         item.add(radioGroup);
-        ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
+        ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { InterpretativeParameter.YES, InterpretativeParameter.NO })) {
 
           @Override
           protected void populateItem(ListItem listItem) {
@@ -205,7 +201,7 @@ public class InstrumentInputParameterPanel extends Panel {
     }
 
     public boolean isSelected() {
-      return selectionKey.equals(YES);
+      return selectionKey.equals(InterpretativeParameter.YES);
     }
 
     public String getParameterName() {

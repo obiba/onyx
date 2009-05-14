@@ -93,7 +93,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
   @Test
   public void testVariable() {
     Variable root = createInstrumentTypeVariable(instrumentType);
-    // log.info(VariableStreamer.toXML(root));
+    log.info(VariableStreamer.toXML(root));
 
     Assert.assertEquals(1, root.getVariables().size());
     Variable var = root.getVariable(instrumentType.getName());
@@ -120,7 +120,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
   @Test
   public void testRepeatableVariable() {
     Variable root = createInstrumentTypeVariable(repeatableInstrumentType);
-    log.info(VariableStreamer.toXML(root));
+    // log.info(VariableStreamer.toXML(root));
 
     Assert.assertEquals(1, root.getVariables().size());
     Variable var = root.getVariable(repeatableInstrumentType.getName());
@@ -173,6 +173,34 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Assert.assertNotNull(data);
     Assert.assertEquals(DataType.TEXT, data.getType());
     Assert.assertEquals("coucou", data.getValue());
+  }
+
+  @Test
+  public void testInstrumentInputParameterCategory() {
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
+
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable("INPUT_PARAM2").getVariable("L");
+    Assert.assertNotNull(variable);
+
+    Participant participant = new Participant();
+    InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentParameter(inputParam.getCode());
+    runValue.setData(DataBuilder.buildText("L"));
+
+    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
+    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INPUT_PARAM2", null)).andReturn(runValue);
+    replay(instrumentServiceMock);
+    replay(instrumentRunServiceMock);
+
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
+
+    verify(instrumentServiceMock);
+    verify(instrumentRunServiceMock);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.BOOLEAN, data.getType());
+    Assert.assertEquals(true, data.getValue());
   }
 
   @Test
@@ -229,6 +257,34 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Assert.assertNotNull(data);
     Assert.assertEquals(DataType.TEXT, data.getType());
     Assert.assertEquals("coucou", data.getValue());
+  }
+
+  @Test
+  public void testInstrumentInterpretiveParameterCategory() {
+    Variable root = createInstrumentTypeVariable(instrumentType);
+    // log.info(VariableStreamer.toXML(root));
+
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable("INTERPRETIVE_PARAM").getVariable(InterpretativeParameter.YES);
+    Assert.assertNotNull(variable);
+
+    Participant participant = new Participant();
+    InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentParameter(interParam.getCode());
+    runValue.setData(DataBuilder.buildText(InterpretativeParameter.YES));
+
+    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
+    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INTERPRETIVE_PARAM", null)).andReturn(runValue);
+    replay(instrumentServiceMock);
+    replay(instrumentRunServiceMock);
+
+    Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
+
+    verify(instrumentServiceMock);
+    verify(instrumentRunServiceMock);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.BOOLEAN, data.getType());
+    Assert.assertEquals(true, data.getValue());
   }
 
   @Test
@@ -363,6 +419,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     InstrumentParameter anotherInputParam = new InstrumentInputParameter();
     anotherInputParam.setCode("INPUT_PARAM2");
     anotherInputParam.setDataType(DataType.TEXT);
+    anotherInputParam.addAllowedValues(DataBuilder.buildText("S"), DataBuilder.buildText("M"), DataBuilder.buildText("L"));
     type.addInstrumentParameter(anotherInputParam);
 
     outputParam = new InstrumentOutputParameter();

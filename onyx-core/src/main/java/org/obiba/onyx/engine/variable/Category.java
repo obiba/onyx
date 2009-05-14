@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable;
 
+import org.obiba.onyx.util.data.DataType;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -33,6 +35,7 @@ public class Category extends Variable {
   public Category(String name, String alternateName) {
     super(name);
     this.alt = alternateName;
+    setDataType(DataType.BOOLEAN);
   }
 
   public String getAlternateName() {

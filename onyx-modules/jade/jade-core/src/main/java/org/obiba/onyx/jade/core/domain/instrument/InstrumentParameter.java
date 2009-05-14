@@ -134,4 +134,18 @@ public abstract class InstrumentParameter implements Serializable {
   public List<Data> getAllowedValues() {
     return allowedValues != null ? allowedValues : (allowedValues = new ArrayList<Data>());
   }
+
+  public void addAllowedValue(Data data) {
+    if(data != null) {
+      getAllowedValues().add(data);
+    }
+  }
+
+  public void addAllowedValues(Data... dataList) {
+    if(dataList != null) {
+      for(Data data : dataList) {
+        addAllowedValue(data);
+      }
+    }
+  }
 }

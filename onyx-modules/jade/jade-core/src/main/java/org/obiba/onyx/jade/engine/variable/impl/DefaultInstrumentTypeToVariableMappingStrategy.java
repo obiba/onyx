@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
@@ -21,6 +22,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
@@ -30,11 +32,16 @@ import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrat
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrumentTypeToVariableMappingStrategy {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(DefaultInstrumentTypeToVariableMappingStrategy.class);
 
   public static final String INSTRUMENT_RUN = "InstrumentRun";
 
@@ -106,6 +113,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
     if(parameters.size() > 0) {
       for(InstrumentParameter parameter : parameters) {
+
         Variable paramVariable = new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit());
         if(type.isRepeatable() && parameter instanceof InstrumentOutputParameter && !parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
           Variable measureVariable = typeVariable.getVariable(MEASURE);
@@ -117,6 +125,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           measureVariable.addVariable(paramVariable);
         } else {
           typeVariable.addVariable(paramVariable);
+          if(parameter instanceof InterpretativeParameter) {
+            paramVariable.addCategories(new Category(InterpretativeParameter.YES, "1"), new Category(InterpretativeParameter.NO, "0"));
+          } else if(parameter.getAllowedValues().size() > 0) {
+            int pos = 1;
+            for(Data allowedValue : parameter.getAllowedValues()) {
+              paramVariable.addCategory(new Category(allowedValue.getValueAsString(), Integer.toString(pos++)));
+            }
+          }
         }
       }
     }
@@ -129,7 +145,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       return varData;
     }
 
-    if(variable.getParent().getName().equals(INSTRUMENT)) {
+    if(variable instanceof Category) {
+      // parameter name is the parent variable
+      String parameterCode = variable.getParent().getName();
+      Data data = getInstrumentRunValue(participant, variable, parameterCode);
+      if(data != null && variable.getName().equals(data.getValueAsString())) {
+        varData.addData(DataBuilder.buildBoolean(true));
+      }
+    } else if(variable.getParent().getName().equals(INSTRUMENT)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null && run.getInstrument() != null) {
         Instrument instrument = run.getInstrument();
@@ -171,54 +194,65 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       }
     } else if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
-      InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
-      List<Measure> measures = run.getMeasures();
+      if(run != null) {
+        InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
+        List<Measure> measures = run.getMeasures();
 
-      int measurePosition = 1;
-      for(Measure measure : measures) {
-        Data data = null;
+        int measurePosition = 1;
+        for(Measure measure : measures) {
+          Data data = null;
 
-        if(variable.getName().equals(MEASURE)) {
-          varData.addData(DataBuilder.buildText(measure.getId().toString()));
-        } else if(variable.getName().equals(USER) && measure.getUser() != null) {
-          data = DataBuilder.buildText(measure.getUser().getLogin());
-        } else if(variable.getName().equals(TIME) && measure.getTime() != null) {
-          data = DataBuilder.buildDate(measure.getTime());
-        } else {
-          // variable name is the parameter name
-          String parameterCode = variable.getName();
-          InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
-          InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
-          if(runValue != null) {
-            data = runValue.getData(parameter.getDataType());
+          if(variable.getName().equals(MEASURE)) {
+            varData.addData(DataBuilder.buildText(measure.getId().toString()));
+          } else if(variable.getName().equals(USER) && measure.getUser() != null) {
+            data = DataBuilder.buildText(measure.getUser().getLogin());
+          } else if(variable.getName().equals(TIME) && measure.getTime() != null) {
+            data = DataBuilder.buildDate(measure.getTime());
+          } else {
+            // variable name is the parameter name
+            String parameterCode = variable.getName();
+            InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
+            InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
+            if(runValue != null) {
+              data = runValue.getData(parameter.getDataType());
+            }
           }
-        }
 
-        if(data != null) {
-          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, MEASURE, measure.getId().toString()));
-          varData.addVariableData(childVarData);
-          childVarData.addData(data);
-        }
+          if(data != null) {
+            VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, MEASURE, measure.getId().toString()));
+            varData.addVariableData(childVarData);
+            childVarData.addData(data);
+          }
 
-        measurePosition++;
+          measurePosition++;
+        }
       }
 
     } else {
-      String parameterCode = variable.getName();
-      String instrumentTypeName = getInstrumentTypeVariable(variable).getName();
+      Data data = getInstrumentRunValue(participant, variable, variable.getName());
+      if(data != null) {
+        varData.addData(data);
+      }
+    }
 
-      InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
-      if(type == null) return null;
+    return varData;
+  }
+
+  private Data getInstrumentRunValue(Participant participant, Variable variable, String parameterCode) {
+    String instrumentTypeName = getInstrumentTypeVariable(variable).getName();
+
+    InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
+    if(type != null) {
 
       InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
       InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, null);
 
       if(runValue != null) {
-        varData.addData(runValue.getData(parameter.getDataType()));
+        return runValue.getData(parameter.getDataType());
       }
     }
 
-    return varData;
+    return null;
   }
 
   private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {

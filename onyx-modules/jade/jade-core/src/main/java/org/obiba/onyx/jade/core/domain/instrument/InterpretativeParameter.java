@@ -15,6 +15,10 @@ public class InterpretativeParameter extends InstrumentParameter {
 
   private static final long serialVersionUID = -5035544856948727535L;
 
+  public static final String YES = "Yes";
+
+  public static final String NO = "No";
+
   private ParticipantInteractionType type;
 
   public InterpretativeParameter() {
