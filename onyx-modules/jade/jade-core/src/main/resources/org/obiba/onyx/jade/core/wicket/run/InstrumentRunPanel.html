@@ -1,21 +1,11 @@
 <wicket:panel>
-	<table>
-		<tr>
-			<td><div style="margin-bottom: 10px;" wicket:id="run"/></td>
-		</tr>
-		<tr>
-			<td><div style="margin-bottom: 10px;" wicket:id="interpretatives"/></td>
-		</tr>
-		<tr>
-			<td><div style="margin-bottom: 10px;" wicket:id="inputs"/>
-			<br/>
-			<div style="margin-bottom: 10px;" wicket:id="operatorAutoInputs"/></td>
-		</tr>
-		<tr>
-			<td><div style="margin-bottom: 10px;" wicket:id="outputs"/></td>
-		</tr>
-	</table>
-	<div class="footer">
-	  	<input type="button" wicket:id="closeAction" wicket:message="value:Close" />
-	  </div>
+	<div style="margin-left: 20px; margin-bottom: 10px; margin-right: 20px;" wicket:id="run"/>
+	<div style="margin-left: 20px; margin-bottom: 10px; margin-right: 20px;" wicket:id="interpretatives"/>
+	<div style="margin-left: 20px; margin-bottom: 10px; margin-right: 20px;" wicket:id="inputs"/>
+	<div style="margin-left: 20px; margin-bottom: 10px; margin-right: 20px;" wicket:id="operatorAutoInputs"/>
+	<div style="margin-left: 20px; margin-bottom: 10px; margin-right: 20px;" wicket:id="outputs"/>
+	<div class="separator"/>
+	<div class="modal-footer">
+	  <input class="obiba-button ui-corner-all" type="button" wicket:id="closeAction" wicket:message="value:Close" />
+	</div>
 </wicket:panel>

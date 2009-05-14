@@ -635,20 +635,19 @@ table.entityTable td A img {
 /*******************KEY VALUE TABLE LAYOUT************************************/
 
 table.keyValueTable {
-	/*border-width: 1px;
-	border-style: solid;
-	border-color: #666666;
-	padding:1px;
-	width:500px;*/
+	width:100%;
 }
 
 td.keyValueTableHeader {
-	font-weight: bold;
-	color: #F6F8FF;
-	background-color: #888888;
-	border-bottom: 1px solid #FFFFFF;
-	padding: 3px;
+    border-color:#C65F02;
+	border-style:none none solid;
+	border-width:1px;
+	color:#C65F02;
+	font-size:12px;
 	text-align: left;
+	margin-bottom:25px;
+    margin-top:7px;
+	padding-bottom:1px;
 }
 
 td.keyValueTableKey {
@@ -657,6 +656,10 @@ td.keyValueTableKey {
 	background-color: #FFFFFF;
 	text-align: left;
 }
+
+.wicket-modal td.keyValueTableKey {
+	white-space:nowrap;
+} 
 
 td.keyValueTableKeyIndent {
 	/*width:30%;*/
