@@ -51,8 +51,6 @@ public interface InstrumentExecutionService {
 
   public void addOutputParameterValues(Map<String, Data> values);
 
-  public void addOutputParameterValue(String name, Data value);
-
   public void instrumentRunnerError(Exception error);
 
 }

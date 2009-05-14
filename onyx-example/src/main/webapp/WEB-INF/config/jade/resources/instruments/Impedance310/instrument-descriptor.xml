@@ -34,7 +34,7 @@
   
   <expectedMeasureCount class="computingDataSource">
     <dataType>INTEGER</dataType>
-    <expression>If[Equal[$1, 0] || Equal[$2, 0], 2, If[Abs[$1 - $2] &lt; 0.1, 2, 3]]</expression>
+    <expression>If[Equal[$1, 0] || Equal[$2, 0], 2, If[Abs[$1 - $2] &lt; 0.2, 2, 3]]</expression>
     <dataSources>
       <instrumentParameterDataSource>
         <instrumentType>Impedance310</instrumentType>

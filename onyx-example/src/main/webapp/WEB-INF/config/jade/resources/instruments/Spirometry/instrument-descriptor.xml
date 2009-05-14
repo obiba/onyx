@@ -46,6 +46,12 @@
     </contraIndication>
 
   </contraindications>  -->
+  
+  <!-- A maximum of 3 measures is supported in one minispir software run. 
+  Requesting for more than 3 measures while require multiple runs. -->
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount>
 
   <instrumentParameters>
   <!--  <interpretative>   commented out
@@ -82,16 +88,6 @@
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative> -->
-
-    <input>
-      <vendorName>NumberOfBestMeasurementExpected</vendorName>
-      <code>BEST_MEASUREMENTS_EXPECTED</code>
-      <dataType>INTEGER</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="fixedDataSource">
-        <data type="INTEGER">3</data>
-      </dataSource>
-    </input>
 
     <input>
       <vendorName>ID</vendorName>
@@ -177,7 +173,7 @@
         <dataSources>
           <dataSource class="instrumentParameterDataSource">
             <instrumentType>Impedance310</instrumentType>
-            <parameterCode>RES_WEIGHT</parameterCode>
+            <parameterCode>CALC_AVG_WEIGHT</parameterCode>
           </dataSource>
           <dataSource class="instrumentParameterDataSource">
             <instrumentType>Impedance418</instrumentType>
@@ -490,310 +486,6 @@
     <output>
       <vendorName>PIF</vendorName>
       <code>RES_MEASURED_PIF</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FVC_2</vendorName>
-      <code>RES_MEASURED_FVC_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV1_2</vendorName>
-      <code>RES_MEASURED_FEV1_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV1_FVC_2</vendorName>
-      <code>RES_MEASURED_FEV1_FVC_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV6_2</vendorName>
-      <code>RES_MEASURED_FEV6_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV1_FEV6_2</vendorName>
-      <code>RES_MEASURED_FEV1_FEV6_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>PEF_2</vendorName>
-      <code>RES_MEASURED_PEF_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF2575_2</vendorName>
-      <code>RES_MEASURED_FEF2575_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV3_2</vendorName>
-      <code>RES_MEASURED_FEV3_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV3_FVC_2</vendorName>
-      <code>RES_MEASURED_FEV3_FVC_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>ELA_2</vendorName>
-      <code>RES_MEASURED_ELA_2</code>
-      <dataType>INTEGER</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>year</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FET_2</vendorName>
-      <code>RES_MEASURED_FET_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF25_2</vendorName>
-      <code>RES_MEASURED_FEF25_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF50_2</vendorName>
-      <code>RES_MEASURED_FEF50_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF75_2</vendorName>
-      <code>RES_MEASURED_FEF75_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>EVol_2</vendorName>
-      <code>RES_MEASURED_EVOL_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>mL</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FIVC_2</vendorName>
-      <code>RES_MEASURED_FIVC_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FIV1_2</vendorName>
-      <code>RES_MEASURED_FIV1_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FIV1_FIVC_2</vendorName>
-      <code>RES_MEASURED_FIV1_FIVC_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>PIF_2</vendorName>
-      <code>RES_MEASURED_PIF_2</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FVC_3</vendorName>
-      <code>RES_MEASURED_FVC_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV1_3</vendorName>
-      <code>RES_MEASURED_FEV1_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV1_FVC_3</vendorName>
-      <code>RES_MEASURED_FEV1_FVC_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV6_3</vendorName>
-      <code>RES_MEASURED_FEV6_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV1_FEV6_3</vendorName>
-      <code>RES_MEASURED_FEV1_FEV6_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>PEF_3</vendorName>
-      <code>RES_MEASURED_PEF_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF2575_3</vendorName>
-      <code>RES_MEASURED_FEF2575_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV3_3</vendorName>
-      <code>RES_MEASURED_FEV3_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEV3_FVC_3</vendorName>
-      <code>RES_MEASURED_FEV3_FVC_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>ELA_3</vendorName>
-      <code>RES_MEASURED_ELA_3</code>
-      <dataType>INTEGER</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>year</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FET_3</vendorName>
-      <code>RES_MEASURED_FET_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF25_3</vendorName>
-      <code>RES_MEASURED_FEF25_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF50_3</vendorName>
-      <code>RES_MEASURED_FEF50_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FEF75_3</vendorName>
-      <code>RES_MEASURED_FEF75_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L/s</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>EVol_3</vendorName>
-      <code>RES_MEASURED_EVOL_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>mL</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FIVC_3</vendorName>
-      <code>RES_MEASURED_FIVC_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FIV1_3</vendorName>
-      <code>RES_MEASURED_FIV1_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>L</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>FIV1_FIVC_3</vendorName>
-      <code>RES_MEASURED_FIV1_FIVC_3</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>%</measurementUnit>
-    </output>
-
-    <output>
-      <vendorName>PIF_3</vendorName>
-      <code>RES_MEASURED_PIF_3</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>L/s</measurementUnit>

@@ -46,44 +46,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <value>FIV1</value>
         <value>FIV1_FIVC</value>
         <value>PIF</value>
-        <value>FVC_2</value>
-        <value>FEV1_2</value>
-        <value>FEV1_FVC_2</value>
-        <value>FEV6_2</value>
-        <value>FEV1_FEV6_2</value>
-        <value>PEF_2</value>
-        <value>FEF2575_2</value>
-        <value>FEV3_2</value>
-        <value>FEV3_FVC_2</value>
-        <value>ELA_2</value>
-        <value>FET_2</value>
-        <value>FEF25_2</value>
-        <value>FEF50_2</value>
-        <value>FEF75_2</value>
-        <value>EVol_2</value>
-        <value>FIVC_2</value>
-        <value>FIV1_2</value>
-        <value>FIV1_FIVC_2</value>
-        <value>PIF_2</value>   
-        <value>FVC_3</value>
-        <value>FEV1_3</value>
-        <value>FEV1_FVC_3</value>
-        <value>FEV6_3</value>
-        <value>FEV1_FEV6_3</value>
-        <value>PEF_3</value>
-        <value>FEF2575_3</value>
-        <value>FEV3_3</value>
-        <value>FEV3_FVC_3</value>
-        <value>ELA_3</value>
-        <value>FET_3</value>
-        <value>FEF25_3</value>
-        <value>FEF50_3</value>
-        <value>FEF75_3</value>
-        <value>EVol_3</value>
-        <value>FIVC_3</value>
-        <value>FIV1_3</value>
-        <value>FIV1_FIVC_3</value>
-        <value>PIF_3</value>          
       </set>
     </property>
   </bean>

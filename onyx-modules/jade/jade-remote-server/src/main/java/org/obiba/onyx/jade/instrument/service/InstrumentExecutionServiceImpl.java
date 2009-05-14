@@ -67,8 +67,16 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
     for(String parameterCode : parameters) {
       InstrumentParameter inputParameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
-      InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInstrumentRunValue(parameterCode);
-      inputParametersValue.put(parameterCode, inputParameterValue.getData(inputParameter.getDataType()));
+      if(inputParameter != null) {
+        InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInstrumentRunValue(parameterCode);
+        if(inputParameterValue != null) {
+          inputParametersValue.put(parameterCode, inputParameterValue.getData(inputParameter.getDataType()));
+        } else {
+          log.warn("Run value for input parameter with code {} in {} is null.", parameterCode, activeInstrumentRunService.getInstrumentType());
+        }
+      } else {
+        log.warn("Parameter with code {} unknown in {}.", parameterCode, activeInstrumentRunService.getInstrumentType());
+      }
     }
     log.info("getInputParametersValue({})={}", parameters, inputParametersValue);
     return (inputParametersValue);
@@ -99,11 +107,6 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     } else {
       activeInstrumentRunService.addMeasure(values);
     }
-  }
-
-  public void addOutputParameterValue(String name, Data value) {
-    log.debug("addOutputParameterValue({}, {})", name, value);
-    updateParameterValue(getInstrumentParameter(name), value);
   }
 
   private void updateParameterValue(InstrumentParameter parameter, Data value) {

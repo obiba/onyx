@@ -207,7 +207,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
    * @param measurementSuffix A suffix which will be added to the name of each variable found in the file
    * @return A list of each variable found in the file with its corresponding value
    */
-  LinkedHashMap<String, Double[]> retrieveDeviceData(String externalOutputName, String measurementSuffix) {
+  LinkedHashMap<String, Double[]> retrieveDeviceData(String externalOutputName) {
 
     InputStream resultFileStrm = null;
     InputStreamReader resultReader = null;
@@ -239,7 +239,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
         data = new Double[2];
         data[0] = Double.valueOf(matcher.group(3));
         data[1] = Double.valueOf(matcher.group(4));
-        outputData.put(description + measurementSuffix, data);
+        outputData.put(description, data);
       }
 
       resultFileStrm.close();
@@ -258,41 +258,36 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     return outputData;
   }
 
-  public LinkedHashMap<String, Double[]> retrieveDeviceData(String externalOutputName) {
-    return retrieveDeviceData(externalOutputName, "");
-  }
-
   /**
-   * Send the results to the server for persistence
+   * Send the results to the server for persistence, always including the predicted values calculated by the Spirometry
+   * software.
    * @param results The data to send to the server.
-   * @param includePredictedData Include or not the predicted values calculated by the Spirometry software.
    */
-  public void sendDataToServer(LinkedHashMap<String, Double[]> results, boolean includePredictedData) {
-    Map<String, Data> ouputToSend = new HashMap<String, Data>();
+  public void sendDataToServer(LinkedHashMap<String, Double[]> results) {
+    Map<String, Data> outputToSend = new HashMap<String, Data>();
 
     for(Map.Entry<String, Double[]> entry : results.entrySet()) {
       if(!expectedOutputParameterNames.contains(entry.getKey())) {
-        log.debug("Output parameter {} is not expected but has an entry in result file.", entry.getKey());
+        log.warn("Output parameter {} is not expected but has an entry in result file.", entry.getKey());
         continue;
       }
       if(entry.getKey().indexOf("ELA") == 0) {
-        ouputToSend.put(entry.getKey(), DataBuilder.buildInteger(Math.round(entry.getValue()[0])));
-        if(includePredictedData) {
-          ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
-        }
+        outputToSend.put(entry.getKey(), DataBuilder.buildInteger(Math.round(entry.getValue()[0])));
+        outputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
       } else {
-        ouputToSend.put(entry.getKey(), DataBuilder.buildDecimal(entry.getValue()[0]));
-        if(includePredictedData) {
-          ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildDecimal(entry.getValue()[1]));
-        }
+        outputToSend.put(entry.getKey(), DataBuilder.buildDecimal(entry.getValue()[0]));
+        outputToSend.put(entry.getKey() + "_pred", DataBuilder.buildDecimal(entry.getValue()[1]));
       }
     }
-    instrumentExecutionService.addOutputParameterValues(ouputToSend);
-  }
 
-  public void sendDataToServer(LinkedHashMap<String, Double[]> retrieveDeviceData) {
-    sendDataToServer(retrieveDeviceData, false);
+    if(outputToSend.size() > 0) {
 
+      // Save the FVC image
+      File FVCFile = new File(getMirPath() + getExternalImageName());
+      outputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
+
+      instrumentExecutionService.addOutputParameterValues(outputToSend);
+    }
   }
 
   private int getGenderConverter(Data data) {
@@ -317,42 +312,29 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     externalAppHelper.launch();
 
     // Get the number of best measurement expected.
-    Long bestmeasurementsExpected = 1l;
-    Data bestmeasurementsExpectedData = null;
-    try {
-      bestmeasurementsExpectedData = instrumentExecutionService.getInputParameterValue("BEST_MEASUREMENTS_EXPECTED");
-    } catch(IllegalArgumentException ex) {
-      // If this has not been defined, the default value is one.
-    }
+    int expectedMeasureCount = instrumentExecutionService.getExpectedMeasureCount();
+    int currentMeasureCount = instrumentExecutionService.getCurrentMeasureCount();
 
-    if(bestmeasurementsExpectedData != null) {
-      bestmeasurementsExpected = bestmeasurementsExpectedData.getValue();
-      if(bestmeasurementsExpected >= 1 && bestmeasurementsExpected <= 3) {
-        bestmeasurementsExpected = bestmeasurementsExpectedData.getValue();
-      } else {
-        throw new IllegalArgumentException("The number of best measurement expected has to be between 1 and 3.  Please check your instrument configuration file.");
+    int remainingMeasureCount = expectedMeasureCount - currentMeasureCount;
+
+    if(remainingMeasureCount > 0) {
+
+      if(remainingMeasureCount > 3) {
+        log.warn(remainingMeasureCount + " measures are requested. The maximum number of best measurements in one run is 3. This will require a new run.");
       }
-    }
 
-    log.info("Number of best measurements expected: {}", bestmeasurementsExpected);
+      log.info("Number of best measurements expected: {}", remainingMeasureCount);
 
-    log.info("Sending the first best measurement and predicted values...");
-    sendDataToServer(retrieveDeviceData(getExternalOutputName()), true);
-    if(bestmeasurementsExpected > 1) {
-      log.info("Sending the second best measurement...");
-      sendDataToServer(retrieveDeviceData(getExternalOutputName2ndBest(), "_2"));
-      if(bestmeasurementsExpected > 2) {
-        log.info("Sending the third best measurement...");
-        sendDataToServer(retrieveDeviceData(getExternalOutputName3rdBest(), "_3"));
+      log.info("Sending the first best measure...");
+      sendDataToServer(retrieveDeviceData(getExternalOutputName()));
+      if(remainingMeasureCount > 1) {
+        log.info("Sending the second best measure...");
+        sendDataToServer(retrieveDeviceData(getExternalOutputName2ndBest()));
+        if(remainingMeasureCount > 2) {
+          log.info("Sending the third best measure...");
+          sendDataToServer(retrieveDeviceData(getExternalOutputName3rdBest()));
+        }
       }
-    }
-
-    // Save the FVC image
-    try {
-      File FVCFile = new File(getMirPath() + getExternalImageName());
-      instrumentExecutionService.addOutputParameterValue("FVCImage", DataBuilder.buildBinary(FVCFile));
-    } catch(Exception e) {
-      log.warn("No device output image found");
     }
 
   }
