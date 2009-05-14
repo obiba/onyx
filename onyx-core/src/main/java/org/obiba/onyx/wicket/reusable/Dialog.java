@@ -105,13 +105,17 @@ public class Dialog extends ModalWindow {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         Dialog.this.setStatus(Status.SUCCESS);
-        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) ModalWindow.closeCurrent(target);
+        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
+          ModalWindow.closeCurrent(target);
+        }
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         Dialog.this.setStatus(Status.ERROR);
-        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) ModalWindow.closeCurrent(target);
+        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
+          ModalWindow.closeCurrent(target);
+        }
       }
 
     };
@@ -123,7 +127,9 @@ public class Dialog extends ModalWindow {
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.CANCELLED);
-        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) ModalWindow.closeCurrent(target);
+        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
+          ModalWindow.closeCurrent(target);
+        }
       }
 
     };
@@ -135,7 +141,9 @@ public class Dialog extends ModalWindow {
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.YES);
-        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) ModalWindow.closeCurrent(target);
+        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
+          ModalWindow.closeCurrent(target);
+        }
       }
 
     };
@@ -147,7 +155,9 @@ public class Dialog extends ModalWindow {
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.NO);
-        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) ModalWindow.closeCurrent(target);
+        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
+          ModalWindow.closeCurrent(target);
+        }
       }
 
     };
@@ -159,7 +169,9 @@ public class Dialog extends ModalWindow {
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.CLOSED);
-        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) ModalWindow.closeCurrent(target);
+        if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
+          ModalWindow.closeCurrent(target);
+        }
       }
 
     };
