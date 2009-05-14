@@ -143,7 +143,7 @@ public class OnyxVariableProvider implements IVariableProvider {
         if(participant.getBirthDate() != null) {
           Calendar cal = Calendar.getInstance();
           cal.setTime(participant.getBirthDate());
-          varData.addData(DataBuilder.buildInteger(cal.get(Calendar.YEAR)));
+          varData.addData(DataBuilder.buildInteger((long) cal.get(Calendar.YEAR)));
         }
       } else if(variable.getName().equals(SITENO)) {
         varData.addData(DataBuilder.buildText(participant.getSiteNo()));
