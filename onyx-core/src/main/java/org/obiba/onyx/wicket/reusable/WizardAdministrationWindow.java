@@ -52,7 +52,7 @@ public class WizardAdministrationWindow extends Dialog {
       @Override
       public void onClick(AjaxRequestTarget target) {
         setStatus(Status.OTHER);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
+        if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) WizardAdministrationWindow.this.close(target);
       }
 
     };
@@ -64,7 +64,7 @@ public class WizardAdministrationWindow extends Dialog {
       @Override
       public void onClick(AjaxRequestTarget target) {
         setStatus(Status.CLOSED);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
+        if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) WizardAdministrationWindow.this.close(target);
       }
     };
   }
@@ -87,13 +87,13 @@ public class WizardAdministrationWindow extends Dialog {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         setStatus(Status.SUCCESS);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
+        if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) WizardAdministrationWindow.this.close(target);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         setStatus(Status.ERROR);
-        if(getCloseButtonCallback() == null || (getCloseButtonCallback() != null && getCloseButtonCallback().onCloseButtonClicked(target, getStatus()))) WizardAdministrationWindow.this.close(target);
+        if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) WizardAdministrationWindow.this.close(target);
       }
     };
   }
