@@ -19,13 +19,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
-import org.obiba.onyx.ruby.core.wicket.wizard.TubeRegistrationPanel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
-import org.obiba.onyx.wicket.reusable.Dialog.Status;
-import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 
 public class EditSamplePanel extends Panel {
 
@@ -40,7 +35,7 @@ public class EditSamplePanel extends Panel {
 
   private FeedbackWindow feedbackWindow;
 
-  public EditSamplePanel(Dialog editSampleDialog, String id, IModel rowModel, TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+  public EditSamplePanel(String id, IModel rowModel, TubeRegistrationConfiguration tubeRegistrationConfiguration) {
     super(id, rowModel);
 
     add(new Label("barcodeLabel", new SpringStringResourceModel("Ruby.Barcode")));
@@ -55,50 +50,10 @@ public class EditSamplePanel extends Panel {
     add(new BarcodePartsPanel("barcodeParts", rowModel, tubeRegistrationConfiguration));
 
     addFeedbackWindow();
-    addDialogCallbacks(editSampleDialog);
 
   }
 
-  private void addFeedbackWindow() {
-    feedbackWindow = new FeedbackWindow("feedback");
-    feedbackWindow.setOutputMarkupId(true);
-    add(feedbackWindow);
-  }
-
-  @SuppressWarnings("serial")
-  private void addDialogCallbacks(final Dialog editSampleDialog) {
-    editSampleDialog.setWindowClosedCallback(new WindowClosedCallback() {
-
-      public void onClose(AjaxRequestTarget target, Status status) {
-        if(status.equals(Status.SUCCESS)) {
-          target.addComponent(EditSamplePanel.this.findParent(TubeRegistrationPanel.class));
-        }
-      }
-
-    });
-
-    editSampleDialog.setCloseButtonCallback(new CloseButtonCallback() {
-
-      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-
-        switch(status) {
-        case SUCCESS:
-          updateSample();
-          break;
-        case ERROR:
-          displayFeedbackWindow(target);
-          return false;
-
-        }
-        return true;
-
-      }
-
-    });
-
-  }
-
-  private void updateSample() {
+  public void updateSample() {
     String comment = commentPanel.getCommentField().getModelObjectAsString();
 
     if(comment != null && comment.trim().length() == 0) {
@@ -112,7 +67,13 @@ public class EditSamplePanel extends Panel {
 
   }
 
-  private void displayFeedbackWindow(AjaxRequestTarget target) {
+  private void addFeedbackWindow() {
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
+  }
+
+  public void displayFeedbackWindow(AjaxRequestTarget target) {
     feedbackWindow.setContent(new FeedbackPanel("content"));
     feedbackWindow.show(target);
   }
