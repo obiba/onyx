@@ -79,6 +79,11 @@ public class EncryptingOnyxDataExportStrategy implements IChainingOnyxDataExport
   public static final String PUBLIC_KEY_FORMAT = "publicKeyFormat";
 
   /**
+   * The key value for the public key algorithm entry in {@code EncryptionData}. Stores the public key's algorithm.
+   */
+  public static final String PUBLIC_KEY_ALGORITHM = "publicKeyAlgorithm";
+
+  /**
    * The key value for the secret key entry in {@code EncryptionData}. Stores the secret key.
    */
   public static final String SECRET_KEY = "key";
@@ -225,6 +230,7 @@ public class EncryptingOnyxDataExportStrategy implements IChainingOnyxDataExport
       if(pk.getEncoded() != null) {
         encryptionData.addEntry(PUBLIC_KEY, pk.getEncoded());
         encryptionData.addEntry(PUBLIC_KEY_FORMAT, pk.getFormat());
+        encryptionData.addEntry(PUBLIC_KEY_ALGORITHM, pk.getAlgorithm());
       }
 
       Cipher cipher = Cipher.getInstance(pk.getAlgorithm());
