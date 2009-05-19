@@ -41,14 +41,14 @@ public class VariableFinderTest {
 
     // users
 
-    parent = root.addVariable("Admin/User", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("Admin/User", variablePathNamingStrategy);
     parent.setDataType(DataType.TEXT).setRepeatable(true);
     parent.addVariable(new Variable("login").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
 
     // participants
 
-    parent = root.addVariable("Admin/Participant", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("Admin/Participant", variablePathNamingStrategy);
 
     variable = new Variable("barcode").setDataType(DataType.TEXT);
     parent.addVariable(variable);
@@ -58,7 +58,7 @@ public class VariableFinderTest {
 
     // questionnaire
 
-    parent = root.addVariable("HealthQuestionnaire", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("HealthQuestionnaire", variablePathNamingStrategy);
 
     variable = new Variable("Participant_AGE").addCategories("Participant_AGE", "PNA", "DK");
     parent.addVariable(variable);
@@ -66,7 +66,7 @@ public class VariableFinderTest {
     subvariable = new Variable("OPEN_AGE").setDataType(DataType.INTEGER).setUnit("year");
     variable.addVariable(subvariable);
 
-    parent = root.addVariable("HealthQuestionnaire/DATE_OF_BIRTH", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("HealthQuestionnaire/DATE_OF_BIRTH", variablePathNamingStrategy);
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
     parent.addVariable(variable);
@@ -88,7 +88,7 @@ public class VariableFinderTest {
 
     // instruments
 
-    parent = root.addVariable("StandingHeight", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("StandingHeight", variablePathNamingStrategy);
 
     parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL));

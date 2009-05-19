@@ -222,10 +222,9 @@ public class Variable implements Serializable {
    * @param separator
    * @return last created variable
    */
-  public Variable addVariable(String path, String separator) {
-    String[] names = path.split(separator);
+  public Variable addVariable(String path, IVariablePathNamingStrategy variablePathNamingStrategy) {
     Variable current = this;
-    for(String name : names) {
+    for(String name : variablePathNamingStrategy.getNormalizedNames(path)) {
       Variable found = getVariable(name);
       if(found == null) {
         current = current.addVariable(new Variable(name));

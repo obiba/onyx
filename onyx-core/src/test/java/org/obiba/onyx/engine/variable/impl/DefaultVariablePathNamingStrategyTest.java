@@ -33,13 +33,15 @@ public class DefaultVariablePathNamingStrategyTest {
   public void setUp() {
     strategy = new DefaultVariablePathNamingStrategy();
     strategy.setRootName("Root");
-    strategy.setPathSeparator("/");
-    strategy.setStartWithPathSeparator(true);
+
   }
 
   @Test
-  public void testParameters() {
-    Variable variable = (new Variable(strategy.getRootName())).addVariable("Test/Toto", strategy.getPathSeparator());
+  public void testParameters1() {
+    strategy.setPathSeparator("/");
+    strategy.setStartWithPathSeparator(true);
+
+    Variable variable = (new Variable(strategy.getRootName())).addVariable("Test/Toto", strategy);
 
     String path;
     log.info(path = strategy.getPath(variable));
@@ -68,5 +70,41 @@ public class DefaultVariablePathNamingStrategyTest {
     Assert.assertEquals("Vincent Ferreti", map.get("name"));
     Assert.assertTrue(map.containsKey("path"));
     Assert.assertEquals("/tutu/tata", map.get("path"));
+  }
+
+  @Test
+  public void testParameters2() {
+    strategy.setPathSeparator(".");
+    strategy.setStartWithPathSeparator(false);
+
+    Variable variable = (new Variable(strategy.getRootName())).addVariable("Test.Toto", strategy);
+
+    String path;
+    log.info(path = strategy.getPath(variable));
+    Assert.assertEquals("Root.Test.Toto", path);
+
+    log.info(path = strategy.getPath(variable, "id", "1"));
+    Assert.assertEquals("Root.Test.Toto?id=1", path);
+
+    log.info(path = strategy.addParameter(strategy.addParameter(strategy.getPath(variable, "id", "1"), "name", "Vincent Ferreti"), "path", "tutu.tata"));
+    Assert.assertEquals("Root.Test.Toto?id=1&name=Vincent+Ferreti&path=tutu.tata", path);
+
+    List<String> names = strategy.getNormalizedNames(path);
+    log.info("names={}", names);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("Root", names.get(0));
+    Assert.assertEquals("Test", names.get(1));
+    Assert.assertEquals("Toto", names.get(2));
+
+    Assert.assertEquals(0, strategy.getParameters("Root.Test.Toto?").size());
+
+    Map<String, String> map = strategy.getParameters(path);
+    Assert.assertEquals(3, map.size());
+    Assert.assertTrue(map.containsKey("id"));
+    Assert.assertEquals("1", map.get("id"));
+    Assert.assertTrue(map.containsKey("name"));
+    Assert.assertEquals("Vincent Ferreti", map.get("name"));
+    Assert.assertTrue(map.containsKey("path"));
+    Assert.assertEquals("tutu.tata", map.get("path"));
   }
 }

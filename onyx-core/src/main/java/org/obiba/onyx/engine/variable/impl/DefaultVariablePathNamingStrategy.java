@@ -135,6 +135,14 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
   }
 
   /**
+   * Get the separator of entity names as a regular expression.
+   * @return
+   */
+  private String getPathSeparatorRegex() {
+    return pathSeparator.equals(".") ? "\\." : pathSeparator;
+  }
+
+  /**
    * Set the separator string that separates the path elements.
    * @param pathSeparator
    */
@@ -173,7 +181,7 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     }
 
     // split the path
-    for(String str : noParamsPath.split(getPathSeparator())) {
+    for(String str : noParamsPath.split(getPathSeparatorRegex())) {
       if(str.length() > 0) {
         entityNames.add(str);
       }
