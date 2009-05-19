@@ -54,6 +54,9 @@ public class Variable implements Serializable {
   @XStreamAsAttribute
   private String key;
 
+  @XStreamAsAttribute
+  private String mimeType;
+
   /**
    * 
    * @param name
@@ -257,6 +260,14 @@ public class Variable implements Serializable {
 
   public void setParent(Variable parent) {
     this.parent = parent;
+  }
+
+  public String getMimeType() {
+    return mimeType;
+  }
+
+  public void setMimeType(String mimeType) {
+    this.mimeType = mimeType;
   }
 
   /**
