@@ -213,6 +213,8 @@ public class VariableStreamer {
     xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
     xstream.processAnnotations(Variable.class);
     xstream.processAnnotations(Category.class);
+    xstream.processAnnotations(VariableDataSet.class);
+    xstream.processAnnotations(VariableData.class);
     xstream.autodetectAnnotations(true);
 
     xstream.alias("data", Data.class);
