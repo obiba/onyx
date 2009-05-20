@@ -1546,6 +1546,14 @@ ul#interviewMenuBar li a span {
     overflow: auto;
 }
 
+.comment-content {
+	display:inline-table;
+	margin-top:-17px;
+	padding-left:20px;
+	position:absolute;
+	width:630px;
+}
+
 /******************* End InterviewPage *********************************************/
 
 #commentIcon, #logIcon {
