@@ -266,8 +266,14 @@ public class Variable implements Serializable {
     return mimeType;
   }
 
-  public void setMimeType(String mimeType) {
+  /**
+   * Set the mime type of the data (makes sense only if the data type is DATA).
+   * @param mimeType
+   * @return this for chaining
+   */
+  public Variable setMimeType(String mimeType) {
     this.mimeType = mimeType;
+    return this;
   }
 
   /**

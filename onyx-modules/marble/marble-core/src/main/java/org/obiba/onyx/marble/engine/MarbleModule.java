@@ -131,7 +131,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
       stageVariable.addVariable(new Variable(MODE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
-      stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA));
+      stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA).setMimeType("application/pdf"));
     }
 
     return variables;
