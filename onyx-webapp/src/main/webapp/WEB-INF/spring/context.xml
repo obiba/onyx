@@ -53,11 +53,7 @@
   </bean>
 
   <!-- Converts a variable to a path representing its unique identification -->
-  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
-    <property name="rootName" value="${org.obiba.onyx.variablePathNamingStrategy.rootName}" />
-    <property name="pathSeparator" value="${org.obiba.onyx.variablePathNamingStrategy.pathSeparator}" />
-    <property name="startWithPathSeparator" value="${org.obiba.onyx.variablePathNamingStrategy.startWithPathSeparator}" />
-  </bean>
+  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy"/>
 
   <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
   <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader" scope="prototype">

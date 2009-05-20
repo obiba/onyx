@@ -7,7 +7,7 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Onyx/Consent/accepted</variablePath>
+          <variablePath>Onyx.Consent.accepted</variablePath>
         </variableCondition>
         <moduleCondition>
           <moduleName>jade</moduleName>

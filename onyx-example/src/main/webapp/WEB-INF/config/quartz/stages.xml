@@ -5,7 +5,7 @@
     <module>quartz</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>/Onyx/Consent/accepted</variablePath>
+      <variablePath>Onyx.Consent.accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -14,7 +14,7 @@
     <module>quartz</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>/Onyx/Consent/accepted</variablePath>
+      <variablePath>Onyx.Consent.accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -23,7 +23,7 @@
     <module>quartz</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>/Onyx/Consent/accepted</variablePath>
+      <variablePath>Onyx.Consent.accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 

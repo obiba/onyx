@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 /**
- * Default variable path is for instance : /Root/Test/Toto?id=1&name=Vincent+Ferreti&path=%2Ftutu%2Ftata
+ * Default variable path is for instance : Onyx.Test.Toto?id=1&name=Vincent+Ferreti&path=tutu.tata
  */
 public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStrategy {
 
@@ -33,9 +33,9 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
 
   public static final String ENCODING = "ISO-8859-1";
 
-  public static final String DEFAULT_PATH_SEPARATOR = "/";
+  public static final String DEFAULT_PATH_SEPARATOR = ".";
 
-  private String rootName;
+  private String rootName = "Onyx";
 
   private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
@@ -45,7 +45,7 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
 
   public static final String QUERY_STATEMENT_SEPARATOR = "&";
 
-  private boolean startWithPathSeparator = true;
+  private boolean startWithPathSeparator = false;
 
   public String getPath(Variable entity) {
     String name = normalizeName(entity.getName());

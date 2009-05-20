@@ -42,14 +42,14 @@ public class VariableStreamerTest {
 
     // users
 
-    parent = root.addVariable("Admin/User", variablePathNamingStrategy);
+    parent = root.addVariable("Admin.User", variablePathNamingStrategy);
     parent.setDataType(DataType.TEXT).setRepeatable(true);
     parent.addVariable(new Variable("login").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
 
     // participants
 
-    parent = root.addVariable("Admin/Participant", variablePathNamingStrategy);
+    parent = root.addVariable("Admin.Participant", variablePathNamingStrategy);
 
     variable = new Variable("barcode").setDataType(DataType.TEXT);
     parent.addVariable(variable);
@@ -67,7 +67,7 @@ public class VariableStreamerTest {
     subvariable = new Variable("OPEN_AGE").setDataType(DataType.INTEGER).setUnit("year");
     variable.addVariable(subvariable);
 
-    parent = root.addVariable("HealthQuestionnaire/DATE_OF_BIRTH", variablePathNamingStrategy);
+    parent = root.addVariable("HealthQuestionnaire.DATE_OF_BIRTH", variablePathNamingStrategy);
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
     parent.addVariable(variable);

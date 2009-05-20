@@ -4,11 +4,11 @@
     <name>DCC</name>
     <includeAll>true</includeAll>
     <filteredVariables>
-      <string>/Onyx/Consent/pdfForm</string>
-      <string>/Onyx/Admin/Participant</string>
+      <string>Onyx.Consent.pdfForm</string>
+      <string>Onyx.Admin.Participant</string>
     </filteredVariables>
     <includedVariables>
-      <string>/Onyx/Admin/Participant/barcode</string>
+      <string>Onyx.Admin.Participant.barcode</string>
     </includedVariables>
   </destination>
 
@@ -17,11 +17,11 @@
     <name>Appointment Unit</name>
     <includeAll>false</includeAll>
     <includedVariables>
-      <string>/Onyx/Consent</string>
-      <string>/Onyx/Admin/onyxVersion</string>
+      <string>Onyx.Consent</string>
+      <string>Onyx.Admin.onyxVersion</string>
     </includedVariables>
     <filteredVariables>
-      <string>/Onyx/Consent/actions</string>
+      <string>Onyx.Consent.actions</string>
     </filteredVariables>
   </destination>
 </destinations>

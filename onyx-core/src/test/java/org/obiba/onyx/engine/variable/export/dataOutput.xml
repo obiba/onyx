@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <variableDataSet>
-  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/USER/LOGIN" type="TEXT">
+  <variableData path="STUDY_NAME.STUDY_NAME.ADMIN.USER.LOGIN" type="TEXT">
     <string>2Jy4GW8O+2iS+U1o/MwsNfC4Rgnl8SxV3YWrqNXZvvdoCPO1</string>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/PARTICIPANT/BARCODE" type="TEXT">
+  <variableData path="STUDY_NAME.STUDY_NAME.ADMIN.PARTICIPANT.BARCODE" type="TEXT">
     <string>ErgZJ7pbtfZ+G9ootASb8OSu140=</string>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/PARTICIPANT/NAME" type="TEXT">
+  <variableData path="STUDY_NAME.STUDY_NAME.ADMIN.PARTICIPANT.NAME" type="TEXT">
     <string>/Aw06amd5O87wrF8gTetZZh4+ek98fZYNnrKKGRSR0ue83ZeJOmogXNyTQ==</string>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/PARTICIPANT/CONSENT" type="BOOLEAN">
+  <variableData path="STUDY_NAME.STUDY_NAME.ADMIN.PARTICIPANT.CONSENT" type="BOOLEAN">
     <boolean>false</boolean>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/HealthQuestionnaire/PARTICIPANT_AGE/OPEN_AGE" type="INTEGER">
+  <variableData path="STUDY_NAME.STUDY_NAME.HealthQuestionnaire.PARTICIPANT_AGE.OPEN_AGE" type="INTEGER">
     <long>-8499159136334653718</long>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_YEAR/OPEN_YEAR" type="INTEGER">
+  <variableData path="STUDY_NAME.STUDY_NAME.HealthQuestionnaire.DATE_OF_BIRTH.DOB_YEAR.OPEN_YEAR" type="INTEGER">
     <long>-7685764894419928447</long>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH" type="INTEGER">
+  <variableData path="STUDY_NAME.STUDY_NAME.HealthQuestionnaire.DATE_OF_BIRTH.DOB_MONTH.OPEN_MONTH" type="INTEGER">
     <long>780266760877150279</long>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_DAY/OPEN_DAY" type="INTEGER">
+  <variableData path="STUDY_NAME.STUDY_NAME.HealthQuestionnaire.DATE_OF_BIRTH.DOB_DAY.OPEN_DAY" type="INTEGER">
     <long>-4396325885451314877</long>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/StandingHeight/First_Height_Measurement" type="DECIMAL">
+  <variableData path="STUDY_NAME.STUDY_NAME.StandingHeight.First_Height_Measurement" type="DECIMAL">
     <double>0.623972537215988</double>
   </variableData>
-  <variableData path="/STUDY_NAME/STUDY_NAME/StandingHeight/Second_Height_Measurement" type="DECIMAL">
+  <variableData path="STUDY_NAME.STUDY_NAME.StandingHeight.Second_Height_Measurement" type="DECIMAL">
     <double>0.8792629643521901</double>
   </variableData>
 </variableDataSet>

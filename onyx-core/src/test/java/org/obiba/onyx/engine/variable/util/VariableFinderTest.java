@@ -41,14 +41,14 @@ public class VariableFinderTest {
 
     // users
 
-    parent = root.addVariable("Admin/User", variablePathNamingStrategy);
+    parent = root.addVariable("Admin.User", variablePathNamingStrategy);
     parent.setDataType(DataType.TEXT).setRepeatable(true);
     parent.addVariable(new Variable("login").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
 
     // participants
 
-    parent = root.addVariable("Admin/Participant", variablePathNamingStrategy);
+    parent = root.addVariable("Admin.Participant", variablePathNamingStrategy);
 
     variable = new Variable("barcode").setDataType(DataType.TEXT);
     parent.addVariable(variable);
@@ -66,7 +66,7 @@ public class VariableFinderTest {
     subvariable = new Variable("OPEN_AGE").setDataType(DataType.INTEGER).setUnit("year");
     variable.addVariable(subvariable);
 
-    parent = root.addVariable("HealthQuestionnaire/DATE_OF_BIRTH", variablePathNamingStrategy);
+    parent = root.addVariable("HealthQuestionnaire.DATE_OF_BIRTH", variablePathNamingStrategy);
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
     parent.addVariable(variable);
@@ -112,14 +112,14 @@ public class VariableFinderTest {
     Assert.assertEquals(0, finder.filterIntersection(finder.filter(VariableFinder.ALL_ADMIN_VARIABLES_XPATH), finder.filterComplement(VariableFinder.ALL_ADMIN_VARIABLES_XPATH)).size());
 
     // search
-    Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("Study.HealthQuestionnaire.DATE_OF_BIRTH.DOB_MONTH.OPEN_MONTH");
     Assert.assertNotNull(searchedEntity);
     Assert.assertEquals("OPEN_MONTH", searchedEntity.getName());
 
-    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/OPEN_MONTH");
+    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("Study.HealthQuestionnaire.DATE_OF_BIRTH.OPEN_MONTH");
     Assert.assertNull(searchedEntity);
 
-    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/AnotherStudy/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("AnotherStudy.HealthQuestionnaire.DATE_OF_BIRTH.DOB_MONTH.OPEN_MONTH");
     Assert.assertNull(searchedEntity);
 
   }

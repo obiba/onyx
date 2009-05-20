@@ -17,7 +17,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="variableDataSource">
-        <path>/Onyx/CIPreliminaryQuestionnaire/BP_ARM_CHOSEN</path>
+        <path>Onyx.CIPreliminaryQuestionnaire.BP_ARM_CHOSEN</path>
       </dataSource>
     </input>
     

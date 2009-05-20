@@ -133,7 +133,7 @@ public class OnyxDataExportTest {
   public void testFilteredExport() throws Exception {
 
     Set<String> includedVariables = new HashSet<String>();
-    includedVariables.add("/STUDY_NAME/STUDY_NAME/ADMIN");
+    includedVariables.add("STUDY_NAME.STUDY_NAME.ADMIN");
 
     destination.setIncludedVariables(includedVariables);
     destination.setIncludeAll(false);
