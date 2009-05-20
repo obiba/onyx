@@ -77,7 +77,8 @@ public class VariableStreamer {
    * @return
    */
   public static <T> T fromXML(InputStream is) {
-    return fromXML(is, "UTF-8");
+    T obj = fromXML(is, "UTF-8");
+    return obj;
   }
 
   /**
