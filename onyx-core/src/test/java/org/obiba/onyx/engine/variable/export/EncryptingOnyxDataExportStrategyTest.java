@@ -20,6 +20,8 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -38,6 +40,14 @@ import org.obiba.onyx.crypt.IPublicKeyFactory;
  * 
  */
 public class EncryptingOnyxDataExportStrategyTest {
+
+  static final String ALGORITHM = "AES";
+
+  static final String MODE = "CFB";
+
+  static final String PADDING = "NoPadding";
+
+  static final String TRANSFORM = ALGORITHM + "/" + MODE + "/" + PADDING;
 
   EncryptingOnyxDataExportStrategy strategy;
 
@@ -64,9 +74,9 @@ public class EncryptingOnyxDataExportStrategyTest {
     strategy.setDelegate(mockDelegate);
     strategy.setPublicKeyFactory(mockKeyFactory);
 
-    strategy.setAlgorithm("AES");
-    strategy.setMode("CFB");
-    strategy.setPadding("PKCS5PADDING");
+    strategy.setAlgorithm(ALGORITHM);
+    strategy.setMode(MODE);
+    strategy.setPadding(PADDING);
   }
 
   @Test
@@ -74,17 +84,17 @@ public class EncryptingOnyxDataExportStrategyTest {
 
     byte[] testData = "Test Entry Data".getBytes("ISO-8859-1");
 
+    ByteArrayOutputStream secretKeyStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream secretKeyIvStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream paramStream = new ByteArrayOutputStream();
     ByteArrayOutputStream entryStream = new ByteArrayOutputStream();
-    ByteArrayOutputStream keyStream = new ByteArrayOutputStream();
-    ByteArrayOutputStream ivStream = new ByteArrayOutputStream();
-    ByteArrayOutputStream parametersStream = new ByteArrayOutputStream();
 
     // The digesting strategy should delegate all the calls but also call an extra "newEntry" on the delegate to add the
     // digest
     mockDelegate.prepare(context);
-    EasyMock.expect(mockDelegate.newEntry("encryption.key")).andReturn(keyStream);
-    EasyMock.expect(mockDelegate.newEntry("encryption.iv")).andReturn(ivStream);
-    EasyMock.expect(mockDelegate.newEntry("encryption.parameters")).andReturn(parametersStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.key")).andReturn(secretKeyStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.iv")).andReturn(secretKeyIvStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.xml")).andReturn(paramStream);
     EasyMock.expect(mockDelegate.newEntry("testEntry.dat")).andReturn(entryStream);
     mockDelegate.terminate(context);
 
@@ -97,8 +107,13 @@ public class EncryptingOnyxDataExportStrategyTest {
     strategy.terminate(context);
     EasyMock.verify(mockDelegate);
 
-    Cipher cipher = createCipher(keyStream.toByteArray(), parametersStream.toByteArray());
-    Assert.assertArrayEquals(cipher.getIV(), ivStream.toByteArray());
+    EncryptionData encryptionData = EncryptionData.fromXml(paramStream.toByteArray());
+    Assert.assertNotNull(encryptionData);
+
+    Assert.assertArrayEquals((byte[]) encryptionData.getEntry(EncryptingOnyxDataExportStrategy.SECRET_KEY), secretKeyStream.toByteArray());
+    Assert.assertArrayEquals((byte[]) encryptionData.getEntry(EncryptingOnyxDataExportStrategy.SECRET_KEY_IV), secretKeyIvStream.toByteArray());
+
+    Cipher cipher = assertCipher(encryptionData);
     // Make sure we find the data we wrote after decrypting it
     Assert.assertArrayEquals(testData, cipher.doFinal(entryStream.toByteArray()));
   }
@@ -108,14 +123,12 @@ public class EncryptingOnyxDataExportStrategyTest {
 
     TestEntry entries[] = { new TestEntry("First Entry"), new TestEntry("Second Entry"), new TestEntry("Third Entry") };
 
-    ByteArrayOutputStream keyStream = new ByteArrayOutputStream();
-    ByteArrayOutputStream ivStream = new ByteArrayOutputStream();
-    ByteArrayOutputStream parametersStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream paramStream = new ByteArrayOutputStream();
 
     mockDelegate.prepare(context);
-    EasyMock.expect(mockDelegate.newEntry("encryption.key")).andReturn(keyStream);
-    EasyMock.expect(mockDelegate.newEntry("encryption.iv")).andReturn(ivStream);
-    EasyMock.expect(mockDelegate.newEntry("encryption.parameters")).andReturn(parametersStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.xml")).andReturn(paramStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.key")).andReturn(new ByteArrayOutputStream());
+    EasyMock.expect(mockDelegate.newEntry("encryption.iv")).andReturn(new ByteArrayOutputStream());
     for(TestEntry entry : entries) {
       entry.expect();
     }
@@ -129,11 +142,26 @@ public class EncryptingOnyxDataExportStrategyTest {
     strategy.terminate(context);
     EasyMock.verify(mockDelegate);
 
-    Cipher cipher = createCipher(keyStream.toByteArray(), parametersStream.toByteArray());
-    Assert.assertArrayEquals(cipher.getIV(), ivStream.toByteArray());
+    EncryptionData encryptionData = EncryptionData.fromXml(paramStream.toByteArray());
+    Assert.assertNotNull(encryptionData);
+
+    Cipher cipher = assertCipher(encryptionData);
     for(TestEntry entry : entries) {
       entry.verify(cipher);
     }
+  }
+
+  private Cipher assertCipher(EncryptionData encryptionData) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException {
+    String transform = encryptionData.getEntry(EncryptingOnyxDataExportStrategy.CIPHER_TRANSFORMATION);
+    Assert.assertEquals(TRANSFORM, transform);
+
+    byte[] keyData = encryptionData.getEntry(EncryptingOnyxDataExportStrategy.SECRET_KEY);
+    byte[] parameters = encryptionData.getEntry(EncryptingOnyxDataExportStrategy.ALGORITHM_PARAMETERS);
+    byte[] iv = encryptionData.getEntry(EncryptingOnyxDataExportStrategy.SECRET_KEY_IV);
+
+    Cipher cipher = createCipher(keyData, parameters);
+    Assert.assertArrayEquals(cipher.getIV(), iv);
+    return cipher;
   }
 
   private Cipher createCipher(byte[] keyData, byte[] parameterData) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
@@ -150,7 +178,7 @@ public class EncryptingOnyxDataExportStrategyTest {
     parameters.init(parameterData);
 
     // Re-create the Cipher (same key + parameters), but in DECRYPT_MODE
-    Cipher cipher = Cipher.getInstance("AES/CFB/PKCS5PADDING");
+    Cipher cipher = Cipher.getInstance(TRANSFORM);
     cipher.init(Cipher.DECRYPT_MODE, sk, parameters);
     return cipher;
   }
@@ -182,6 +210,19 @@ public class EncryptingOnyxDataExportStrategyTest {
     public void verify(Cipher cipher) throws IllegalBlockSizeException, BadPaddingException {
       // Make sure we find the data we wrote
       Assert.assertArrayEquals(testData, cipher.doFinal(entryStream.toByteArray()));
+    }
+
+  }
+
+  private class StreamHolder {
+    private Map<String, ByteArrayOutputStream> streams = new HashMap<String, ByteArrayOutputStream>();
+
+    ByteArrayOutputStream getStream(String name) {
+      if(streams.containsKey(name == null)) {
+        ByteArrayOutputStream newStream = new ByteArrayOutputStream();
+        streams.put(name, newStream);
+      }
+      return streams.get(name);
     }
 
   }
