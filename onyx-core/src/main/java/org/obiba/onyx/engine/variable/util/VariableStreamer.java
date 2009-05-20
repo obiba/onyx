@@ -76,9 +76,10 @@ public class VariableStreamer {
    * @param is
    * @return
    */
+  @SuppressWarnings("unchecked")
   public static <T> T fromXML(InputStream is) {
-    T obj = fromXML(is, "UTF-8");
-    return obj;
+    Object obj = fromXML(is, "UTF-8");
+    return (T) obj;
   }
 
   /**
