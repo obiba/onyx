@@ -76,7 +76,7 @@ public class VariableStreamer {
    * @param is
    * @return
    */
-  public static Variable fromXML(InputStream is) {
+  public static <T> T fromXML(InputStream is) {
     return fromXML(is, "UTF-8");
   }
 
@@ -86,9 +86,14 @@ public class VariableStreamer {
    * @param encoding
    * @return
    */
-  public static Variable fromXML(InputStream is, String encoding) {
+  @SuppressWarnings("unchecked")
+  public static <T> T fromXML(InputStream is, String encoding) {
     VariableStreamer streamer = new VariableStreamer();
-    return setParentInstance((Variable) streamer.xstream.fromXML(createReader(is, encoding)));
+    T obj = (T) streamer.xstream.fromXML(createReader(is, encoding));
+    if(obj instanceof Variable) {
+      setParentInstance((Variable) obj);
+    }
+    return obj;
   }
 
   private static Reader createReader(InputStream is, String encoding) {
