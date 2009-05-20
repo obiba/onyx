@@ -9,13 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,9 +107,26 @@ public class VariableStreamerTest {
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     VariableStreamer.toCSV(root, os, variablePathNamingStrategy);
-    log.info("size={}", os.size());
+    Assert.assertEquals(true, os.size() > 0);
+    log.info(os.toString());
+  }
+
+  @Test
+  public void testVariableDataStreaming() {
+    VariableDataSet variableDataSet = new VariableDataSet();
+    variableDataSet.addVariableData(new VariableData("Onyx.blabla", DataBuilder.buildBoolean(true)));
+
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    VariableStreamer.toXML(variableDataSet, os);
+    Assert.assertEquals(true, os.size() > 0);
     log.info(os.toString());
 
+    variableDataSet = VariableStreamer.fromXML(new ByteArrayInputStream(os.toByteArray()));
+    Assert.assertNotNull(variableDataSet);
+    Assert.assertEquals(1, variableDataSet.getVariableDatas().size());
+    Assert.assertEquals("Onyx.blabla", variableDataSet.getVariableDatas().get(0).getVariablePath());
+    Assert.assertEquals(1, variableDataSet.getVariableDatas().get(0).getDatas().size());
+    Assert.assertEquals(DataBuilder.buildBoolean(true), variableDataSet.getVariableDatas().get(0).getDatas().get(0));
   }
 
   @Test
