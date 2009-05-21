@@ -1546,14 +1546,6 @@ ul#interviewMenuBar li a span {
     overflow: auto;
 }
 
-.comment-content {
-	display:inline-table;
-	margin-top:-17px;
-	padding-left:20px;
-	position:absolute;
-	width:630px;
-}
-
 /******************* End InterviewPage *********************************************/
 
 #commentIcon, #logIcon {
@@ -1564,7 +1556,17 @@ ul#interviewMenuBar li a span {
 .log-comment {
   white-space: normal;
   padding-right: 20px;
- }
+}
+ 
+td > .log-comment {
+  background-image:url(../icons/note.png);
+  background-repeat: no-repeat;
+}
+
+div.log-comment {
+  padding-left:20px;
+  padding-right:20px;
+}
  
 /******************* Sample Collection *********************************************/
  

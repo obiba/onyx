@@ -22,7 +22,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -207,12 +206,6 @@ public class InterviewLogPanel extends Panel {
       comment.setEscapeModelStrings(false);
       comment.add(new AttributeAppender("class", true, new Model("log-comment"), " "));
       webMarkupContainerTwo.add(comment);
-
-      ContextImage commentIcon = new ContextImage("commentIcon", new Model("icons/note.png"));
-      commentIcon.setMarkupId("commentIcon");
-      commentIcon.setOutputMarkupId(true);
-      webMarkupContainerTwo.add(commentIcon);
-
     }
   }
 
