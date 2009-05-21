@@ -30,7 +30,6 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.service.ConsentService;
-import org.obiba.onyx.marble.core.wicket.MarblePanel;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -90,7 +89,9 @@ public class MarblePanelTest {
   @Test
   public void testManualOption() {
 
-    expect(activeConsentService.getConsent()).andReturn(new Consent()).anyTimes();
+    Consent consent;
+    expect(activeConsentService.getConsent(true)).andReturn(consent = new Consent());
+    expect(activeConsentService.getConsent()).andReturn(consent).anyTimes();
 
     EasyMock.replay(consentService);
     EasyMock.replay(activeConsentService);
@@ -133,6 +134,7 @@ public class MarblePanelTest {
         return true;
       }
     };
+    expect(activeConsentService.getConsent(true)).andReturn(consent);
     expect(activeConsentService.getConsent()).andReturn(consent).anyTimes();
 
     expect(activeConsentService.validateElectronicConsent()).andReturn(true);

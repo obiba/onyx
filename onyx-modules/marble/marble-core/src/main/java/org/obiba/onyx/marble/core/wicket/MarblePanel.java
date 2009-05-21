@@ -14,6 +14,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardPanel;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
@@ -31,6 +32,9 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
+  @SpringBean
+  private ActiveConsentService activeConsentService;
+
   private ConsentWizardPanel wizardPanel;
 
   //
@@ -40,7 +44,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
   @SuppressWarnings("serial")
   public MarblePanel(String id, Stage stage) {
     super(id);
-    add(wizardPanel = new ConsentWizardPanel("content", new Model(), new StageModel(moduleRegistry, stage.getName())));
+    add(wizardPanel = new ConsentWizardPanel("content", new Model(activeConsentService.getConsent(true)), new StageModel(moduleRegistry, stage.getName())));
   }
 
   //
