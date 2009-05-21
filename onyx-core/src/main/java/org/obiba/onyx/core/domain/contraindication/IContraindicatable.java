@@ -12,9 +12,9 @@ package org.obiba.onyx.core.domain.contraindication;
 import java.util.List;
 
 /**
- * Defines the contract by which a stage can be contraindicated.
- * <p>
- * The stage may be a different entity for each module.
+ * Defines the contract by which something can be contraindicated. Implementations of this interface define what is
+ * actually being contraindicated. For example, some implementations may contraindicate a whole stage, others may
+ * contraindicate a subset of values to be captured.
  */
 public interface IContraindicatable {
 
