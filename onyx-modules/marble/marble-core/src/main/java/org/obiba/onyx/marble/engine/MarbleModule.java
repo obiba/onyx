@@ -10,8 +10,12 @@
 package org.obiba.onyx.marble.engine;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -31,11 +35,18 @@ import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
+
 public class MarbleModule implements Module, IVariableProvider, ApplicationContextAware {
+
+  private static final Logger log = LoggerFactory.getLogger(MarbleModule.class);
 
   private static final String MODE_ATTRIBUTE = "mode";
 
@@ -50,6 +61,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
   private ConsentService consentService;
 
   private List<Stage> stages;
+
+  private Map<String, String> variableToFieldMap;
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
@@ -115,10 +128,29 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
         varData.addData(DataBuilder.buildText(consent.getMode().toString()));
       } else if(varName.equals(PDF_ATTRIBUTE) && consent.getPdfForm() != null) {
         varData.addData(DataBuilder.buildBinary(new ByteArrayInputStream(consent.getPdfForm())));
+      } else if(consent.getPdfForm() != null) {
+        String key = variableToFieldMap.get(varName);
+        if(key != null && getConsentField(consent, key) != null) varData.addData(DataBuilder.buildText(getConsentField(consent, key)));
       }
     }
 
     return varData;
+  }
+
+  public String getConsentField(Consent consent, String fieldName) {
+
+    byte[] pdfForm = consent.getPdfForm();
+    // Access PDF content with IText library.
+    PdfReader reader;
+    try {
+      reader = new PdfReader(pdfForm);
+    } catch(IOException ex) {
+      throw new RuntimeException(ex);
+    }
+
+    // Get the PDF form fields.
+    AcroFields form = reader.getAcroFields();
+    return form.getField(fieldName);
   }
 
   public List<Variable> getVariables() {
@@ -132,9 +164,29 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
       stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
       stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA).setMimeType("application/pdf"));
+
+      for(String key : variableToFieldMap.keySet()) {
+        stageVariable.addVariable(new Variable(key).setDataType(DataType.TEXT));
+      }
+
     }
 
     return variables;
+  }
+
+  public void setVariableToFieldMap(String keyValuePairs) {
+    variableToFieldMap = new HashMap<String, String>();
+    // Get list of strings separated by the delimiter
+    StringTokenizer tokenizer = new StringTokenizer(keyValuePairs, ",");
+    while(tokenizer.hasMoreElements()) {
+      String token = tokenizer.nextToken();
+      String[] entry = token.split("=");
+      if(entry.length == 2) {
+        variableToFieldMap.put(entry[0].trim(), entry[1].trim());
+      } else {
+        log.error("Could not identify PDF field name to variable path mapping: " + token);
+      }
+    }
   }
 
 }

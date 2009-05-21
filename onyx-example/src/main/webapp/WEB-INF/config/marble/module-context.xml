@@ -9,6 +9,7 @@
       </bean>
     </property>
     <property name="consentService" ref="consentService" />
+    <property name="variableToFieldMap" value="${org.obiba.onyx.marble.consent.variableToField}" />
   </bean>
 
 </beans>
