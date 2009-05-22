@@ -66,6 +66,14 @@ div.wicket-modal div.onyx .obiba-numeric-pad .imagelink a.button {
 div.wicket-modal div.onyx .obiba-numeric-pad .feedback {  
   padding-top:0px;  
   text-align:center;
+  margin-left:-35px;  
+  font-weight:bold;  
+  font-size:14px;
+  height:auto;
+}
+
+.obiba-numeric-pad .feedbackPanelERROR {
+  color:red;
 }
 
 div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepressed-label {  
@@ -78,12 +86,18 @@ div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepresse
   text-align: left;
 }
 
+div.wicket-modal div.onyx .obiba-numeric-pad .separator {
+  border-top:1px solid #B7B7B7;
+  margin:10px 5px;
+}
+
 .obiba-numeric-pad .obiba-quartz-padForm  table {
   margin: auto; padding: 0px 16px; width: 100%;
 }
 
 .obiba-quartz-padActions .imagelink {
-  float: left;width: 80px;
+  float: left;
+  width: 80px;
 }
 
 .obiba-quartz-padActions .imagelink.obiba-button-ok {
