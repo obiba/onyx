@@ -137,7 +137,7 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
       if(variable.getName().equals(ACCEPTED_ATTRIBUTE)) {
         varData.addData(DataBuilder.buildBoolean(conclusion.isAccepted()));
       } else if(variable.getName().equals(BARCODE_ATTRIBUTE)) {
-        varData.addData(DataBuilder.buildBoolean(conclusion.getBarcode()));
+        varData.addData(DataBuilder.buildText(conclusion.getBarcode()));
       }
     }
 
