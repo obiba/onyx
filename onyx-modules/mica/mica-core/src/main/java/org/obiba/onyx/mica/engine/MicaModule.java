@@ -134,9 +134,9 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
     conclusion = queryService.matchOne(conclusion);
 
     if(conclusion != null) {
-      if(variable.getName().equals(ACCEPTED_ATTRIBUTE)) {
+      if(variable.getName().equals(ACCEPTED_ATTRIBUTE) && conclusion.isAccepted() != null) {
         varData.addData(DataBuilder.buildBoolean(conclusion.isAccepted()));
-      } else if(variable.getName().equals(BARCODE_ATTRIBUTE)) {
+      } else if(variable.getName().equals(BARCODE_ATTRIBUTE) && conclusion.getBarcode() != null) {
         varData.addData(DataBuilder.buildText(conclusion.getBarcode()));
       }
     }
