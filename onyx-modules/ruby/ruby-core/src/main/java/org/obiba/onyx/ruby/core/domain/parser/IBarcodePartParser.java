@@ -27,25 +27,54 @@ public interface IBarcodePartParser {
   public MessageSourceResolvable getPartTitle();
 
   /**
+   * Returns the barcode part's variable name, if it has been configured with one.
+   * 
+   * @return barcode part variable name (may be <code>null</code>)
+   */
+  public String getVariableName();
+
+  /**
+   * <p>
    * Consumes the appropriate (parser-dependent) number of characters in the given barcode fragment, and creates a
    * <code>BarcodePart</code> based on those characters.
+   * </p>
    * 
+   * <p>
    * The consumed characters are validated. Any errors found are added to the provided error list.
+   * </p>
    * 
+   * <p>
    * Note: Characters are consumed from left to right.
+   * </p>
    * 
    * @param barcodeFragment a barcode fragment (for the first parser in a <code>BarcodeStructure</code> this will be a
    * complete barcode; for subsequent parsers, this will be some fragment of the barcode -- i.e., whatever has not been
    * consumed by earlier parsers)
-   * @param activeInterviewService service that may be required by some parsers for validation
    * @param errors error list
    * @return consumed barcode part (<code>null</code> in case of errors)
    */
   public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors);
 
   /**
+   * <p>
+   * Consumes the appropriate (parser-dependent) number of characters in the given barcode fragment, and creates a
+   * <code>BarcodePart</code> based on those characters.
+   * </p>
+   * 
+   * <p>
+   * This method does <em>not</em> validate the consumed characters. However, if the required <em>number</em> of
+   * characters cannot be consumed, a value of <code>null</code> is returned.
+   * </p>
+   * 
+   * @param barcodeFragment a barcode fragment (for the first parser in a <code>BarcodeStructure</code> this will be a
+   * complete barcode; for subsequent parsers, this will be some fragment of the barcode -- i.e., whatever has not been
+   * consumed by earlier parsers)
+   * @return consumed barcode part (<code>null</code> in case of errors)
+   */
+  public BarcodePart eatPart(StringBuilder barcodeFragment);
+
+  /**
    * @return consumed barcode part size
    */
   public int getSize();
-
 }

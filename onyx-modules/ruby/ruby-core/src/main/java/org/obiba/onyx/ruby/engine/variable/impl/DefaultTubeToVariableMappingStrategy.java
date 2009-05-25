@@ -18,18 +18,26 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.ruby.core.domain.BarcodePart;
+import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMappingStrategy {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(DefaultTubeToVariableMappingStrategy.class);
 
   private static final String PARTICIPANT_TUBE_REGISTRATION = "ParticipantTubeRegistration";
 
@@ -90,6 +98,8 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
     tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
     tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));
 
+    addBarcodePartVariables(tubeVariable);
+
     return tubeVariable;
   }
 
@@ -139,6 +149,11 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
           for(String code : registeredTube.getRemarks()) {
             datas.add(DataBuilder.buildText(code));
           }
+        } else if(variable.getParent().getName().equals(REGISTERED_PARTICIPANT_TUBE)) { // barcodePartVariable
+          Data barcodePartVariableData = getBarcodePartVariableData(registeredTube, variable);
+          if(barcodePartVariableData != null) {
+            datas.add(barcodePartVariableData);
+          }
         }
 
         if(datas.size() > 0) {
@@ -154,4 +169,42 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
     return varData;
   }
 
+  //
+  // Methods
+  //
+
+  protected void addBarcodePartVariables(Variable tubeVariable) {
+    // Add the barcode part variables. Only barcode parts with non-null variable
+    // names should be included (those are the variables).
+    BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
+
+    for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
+      String variableName = partParser.getVariableName();
+
+      if(variableName != null) {
+        tubeVariable.addVariable(new Variable(variableName).setDataType(DataType.TEXT));
+      }
+    }
+
+  }
+
+  protected Data getBarcodePartVariableData(RegisteredParticipantTube registeredTube, Variable barcodePartVariable) {
+    Data barcodePartVariableData = null;
+
+    BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
+    List<IBarcodePartParser> partParsers = barcodeStructure.getParsers();
+    List<BarcodePart> barcodeParts = barcodeStructure.parseBarcode(registeredTube.getBarcode());
+
+    for(int i = 0; i < partParsers.size(); i++) {
+      IBarcodePartParser partParser = partParsers.get(i);
+
+      if(partParser.getVariableName() != null && partParser.getVariableName().equals(barcodePartVariable.getName())) {
+        BarcodePart barcodePart = barcodeParts.get(i);
+        barcodePartVariableData = DataBuilder.buildText(barcodePart.getPartValue());
+        break;
+      }
+    }
+
+    return barcodePartVariableData;
+  }
 }

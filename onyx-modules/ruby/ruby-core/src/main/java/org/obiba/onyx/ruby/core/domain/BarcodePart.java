@@ -54,4 +54,15 @@ public class BarcodePart {
 
     return partLabel;
   }
+
+  /**
+   * Returns the non-localized barcode part (i.e., the part as it appears in the barcode).
+   * 
+   * Note: This value serves as the variable data for barcode part variables.
+   * 
+   * @return non-localized barcode part
+   */
+  public String getPartValue() {
+    return part;
+  }
 }

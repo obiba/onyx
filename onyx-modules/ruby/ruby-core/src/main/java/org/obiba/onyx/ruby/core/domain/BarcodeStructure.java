@@ -48,21 +48,11 @@ public class BarcodeStructure {
   }
 
   public List<BarcodePart> parseBarcode(String barcode, List<MessageSourceResolvable> errors) {
-    List<BarcodePart> barcodePartList = new ArrayList<BarcodePart>();
+    return parseBarcode(barcode, errors, true);
+  }
 
-    StringBuilder barcodeFragment = new StringBuilder(barcode);
-
-    for(IBarcodePartParser parser : parserList) {
-      BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
-
-      if(errors.isEmpty()) {
-        barcodePartList.add(barcodePart);
-      } else {
-        break;
-      }
-    }
-
-    return barcodePartList;
+  public List<BarcodePart> parseBarcode(String barcode) {
+    return parseBarcode(barcode, null, false);
   }
 
   public int getExpectedSize() {
@@ -73,5 +63,27 @@ public class BarcodeStructure {
     }
 
     return expectedSize;
+  }
+
+  private List<BarcodePart> parseBarcode(String barcode, List<MessageSourceResolvable> errors, boolean validate) {
+    List<BarcodePart> barcodePartList = new ArrayList<BarcodePart>();
+
+    StringBuilder barcodeFragment = new StringBuilder(barcode);
+
+    for(IBarcodePartParser parser : parserList) {
+      BarcodePart barcodePart = null;
+      if(validate) {
+        barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
+        if(!errors.isEmpty()) {
+          break;
+        }
+      } else {
+        barcodePart = parser.eatPart(barcodeFragment);
+      }
+
+      barcodePartList.add(barcodePart);
+    }
+
+    return barcodePartList;
   }
 }

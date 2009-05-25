@@ -34,6 +34,7 @@
             </bean>
             <!-- Tube Type Parser -->
             <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser">
+              <property name="variableName" value="tubeType" />
               <property name="partTitle">
                 <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
                   <constructor-arg value="Ruby.BarcodePartColumn.TubeType" />

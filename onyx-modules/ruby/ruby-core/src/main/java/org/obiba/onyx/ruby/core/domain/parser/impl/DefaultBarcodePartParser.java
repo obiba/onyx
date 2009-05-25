@@ -20,10 +20,47 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
  * Common barcode part Parser for parser implementations
  */
 public abstract class DefaultBarcodePartParser implements IBarcodePartParser {
+  //
+  // Instance Variables
+  //
 
   private MessageSourceResolvable partTitle;
 
+  private String variableName;
+
+  //
+  // IBarcodePartParser Methods
+  //
+
+  public MessageSourceResolvable getPartTitle() {
+    return partTitle;
+  }
+
+  public String getVariableName() {
+    return variableName;
+  }
+
   public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors) {
+    return eatPart(barcodeFragment, errors, true);
+  }
+
+  public BarcodePart eatPart(StringBuilder barcodeFragment) {
+    return eatPart(barcodeFragment, null, false);
+  }
+
+  //
+  // Methods
+  //
+
+  public void setPartTitle(MessageSourceResolvable partTitle) {
+    this.partTitle = partTitle;
+  }
+
+  public void setVariableName(String variableName) {
+    this.variableName = variableName;
+  }
+
+  protected BarcodePart eatPart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors, boolean validate) {
     BarcodePart barcodePart = null;
 
     if(barcodeFragment != null && barcodeFragment.length() >= getSize()) {
@@ -31,7 +68,10 @@ public abstract class DefaultBarcodePartParser implements IBarcodePartParser {
       String part = barcodeFragment.substring(0, getSize());
       barcodeFragment.delete(0, getSize());
 
-      MessageSourceResolvable error = validatePart(part);
+      MessageSourceResolvable error = null;
+      if(validate) {
+        error = validatePart(part);
+      }
 
       if(error != null) {
         errors.add(error);
@@ -53,14 +93,6 @@ public abstract class DefaultBarcodePartParser implements IBarcodePartParser {
    * @return error message (<code>null</code> in case of no errors)
    */
   protected abstract MessageSourceResolvable validatePart(String part);
-
-  public MessageSourceResolvable getPartTitle() {
-    return partTitle;
-  }
-
-  public void setPartTitle(MessageSourceResolvable partTitle) {
-    this.partTitle = partTitle;
-  }
 
   /**
    * Creates error message
