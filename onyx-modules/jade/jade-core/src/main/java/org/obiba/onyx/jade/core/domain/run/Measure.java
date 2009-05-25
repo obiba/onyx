@@ -45,6 +45,8 @@ public class Measure extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
+  private String instrumentBarcode;
+
   public InstrumentRun getInstrumentRun() {
     return instrumentRun;
   }
@@ -71,6 +73,14 @@ public class Measure extends AbstractEntity {
 
   public void setTime(Date time) {
     this.time = time;
+  }
+
+  public String getInstrumentBarcode() {
+    return instrumentBarcode;
+  }
+
+  public void setInstrumentBarcode(String instrumentBarcode) {
+    this.instrumentBarcode = instrumentBarcode;
   }
 
 }

@@ -45,17 +45,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
   public static final String INSTRUMENT_RUN = "InstrumentRun";
 
-  public static final String INSTRUMENT = "Instrument";
-
-  public static final String NAME = "name";
-
-  public static final String VENDOR = "vendor";
-
-  public static final String MODEL = "model";
-
-  public static final String SERIAL_NUMBER = "serialNumber";
-
-  public static final String BARCODE = "barcode";
+  public static final String BARCODE = "instrumentBarcode";
 
   public static final String USER = "user";
 
@@ -96,18 +86,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     runVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
     runVariable.addVariable(new Variable(TIMESTART).setDataType(DataType.DATE));
     runVariable.addVariable(new Variable(TIMEEND).setDataType(DataType.DATE));
+    if(!type.isRepeatable()) {
+      runVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+    }
     runVariable.addVariable(new Variable(OTHER_CONTRAINDICATION).setDataType(DataType.TEXT));
 
     Variable ciVariable = runVariable.addVariable(new Variable(CONTRAINDICATION));
     ciVariable.addVariable(new Variable(CONTRAINDICATION_CODE).setDataType(DataType.TEXT));
     ciVariable.addVariable(new Variable(CONTRAINDICATION_TYPE).setDataType(DataType.TEXT));
-
-    Variable instrumentVariable = runVariable.addVariable(new Variable(INSTRUMENT));
-    instrumentVariable.addVariable(new Variable(NAME).setDataType(DataType.TEXT));
-    instrumentVariable.addVariable(new Variable(VENDOR).setDataType(DataType.TEXT));
-    instrumentVariable.addVariable(new Variable(MODEL).setDataType(DataType.TEXT));
-    instrumentVariable.addVariable(new Variable(SERIAL_NUMBER).setDataType(DataType.TEXT));
-    instrumentVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
 
     // instrument parameters
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
@@ -121,6 +107,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
             measureVariable = typeVariable.addVariable(new Variable(MEASURE).setDataType(DataType.TEXT).setRepeatable(true));
             measureVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
             measureVariable.addVariable(new Variable(TIME).setDataType(DataType.DATE));
+            measureVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
           }
           measureVariable.addVariable(paramVariable);
         } else {
@@ -152,20 +139,41 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       if(data != null && variable.getName().equals(data.getValueAsString())) {
         varData.addData(DataBuilder.buildBoolean(true));
       }
-    } else if(variable.getParent().getName().equals(INSTRUMENT)) {
+    } else if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
-      if(run != null && run.getInstrument() != null) {
-        Instrument instrument = run.getInstrument();
-        if(variable.getName().equals(NAME) && instrument.getName() != null) {
-          varData.addData(DataBuilder.buildText(instrument.getName()));
-        } else if(variable.getName().equals(VENDOR) && instrument.getVendor() != null) {
-          varData.addData(DataBuilder.buildText(instrument.getVendor()));
-        } else if(variable.getName().equals(MODEL) && instrument.getModel() != null) {
-          varData.addData(DataBuilder.buildText(instrument.getModel()));
-        } else if(variable.getName().equals(SERIAL_NUMBER) && instrument.getSerialNumber() != null) {
-          varData.addData(DataBuilder.buildText(instrument.getSerialNumber()));
-        } else if(variable.getName().equals(BARCODE) && instrument.getBarcode() != null) {
-          varData.addData(DataBuilder.buildText(instrument.getBarcode()));
+      if(run != null) {
+        InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
+        List<Measure> measures = run.getMeasures();
+
+        int measurePosition = 1;
+        for(Measure measure : measures) {
+          Data data = null;
+
+          if(variable.getName().equals(MEASURE)) {
+            varData.addData(DataBuilder.buildText(measure.getId().toString()));
+          } else if(variable.getName().equals(USER) && measure.getUser() != null) {
+            data = DataBuilder.buildText(measure.getUser().getLogin());
+          } else if(variable.getName().equals(TIME) && measure.getTime() != null) {
+            data = DataBuilder.buildDate(measure.getTime());
+          } else if(variable.getName().equals(BARCODE) && measure.getInstrumentBarcode() != null) {
+            data = DataBuilder.buildText(measure.getInstrumentBarcode());
+          } else {
+            // variable name is the parameter name
+            String parameterCode = variable.getName();
+            InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
+            InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
+            if(runValue != null) {
+              data = runValue.getData(parameter.getDataType());
+            }
+          }
+
+          if(data != null) {
+            VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, MEASURE, measure.getId().toString()));
+            varData.addVariableData(childVarData);
+            childVarData.addData(data);
+          }
+
+          measurePosition++;
         }
       }
     } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
@@ -188,46 +196,15 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           varData.addData(DataBuilder.buildDate(run.getTimeStart()));
         } else if(variable.getName().equals(TIMEEND) && run.getTimeEnd() != null) {
           varData.addData(DataBuilder.buildDate(run.getTimeEnd()));
+        } else if(variable.getName().equals(BARCODE) && run.getInstrument() != null) {
+          Instrument instrument = run.getInstrument();
+          if(instrument != null && instrument.getBarcode() != null) {
+            varData.addData(DataBuilder.buildText(instrument.getBarcode()));
+          }
         } else if(variable.getName().equals(OTHER_CONTRAINDICATION) && run.getOtherContraindication() != null) {
           varData.addData(DataBuilder.buildText(run.getOtherContraindication()));
         }
       }
-    } else if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE)) {
-      InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
-      if(run != null) {
-        InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
-        List<Measure> measures = run.getMeasures();
-
-        int measurePosition = 1;
-        for(Measure measure : measures) {
-          Data data = null;
-
-          if(variable.getName().equals(MEASURE)) {
-            varData.addData(DataBuilder.buildText(measure.getId().toString()));
-          } else if(variable.getName().equals(USER) && measure.getUser() != null) {
-            data = DataBuilder.buildText(measure.getUser().getLogin());
-          } else if(variable.getName().equals(TIME) && measure.getTime() != null) {
-            data = DataBuilder.buildDate(measure.getTime());
-          } else {
-            // variable name is the parameter name
-            String parameterCode = variable.getName();
-            InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
-            InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
-            if(runValue != null) {
-              data = runValue.getData(parameter.getDataType());
-            }
-          }
-
-          if(data != null) {
-            VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, MEASURE, measure.getId().toString()));
-            varData.addVariableData(childVarData);
-            childVarData.addData(data);
-          }
-
-          measurePosition++;
-        }
-      }
-
     } else {
       Data data = getInstrumentRunValue(participant, variable, variable.getName());
       if(data != null) {

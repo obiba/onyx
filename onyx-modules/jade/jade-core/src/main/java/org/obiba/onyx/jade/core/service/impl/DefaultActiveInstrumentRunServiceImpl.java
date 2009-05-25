@@ -310,6 +310,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     Measure measure = new Measure();
     measure.setUser(userSessionService.getUser());
     measure.setTime(new Date());
+    measure.setInstrumentBarcode(instrumentRun.getInstrument().getBarcode());
     measure.setInstrumentRun(instrumentRun);
 
     measure = getPersistenceManager().save(measure);

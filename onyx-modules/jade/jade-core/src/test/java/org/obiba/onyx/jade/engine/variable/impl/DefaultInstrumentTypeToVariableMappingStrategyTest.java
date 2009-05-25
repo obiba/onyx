@@ -26,7 +26,6 @@ import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -93,7 +92,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
   @Test
   public void testVariable() {
     Variable root = createInstrumentTypeVariable(instrumentType);
-    log.info(VariableStreamer.toXML(root));
+    // log.info(VariableStreamer.toXML(root));
 
     Assert.assertEquals(1, root.getVariables().size());
     Variable var = root.getVariable(instrumentType.getName());
@@ -112,9 +111,6 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Variable subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION);
     Assert.assertNotNull(subSubVar);
-
-    subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT);
-    Assert.assertNotNull(subSubVar);
   }
 
   @Test
@@ -130,7 +126,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.MEASURE);
     Assert.assertNotNull(subVar);
     Assert.assertTrue(subVar.isRepeatable());
-    Assert.assertEquals(3, subVar.getVariables().size());
+    Assert.assertEquals(4, subVar.getVariables().size());
     Assert.assertNotNull(subVar.getVariable("OUTPUT_PARAM"));
 
     subVar = var.getVariable("CALC_OUTPUT_PARAM");
@@ -138,12 +134,9 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN);
     Assert.assertNotNull(subVar);
-    Assert.assertEquals(6, subVar.getVariables().size());
+    Assert.assertEquals(5, subVar.getVariables().size());
 
     Variable subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION);
-    Assert.assertNotNull(subSubVar);
-
-    subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT);
     Assert.assertNotNull(subSubVar);
   }
 
@@ -321,7 +314,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable(instrumentType);
     // log.info(VariableStreamer.toXML(root));
 
-    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
