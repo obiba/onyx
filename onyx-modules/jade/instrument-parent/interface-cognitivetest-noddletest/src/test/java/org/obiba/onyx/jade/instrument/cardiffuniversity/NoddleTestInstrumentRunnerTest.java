@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner.LineCallback;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
-import org.obiba.onyx.jade.util.FileUtil;
+import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
