@@ -212,4 +212,15 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     return map;
   }
 
+  public String getVariablePath(String path) {
+    int pos = path.indexOf(QUERY_STARTER);
+    if(pos == -1) return path;
+
+    return path.substring(0, pos);
+  }
+
+  public boolean hasParameters(String path) {
+    return (path.indexOf(QUERY_STARTER) > -1);
+  }
+
 }

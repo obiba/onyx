@@ -85,4 +85,18 @@ public interface IVariablePathNamingStrategy {
    */
   public Map<String, String> getParameters(String path);
 
+  /**
+   * Get if the path contains appendd parameters.
+   * @param path
+   * @return
+   */
+  public boolean hasParameters(String path);
+
+  /**
+   * Remove the parameters from the path.
+   * @param path
+   * @return the path if it contains no parameters.
+   */
+  public String getVariablePath(String path);
+
 }
