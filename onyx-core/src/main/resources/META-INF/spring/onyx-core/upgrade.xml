@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+
+  <bean id="upgradeManager" class="org.obiba.runtime.upgrade.DefaultUpgradeManager">
+     <!-- <property name="currentVersionModifier">
+       <bean class="org.obiba.onyx.runtime.upgrade.CurrentVersionModifier">
+          <property name="datasource" ref="datasource"/>
+       </bean>
+     </property>
+     <property name="runtimeVersionProvider">
+       <bean class="org.obiba.runtime.upgrade.support.VersionProviderBean">
+          <property name="version" ref="version"/>
+       </bean>
+     </property> -->
+     <property name="upgradeSteps">
+        <list>
+          <ref bean="upgrade-1.0.3" />
+        </list>
+     </property>
+     <property name="stepListeners">
+        <list>
+          <bean class="org.obiba.runtime.upgrade.support.LoggingUpgradeStepExecutionListener"/>
+        </list>
+     </property>
+  </bean>
+  
+  <bean id="upgrade-1.0.3" class="org.obiba.onyx.runtime.upgrade.impl.SqlScriptUpgradeStep">
+    <property name="datasource" ref="datasource"/>
+    <property name="script">
+      <value>../upgrade-script/upgrade-1.0.3.sql</value>
+    </property>
+    <property name="description">
+      <value>Upgrade Onyx 1.2 to 1.3</value>
+    </property>
+    <property name="appliesTo">
+      <value>1.0.2</value>
+    </property>
+    
+  </bean>
+  
+
+</beans>
