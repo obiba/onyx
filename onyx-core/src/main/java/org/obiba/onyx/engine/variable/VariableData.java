@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -42,7 +43,6 @@ public class VariableData implements Serializable {
   @XStreamImplicit
   private List<Serializable> values;
 
-  @XStreamImplicit
   private List<VariableData> variableDatas;
 
   public VariableData(String variablePath) {
@@ -85,8 +85,14 @@ public class VariableData implements Serializable {
   public List<Data> getDatas() {
     List<Data> datas = new ArrayList<Data>();
 
-    for(Serializable value : getValues()) {
-      datas.add(new Data(type, value));
+    if(type != null) {
+      for(Serializable value : getValues()) {
+        datas.add(new Data(type, value));
+      }
+    } else {
+      for(Serializable value : getValues()) {
+        datas.add(DataBuilder.build(value));
+      }
     }
 
     return datas;
