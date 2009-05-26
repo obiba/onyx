@@ -140,36 +140,52 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     try {
       String wUnitsOfMeasure = "U0\r\n";
 
-      String clothesWeight = "D000" + inputData.get("INPUT_CLOTHES_WEIGHT").getValueAsString() + "\r\n";
-      log.info("wClothesWeight" + clothesWeight);
+      String clothesWeight = null;
+      try {
+        clothesWeight = "D000" + inputData.get("INPUT_CLOTHES_WEIGHT").getValueAsString() + "\r\n";
+        log.info("wClothesWeight" + clothesWeight);
+      } catch(NullPointerException ex) {
+        throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT is null \n" + ex);
+      }
 
       String wGender = null;
-      if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("MALE")) {
-        wGender = "D11\r\n";
-      } else {
-        if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("FEMALE")) {
-          wGender = "D12\r\n";
+      try {
+        if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("MALE")) {
+          wGender = "D11\r\n";
+        } else {
+          if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("FEMALE")) {
+            wGender = "D12\r\n";
+          }
         }
+      } catch(NullPointerException ex) {
+        throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_GENDER is null \n" + ex);
       }
 
       String wBodyType = null;
-      if(inputData.get("INPUT_BODY_TYPE").getValueAsString().equals("STANDARD")) {
-        wBodyType = "D20\r\n";
-      } else {
-        if(inputData.get("INPUT_BODY_TYPE").getValueAsString().equals("ATHLETIC")) {
-          wBodyType = "D22\r\n";
+      try {
+        if(inputData.get("INPUT_BODY_TYPE").getValueAsString().equals("STANDARD")) {
+          wBodyType = "D20\r\n";
+        } else {
+          if(inputData.get("INPUT_BODY_TYPE").getValueAsString().equals("ATHLETIC")) {
+            wBodyType = "D22\r\n";
+          }
         }
+      } catch(NullPointerException ex) {
+        throw new RuntimeException("Error: Expected parameter INPUT_BODY_TYPE is null \n" + ex);
       }
 
       String wHeight = null;
-      Float inputHeight = Float.parseFloat(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString());
-
-      if(inputHeight.intValue() < 100) {
-        wHeight = "D3000" + inputData.get("Height") + "\r\n";
-      } else {
-        if(inputHeight.intValue() >= 100) {
-          wHeight = "D300" + inputHeight.intValue() + "\r\n";
+      try {
+        Float inputHeight = Float.parseFloat(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString());
+        if(inputHeight.intValue() < 100) {
+          wHeight = "D3000" + inputData.get("Height") + "\r\n";
+        } else {
+          if(inputHeight.intValue() >= 100) {
+            wHeight = "D300" + inputHeight.intValue() + "\r\n";
+          }
         }
+      } catch(NullPointerException ex) {
+        throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_HEIGHT is null \n" + ex);
       }
 
       // Send commands and receives response
