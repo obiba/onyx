@@ -21,6 +21,7 @@ import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.data.InstrumentParameterDataSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -423,9 +424,19 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   private boolean isReadyToCompute(InstrumentOutputParameter computedParam) {
     ComputingDataSource computingDataSource = (ComputingDataSource) computedParam.getDataSource();
 
+    String instrumentTypeName = getInstrumentRun().getInstrumentType();
     for(IDataSource dataSource : computingDataSource.getDataSources()) {
-      if(dataSource.getData(getParticipant()) == null) {
-        return false;
+      if(dataSource instanceof InstrumentParameterDataSource) {
+        InstrumentParameterDataSource instrumentParameterDataSource = (InstrumentParameterDataSource) dataSource;
+        // ONYX-584 we are only interested in dependencies between COMPUTED data sources
+        // from the current instrument type.
+        // COMPUTED outputs should not be linked by variable data sources.
+        if(instrumentTypeName.equals(instrumentParameterDataSource.getInstrumentType())) {
+          InstrumentParameter parameter = instrumentParameterDataSource.getInstrumentParameter();
+          if(parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED) && dataSource.getData(getParticipant()) == null) {
+            return false;
+          }
+        }
       }
     }
 
