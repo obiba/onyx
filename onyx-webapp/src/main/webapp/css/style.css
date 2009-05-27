@@ -1665,11 +1665,11 @@ div.log-comment {
 }
 
 .editSamplePanel textarea {
-  width:289px;
+  width:280px;
 }
 
 .editSamplePanel select {
-  width:291px;
+  width:282px;
 }
 
 .editSamplePanel table td {
@@ -1678,14 +1678,15 @@ div.log-comment {
 }
 
 .editSamplePanel table td > div {
+  margin-right:5px;
   width:60px;
 }
 
 .editSamplePanel #barcodeParts {
-  height:70px;
+  height:auto;
   margin-left:-4px;
   margin-top:-6px;  
-  width:358px;
+  width:354px;
   overflow-y:auto;
 }
  
