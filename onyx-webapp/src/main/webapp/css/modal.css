@@ -168,7 +168,8 @@ div.wicket-modal div.onyx h2 {
 }
 
 div.wicket-modal div.onyx .confirmation-dialog-content {
-  height: 61px;
+  height: 54px;
   margin-left: 10px; 
-  margin-right: 10px; 
+  margin-right: 10px;
+  padding-top: 7px; 
 }

@@ -9,15 +9,19 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.wicket.JavascriptEventConfirmation;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,17 +60,34 @@ public class DeleteBarcodePanel extends Panel {
     RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) DeleteBarcodePanel.this.getModelObject();
     final String barcode = registeredParticipantTube.getBarcode();
 
-    Link deleteLink = new Link("link") {
+    final ConfirmationDialog confirmationDialog = new ConfirmationDialog("confirmation-dialog");
+    add(confirmationDialog);
+
+    AjaxLink deleteLink = new AjaxLink("link") {
       private static final long serialVersionUID = 1L;
 
-      public void onClick() {
-        activeTubeRegistrationService.unregisterTube(barcode);
+      public void onClick(AjaxRequestTarget target) {
+
+        Label label = new Label("content", new SpringStringResourceModel("Ruby.Confirm.BarcodeDeletion", new Object[] { barcode }, null));
+        label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+
+        confirmationDialog.setContent(label);
+        confirmationDialog.setTitle(new SpringStringResourceModel("Ruby.TubeDeletion"));
+        confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+          private static final long serialVersionUID = -6691702933562884991L;
+
+          public void onYesButtonClicked(AjaxRequestTarget target) {
+            activeTubeRegistrationService.unregisterTube(barcode);
+            target.addComponent(DeleteBarcodePanel.this.findParent(TubeRegistrationPanel.class));
+          }
+
+        });
+        confirmationDialog.show(target);
       }
     };
 
     deleteLink.add(new Label("delete", new SpringStringResourceModel("Ruby.Delete")));
-    deleteLink.add(new JavascriptEventConfirmation("onclick", new SpringStringResourceModel("Ruby.Confirm.BarcodeDeletion", new Object[] { barcode }, null)));
-
     add(deleteLink);
   }
 }
