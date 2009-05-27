@@ -19,6 +19,7 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -397,10 +398,10 @@ public class Dialog extends ModalWindow {
     if(name.length > 0) link.add(new AttributeModifier("name", true, new Model(name[0])));
 
     if(side.equals(OptionSide.LEFT)) {
-      link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all left")));
+      link.add(new AttributeAppender("class", new Model("left"), " "));
       customOptionsLeft.add(link);
     } else {
-      link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all right")));
+      link.add(new AttributeAppender("class", new Model("right"), " "));
       customOptionsRight.add(link);
     }
   }

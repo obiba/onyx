@@ -40,6 +40,7 @@ public class WizardAdministrationWindow extends Dialog {
     setMinimalHeight(50);
     setInitialHeight(50);
     setInitialWidth(450);
+    setTitle("Administration");
 
     setOptions(Dialog.Option.CANCEL_OPTION);
 
