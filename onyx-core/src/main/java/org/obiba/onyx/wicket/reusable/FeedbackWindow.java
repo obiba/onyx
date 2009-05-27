@@ -24,7 +24,7 @@ import org.apache.wicket.model.StringResourceModel;
  */
 public class FeedbackWindow extends Dialog {
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 100;
+  private static final int DEFAULT_INITIAL_HEIGHT = 105;
 
   private static final int DEFAULT_INITIAL_WIDTH = 400;
 
