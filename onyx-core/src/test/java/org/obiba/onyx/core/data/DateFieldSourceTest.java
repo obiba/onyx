@@ -65,6 +65,12 @@ public class DateFieldSourceTest {
     verify(iDataSourceMock);
   }
 
+  @Test
+  public void testXStream() {
+    DateFieldSource dataSource = new DateFieldSource(new VariableDataSource("Onyx.Questionnaire.BirthDate"), DateField.YEAR);
+    System.out.println(DataSourceStreamer.toXML(dataSource));
+  }
+
   private Participant createParticipant() {
     Participant p = new Participant();
     p.setBarcode("1187432");
