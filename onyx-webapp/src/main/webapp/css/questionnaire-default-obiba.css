@@ -129,6 +129,10 @@
 	padding:0;
 }
 
+.categories > .questions .question {
+	padding-left:10px;
+}
+
 .categories td.category {
 	padding-right:3px;
 	padding-bottom:3px;
