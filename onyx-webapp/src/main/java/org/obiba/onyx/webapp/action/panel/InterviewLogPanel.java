@@ -245,7 +245,7 @@ public class InterviewLogPanel extends Panel {
     if(action.getActionType() != null) {
       actionModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable("action." + action.getActionType()));
     } else {
-      actionModel = new StringResourceModel("GeneralComment", this, null);
+      actionModel = new Model("");
     }
     return actionModel;
   }
