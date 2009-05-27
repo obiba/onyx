@@ -41,6 +41,7 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
+import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -251,39 +252,53 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
    * @throws Exception
    */
   public void sendDataToServer(CardiosoftInstrumentResultParser resultParser) {
-    Map<String, Data> ouputToSend = new HashMap<String, Data>();
+    Map<String, Data> outputToSend = new HashMap<String, Data>();
 
     try {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
         if(!pd.getName().equalsIgnoreCase("doc") && !pd.getName().equalsIgnoreCase("xpath") && !pd.getName().equalsIgnoreCase("xmldocument") && !pd.getName().equalsIgnoreCase("class")) {
           Object value = pd.getReadMethod().invoke(resultParser);
-          if(value == null) continue;
-          if(value instanceof Long) {
+          if(value != null) {
+            if(value instanceof Long) {
 
-            // We need to subtract one to the birthday month since the month of January is represented by "0" in
-            // java.util.Calendar (January is represented by "1" in Cardiosoft).
-            if(pd.getName().equals("participantBirthMonth")) {
-              ouputToSend.put(pd.getName(), DataBuilder.buildInteger(((Long) value) - 1));
+              // We need to subtract one to the birthday month since the month of January is represented by "0" in
+              // java.util.Calendar (January is represented by "1" in Cardiosoft).
+              if(pd.getName().equals("participantBirthMonth")) {
+                outputToSend.put(pd.getName(), DataBuilder.buildInteger(((Long) value) - 1));
+              } else {
+                outputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+              }
+
+            } else if(value instanceof Double) {
+              outputToSend.put(pd.getName(), DataBuilder.buildDecimal((Double) value));
             } else {
-              ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+              outputToSend.put(pd.getName(), DataBuilder.buildText(value.toString()));
             }
+          } else { // send null values as well (ONYX-585)
+            log.info("Output parameter " + pd.getName() + " was null; will send null to server");
 
-          } else if(value instanceof Double) {
-            ouputToSend.put(pd.getName(), DataBuilder.buildDecimal((Double) value));
-          } else {
-            ouputToSend.put(pd.getName(), DataBuilder.buildText(value.toString()));
+            if(pd.getPropertyType().isAssignableFrom(Long.class)) {
+              log.info("Output parameter " + pd.getName() + " is of type INTEGER");
+              outputToSend.put(pd.getName(), new Data(DataType.INTEGER, null));
+            } else if(pd.getPropertyType().isAssignableFrom(Double.class)) {
+              log.info("Output parameter " + pd.getName() + " is of type DECIMAL");
+              outputToSend.put(pd.getName(), new Data(DataType.DECIMAL, null));
+            } else {
+              log.info("Output parameter " + pd.getName() + " is of type TEXT");
+              outputToSend.put(pd.getName(), new Data(DataType.TEXT, null));
+            }
           }
         }
       }
 
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath(), getXmlFileName());
-      ouputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
+      outputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
 
       File pdfFile = new File(getExportPath(), getPdfFileName());
-      ouputToSend.put("pdfFile", DataBuilder.buildBinary(pdfFile));
+      outputToSend.put("pdfFile", DataBuilder.buildBinary(pdfFile));
 
-      instrumentExecutionService.addOutputParameterValues(ouputToSend);
+      instrumentExecutionService.addOutputParameterValues(outputToSend);
 
     } catch(Exception e) {
       throw new RuntimeException(e);
