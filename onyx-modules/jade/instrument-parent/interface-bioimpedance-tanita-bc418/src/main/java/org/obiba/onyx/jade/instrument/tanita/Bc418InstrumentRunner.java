@@ -143,9 +143,10 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       String clothesWeight = null;
       try {
         clothesWeight = "D000" + inputData.get("INPUT_CLOTHES_WEIGHT").getValueAsString() + "\r\n";
+        if(clothesWeight == null) throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT is null");
         log.info("wClothesWeight" + clothesWeight);
       } catch(NullPointerException ex) {
-        throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT is null \n" + ex);
+        throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT does not exist \n" + ex);
       }
 
       String wGender = null;
@@ -158,7 +159,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
           }
         }
       } catch(NullPointerException ex) {
-        throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_GENDER is null \n" + ex);
+        throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_GENDER does not exist or is null \n" + ex);
       }
 
       String wBodyType = null;
@@ -171,12 +172,14 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
           }
         }
       } catch(NullPointerException ex) {
-        throw new RuntimeException("Error: Expected parameter INPUT_BODY_TYPE is null \n" + ex);
+        throw new RuntimeException("Error: Expected parameter INPUT_BODY_TYPE does not exist or is null \n" + ex);
       }
 
       String wHeight = null;
       try {
         Float inputHeight = Float.parseFloat(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString());
+        if(inputHeight == null) throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_HEIGHT is null");
+
         if(inputHeight.intValue() < 100) {
           wHeight = "D3000" + inputData.get("Height") + "\r\n";
         } else {
@@ -185,7 +188,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
           }
         }
       } catch(NullPointerException ex) {
-        throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_HEIGHT is null \n" + ex);
+        throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_HEIGHT does not exist \n" + ex);
       }
 
       // Send commands and receives response
