@@ -63,12 +63,13 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.participant.panel.ConfirmExportPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -116,7 +117,7 @@ public class ParticipantSearchPage extends BasePage {
 
   private static final int DEFAULT_INITIAL_WIDTH = 400;
 
-  private ModalWindow confirmExportModalWindow;
+  private ConfirmationDialog confirmationDialog;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
 
@@ -129,18 +130,16 @@ public class ParticipantSearchPage extends BasePage {
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
     editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION, "Save");
 
+    confirmationDialog = new ConfirmationDialog("confirmExportModalWindow");
+    confirmationDialog.setTitle(new ResourceModel("ConfirmExport"));
+    confirmationDialog.setInitialHeight(130);
+    add(confirmationDialog);
+
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
     unlockInterviewWindow.setOptions(Dialog.Option.YES_NO_CANCEL_OPTION);
     unlockInterviewWindow.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     unlockInterviewWindow.setInitialWidth(DEFAULT_INITIAL_WIDTH);
-
-    confirmExportModalWindow = new ModalWindow("confirmExportModalWindow");
-    confirmExportModalWindow.setCssClassName("onyx");
-    confirmExportModalWindow.setTitle(new ResourceModel("ConfirmExport"));
-    confirmExportModalWindow.setResizable(false);
-    confirmExportModalWindow.setUseInitialHeight(false);
-    add(confirmExportModalWindow);
 
     unlockInterviewWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
@@ -494,27 +493,22 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          final Model acceptModel = new Model();
-          confirmExportModalWindow.setContent(new ConfirmExportPanel("content", acceptModel));
-          confirmExportModalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+          Label label = new Label("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
+          label.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
+          confirmationDialog.setContent(label);
 
+          confirmationDialog.setYesButtonCallback(new OnYesCallback() {
             private static final long serialVersionUID = 1L;
 
-            public void onClose(AjaxRequestTarget target) {
-              // This method is called after the confirm dialog is closed.
-              // This fixes part of ONYX-445. Ideally, the actual export would be done in a background thread
-              // so that the current request could terminate properly instead of idling during the export.
-              Boolean accepted = (Boolean) acceptModel.getObject();
-              if(accepted != null && accepted == true) {
-                try {
-                  onyxDataExport.exportCompletedInterviews();
-                } catch(Exception e) {
-                  log.error("Error on data export.", e);
-                }
+            public void onYesButtonClicked(AjaxRequestTarget target) {
+              try {
+                onyxDataExport.exportCompletedInterviews();
+              } catch(Exception e) {
+                log.error("Error on data export.", e);
               }
-            };
+            }
           });
-          confirmExportModalWindow.show(target);
+          confirmationDialog.show(target);
         }
 
       };
