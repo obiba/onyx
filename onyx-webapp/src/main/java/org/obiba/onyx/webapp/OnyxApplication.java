@@ -10,7 +10,6 @@
 package org.obiba.onyx.webapp;
 
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
@@ -42,11 +41,8 @@ import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 public class OnyxApplication extends WebApplication implements ISpringWebApplication, IUnauthorizedComponentInstantiationListener {
@@ -154,25 +150,12 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   protected void createApplicationContext() {
     try {
-      PropertiesFactoryBean pfb = new PropertiesFactoryBean();
-      pfb.setLocation(new ServletContextResource(getServletContext(), "WEB-INF/onyx.properties"));
-      pfb.setSingleton(false);
-      Properties onyxProperties = (Properties) pfb.getObject();
-
-      String configPath = onyxProperties.getProperty("org.obiba.onyx.config.path");
-      if(configPath == null) {
-        throw new IllegalStateException("Onyx config path not set.");
-      }
-
-      PropertyPlaceholderConfigurer configurer = new PropertyPlaceholderConfigurer();
-      configurer.setProperties(onyxProperties);
-      // This must be set to true in order to let another PropertyPlaceholderConfigurer replace the unresolved entries.
-      configurer.setIgnoreUnresolvablePlaceholders(true);
+      OnyxApplicationPropertyPlaceholderConfigurer configurer = new OnyxApplicationPropertyPlaceholderConfigurer(getServletContext());
 
       applicationContext = new XmlWebApplicationContext();
       applicationContext.setServletContext(getServletContext());
       applicationContext.addBeanFactoryPostProcessor(configurer);
-      applicationContext.setConfigLocation("WEB-INF/spring/context.xml," + configPath + "/*/module-context.xml");
+      applicationContext.setConfigLocation("WEB-INF/spring/context.xml," + configurer.getConfigPath() + "/*/module-context.xml");
       applicationContext.refresh();
 
       // Required for WebApplicationContext

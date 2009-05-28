@@ -50,11 +50,16 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- This dependency is required because it contains LobHandler which is reference by LocalSessionFactoryBean in the Hibernate3 pacakge -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>compile</scope>            
+    </dependency>    
 
     <dependency>
       <groupId>org.springframework</groupId>

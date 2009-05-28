@@ -6,6 +6,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+  <import resource="version.xml" />
+
   <bean name="version" class="org.obiba.runtime.Version" primary="true">
     <constructor-arg value="${project.version}-b${buildNumber}" />
   </bean>

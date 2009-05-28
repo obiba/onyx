@@ -7,15 +7,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.runtime.upgrade.impl;
-
-import java.io.IOException;
+package org.obiba.onyx.runtime.upgrade.support;
 
 import org.obiba.onyx.runtime.upgrade.AbstractDatabaseUpgradeStep;
-import org.obiba.onyx.util.FileUtil;
 import org.obiba.runtime.Version;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.test.jdbc.SimpleJdbcTestUtils;
 
 public class SqlScriptUpgradeStep extends AbstractDatabaseUpgradeStep {
 
@@ -29,12 +28,11 @@ public class SqlScriptUpgradeStep extends AbstractDatabaseUpgradeStep {
     this.script = script;
   }
 
-  public void execute(Version currentVersion, JdbcTemplate template) {
+  public void execute(Version currentVersion, SimpleJdbcTemplate template) {
     try {
-      String scriptString = FileUtil.readString(script.getInputStream());
-      template.execute(scriptString);
-    } catch(IOException ex) {
-      throw new RuntimeException("Error in reading sql script: " + ex);
+      SimpleJdbcTestUtils.executeSqlScript(template, script, false);
+    } catch(DataAccessException ex) {
+      throw new RuntimeException("There was an error while executing the upgrade sql script: " + ex);
     }
   }
 }

@@ -1,34 +1,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <!-- Setup Jasypt's StringEncryptor used for decrypting configuration files using PBE -->
-  <bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
-    <property name="config">
-      <bean class="org.obiba.onyx.crypt.OnyxEnvironmentStringPBEConfig">
-        <property name="algorithm" value="PBEWithMD5AndDES" />
-
-        <!--
-          onyxPasswordKeyName obtains the password from a system property (ie: java -DONYX_PASSWORD=changeme) or if not found from environment variable
-        -->
-        <property name="onyxPasswordKeyName" value="ONYX_PASSWORD" />
-      </bean>
-    </property>
-  </bean>
-
-  <!-- Loads the configuration properties. These are used throughout the spring context files to configure the deployment -->
-  <bean class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
-    <constructor-arg ref="configurationEncryptor" />
-    <property name="locations">
-      <list>
-        <!-- Load the onyx.properties file in order to replace the org.obiba.onyx.config.path property
-          within the other properties files -->
-        <value>WEB-INF/onyx.properties</value>
-
-        <value>${org.obiba.onyx.config.path}/onyx-config.properties</value>
-        <value>${org.obiba.onyx.config.path}/*/module-config.properties</value>
-      </list>
-    </property>
-  </bean>
+  <import resource="property-configurer.xml" />
 
   <bean name="onyxApplicationConfiguration" class="org.obiba.onyx.webapp.OnyxApplicationConfiguration" primary="true">
     <property name="configurationType" value="${org.obiba.onyx.webapp.configurationType}" />

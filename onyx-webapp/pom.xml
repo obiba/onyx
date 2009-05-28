@@ -87,11 +87,12 @@
       <groupId>org.jasypt</groupId>
       <artifactId>jasypt</artifactId>
     </dependency>
-    
+            
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
-    </dependency>    
+      <artifactId>spring-test</artifactId>
+      <scope>runtime</scope>            
+    </dependency>      
     
   </dependencies>
 
