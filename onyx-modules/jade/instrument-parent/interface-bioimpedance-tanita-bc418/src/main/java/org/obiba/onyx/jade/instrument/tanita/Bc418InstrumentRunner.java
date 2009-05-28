@@ -142,8 +142,8 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
 
       String clothesWeight = null;
       try {
+        if(inputData.get("INPUT_CLOTHES_WEIGHT").getValue() == null) throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT is null");
         clothesWeight = "D000" + inputData.get("INPUT_CLOTHES_WEIGHT").getValueAsString() + "\r\n";
-        if(clothesWeight == null) throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT is null");
         log.info("wClothesWeight" + clothesWeight);
       } catch(NullPointerException ex) {
         throw new RuntimeException("Error: Expected parameter INPUT_CLOTHES_WEIGHT does not exist \n" + ex);
@@ -177,8 +177,8 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
 
       String wHeight = null;
       try {
+        if(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValue() == null) throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_HEIGHT is null");
         Float inputHeight = Float.parseFloat(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString());
-        if(inputHeight == null) throw new RuntimeException("Error: Expected parameter INPUT_PARTICIPANT_HEIGHT is null");
 
         if(inputHeight.intValue() < 100) {
           wHeight = "D3000" + inputData.get("Height") + "\r\n";
