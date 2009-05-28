@@ -136,6 +136,11 @@
 .categories td.category {
 	padding-right:3px;
 	padding-bottom:3px;
+	min-width:160px;
+}
+
+.categories td.category:first-child {
+	padding-left:20px;
 }
 
 .category .label {
@@ -220,6 +225,7 @@ div.page div.question div.categories div.category {
 
 .obiba-quartz-dropdown-category:first-child {
 	padding-top:9px;
+	padding-left:27px;
 }
 
 .obiba-quartz-dropdown-category {
