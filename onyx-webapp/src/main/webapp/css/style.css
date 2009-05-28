@@ -1511,19 +1511,32 @@ ul#interviewMenuBar li {
 }
 
 ul#interviewMenuBar li > div {
-  padding-left:63px !important;
+  /*padding-left:63px !important;*/
+  padding-right:3px !important;
+}
+
+.menu-center {
+  display: block;
+  float: left;
+  padding-left:51px !important;
+}
+
+.menu-right {
+  display: block;
+  text-align: right;
 }
 
 ul#interviewMenuBar li a {
   bottom:2px;
   display:inline;
   font-size:14px;
-  left:21px;
   padding-bottom:0;
   padding-left:0;
   padding-right:0;
   padding-top:0;
   position:relative;
+  /*left:15px;*/
+  text-align:right;
 }
 
 ul#interviewMenuBar li a span {
