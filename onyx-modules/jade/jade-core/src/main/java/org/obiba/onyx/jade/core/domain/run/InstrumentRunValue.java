@@ -127,7 +127,7 @@ public class InstrumentRunValue extends AbstractEntity {
         break;
 
       case INTEGER:
-        integerValue = Long.valueOf(data.getValueAsString());
+        integerValue = (data.getValue() != null) ? Long.valueOf(data.getValueAsString()) : null;
         break;
 
       case TEXT:
