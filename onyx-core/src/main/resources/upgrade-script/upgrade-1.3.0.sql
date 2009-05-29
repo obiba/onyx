@@ -3,7 +3,7 @@ CREATE TABLE measure (
   time datetime DEFAULT NULL,
   instrument_run_id bigint(20) DEFAULT NULL,
   user_id bigint(20) DEFAULT NULL,
-  instrumentBarcode varchar(200) DEFAULT NULL,
+  instrument_barcode varchar(200) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FK37EDA55E6434F6C4 (instrument_run_id),
   KEY FK37EDA55E62335EF5 (user_id),
