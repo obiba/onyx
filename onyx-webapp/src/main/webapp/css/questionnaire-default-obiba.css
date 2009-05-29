@@ -16,6 +16,8 @@
 	font-weight: bold;
 	font-size: larger;	
 	padding-bottom:10px;
+	border-bottom: 1px solid #C65F02;
+	margin-bottom: 7px;
 }
 
 .page > div.label {
