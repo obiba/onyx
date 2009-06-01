@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -187,7 +186,7 @@ public class UserPanel extends Panel {
       @Override
       protected void onValidate(IValidatable validatable) {
         User existUser = userService.getUserWithLogin(validatable.getValue().toString());
-        if(existUser != null) feedbackPanel.error(new StringResourceModel("LoginAlreadyUsed", UserPanel.this, null).getString());
+        if(existUser != null) error(validatable, "LoginAlreadyUsed");
       }
     }
 
@@ -202,7 +201,7 @@ public class UserPanel extends Panel {
         // TODO validate the password's length and strenght
 
         if(getUser().getPassword().equals(User.digest(newPassword))) {
-          feedbackPanel.error(new StringResourceModel("PasswordPreviouslyUsed", UserPanel.this, null).getString());
+          error(validatable, "PasswordPreviouslyUsed");
         }
       }
     }
