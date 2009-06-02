@@ -75,8 +75,9 @@ public class VariableReportContributor implements ModuleReportContributor {
       AcroFields form = stamper.getAcroFields();
 
       Participant participant = activeInterviewService.getParticipant();
-      setParticipantDataFields(participant, form);
+
       setVariableDataFields(participant, form);
+      setParticipantDataFields(participant, form);
 
       stamper.setFormFlattening(true);
 
