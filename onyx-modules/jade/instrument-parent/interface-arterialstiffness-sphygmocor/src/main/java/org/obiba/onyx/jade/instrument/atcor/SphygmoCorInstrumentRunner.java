@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -76,10 +76,10 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     deleteExportFiles();
 
     // Fetch the current participant's data.
-    participantLastName = instrumentExecutionService.getParticipantLastName();
-    participantFirstName = instrumentExecutionService.getParticipantFirstName();
-    participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
-    participantGender = instrumentExecutionService.getParticipantGender();
+    participantLastName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME").getValue();
+    participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
+    participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
+    participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
 
     systolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE").getValue();
     diastolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE").getValue();
@@ -306,7 +306,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   /**
    * Adds the specified export file to the output to send.
-   * 
+   *
    * @param outputToSend output to send to the server
    * @param exportFilenamePrefix export file name prefix
    * @param fileIdentifier
@@ -324,7 +324,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   /**
    * Returns the export file with the specified file name prefix.
-   * 
+   *
    * @param exportFilename export file name prefix
    * @return export file (or <code>null</code> if no such file exists)
    */

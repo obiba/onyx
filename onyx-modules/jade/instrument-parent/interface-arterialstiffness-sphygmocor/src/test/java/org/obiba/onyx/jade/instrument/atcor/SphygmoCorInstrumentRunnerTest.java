@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -65,7 +65,7 @@ public class SphygmoCorInstrumentRunnerTest {
 
   /**
    * Test that the <code>initialize</code> method does the following:
-   * 
+   *
    * <ul>
    * <li>Deletes all instrument data (measurements and patients)</li>
    * <li>Fetches the current participant</li>
@@ -86,10 +86,10 @@ public class SphygmoCorInstrumentRunnerTest {
     long systolicPressure = 123;
     long diastolicPressure = 65;
 
-    expect(instrumentExecutionServiceMock.getParticipantLastName()).andReturn(participantLastName);
-    expect(instrumentExecutionServiceMock.getParticipantFirstName()).andReturn(participantFirstName);
-    expect(instrumentExecutionServiceMock.getParticipantBirthDate()).andReturn(participantBirthDate);
-    expect(instrumentExecutionServiceMock.getParticipantGender()).andReturn(participantGender);
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME")).andReturn(DataBuilder.buildText(participantLastName));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME")).andReturn(DataBuilder.buildText(participantFirstName));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(DataBuilder.buildDate(participantBirthDate));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_GENDER")).andReturn(DataBuilder.buildText(participantGender));
 
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(systolicPressure));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(diastolicPressure));
