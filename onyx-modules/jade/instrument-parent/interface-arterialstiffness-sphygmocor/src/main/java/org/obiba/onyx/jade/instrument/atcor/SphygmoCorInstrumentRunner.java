@@ -76,10 +76,10 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     deleteExportFiles();
 
     // Fetch the current participant's data.
-    participantLastName = instrumentExecutionService.getParticipantLastName();
-    participantFirstName = instrumentExecutionService.getParticipantFirstName();
-    participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
-    participantGender = instrumentExecutionService.getParticipantGender();
+    participantLastName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME").getValue();
+    participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
+    participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
+    participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
 
     systolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE").getValue();
     diastolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE").getValue();

@@ -86,10 +86,10 @@ public class SphygmoCorInstrumentRunnerTest {
     long systolicPressure = 123;
     long diastolicPressure = 65;
 
-    expect(instrumentExecutionServiceMock.getParticipantLastName()).andReturn(participantLastName);
-    expect(instrumentExecutionServiceMock.getParticipantFirstName()).andReturn(participantFirstName);
-    expect(instrumentExecutionServiceMock.getParticipantBirthDate()).andReturn(participantBirthDate);
-    expect(instrumentExecutionServiceMock.getParticipantGender()).andReturn(participantGender);
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME")).andReturn(DataBuilder.buildText(participantLastName));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME")).andReturn(DataBuilder.buildText(participantFirstName));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(DataBuilder.buildDate(participantBirthDate));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_GENDER")).andReturn(DataBuilder.buildText(participantGender));
 
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(systolicPressure));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(diastolicPressure));
