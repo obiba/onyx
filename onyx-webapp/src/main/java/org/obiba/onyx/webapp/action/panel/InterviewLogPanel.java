@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.action.panel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,13 +25,12 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.Strings;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ModuleRegistry;
-import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.behavior.ScrollToBottomBehaviour;
@@ -66,43 +62,23 @@ public class InterviewLogPanel extends Panel {
   /** The {@code Dialog} used to add a general comment. */
   private Dialog addCommentDialog;
 
-  /** Reference allows us to update the comment count on this page when a new comment is added. */
-  private InterviewPage interviewPage;
-
-  /** Log items will be displayed for this stage. May be null when displaying items for all Stages. */
-  private String stageName = null;
-
-  /** Set to true to display all log items. */
-  private boolean showAll = false;
-
-  private List<Action> interviewLogList;
-
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
-  public InterviewLogPanel(String id, final int tableBodyHeight) {
-    super(id);
+  public InterviewLogPanel(String id, final int tableBodyHeight, IModel model) {
+    super(id, model);
     add(new ScrollableTableBodyBehaviour(tableBodyHeight));
-    addTableTitleComponents();
 
     addInterviewLogComponent();
-
   }
 
-  private void addTableTitleComponents() {
-    add(new Label("date-title", new StringResourceModel("Date", this, null)));
-    add(new Label("stage-title", new StringResourceModel("Stage", this, null)));
-    add(new Label("action-title", new StringResourceModel("Action", this, null)));
-    add(new Label("author-title", new StringResourceModel("Author", this, null)));
-    add(new Label("reason-title", new StringResourceModel("Reason", this, null)));
-  }
-
+  @SuppressWarnings("unchecked")
   public void addInterviewLogComponent() {
 
-    getFilteredSortedInterviewLogList();
+    final List<Action> interviewLogList = (List<Action>) getModelObject();
 
     if(logItemLoop != null) {
       remove(logItemLoop);
@@ -113,46 +89,13 @@ public class InterviewLogPanel extends Panel {
 
       @Override
       protected void populateItem(LoopItem item) {
-        if(interviewLogList.get(item.getIteration()).getComment() != null) {
-          item.add(new CommentFragment("rows", "commentRow", InterviewLogPanel.this, item.getIteration()));
-        } else {
-          item.add(new RowFragment("rows", "tableRow", InterviewLogPanel.this, item.getIteration()));
-        }
+        item.setRenderBodyOnly(true);
+        Action action = interviewLogList.get(item.getIteration());
+        item.add(new CommentFragment("rows", "interviewLogRow", InterviewLogPanel.this, new Model(action), item.getIteration()));
       }
-
     };
 
     addOrReplace(logItemLoop);
-  }
-
-  private void getFilteredSortedInterviewLogList() {
-
-    interviewLogList = activeInterviewService.getInterviewActions();
-    filterOut();
-
-    Collections.sort(interviewLogList, new Comparator<Action>() {
-
-      public int compare(Action o1, Action o2) {
-        return o1.getDateTime().compareTo(o2.getDateTime());
-      }
-
-    });
-  }
-
-  /**
-   * Filters out the comments not for this stage
-   */
-  private void filterOut() {
-    if(stageName != null && !showAll) {
-      List<Action> comments = new ArrayList<Action>();
-
-      for(Action comment : interviewLogList) {
-        if(stageName.equals(comment.getStage())) {
-          comments.add(comment);
-        }
-      }
-      interviewLogList = comments;
-    }
   }
 
   public void setup(final Dialog modalWindow) {
@@ -162,46 +105,34 @@ public class InterviewLogPanel extends Panel {
     add(addCommentDialog = createAddCommentDialog());
   }
 
-  public void setInterviewPage(InterviewPage interviewPage) {
-    this.interviewPage = interviewPage;
-  }
-
   public void setStageName(String stageName) {
-    this.stageName = stageName;
-    showStage();
+    ((LoadableInterviewLogModel) getModel()).showLogEntriesForStage(stageName);
     addInterviewLogComponent();
-  }
-
-  public class RowFragment extends Fragment {
-    private static final long serialVersionUID = 1L;
-
-    public RowFragment(String id, String markupId, MarkupContainer markupContainer, int iteration) {
-      super(id, markupId, markupContainer);
-      Action action = interviewLogList.get(iteration);
-      WebMarkupContainer webMarkupContainer = new WebMarkupContainer("tableRowClass");
-      add(webMarkupContainer);
-      webMarkupContainer.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
-
-      webMarkupContainer = addCommonFragmentComponents(webMarkupContainer, action);
-    }
   }
 
   public class CommentFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public CommentFragment(String id, String markupId, MarkupContainer markupContainer, int iteration) {
-      super(id, markupId, markupContainer);
-      Action action = interviewLogList.get(iteration);
-      WebMarkupContainer webMarkupContainer = new WebMarkupContainer("commentRowClass");
+    public CommentFragment(String id, String markupId, MarkupContainer markupContainer, IModel model, int iteration) {
+      super(id, markupId, markupContainer, model);
+      setRenderBodyOnly(true);
+      Action action = (Action) getModelObject();
+      WebMarkupContainer webMarkupContainer = new WebMarkupContainer("logEntryRow");
       add(webMarkupContainer);
       webMarkupContainer.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
 
       webMarkupContainer = addCommonFragmentComponents(webMarkupContainer, action);
 
-      WebMarkupContainer webMarkupContainerTwo = new WebMarkupContainer("commentRowClassTwo");
+      WebMarkupContainer webMarkupContainerTwo = new WebMarkupContainer("logCommentRow");
       add(webMarkupContainerTwo);
+      String commentText = "";
+      if(action.getComment() != null) {
+        commentText = action.getComment();
+      } else {
+        webMarkupContainerTwo.setVisible(false);
+      }
       webMarkupContainerTwo.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
-      CharSequence escapedComment = Strings.escapeMarkup(action.getComment());
+      CharSequence escapedComment = Strings.escapeMarkup(commentText);
       Label comment = new Label("comment", textToMultiLineHtml(escapedComment.toString()));
       comment.setEscapeModelStrings(false);
       comment.add(new AttributeAppender("class", true, new Model("log-comment"), " "));
@@ -237,7 +168,7 @@ public class InterviewLogPanel extends Panel {
         return new MessageSourceResolvableStringModel(stageModel);
       }
     }
-    return new StringResourceModel("GeneralComment", this, null);
+    return new ResourceModel("GeneralComment");
   }
 
   private IModel getActionModel(Action action) {
@@ -260,14 +191,6 @@ public class InterviewLogPanel extends Panel {
     return reasonModel;
   }
 
-  private void showAll() {
-    showAll = true;
-  }
-
-  private void showStage() {
-    showAll = false;
-  }
-
   @SuppressWarnings("serial")
   private void addDialogActionButtons(final Dialog modalWindow) {
 
@@ -277,7 +200,7 @@ public class InterviewLogPanel extends Panel {
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setStatus(Status.OTHER);
         // Redraw, but show all log entries.
-        showAll();
+        ((LoadableInterviewLogModel) InterviewLogPanel.this.getModel()).showAllLogEntries();
         addInterviewLogComponent();
         // Disable Show All Button
         target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
@@ -295,16 +218,6 @@ public class InterviewLogPanel extends Panel {
       }
 
     });
-
-    modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
-
-      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        if(status.equals(Status.CLOSED) || status.equals(Status.WINDOW_CLOSED)) return true;
-        return false;
-      }
-
-    });
-
   }
 
   private AddCommentWindow createAddCommentDialog() {
@@ -334,14 +247,13 @@ public class InterviewLogPanel extends Panel {
         if(status.equals(Status.SUCCESS)) {
           Action comment = (Action) dialogContent.getModelObject();
           activeInterviewService.doAction(null, comment);
-          interviewPage.updateCommentCount(target);
 
           // Scroll to bottom of log to make the recently added comment visible.
           InterviewLogPanel.this.add(new ScrollToBottomBehaviour("#interviewLogPanel tbody"));
           // Disable Show All Button
           target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
 
-          InterviewLogPanel.this.showAll();
+          ((LoadableInterviewLogModel) InterviewLogPanel.this.getModel()).showAllLogEntries();
           InterviewLogPanel.this.addInterviewLogComponent();
           target.addComponent(InterviewLogPanel.this);
         }

@@ -40,6 +40,7 @@ import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
+import org.obiba.onyx.webapp.action.panel.LoadableInterviewLogModel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
@@ -54,6 +55,7 @@ import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
@@ -101,15 +103,24 @@ public class InterviewPage extends BasePage {
 
       final InterviewLogPanel interviewLogPanel;
       final Dialog interviewLogsDialog;
-      interviewLogPanel = new InterviewLogPanel("content", 329);
+      interviewLogPanel = new InterviewLogPanel("content", 329, new LoadableInterviewLogModel());
       interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.CLOSE_OPTION).setFormCssClass("interview-log-dialog-form").getDialog();
       interviewLogsDialog.setInitialHeight(400);
       interviewLogsDialog.setInitialWidth(700);
+      interviewLogsDialog.setCloseButtonCallback(new CloseButtonCallback() {
+        private static final long serialVersionUID = 1L;
+
+        public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+          // Update comment count on interview page once the modal window closes. User may have added comments.
+          updateCommentCount(target);
+          return true;
+        }
+      });
       interviewLogPanel.setup(interviewLogsDialog);
-      interviewLogPanel.setInterviewPage(InterviewPage.this);
       interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
       interviewLogPanel.setMarkupId("interviewLogPanel");
       interviewLogPanel.setOutputMarkupId(true);
+
       add(interviewLogsDialog);
 
       Participant participant = activeInterviewService.getParticipant();
@@ -262,7 +273,6 @@ public class InterviewPage extends BasePage {
         @Override
         public void onViewLogs(AjaxRequestTarget target, String stage) {
           interviewLogPanel.setStageName(stage);
-          interviewLogPanel.setInterviewPage(InterviewPage.this);
           interviewLogsDialog.show(target);
         }
 
@@ -339,40 +349,10 @@ public class InterviewPage extends BasePage {
     @Override
     public void onClick(AjaxRequestTarget target) {
       interviewLogPanel.setStageName(null);
-      interviewLogPanel.setInterviewPage(InterviewPage.this);
       interviewLogsDialog.show(target);
-
     }
 
   }
-
-  // private class CommentsLink extends AjaxLink {
-  //
-  // private static final long serialVersionUID = 1L;
-  //
-  // private final ModalWindow commentsWindow;
-  //
-  // private CommentsLink(String id, ModalWindow commentsWindow) {
-  // super(id);
-  // this.commentsWindow = commentsWindow;
-  // }
-  //
-  // public void onClick(AjaxRequestTarget target) {
-  // commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow, null) {
-  // private static final long serialVersionUID = 1L;
-  //
-  // @Override
-  // public void onAddComments(AjaxRequestTarget target) {
-  // InterviewPage.this.updateCommentsCount();
-  //
-  // target.addComponent(InterviewPage.this.commentsCount);
-  //
-  // }
-  //
-  // });
-  // commentsWindow.show(target);
-  // }
-  // }
 
   @SuppressWarnings("serial")
   private class ActiveInterviewModel implements Serializable {

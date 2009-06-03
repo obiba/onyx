@@ -178,6 +178,19 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return comments;
   }
 
+  public List<Action> getInterviewActions(String stageName) {
+    if(stageName == null) throw new IllegalArgumentException("The argument stageName cannot be null.");
+    List<Action> actions = new ArrayList<Action>();
+
+    for(Action action : getInterviewActions()) {
+      if(stageName.equals(action.getStage())) {
+        actions.add(action);
+      }
+    }
+
+    return actions;
+  }
+
   public Action getStatusAction() {
     Interview interview = getInterview();
     Action template = new Action();

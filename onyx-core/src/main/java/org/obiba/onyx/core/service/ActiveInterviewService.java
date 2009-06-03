@@ -77,16 +77,26 @@ public interface ActiveInterviewService {
   public void setStatus(InterviewStatus status);
 
   /**
-   * Return a list of all the actions associated with the current interview that contain comments.
+   * Return a list of all the actions associated with the current interview that contain comments. Actions are returned
+   * in descending order based on the time stamp of the action.
    * @return A list of actions that contain comments.
    */
   public List<Action> getInterviewComments();
 
   /**
-   * Return a complete list of actions associated with the current interview.
+   * Return a complete list of actions associated with the current interview. Actions are returned in descending order
+   * based on the time stamp of the action.
    * @return A list of all actions.
    */
   public List<Action> getInterviewActions();
+
+  /**
+   * Return a list of actions associated with the current interview that belong to the given {@code stage}. Actions are
+   * returned in descending order based on the time stamp of the action.
+   * @param stageName Only return actions that belong to this stage.
+   * @return A list of all actions.
+   */
+  public List<Action> getInterviewActions(String stageName);
 
   /**
    * Get the {@link Action} associated to interview status.
