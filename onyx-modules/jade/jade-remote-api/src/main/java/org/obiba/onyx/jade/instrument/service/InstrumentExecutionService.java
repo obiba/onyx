@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.instrument.service;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
@@ -28,6 +29,10 @@ public interface InstrumentExecutionService {
    * @return the instrument's operator name.
    */
   public String getInstrumentOperator();
+
+  public String getInstrumentOperatorUsername();
+
+  public Locale getInstrumentOperatorLocale();
 
   public String getParticipantID();
 

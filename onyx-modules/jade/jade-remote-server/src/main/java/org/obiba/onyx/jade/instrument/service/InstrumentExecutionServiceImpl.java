@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.instrument.service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -41,6 +42,14 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   public String getInstrumentOperator() {
     return getInstrumentRun().getUser().getFullName();
+  }
+
+  public String getInstrumentOperatorUsername() {
+    return getInstrumentRun().getUser().getLogin();
+  }
+
+  public Locale getInstrumentOperatorLocale() {
+    return getInstrumentRun().getUser().getLanguage();
   }
 
   public String getParticipantFirstName() {

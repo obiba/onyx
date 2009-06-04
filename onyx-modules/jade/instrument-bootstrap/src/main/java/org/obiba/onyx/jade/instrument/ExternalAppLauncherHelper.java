@@ -23,7 +23,12 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ExternalAppLauncherHelper {
+
+  private static final Logger log = LoggerFactory.getLogger(ExternalAppLauncherHelper.class);
 
   // Working directory for external software.
   protected String workDir;
@@ -64,6 +69,8 @@ public class ExternalAppLauncherHelper {
     if(getParameterStr() == null) command.add(getExecutable());
     else
       command.add(getExecutable() + " " + getParameterStr());
+
+    log.info("Launching {} (Work directory={})", command, getWorkDir());
 
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getWorkDir()));
