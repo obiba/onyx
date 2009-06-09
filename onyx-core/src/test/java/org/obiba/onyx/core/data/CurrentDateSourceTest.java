@@ -164,6 +164,12 @@ public class CurrentDateSourceTest {
     Assert.assertEquals(current.get(Calendar.YEAR), data.getValue());
   }
 
+  @Test
+  public void testXStream() {
+    CurrentDateSource dataSource = new CurrentDateSource(DateField.YEAR);
+    System.out.println(DataSourceStreamer.toXML(dataSource));
+  }
+
   private Participant createParticipant() {
     Participant p = new Participant();
     p.setBarcode("1187432");
