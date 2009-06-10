@@ -12,7 +12,9 @@ package org.obiba.onyx.jade.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -29,12 +31,14 @@ import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
+import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.util.seed.DatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.MessageSource;
 
 public class JadeModule implements Module, IVariableProvider, ApplicationContextAware {
 
@@ -159,10 +163,23 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   public List<Variable> getVariables() {
     List<Variable> entities = new ArrayList<Variable>();
 
+    instrumentTypeToVariableMappingStrategy.setMessageSource(getMessageSource());
+
     for(InstrumentType type : instrumentService.getInstrumentTypes().values()) {
       entities.add(instrumentTypeToVariableMappingStrategy.getVariable(type));
     }
 
     return entities;
+  }
+
+  private MessageSource getMessageSource() {
+    Application application = Application.get();
+    if(application instanceof ISpringWebApplication) {
+      return ((ISpringWebApplication) application).getSpringContextLocator().getSpringContext();
+    } else if(application instanceof SpringWebApplication) {
+      return ((SpringWebApplication) application).getSpringContextLocator().getSpringContext();
+    }
+
+    throw new IllegalStateException("Cannot find MessageSource. Application must either implement ISpringWebApplication or extend SpringWebApplication.");
   }
 }

@@ -28,6 +28,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuild
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.PropertiesPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
@@ -252,16 +253,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     setDefaultPageUI(SimplifiedPageLayoutFactory.class);
     setDefaultQuestionUI(SimplifiedQuestionPanelFactory.class);
 
-    DefaultPropertyKeyProviderImpl propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
-    propertyKeyProvider.getQuestionnaireProperties().add("clearAll");
-    propertyKeyProvider.getQuestionnaireProperties().add("or");
-    propertyKeyProvider.getQuestionnaireProperties().add("clickHere");
-    propertyKeyProvider.getQuestionnaireProperties().add("ok");
-    propertyKeyProvider.getQuestionnaireProperties().add("cancel");
-    propertyKeyProvider.getQuestionnaireProperties().add("reset");
-    propertyKeyProvider.getCategoryProperties().add("description");
-    propertyKeyProvider.getCategoryProperties().add("imageSelected");
-    propertyKeyProvider.getCategoryProperties().add("imageDeselected");
+    DefaultPropertyKeyProviderImpl propertyKeyProvider = new SimplifiedUIPropertyKeyProviderImpl();
     setPropertyKeyProvider(propertyKeyProvider);
   }
 

@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.engine.variable;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
@@ -50,5 +51,11 @@ public interface IQuestionToVariableMappingStrategy {
    * @return
    */
   public VariableData getVariableData(QuestionnaireParticipantService questionnaireParticipantService, Participant participant, Variable variable, VariableData variableData, Questionnaire questionnaire);
+
+  /**
+   * Set the current questionnaire bundle.
+   * @param bundle
+   */
+  public void setQuestionnaireBundle(QuestionnaireBundle bundle);
 
 }

@@ -10,9 +10,11 @@
 package org.obiba.onyx.jade.engine.variable.impl;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.engine.variable.Attribute;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
@@ -34,6 +36,8 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 
 /**
  * 
@@ -68,6 +72,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   private InstrumentRunService instrumentRunService;
 
   private InstrumentService instrumentService;
+
+  private MessageSource messageSource;
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
@@ -117,13 +123,34 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           } else if(parameter.getAllowedValues().size() > 0) {
             int pos = 1;
             for(Data allowedValue : parameter.getAllowedValues()) {
-              paramVariable.addCategory(new Category(allowedValue.getValueAsString(), Integer.toString(pos++)));
+              String code = allowedValue.getValueAsString();
+              Category category = new Category(code, Integer.toString(pos++));
+              addLocalizedAttributes(category, code);
+              paramVariable.addCategory(category);
             }
           }
         }
+
+        addLocalizedAttributes(paramVariable, parameter.getCode());
       }
     }
     return typeVariable;
+  }
+
+  private void addLocalizedAttributes(Variable variable, String property) {
+    if(messageSource != null) {
+      // TODO get the list of available languages !
+      for(Locale locale : new Locale[] { Locale.ENGLISH, Locale.FRENCH }) {
+        try {
+          String message = messageSource.getMessage(property, null, locale);
+          if(message.trim().length() > 0) {
+            variable.addAttributes(new Attribute("label", locale, message));
+          }
+        } catch(NoSuchMessageException ex) {
+          // ignore
+        }
+      }
+    }
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData) {
@@ -245,6 +272,10 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     }
 
     return instrumentTypeVariable;
+  }
+
+  public void setMessageSource(MessageSource messageSource) {
+    this.messageSource = messageSource;
   }
 
 }

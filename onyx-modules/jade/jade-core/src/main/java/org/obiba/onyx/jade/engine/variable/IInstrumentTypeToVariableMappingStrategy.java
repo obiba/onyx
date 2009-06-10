@@ -14,6 +14,7 @@ import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.springframework.context.MessageSource;
 
 /**
  * Defines the way instrument types will be expressed in terms of variables. It is also responsible for retrieving
@@ -44,4 +45,10 @@ public interface IInstrumentTypeToVariableMappingStrategy {
    * @return
    */
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData);
+
+  /**
+   * Set the Spring message source for localization of instrument attributes.
+   * @param messageSource
+   */
+  public void setMessageSource(MessageSource messageSource);
 }

@@ -183,7 +183,7 @@ public class QuestionnaireStringResourceModelTest {
 
     // Expect that methods are called on questionnaireBundleMock to retrieve the message source
     // and required property key.
-    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource);
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire);
     expect(questionnaireBundleMock.getPropertyKey(localizable, property)).andReturn(propertyKeyProvider.getPropertyKey(localizable, property));
 

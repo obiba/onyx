@@ -10,24 +10,32 @@
 package org.obiba.onyx.quartz.engine.variable.impl;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.engine.variable.Attribute;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.NoSuchMessageException;
 
 /**
  * 
@@ -52,8 +60,16 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   public static final String QUESTION_ACTIVE = "active";
 
+  private QuestionnaireBundle questionnaireBundle;
+
+  // choose the one with the most properties declared
+  private IPropertyKeyProvider propertyKeyProvider = new SimplifiedUIPropertyKeyProviderImpl();
+
   public Variable getVariable(Questionnaire questionnaire) {
     Variable questionnaireVariable = new Variable(questionnaire.getName());
+
+    addLocalizedAttributes(questionnaireVariable, questionnaire);
+
     // add participant dependent information
     Variable questionnaireRunVariable = questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_RUN));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_VERSION).setDataType(DataType.TEXT));
@@ -130,7 +146,31 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
     }
 
+    addLocalizedAttributes(variable, question);
+
+    if(question.getCondition() != null) {
+      variable.addAttributes(new Attribute("condition", question.getCondition().toString()));
+    }
+
     return variable;
+  }
+
+  private void addLocalizedAttributes(Variable variable, IQuestionnaireElement localizable) {
+    if(questionnaireBundle != null) {
+      for(Locale locale : questionnaireBundle.getAvailableLanguages()) {
+        for(String property : propertyKeyProvider.getProperties(localizable)) {
+          try {
+            String stringResource = QuestionnaireStringResourceModelHelper.getMessage(questionnaireBundle, localizable, property, null, locale);
+            if(stringResource.trim().length() > 0) {
+              String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
+              variable.addAttributes(new Attribute(property, locale, noHTMLString));
+            }
+          } catch(NoSuchMessageException ex) {
+            // ignored
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -155,6 +195,8 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
     }
 
+    addLocalizedAttributes(categoryVariable, questionCategory);
+
     return categoryVariable;
   }
 
@@ -167,6 +209,20 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     Variable variable = null;
 
     variable = new Variable(openAnswerDefinition.getName()).setDataType(openAnswerDefinition.getDataType()).setUnit(openAnswerDefinition.getUnit());
+
+    addLocalizedAttributes(variable, openAnswerDefinition);
+
+    if(openAnswerDefinition.getDataSource() != null) {
+      variable.addAttributes(new Attribute("source", openAnswerDefinition.getDataSource().toString()));
+    }
+
+    if(openAnswerDefinition.getDataValidators().size() > 0) {
+      // TODO
+    }
+
+    if(openAnswerDefinition.getValidationDataSources().size() > 0) {
+      variable.addAttributes(new Attribute("validation", openAnswerDefinition.getValidationDataSources().toString()));
+    }
 
     return variable;
   }
@@ -237,6 +293,10 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     }
 
     return questionnaireVariable;
+  }
+
+  public void setQuestionnaireBundle(QuestionnaireBundle bundle) {
+    this.questionnaireBundle = bundle;
   }
 
 }

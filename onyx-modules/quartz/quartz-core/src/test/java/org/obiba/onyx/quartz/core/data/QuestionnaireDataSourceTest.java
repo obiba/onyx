@@ -254,6 +254,16 @@ public class QuestionnaireDataSourceTest {
     Assert.assertNull(unit);
   }
 
+  @Test
+  public void testToString() {
+    QuestionnaireDataSource ds = new QuestionnaireDataSource(QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION);
+    Assert.assertEquals("Questionnaire[" + QUESTIONNAIRE + "." + QUESTION + "." + CATEGORY + "." + OPEN_ANSWER_DEFINITION + "]", ds.toString());
+    ds = new QuestionnaireDataSource(QUESTIONNAIRE, QUESTION, CATEGORY);
+    Assert.assertEquals("Questionnaire[" + QUESTIONNAIRE + "." + QUESTION + "." + CATEGORY + "]", ds.toString());
+    ds = new QuestionnaireDataSource(QUESTIONNAIRE, QUESTION);
+    Assert.assertEquals("Questionnaire[" + QUESTIONNAIRE + "." + QUESTION + "]", ds.toString());
+  }
+
   private Questionnaire createQuestionnaire(boolean withUnit) {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire(QUESTIONNAIRE, "1.0");
 

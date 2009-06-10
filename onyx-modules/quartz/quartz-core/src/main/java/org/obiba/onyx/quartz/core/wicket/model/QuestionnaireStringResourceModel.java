@@ -17,9 +17,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
-import org.springframework.context.MessageSource;
 
 public class QuestionnaireStringResourceModel extends SpringDetachableModel {
 
@@ -28,8 +26,6 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   //
 
   private static final long serialVersionUID = 1L;
-
-  private static final int MAX_RESOLVE_STRING_REFERENCE_ATTEMPTS = 10;
 
   //
   // Instance Variables
@@ -100,29 +96,7 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
 
     // Finally, resolve the string resource using the bundle's message source and the
     // property key.
-    MessageSource messageSource = bundle.getMessageSource();
-    String propertyKey = bundle.getPropertyKey(getLocalizable(), property);
-
-    String stringResource = null;
-
-    int resolveAttempts = 0;
-
-    while(true) {
-      stringResource = messageSource.getMessage(propertyKey, stringArgs, locale);
-
-      if(StringReferenceCompatibleMessageFormat.isStringReference(stringResource)) {
-        if(resolveAttempts == MAX_RESOLVE_STRING_REFERENCE_ATTEMPTS) {
-          throw new RuntimeException("Exceeded maximum number of attempts to resolve string reference");
-        }
-
-        resolveAttempts++;
-        propertyKey = extractKeyFromReference(stringResource);
-      } else {
-        break;
-      }
-    }
-
-    return stringResource;
+    return QuestionnaireStringResourceModelHelper.getMessage(bundle, getLocalizable(), property, stringArgs, locale);
   }
 
   //
@@ -149,9 +123,5 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
    */
   public String getString() {
     return (String) getObject();
-  }
-
-  private String extractKeyFromReference(String stringReference) {
-    return stringReference.substring(StringReferenceCompatibleMessageFormat.STRING_REFERENCE_PREFIX.length(), stringReference.length() - StringReferenceCompatibleMessageFormat.STRING_REFERENCE_SUFFIX.length());
   }
 }

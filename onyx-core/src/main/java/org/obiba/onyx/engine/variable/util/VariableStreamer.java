@@ -25,12 +25,14 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.obiba.onyx.engine.variable.Attribute;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,6 +214,7 @@ public class VariableStreamer {
     xstream = new XStream();
     xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
     xstream.processAnnotations(Variable.class);
+    xstream.processAnnotations(Attribute.class);
     xstream.processAnnotations(Category.class);
     xstream.processAnnotations(VariableDataSet.class);
     xstream.processAnnotations(VariableData.class);
@@ -219,6 +222,9 @@ public class VariableStreamer {
 
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");
+
+    // Use DataValidatorConverter to allow easier aliases for validator nodes
+    xstream.registerConverter(new DataValidatorConverter().createAliases(xstream));
   }
 
   //
