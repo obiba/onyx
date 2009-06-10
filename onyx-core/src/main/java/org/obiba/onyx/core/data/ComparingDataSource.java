@@ -105,7 +105,7 @@ public class ComparingDataSource implements IDataSource, Cloneable {
     String op;
     switch(comparisonOperator) {
     case eq:
-      op = "=";
+      op = "==";
       break;
     case ne:
       op = "!=";
@@ -125,6 +125,14 @@ public class ComparingDataSource implements IDataSource, Cloneable {
     default:
       op = "";
     }
-    return "Comparing[" + dataSourceLeft + " " + op + " " + dataSourceRight + "]";
+    String rval = "Comparing[";
+    if(dataSourceLeft != null) {
+      rval += dataSourceLeft + " ";
+    }
+    rval += op;
+    if(dataSourceRight != null) {
+      rval += " " + dataSourceRight;
+    }
+    return rval + "]";
   }
 }
