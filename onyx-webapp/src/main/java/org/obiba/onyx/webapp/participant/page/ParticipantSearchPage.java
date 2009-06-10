@@ -58,6 +58,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -66,6 +67,7 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
+import org.obiba.onyx.wicket.behavior.DisplayTooltipBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -554,10 +556,18 @@ public class ParticipantSearchPage extends BasePage {
 
     public LockedInterviewFragment(String id, IModel participantModel) {
       super(id, "lockedInterview", ParticipantSearchPage.this, participantModel);
+      setOutputMarkupId(true);
       ContextImage image = new ContextImage("lock", new Model("icons/locked.png"));
       add(image);
+
       if(interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
         image.setVisible(false);
+      } else {
+        // Display tooltip.
+        User interviewer = interviewManager.getInterviewer((Participant) participantModel.getObject());
+        StringResourceModel tooltipResource = new StringResourceModel("InterviewerHasLockOnInterview", ParticipantSearchPage.this, new Model(interviewer));
+        add(new AttributeAppender("title", true, tooltipResource, " "));
+        add(new DisplayTooltipBehaviour(getMarkupId(), "{positionLeft: true, left: -5}"));
       }
     }
   }
