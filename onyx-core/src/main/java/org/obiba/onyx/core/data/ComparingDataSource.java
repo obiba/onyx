@@ -102,6 +102,29 @@ public class ComparingDataSource implements IDataSource, Cloneable {
 
   @Override
   public String toString() {
-    return "[" + dataSourceLeft + ", " + comparisonOperator + ", " + dataSourceRight + "]";
+    String op;
+    switch(comparisonOperator) {
+    case eq:
+      op = "=";
+      break;
+    case ne:
+      op = "!=";
+      break;
+    case lt:
+      op = "<";
+      break;
+    case le:
+      op = "<=";
+      break;
+    case gt:
+      op = ">";
+      break;
+    case ge:
+      op = ">=";
+      break;
+    default:
+      op = "";
+    }
+    return "Comparing[" + dataSourceLeft + " " + op + " " + dataSourceRight + "]";
   }
 }

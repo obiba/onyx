@@ -44,4 +44,9 @@ public abstract class AbstractMultipleDataSource implements IDataSource {
   public AbstractMultipleDataSource() {
   }
 
+  @Override
+  public String toString() {
+    return getDataSources().toString();
+  }
+
 }

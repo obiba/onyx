@@ -62,4 +62,9 @@ public class DateFieldSource extends AbstractDataSourceDataModifier {
     this.field = field;
   }
 
+  @Override
+  public String toString() {
+    return "DateField[" + super.toString() + "]." + field;
+  }
+
 }

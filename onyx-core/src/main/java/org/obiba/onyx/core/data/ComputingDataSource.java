@@ -124,7 +124,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   @Override
   public String toString() {
-    return "[type=" + dataType + ", expression=" + expression + ", unit=" + unit + "]";
+    return "Computing[" + expression + "," + getDataSources() + "]";
   }
 
 }

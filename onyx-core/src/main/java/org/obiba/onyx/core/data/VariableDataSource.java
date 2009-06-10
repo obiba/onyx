@@ -52,4 +52,9 @@ public class VariableDataSource implements IDataSource {
     this.variableDirectory = variableDirectory;
   }
 
+  @Override
+  public String toString() {
+    return "Variable[" + path + "]";
+  }
+
 }
