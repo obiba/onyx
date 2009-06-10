@@ -277,7 +277,23 @@ public class Variable implements Serializable {
   }
 
   /**
-   * Get the categories: the expected data values of the current variable.
+   * Get the regular variables (not categories).
+   * @return
+   */
+  public List<Variable> getRegularVariables() {
+    List<Variable> regulars = new ArrayList<Variable>();
+
+    for(Variable var : getVariables()) {
+      if(!Category.class.isInstance(var)) {
+        regulars.add(var);
+      }
+    }
+
+    return regulars;
+  }
+
+  /**
+   * Get the categories.
    * @return
    */
   public List<Category> getCategories() {
