@@ -64,4 +64,9 @@ public abstract class AbstractIntegrityCheck implements IntegrityCheck {
   }
 
   protected abstract Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService);
+
+  @Override
+  public String toString() {
+    return "IntegrityCheck-" + (type != null ? type : IntegrityCheckType.ERROR);
+  }
 }

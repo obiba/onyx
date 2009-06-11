@@ -126,6 +126,10 @@ public abstract class InstrumentParameter implements Serializable {
     return true;
   }
 
+  public IDataSource getCondition() {
+    return condition;
+  }
+
   /**
    * Returns a list of the values allowed for this parameter.
    * 

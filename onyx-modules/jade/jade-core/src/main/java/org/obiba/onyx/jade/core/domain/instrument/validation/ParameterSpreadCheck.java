@@ -169,4 +169,16 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     rangeCheck.setDecimalMinValueFemale(minCheckedValue);
     rangeCheck.setDecimalMaxValueFemale(maxCheckedValue);
   }
+
+  @Override
+  public String toString() {
+    String rval = super.toString() + "[" + rangeCheck;
+    if(percent != null) {
+      rval += ", " + percent + "%";
+    }
+    if(offset != null) {
+      rval += ", +/-" + offset;
+    }
+    return rval + "]";
+  }
 }

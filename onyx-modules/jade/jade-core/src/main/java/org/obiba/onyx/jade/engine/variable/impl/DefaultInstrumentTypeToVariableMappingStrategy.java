@@ -132,6 +132,18 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
         }
 
         addLocalizedAttributes(paramVariable, parameter.getCode());
+
+        if(parameter.getIntegrityChecks().size() > 0) {
+          paramVariable.addAttributes(new Attribute("validation", parameter.getIntegrityChecks().toString()));
+        }
+
+        if(parameter.getDataSource() != null) {
+          paramVariable.addAttributes(new Attribute("source", parameter.getDataSource().toString()));
+        }
+
+        if(parameter.getCondition() != null) {
+          paramVariable.addAttributes(new Attribute("condition", parameter.getCondition().toString()));
+        }
       }
     }
     return typeVariable;

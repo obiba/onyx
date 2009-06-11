@@ -100,4 +100,29 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
     return new Object[] { checkedParameter.getLabel(), getData().getValue() };
   }
 
+  @Override
+  public String toString() {
+    String op = "==";
+    if(operator != null) {
+      switch(operator) {
+      case EQUALS:
+        op = "==";
+        break;
+      case GREATER:
+        op = ">";
+        break;
+      case GREATER_EQUALS:
+        op = ">=";
+        break;
+      case LESSER:
+        op = "<";
+        break;
+      case LESSER_EQUALS:
+        op = "<=";
+        break;
+      }
+    }
+
+    return super.toString() + "[x " + op + " " + getData() + "]";
+  }
 }

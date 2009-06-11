@@ -34,9 +34,9 @@ public class InstrumentParameterDataSource implements IDataSource {
 
   private Integer measure;
 
-  private InstrumentRunService instrumentRunService;
+  private transient InstrumentRunService instrumentRunService;
 
-  private InstrumentService instrumentService;
+  private transient InstrumentService instrumentService;
 
   public InstrumentParameterDataSource(String instrumentType, String parameterCode) {
     super();
@@ -92,5 +92,14 @@ public class InstrumentParameterDataSource implements IDataSource {
 
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
+  }
+
+  @Override
+  public String toString() {
+    String rval = "Instrument[" + instrumentType + ", " + parameterCode;
+    if(measure != null) {
+      rval += ", " + measure;
+    }
+    return rval + "]";
   }
 }

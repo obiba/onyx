@@ -165,4 +165,60 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
     return withinRange;
   }
+
+  @Override
+  public String toString() {
+    StringBuffer rval = new StringBuffer(super.toString()).append("[");
+
+    boolean male = false;
+    if(integerMinValueMale != null || integerMaxValueMale != null || decimalMinValueMale != null || decimalMaxValueMale != null) {
+      rval.append("MALE[");
+      if(integerMinValueMale != null && integerMaxValueMale != null) {
+        rval.append(integerMinValueMale).append(" < x < ").append(integerMaxValueMale);
+      } else if(integerMinValueMale != null) {
+        rval.append("x > ").append(integerMinValueMale);
+      } else if(integerMaxValueMale != null) {
+        rval.append("x < ").append(integerMaxValueMale);
+      }
+      if(integerMinValueMale != null || integerMaxValueMale != null) {
+        rval.append(" || ");
+      }
+      if(decimalMinValueMale != null && decimalMaxValueMale != null) {
+        rval.append(decimalMinValueMale).append(" < x < ").append(decimalMaxValueMale);
+      } else if(decimalMinValueMale != null) {
+        rval.append("x > ").append(decimalMinValueMale);
+      } else if(decimalMaxValueMale != null) {
+        rval.append("x < ").append(decimalMaxValueMale);
+      }
+      rval.append("]");
+      male = true;
+    }
+
+    if(integerMinValueFemale != null || integerMaxValueFemale != null || decimalMinValueFemale != null || decimalMaxValueFemale != null) {
+      if(male) {
+        rval.append(", ");
+      }
+      rval.append("FEMALE[");
+      if(integerMinValueFemale != null && integerMaxValueFemale != null) {
+        rval.append(integerMinValueFemale).append(" < x < ").append(integerMaxValueFemale);
+      } else if(integerMinValueFemale != null) {
+        rval.append("x > ").append(integerMinValueFemale);
+      } else if(integerMaxValueFemale != null) {
+        rval.append("x < ").append(integerMaxValueFemale);
+      }
+      if(integerMinValueFemale != null || integerMaxValueFemale != null) {
+        rval.append(" || ");
+      }
+      if(decimalMinValueFemale != null && decimalMaxValueFemale != null) {
+        rval.append(decimalMinValueFemale).append(" < x < ").append(decimalMaxValueFemale);
+      } else if(decimalMinValueFemale != null) {
+        rval.append("x > ").append(decimalMinValueFemale);
+      } else if(decimalMaxValueFemale != null) {
+        rval.append("x < ").append(decimalMaxValueFemale);
+      }
+      rval.append("]");
+    }
+    rval.append("]");
+    return rval.toString();
+  }
 }
