@@ -127,11 +127,16 @@ public class ComparingDataSource implements IDataSource, Cloneable {
     }
     String rval = "Comparing[";
     if(dataSourceLeft != null) {
-      rval += dataSourceLeft + " ";
+      rval += dataSourceLeft;
+    } else {
+      rval += "x";
     }
-    rval += op;
+
+    rval += " " + op + " ";
     if(dataSourceRight != null) {
-      rval += " " + dataSourceRight;
+      rval += dataSourceRight;
+    } else {
+      rval += "y";
     }
     return rval + "]";
   }

@@ -28,6 +28,12 @@ public class DataSourceTest {
   public void testComparingToString() {
     ComparingDataSource ds = new ComparingDataSource(new CurrentDateSource(), ComparisonOperator.gt, new ParticipantPropertyDataSource("birthDate"));
     Assert.assertEquals("Comparing[CurrentDate > ParticipantProperty[birthDate]]", ds.toString());
+
+    ds = new ComparingDataSource(null, ComparisonOperator.gt, new ParticipantPropertyDataSource("birthDate"));
+    Assert.assertEquals("Comparing[x > ParticipantProperty[birthDate]]", ds.toString());
+
+    ds = new ComparingDataSource(new CurrentDateSource(), ComparisonOperator.gt, null);
+    Assert.assertEquals("Comparing[CurrentDate > y]", ds.toString());
   }
 
   @Test
