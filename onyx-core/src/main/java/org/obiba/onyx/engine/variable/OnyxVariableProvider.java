@@ -103,6 +103,8 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   private Version version;
 
+  private VariableHelper variableHelper;
+
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
   }
@@ -117,6 +119,10 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
     this.applicationConfigurationService = applicationConfigurationService;
+  }
+
+  public void setVariableHelper(VariableHelper variableHelper) {
+    this.variableHelper = variableHelper;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -240,7 +246,8 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT));
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-      entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType()));
+      Variable var = entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType()));
+      addLocalizedAttributes(var);
     }
 
     entity = admin.addVariable(new Variable(INTERVIEW));
@@ -257,6 +264,12 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_EVENT_REASON).setDataType(DataType.TEXT));
 
     return variables;
+  }
+
+  private void addLocalizedAttributes(Variable variable) {
+    if(variableHelper != null) {
+      variableHelper.addLocalizedAttributes(variable);
+    }
   }
 
 }
