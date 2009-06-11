@@ -32,7 +32,7 @@ public class DataSourceTest {
 
   @Test
   public void testComputingToString() {
-    ComputingDataSource computing = new ComputingDataSource(DataType.BOOLEAN, "$1 + $2 > 4.0");
+    ComputingDataSource computing = new ComputingDataSource(DataType.BOOLEAN, "\n     $1 +\t\n\r$2     \n> 4.0\n\r");
     computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(1)));
     computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(4)));
     Assert.assertEquals("Computing[$1 + $2 > 4.0,[Data[INTEGER:1], Data[INTEGER:4]]]", computing.toString());

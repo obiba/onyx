@@ -124,7 +124,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   @Override
   public String toString() {
-    String rval = "Computing[" + expression;
+    String rval = "Computing[" + expression.replaceAll("[\n\r]", "").replaceAll("\\s+", " ").trim();
     if(getDataSources().size() > 0) {
       rval += "," + getDataSources();
     }
