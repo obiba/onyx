@@ -25,6 +25,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
+import org.obiba.onyx.ruby.core.domain.Remark;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser;
@@ -103,10 +104,23 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   public Variable getRegisteredParticipantTubeVariable() {
 
     Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
-    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey("ruby"));
+    Variable subVariable = tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey("ruby"));
+    addLocalizedAttributes(subVariable, "Ruby.Barcode");
+
     tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE));
-    tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
-    tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));
+
+    subVariable = tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
+    addLocalizedAttributes(subVariable, "Ruby.Comment");
+
+    subVariable = tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));
+    subVariable.setMultiple(true);
+    addLocalizedAttributes(subVariable, "Ruby.Remark");
+    int pos = 1;
+    for(Remark remark : tubeRegistrationConfiguration.getAvailableRemarks()) {
+      Category cat = new Category(normalizeCode(remark.getCode()), Integer.toString(pos++));
+      addLocalizedAttributes(cat, remark.getCode());
+      subVariable.addCategory(cat);
+    }
 
     addBarcodePartVariables(tubeVariable);
 
@@ -159,7 +173,15 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
           datas.add(DataBuilder.buildDate(registeredTube.getRegistrationTime()));
         } else if(variable.getName().equals(REMARK_CODE)) {
           for(String code : registeredTube.getRemarks()) {
-            datas.add(DataBuilder.buildText(code));
+            datas.add(DataBuilder.buildText(normalizeCode(code)));
+          }
+        } else if(variable instanceof Category && variable.getParent().getName().equals(REMARK_CODE)) {
+          for(String code : registeredTube.getRemarks()) {
+            String normalizedCode = normalizeCode(code);
+            if(normalizedCode.equals(variable.getName())) {
+              datas.add(DataBuilder.buildBoolean(true));
+              break;
+            }
           }
         } else if(variable.getParent().getName().equals(REGISTERED_PARTICIPANT_TUBE)) { // barcodePartVariable
           Data barcodePartVariableData = getBarcodePartVariableData(registeredTube, variable);
@@ -189,6 +211,13 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   //
   // Methods
   //
+
+  /**
+   * Make sure there is no . in the variable name.
+   */
+  private String normalizeCode(String code) {
+    return code.replaceAll("\\.", "_");
+  }
 
   protected void addBarcodePartVariables(Variable tubeVariable) {
     // Add the barcode part variables. Only barcode parts with non-null variable
@@ -244,6 +273,18 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   private void addLocalizedAttributes(Variable variable, MessageSourceResolvable resolvable) {
     if(variableHelper != null) {
       variableHelper.addLocalizedAttributes(variable, resolvable);
+    }
+  }
+
+  private void addLocalizedAttributes(Variable variable) {
+    if(variableHelper != null) {
+      variableHelper.addLocalizedAttributes(variable);
+    }
+  }
+
+  private void addLocalizedAttributes(Variable variable, String property) {
+    if(variableHelper != null) {
+      variableHelper.addLocalizedAttributes(variable, property);
     }
   }
 
