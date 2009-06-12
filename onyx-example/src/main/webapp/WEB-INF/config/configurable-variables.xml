@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The configurable variables file allows new variables to be created that are based on existing variables.
+  In the example below a new variable named "PostalCodePrefix" is created. The "PostalCodePrefix" variable is
+  based on the existing variable "Onyx.Admin.Participant.Postal_Code". The "regexDataSource" dataSource is
+  used take the first three characters from the existing variable and use them for the newly created variable.
+  So if "Postal_Code" contained the value "T5G 2B1" then "PostalCodePrefix" would contain the value "T5G".
+  
+  When adding new configurable variables you may need to also modify the "export-destinations.xml" file in 
+  order to adjust the filters so that the new variable is exported.
+  
+  The new variable name must not include any separators. For example "Admin.PostalPostFix" is NOT permitted.
+
+  <dataSourceVariable>
+    <path>PostalCodePrefix</path>
+    <dataType>TEXT</dataType>
+    <dataSource class="regexDataSource">
+      <dataSource class="variableDataSource">
+        <path>Onyx.Admin.Participant.Postal_Code</path>
+      </dataSource>
+      <regex>^\s*([a-zA-Z]\d[a-zA-Z]).*$</regex>
+    </dataSource>
+  </dataSourceVariable>  
+-->
+<variables>
+
+</variables>
