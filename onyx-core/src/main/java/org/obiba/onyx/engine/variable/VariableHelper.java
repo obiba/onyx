@@ -47,14 +47,16 @@ public class VariableHelper implements ApplicationContextAware {
    * @param property
    */
   public void addLocalizedAttributes(Variable variable, String property) {
-    for(Locale locale : getLocales()) {
-      try {
-        String message = applicationContext.getMessage(property, null, locale);
-        if(message.trim().length() > 0) {
-          variable.addAttributes(new Attribute("label", locale, message));
+    if(property != null) {
+      for(Locale locale : getLocales()) {
+        try {
+          String message = applicationContext.getMessage(property, null, locale);
+          if(message.trim().length() > 0) {
+            variable.addAttributes(new Attribute("label", locale, message));
+          }
+        } catch(NoSuchMessageException ex) {
+          // ignore
         }
-      } catch(NoSuchMessageException ex) {
-        // ignore
       }
     }
   }
@@ -65,14 +67,16 @@ public class VariableHelper implements ApplicationContextAware {
    * @param resolvable
    */
   public void addLocalizedAttributes(Variable variable, MessageSourceResolvable resolvable) {
-    for(Locale locale : getLocales()) {
-      try {
-        String message = applicationContext.getMessage(resolvable, locale);
-        if(message.trim().length() > 0) {
-          variable.addAttributes(new Attribute("label", locale, message));
+    if(resolvable != null) {
+      for(Locale locale : getLocales()) {
+        try {
+          String message = applicationContext.getMessage(resolvable, locale);
+          if(message.trim().length() > 0) {
+            variable.addAttributes(new Attribute("label", locale, message));
+          }
+        } catch(NoSuchMessageException ex) {
+          // ignore
         }
-      } catch(NoSuchMessageException ex) {
-        // ignore
       }
     }
   }
