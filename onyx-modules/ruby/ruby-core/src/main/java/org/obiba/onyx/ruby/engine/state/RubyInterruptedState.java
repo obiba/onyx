@@ -43,9 +43,9 @@ public class RubyInterruptedState extends AbstractRubyStageState {
 
   @Override
   public void stop(Action action) {
-    log.debug("Ruby Stage {} is canceling", super.getStage().getName());
+    log.debug("Ruby Stage {} is canceling", getStage().getName());
 
-    activeTubeRegistrationService.deleteParticipantTubeRegistration();
+    activeTubeRegistrationService.deleteParticipantTubeRegistration(getStage().getName());
 
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);

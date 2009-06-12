@@ -1,12 +1,9 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
   <import resource="classpath:META-INF/spring/ruby-core/context.xml" />
-
-  <bean id="tubeToVariableMappingStrategy" class="org.obiba.onyx.ruby.engine.variable.impl.DefaultTubeToVariableMappingStrategy">
-    <property name="tubeRegistrationConfiguration" ref="tubeRegistrationConfiguration" />
-    <property name="queryService" ref="persistenceManager" />
-  </bean>
 
   <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
@@ -17,11 +14,22 @@
     </property>
     <property name="tubeToVariableMappingStrategy" ref="tubeToVariableMappingStrategy" />
   </bean>
+  
+  <bean id="tubeToVariableMappingStrategy" class="org.obiba.onyx.ruby.engine.variable.impl.DefaultTubeToVariableMappingStrategy">
+    <property name="queryService" ref="persistenceManager" />
+    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
+    <property name="variableRoot" value="SamplesCollection" /> 
+  </bean>
 
-  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+  <util:map id="tubeRegistrationConfigurationMap">
+    <entry key="BloodUrineSamplesCollection" value-ref="bloodUrineTubeRegistrationConfiguration"/>
+    <entry key="SalivaUrineSamplesCollection" value-ref="salivaUrineTubeRegistrationConfiguration"/>
+  </util:map>
+  
+  <bean id="bloodUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
-    <property name="expectedTubeCount" value="16" />
+    <property name="expectedTubeCount" value="15" />
 
     <property name="barcodeStructure">
       <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
@@ -57,6 +65,40 @@
                   <value>061</value>
                   <value>071</value>
                   <value>081</value>
+                  <value>091</value>
+                </set>
+              </property>
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>  
+
+  <bean id="salivaUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+    <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
+
+    <property name="expectedTubeCount" value="1" />
+
+    <property name="barcodeStructure">
+      <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
+        <property name="parsers">
+          <list>
+            <!-- Participant Code Parser -->
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.ParticipantCodeBarcodePartParser">
+              <property name="activeInterviewService" ref="activeInterviewService" />
+              <property name="size" value="7" />
+            </bean>
+            <!-- Tube Type Parser -->
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser">
+              <property name="variableName" value="tubeType" />
+              <property name="partTitle">
+                <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+                  <constructor-arg value="Ruby.BarcodePartColumn.TubeType" />
+                </bean>
+              </property>
+              <property name="acceptableValues">
+                <set>
                   <value>091</value>
                 </set>
               </property>

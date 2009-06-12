@@ -9,11 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import java.util.Map;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 
 public class TubeRegistrationPanel extends Panel {
@@ -28,7 +32,10 @@ public class TubeRegistrationPanel extends Panel {
   //
 
   @SpringBean
-  private TubeRegistrationConfiguration tubeRegistrationConfiguration;
+  private ActiveTubeRegistrationService activeTubeRegistrationService;
+
+  @SpringBean(name = "tubeRegistrationConfigurationMap")
+  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
   //
   // Constructors
@@ -38,6 +45,10 @@ public class TubeRegistrationPanel extends Panel {
     super(id);
 
     setOutputMarkupId(true);
+
+    ParticipantTubeRegistration participantTubeRegistration = activeTubeRegistrationService.getParticipantTubeRegistration();
+    String tubeSetName = participantTubeRegistration.getTubeSetName();
+    TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(tubeSetName);
 
     add(new TubeBarcodePanel("tubeBarcodePanel"));
     add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new Model("")));

@@ -11,6 +11,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="tubeRegistrationConfiguration" ref="tubeRegistrationConfiguration" />
+    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
   </bean>
 </beans>

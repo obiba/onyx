@@ -64,6 +64,6 @@ public class RubyCompletedState extends AbstractRubyStageState {
   @Override
   public void onExit(TransitionEvent event) {
     // ONYX-366: Delete participant tube registration whenever Ruby leaves the COMPLETED state.
-    activeTubeRegistrationService.deleteParticipantTubeRegistration();
+    activeTubeRegistrationService.deleteParticipantTubeRegistration(getStage().getName());
   }
 }

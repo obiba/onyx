@@ -1,8 +1,13 @@
 <stages>
 
   <stage>
-    <name>SamplesCollection</name>
+    <name>BloodUrineSamplesCollection</name>
     <module>ruby</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>Onyx.Consent.accepted</variablePath>
+    </stageDependencyCondition>
+    <!--
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
@@ -25,6 +30,40 @@
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
+    -->
   </stage>
 
+  <stage>
+    <name>SalivaUrineSamplesCollection</name>
+    <module>ruby</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>Onyx.Consent.accepted</variablePath>
+    </stageDependencyCondition>
+    <!--
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>Onyx.Consent.accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+    -->
+  </stage>
+  
 </stages>

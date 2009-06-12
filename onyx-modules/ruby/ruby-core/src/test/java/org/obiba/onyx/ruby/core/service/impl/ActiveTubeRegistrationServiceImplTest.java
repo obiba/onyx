@@ -19,8 +19,10 @@ import static org.junit.Assert.fail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -43,6 +45,8 @@ import org.springframework.context.MessageSourceResolvable;
  * Unit tests for <code>ActiveTubeRegistrationServiceImpl</code>
  */
 public class ActiveTubeRegistrationServiceImplTest {
+
+  private static final String TUBE_REGISTRATION_CONFIG_NAME = "tubeRegistrationConfiguration";
 
   private ActiveTubeRegistrationServiceImpl service;
 
@@ -71,7 +75,10 @@ public class ActiveTubeRegistrationServiceImplTest {
     service = new ActiveTubeRegistrationServiceImpl();
 
     service.setPersistenceManager(persistenceManagerMock);
-    service.setTubeRegistrationConfiguration(tubeRegistrationConfig);
+
+    Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigMap = new HashMap<String, TubeRegistrationConfiguration>();
+    tubeRegistrationConfigMap.put(TUBE_REGISTRATION_CONFIG_NAME, tubeRegistrationConfig);
+    service.setTubeRegistrationConfigurationMap(tubeRegistrationConfigMap);
   }
 
   /**
@@ -80,8 +87,24 @@ public class ActiveTubeRegistrationServiceImplTest {
    */
   @Test
   public void testGetExpectedTubeCount() {
+    Serializable registrationId = 1l;
+
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setId(registrationId);
+    registration.setTubeSetName(TUBE_REGISTRATION_CONFIG_NAME);
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
+
+    replay(persistenceManagerMock);
+
+    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+
     tubeRegistrationConfig.setExpectedTubeCount(10);
     int count = service.getExpectedTubeCount();
+
+    verify(persistenceManagerMock);
 
     Assert.assertEquals(10, count);
   }
@@ -95,16 +118,17 @@ public class ActiveTubeRegistrationServiceImplTest {
     Serializable registrationId = "123";
 
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setId(registrationId);
+    registration.setTubeSetName(TUBE_REGISTRATION_CONFIG_NAME);
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
     registration.addRegisteredParticipantTube(new RegisteredParticipantTube());
-    registration.setId(registrationId);
 
     expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration);
     expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
 
     replay(persistenceManagerMock);
 
-    service.start(participant);
+    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
     int count = service.getRegisteredTubeCount();
 
     verify(persistenceManagerMock);
@@ -127,6 +151,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     // Set up the Tube Registration object need to be created
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeSetName(TUBE_REGISTRATION_CONFIG_NAME);
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
     registration.setInterview(interview);
     registration.setStartTime(new Date());
@@ -144,7 +169,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     replay(persistenceManagerMock);
 
-    service.start(participant);
+    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
     List<MessageSourceResolvable> errors = service.registerTube(barcode);
 
     verify(persistenceManagerMock);
@@ -156,8 +181,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)} .
    */
   @Test
   public void testSetTubeComment() {
@@ -182,8 +206,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)} .
    */
   @Test
   public void testFailToSetTubeComment() {
@@ -207,8 +230,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeRemark(java.lang.String, org.obiba.onyx.ruby.core.domain.Remark)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeRemark(java.lang.String, org.obiba.onyx.ruby.core.domain.Remark)} .
    */
   @Test
   public void testSetTubeRemark() {
@@ -278,7 +300,7 @@ public class ActiveTubeRegistrationServiceImplTest {
     // before executing the unregisterTube()
     Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube));
 
-    service.start(participant);
+    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
     service.unregisterTube(barcode);
 
     verify(persistenceManagerMock);

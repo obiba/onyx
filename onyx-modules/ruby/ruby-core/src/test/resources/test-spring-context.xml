@@ -1,16 +1,24 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
   default-autowire="no">
   
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
-  <bean id="activeTubeRegistrationService" class="org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl" scope="session">
+  <bean id="activeTubeRegistrationService"
+    class="org.obiba.onyx.ruby.core.service.impl.hibernate.ActiveTubeRegistrationServiceHibernateImpl" scope="session">
+    <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="tubeRegistrationConfiguration" ref="tubeRegistrationConfiguration" />
+    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
   </bean>
+  
+  <util:map id="tubeRegistrationConfigurationMap">
+    <entry key="tubeRegistrationConfiguration" value-ref="tubeRegistrationConfiguration" />
+  </util:map>
   
   <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="classpath:/config" />

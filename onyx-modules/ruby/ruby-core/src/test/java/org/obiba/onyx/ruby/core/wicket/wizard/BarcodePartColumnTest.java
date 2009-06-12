@@ -10,7 +10,9 @@
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
@@ -20,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
@@ -66,7 +69,11 @@ public class BarcodePartColumnTest {
 
     BarcodePartColumn barcodePartColumn = new BarcodePartColumn(new Model("testPartTitle"), firstBarcodePartColumnIndex);
 
+    ParticipantTubeRegistration participantTubeRegistration = new ParticipantTubeRegistration();
+    participantTubeRegistration.setTubeSetName("SamplesCollection");
+
     RegisteredParticipantTube registeredParticipantTube = new RegisteredParticipantTube();
+    registeredParticipantTube.setParticipantTubeRegistration(participantTubeRegistration);
     registeredParticipantTube.setBarcode("1234567011");
 
     Item cellItem = new Item("itemId", firstBarcodePartColumnIndex, new Model());
@@ -103,7 +110,12 @@ public class BarcodePartColumnTest {
 
   private void initApplicationContext() {
     applicationContextMock = new ExtendedApplicationContextMock();
+
     applicationContextMock.putBean("tubeRegistrationConfiguration", tubeRegistrationConfiguration);
+
+    Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap = new HashMap<String, TubeRegistrationConfiguration>();
+    tubeRegistrationConfigurationMap.put("SamplesCollection", tubeRegistrationConfiguration);
+    applicationContextMock.putBean("tubeRegistrationConfigurationMap", tubeRegistrationConfigurationMap);
 
     MockSpringApplication application = new MockSpringApplication();
     application.setApplicationContext(applicationContextMock);

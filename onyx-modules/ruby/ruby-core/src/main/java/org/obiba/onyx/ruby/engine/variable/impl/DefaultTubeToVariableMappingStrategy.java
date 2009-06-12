@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.engine.variable.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -65,14 +66,24 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
   private EntityQueryService queryService;
 
-  private TubeRegistrationConfiguration tubeRegistrationConfiguration;
+  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
+
+  private String variableRoot;
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
   }
 
-  public void setTubeRegistrationConfiguration(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
-    this.tubeRegistrationConfiguration = tubeRegistrationConfiguration;
+  public void setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap) {
+    this.tubeRegistrationConfigurationMap = tubeRegistrationConfigurationMap;
+  }
+
+  public void setVariableRoot(String variableRoot) {
+    this.variableRoot = variableRoot;
+  }
+
+  public String getVariableRoot() {
+    return variableRoot;
   }
 
   public Variable getParticipantTubeRegistrationVariable() {
@@ -90,7 +101,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
     return runVariable;
   }
 
-  public Variable getRegisteredParticipantTubeVariable() {
+  public Variable getRegisteredParticipantTubeVariable(String stageName) {
 
     Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
     tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey("ruby"));
@@ -98,15 +109,16 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
     tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
     tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));
 
-    addBarcodePartVariables(tubeVariable);
+    addBarcodePartVariables(tubeVariable, stageName);
 
     return tubeVariable;
   }
 
-  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData) {
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData, String stageName) {
 
     ParticipantTubeRegistration tubeRegistration = new ParticipantTubeRegistration();
     tubeRegistration.setInterview(participant.getInterview());
+    tubeRegistration.setTubeSetName(stageName);
     tubeRegistration = queryService.matchOne(tubeRegistration);
     if(tubeRegistration == null) {
       return varData;
@@ -121,7 +133,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
         varData.addData(DataBuilder.buildText(tubeRegistration.getOtherContraindication()));
       }
     } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
-      tubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfiguration);
+      tubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfigurationMap.get(stageName));
       Contraindication ci = tubeRegistration.getContraindication();
       if(ci != null) {
         if(variable.getName().equals(CONTRAINDICATION_CODE)) {
@@ -150,7 +162,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
             datas.add(DataBuilder.buildText(code));
           }
         } else if(variable.getParent().getName().equals(REGISTERED_PARTICIPANT_TUBE)) { // barcodePartVariable
-          Data barcodePartVariableData = getBarcodePartVariableData(registeredTube, variable);
+          Data barcodePartVariableData = getBarcodePartVariableData(registeredTube, variable, stageName);
           if(barcodePartVariableData != null) {
             datas.add(barcodePartVariableData);
           }
@@ -173,9 +185,10 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   // Methods
   //
 
-  protected void addBarcodePartVariables(Variable tubeVariable) {
+  protected void addBarcodePartVariables(Variable tubeVariable, String stageName) {
     // Add the barcode part variables. Only barcode parts with non-null variable
     // names should be included (those are the variables).
+    TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stageName);
     BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
 
     for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
@@ -188,9 +201,10 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
   }
 
-  protected Data getBarcodePartVariableData(RegisteredParticipantTube registeredTube, Variable barcodePartVariable) {
+  protected Data getBarcodePartVariableData(RegisteredParticipantTube registeredTube, Variable barcodePartVariable, String stageName) {
     Data barcodePartVariableData = null;
 
+    TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stageName);
     BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
     List<IBarcodePartParser> partParsers = barcodeStructure.getParsers();
     List<BarcodePart> barcodeParts = barcodeStructure.parseBarcode(registeredTube.getBarcode());
