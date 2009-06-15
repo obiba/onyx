@@ -116,5 +116,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="minimumCharacterGroupsUsage" value="${org.obiba.onyx.password.validation.minimumCharacterGroupsUsage}" />
     <property name="preventUserAttributeUsage" value="${org.obiba.onyx.password.validation.preventUserAttributeUsage}" />
   </bean>
+    
+  <bean id="variableHelper" class="org.obiba.onyx.engine.variable.VariableHelper">
+  </bean>  
 
 </beans>
