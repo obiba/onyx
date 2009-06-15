@@ -34,20 +34,21 @@ public class ConfigurableVariableProviderTest {
   @Before
   public void setUp() throws Exception {
     IDataSource postalCodeDataSource = new FixedDataSource(new Data(DataType.TEXT, "M5G 2C1"));
-    DataSourceVariable dataSourceVariable = new DataSourceVariable("Onyx.participant.address.postalCode", DataType.TEXT, postalCodeDataSource);
+    DataSourceVariable dataSourceVariable = new DataSourceVariable("PostalCode", DataType.TEXT, postalCodeDataSource);
     configurableVariableProvider = ConfigurableVariableProvider.getConfigurableVariableProvider(Arrays.asList(new DataSourceVariable[] { dataSourceVariable }));
   }
 
   @Test
   public void getVariablesTest() {
     List<Variable> variables = configurableVariableProvider.getVariables();
-    Assert.assertEquals("Onyx.participant.address.postalCode", variables.get(0).getName());
+    Assert.assertEquals("Configured", variables.get(0).getName());
+    Assert.assertEquals("PostalCode", variables.get(0).getVariables().get(0).getName());
   }
 
   @Test
   public void getVariableDataTest() {
     List<Variable> variables = configurableVariableProvider.getVariables();
-    VariableData variableData = configurableVariableProvider.getVariableData(createParticipant(), variables.get(0), new DefaultVariablePathNamingStrategy());
+    VariableData variableData = configurableVariableProvider.getVariableData(createParticipant(), variables.get(0).getVariables().get(0), new DefaultVariablePathNamingStrategy());
     List<Data> datas = variableData.getDatas();
     Assert.assertEquals("M5G 2C1", datas.get(0).getValue());
   }
