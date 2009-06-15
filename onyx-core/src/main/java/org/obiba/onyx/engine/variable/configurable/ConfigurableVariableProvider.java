@@ -26,6 +26,9 @@ import org.obiba.onyx.engine.variable.VariableData;
  */
 public class ConfigurableVariableProvider implements IVariableProvider {
 
+  /** Name of parent variable containing all the configured variables. */
+  public static final String CONFIGURED = "Configured";
+
   private final List<DataSourceVariable> dataSourceVariables;
 
   private static ConfigurableVariableProvider configurableVariableProvider;
@@ -51,7 +54,9 @@ public class ConfigurableVariableProvider implements IVariableProvider {
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     for(DataSourceVariable dataSourceVariable : dataSourceVariables) {
       if(dataSourceVariable.getPath().equals(variable.getName())) {
-        return dataSourceVariable.getVariableData(participant);
+        VariableData variableData = dataSourceVariable.getVariableData(participant);
+        variableData.setVariablePath(variablePathNamingStrategy.getPath(variable));
+        return variableData;
       }
     }
     return null;
@@ -59,12 +64,13 @@ public class ConfigurableVariableProvider implements IVariableProvider {
 
   public List<Variable> getVariables() {
     if(variables == null) {
-      variables = new ArrayList<Variable>(dataSourceVariables.size());
+      variables = new ArrayList<Variable>();
+      Variable configured = new Variable(CONFIGURED);
+      variables.add(configured);
       for(DataSourceVariable dataSourceVariable : dataSourceVariables) {
         Variable variable = new Variable(dataSourceVariable.getPath());
-
         variable.setDataType(dataSourceVariable.getDataType());
-        variables.add(variable);
+        configured.addVariable(variable);
       }
     }
     return variables;
