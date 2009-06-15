@@ -23,7 +23,7 @@
 
   <util:map id="tubeRegistrationConfigurationMap">
     <entry key="BloodUrineSamplesCollection" value-ref="bloodUrineTubeRegistrationConfiguration"/>
-    <entry key="SalivaUrineSamplesCollection" value-ref="salivaUrineTubeRegistrationConfiguration"/>
+    <entry key="UrineSamplesCollection" value-ref="urineTubeRegistrationConfiguration"/>
   </util:map>
   
   <bean id="bloodUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
@@ -75,7 +75,7 @@
     </property>
   </bean>  
 
-  <bean id="salivaUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+  <bean id="urineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
     <property name="expectedTubeCount" value="1" />
