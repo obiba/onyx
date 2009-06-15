@@ -193,7 +193,10 @@ public class Participant extends AbstractEntity {
 
   public void setInterview(Interview interview) {
     this.interview = interview;
-    this.interview.setParticipant(this);
+
+    if(interview != null) {
+      this.interview.setParticipant(this);
+    }
   }
 
   public void setSiteNo(String siteNo) {

@@ -27,9 +27,11 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
+import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
@@ -46,13 +48,23 @@ import org.springframework.context.MessageSourceResolvable;
  */
 public class ActiveTubeRegistrationServiceImplTest {
 
-  private static final String TUBE_REGISTRATION_CONFIG_NAME = "tubeRegistrationConfiguration";
+  /**
+   * Name of first tube registration configuration.
+   */
+  private static final String FIRST_TUBE_REGISTRATION_CONFIG_NAME = "bloodTubeRegistrationConfiguration";
+
+  /**
+   * Name of second tube registration configuration.
+   */
+  private static final String SECOND_TUBE_REGISTRATION_CONFIG_NAME = "urineTubeRegistrationConfiguration";
 
   private ActiveTubeRegistrationServiceImpl service;
 
   private PersistenceManager persistenceManagerMock;
 
-  private TubeRegistrationConfiguration tubeRegistrationConfig;
+  private TubeRegistrationConfiguration firstTubeRegistrationConfig;
+
+  private TubeRegistrationConfiguration secondTubeRegistrationConfig;
 
   private Participant participant;
 
@@ -70,15 +82,116 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     persistenceManagerMock = createMock(PersistenceManager.class);
 
-    tubeRegistrationConfig = createTubeRegistrationConfiguration();
+    Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigMap = new HashMap<String, TubeRegistrationConfiguration>();
+    firstTubeRegistrationConfig = createTubeRegistrationConfiguration();
+    tubeRegistrationConfigMap.put(FIRST_TUBE_REGISTRATION_CONFIG_NAME, firstTubeRegistrationConfig);
+    secondTubeRegistrationConfig = createTubeRegistrationConfiguration();
+    tubeRegistrationConfigMap.put(SECOND_TUBE_REGISTRATION_CONFIG_NAME, secondTubeRegistrationConfig);
 
     service = new ActiveTubeRegistrationServiceImpl();
-
     service.setPersistenceManager(persistenceManagerMock);
-
-    Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigMap = new HashMap<String, TubeRegistrationConfiguration>();
-    tubeRegistrationConfigMap.put(TUBE_REGISTRATION_CONFIG_NAME, tubeRegistrationConfig);
     service.setTubeRegistrationConfigurationMap(tubeRegistrationConfigMap);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testStartWithNullParticipant() {
+    service.start(null, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testStartWithNullInterview() {
+    participant.setInterview(null);
+    service.start(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+  }
+
+  @Test
+  public void testResumeFirstTubeRegistrationStage() {
+    ParticipantTubeRegistration resumedParticipantTubeRegistration = new ParticipantTubeRegistration();
+    resumedParticipantTubeRegistration.setId(1l);
+    List<ParticipantTubeRegistration> results = new ArrayList<ParticipantTubeRegistration>();
+    results.add(resumedParticipantTubeRegistration);
+
+    expect(persistenceManagerMock.match((ParticipantTubeRegistration) EasyMock.anyObject(), (SortingClause) EasyMock.anyObject())).andReturn(results);
+
+    replay(persistenceManagerMock);
+
+    service.resume(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+
+    verify(persistenceManagerMock);
+
+    // Verify that the resumed ParticipantTubeRegistration has the expected TubeRegistrationConfiguration.
+    Assert.assertEquals(firstTubeRegistrationConfig, resumedParticipantTubeRegistration.getTubeRegistrationConfig());
+  }
+
+  @Test
+  public void testResumeSecondTubeRegistrationStage() {
+    ParticipantTubeRegistration resumedParticipantTubeRegistration = new ParticipantTubeRegistration();
+    resumedParticipantTubeRegistration.setId(1l);
+    List<ParticipantTubeRegistration> results = new ArrayList<ParticipantTubeRegistration>();
+    results.add(resumedParticipantTubeRegistration);
+
+    expect(persistenceManagerMock.match((ParticipantTubeRegistration) EasyMock.anyObject(), (SortingClause) EasyMock.anyObject())).andReturn(results);
+
+    replay(persistenceManagerMock);
+
+    service.resume(participant, SECOND_TUBE_REGISTRATION_CONFIG_NAME);
+
+    verify(persistenceManagerMock);
+
+    // Verify that the resumed ParticipantTubeRegistration has the expected TubeRegistrationConfiguration.
+    Assert.assertEquals(secondTubeRegistrationConfig, resumedParticipantTubeRegistration.getTubeRegistrationConfig());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testResumeWithNullParticipant() {
+    service.resume(null, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testResumeWithNullInterview() {
+    participant.setInterview(null);
+    service.resume(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testResumeWithNullTubeSetName() {
+    service.resume(participant, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testResumeWithUnknownTubeSetName() {
+    service.resume(participant, "bogusTubeSetName");
+  }
+
+  /**
+   * Tests the case of an unexpected resume (i.e., no <code>ParticipantTubeRegistration</code> of the specified type
+   * currently exists).
+   */
+  @Test(expected = IllegalStateException.class)
+  public void testUnexpectedResume() {
+    service.resume(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+  }
+
+  @Test
+  public void testDeleteParticipantTubeRegistration() {
+    ParticipantTubeRegistration participantTubeRegistration = new ParticipantTubeRegistration();
+    participantTubeRegistration.setId(1l);
+    participantTubeRegistration.setTubeRegistrationConfig(firstTubeRegistrationConfig);
+    participantTubeRegistration.setInterview(interview);
+    participantTubeRegistration.setTubeSetName(FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+    participantTubeRegistration.setStartTime(new Date());
+
+    expect(persistenceManagerMock.save((ParticipantTubeRegistration) EasyMock.anyObject())).andReturn(participantTubeRegistration);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, 1l)).andReturn(participantTubeRegistration);
+    persistenceManagerMock.delete(participantTubeRegistration);
+
+    replay(persistenceManagerMock);
+
+    participantTubeRegistration = service.start(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+
+    service.deleteParticipantTubeRegistration(FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+
+    verify(persistenceManagerMock);
   }
 
   /**
@@ -91,17 +204,17 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setId(registrationId);
-    registration.setTubeSetName(TUBE_REGISTRATION_CONFIG_NAME);
-    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setTubeSetName(FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+    registration.setTubeRegistrationConfig(firstTubeRegistrationConfig);
 
     expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration);
     expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
 
     replay(persistenceManagerMock);
 
-    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+    service.start(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
 
-    tubeRegistrationConfig.setExpectedTubeCount(10);
+    firstTubeRegistrationConfig.setExpectedTubeCount(10);
     int count = service.getExpectedTubeCount();
 
     verify(persistenceManagerMock);
@@ -119,8 +232,8 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setId(registrationId);
-    registration.setTubeSetName(TUBE_REGISTRATION_CONFIG_NAME);
-    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setTubeSetName(FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+    registration.setTubeRegistrationConfig(firstTubeRegistrationConfig);
     registration.addRegisteredParticipantTube(new RegisteredParticipantTube());
 
     expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration);
@@ -128,7 +241,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     replay(persistenceManagerMock);
 
-    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+    service.start(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
     int count = service.getRegisteredTubeCount();
 
     verify(persistenceManagerMock);
@@ -151,8 +264,8 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     // Set up the Tube Registration object need to be created
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
-    registration.setTubeSetName(TUBE_REGISTRATION_CONFIG_NAME);
-    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setTubeSetName(FIRST_TUBE_REGISTRATION_CONFIG_NAME);
+    registration.setTubeRegistrationConfig(firstTubeRegistrationConfig);
     registration.setInterview(interview);
     registration.setStartTime(new Date());
     registration.setId(registrationId);
@@ -169,7 +282,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     replay(persistenceManagerMock);
 
-    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+    service.start(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
     List<MessageSourceResolvable> errors = service.registerTube(barcode);
 
     verify(persistenceManagerMock);
@@ -281,7 +394,7 @@ public class ActiveTubeRegistrationServiceImplTest {
     tube1.setBarcode("111");
 
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
-    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setTubeRegistrationConfig(firstTubeRegistrationConfig);
     registration.addRegisteredParticipantTube(tube);
     registration.addRegisteredParticipantTube(tube1);
     registration.setInterview(interview);
@@ -300,7 +413,7 @@ public class ActiveTubeRegistrationServiceImplTest {
     // before executing the unregisterTube()
     Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube));
 
-    service.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+    service.start(participant, FIRST_TUBE_REGISTRATION_CONFIG_NAME);
     service.unregisterTube(barcode);
 
     verify(persistenceManagerMock);
