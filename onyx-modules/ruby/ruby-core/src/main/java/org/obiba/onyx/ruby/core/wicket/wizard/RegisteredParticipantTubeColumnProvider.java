@@ -138,10 +138,7 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
         RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
 
         String tubeSetName = registeredParticipantTube.getParticipantTubeRegistration().getTubeSetName();
-        log.info("tubeSetName = " + tubeSetName);
-        log.info("tubeRegConfigMap is null = " + (tubeRegistrationConfigurationMap == null));
         TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(tubeSetName);
-        log.info("tubeRegConfig is null = " + (tubeRegistrationConfiguration == null));
 
         Set<String> tubeRemarks = registeredParticipantTube.getRemarks();
         List<Remark> configuredRemarks = tubeRegistrationConfiguration.getAvailableRemarks();
