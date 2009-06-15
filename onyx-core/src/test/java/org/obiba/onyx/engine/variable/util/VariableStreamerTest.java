@@ -11,6 +11,8 @@ package org.obiba.onyx.engine.variable.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.junit.Assert;
@@ -128,6 +130,11 @@ public class VariableStreamerTest {
   @Test
   public void testVariableDataStreaming() {
     VariableDataSet variableDataSet = new VariableDataSet();
+    Calendar cal = new GregorianCalendar();
+    cal.set(Calendar.YEAR, 2009);
+    cal.set(Calendar.MONTH, 6);
+    cal.set(Calendar.DAY_OF_MONTH, 15);
+    variableDataSet.setExportDate(cal.getTime());
     variableDataSet.addVariableData(new VariableData("Onyx.blabla", DataBuilder.buildBoolean(true)));
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -137,10 +144,12 @@ public class VariableStreamerTest {
 
     variableDataSet = VariableStreamer.fromXML(new ByteArrayInputStream(os.toByteArray()));
     Assert.assertNotNull(variableDataSet);
+    Assert.assertEquals(cal.getTime(), variableDataSet.getExportDate());
     Assert.assertEquals(1, variableDataSet.getVariableDatas().size());
     Assert.assertEquals("Onyx.blabla", variableDataSet.getVariableDatas().get(0).getVariablePath());
     Assert.assertEquals(1, variableDataSet.getVariableDatas().get(0).getDatas().size());
     Assert.assertEquals(DataBuilder.buildBoolean(true), variableDataSet.getVariableDatas().get(0).getDatas().get(0));
+
   }
 
   @Test

@@ -23,7 +23,6 @@ import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.VariableDataSet;
@@ -106,12 +105,16 @@ public class OnyxDataExport {
       Participant participant = iterator.next();
       // Export completed interviews only
       Interview interview = participant.getInterview();
-      if(interview == null || interview.getStatus() != InterviewStatus.COMPLETED) {
+      if(interview == null /* || interview.getStatus() != InterviewStatus.COMPLETED */) {
         iterator.remove();
       }
     }
 
     if(participants.size() > 0) {
+
+      // same export date for every participant and every destinations: kind of system snapshot.
+      Date exportDate = new Date();
+
       for(OnyxDataExportDestination destination : this.exportDestinations) {
         log.info("Exporting to destination {}", destination.getName());
         OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
@@ -137,6 +140,7 @@ public class OnyxDataExport {
             String entryName = participant.getBarcode() + ".xml";
             OutputStream os = exportStrategy.newEntry(entryName);
             VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+            participantData.setExportDate(exportDate);
             VariableStreamer.toXML(participantData, os);
             os.flush();
 
