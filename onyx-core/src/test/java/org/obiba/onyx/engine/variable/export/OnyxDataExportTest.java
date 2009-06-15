@@ -120,6 +120,8 @@ public class OnyxDataExportTest {
     byte data[] = baos.toByteArray();
     Assert.assertNotNull(data);
     String xml = new String(data);
+    // clean the current export date for compare
+    xml = xml.replaceAll("variableDataSet exportDate=\".*\"", "variableDataSet");
 
     // System.out.println("-----------------------------------------------------------------------");
     // System.out.println(xml);
@@ -165,6 +167,9 @@ public class OnyxDataExportTest {
     byte data[] = baos.toByteArray();
     Assert.assertNotNull(data);
     String xml = new String(data);
+    // clean the current export date for compare
+    xml = xml.replaceAll("variableDataSet exportDate=\".*\"", "variableDataSet");
+
     String expectedData = getExpectedOutput("filteredOutput.xml");
     Assert.assertEquals(expectedData, xml);
   }
