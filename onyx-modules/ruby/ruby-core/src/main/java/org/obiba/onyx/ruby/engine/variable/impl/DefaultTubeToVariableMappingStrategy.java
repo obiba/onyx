@@ -15,7 +15,6 @@ import java.util.List;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.engine.variable.Attribute;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
@@ -124,7 +123,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
     addBarcodePartVariables(tubeVariable);
 
-    tubeVariable.addAttributes(new Attribute(VariableHelper.OCCURRENCE, tubeRegistrationConfiguration.getExpectedTubeCount()));
+    VariableHelper.addConditionAttribute(tubeVariable, tubeRegistrationConfiguration.getExpectedTubeCount());
 
     return tubeVariable;
   }

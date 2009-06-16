@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.engine.variable.Attribute;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
@@ -105,42 +104,51 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       for(InstrumentParameter parameter : parameters) {
 
         Variable paramVariable = new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit());
+
         if(type.isRepeatable() && parameter instanceof InstrumentOutputParameter && !parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+
           Variable measureVariable = typeVariable.getVariable(MEASURE);
+          // create the Measure variable in case of a repeatable instrument type.
           if(measureVariable == null) {
             measureVariable = typeVariable.addVariable(new Variable(MEASURE).setDataType(DataType.TEXT).setRepeatable(true));
             measureVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
             measureVariable.addVariable(new Variable(TIME).setDataType(DataType.DATE));
             measureVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+
+            // add the rule that applies to the count of occurrences
+            VariableHelper.addOccurrenceCountAttribute(measureVariable, type.getExpectedMeasureCount().toString());
           }
           measureVariable.addVariable(paramVariable);
         } else {
           typeVariable.addVariable(paramVariable);
-          if(parameter instanceof InterpretativeParameter) {
-            paramVariable.addCategories(new Category(InterpretativeParameter.YES, "1"), new Category(InterpretativeParameter.NO, "0"));
-          } else if(parameter.getAllowedValues().size() > 0) {
-            int pos = 1;
-            for(Data allowedValue : parameter.getAllowedValues()) {
-              String code = allowedValue.getValueAsString();
-              Category category = new Category(code, Integer.toString(pos++));
-              addLocalizedAttributes(category, code);
-              paramVariable.addCategory(category);
-            }
+
+        }
+
+        // categorical variables
+        if(parameter instanceof InterpretativeParameter) {
+          paramVariable.addCategories(new Category(InterpretativeParameter.YES, "1"), new Category(InterpretativeParameter.NO, "0"));
+        } else if(parameter.getAllowedValues().size() > 0) {
+          int pos = 1;
+          for(Data allowedValue : parameter.getAllowedValues()) {
+            String code = allowedValue.getValueAsString();
+            Category category = new Category(code, Integer.toString(pos++));
+            addLocalizedAttributes(category, code);
+            paramVariable.addCategory(category);
           }
         }
 
         addLocalizedAttributes(paramVariable, parameter.getCode());
 
         if(parameter.getIntegrityChecks().size() > 0) {
-          paramVariable.addAttributes(new Attribute("validation", parameter.getIntegrityChecks().toString()));
+          VariableHelper.addValidationAttribute(paramVariable, parameter.getIntegrityChecks().toString());
         }
 
         if(parameter.getDataSource() != null) {
-          paramVariable.addAttributes(new Attribute("source", parameter.getDataSource().toString()));
+          VariableHelper.addSourceAttribute(paramVariable, parameter.getDataSource().toString());
         }
 
         if(parameter.getCondition() != null) {
-          paramVariable.addAttributes(new Attribute("condition", parameter.getCondition().toString()));
+          VariableHelper.addConditionAttribute(paramVariable, parameter.getCondition().toString());
         }
       }
     }
@@ -153,14 +161,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       return varData;
     }
 
-    if(variable instanceof Category) {
-      // parameter name is the parent variable
-      String parameterCode = variable.getParent().getName();
-      Data data = getInstrumentRunValue(participant, variable, parameterCode);
-      if(data != null && variable.getName().equals(data.getValueAsString())) {
-        varData.addData(DataBuilder.buildBoolean(true));
-      }
-    } else if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE)) {
+    if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE) || (variable instanceof Category && variable.getParent().getParent().getName().equals(MEASURE))) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
@@ -172,6 +173,13 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
           if(variable.getName().equals(MEASURE)) {
             varData.addData(DataBuilder.buildText(measure.getId().toString()));
+          } else if(variable instanceof Category) {
+            // parameter name is the parent variable name
+            String parameterCode = variable.getParent().getName();
+            Data parentData = getInstrumentRunValue(participant, variable, parameterCode);
+            if(parentData != null && variable.getName().equals(parentData.getValueAsString())) {
+              data = DataBuilder.buildBoolean(true);
+            }
           } else if(variable.getName().equals(USER) && measure.getUser() != null) {
             data = DataBuilder.buildText(measure.getUser().getLogin());
           } else if(variable.getName().equals(TIME) && measure.getTime() != null) {
@@ -179,7 +187,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           } else if(variable.getName().equals(BARCODE) && measure.getInstrumentBarcode() != null) {
             data = DataBuilder.buildText(measure.getInstrumentBarcode());
           } else {
-            // variable name is the parameter name
+            // parameter name is the variable name
             String parameterCode = variable.getName();
             InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
             InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
@@ -196,6 +204,13 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
           measurePosition++;
         }
+      }
+    } else if(variable instanceof Category) {
+      // parameter name is the parent variable name
+      String parameterCode = variable.getParent().getName();
+      Data data = getInstrumentRunValue(participant, variable, parameterCode);
+      if(data != null && variable.getName().equals(data.getValueAsString())) {
+        varData.addData(DataBuilder.buildBoolean(true));
       }
     } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());

@@ -22,13 +22,21 @@ import org.springframework.context.NoSuchMessageException;
  */
 public class VariableHelper implements ApplicationContextAware {
 
+  public static final String LABEL = "label";
+
   public static final String VALIDATION = "validation";
 
   public static final String CONDITION = "condition";
 
   public static final String SOURCE = "source";
 
-  public static final String OCCURRENCE = "occurrence";
+  public static final String OCCURRENCECOUNT = "occurrenceCount";
+
+  public static final String REQUIRED = "required";
+
+  public static final String MINCOUNT = "minCount";
+
+  public static final String MAXCOUNT = "maxCount";
 
   private ApplicationContext applicationContext;
 
@@ -52,7 +60,7 @@ public class VariableHelper implements ApplicationContextAware {
         try {
           String message = applicationContext.getMessage(property, null, locale);
           if(message.trim().length() > 0) {
-            variable.addAttributes(new Attribute("label", locale, message));
+            addAttribute(variable, locale, LABEL, message);
           }
         } catch(NoSuchMessageException ex) {
           // ignore
@@ -72,7 +80,7 @@ public class VariableHelper implements ApplicationContextAware {
         try {
           String message = applicationContext.getMessage(resolvable, locale);
           if(message.trim().length() > 0) {
-            variable.addAttributes(new Attribute("label", locale, message));
+            addAttribute(variable, locale, LABEL, message);
           }
         } catch(NoSuchMessageException ex) {
           // ignore
@@ -98,21 +106,43 @@ public class VariableHelper implements ApplicationContextAware {
     addLocalizedAttributes(variable, variable.getName());
   }
 
-  public void addConditionAttribute(Variable variable, Object source) {
+  public static void addConditionAttribute(Variable variable, Object source) {
     addAttribute(variable, CONDITION, source);
   }
 
-  public void addValidationAttribute(Variable variable, Object source) {
+  public static void addValidationAttribute(Variable variable, Object source) {
     addAttribute(variable, VALIDATION, source);
   }
 
-  public void addSourceAttribute(Variable variable, Object source) {
+  public static void addSourceAttribute(Variable variable, Object source) {
     addAttribute(variable, SOURCE, source);
   }
 
-  private void addAttribute(Variable variable, String key, Object source) {
+  public static void addRequiredAttribute(Variable variable, Object source) {
+    addAttribute(variable, REQUIRED, source);
+  }
+
+  public static void addMinCountAttribute(Variable variable, Object source) {
+    addAttribute(variable, MINCOUNT, source);
+  }
+
+  public static void addMaxCountAttribute(Variable variable, Object source) {
+    addAttribute(variable, MAXCOUNT, source);
+  }
+
+  public static void addOccurrenceCountAttribute(Variable variable, Object source) {
+    addAttribute(variable, OCCURRENCECOUNT, source);
+  }
+
+  public static void addAttribute(Variable variable, String key, Object source) {
     if(source != null) {
       variable.addAttributes(new Attribute(key, source.toString()));
+    }
+  }
+
+  public static void addAttribute(Variable variable, Locale locale, String key, Object source) {
+    if(source != null) {
+      variable.addAttributes(new Attribute(key, locale, source.toString()));
     }
   }
 
