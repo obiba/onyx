@@ -219,6 +219,12 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     }
   }
 
+  /**
+   * Localization of the open answer category.
+   * @param category
+   * @param openAnswerDefinition
+   * @param defaultValue
+   */
   private void addLocalizedAttributes(Category category, OpenAnswerDefinition openAnswerDefinition, String defaultValue) {
     if(questionnaireBundle != null) {
       for(Locale locale : questionnaireBundle.getAvailableLanguages()) {
@@ -226,7 +232,7 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
           String stringResource = QuestionnaireStringResourceModelHelper.getMessage(questionnaireBundle, openAnswerDefinition, defaultValue, null, locale);
           if(stringResource.trim().length() > 0) {
             String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
-            VariableHelper.addAttribute(category, locale, defaultValue, noHTMLString);
+            VariableHelper.addAttribute(category, locale, VariableHelper.LABEL, noHTMLString);
           }
         } catch(NoSuchMessageException ex) {
           // ignored
