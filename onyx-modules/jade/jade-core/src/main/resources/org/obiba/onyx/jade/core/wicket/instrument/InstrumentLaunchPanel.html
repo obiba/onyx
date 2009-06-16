@@ -5,7 +5,13 @@
 	<ul>
 		<li wicket:id="repeat"><span wicket:id="instruction"/></li>
 	</ul>
-	<p>
-		<span wicket:id="general"/>&nbsp;<input class="obiba-button ui-corner-all" type="button" wicket:id="start" wicket:message="value:Start" />
-	</p>	
+  
+  <table>
+    <tr>
+      <td wicket:id="general">[Click Start button to launch automatic measurement]</td><td><input class="obiba-button ui-corner-all" type="button" wicket:id="start" wicket:message="value:Start" /></td>
+    </tr>
+    <tr wicket:id="manualButtonBlock">
+      <td><wicket:message key="manualButtonDescription">[Click Add button to enter values manually]</wicket:message></td><td><input class="obiba-button ui-corner-all" type="button" wicket:id="manualButton" wicket:message="value:Add" /></td>
+    </tr>
+  </table>
 </wicket:panel>

@@ -104,6 +104,18 @@ public class InstrumentType {
   }
 
   /**
+   * Returns true if at least one {@link InstrumentParameter} may be captured manually. This indicates that measurements
+   * for this instrument may be captured either manually or automatically.
+   * @return True if manual capture is permitted.
+   */
+  public boolean isManualCaptureAllowed() {
+    for(InstrumentParameter instrumentParameter : instrumentParameters) {
+      if(instrumentParameter.isManualCaptureAllowed()) return true;
+    }
+    return false;
+  }
+
+  /**
    * 
    * @param parameter
    * @return this for chaining
@@ -144,8 +156,8 @@ public class InstrumentType {
   }
 
   /**
-   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a
-   * data source.
+   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a data
+   * source.
    * 
    * @param parameterType type of parameter to return (i.e., the class)
    * @param hasDataSource indicates whether the parameters returned should include those with or without a data source

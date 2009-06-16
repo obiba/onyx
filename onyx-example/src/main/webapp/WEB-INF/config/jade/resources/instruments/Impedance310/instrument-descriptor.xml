@@ -195,6 +195,7 @@
       <code>RES_BODY_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <manualCaptureAllowed>true</manualCaptureAllowed>      
       <measurementUnit>ohm</measurementUnit>
     </output>
 

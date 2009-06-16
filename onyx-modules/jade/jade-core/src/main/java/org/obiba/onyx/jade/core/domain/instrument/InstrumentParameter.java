@@ -33,6 +33,8 @@ public abstract class InstrumentParameter implements Serializable {
 
   private InstrumentParameterCaptureMethod captureMethod;
 
+  private boolean manualCaptureAllowed;
+
   private String displayFormat;
 
   /** A IDataSource instance expected to return a DataType.BOOLEAN which dictates whether this parameter is required. */
@@ -148,4 +150,13 @@ public abstract class InstrumentParameter implements Serializable {
       }
     }
   }
+
+  public boolean isManualCaptureAllowed() {
+    return manualCaptureAllowed;
+  }
+
+  public void setManualCaptureAllowed(boolean manualCaptureAllowed) {
+    this.manualCaptureAllowed = manualCaptureAllowed;
+  }
+
 }

@@ -73,6 +73,18 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
+    WebMarkupContainer manualButtonBlock = new WebMarkupContainer("manualButtonBlock");
+    add(manualButtonBlock);
+    manualButtonBlock.add(new Link("manualButton") {
+
+      @Override
+      public void onClick() {
+        System.out.println("Display Manual Measure Capture Dialog");
+      }
+
+    });
+    manualButtonBlock.setVisible(instrumentType.isManualCaptureAllowed());
+
     String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
     if(errMessage != null) error(errMessage);
 
