@@ -105,9 +105,19 @@ public class DefaultQuestionToVariableMappingStrategyTest {
 
     categoryVariable = questionVariable.getVariable("3");
     Assert.assertNotNull(categoryVariable);
-    Assert.assertEquals(2, categoryVariable.getVariables().size());
-    Assert.assertNotNull(categoryVariable.getVariable("OPEN_DATE"));
+    Assert.assertEquals(1, categoryVariable.getVariables().size());
     Assert.assertNotNull(categoryVariable.getVariable("OPEN_YEAR"));
+
+    categoryVariable = questionVariable.getVariable("4");
+    Assert.assertNotNull(categoryVariable);
+    Assert.assertEquals(1, categoryVariable.getVariables().size());
+    Assert.assertNotNull(categoryVariable.getVariable("OPEN_TEXT_DEFAULT_VALUES"));
+
+    Variable openVariable = categoryVariable.getVariable("OPEN_TEXT_DEFAULT_VALUES");
+    Assert.assertEquals(3, openVariable.getVariables().size());
+    Assert.assertNotNull(openVariable.getVariable("a"));
+    Assert.assertNotNull(openVariable.getVariable("b"));
+    Assert.assertNotNull(openVariable.getVariable("c"));
 
     questionVariable = questionnaireVariable.getVariable("Q3");
     Assert.assertEquals("Q3", questionVariable.getName());
@@ -421,6 +431,80 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals(1, data.getDatas().size());
     Assert.assertEquals(DataType.INTEGER, data.getDatas().get(0).getType());
     Assert.assertEquals("123", data.getDatas().get(0).getValueAsString());
+  }
+
+  @Test
+  public void testVariableDataOpenCategorical() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+    // log.info("\n"+VariableStreamer.toXML(studyVariable));
+
+    // open_int variable
+    Variable variable = questionnaireVariable.getVariable("Q2").getVariable("4").getVariable("OPEN_TEXT_DEFAULT_VALUES");
+
+    Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    Assert.assertEquals(questionnaire.getName(), testVariable.getName());
+
+    Participant participant = new Participant();
+    List<CategoryAnswer> answers = new ArrayList<CategoryAnswer>();
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setCategoryName("4");
+    OpenAnswer open = new OpenAnswer();
+    open.setDataType(DataType.TEXT);
+    open.setData(DataBuilder.buildText("b"));
+    answer.addOpenAnswer(open);
+    answers.add(answer);
+
+    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, questionnaire.getName(), variable.getParent().getParent().getName(), variable.getParent().getName(), variable.getName())).andReturn(answers.get(0).getOpenAnswers().get(0)).atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.info("\n" + VariableStreamer.toXML(data));
+
+    verify(questionnaireParticipantServiceMock);
+
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals(DataType.TEXT, data.getDatas().get(0).getType());
+    Assert.assertEquals("b", data.getDatas().get(0).getValueAsString());
+  }
+
+  @Test
+  public void testVariableDataOpenCategory() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+    // log.info("\n"+VariableStreamer.toXML(studyVariable));
+
+    // open_int variable
+    Variable variable = questionnaireVariable.getVariable("Q2").getVariable("4").getVariable("OPEN_TEXT_DEFAULT_VALUES").getCategory("b");
+
+    Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    Assert.assertEquals(questionnaire.getName(), testVariable.getName());
+
+    Participant participant = new Participant();
+    List<CategoryAnswer> answers = new ArrayList<CategoryAnswer>();
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setCategoryName("4");
+    OpenAnswer open = new OpenAnswer();
+    open.setDataType(DataType.TEXT);
+    open.setData(DataBuilder.buildText("b"));
+    answer.addOpenAnswer(open);
+    answers.add(answer);
+
+    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, questionnaire.getName(), variable.getParent().getParent().getParent().getName(), variable.getParent().getParent().getName(), variable.getParent().getName())).andReturn(answers.get(0).getOpenAnswers().get(0)).atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.info("\n" + VariableStreamer.toXML(data));
+
+    verify(questionnaireParticipantServiceMock);
+
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals(DataType.BOOLEAN, data.getDatas().get(0).getType());
+    Assert.assertEquals("true", data.getDatas().get(0).getValueAsString());
   }
 
   @Test
