@@ -38,6 +38,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.Si
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
@@ -187,8 +188,23 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   private void addLocalizedAttributes(Variable variable, IQuestionnaireElement localizable) {
     if(questionnaireBundle != null) {
+      boolean open = localizable instanceof OpenAnswerDefinition;
       for(Locale locale : questionnaireBundle.getAvailableLanguages()) {
         for(String property : propertyKeyProvider.getProperties(localizable)) {
+          if(open) {
+            // the property may be the default value, not to be added to open answer definition annotations
+            OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) localizable;
+            boolean defaultValueProperty = false;
+            for(Data defaultValue : openAnswerDefinition.getDefaultValues()) {
+              if(defaultValue.getValueAsString().equals(property)) {
+                defaultValueProperty = true;
+                break;
+              }
+            }
+            if(defaultValueProperty) {
+              continue;
+            }
+          }
           try {
             String stringResource = QuestionnaireStringResourceModelHelper.getMessage(questionnaireBundle, localizable, property, null, locale);
             if(stringResource.trim().length() > 0) {
@@ -198,6 +214,22 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
           } catch(NoSuchMessageException ex) {
             // ignored
           }
+        }
+      }
+    }
+  }
+
+  private void addLocalizedAttributes(Category category, OpenAnswerDefinition openAnswerDefinition, String defaultValue) {
+    if(questionnaireBundle != null) {
+      for(Locale locale : questionnaireBundle.getAvailableLanguages()) {
+        try {
+          String stringResource = QuestionnaireStringResourceModelHelper.getMessage(questionnaireBundle, openAnswerDefinition, defaultValue, null, locale);
+          if(stringResource.trim().length() > 0) {
+            String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
+            VariableHelper.addAttribute(category, locale, defaultValue, noHTMLString);
+          }
+        } catch(NoSuchMessageException ex) {
+          // ignored
         }
       }
     }
@@ -219,9 +251,14 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     // one variable per open answer
     OpenAnswerDefinition open = questionCategory.getCategory().getOpenAnswerDefinition();
     if(open != null) {
-      categoryVariable.addVariable(getOpenAnswerVariable(open));
-      for(OpenAnswerDefinition openChild : open.getOpenAnswerDefinitions()) {
-        categoryVariable.addVariable(getOpenAnswerVariable(openChild));
+      if(open.getOpenAnswerDefinitions().size() == 0) {
+        categoryVariable.addVariable(getOpenAnswerVariable(open));
+      } else {
+        // we do not have values for englobing open answer
+        // only for children
+        for(OpenAnswerDefinition openChild : open.getOpenAnswerDefinitions()) {
+          categoryVariable.addVariable(getOpenAnswerVariable(openChild));
+        }
       }
     }
 
@@ -239,6 +276,19 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     Variable variable = null;
 
     variable = new Variable(openAnswerDefinition.getName()).setDataType(openAnswerDefinition.getDataType()).setUnit(openAnswerDefinition.getUnit());
+
+    if(openAnswerDefinition.getDataType().equals(DataType.TEXT)) {
+      // only textual open answers may be categorical, otherwise it would not be consistent with our categorical
+      // variable handling
+      if(openAnswerDefinition.getDefaultValues().size() > 0) {
+        int pos = 1;
+        for(Data defaultValue : openAnswerDefinition.getDefaultValues()) {
+          Category categoryVariable = new Category(defaultValue.getValueAsString(), Integer.toString(pos++));
+          variable.addCategory(categoryVariable);
+          addLocalizedAttributes(categoryVariable, openAnswerDefinition, defaultValue.getValueAsString());
+        }
+      }
+    }
 
     addLocalizedAttributes(variable, openAnswerDefinition);
 
@@ -274,7 +324,7 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
   public VariableData getVariableData(QuestionnaireParticipantService questionnaireParticipantService, Participant participant, Variable variable, VariableData variableData, Questionnaire questionnaire) {
 
     // variable is a question
-    if(variable.getCategories().size() > 0) {
+    if(variable.getCategories().size() > 0 && !Category.class.isInstance(variable.getParent())) {
       List<CategoryAnswer> answers = questionnaireParticipantService.getCategoryAnswers(participant, questionnaire.getName(), variable.getName());
       if(answers != null) {
         for(CategoryAnswer answer : answers) {
@@ -286,10 +336,19 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     // variable is about an open answer or the question comment or the questionnaire or a category
     else if(variable.getDataType() != null) {
       if(Category.class.isInstance(variable)) {
-        // category was selected
-        CategoryAnswer categoryAnswer = questionnaireParticipantService.getCategoryAnswer(participant, questionnaire.getName(), variable.getParent().getName(), variable.getName());
-        if(categoryAnswer != null) {
-          variableData.addData(DataBuilder.buildBoolean(true));
+        if(variable.getParent().getParent() instanceof Category) {
+          // open answer default answer was selected
+          // get the open answer
+          OpenAnswer answer = questionnaireParticipantService.getOpenAnswer(participant, questionnaire.getName(), variable.getParent().getParent().getParent().getName(), variable.getParent().getParent().getName(), variable.getParent().getName());
+          if(answer != null && variable.getName().equals(answer.getData().getValueAsString())) {
+            variableData.addData(DataBuilder.buildBoolean(true));
+          }
+        } else {
+          // real category was selected
+          CategoryAnswer categoryAnswer = questionnaireParticipantService.getCategoryAnswer(participant, questionnaire.getName(), variable.getParent().getName(), variable.getName());
+          if(categoryAnswer != null) {
+            variableData.addData(DataBuilder.buildBoolean(true));
+          }
         }
       } else if(variable.getParent().getName().equals(QUESTIONNAIRE_RUN)) {
         QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
