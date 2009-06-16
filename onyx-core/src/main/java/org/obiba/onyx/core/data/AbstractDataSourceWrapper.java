@@ -26,4 +26,9 @@ public abstract class AbstractDataSourceWrapper implements IDataSource {
     this.dataSource = dataSource;
   }
 
+  @Override
+  public String toString() {
+    return dataSource.toString();
+  }
+
 }

@@ -112,6 +112,10 @@ public class OnyxDataExport {
     }
 
     if(participants.size() > 0) {
+
+      // same export date for every participant and every destinations: kind of system snapshot.
+      Date exportDate = new Date();
+
       for(OnyxDataExportDestination destination : this.exportDestinations) {
         log.info("Exporting to destination {}", destination.getName());
         OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
@@ -137,6 +141,7 @@ public class OnyxDataExport {
             String entryName = participant.getBarcode() + ".xml";
             OutputStream os = exportStrategy.newEntry(entryName);
             VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+            participantData.setExportDate(exportDate);
             VariableStreamer.toXML(participantData, os);
             os.flush();
 

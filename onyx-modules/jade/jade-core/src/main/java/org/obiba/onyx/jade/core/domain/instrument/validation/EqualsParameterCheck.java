@@ -107,4 +107,30 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
   public void setOperator(ComparisonOperator operator) {
     this.operator = operator;
   }
+
+  @Override
+  public String toString() {
+    String op = "==";
+    if(operator != null) {
+      switch(operator) {
+      case EQUALS:
+        op = "==";
+        break;
+      case GREATER:
+        op = ">";
+        break;
+      case GREATER_EQUALS:
+        op = ">=";
+        break;
+      case LESSER:
+        op = "<";
+        break;
+      case LESSER_EQUALS:
+        op = "<=";
+        break;
+      }
+    }
+
+    return super.toString() + "[x " + op + " " + parameterCode + "]";
+  }
 }

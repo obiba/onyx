@@ -116,6 +116,10 @@ public abstract class InstrumentParameter implements Serializable {
   public IDataSource getDataSource() {
     return dataSource;
   }
+  
+  public IDataSource getCondition() {
+    return condition;
+  }
 
   public boolean isRequired(Participant participant) {
     if(condition == null) {

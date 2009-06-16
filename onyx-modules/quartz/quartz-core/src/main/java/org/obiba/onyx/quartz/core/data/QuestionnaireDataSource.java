@@ -36,9 +36,9 @@ public class QuestionnaireDataSource implements IDataSource {
 
   public static final String ANY_CATEGORY = "*";
 
-  private QuestionnaireParticipantService questionnaireParticipantService;
+  private transient QuestionnaireParticipantService questionnaireParticipantService;
 
-  private QuestionnaireBundleManager questionnaireBundleManager;
+  private transient QuestionnaireBundleManager questionnaireBundleManager;
 
   private String questionnaire;
 
@@ -90,10 +90,9 @@ public class QuestionnaireDataSource implements IDataSource {
       if(category.equals(ANY_CATEGORY)) {
         // was question answered by any category selection ?
         List<CategoryAnswer> categoryAnswers = questionnaireParticipantService.getCategoryAnswers(participant, questionnaire, question);
-        if (categoryAnswers != null && categoryAnswers.size()>0) {
+        if(categoryAnswers != null && categoryAnswers.size() > 0) {
           data = DataBuilder.buildBoolean(categoryAnswers.get(0).isActive());
-        }
-        else {
+        } else {
           data = DataBuilder.buildBoolean(false);
         }
       } else {
@@ -140,4 +139,15 @@ public class QuestionnaireDataSource implements IDataSource {
     this.questionnaireBundleManager = questionnaireBundleManager;
   }
 
+  @Override
+  public String toString() {
+    String rval = "Questionnaire[" + questionnaire + "." + question;
+    if(category != null) {
+      rval += "." + category;
+    }
+    if(openAnswerDefinition != null) {
+      rval += "." + openAnswerDefinition;
+    }
+    return rval + "]";
+  }
 }

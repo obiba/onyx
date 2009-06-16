@@ -22,7 +22,7 @@ public class VariableDataSource implements IDataSource {
 
   private static final long serialVersionUID = 1L;
 
-  private VariableDirectory variableDirectory;
+  private transient VariableDirectory variableDirectory;
 
   private String path;
 
@@ -50,6 +50,11 @@ public class VariableDataSource implements IDataSource {
 
   public void setVariableDirectory(VariableDirectory variableDirectory) {
     this.variableDirectory = variableDirectory;
+  }
+
+  @Override
+  public String toString() {
+    return "Variable[" + path + "]";
   }
 
 }

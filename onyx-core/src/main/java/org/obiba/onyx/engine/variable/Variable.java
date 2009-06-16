@@ -36,6 +36,8 @@ public class Variable implements Serializable {
   @XStreamOmitField
   private Variable parent;
 
+  private List<Attribute> attributes;
+
   @XStreamImplicit
   private List<Variable> variables;
 
@@ -277,7 +279,23 @@ public class Variable implements Serializable {
   }
 
   /**
-   * Get the categories: the expected data values of the current variable.
+   * Get the regular variables (not categories).
+   * @return
+   */
+  public List<Variable> getRegularVariables() {
+    List<Variable> regulars = new ArrayList<Variable>();
+
+    for(Variable var : getVariables()) {
+      if(!Category.class.isInstance(var)) {
+        regulars.add(var);
+      }
+    }
+
+    return regulars;
+  }
+
+  /**
+   * Get the categories.
    * @return
    */
   public List<Category> getCategories() {
@@ -368,6 +386,28 @@ public class Variable implements Serializable {
     if(categories != null) {
       for(Category category : categories) {
         addCategory(category);
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Get the variable's attributes.
+   * @return
+   */
+  public List<Attribute> getAttributes() {
+    return attributes != null ? attributes : (attributes = new ArrayList<Attribute>());
+  }
+
+  /**
+   * Add some attributes to the variable.
+   * @param atts
+   * @return
+   */
+  public Variable addAttributes(Attribute... atts) {
+    if(atts != null) {
+      for(Attribute attribute : atts) {
+        getAttributes().add(attribute);
       }
     }
     return this;

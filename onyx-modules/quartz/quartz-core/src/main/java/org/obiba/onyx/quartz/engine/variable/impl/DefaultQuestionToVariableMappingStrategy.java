@@ -9,25 +9,42 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.engine.variable.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.apache.wicket.extensions.validation.validator.RfcCompliantEmailAddressValidator;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.IDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.NoSuchMessageException;
 
 /**
  * 
@@ -52,8 +69,16 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   public static final String QUESTION_ACTIVE = "active";
 
+  private QuestionnaireBundle questionnaireBundle;
+
+  // choose the one with the most properties declared
+  private IPropertyKeyProvider propertyKeyProvider = new SimplifiedUIPropertyKeyProviderImpl();
+
   public Variable getVariable(Questionnaire questionnaire) {
     Variable questionnaireVariable = new Variable(questionnaire.getName());
+
+    addLocalizedAttributes(questionnaireVariable, questionnaire);
+
     // add participant dependent information
     Variable questionnaireRunVariable = questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_RUN));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_VERSION).setDataType(DataType.TEXT));
@@ -130,7 +155,52 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
     }
 
+    addLocalizedAttributes(variable, question);
+
+    if(question.getCondition() != null) {
+      VariableHelper.addConditionAttribute(variable, question.getCondition().toString());
+    }
+
+    // get the min/max settings : for questions having a parent question, if no settings is found parent settings is
+    // used.
+    Integer minCount = question.getMinCount();
+    if(minCount == null && question.getParentQuestion() != null) {
+      minCount = question.getParentQuestion().getMinCount();
+    }
+    Integer maxCount = question.getMaxCount();
+    if(maxCount == null && question.getParentQuestion() != null) {
+      maxCount = question.getParentQuestion().getMaxCount();
+    }
+
+    VariableHelper.addRequiredAttribute(variable, question.isRequired());
+
+    if(minCount != null && minCount > 1) {
+      VariableHelper.addMinCountAttribute(variable, minCount);
+    }
+
+    if(maxCount != null) {
+      VariableHelper.addMaxCountAttribute(variable, maxCount);
+    }
+
     return variable;
+  }
+
+  private void addLocalizedAttributes(Variable variable, IQuestionnaireElement localizable) {
+    if(questionnaireBundle != null) {
+      for(Locale locale : questionnaireBundle.getAvailableLanguages()) {
+        for(String property : propertyKeyProvider.getProperties(localizable)) {
+          try {
+            String stringResource = QuestionnaireStringResourceModelHelper.getMessage(questionnaireBundle, localizable, property, null, locale);
+            if(stringResource.trim().length() > 0) {
+              String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
+              VariableHelper.addAttribute(variable, locale, property, noHTMLString);
+            }
+          } catch(NoSuchMessageException ex) {
+            // ignored
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -155,6 +225,8 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
     }
 
+    addLocalizedAttributes(categoryVariable, questionCategory);
+
     return categoryVariable;
   }
 
@@ -167,6 +239,34 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     Variable variable = null;
 
     variable = new Variable(openAnswerDefinition.getName()).setDataType(openAnswerDefinition.getDataType()).setUnit(openAnswerDefinition.getUnit());
+
+    addLocalizedAttributes(variable, openAnswerDefinition);
+
+    if(openAnswerDefinition.getDataSource() != null) {
+      VariableHelper.addSourceAttribute(variable, openAnswerDefinition.getDataSource().toString());
+    }
+
+    List<String> validations = new ArrayList<String>();
+    if(openAnswerDefinition.getDataValidators().size() > 0) {
+
+      for(IDataValidator v : openAnswerDefinition.getDataValidators()) {
+        if(v instanceof DataValidator) {
+          String validator = validatorToString(((DataValidator) v).getValidator());
+          if(validator != null) {
+            validations.add(validator);
+          }
+        }
+      }
+    }
+
+    if(openAnswerDefinition.getValidationDataSources().size() > 0) {
+      validations.add(openAnswerDefinition.getValidationDataSources().toString());
+    }
+    if(validations.size() > 0) {
+      VariableHelper.addValidationAttribute(variable, validations.toString());
+    }
+
+    VariableHelper.addRequiredAttribute(variable, openAnswerDefinition.isRequired());
 
     return variable;
   }
@@ -237,6 +337,57 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     }
 
     return questionnaireVariable;
+  }
+
+  public void setQuestionnaireBundle(QuestionnaireBundle bundle) {
+    this.questionnaireBundle = bundle;
+  }
+
+  /**
+   * Turns a IValidator into a String.
+   * @param validator
+   * @return null if validator not identified.
+   */
+  private String validatorToString(IValidator validator) {
+    if(validator == null) {
+      return null;
+    }
+
+    if(validator instanceof NumberValidator) {
+      if(validator instanceof NumberValidator.DoubleMaximumValidator) {
+        return "Number.Maximum[" + ((NumberValidator.DoubleMaximumValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof NumberValidator.DoubleMinimumValidator) {
+        return "Number.Minimum[" + ((NumberValidator.DoubleMinimumValidator) validator).getMinimum() + "]";
+      } else if(validator instanceof NumberValidator.DoubleRangeValidator) {
+        return "Number.Range[" + ((NumberValidator.DoubleRangeValidator) validator).getMinimum() + ", " + ((NumberValidator.DoubleRangeValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof NumberValidator.MaximumValidator) {
+        return "Number.Maximum[" + ((NumberValidator.MaximumValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof NumberValidator.MinimumValidator) {
+        return "Number.Minimum[" + ((NumberValidator.MinimumValidator) validator).getMinimum() + "]";
+      } else if(validator instanceof NumberValidator.RangeValidator) {
+        return "Number.Range[" + ((NumberValidator.RangeValidator) validator).getMinimum() + ", " + ((NumberValidator.RangeValidator) validator).getMaximum() + "]";
+      }
+    } else if(validator instanceof StringValidator) {
+      if(validator instanceof StringValidator.ExactLengthValidator) {
+        return "String.ExactLength[" + ((StringValidator.ExactLengthValidator) validator).getLength() + "]";
+      } else if(validator instanceof StringValidator.LengthBetweenValidator) {
+        return "String.LengthBetween[" + ((StringValidator.LengthBetweenValidator) validator).getMinimum() + ", " + ((StringValidator.LengthBetweenValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof StringValidator.MaximumLengthValidator) {
+        return "String.MaximumLength[" + ((StringValidator.MaximumLengthValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof StringValidator.MinimumLengthValidator) {
+        return "String.MinimumLength[" + ((StringValidator.MinimumLengthValidator) validator).getMinimum() + "]";
+      } else if(validator instanceof PatternValidator) {
+        if(validator instanceof EmailAddressValidator) {
+          return "String.EmailAddress";
+        } else if(validator instanceof RfcCompliantEmailAddressValidator) {
+          return "String.RfcCompliantEmailAddress";
+        } else {
+          return "String.Pattern[" + ((PatternValidator) validator).getPattern() + "]";
+        }
+      }
+    }
+
+    return validator.getClass().getSimpleName().replaceAll("Validator", "");
   }
 
 }

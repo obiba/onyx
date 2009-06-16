@@ -25,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.obiba.onyx.engine.variable.Attribute;
 import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
@@ -61,6 +62,10 @@ public class VariableStreamer {
   private static final String MULTIPLE = "Multiple";
 
   private static final String REPEATABLE = "Repeatable";
+
+  private static final String LOCALE = "Locale";
+
+  private static final String VALUE = "Value";
 
   /**
    * The de-serializer.
@@ -212,6 +217,7 @@ public class VariableStreamer {
     xstream = new XStream();
     xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
     xstream.processAnnotations(Variable.class);
+    xstream.processAnnotations(Attribute.class);
     xstream.processAnnotations(Category.class);
     xstream.processAnnotations(VariableDataSet.class);
     xstream.processAnnotations(VariableData.class);
@@ -237,15 +243,35 @@ public class VariableStreamer {
     }
   }
 
+  public static void toCSVAttributes(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    CSVWriter writer = new CSVWriter(new OutputStreamWriter(os));
+    writer.writeNext(new String[] { PATH, KEY, LOCALE, VALUE });
+    csvAttributesWrite(writer, variable, variablePathNamingStrategy);
+    try {
+      writer.close();
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   public static String toCSV(Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    StringWriter writer = new StringWriter();
-    csvWrite(new CSVWriter(writer), variable, variablePathNamingStrategy);
+    CSVWriter writer = new CSVWriter(new StringWriter());
+    writer.writeNext(new String[] { PATH, NAME, CATEGORIES, TYPE, UNIT, MULTIPLE, REPEATABLE, KEY });
+    csvWrite(writer, variable, variablePathNamingStrategy);
+    return writer.toString();
+  }
+
+  public static String toCSVAttributes(Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    CSVWriter writer = new CSVWriter(new StringWriter());
+    writer.writeNext(new String[] { PATH, KEY, LOCALE, VALUE });
+    csvAttributesWrite(writer, variable, variablePathNamingStrategy);
     return writer.toString();
   }
 
   private static void csvWrite(CSVWriter writer, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     if(variable.getDataType() != null) {
-      String[] nextLine = new String[7];
+      String[] nextLine = new String[8];
       nextLine[0] = variablePathNamingStrategy.getPath(variable);
       nextLine[1] = variable.getName();
       nextLine[2] = getCategories(variable, "\n");
@@ -253,10 +279,32 @@ public class VariableStreamer {
       nextLine[4] = variable.getUnit();
       nextLine[5] = Boolean.toString(variable.isMultiple());
       nextLine[6] = Boolean.toString(variable.isRepeatable());
+      nextLine[7] = variable.getKey();
       writer.writeNext(nextLine);
     }
     for(Variable child : variable.getVariables()) {
       csvWrite(writer, child, variablePathNamingStrategy);
+    }
+  }
+
+  private static void csvAttributesWrite(CSVWriter writer, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    if(variable.getAttributes().size() > 0) {
+      String path = variablePathNamingStrategy.getPath(variable);
+      for(Attribute attribute : variable.getAttributes()) {
+        if(attribute.getValue() != null) {
+          String[] nextLine = new String[4];
+          nextLine[0] = path;
+          nextLine[1] = attribute.getKey();
+          if(attribute.getLocale() != null) {
+            nextLine[2] = attribute.getLocale().toString();
+          }
+          nextLine[3] = attribute.getValue().toString();
+          writer.writeNext(nextLine);
+        }
+      }
+    }
+    for(Variable child : variable.getVariables()) {
+      csvAttributesWrite(writer, child, variablePathNamingStrategy);
     }
   }
 
@@ -285,9 +333,7 @@ public class VariableStreamer {
     HSSFWorkbook wb = new HSSFWorkbook();
     // create a new sheet
     HSSFSheet sheet = wb.createSheet("Variables");
-
     HSSFRow row = sheet.createRow(0);
-
     HSSFCell cell = row.createCell(0);
     cell.setCellValue(new HSSFRichTextString(PATH));
     cell = row.createCell(1);
@@ -305,13 +351,39 @@ public class VariableStreamer {
     cell = row.createCell(7);
     cell.setCellValue(new HSSFRichTextString(KEY));
 
-    HSSFRichTextString str = new HSSFRichTextString();
-    str.clearFormatting();
-
     HSSFCellStyle categoryTextStyle = wb.createCellStyle();
     categoryTextStyle.setWrapText(true);
 
     xlsWrite(wb, sheet, categoryTextStyle, 1, variable, variablePathNamingStrategy);
+
+    // write the workbook to the output stream
+    // close our file (don't blow out our file handles
+    try {
+      wb.write(os);
+      os.close();
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  public static void toXLSAttributes(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    // create a new workbook
+    HSSFWorkbook wb = new HSSFWorkbook();
+    // create a new sheet
+    HSSFSheet sheet = wb.createSheet("Variables Attributes");
+    HSSFRow row = sheet.createRow(0);
+    HSSFCell cell = row.createCell(0);
+
+    cell.setCellValue(new HSSFRichTextString(PATH));
+    cell = row.createCell(1);
+    cell.setCellValue(new HSSFRichTextString(KEY));
+    cell = row.createCell(2);
+    cell.setCellValue(new HSSFRichTextString(LOCALE));
+    cell = row.createCell(3);
+    cell.setCellValue(new HSSFRichTextString(VALUE));
+
+    xlsAttributeWrite(wb, sheet, 1, variable, variablePathNamingStrategy);
 
     // write the workbook to the output stream
     // close our file (don't blow out our file handles
@@ -352,6 +424,30 @@ public class VariableStreamer {
     }
     for(Variable child : variable.getVariables()) {
       rowCount = xlsWrite(wb, sheet, categoryTextStyle, rowCount, child, variablePathNamingStrategy);
+    }
+    return rowCount;
+  }
+
+  private static int xlsAttributeWrite(HSSFWorkbook wb, HSSFSheet sheet, int rowCount, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    if(variable.getAttributes().size() > 0) {
+      for(Attribute attribute : variable.getAttributes()) {
+        if(attribute.getValue() != null) {
+          HSSFRow row = sheet.createRow(rowCount++);
+          HSSFCell cell = row.createCell(0);
+          cell.setCellValue(new HSSFRichTextString(variablePathNamingStrategy.getPath(variable)));
+          cell = row.createCell(1);
+          cell.setCellValue(new HSSFRichTextString(attribute.getKey()));
+          if(attribute.getLocale() != null) {
+            cell = row.createCell(2);
+            cell.setCellValue(new HSSFRichTextString(attribute.getLocale().toString()));
+          }
+          cell = row.createCell(3);
+          cell.setCellValue(new HSSFRichTextString(attribute.getValue().toString()));
+        }
+      }
+    }
+    for(Variable child : variable.getVariables()) {
+      rowCount = xlsAttributeWrite(wb, sheet, rowCount, child, variablePathNamingStrategy);
     }
     return rowCount;
   }

@@ -58,7 +58,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   private static final long serialVersionUID = 1L;
 
-  private IAlgorithmEvaluator algorithmEvaluator;
+  private transient IAlgorithmEvaluator algorithmEvaluator;
 
   private String expression;
 
@@ -124,7 +124,11 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   @Override
   public String toString() {
-    return "[type=" + dataType + ", expression=" + expression + ", unit=" + unit + "]";
+    String rval = "Computing[" + expression.replaceAll("[\n\r]", "").replaceAll("\\s+", " ").trim();
+    if(getDataSources().size() > 0) {
+      rval += "," + getDataSources();
+    }
+    return rval + "]";
   }
 
 }

@@ -44,4 +44,9 @@ public class FirstNotNullDataSource extends AbstractMultipleDataSource {
   public FirstNotNullDataSource() {
     super();
   }
+
+  @Override
+  public String toString() {
+    return "FirstNotNull" + super.toString();
+  }
 }

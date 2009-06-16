@@ -34,4 +34,9 @@ public class ParticipantPropertyDataSource extends AbstractBeanPropertyDataSourc
     super(property);
     setUnit(unit);
   }
+
+  @Override
+  public String toString() {
+    return "ParticipantProperty[" + super.toString() + "]";
+  }
 }

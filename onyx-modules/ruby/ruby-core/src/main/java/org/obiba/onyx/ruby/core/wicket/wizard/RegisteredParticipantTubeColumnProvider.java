@@ -12,18 +12,15 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
@@ -49,9 +46,6 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   // Instance Variables
   //
 
-  @SpringBean(name = "tubeRegistrationConfigurationMap")
-  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
-
   private List<IColumn> columns = new ArrayList<IColumn>();
 
   private List<IColumn> additional = new ArrayList<IColumn>();
@@ -64,13 +58,11 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
 
   @SuppressWarnings("serial")
   public RegisteredParticipantTubeColumnProvider(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
-    InjectorHolder.getInjector().inject(this);
-
     addBarcodeColumn();
     addBarcodePartColumns(tubeRegistrationConfiguration);
-    addRemarkColumn();
+    addRemarkColumn(tubeRegistrationConfiguration);
     addCommentColumn();
-    addEditColumn();
+    addEditColumn(tubeRegistrationConfiguration);
     addDeleteColumn();
   }
 
@@ -129,18 +121,14 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
     return firstBarcodePartColumnIndex;
   }
 
-  private void addRemarkColumn() {
+  private void addRemarkColumn(final TubeRegistrationConfiguration tubeRegistrationConfiguration) {
 
     columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Remark")) {
       private static final long serialVersionUID = 1L;
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
 
-        String tubeSetName = registeredParticipantTube.getParticipantTubeRegistration().getTubeSetName();
-        TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(tubeSetName);
-
-        Set<String> tubeRemarks = registeredParticipantTube.getRemarks();
+        Set<String> tubeRemarks = ((RegisteredParticipantTube) rowModel.getObject()).getRemarks();
         List<Remark> configuredRemarks = tubeRegistrationConfiguration.getAvailableRemarks();
         StringBuffer remarksLabel = new StringBuffer();
 
@@ -172,16 +160,11 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
 
   }
 
-  private void addEditColumn() {
+  private void addEditColumn(final TubeRegistrationConfiguration tubeRegistrationConfiguration) {
     columns.add(new AbstractColumn(new Model("")) {
       private static final long serialVersionUID = 1L;
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
-
-        String tubeSetName = registeredParticipantTube.getParticipantTubeRegistration().getTubeSetName();
-        TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(tubeSetName);
-
         cellItem.add(new EditBarcodePanel(componentId, rowModel, tubeRegistrationConfiguration));
       }
     });

@@ -71,4 +71,9 @@ public abstract class AbstractBeanPropertyDataSource implements IDataSource {
     this.unit = unit;
     return this;
   }
+
+  @Override
+  public String toString() {
+    return property;
+  }
 }

@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
-import static org.easymock.EasyMock.createMock;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +21,6 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
-import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -34,8 +31,6 @@ public class RegisteredParticipantTubeColumnProviderTest {
   //
 
   private ApplicationContextMock applicationContextMock;
-
-  private ActiveTubeRegistrationService activeTubeRegistrationServiceMock;
 
   private TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
@@ -84,10 +79,6 @@ public class RegisteredParticipantTubeColumnProviderTest {
 
   private void initApplicationContext() {
     applicationContextMock = new ExtendedApplicationContextMock();
-
-    activeTubeRegistrationServiceMock = createMock(ActiveTubeRegistrationService.class);
-    applicationContextMock.putBean("activeTubeRegistrationService", activeTubeRegistrationServiceMock);
-
     applicationContextMock.putBean("tubeRegistrationConfiguration", tubeRegistrationConfiguration);
 
     MockSpringApplication application = new MockSpringApplication();

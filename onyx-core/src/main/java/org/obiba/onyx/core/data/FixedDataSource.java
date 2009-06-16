@@ -57,6 +57,6 @@ public class FixedDataSource implements IDataSource {
 
   @Override
   public String toString() {
-    return "[" + data + ", " + unit + "]";
+    return "Data" + data;
   }
 }

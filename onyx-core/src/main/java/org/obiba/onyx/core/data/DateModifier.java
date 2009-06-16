@@ -62,4 +62,15 @@ public class DateModifier {
   public void setAmountSource(IDataSource amountSource) {
     this.amountSource = amountSource;
   }
+
+  @Override
+  public String toString() {
+    String rval = "DateModifier[" + field + ", ";
+    if(amountSource != null) {
+      rval += amountSource;
+    } else {
+      rval += amount;
+    }
+    return rval + "]";
+  }
 }

@@ -172,6 +172,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
       Stage stage = iter.next();
       QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(stage.getName());
       if(bundle != null) {
+        questionToVariableMappingStrategy.setQuestionnaireBundle(bundle);
         Questionnaire questionnaire = bundle.getQuestionnaire();
         log.info("getVariables from questionnaire {}", questionnaire.getName());
         Variable questionnaireVariable = questionToVariableMappingStrategy.getVariable(questionnaire);
@@ -194,6 +195,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     Variable questionnaireVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaireVariable.getName());
     if(bundle != null) {
+      questionToVariableMappingStrategy.setQuestionnaireBundle(bundle);
       Questionnaire questionnaire = bundle.getQuestionnaire();
       varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
     }

@@ -62,9 +62,9 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
   @Override
   public void stop(Action action) {
-    log.debug("Ruby Stage {} is stopping", getStage().getName());
+    log.debug("Ruby Stage {} is stopping", super.getStage().getName());
 
-    activeTubeRegistrationService.deleteParticipantTubeRegistration(getStage().getName());
+    activeTubeRegistrationService.deleteParticipantTubeRegistration();
 
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
@@ -75,9 +75,9 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
   @Override
   public void complete(Action action) {
-    log.debug("Ruby Stage {} is completing", getStage().getName());
+    log.debug("Ruby Stage {} is completing", super.getStage().getName());
 
-    ParticipantTubeRegistration participantTubeRegistration = activeTubeRegistrationService.getParticipantTubeRegistration(getStage().getName());
+    ParticipantTubeRegistration participantTubeRegistration = activeTubeRegistrationService.getParticipantTubeRegistration();
     boolean contraIndicated = (participantTubeRegistration.getContraindication() != null);
 
     activeTubeRegistrationService.end();
@@ -106,10 +106,10 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
     if(event.equals(TransitionEvent.RESUME)) {
       resuming = true;
-      activeTubeRegistrationService.resume(participant, getStage().getName());
+      activeTubeRegistrationService.resume(participant);
     } else {
       resuming = false;
-      activeTubeRegistrationService.start(participant, getStage().getName());
+      activeTubeRegistrationService.start(participant);
     }
   }
 

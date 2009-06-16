@@ -11,11 +11,13 @@ package org.obiba.onyx.engine.variable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
@@ -25,6 +27,9 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class VariableDataSet implements Serializable {
 
   private static final long serialVersionUID = 1L;
+
+  @XStreamAsAttribute
+  private Date exportDate;
 
   @XStreamImplicit
   private List<VariableData> variableDatas;
@@ -38,6 +43,14 @@ public class VariableDataSet implements Serializable {
       getVariableDatas().add(variableData);
     }
     return variableData;
+  }
+
+  public Date getExportDate() {
+    return exportDate;
+  }
+
+  public void setExportDate(Date exportDate) {
+    this.exportDate = exportDate;
   }
 
 }

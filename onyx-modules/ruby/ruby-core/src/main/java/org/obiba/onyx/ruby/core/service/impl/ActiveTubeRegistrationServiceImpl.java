@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -55,7 +54,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   private ActiveInterviewService activeInterviewService;
 
-  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigMap;
+  private TubeRegistrationConfiguration tubeRegistrationConfig;
 
   private Serializable currentTubeRegistrationId = null;
 
@@ -63,7 +62,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   // ActiveTubeRegistrationService Methods
   //
 
-  public ParticipantTubeRegistration start(Participant participant, String tubeSetName) {
+  public ParticipantTubeRegistration start(Participant participant) {
     if(participant == null) {
       throw new IllegalArgumentException("Null participant");
     }
@@ -77,13 +76,13 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     end();
 
     // create and persist a new TubeRegistration
-    ParticipantTubeRegistration currentRegistration = createParticipantTubeRegistration(interview, tubeSetName);
+    ParticipantTubeRegistration currentRegistration = createParticipantTubeRegistration(interview);
     log.info("New ParticipantTubeRegistration id={} is created.", currentRegistration.getId());
 
     return currentRegistration;
   }
 
-  public void resume(Participant participant, String tubeSetName) {
+  public void resume(Participant participant) {
     if(participant == null) {
       throw new IllegalArgumentException("Null participant");
     }
@@ -93,17 +92,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       throw new IllegalArgumentException("Null participant interview");
     }
 
-    if(tubeSetName == null) {
-      throw new IllegalArgumentException("Null tubeSetName");
-    }
-
-    TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(tubeSetName);
-
-    if(tubeRegistrationConfig == null) {
-      throw new IllegalArgumentException("Null tubeRegistrationConfiguration (tubeSetName = " + tubeSetName + ")");
-    }
-
-    List<ParticipantTubeRegistration> participantTubeRegistrations = getParticipantTubeRegistrations(interview, tubeSetName);
+    List<ParticipantTubeRegistration> participantTubeRegistrations = getParticipantTubeRegistrations(interview);
 
     if(participantTubeRegistrations == null || participantTubeRegistrations.isEmpty()) {
       throw new IllegalStateException("No participant tube registration to resume");
@@ -129,9 +118,6 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   }
 
   public int getExpectedTubeCount() {
-    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
-    TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(participantTubeRegistration.getTubeSetName());
-
     return tubeRegistrationConfig.getExpectedTubeCount();
   }
 
@@ -148,62 +134,34 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   }
 
   /**
-   * Finds the current ParticipantTubeRegistration, of the specified tube set, and returns it.
+   * Finds the current ParticipantTubeRegistration and return it.
    * 
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
-   * @return participant tube registration of the participant currently being interviewed of the specified tube set (if
-   * there are many, returns the latest one)
+   * @return participant tube registration of the participant currently being interviewed (if there are many, returns
+   * the latest one)
    */
 
-  public ParticipantTubeRegistration getParticipantTubeRegistration(String tubeSetName) {
-    if(tubeSetName == null) {
-      throw new IllegalArgumentException("Null tubeSetName");
-    }
-
-    TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(tubeSetName);
-
-    if(tubeRegistrationConfig == null) {
-      throw new IllegalArgumentException("Null tubeRegistrationConfiguration (tubeSetName = " + tubeSetName + ")");
-    }
-
+  public ParticipantTubeRegistration getParticipantTubeRegistration() {
     ParticipantTubeRegistration participantTubeRegistration = null;
 
     if(currentTubeRegistrationId != null) {
       participantTubeRegistration = getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
+      participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
     } else {
       Interview interview = activeInterviewService.getInterview();
-      List<ParticipantTubeRegistration> participantTubeRegistrations = getParticipantTubeRegistrations(interview, tubeSetName);
+      List<ParticipantTubeRegistration> participantTubeRegistrations = getParticipantTubeRegistrations(interview);
 
       if(participantTubeRegistrations != null && !participantTubeRegistrations.isEmpty()) {
         // Take the first on the list -- this is the latest one.
         participantTubeRegistration = participantTubeRegistrations.get(0);
+        participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
       }
-    }
-
-    if(participantTubeRegistration != null) {
-      if(!tubeSetName.equals(participantTubeRegistration.getTubeSetName())) {
-        throw new IllegalArgumentException("tubeSetName does not match participantTubeRegistration's tubeSetName");
-      }
-
-      participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
     }
 
     return participantTubeRegistration;
   }
 
-  public ParticipantTubeRegistration getParticipantTubeRegistration() {
-    if(currentTubeRegistrationId == null) {
-      throw new IllegalStateException("Null currentTubeRegistrationId");
-    }
-
-    return getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
-  }
-
   public List<MessageSourceResolvable> registerTube(String barcode) {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-
-    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
-    TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(participantTubeRegistration.getTubeSetName());
 
     int expectedSize = tubeRegistrationConfig.getBarcodeStructure().getExpectedSize();
 
@@ -273,9 +231,6 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     RegisteredParticipantTube tube = findTubeByBarcode(barcode);
     checkBarcodeExists(barcode, tube);
 
-    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
-    TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(participantTubeRegistration.getTubeSetName());
-
     List<Remark> remarks = tubeRegistrationConfig.getAvailableRemarks();
     List<Remark> tubeRemarks = new ArrayList<Remark>();
     for(Remark remark : remarks) {
@@ -298,8 +253,8 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     getPersistenceManager().save(getParticipantTubeRegistration());
   }
 
-  public void deleteParticipantTubeRegistration(String stageName) {
-    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration(stageName);
+  public void deleteParticipantTubeRegistration() {
+    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
 
     if(participantTubeRegistration != null) {
       getPersistenceManager().delete(participantTubeRegistration);
@@ -315,36 +270,24 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     this.activeInterviewService = activeInterviewService;
   }
 
-  public void setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigMap) {
-    this.tubeRegistrationConfigMap = tubeRegistrationConfigMap;
+  public void setTubeRegistrationConfiguration(TubeRegistrationConfiguration config) {
+    this.tubeRegistrationConfig = config;
   }
 
-  public Map<String, TubeRegistrationConfiguration> getTubeRegistrationConfigurationMap() {
-    return tubeRegistrationConfigMap;
+  public TubeRegistrationConfiguration getTubeRegistrationConfiguration() {
+    return tubeRegistrationConfig;
   }
 
   /**
    * Creates a tube registration for the current interview and setup the flag
    * @param interview
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
    * @return
    * 
    */
-  private ParticipantTubeRegistration createParticipantTubeRegistration(Interview interview, String tubeSetName) {
-    if(tubeSetName == null) {
-      throw new IllegalArgumentException("Null tubeSetName");
-    }
-
-    TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(tubeSetName);
-
-    if(tubeRegistrationConfig == null) {
-      throw new IllegalArgumentException("Null tubeRegistrationConfiguration (tubeSetName = " + tubeSetName + ")");
-    }
-
+  private ParticipantTubeRegistration createParticipantTubeRegistration(Interview interview) {
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
     registration.setInterview(interview);
-    registration.setTubeSetName(tubeSetName);
     registration.setStartTime(new Date());
     registration = getPersistenceManager().save(registration);
     currentTubeRegistrationId = registration.getId();
@@ -358,17 +301,11 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * started and contra-indicated and then another one was started.
    * 
    * @param interview current interview
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
    * @return list of participant tube registrations for the participant currently being interviewed
    */
-  private List<ParticipantTubeRegistration> getParticipantTubeRegistrations(Interview interview, String tubeSetName) {
-    if(tubeSetName == null) {
-      throw new IllegalArgumentException("Null tubeSetName");
-    }
-
+  private List<ParticipantTubeRegistration> getParticipantTubeRegistrations(Interview interview) {
     ParticipantTubeRegistration template = new ParticipantTubeRegistration();
     template.setInterview(interview);
-    template.setTubeSetName(tubeSetName);
     List<ParticipantTubeRegistration> participantTubeRegistrations = getPersistenceManager().match(template, new SortingClause("startTime", false));
 
     return participantTubeRegistrations;

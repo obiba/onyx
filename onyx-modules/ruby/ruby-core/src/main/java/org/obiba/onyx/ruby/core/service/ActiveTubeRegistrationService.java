@@ -86,13 +86,6 @@ public interface ActiveTubeRegistrationService {
   public boolean hasContraindications(Contraindication.Type type);
 
   /**
-   * 
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
-   * @return
-   */
-  public ParticipantTubeRegistration getParticipantTubeRegistration(String tubeSetName);
-
-  /**
    * Finds the current ParticipantTubeRegistration and return it, it will create a new one if there is no
    * TubeRegistration for current Interview.
    * 
@@ -114,18 +107,16 @@ public interface ActiveTubeRegistrationService {
   /**
    * Create the current {@link ParticipantTubeRegistration} and persist it.
    * @param participant
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
    * @return
    */
-  public ParticipantTubeRegistration start(Participant participant, String tubeSetName);
+  public ParticipantTubeRegistration start(Participant participant);
 
   /**
    * Resume an interrupted participant tube registration.
    * 
    * @param participant participant
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
    */
-  public void resume(Participant participant, String tubeSetName);
+  public void resume(Participant participant);
 
   /**
    * Set the end date to the current {@link ParticipantTubeRegistration}.
@@ -133,9 +124,7 @@ public interface ActiveTubeRegistrationService {
   public void end();
 
   /**
-   * Deletes the current {@link ParticipantTubeRegistration} and all associated objects, of the specified Ruby stage.
-   * 
-   * @param stageName the associated Ruby stage
+   * Deletes the current {@link ParticipantTubeRegistration} and all associated objects.
    */
-  public void deleteParticipantTubeRegistration(String stageName);
+  public void deleteParticipantTubeRegistration();
 }

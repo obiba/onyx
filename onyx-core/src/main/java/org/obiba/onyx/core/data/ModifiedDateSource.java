@@ -60,4 +60,14 @@ public class ModifiedDateSource extends AbstractDataSourceDataModifier {
   public void addDateModifiers(DateModifier dateModifier) {
     if(dateModifier != null) getDateModifiers().add(dateModifier);
   }
+
+  @Override
+  public String toString() {
+    String rval = "ModifiedDate[" + super.toString();
+    if(getDateModifiers().size() > 0) {
+      rval += ", " + getDateModifiers();
+    }
+    rval += "]";
+    return rval;
+  }
 }

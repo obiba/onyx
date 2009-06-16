@@ -26,6 +26,7 @@ import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
@@ -158,6 +159,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   public List<Variable> getVariables() {
     List<Variable> entities = new ArrayList<Variable>();
+
+    instrumentTypeToVariableMappingStrategy.setVariableHelper(new VariableHelper(applicationContext));
 
     for(InstrumentType type : instrumentService.getInstrumentTypes().values()) {
       entities.add(instrumentTypeToVariableMappingStrategy.getVariable(type));

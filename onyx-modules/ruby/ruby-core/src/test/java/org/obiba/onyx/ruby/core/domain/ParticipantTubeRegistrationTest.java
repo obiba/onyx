@@ -42,8 +42,6 @@ import org.springframework.web.context.request.SessionScope;
 // DbUnitAwareTestExecutionListener.class })
 public class ParticipantTubeRegistrationTest {
 
-  private static final String TUBE_REGISTRATION_CONFIG_NAME = "tubeRegistrationConfiguration";
-
   private ConfigurableApplicationContext applicationContext;
 
   private ActiveTubeRegistrationService activeTubeRegistrationService;
@@ -88,7 +86,7 @@ public class ParticipantTubeRegistrationTest {
   @Test
   public void testStartAndStopParticipantTubeRegistration() {
     // Create and persist ParticipantTubeRegistration
-    ParticipantTubeRegistration tubeRegistration = activeTubeRegistrationService.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+    ParticipantTubeRegistration tubeRegistration = activeTubeRegistrationService.start(participant);
 
     Assert.assertNotNull(tubeRegistration);
 
@@ -116,7 +114,7 @@ public class ParticipantTubeRegistrationTest {
     RegisteredParticipantTube tube = new RegisteredParticipantTube();
     tube.setBarcode(barcode);
 
-    activeTubeRegistrationService.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
+    activeTubeRegistrationService.start(participant);
 
     // There should be no tubes before tube registering
     Assert.assertEquals(0, activeTubeRegistrationService.getRegisteredTubeCount());

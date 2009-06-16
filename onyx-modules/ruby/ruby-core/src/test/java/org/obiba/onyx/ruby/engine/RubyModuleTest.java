@@ -9,14 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine;
 
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,9 +36,6 @@ import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.state.RubyCompletedState;
 import org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState;
@@ -52,9 +45,6 @@ import org.obiba.onyx.ruby.engine.state.RubyNotApplicableState;
 import org.obiba.onyx.ruby.engine.state.RubyReadyState;
 import org.obiba.onyx.ruby.engine.state.RubySkippedState;
 import org.obiba.onyx.ruby.engine.state.RubyWaitingState;
-import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 
 public class RubyModuleTest {
   //
@@ -74,16 +64,6 @@ public class RubyModuleTest {
   private static final String INTERRUPTED_STATE = "RubyInterruptedState";
 
   private static final String NOT_APPLICABLE_STATE = "RubyNotApplicableState";
-
-  private static final String PARTICIPANT_TUBE_REGISTRATION = "ParticipantTubeRegistration";
-
-  private static final String REGISTERED_PARTICIPANT_TUBE = "RegisteredParticipantTube";
-
-  private static final String BARCODE = "barcode";
-
-  private static final String FIRST_RUBY_STAGE_NAME = "BloodSamplesCollection";
-
-  private static final String SECOND_RUBY_STAGE_NAME = "UrineSamplesCollection";
 
   //
   // Instance Variables
@@ -109,19 +89,7 @@ public class RubyModuleTest {
 
   private Interview interview;
 
-  private Stage firstStage;
-
-  private Stage secondStage;
-
-  private ITubeToVariableMappingStrategy tubeToVariableMappingStrategyMock;
-
-  private IVariablePathNamingStrategy variablePathNamingStrategyMock;
-
-  private Variable participantTubeRegistrationVariable;
-
-  private Variable firstStageRegisteredParticipantTubeVariable;
-
-  private Variable secondStageRegisteredParticipantTubeVariable;
+  private Stage stage;
 
   //
   // Fixture Methods
@@ -129,35 +97,25 @@ public class RubyModuleTest {
 
   @Before
   public void setUp() {
-    // Create RubyModule (object under test).
-    rubyModule = new RubyModule();
-
     //
     // Create domain objects for tests.
     //
-
     user = createUser(1l, "user", "test");
     participant = createParticipant(1l, "participant", "test");
 
     interview = createInterview(1l);
     interview.setParticipant(participant);
 
-    firstStage = new Stage();
-    firstStage.setName(FIRST_RUBY_STAGE_NAME);
-    StageDependencyConditionMock firstStageDependencyConditionMock = new StageDependencyConditionMock();
-    firstStage.setStageDependencyCondition(firstStageDependencyConditionMock);
+    stage = new Stage();
+    stage.setName("SamplesCollection");
 
-    secondStage = new Stage();
-    secondStage.setName(SECOND_RUBY_STAGE_NAME);
-    StageDependencyConditionMock secondStageDependencyConditionMock = new StageDependencyConditionMock();
-    secondStage.setStageDependencyCondition(secondStageDependencyConditionMock);
+    StageDependencyConditionMock stageDependencyConditionMock = new StageDependencyConditionMock();
+    stage.setStageDependencyCondition(stageDependencyConditionMock);
 
     //
     // Create test application context and add to it the necessary mocks.
     //
-
     applicationContextMock = new ApplicationContextMock();
-    rubyModule.setApplicationContext(applicationContextMock);
 
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
     applicationContextMock.putBean("activeInterviewService", activeInterviewServiceMock);
@@ -167,7 +125,7 @@ public class RubyModuleTest {
 
     persistenceManagerMock = createMock(PersistenceManager.class);
 
-    stageExecutionContext = new StageExecutionContext(interview, firstStage);
+    stageExecutionContext = new StageExecutionContext(interview, stage);
     stageExecutionContext.setPersistenceManager(persistenceManagerMock);
     applicationContextMock.putBean("stageExecutionContext", stageExecutionContext);
 
@@ -190,19 +148,12 @@ public class RubyModuleTest {
     AbstractStageState rubyNotApplicableState = new RubyNotApplicableState();
     applicationContextMock.putBean("rubyNotApplicableState", rubyNotApplicableState);
 
+    rubyModule = new RubyModule();
+    rubyModule.setApplicationContext(applicationContextMock);
+
     List<Stage> stages = new ArrayList<Stage>();
-    stages.add(firstStage);
-    stages.add(secondStage);
+    stages.add(stage);
     rubyModule.setStages(stages);
-
-    tubeToVariableMappingStrategyMock = createMock(ITubeToVariableMappingStrategy.class);
-    rubyModule.setTubeToVariableMappingStrategy(tubeToVariableMappingStrategyMock);
-
-    participantTubeRegistrationVariable = createParticipantTubeRegistrationVariable();
-    firstStageRegisteredParticipantTubeVariable = createRegisteredParticipantTubeVariable(FIRST_RUBY_STAGE_NAME);
-    secondStageRegisteredParticipantTubeVariable = createRegisteredParticipantTubeVariable(SECOND_RUBY_STAGE_NAME);
-
-    variablePathNamingStrategyMock = createMock(IVariablePathNamingStrategy.class);
 
     moduleRegistry = new ModuleRegistry();
     moduleRegistry.registerModule(rubyModule);
@@ -226,7 +177,7 @@ public class RubyModuleTest {
   public void testWaitingToNotApplicableTransition() {
     setDependencyConditionNotSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to WAITING.
@@ -255,7 +206,7 @@ public class RubyModuleTest {
   public void testReadyToSkippedTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to READY.
@@ -284,7 +235,7 @@ public class RubyModuleTest {
   public void testReadyToInProgressTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to READY.
@@ -313,7 +264,7 @@ public class RubyModuleTest {
   public void testInProgressToCompletedTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to IN PROGRESS.
@@ -342,7 +293,7 @@ public class RubyModuleTest {
   public void testInProgressToContraIndicatedTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to IN PROGRESS.
@@ -371,7 +322,7 @@ public class RubyModuleTest {
   public void testInProgressToInterruptedTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to IN PROGRESS.
@@ -400,7 +351,7 @@ public class RubyModuleTest {
   public void testInterruptedToInProgressTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to INTERRUPTED.
@@ -429,7 +380,7 @@ public class RubyModuleTest {
   public void testContraIndicatedToReadyTransition() {
     setDependencyConditionSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to CONTRAINDICATED.
@@ -458,7 +409,7 @@ public class RubyModuleTest {
   public void testNotApplicableToReadyTransition() {
     setDependencyConditionNotSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to NOT APPLICABLE.
@@ -487,7 +438,7 @@ public class RubyModuleTest {
   public void testNotApplicableToWaitingTransition() {
     setDependencyConditionNotSatisfied();
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     exec.setModuleRegistry(moduleRegistry);
 
     // Set the current state to NOT APPLICABLE.
@@ -512,80 +463,6 @@ public class RubyModuleTest {
     Assert.assertEquals(RubyWaitingState.class.getSimpleName(), memento.getState());
   }
 
-  @Test
-  public void testGetVariablesWithVariableRoot() {
-    expect(tubeToVariableMappingStrategyMock.getVariableRoot()).andReturn("SamplesCollection").anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getParticipantTubeRegistrationVariable()).andReturn(participantTubeRegistrationVariable).anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(FIRST_RUBY_STAGE_NAME)).andReturn(firstStageRegisteredParticipantTubeVariable);
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(SECOND_RUBY_STAGE_NAME)).andReturn(secondStageRegisteredParticipantTubeVariable);
-
-    replay(tubeToVariableMappingStrategyMock);
-
-    List<Variable> variables = rubyModule.getVariables();
-
-    verify(tubeToVariableMappingStrategyMock);
-
-    assertNotNull(variables);
-    assertEquals(1, variables.size());
-
-    Variable variableRoot = variables.get(0);
-    assertEquals("SamplesCollection", variableRoot.getName());
-
-    List<Variable> childVariables = variableRoot.getVariables();
-    assertNotNull(variables);
-    assertEquals(2, childVariables.size());
-    assertEquals(FIRST_RUBY_STAGE_NAME, childVariables.get(0).getName());
-    assertEquals(SECOND_RUBY_STAGE_NAME, childVariables.get(1).getName());
-  }
-
-  @Test
-  public void testGetVariablesWithNoVariableRoot() {
-    expect(tubeToVariableMappingStrategyMock.getVariableRoot()).andReturn(null).anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getParticipantTubeRegistrationVariable()).andReturn(participantTubeRegistrationVariable).anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(FIRST_RUBY_STAGE_NAME)).andReturn(firstStageRegisteredParticipantTubeVariable);
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(SECOND_RUBY_STAGE_NAME)).andReturn(secondStageRegisteredParticipantTubeVariable);
-
-    replay(tubeToVariableMappingStrategyMock);
-
-    List<Variable> variables = rubyModule.getVariables();
-
-    verify(tubeToVariableMappingStrategyMock);
-
-    assertNotNull(variables);
-    assertEquals(2, variables.size());
-    assertEquals(FIRST_RUBY_STAGE_NAME, variables.get(0).getName());
-    assertEquals(SECOND_RUBY_STAGE_NAME, variables.get(1).getName());
-  }
-
-  @Test
-  public void testGetVariableData() {
-    String variablePath = "Onyx.SamplesCollection." + FIRST_RUBY_STAGE_NAME + "." + PARTICIPANT_TUBE_REGISTRATION;
-    Variable variable = createVariable(variablePath);
-    VariableData variableData = new VariableData(variablePath);
-
-    expect(tubeToVariableMappingStrategyMock.getVariableData((Participant) anyObject(), (Variable) anyObject(), (IVariablePathNamingStrategy) anyObject(), (VariableData) anyObject(), (String) anyObject())).andReturn(variableData);
-    expect(variablePathNamingStrategyMock.getPath(variable)).andReturn(variablePath);
-
-    replay(tubeToVariableMappingStrategyMock);
-    replay(variablePathNamingStrategyMock);
-
-    variableData = rubyModule.getVariableData(participant, variable, variablePathNamingStrategyMock);
-
-    verify(tubeToVariableMappingStrategyMock);
-    verify(variablePathNamingStrategyMock);
-
-    assertNotNull(variableData);
-    assertEquals(variablePath, variableData.getVariablePath());
-
-    List<Data> dataList = variableData.getDatas();
-    assertNotNull(dataList);
-    assertTrue(dataList.isEmpty());
-
-    List<VariableData> childDataList = variableData.getVariableDatas();
-    assertNotNull(childDataList);
-    assertTrue(childDataList.isEmpty());
-  }
-
   //
   // Helper Methods
   //
@@ -594,13 +471,13 @@ public class RubyModuleTest {
     RubyModule rubyModule = new RubyModule();
     rubyModule.setApplicationContext(applicationContextMock);
 
-    ((StageDependencyConditionMock) firstStage.getStageDependencyCondition()).setDependencySatisfied(dependencySatisfied);
+    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(dependencySatisfied);
 
     List<Stage> stages = new ArrayList<Stage>();
-    stages.add(firstStage);
+    stages.add(stage);
     rubyModule.setStages(stages);
 
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
     StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
 
     Assert.assertEquals(expectedInitialState, memento.getState());
@@ -632,44 +509,19 @@ public class RubyModuleTest {
   }
 
   private void setDependencyConditionSatisfied() {
-    ((StageDependencyConditionMock) firstStage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
   }
 
   private void setDependencyConditionNotSatisfied() {
-    ((StageDependencyConditionMock) firstStage.getStageDependencyCondition()).setDependencySatisfied(null);
+    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(null);
   }
 
   private StageExecutionMemento createMemento(String stateName) {
     StageExecutionMemento memento = new StageExecutionMemento();
     memento.setInterview(interview);
-    memento.setStage(firstStage.getName());
+    memento.setStage(stage.getName());
     memento.setState(stateName);
     return memento;
-  }
-
-  private Variable createParticipantTubeRegistrationVariable() {
-    Variable runVariable = new Variable(PARTICIPANT_TUBE_REGISTRATION);
-    return runVariable;
-  }
-
-  private Variable createRegisteredParticipantTubeVariable(String stageName) {
-    Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
-    return tubeVariable;
-  }
-
-  private Variable createVariable(String variablePath) {
-    String[] pathElements = variablePath.split("\\.");
-
-    Variable variable = new Variable(pathElements[0]);
-
-    Variable parent = variable;
-    for(int i = 1; i < pathElements.length; i++) {
-      variable = new Variable(pathElements[i]);
-      parent.addVariable(variable);
-      parent = variable;
-    }
-
-    return variable;
   }
 
   //
