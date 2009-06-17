@@ -63,9 +63,13 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   public static final String LAST_NAME = "lastName";
 
+  public static final String FULL_NAME = "fullName";
+
   public static final String BIRTH_DATE = "birthDate";
 
   public static final String BIRTH_YEAR = "birthYear";
+
+  public static final String AGE = "age";
 
   public static final String SITENO = "siteNo";
 
@@ -141,6 +145,8 @@ public class OnyxVariableProvider implements IVariableProvider {
         varData.addData(DataBuilder.buildText(participant.getFirstName()));
       } else if(variable.getName().equals(LAST_NAME)) {
         varData.addData(DataBuilder.buildText(participant.getLastName()));
+      } else if(variable.getName().equals(FULL_NAME)) {
+        varData.addData(DataBuilder.buildText(participant.getFullName()));
       } else if(variable.getName().equals(BIRTH_DATE)) {
         if(participant.getBirthDate() != null) {
           varData.addData(DataBuilder.buildDate(participant.getBirthDate()));
@@ -151,6 +157,8 @@ public class OnyxVariableProvider implements IVariableProvider {
           cal.setTime(participant.getBirthDate());
           varData.addData(DataBuilder.buildInteger((long) cal.get(Calendar.YEAR)));
         }
+      } else if(variable.getName().equals(AGE)) {
+        varData.addData(DataBuilder.buildInteger(participant.getAge()));
       } else if(variable.getName().equals(SITENO)) {
         varData.addData(DataBuilder.buildText(participant.getSiteNo()));
       } else if(variable.getName().equals(RECRUITMENT_TYPE)) {
@@ -241,8 +249,10 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(FULL_NAME).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE));
     entity.addVariable(new Variable(BIRTH_YEAR).setDataType(DataType.INTEGER));
+    entity.addVariable(new Variable(AGE).setDataType(DataType.INTEGER));
     entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT));
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {

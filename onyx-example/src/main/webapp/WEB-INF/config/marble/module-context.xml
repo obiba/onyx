@@ -11,5 +11,21 @@
     <property name="consentService" ref="consentService" />
     <property name="variableToFieldMap" value="${org.obiba.onyx.marble.consent.variableToField}" />
   </bean>
+    
+  <bean id="consentForm" class="org.obiba.onyx.print.impl.PdfVariableReport" scope="session">
+    <property name="name" value="${org.obiba.onyx.marble.consent.basename}" />
+    <property name="label">
+      <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+        <constructor-arg value="consentForm.label" />
+      </bean>
+    </property>   
+    <property name="pdfVariablePath" value="${org.obiba.onyx.marble.consent.pdfvariablepath}" />   
+    <property name="readyCondition">
+      <bean class="org.obiba.onyx.core.data.VariableDataSource">
+        <property name="variableDirectory" ref="variableDirectory" />
+        <constructor-arg value="${org.obiba.onyx.marble.consent.accepted}" />            
+      </bean>
+    </property>    
+  </bean>
 
 </beans>

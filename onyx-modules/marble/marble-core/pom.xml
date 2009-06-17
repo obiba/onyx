@@ -118,12 +118,6 @@
       <artifactId>wicket-spring-annot</artifactId>
     </dependency>
 
-
-    <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-    </dependency>
-
   </dependencies>
 
 </project>

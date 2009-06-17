@@ -12,6 +12,7 @@ package org.obiba.onyx.webapp.participant.page;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -39,6 +40,7 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.print.impl.PdfReport;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.action.panel.LoadableInterviewLogModel;
 import org.obiba.onyx.webapp.base.page.BasePage;
@@ -65,6 +67,12 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
+
+  @SpringBean(name = "participantReport")
+  private PdfReport participantReport;
+
+  @SpringBean(name = "consentForm")
+  private PdfReport consentForm;
 
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
@@ -248,6 +256,32 @@ public class InterviewPage extends BasePage {
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
       add(link);
+
+      link = new AjaxLink("printReport") {
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          participantReport.print(Locale.ENGLISH);
+        }
+
+      };
+      add(link);
+      if(!participantReport.isReady()) {
+        link.setVisible(false);
+      }
+
+      link = new AjaxLink("printConsent") {
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          consentForm.print(null);
+        }
+
+      };
+      add(link);
+      if(!consentForm.isReady()) {
+        link.setVisible(false);
+      }
 
       add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
 
