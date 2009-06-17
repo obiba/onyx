@@ -248,6 +248,9 @@ public class OnyxVariableProvider implements IVariableProvider {
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
       Variable var = entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType()));
       addLocalizedAttributes(var);
+      if(attribute.getGroup() != null) {
+        VariableHelper.addGroupAttribute(var, attribute.getGroup().getName());
+      }
     }
 
     entity = admin.addVariable(new Variable(INTERVIEW));

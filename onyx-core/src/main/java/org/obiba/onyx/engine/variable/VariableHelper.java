@@ -38,6 +38,8 @@ public class VariableHelper implements ApplicationContextAware {
 
   public static final String MAXCOUNT = "maxCount";
 
+  public static final String GROUP = "group";
+
   private ApplicationContext applicationContext;
 
   public VariableHelper() {
@@ -55,12 +57,22 @@ public class VariableHelper implements ApplicationContextAware {
    * @param property
    */
   public void addLocalizedAttributes(Variable variable, String property) {
+    addLocalizedAttributes(variable, LABEL, property);
+  }
+
+  /**
+   * Add localized attributes for the given key/property.
+   * @param variable
+   * @param key
+   * @param property
+   */
+  public void addLocalizedAttributes(Variable variable, String key, String property) {
     if(property != null) {
       for(Locale locale : getLocales()) {
         try {
           String message = applicationContext.getMessage(property, null, locale);
           if(message.trim().length() > 0) {
-            addAttribute(variable, locale, LABEL, message);
+            addAttribute(variable, locale, key, message);
           }
         } catch(NoSuchMessageException ex) {
           // ignore
@@ -75,12 +87,22 @@ public class VariableHelper implements ApplicationContextAware {
    * @param resolvable
    */
   public void addLocalizedAttributes(Variable variable, MessageSourceResolvable resolvable) {
+    addLocalizedAttributes(variable, LABEL, resolvable);
+  }
+
+  /**
+   * Add localized attributes for the given key/message source.
+   * @param variable
+   * @param key
+   * @param resolvable
+   */
+  public void addLocalizedAttributes(Variable variable, String key, MessageSourceResolvable resolvable) {
     if(resolvable != null) {
       for(Locale locale : getLocales()) {
         try {
           String message = applicationContext.getMessage(resolvable, locale);
           if(message.trim().length() > 0) {
-            addAttribute(variable, locale, LABEL, message);
+            addAttribute(variable, locale, key, message);
           }
         } catch(NoSuchMessageException ex) {
           // ignore
@@ -132,6 +154,10 @@ public class VariableHelper implements ApplicationContextAware {
 
   public static void addOccurrenceCountAttribute(Variable variable, Object source) {
     addAttribute(variable, OCCURRENCECOUNT, source);
+  }
+
+  public static void addGroupAttribute(Variable variable, Object source) {
+    addAttribute(variable, GROUP, source);
   }
 
   public static void addAttribute(Variable variable, String key, Object source) {
