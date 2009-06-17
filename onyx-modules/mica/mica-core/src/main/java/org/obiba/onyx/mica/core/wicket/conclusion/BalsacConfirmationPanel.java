@@ -112,7 +112,7 @@ public class BalsacConfirmationPanel extends Panel {
         return isVisible();
       }
     };
-    balsacBarcode.add(new PatternValidator("B[0-9]{8}"));
+    balsacBarcode.add(new PatternValidator(activeConclusionService.getBalsacBarcodePattern()));
     balsacBarcode.setOutputMarkupId(true);
     add(balsacBarcode);
   }

@@ -26,6 +26,8 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
 
   private boolean balsacConfirmationRequired = false;
 
+  private String balsacBarcodePattern;
+
   protected SessionFactory sessionFactory = null;
 
   public void setSessionFactory(SessionFactory sessionFactory) {
@@ -81,4 +83,11 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
     this.balsacConfirmationRequired = balsacConfirmationRequired;
   }
 
+  public String getBalsacBarcodePattern() {
+    return balsacBarcodePattern;
+  }
+
+  public void setBalsacBarcodePattern(String balsacBarcodePattern) {
+    this.balsacBarcodePattern = balsacBarcodePattern;
+  }
 }
