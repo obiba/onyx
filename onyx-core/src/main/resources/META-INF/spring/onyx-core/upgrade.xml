@@ -15,7 +15,9 @@
      </property>
      <property name="upgradeSteps">
         <list>
-          <ref bean="upgrade-to-1.3.0" />       
+          <ref bean="upgrade-to-1.3.0" />
+          <ref bean="ruby-schemaUpgrade-1.4.0" />
+          <ref bean="ruby-dataUpgrade-1.4.0" />
         </list>
      </property>
      <property name="stepListeners">
@@ -35,5 +37,28 @@
       </bean>      
     </property>     
   </bean>  
+  
+  <bean id="ruby-schemaUpgrade-1.4.0" class="org.obiba.onyx.runtime.upgrade.support.SqlScriptUpgradeStep">
+    <property name="description" value="Ruby Schema Upgrade 1.4.0"/>
+    <property name="appliesTo">
+      <bean class="org.obiba.onyx.runtime.upgrade.support.VersionBeanVersionProvider">
+        <property name="version" value="1.4.0" />
+      </bean>      
+    </property>
+    
+    <property name="dataSource" ref="dataSource" />
+    <property name="script" value="classpath:/upgrade-script/ruby-schemaUpgrade-1.4.0.sql" />
+  </bean>
+  
+  <bean id="ruby-dataUpgrade-1.4.0" class="org.obiba.onyx.ruby.runtime.upgrade.DataUpgrade_1_4_0">
+    <property name="description" value="Ruby Data Upgrade 1.4.0"/>
+    <property name="appliesTo">
+      <bean class="org.obiba.onyx.runtime.upgrade.support.VersionBeanVersionProvider">
+        <property name="version" value="1.4.0" />
+      </bean>      
+    </property>
+    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
   
 </beans>
