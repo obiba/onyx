@@ -9,12 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -26,6 +29,10 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,13 +80,36 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
+    final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), new Label("content")).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
+    add(manualEntryDialog);
     WebMarkupContainer manualButtonBlock = new WebMarkupContainer("manualButtonBlock");
     add(manualButtonBlock);
-    manualButtonBlock.add(new Link("manualButton") {
+    manualButtonBlock.add(new AjaxLink("manualButton") {
 
       @Override
-      public void onClick() {
-        System.out.println("Display Manual Measure Capture Dialog");
+      public void onClick(AjaxRequestTarget target) {
+        manualEntryDialog.setCloseButtonCallback(new CloseButtonCallback() {
+          private static final long serialVersionUID = 1L;
+
+          public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+            switch(status) {
+            case SUCCESS:
+              System.out.println("okay clicked");
+              manualEntryDialog.resetStatus();
+              return false;
+            case CANCELLED:
+              System.out.println("cancel clicked");
+              return true;
+            case WINDOW_CLOSED:
+              System.out.println("window closed");
+              return true;
+            default:
+              System.out.println("unknown event");
+              return true;
+            }
+          }
+        });
+        manualEntryDialog.show(target);
       }
 
     });
