@@ -30,9 +30,11 @@ import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
@@ -181,6 +183,26 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
     if(maxCount != null) {
       VariableHelper.addMaxCountAttribute(variable, maxCount);
+    }
+
+    Page page = question.getPage();
+    if(page != null) {
+      VariableHelper.addGroupAttribute(variable, page.getName());
+
+      Section currentSection = page.getSection();
+      String sections = "";
+      if(currentSection != null) {
+        sections = currentSection.getName();
+      }
+      while(currentSection != null) {
+        currentSection = currentSection.getParentSection();
+        if(currentSection != null) {
+          sections = currentSection.getName() + "/" + sections;
+        }
+      }
+      if(sections.length() > 0) {
+        VariableHelper.addAttribute(variable, "sections", sections);
+      }
     }
 
     return variable;
