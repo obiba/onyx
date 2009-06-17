@@ -32,11 +32,6 @@ public class BarcodePart {
     this.part = part;
   }
 
-  public BarcodePart(String part, MessageSourceResolvable title) {
-    this.part = part;
-    this.title = title;
-  }
-
   //
   // Methods
   //

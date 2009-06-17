@@ -55,6 +55,8 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
   @Column(length = 2000)
   private String otherContraindication;
 
+  private String tubeSetName;
+
   @Transient
   private TubeRegistrationConfiguration registrationConfig;
 
@@ -98,6 +100,24 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
 
   public Date getEndTime() {
     return endTime;
+  }
+
+  /**
+   * Sets the <code>ParticipantTubeRegistration</code>'s associated tube set (i.e., the associated Ruby stage).
+   * 
+   * @param tubeSetName tube set name (the name of the associated Ruby stage)
+   */
+  public void setTubeSetName(String tubeSetName) {
+    this.tubeSetName = tubeSetName;
+  }
+
+  /**
+   * Returns the <code>ParticipantTubeRegistration</code>'s associated tube set (i.e., the associated Ruby stage).
+   * 
+   * @return associated tube set
+   */
+  public String getTubeSetName() {
+    return tubeSetName;
   }
 
   public void setOtherContraindication(String otherContraindication) {

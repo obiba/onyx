@@ -276,7 +276,9 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-    varData = tubeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData);
+
+    Stage stage = getVariableStage(variable);
+    varData = tubeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData, stage.getName());
 
     return varData;
   }
@@ -284,14 +286,47 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   public List<Variable> getVariables() {
     List<Variable> variables = new ArrayList<Variable>();
 
+    Variable variableRoot = null;
+    if(tubeToVariableMappingStrategy.getVariableRoot() != null) {
+      variableRoot = new Variable(tubeToVariableMappingStrategy.getVariableRoot());
+      variables.add(variableRoot);
+    }
+
     for(Stage stage : stages) {
       Variable entity = new Variable(stage.getName());
-      variables.add(entity);
+
+      if(variableRoot != null) {
+        variableRoot.addVariable(entity);
+      } else {
+        variables.add(entity);
+      }
 
       entity.addVariable(tubeToVariableMappingStrategy.getParticipantTubeRegistrationVariable());
-      entity.addVariable(tubeToVariableMappingStrategy.getRegisteredParticipantTubeVariable());
+      entity.addVariable(tubeToVariableMappingStrategy.getRegisteredParticipantTubeVariable(stage.getName()));
     }
 
     return variables;
+  }
+
+  /**
+   * Returns the stage associated with the specified variable.
+   * 
+   * @param variable the variable
+   * @return the associated stage
+   */
+  private Stage getVariableStage(Variable variable) {
+    for(Stage stage : stages) {
+      Variable sameOrAncestor = variable;
+
+      while(sameOrAncestor != null) {
+        if(sameOrAncestor.getName().equals(stage.getName())) {
+          return stage;
+        }
+
+        sameOrAncestor = sameOrAncestor.getParent();
+      }
+    }
+
+    return null;
   }
 }

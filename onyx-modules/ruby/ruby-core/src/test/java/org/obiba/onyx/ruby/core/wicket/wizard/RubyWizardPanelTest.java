@@ -16,8 +16,10 @@ import static org.easymock.EasyMock.verify;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -188,6 +190,7 @@ public class RubyWizardPanelTest {
     contraIndicationsAskedOnly = loadContraindications("contra-indications_askedOnly.xml");
 
     participantTubeRegistration = new ParticipantTubeRegistration();
+    participantTubeRegistration.setTubeSetName("SamplesCollection");
     participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfiguration);
     participantTubeRegistration.setInterview(interview);
   }
@@ -211,6 +214,10 @@ public class RubyWizardPanelTest {
     applicationContextMock.putBean("activeTubeRegistrationService", activeTubeRegistrationServiceMock);
 
     applicationContextMock.putBean("tubeRegistrationConfiguration", tubeRegistrationConfiguration);
+
+    Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap = new HashMap<String, TubeRegistrationConfiguration>();
+    tubeRegistrationConfigurationMap.put("SamplesCollection", tubeRegistrationConfiguration);
+    applicationContextMock.putBean("tubeRegistrationConfigurationMap", tubeRegistrationConfigurationMap);
 
     messageSource = createMessageSource();
     applicationContextMock.putBean("messageSource", messageSource);

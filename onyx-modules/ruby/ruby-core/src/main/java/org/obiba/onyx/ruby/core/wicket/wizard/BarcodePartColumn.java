@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -41,8 +42,8 @@ public class BarcodePartColumn extends AbstractColumn {
   // Instance Variables
   //
 
-  @SpringBean
-  private TubeRegistrationConfiguration tubeRegistrationConfiguration;
+  @SpringBean(name = "tubeRegistrationConfigurationMap")
+  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
   private int firstBarcodePartColumnIndex;
 
@@ -63,9 +64,12 @@ public class BarcodePartColumn extends AbstractColumn {
   //
 
   public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
+
+    String tubeSetName = registeredParticipantTube.getParticipantTubeRegistration().getTubeSetName();
+    TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(tubeSetName);
     BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
 
-    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
     String barcode = registeredParticipantTube.getBarcode();
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
 
