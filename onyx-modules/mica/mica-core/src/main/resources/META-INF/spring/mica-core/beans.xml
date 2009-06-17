@@ -34,6 +34,7 @@
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInterviewService" ref="activeInterviewService" />    
     <property name="balsacConfirmationRequired" value="${org.obiba.onyx.mica.balsacConfirmationRequired}" />
+    <property name="balsacBarcodePattern" value="${org.obiba.onyx.mica.balsacBarcodePattern}" />
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 

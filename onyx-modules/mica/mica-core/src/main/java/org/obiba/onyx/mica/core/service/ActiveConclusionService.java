@@ -21,6 +21,13 @@ public interface ActiveConclusionService {
 
   public boolean isBalsacConfirmationRequired();
 
+  /**
+   * Returns the Balsac barcode pattern (regex).
+   * 
+   * @return Balsac barcode pattern (regex)
+   */
+  public String getBalsacBarcodePattern();
+
   public Consent getParticipantConsent();
 
 }
