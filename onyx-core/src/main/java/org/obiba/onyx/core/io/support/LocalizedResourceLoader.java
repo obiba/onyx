@@ -63,7 +63,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
     final List<Locale> languages = new ArrayList<Locale>();
 
     Object[] resourceMessageVar = new Object[] { resourcePath, resourceName, resourceExtension };
-    log.info("Searching for available locales for resource (path={}, name={}, extension={})", resourceMessageVar);
+    log.debug("Searching for available locales for resource (path={}, name={}, extension={})", resourceMessageVar);
 
     // Get the resource "real" path in the file system.
     File dir;
@@ -101,7 +101,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
           }
 
           if(locale != null) {
-            log.info("Found the following locale \"{}\" for resource \"{}\"", locale, resourceName);
+            log.debug("Found the following locale \"{}\" for resource \"{}\"", locale, resourceName);
             languages.add(locale);
             return true;
           }
