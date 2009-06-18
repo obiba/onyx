@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -20,9 +21,14 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -40,7 +46,8 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.print.impl.PdfReport;
+import org.obiba.onyx.print.IPrintableReport;
+import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.action.panel.LoadableInterviewLogModel;
 import org.obiba.onyx.webapp.base.page.BasePage;
@@ -64,15 +71,13 @@ import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
 
-  @SpringBean(name = "participantReport")
-  private PdfReport participantReport;
-
-  @SpringBean(name = "consentForm")
-  private PdfReport consentForm;
+  @SpringBean(name = "printableReportsRegistry")
+  private PrintableReportsRegistry printableReportsRegistry;
 
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
@@ -257,31 +262,33 @@ public class InterviewPage extends BasePage {
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
       add(link);
 
-      link = new AjaxLink("printReport") {
+      class ReportLink extends Link {
 
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          participantReport.print(Locale.ENGLISH);
+        private static final long serialVersionUID = 1L;
+
+        public ReportLink(String id, IModel report) {
+          super(id, report);
         }
 
-      };
-      add(link);
-      if(!participantReport.isReady()) {
-        link.setVisible(false);
-      }
-
-      link = new AjaxLink("printConsent") {
-
         @Override
-        public void onClick(AjaxRequestTarget target) {
-          consentForm.print(null);
+        public void onClick() {
+          ((IPrintableReport) getModelObject()).print(Locale.ENGLISH);
         }
 
-      };
-      add(link);
-      if(!consentForm.isReady()) {
-        link.setVisible(false);
       }
+
+      Set<IPrintableReport> reportList = printableReportsRegistry.availableReports();
+      RepeatingView reportView = new RepeatingView("reports");
+      for(IPrintableReport printableReport : reportList) {
+        WebMarkupContainer reportViewItem = new WebMarkupContainer(reportView.newChildId());
+        if(printableReport.isReady()) {
+          ReportLink printReport = new ReportLink("printReport", new PrintableReportModel(printableReport));
+          printReport.add(new Label("reportLabel", new MessageSourceResolvableStringModel(printableReport.getLabel())));
+          reportViewItem.add(printReport);
+          reportView.add(reportViewItem);
+        }
+      }
+      add(reportView);
 
       add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
 
@@ -443,4 +450,22 @@ public class InterviewPage extends BasePage {
     commentIcon.setOutputMarkupId(true);
     return commentIcon;
   }
+
+  private class PrintableReportModel extends LoadableDetachableModel {
+
+    private static final long serialVersionUID = 1L;
+
+    String name;
+
+    public PrintableReportModel(IPrintableReport report) {
+      super(report);
+      this.name = report.getName();
+    }
+
+    @Override
+    protected Object load() {
+      return printableReportsRegistry.getReportByName(name);
+    }
+  }
+
 }

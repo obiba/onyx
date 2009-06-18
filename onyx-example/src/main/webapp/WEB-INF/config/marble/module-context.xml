@@ -16,7 +16,7 @@
     <property name="name" value="${org.obiba.onyx.marble.consent.basename}" />
     <property name="label">
       <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
-        <constructor-arg value="consentForm.label" />
+        <constructor-arg value="PrintConsentForm" />
       </bean>
     </property>   
     <property name="pdfVariablePath" value="${org.obiba.onyx.marble.consent.pdfvariablepath}" />   

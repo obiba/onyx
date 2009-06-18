@@ -122,8 +122,13 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="dateFormat" value="${org.obiba.onyx.dateFormat}" />
     <property name="variableDirectory" ref="variableDirectory" />    
   </bean>    
+  
+  <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
+  </bean> 
 
   <bean id="variableHelper" class="org.obiba.onyx.engine.variable.VariableHelper">
   </bean> 
+  
+  
 
 </beans>
