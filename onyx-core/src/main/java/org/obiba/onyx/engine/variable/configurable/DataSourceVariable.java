@@ -10,37 +10,40 @@
 package org.obiba.onyx.engine.variable.configurable;
 
 import org.obiba.onyx.core.data.IDataSource;
-import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.engine.variable.Variable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * A variable that relies on the {@link IDataSource} on an existing variable.
  */
+@XStreamAlias("dataSourceVariable")
 public class DataSourceVariable {
 
-  private final String path;
+  private Variable variable;
 
-  private final DataType dataType;
+  @XStreamAsAttribute
+  private final String parent;
 
   private final IDataSource dataSource;
 
-  public DataSourceVariable(String path, DataType dataType, IDataSource dataSource) {
+  public DataSourceVariable(String parent, Variable variable, IDataSource dataSource) {
     super();
-    this.path = path;
-    this.dataType = dataType;
+    this.parent = parent;
+    this.variable = variable;
     this.dataSource = dataSource;
   }
 
-  public DataType getDataType() {
-    return dataType;
+  public String getParentPath() {
+    return parent;
   }
 
-  public String getPath() {
-    return path;
+  public Variable getVariable() {
+    return variable;
   }
 
-  public VariableData getVariableData(Participant participant) {
-    return new VariableData(path, dataSource.getData(participant));
+  public IDataSource getDataSource() {
+    return dataSource;
   }
 }

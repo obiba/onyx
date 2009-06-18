@@ -18,6 +18,7 @@ import org.obiba.onyx.core.data.RegexDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.participant.Group;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
+import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.configurable.DataSourceVariable;
 import org.obiba.onyx.util.data.DataType;
 
@@ -54,7 +55,9 @@ public class DataSourceVariableWriterTest {
     xstream.useAttributeFor(Group.class, "name");
     xstream.addImplicitCollection(Group.class, "participantAttributes");
 
-    variables.add(new DataSourceVariable("PostalCodePrefix", DataType.TEXT, regexDataSource));
+    Variable variable = new Variable("PostalCodePrefix");
+    variable.setDataType(DataType.TEXT);
+    variables.add(new DataSourceVariable("Onyx.Admin.Participant", variable, regexDataSource));
 
     String xml = xstream.toXML(variables);
     System.out.println(xml);

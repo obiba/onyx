@@ -285,4 +285,8 @@ public class OnyxVariableProvider implements IVariableProvider {
     }
   }
 
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
+
 }

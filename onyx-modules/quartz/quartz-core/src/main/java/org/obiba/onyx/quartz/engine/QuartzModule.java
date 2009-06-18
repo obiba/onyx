@@ -202,4 +202,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
     return varData;
   }
+
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
 }

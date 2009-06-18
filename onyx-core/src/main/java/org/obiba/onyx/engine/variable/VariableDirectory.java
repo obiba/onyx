@@ -53,6 +53,9 @@ public class VariableDirectory implements IVariableProvider {
 
     if(!providerToVariablePathsMap.containsKey(provider)) {
       log.info("Registering variables from provider {}", provider.getClass().getSimpleName());
+      int variableCount = variablePathToProvidersMap.keySet().size();
+
+      // add new branches in the variable tree
       List<Variable> entities = provider.getVariables();
       if(entities != null) {
         for(Variable entity : entities) {
@@ -71,12 +74,33 @@ public class VariableDirectory implements IVariableProvider {
                 providerToVariablePathsMap.put(provider, new ArrayList<String>());
               }
               providerToVariablePathsMap.get(provider).add(path);
-
             }
           }
         }
       }
-      log.info("Provider {} registered {} variables", provider.getClass().getSimpleName(), variablePathToProvidersMap.keySet().size());
+
+      // contributed variables, placed in existing branches or create new branches
+      entities = provider.getContributedVariables(getVariableRoot(), variablePathNamingStrategy);
+      if(entities != null) {
+        for(Variable variable : entities) {
+          if(variable.getDataType() != null) {
+            String path = variablePathNamingStrategy.getPath(variable);
+            if(variablePathToProvidersMap.containsKey(path)) {
+              throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
+            }
+            log.debug("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
+
+            variablePathToProvidersMap.put(path, provider);
+
+            if(!providerToVariablePathsMap.containsKey(provider)) {
+              providerToVariablePathsMap.put(provider, new ArrayList<String>());
+            }
+            providerToVariablePathsMap.get(provider).add(path);
+          }
+        }
+      }
+
+      log.info("Provider {} registered {}/{} variables", new Object[] { provider.getClass().getSimpleName(), (variablePathToProvidersMap.keySet().size() - variableCount), variablePathToProvidersMap.keySet().size() });
     }
   }
 
@@ -202,6 +226,10 @@ public class VariableDirectory implements IVariableProvider {
     }
 
     return variables;
+  }
+
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
   }
 
 }

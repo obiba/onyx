@@ -94,4 +94,8 @@ public class TestVariableProvider implements IVariableProvider {
     }
     dataSet.addVariableData(data);
   }
+
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
 }

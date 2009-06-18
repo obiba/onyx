@@ -9,6 +9,7 @@
     </filteredVariables>
     <includedVariables>
       <string>Onyx.Admin.Participant.barcode</string>
+      <string>Onyx.Admin.Participant.PostalCodePrefix</string>
     </includedVariables>
   </destination>
 

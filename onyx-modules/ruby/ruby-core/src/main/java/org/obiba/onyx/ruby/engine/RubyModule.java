@@ -329,4 +329,8 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
     return null;
   }
+  
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
 }
