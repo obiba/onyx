@@ -113,8 +113,6 @@ public class DataUpgrade_1_4_0 extends AbstractUpgradeStep {
    * @return <code>true</code> if data upgrade configured
    */
   private boolean isDataUpgradeConfigured() {
-    log.info("dataUpgradeProperties is null = " + (dataUpgradeProperties == null));
-    log.info("dataUpgradeProperties is empty = " + (dataUpgradeProperties.isEmpty()));
     return (dataUpgradeProperties != null && !dataUpgradeProperties.isEmpty());
   }
 
