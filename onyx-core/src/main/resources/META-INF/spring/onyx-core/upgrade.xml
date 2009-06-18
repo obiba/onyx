@@ -38,7 +38,7 @@
     </property>     
   </bean>  
   
-  <bean id="ruby-schemaUpgrade-1.4.0" class="org.obiba.onyx.runtime.upgrade.support.SqlScriptUpgradeStep">
+  <bean id="ruby-schemaUpgrade-1.4.0" class="org.obiba.onyx.ruby.runtime.upgrade.SchemaUpgrade_1_4_0">
     <property name="description" value="Ruby Schema Upgrade 1.4.0"/>
     <property name="appliesTo">
       <bean class="org.obiba.onyx.runtime.upgrade.support.VersionBeanVersionProvider">
@@ -47,7 +47,6 @@
     </property>
     
     <property name="dataSource" ref="dataSource" />
-    <property name="script" value="classpath:/upgrade-script/ruby-schemaUpgrade-1.4.0.sql" />
   </bean>
   
   <bean id="ruby-dataUpgrade-1.4.0" class="org.obiba.onyx.ruby.runtime.upgrade.DataUpgrade_1_4_0">
@@ -59,6 +58,7 @@
     </property>
     
     <property name="dataSource" ref="dataSource" />
+    <property name="dataUpgradeResource" value="/WEB-INF/config/ruby/upgrade/dataUpgrade_1.4.0.properties" />
   </bean>
   
 </beans>
