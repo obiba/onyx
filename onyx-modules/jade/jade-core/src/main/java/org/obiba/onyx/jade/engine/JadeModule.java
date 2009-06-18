@@ -168,4 +168,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
     return entities;
   }
+
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
 }

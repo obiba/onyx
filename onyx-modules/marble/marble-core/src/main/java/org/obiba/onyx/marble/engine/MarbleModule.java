@@ -189,4 +189,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     }
   }
 
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
+
 }

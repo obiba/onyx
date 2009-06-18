@@ -156,4 +156,8 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
     }
     return variables;
   }
+
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    return null;
+  }
 }

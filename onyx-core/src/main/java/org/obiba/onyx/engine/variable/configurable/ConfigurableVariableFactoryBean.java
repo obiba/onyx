@@ -15,10 +15,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.FirstNotNullDataSource;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.RegexDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
-import org.obiba.onyx.core.domain.participant.Group;
 import org.obiba.onyx.core.io.support.XStreamDataConverter;
+import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +88,7 @@ public class ConfigurableVariableFactoryBean implements FactoryBean, Application
     if(configurableVariableProvider == null) {
       dataSourceVariables = new ArrayList<DataSourceVariable>();
       handleResourcePattern();
-      configurableVariableProvider = ConfigurableVariableProvider.getConfigurableVariableProvider(dataSourceVariables);
+      configurableVariableProvider = new ConfigurableVariableProvider(dataSourceVariables);
       dataSourceVariables = null;
     }
     return configurableVariableProvider;
@@ -98,13 +102,15 @@ public class ConfigurableVariableFactoryBean implements FactoryBean, Application
     xstream = new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
 
     xstream.setMode(XStream.ID_REFERENCES);
-    xstream.alias("variables", List.class);
-    xstream.alias("dataSourceVariable", DataSourceVariable.class);
+    xstream.processAnnotations(Variable.class);
+    xstream.processAnnotations(DataSourceVariable.class);
     xstream.alias("regexDataSource", RegexDataSource.class);
     xstream.alias("variableDataSource", VariableDataSource.class);
-    xstream.alias("group", Group.class);
-    xstream.useAttributeFor(Group.class, "name");
-    xstream.addImplicitCollection(Group.class, "participantAttributes");
+    xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
+    xstream.alias("fixedDataSource", FixedDataSource.class);
+    xstream.alias("firstNotNullDataSource", FirstNotNullDataSource.class);
+    xstream.alias("computingDataSource", ComputingDataSource.class);
+
     xstream.registerConverter(new XStreamDataConverter());
   }
 

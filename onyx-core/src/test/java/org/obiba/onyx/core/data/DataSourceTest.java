@@ -74,6 +74,12 @@ public class DataSourceTest {
   }
 
   @Test
+  public void testRegexToString() {
+    RegexDataSource ds = new RegexDataSource(new VariableDataSource("Onyx.Admin.Participant.birthDate"), "^\\s*([a-zA-Z]\\d[a-zA-Z]).*$");
+    Assert.assertEquals("Regex[Variable[Onyx.Admin.Participant.birthDate], '^\\s*([a-zA-Z]\\d[a-zA-Z]).*$']", ds.toString());
+  }
+
+  @Test
   public void testParticipantPropertyToString() {
     ParticipantPropertyDataSource ds = new ParticipantPropertyDataSource("age", "years");
     Assert.assertEquals("ParticipantProperty[age]", ds.toString());

@@ -61,4 +61,9 @@ public class RegexDataSource extends AbstractDataSourceDataModifier {
     }
   }
 
+  @Override
+  public String toString() {
+    return "Regex[" + super.toString() + ", '" + regex + "']";
+  }
+
 }

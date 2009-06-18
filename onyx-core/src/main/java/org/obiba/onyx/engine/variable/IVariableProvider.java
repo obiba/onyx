@@ -19,10 +19,18 @@ import org.obiba.onyx.core.domain.participant.Participant;
 public interface IVariableProvider {
 
   /**
-   * Get the list of entity/variables.
-   * @return
+   * Get the list of variable branches to be added to the root.
+   * @return the variables to be connected to the variable root
    */
   public List<Variable> getVariables();
+
+  /**
+   * Get the list of variables that have been be placed in the existing variable tree.
+   * @param root the of the variable tree
+   * @param variablePathNamingStrategy utility to perform the placing of the variables into the tree
+   * @return the flat list of variables that have been placed in the tree
+   */
+  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy);
 
   /**
    * Get the participant's variable data for the given variable.
