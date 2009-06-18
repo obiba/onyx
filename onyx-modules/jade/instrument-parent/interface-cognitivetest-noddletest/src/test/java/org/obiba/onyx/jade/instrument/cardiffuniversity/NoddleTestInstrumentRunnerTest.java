@@ -1,7 +1,6 @@
 package org.obiba.onyx.jade.instrument.cardiffuniversity;
 
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -24,7 +23,6 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner.LineCallback;
@@ -106,28 +104,20 @@ public class NoddleTestInstrumentRunnerTest {
 
   @Test
   public void testInitializeWithoutFiles() throws FileNotFoundException, IOException, URISyntaxException {
-    expect(instrumentExecutionServiceMock.getInstrumentOperator()).andReturn("administratorUser");
-    replay(instrumentExecutionServiceMock);
     noddleTestInstrumentRunner.initialize();
     noddleTestInstrumentRunner.releaseConfigFileAndResultFileLock();
-    verify(instrumentExecutionServiceMock);
 
     // Verify that the Noddle Test result file has been deleted successfully.
     Assert.assertFalse(new File(noddleTestInstrumentRunner.getResultPath(), RESULT_FILENAME).exists());
-    verifyInitialization();
   }
 
   @Test
   public void testInitializeWithFiles() throws FileNotFoundException, IOException, URISyntaxException {
     simulateResultsAndInput(RESULT_FILENAME);
-    expect(instrumentExecutionServiceMock.getInstrumentOperator()).andReturn("administratorUser");
-    replay(instrumentExecutionServiceMock);
     noddleTestInstrumentRunner.initialize();
-    verify(instrumentExecutionServiceMock);
 
     // Verify that the Noddle Test result file has been deleted successfully.
     Assert.assertFalse(new File(noddleTestInstrumentRunner.getResultPath(), RESULT_FILENAME).exists());
-    verifyInitialization();
   }
 
   @Test
@@ -200,14 +190,12 @@ public class NoddleTestInstrumentRunnerTest {
     Assert.assertTrue(new File(noddleTestInstrumentRunner.getResultPath()).listFiles().length == 2);
   }
 
-  @Ignore("This test fails on Windows.")
   @Test
   public void testShutdown() throws FileNotFoundException, IOException, URISyntaxException, InterruptedException {
     simulateResultsAndInput(RESULT_FILENAME);
     noddleTestInstrumentRunner.shutdown();
 
     Assert.assertFalse(new File(noddleTestInstrumentRunner.getResultPath(), RESULT_FILENAME).exists());
-    Assert.assertFalse(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt").exists());
   }
 
   @Test(expected = NoddleTestInsturmentRunnerException.class)
@@ -291,26 +279,6 @@ public class NoddleTestInstrumentRunnerTest {
 
     // Copy Config file.
     FileUtil.copyFile(new File(getClass().getResource("/Config.txt").toURI()), new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "Config.txt"));
-
-    // Create dummy Input file.
-    FileOutputStream input = new FileOutputStream(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt"));
-    input.write((byte) 234432141);
-    input.close();
-  }
-
-  private void verifyInitialization() {
-    // Verify that the Input file has the right data.
-    Assert.assertTrue(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt").exists());
-
-    verifyFileContent(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt"), new TestLineCallback() {
-      public void handleLine(LineNumberReader reader) throws IOException {
-        for(int i = 0; i < reader.getLineNumber(); i++) {
-          if(i == 0) Assert.assertTrue(reader.readLine().contains("#ONYX"));
-          if(i == 1) Assert.assertTrue(reader.readLine().contains("administratorUser"));
-          if(i > 1) Assert.assertTrue(reader.readLine().isEmpty());
-        }
-      }
-    });
   }
 
   private void verifyFileContent(File file, TestLineCallback callback) {

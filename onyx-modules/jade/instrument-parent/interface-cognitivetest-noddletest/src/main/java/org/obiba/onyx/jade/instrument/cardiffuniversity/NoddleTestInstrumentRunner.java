@@ -1,18 +1,17 @@
 package org.obiba.onyx.jade.instrument.cardiffuniversity;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +28,7 @@ import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.UnicodeReader;
 import org.obiba.onyx.util.FileUtil;
+import org.obiba.onyx.util.UnicodeReader;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
@@ -63,8 +63,6 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private static String NODDLE_CONFIG_FILENAME = "Config.txt";
 
-  private static String NODDLE_INPUT_ARGUMENT_FILENAME = "List.txt";
-
   private static String CLINIC_NAME = "ONYX";
 
   private static String RESULT_FILENAME_PREFIX = "Noddletest_" + CLINIC_NAME + "_";
@@ -76,24 +74,31 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
       System.exit(1); // Leave now. Avoid deleting in use data files.
     }
     deleteDeviceData();
-    initInputFile();
   }
 
   public void run() {
+    StringBuilder params = new StringBuilder();
+
+    // Generate fake participant id from current date-time
+    SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmm");
+    Date currentTime = new Date(System.currentTimeMillis());
+    String fakeId = formatter.format(currentTime);
+
+    params.append(" /u" + fakeId);
+
+    params.append(" /i" + instrumentExecutionService.getInstrumentOperatorUsername());
+
+    params.append(" /c" + CLINIC_NAME + "_");
+
+    String language = instrumentExecutionService.getInstrumentOperatorLocale().toString().startsWith("fr") ? "F" : "E";
+    params.append(" /l" + instrumentExecutionService.getInstrumentOperatorLocale());
+
+    externalAppHelper.setParameterStr(params.toString());
     externalAppHelper.launch();
     getDataFiles();
   }
 
   public void shutdown() {
-    // Delete input file
-    File inputFile = new File(getSoftwareInstallPath() + File.separator + NODDLE_INPUT_ARGUMENT_FILENAME);
-
-    try {
-      if(!inputFile.delete()) log.warn("Could not delete NoddleTest input file.");
-    } catch(Exception ex) {
-      log.warn("Could not delete NoddleTest input file: " + ex);
-    }
-
     deleteDeviceData();
     releaseConfigFileAndResultFileLock();
   }
@@ -143,7 +148,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   private Set<NoddleTests> getTestsConfiguredToRunFromNoodleConfigurationFile() {
     Set<String> testsConfiguredToRun = extractTestsFromResultFile(new File(getSoftwareInstallPath() + File.separator + NODDLE_CONFIG_FILENAME), new LineCallback() {
       public String handleLine(String line) {
-        if(line.startsWith("!") == false) return (line.substring(0, 2));
+        if(!line.startsWith("!") && !line.startsWith("X")) return (line.substring(0, 2));
         return null;
       }
     });
@@ -255,23 +260,6 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
       }
     }
     return formattedString;
-  }
-
-  private void initInputFile() {
-    BufferedWriter localInputFile = null;
-    try {
-      localInputFile = new BufferedWriter(new FileWriter(getSoftwareInstallPath() + File.separator + NODDLE_INPUT_ARGUMENT_FILENAME));
-      localInputFile.write("#" + CLINIC_NAME + "\n");
-      localInputFile.write(instrumentExecutionService.getInstrumentOperator() + "\n");
-    } catch(IOException e) {
-      log.error("Could not write input file!");
-      throw new RuntimeException(e);
-    } finally {
-      try {
-        localInputFile.close();
-      } catch(Exception e) {
-      }
-    }
   }
 
   private void deleteDeviceData() {
