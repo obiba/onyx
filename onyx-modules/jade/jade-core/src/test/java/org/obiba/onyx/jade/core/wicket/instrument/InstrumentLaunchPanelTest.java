@@ -63,8 +63,8 @@ public class InstrumentLaunchPanelTest {
   public void testPresenceOfManualButtonWhenManualCaptureAllowed() {
     instrumentType.setManualCaptureAllowed(true);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType);
-    expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null);
+    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
+    expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
 
     replay(activeInstrumentRunServiceMock);
 
@@ -85,8 +85,8 @@ public class InstrumentLaunchPanelTest {
   public void testAbsenceOfManualButtonWhenManualCaptureNotAllowed() {
     instrumentType.setManualCaptureAllowed(false);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType);
-    expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null);
+    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
+    expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
 
     replay(activeInstrumentRunServiceMock);
 
@@ -108,8 +108,8 @@ public class InstrumentLaunchPanelTest {
   public void testPresenceOfManualEntryDialog() {
     instrumentType.setManualCaptureAllowed(false);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType);
-    expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null);
+    expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
+    expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
 
     replay(activeInstrumentRunServiceMock);
 
