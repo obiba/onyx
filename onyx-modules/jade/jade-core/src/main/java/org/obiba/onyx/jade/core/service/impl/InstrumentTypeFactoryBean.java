@@ -110,8 +110,9 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ApplicationContex
   // FactoryBean Methods
   //
 
+  @SuppressWarnings("unchecked")
   public Class getObjectType() {
-    return instrumentTypes.getClass();
+    return Map.class;
   }
 
   public boolean isSingleton() {
