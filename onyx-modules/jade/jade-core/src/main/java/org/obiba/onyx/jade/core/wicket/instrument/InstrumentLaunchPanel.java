@@ -80,7 +80,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
-    final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), new Label("content")).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
+    final InstrumentManualOutputParameterPanel instrumentManualOutputParameterPanel = new InstrumentManualOutputParameterPanel("content");
+    final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), instrumentManualOutputParameterPanel).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
     add(manualEntryDialog);
     WebMarkupContainer manualButtonBlock = new WebMarkupContainer("manualButtonBlock");
     add(manualButtonBlock);
@@ -94,22 +95,19 @@ public abstract class InstrumentLaunchPanel extends Panel {
           public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
             switch(status) {
             case SUCCESS:
-              System.out.println("okay clicked");
               manualEntryDialog.resetStatus();
-              return false;
+              instrumentManualOutputParameterPanel.saveOutputInstrumentRunValues();
+              return true;
             case CANCELLED:
-              System.out.println("cancel clicked");
-              return true;
             case WINDOW_CLOSED:
-              System.out.println("window closed");
-              return true;
             default:
-              System.out.println("unknown event");
               return true;
             }
           }
         });
         manualEntryDialog.show(target);
+        // Note that "Manual" instrument has been launched.
+        InstrumentLaunchPanel.this.onInstrumentLaunch();
       }
 
     });

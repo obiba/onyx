@@ -116,6 +116,23 @@ public class InstrumentType {
   }
 
   /**
+   * Returns a list of {@link InstrumentOutputParameter}s that permit manual capture. Normally these parameters would be
+   * captured automatically, but if required they may also be captured manually.
+   * @return A list of output parameters that permit manual capture.
+   */
+  public List<InstrumentOutputParameter> getManualCaptureAllowedOutputParameters() {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    for(InstrumentOutputParameter parameter : getOutputParameters()) {
+      if(parameter.isManualCaptureAllowed()) {
+        outputParameters.add(parameter);
+      }
+    }
+
+    return outputParameters;
+  }
+
+  /**
    * 
    * @param parameter
    * @return this for chaining

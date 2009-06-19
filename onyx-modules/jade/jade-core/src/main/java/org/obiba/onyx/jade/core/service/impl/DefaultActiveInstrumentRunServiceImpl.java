@@ -307,6 +307,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public void addMeasure(Map<String, Data> repeatableData) {
+    addMeasure(repeatableData, null);
+  }
+
+  private void addManuallyCapturedMeasure(Map<String, Data> repeatableData) {
+    addMeasure(repeatableData, InstrumentParameterCaptureMethod.MANUAL);
+  }
+
+  private void addMeasure(Map<String, Data> repeatableData, InstrumentParameterCaptureMethod captureMethod) {
     InstrumentRun instrumentRun = getInstrumentRun();
     Measure measure = new Measure();
     measure.setUser(userSessionService.getUser());
@@ -321,9 +329,16 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       InstrumentRunValue runValue = new InstrumentRunValue();
 
       runValue.setMeasure(measure);
-      runValue.setInstrumentParameter(parameter.getCode());
       runValue.setCaptureMethod(parameter.getCaptureMethod());
+      runValue.setInstrumentParameter(parameter.getCode());
       runValue.setData(entry.getValue());
+      runValue.setInstrumentRun(instrumentRun);
+
+      if(captureMethod != null) {
+        runValue.setCaptureMethod(captureMethod);
+      } else {
+        runValue.setCaptureMethod(parameter.getCaptureMethod());
+      }
 
       getPersistenceManager().save(runValue);
     }
@@ -473,6 +488,48 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       }
       return 0;
     }
+  }
+
+  public void addOutputParameterValues(Map<String, Data> values) {
+    addOutputParameterValues(values, null);
+  }
+
+  public void addManuallyCapturedOutputParameterValues(Map<String, Data> values) {
+    addOutputParameterValues(values, InstrumentParameterCaptureMethod.MANUAL);
+  }
+
+  private void addOutputParameterValues(Map<String, Data> values, InstrumentParameterCaptureMethod captureMethod) {
+    if(!getInstrumentType().isRepeatable()) {
+      for(Map.Entry<String, Data> entry : values.entrySet()) {
+        String paramName = entry.getKey();
+        InstrumentParameter parameter = getInstrumentParameter(paramName);
+        if(captureMethod != null && parameter.isManualCaptureAllowed()) parameter.setCaptureMethod(captureMethod);
+        updateParameterValue(parameter, entry.getValue());
+      }
+    } else {
+      if(captureMethod != null) {
+        addManuallyCapturedMeasure(values);
+      } else {
+        addMeasure(values);
+      }
+    }
+  }
+
+  private InstrumentParameter getInstrumentParameter(String name) {
+    InstrumentParameter parameter = getInstrumentType().getInstrumentParameter(name);
+
+    // Test if no parameter found for the given name
+    if(parameter == null || parameter instanceof InstrumentOutputParameter == false) {
+      throw new IllegalArgumentException("No output parameter with name: " + name);
+    }
+
+    return parameter;
+  }
+
+  private void updateParameterValue(InstrumentParameter parameter, Data value) {
+    InstrumentRunValue outputParameterValue = getOrCreateInstrumentRunValue(parameter);
+    outputParameterValue.setData(value);
+    update(outputParameterValue);
   }
 
 }

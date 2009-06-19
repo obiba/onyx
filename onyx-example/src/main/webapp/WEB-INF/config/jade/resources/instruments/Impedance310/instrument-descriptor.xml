@@ -195,7 +195,7 @@
       <code>RES_BODY_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <manualCaptureAllowed>true</manualCaptureAllowed>      
+      <manualCaptureAllowed>true</manualCaptureAllowed>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
@@ -204,6 +204,7 @@
       <code>RES_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
       <measurementUnit>%</measurementUnit>
     </output>
 

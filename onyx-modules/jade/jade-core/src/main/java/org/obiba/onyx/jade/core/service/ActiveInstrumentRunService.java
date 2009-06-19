@@ -131,8 +131,8 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public List<InstrumentRunValue> getInstrumentRunValues(String code);
 
   /**
-   * Get or create the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current
-   * {@code InstrumentRun}.
+   * Get or create the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current {@code
+   * InstrumentRun}.
    * @param code
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
@@ -154,7 +154,8 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public String updateReadOnlyInputParameterRunValue();
 
   /**
-   * @param repeatableData
+   * Persists repeatable instrument parameters.
+   * @param repeatableData A map of parameter names to {@link Data} values.
    */
   public void addMeasure(Map<String, Data> repeatableData);
 
@@ -163,4 +164,16 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @return
    */
   public int getCurrentMeasureCount();
+
+  /**
+   * Persists both repeatable and non repeatable instrument output parameters.
+   * @param values A map of parameter names to {@link Data} values.
+   */
+  public void addOutputParameterValues(Map<String, Data> values);
+
+  /**
+   * Persists and marks as manually captured both repeatable and non repeatable instrument output parameters.
+   * @param values A map of parameter names to {@link Data} values.
+   */
+  public void addManuallyCapturedOutputParameterValues(Map<String, Data> values);
 }
