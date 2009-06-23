@@ -9,14 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
-import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 /**
  * Question category filter upon escape category flag.
  */
-public class QuestionCategoryOpenAnswerFilter implements IDataListFilter<IModel> {
+public class QuestionCategoryOpenAnswerFilter implements IDataListFilter<QuestionCategory> {
 
   private static final long serialVersionUID = 1L;
 
@@ -27,9 +26,8 @@ public class QuestionCategoryOpenAnswerFilter implements IDataListFilter<IModel>
     this.acceptOpenAnswer = acceptOpenAnswer;
   }
 
-  public boolean accept(IModel item) {
-    QuestionCategory questionCategory = (QuestionCategory) item.getObject();
-    OpenAnswerDefinition open = questionCategory.getCategory().getOpenAnswerDefinition();
+  public boolean accept(QuestionCategory item) {
+    OpenAnswerDefinition open = item.getCategory().getOpenAnswerDefinition();
     return acceptOpenAnswer ? open != null : open == null;
   }
 

@@ -31,24 +31,35 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategoriesProvider.class);
 
+  private IDataListFilter<QuestionCategory> filter;
+
   private IModel questionModel;
+
+  private List<IModel> dataList;
 
   public QuestionCategoriesProvider(IModel questionModel) {
     this(questionModel, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<IModel> filter) {
+  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter) {
     this(questionModel, filter, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
-    super(filter, permutator);
+  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+    super(permutator);
+    this.filter = filter;
     this.questionModel = questionModel;
     getDataList();
   }
 
   @Override
   public List<IModel> getDataList() {
+    if(dataList != null) {
+      log.debug("QuestionCategoriesProvider.getDataList() CACHED");
+      return dataList;
+    }
+
+    log.debug("QuestionCategoriesProvider.getDataList() START");
     Question question = (Question) questionModel.getObject();
 
     List<IModel> categories = new ArrayList<IModel>();
@@ -65,43 +76,51 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
       for(String categoryName : categoryOrder.split(",")) {
         QuestionCategory found = question.findQuestionCategory(categoryName.trim());
         if(found != null) {
-          categories.add(new QuestionnaireModel(found));
+          if(accept(found)) {
+            categories.add(new QuestionnaireModel(found));
+          }
         }
       }
       // make sure no one is missing
       if(categories.size() < question.getQuestionCategories().size()) {
         for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          IModel questionCategoryModel = new QuestionnaireModel(questionCategory);
-          if(!categories.contains(questionCategoryModel)) {
-            categories.add(questionCategoryModel);
+          if(accept(questionCategory)) {
+            IModel questionCategoryModel = new QuestionnaireModel(questionCategory);
+            if(!categories.contains(questionCategoryModel)) {
+              categories.add(questionCategoryModel);
+            }
           }
         }
       }
     } else {
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-        categories.add(new QuestionnaireModel(questionCategory));
-      }
-
-    }
-
-    // filtering
-    if(filter != null) {
-      List<IModel> filteredCategories = new ArrayList<IModel>();
-      for(IModel questionCategoryModel : categories) {
-        if(filter.accept(questionCategoryModel)) {
-          filteredCategories.add(questionCategoryModel);
+        if(accept(questionCategory)) {
+          categories.add(new QuestionnaireModel(questionCategory));
         }
       }
-      categories = filteredCategories;
     }
 
     // permutation
     IDataListPermutator<IModel> permutator = getDataListPermutator();
     if(permutator != null) {
-      return permutator.permute(categories);
+      dataList = permutator.permute(categories);
     } else {
-      return categories;
+      dataList = categories;
     }
+    log.debug("QuestionCategoriesProvider.getDataList() END");
+    return dataList;
+  }
+
+  /**
+   * Question category model filtering.
+   * @param item
+   * @return
+   */
+  private boolean accept(QuestionCategory item) {
+    if(filter != null) {
+      return filter.accept(item);
+    }
+    return true;
   }
 
   @Override

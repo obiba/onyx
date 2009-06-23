@@ -9,13 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
-import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 /**
  * Question category filter upon escape category flag.
  */
-public class QuestionCategoryEscapeFilter implements IDataListFilter<IModel> {
+public class QuestionCategoryEscapeFilter implements IDataListFilter<QuestionCategory> {
 
   private static final long serialVersionUID = 1L;
 
@@ -26,9 +25,8 @@ public class QuestionCategoryEscapeFilter implements IDataListFilter<IModel> {
     this.acceptEscape = acceptEscape;
   }
 
-  public boolean accept(IModel item) {
-    QuestionCategory questionCategory = (QuestionCategory) item.getObject();
-    return acceptEscape ? questionCategory.getCategory().isEscape() : !questionCategory.getCategory().isEscape();
+  public boolean accept(QuestionCategory item) {
+    return acceptEscape ? item.getCategory().isEscape() : !item.getCategory().isEscape();
   }
 
 }

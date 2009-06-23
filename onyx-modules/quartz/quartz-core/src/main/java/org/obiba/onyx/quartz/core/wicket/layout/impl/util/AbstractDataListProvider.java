@@ -25,21 +25,14 @@ public abstract class AbstractDataListProvider<T extends Serializable> implement
 
   private static final long serialVersionUID = 1L;
 
-  protected IDataListFilter<T> filter;
-
   protected IDataListPermutator<T> permutator;
 
   public AbstractDataListProvider() {
-    this(null, null);
+    this(null);
   }
 
-  public AbstractDataListProvider(IDataListFilter<T> filter) {
-    this(filter, null);
-  }
-
-  public AbstractDataListProvider(IDataListFilter<T> filter, IDataListPermutator<T> permutator) {
+  public AbstractDataListProvider(IDataListPermutator<T> permutator) {
     super();
-    this.filter = filter;
     this.permutator = permutator;
   }
 

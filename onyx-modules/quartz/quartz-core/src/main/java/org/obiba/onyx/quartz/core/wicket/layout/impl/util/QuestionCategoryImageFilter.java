@@ -9,10 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
-import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
-public class QuestionCategoryImageFilter implements IDataListFilter<IModel> {
+public class QuestionCategoryImageFilter implements IDataListFilter<QuestionCategory> {
   //
   // Constants
   //
@@ -41,7 +41,7 @@ public class QuestionCategoryImageFilter implements IDataListFilter<IModel> {
    * Accepts a <code>QuestionCategory</code> (i.e., returns <code>true</code>) if the <code>imageSelected</code>
    * and <code>imageDeselected</code> properties are defined for it.
    */
-  public boolean accept(IModel item) {
+  public boolean accept(QuestionCategory item) {
     QuestionnaireStringResourceModel model = null;
 
     model = new QuestionnaireStringResourceModel(item, "imageSelected");
