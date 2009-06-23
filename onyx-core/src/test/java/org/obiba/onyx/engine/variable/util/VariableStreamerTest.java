@@ -174,7 +174,34 @@ public class VariableStreamerTest {
     Assert.assertEquals(1, variableDataSet.getVariableDatas().size());
     Assert.assertEquals("Onyx.blabla", variableDataSet.getVariableDatas().get(0).getVariablePath());
     Assert.assertEquals(0, variableDataSet.getVariableDatas().get(0).getDatas().size());
+  }
 
+  @Test
+  public void testVariableDataWithNullValueStreaming2() {
+    String variableDataSetString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><variableDataSet><variableData path=\"Onyx.blabla\" type=\"TEXT\"><null/></variableData></variableDataSet>";
+
+    VariableDataSet variableDataSet = VariableStreamer.fromXML(new ByteArrayInputStream(variableDataSetString.getBytes()));
+    Assert.assertNotNull(variableDataSet);
+    Assert.assertEquals(1, variableDataSet.getVariableDatas().size());
+    VariableData varData = variableDataSet.getVariableDatas().get(0);
+    Assert.assertEquals("Onyx.blabla", varData.getVariablePath());
+    Assert.assertEquals(1, varData.getDatas().size());
+    Assert.assertEquals(DataType.TEXT, varData.getDatas().get(0).getType());
+    Assert.assertEquals(null, varData.getDatas().get(0).getValue());
+  }
+
+  @Test
+  public void testVariableDataWithNullValueStreaming3() {
+    String variableDataSetString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><variableDataSet><variableData path=\"Onyx.blabla\" type=\"INTEGER\"><null/></variableData></variableDataSet>";
+
+    VariableDataSet variableDataSet = VariableStreamer.fromXML(new ByteArrayInputStream(variableDataSetString.getBytes()));
+    Assert.assertNotNull(variableDataSet);
+    Assert.assertEquals(1, variableDataSet.getVariableDatas().size());
+    VariableData varData = variableDataSet.getVariableDatas().get(0);
+    Assert.assertEquals("Onyx.blabla", varData.getVariablePath());
+    Assert.assertEquals(1, varData.getDatas().size());
+    Assert.assertEquals(DataType.INTEGER, varData.getDatas().get(0).getType());
+    Assert.assertEquals(null, varData.getDatas().get(0).getValue());
   }
 
   @Test
