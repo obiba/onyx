@@ -87,7 +87,11 @@ public class VariableData implements Serializable {
 
     if(type != null) {
       for(Serializable value : getValues()) {
-        datas.add(new Data(type, value));
+        try {
+          datas.add(new Data(type, value));
+        } catch(Exception e) {
+          datas.add(new Data(type, null));
+        }
       }
     } else {
       for(Serializable value : getValues()) {

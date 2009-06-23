@@ -224,6 +224,7 @@ public class VariableStreamer {
     xstream.autodetectAnnotations(true);
 
     xstream.alias("data", Data.class);
+    xstream.alias("null", NullValue.class);
     xstream.useAttributeFor(Data.class, "type");
   }
 
