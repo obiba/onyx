@@ -92,7 +92,6 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
       @Override
       protected Object load() {
-        log.info("load()");
         QuestionCategoriesProvider questionCategoriesProvider = new QuestionCategoriesProvider(getQuestionModel(), new QuestionCategoryEscapeFilter(false));
         return questionCategoriesProvider.getDataList();
       }
