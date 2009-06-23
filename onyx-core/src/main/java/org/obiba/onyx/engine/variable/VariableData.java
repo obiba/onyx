@@ -115,7 +115,10 @@ public class VariableData implements Serializable {
         cal.setTime((Date) value);
         value = cal.getTime();
       }
-      getValues().add(value);
+      // make sure we do not send a null
+      if(value != null) {
+        getValues().add(value);
+      }
       type = child.getType();
     }
     return this;
