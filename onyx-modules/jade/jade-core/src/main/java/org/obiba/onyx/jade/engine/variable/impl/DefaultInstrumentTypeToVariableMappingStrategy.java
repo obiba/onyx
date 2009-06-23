@@ -193,6 +193,9 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
             InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
             if(runValue != null) {
               data = runValue.getData(parameter.getDataType());
+              if(data != null && data.getValue() == null) {
+                data = null;
+              }
             }
           }
 
@@ -252,6 +255,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   }
 
   private Data getInstrumentRunValue(Participant participant, Variable variable, String parameterCode) {
+    Data data = null;
     String instrumentTypeName = getInstrumentTypeVariable(variable).getName();
 
     InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
@@ -261,11 +265,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, null);
 
       if(runValue != null) {
-        return runValue.getData(parameter.getDataType());
+        data = runValue.getData(parameter.getDataType());
+        if(data.getValue() == null) {
+          data = null;
+        }
       }
     }
 
-    return null;
+    return data;
   }
 
   private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {

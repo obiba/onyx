@@ -24,6 +24,7 @@ import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -149,6 +150,30 @@ public class VariableStreamerTest {
     Assert.assertEquals("Onyx.blabla", variableDataSet.getVariableDatas().get(0).getVariablePath());
     Assert.assertEquals(1, variableDataSet.getVariableDatas().get(0).getDatas().size());
     Assert.assertEquals(DataBuilder.buildBoolean(true), variableDataSet.getVariableDatas().get(0).getDatas().get(0));
+
+  }
+
+  @Test
+  public void testVariableDataWithNullValueStreaming() {
+    VariableDataSet variableDataSet = new VariableDataSet();
+    Calendar cal = new GregorianCalendar();
+    cal.set(Calendar.YEAR, 2009);
+    cal.set(Calendar.MONTH, 6);
+    cal.set(Calendar.DAY_OF_MONTH, 15);
+    variableDataSet.setExportDate(cal.getTime());
+    variableDataSet.addVariableData(new VariableData("Onyx.blabla", new Data(DataType.TEXT, null)));
+
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    VariableStreamer.toXML(variableDataSet, os);
+    Assert.assertEquals(true, os.size() > 0);
+    log.info(os.toString());
+
+    variableDataSet = VariableStreamer.fromXML(new ByteArrayInputStream(os.toByteArray()));
+    Assert.assertNotNull(variableDataSet);
+    Assert.assertEquals(cal.getTime(), variableDataSet.getExportDate());
+    Assert.assertEquals(1, variableDataSet.getVariableDatas().size());
+    Assert.assertEquals("Onyx.blabla", variableDataSet.getVariableDatas().get(0).getVariablePath());
+    Assert.assertEquals(0, variableDataSet.getVariableDatas().get(0).getDatas().size());
 
   }
 
