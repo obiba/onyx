@@ -73,7 +73,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    */
   @SuppressWarnings("serial")
   private void addOpenAnswerCategoriesView() {
-    MultipleDataListFilter<IModel> filter = new MultipleDataListFilter<IModel>();
+    MultipleDataListFilter<QuestionCategory> filter = new MultipleDataListFilter<QuestionCategory>();
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(true));
     add(new QuestionCategoryComponentsView("openCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel(), 1)) {
@@ -90,7 +90,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * Regular category choice in potentially multiple columns.
    */
   private void addRegularCategoriesView() {
-    MultipleDataListFilter<IModel> filter = new MultipleDataListFilter<IModel>();
+    MultipleDataListFilter<QuestionCategory> filter = new MultipleDataListFilter<QuestionCategory>();
     filter.addFilter(new QuestionCategoryImageFilter(false));
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
@@ -147,7 +147,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
 
-    public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
+    public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
     }
 
@@ -163,7 +163,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryImageLinksView extends QuestionCategoryComponentsView {
 
-    public QuestionCategoryImageLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
+    public QuestionCategoryImageLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
     }
 

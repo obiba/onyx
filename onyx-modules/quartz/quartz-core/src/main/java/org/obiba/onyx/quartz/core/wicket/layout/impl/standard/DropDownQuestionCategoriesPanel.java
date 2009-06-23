@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
@@ -87,7 +88,15 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
       updateOpenAnswerDefinitionPanel(null, selectedQuestionCategoryModel);
     }
 
-    questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(this, "questionCategories"), new QuestionCategoryChoiceRenderer());
+    questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new LoadableDetachableModel() {
+
+      @Override
+      protected Object load() {
+        QuestionCategoriesProvider questionCategoriesProvider = new QuestionCategoriesProvider(getQuestionModel(), new QuestionCategoryEscapeFilter(false));
+        return questionCategoriesProvider.getDataList();
+      }
+
+    }, new QuestionCategoryChoiceRenderer());
     questionCategoriesDropDownChoice.setOutputMarkupId(true);
 
     questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
@@ -144,11 +153,6 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
       if(category.isEscape()) return true;
     }
     return false;
-  }
-
-  public List<IModel> getQuestionCategories() {
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getQuestionModel(), new QuestionCategoryEscapeFilter(false));
-    return provider.getDataList();
   }
 
   /**

@@ -264,16 +264,18 @@
                   <questionnaireDataSource id="128" questionnaire="Test" question="DD" category="DNK"/>
                 </dataSources>
               </condition>
+              <questions id="129"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="129"/>
+      <sections id="599"/>
     </section>
   </sections>
-  <pages id="130">
+  <pages id="600">
     <page reference="7"/>
     <page reference="92"/>
     <page reference="101"/>
+    <page reference="130"/>
   </pages>
 </questionnaire>
