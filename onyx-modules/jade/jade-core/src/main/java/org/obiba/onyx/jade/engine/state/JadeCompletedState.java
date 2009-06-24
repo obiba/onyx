@@ -19,7 +19,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,8 @@ public class JadeCompletedState extends AbstractJadeStageState {
   private void cancelInstrumentRun() {
     InstrumentType instrumentType = instrumentService.getInstrumentType(getStage().getName());
     Participant participant = activeInterviewService.getParticipant();
-    instrumentRunService.setInstrumentRunStatus(instrumentRunService.getLastCompletedInstrumentRun(participant, instrumentType), InstrumentRunStatus.CANCELED);
+    InstrumentRun run = instrumentRunService.getInstrumentRun(participant, instrumentType.getName());
+    activeInstrumentRunService.deleteInstrumentRun(run);
   }
 
   @Override

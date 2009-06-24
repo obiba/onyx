@@ -182,4 +182,11 @@ public class InstrumentRun extends AbstractEntity {
   public void setOtherContraindication(String reason) {
     otherContraindication = reason;
   }
+
+  public boolean isCompletedOrContraindicated() {
+    if(getStatus().equals(InstrumentRunStatus.COMPLETED) || getStatus().equals(InstrumentRunStatus.CONTRA_INDICATED)) {
+      return true;
+    }
+    return false;
+  }
 }

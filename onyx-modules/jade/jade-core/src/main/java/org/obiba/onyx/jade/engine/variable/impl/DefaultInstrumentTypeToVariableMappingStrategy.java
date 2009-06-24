@@ -190,8 +190,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
             // parameter name is the variable name
             String parameterCode = variable.getName();
             InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
-            InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, measurePosition);
-            if(runValue != null) {
+            InstrumentRunValue runValue = instrumentRunService.getInstrumentRunValue(participant, type.getName(), parameterCode, measurePosition);
+            if(runValue != null && runValue.getInstrumentRun().isCompletedOrContraindicated()) {
               data = runValue.getData(parameter.getDataType());
               if(data != null && data.getValue() == null) {
                 data = null;
@@ -262,9 +262,9 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     if(type != null) {
 
       InstrumentParameter parameter = type.getInstrumentParameter(parameterCode);
-      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode, null);
+      InstrumentRunValue runValue = instrumentRunService.getInstrumentRunValue(participant, type.getName(), parameterCode, null);
 
-      if(runValue != null) {
+      if(runValue != null && runValue.getInstrumentRun() != null && runValue.getInstrumentRun().isCompletedOrContraindicated()) {
         data = runValue.getData(parameter.getDataType());
         if(data.getValue() == null) {
           data = null;
@@ -276,8 +276,9 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   }
 
   private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {
-    InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
-    return instrumentRunService.getLastCompletedInstrumentRun(participant, type);
+    InstrumentRun run = instrumentRunService.getInstrumentRun(participant, instrumentTypeName);
+    if(!run.isCompletedOrContraindicated()) run = null; // We only want the last completed run.
+    return run;
   }
 
   public Variable getInstrumentTypeVariable(Variable variable) {

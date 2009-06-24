@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 
@@ -22,11 +23,17 @@ public abstract class AbstractJadeStageState extends AbstractStageState {
 
   protected InstrumentService instrumentService;
 
+  protected ActiveInstrumentRunService activeInstrumentRunService;
+
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
   }
 
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
+  }
+
+  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
+    this.activeInstrumentRunService = activeInstrumentRunService;
   }
 }

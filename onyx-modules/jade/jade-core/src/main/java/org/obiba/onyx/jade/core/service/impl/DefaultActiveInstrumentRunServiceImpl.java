@@ -80,7 +80,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return currentRun;
   }
 
-  public void reset() {
+  // Visible for testing.
+  void reset() {
     currentRunId = null;
   }
 
@@ -114,7 +115,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRun().getInstrument();
   }
 
-  public boolean hasParameterWithWarning() {
+  // Visible for testing.
+  boolean hasParameterWithWarning() {
     return !getParametersWithWarning().isEmpty();
   }
 
@@ -168,20 +170,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getPersistenceManager().get(InstrumentRun.class, currentRunId);
   }
 
-  public void persistRun() {
-    log.debug("ActiveInstrumentRunService is persisting InstrumentRun");
-    getPersistenceManager().save(getInstrumentRun());
-  }
-
   public void setInstrumentRunStatus(InstrumentRunStatus status) {
     InstrumentRun currentRun = getInstrumentRun();
 
     currentRun.setStatus(status);
     getPersistenceManager().save(currentRun);
-  }
-
-  public InstrumentRunStatus getInstrumentRunStatus() {
-    return getInstrumentRun().getStatus();
   }
 
   public void update(InstrumentRunValue currentRunValue) {
@@ -530,6 +523,18 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentRunValue outputParameterValue = getOrCreateInstrumentRunValue(parameter);
     outputParameterValue.setData(value);
     update(outputParameterValue);
+  }
+
+  public void deleteInstrumentRun(InstrumentRun instrumentRun) {
+    if(instrumentRun != null) {
+      for(InstrumentRunValue instrumentRunValue : instrumentRun.getInstrumentRunValues()) {
+        getPersistenceManager().delete(instrumentRunValue);
+      }
+      for(Measure measure : instrumentRun.getMeasures()) {
+        getPersistenceManager().delete(measure);
+      }
+      getPersistenceManager().delete(instrumentRun);
+    }
   }
 
 }

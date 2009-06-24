@@ -100,7 +100,9 @@ public class InstrumentRunPanel extends Panel {
   public InstrumentRunPanel(String id, IModel instrumentTypeModel) {
     super(id);
 
-    InstrumentRun run = instrumentRunService.getLastCompletedInstrumentRun(activeInterviewService.getParticipant(), (InstrumentType) instrumentTypeModel.getObject());
+    InstrumentType instrumentType = (InstrumentType) instrumentTypeModel.getObject();
+    InstrumentRun run = instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), instrumentType.getName());
+    if(!run.isCompletedOrContraindicated()) run = null; // We only want the last completed run.
     if(run == null) {
       throw new IllegalStateException("No instrument run in session.");
     }

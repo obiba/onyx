@@ -54,7 +54,7 @@ public class InstrumentParameterDataSource implements IDataSource {
     if(participant == null) return null;
 
     InstrumentParameter param = getInstrumentParameter();
-    InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValueFromLastRun(participant, instrumentService.getInstrumentType(instrumentType), parameterCode, measure);
+    InstrumentRunValue runValue = instrumentRunService.getInstrumentRunValue(participant, (instrumentService.getInstrumentType(instrumentType)).getName(), parameterCode, measure);
 
     if(runValue != null) {
       data = runValue.getData(param.getDataType());

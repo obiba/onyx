@@ -59,7 +59,7 @@ public class InstrumentParameterDataSourceTest {
     InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun(participant, instrumentType, PARAMETER_CODE, null)).andReturn(null);
+    expect(instrumentRunServiceMock.getInstrumentRunValue(participant, instrumentType.getName(), PARAMETER_CODE, null)).andReturn(null);
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
@@ -82,7 +82,7 @@ public class InstrumentParameterDataSourceTest {
     instrumentType.addInstrumentParameter(param);
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject(), (Integer) EasyMock.anyObject())).andReturn(createRunValue());
+    expect(instrumentRunServiceMock.getInstrumentRunValue((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (Integer) EasyMock.anyObject())).andReturn(createRunValue());
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);

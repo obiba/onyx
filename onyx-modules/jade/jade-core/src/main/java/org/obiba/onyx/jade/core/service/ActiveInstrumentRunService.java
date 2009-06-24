@@ -35,11 +35,6 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public InstrumentRun start(Participant participant, InstrumentType type);
 
   /**
-   * Make sure there is no current {@link InstrumentRun}.
-   */
-  public void reset();
-
-  /**
    * Set the end date to the current {@link InstrumentRun} with its current status.
    */
   public void end();
@@ -62,14 +57,7 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    */
   public void setInstrument(Instrument instrument);
 
-  /**
-   * Get the instrument used for performing the measure.
-   * @return
-   */
-  public Instrument getInstrument();
-
-  public boolean hasParameterWithWarning();
-
+  // used by public class OutputParametersStep extends WizardStepPanel {
   public List<InstrumentOutputParameter> getParametersWithWarning();
 
   /**
@@ -79,6 +67,8 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    */
   public void setInstrumentRun(InstrumentRun instrumentRun);
 
+  public void deleteInstrumentRun(InstrumentRun instrumentRun);
+
   /**
    * Get the current {@link InstrumentRun}.
    * @return
@@ -86,22 +76,10 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public InstrumentRun getInstrumentRun();
 
   /**
-   * Persist current {@link InstrumentRun}.
-   * @param currentRun
-   */
-  public void persistRun();
-
-  /**
    * Set the {@link InstrumentRunStatus} to the current {@link InstrumentRun}.
    * @param status
    */
   public void setInstrumentRunStatus(InstrumentRunStatus status);
-
-  /**
-   * Get the {@link InstrumentRunStatus} for the current {@link InstrumentRun}.
-   * @return
-   */
-  public InstrumentRunStatus getInstrumentRunStatus();
 
   /**
    * Persist {@link InstrumentRunValue} current {@link InstrumentRun}.

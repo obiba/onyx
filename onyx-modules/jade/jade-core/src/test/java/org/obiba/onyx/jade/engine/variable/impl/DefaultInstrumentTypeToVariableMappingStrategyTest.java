@@ -35,6 +35,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultInstrumentTypeToVariableMappingStrategyTest.class);
 
   private InstrumentRunService instrumentRunServiceMock;
@@ -70,6 +72,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   IVariablePathNamingStrategy variablePathNamingStrategy;
 
+  private InstrumentRun instrumentRun;
+
   @Before
   public void setUp() {
     ApplicationContextMock mockCtx = new ApplicationContextMock();
@@ -87,6 +91,10 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     repeatableInstrumentType = createRepeatableInstrumentType();
 
     variablePathNamingStrategy = new DefaultVariablePathNamingStrategy();
+
+    // Create a COMPLETED InstrumentRun.
+    instrumentRun = new InstrumentRun();
+    instrumentRun.setStatus(InstrumentRunStatus.COMPLETED);
   }
 
   @Test
@@ -150,11 +158,12 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentRun(instrumentRun);
     runValue.setInstrumentParameter(inputParam.getCode());
     runValue.setData(DataBuilder.buildText("coucou"));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INPUT_PARAM", null)).andReturn(runValue);
+    expect(instrumentRunServiceMock.getInstrumentRunValue(participant, instrumentType.getName(), "INPUT_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
@@ -178,11 +187,12 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentRun(instrumentRun);
     runValue.setInstrumentParameter(inputParam.getCode());
     runValue.setData(DataBuilder.buildText("L"));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INPUT_PARAM2", null)).andReturn(runValue);
+    expect(instrumentRunServiceMock.getInstrumentRunValue(participant, instrumentType.getName(), "INPUT_PARAM2", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
@@ -206,11 +216,12 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentRun(instrumentRun);
     runValue.setInstrumentParameter(outputParam.getCode());
     runValue.setData(DataBuilder.buildInteger(123l));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "OUTPUT_PARAM", null)).andReturn(runValue);
+    expect(instrumentRunServiceMock.getInstrumentRunValue(participant, instrumentType.getName(), "OUTPUT_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
@@ -234,11 +245,12 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentRun(instrumentRun);
     runValue.setInstrumentParameter(interParam.getCode());
     runValue.setData(DataBuilder.buildText("coucou"));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INTERPRETIVE_PARAM", null)).andReturn(runValue);
+    expect(instrumentRunServiceMock.getInstrumentRunValue(participant, instrumentType.getName(), "INTERPRETIVE_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
@@ -262,11 +274,12 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRunValue runValue = new InstrumentRunValue();
+    runValue.setInstrumentRun(instrumentRun);
     runValue.setInstrumentParameter(interParam.getCode());
     runValue.setData(DataBuilder.buildText(InterpretativeParameter.YES));
 
     expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, "INTERPRETIVE_PARAM", null)).andReturn(runValue);
+    expect(instrumentRunServiceMock.getInstrumentRunValue(participant, instrumentType.getName(), "INTERPRETIVE_PARAM", null)).andReturn(runValue);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
@@ -290,18 +303,16 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRun run = new InstrumentRun();
+    run.setStatus(InstrumentRunStatus.COMPLETED);
     User user = new User();
     user.setLogin("toto");
     run.setUser(user);
 
-    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
-    replay(instrumentServiceMock);
+    expect(instrumentRunServiceMock.getInstrumentRun(participant, instrumentType.getName())).andReturn(run);
     replay(instrumentRunServiceMock);
 
     Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
-    verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
     Assert.assertNotNull(data);
@@ -319,17 +330,15 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRun run = new InstrumentRun();
+    run.setStatus(InstrumentRunStatus.COMPLETED);
     Instrument instrument = createInstrument(instrumentType);
     run.setInstrument(instrument);
 
-    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
-    replay(instrumentServiceMock);
+    expect(instrumentRunServiceMock.getInstrumentRun(participant, instrumentType.getName())).andReturn(run);
     replay(instrumentRunServiceMock);
 
     Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
-    verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
     Assert.assertNotNull(data);
@@ -347,17 +356,15 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRun run = new InstrumentRun();
+    run.setStatus(InstrumentRunStatus.COMPLETED);
     run.setInstrumentType(instrumentType.getName());
     run.setContraindication(instrumentType.getContraindications().get(0));
 
-    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
-    replay(instrumentServiceMock);
+    expect(instrumentRunServiceMock.getInstrumentRun(participant, instrumentType.getName())).andReturn(run);
     replay(instrumentRunServiceMock);
 
     Data data = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().get(0);
 
-    verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
     Assert.assertNotNull(data);
@@ -375,16 +382,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     Participant participant = new Participant();
     InstrumentRun run = new InstrumentRun();
+    run.setStatus(InstrumentRunStatus.COMPLETED);
     run.setInstrumentType(instrumentType.getName());
 
-    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
-    replay(instrumentServiceMock);
+    expect(instrumentRunServiceMock.getInstrumentRun(participant, instrumentType.getName())).andReturn(run);
     replay(instrumentRunServiceMock);
 
     Assert.assertEquals(0, instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, new VariableData(variablePathNamingStrategy.getPath(variable))).getDatas().size());
 
-    verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
   }

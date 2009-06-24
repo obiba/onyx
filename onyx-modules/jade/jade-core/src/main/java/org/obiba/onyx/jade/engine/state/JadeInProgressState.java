@@ -48,7 +48,7 @@ public class JadeInProgressState extends AbstractJadeStageState {
     // Invalidate current instrument run
     InstrumentRun run = getLastInstrumentRun();
     if(run != null) {
-      instrumentRunService.setInstrumentRunStatus(run, InstrumentRunStatus.CANCELED);
+      activeInstrumentRunService.deleteInstrumentRun(run);
     }
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
@@ -65,10 +65,11 @@ public class JadeInProgressState extends AbstractJadeStageState {
 
     InstrumentRunStatus runStatus = run.getStatus();
     if(!runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
-      instrumentRunService.setInstrumentRunStatus(run, InstrumentRunStatus.COMPLETED);
+      run.setStatus(InstrumentRunStatus.COMPLETED);
+      activeInstrumentRunService.setInstrumentRun(run);
       runStatus = InstrumentRunStatus.COMPLETED;
     }
-    instrumentRunService.end(run);
+    activeInstrumentRunService.end();
 
     if(runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
       castEvent(TransitionEvent.CONTRAINDICATED);
@@ -78,7 +79,7 @@ public class JadeInProgressState extends AbstractJadeStageState {
   }
 
   private InstrumentRun getLastInstrumentRun() {
-    return instrumentRunService.getLastInstrumentRun(activeInterviewService.getParticipant(), getStage().getName());
+    return instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), getStage().getName());
   }
 
   @Override

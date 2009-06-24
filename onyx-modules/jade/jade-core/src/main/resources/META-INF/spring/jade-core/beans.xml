@@ -11,6 +11,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     abstract="true" scope="prototype">
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="instrumentService" ref="instrumentService" />
+    <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
 
   <bean id="jadeWaitingState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState"
@@ -65,5 +66,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </list>
     </property>
   </bean>
+  
+  <!-- 
+  <bean id="newInstrumentRunService"
+    class="org.obiba.onyx.jade.core.service.impl.DefaultNewInstrumentRunServiceImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="instrumentTypes" ref="instrumentTypeFactory" />
+  </bean>
+  -->
   
 </beans>

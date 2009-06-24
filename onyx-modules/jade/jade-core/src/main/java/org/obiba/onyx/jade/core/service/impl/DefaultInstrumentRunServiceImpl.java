@@ -9,36 +9,39 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl;
 
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ *
+ */
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
 
-  @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(DefaultInstrumentRunServiceImpl.class);
+  private Map<String, InstrumentType> instrumentTypes;
 
-  public void setInstrumentRunStatus(InstrumentRun run, InstrumentRunStatus status) {
-    // if(status.equals(InstrumentRunStatus.CANCELED)) {
-    // getPersistenceManager().delete(run);
-    // } else {
-    // run.setStatus(status);
-    // getPersistenceManager().save(run);
-    // }
-    run.setStatus(status);
-    getPersistenceManager().save(run);
+  public void setInstrumentTypes(Map<String, InstrumentType> instrumentTypes) {
+    this.instrumentTypes = instrumentTypes;
   }
 
-  public void end(InstrumentRun run) {
-    if(run.getTimeEnd() != null) throw new IllegalArgumentException("Instrument run already ended the " + run.getTimeEnd());
-
-    run.setTimeEnd(new Date());
-    getPersistenceManager().save(run);
+  public InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {
+    if(participant == null) throw new IllegalArgumentException("The participant must not be null.");
+    if(instrumentTypeName == null) throw new IllegalArgumentException("The instrumentTypeName must not be null.");
+    InstrumentType instrumentType = instrumentTypes.get(instrumentTypeName);
+    if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve instrument run for a null instrument type. InstrumentTypeName was [" + instrumentTypeName + "].");
+    InstrumentRun template = new InstrumentRun();
+    template.setInstrumentType(instrumentType.getName());
+    template.setParticipant(participant);
+    List<InstrumentRun> runs = getPersistenceManager().match(template, SortingClause.create("id", false));
+    if(runs != null && runs.size() > 1) throw new IllegalStateException("Too many InstrumentRun objects for Participant [" + participant.getFullName() + "]. Expected [1] but found [" + runs.size() + "].");
+    if(runs != null && runs.size() == 1) return runs.get(0);
+    return null;
   }
 
 }

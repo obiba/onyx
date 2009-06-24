@@ -39,7 +39,6 @@ public abstract class AbstractJadeContraIndicationStep extends AbstractContraInd
   //
 
   protected void persistContraindicatable() {
-    activeInstrumentRunService.persistRun();
   }
 
   protected Contraindication getContraindication() {

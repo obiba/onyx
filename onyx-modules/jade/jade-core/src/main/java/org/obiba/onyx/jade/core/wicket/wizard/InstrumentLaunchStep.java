@@ -84,7 +84,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutNext(form, target);
     if(launched) {
-      if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRunStatus())) {
+      if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRun().getStatus())) {
         error(getString("InstrumentApplicationError"));
         setNextStep(null);
       } else {
