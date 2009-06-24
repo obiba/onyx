@@ -7,9 +7,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-/**
- * 
- */
 package org.obiba.onyx.jade.engine.state;
 
 import java.util.Set;
@@ -17,32 +14,34 @@ import java.util.Set;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class JadeCompletedState extends AbstractJadeStageState {
-
-  private static final Logger log = LoggerFactory.getLogger(JadeCompletedState.class);
+public class JadeInterruptedState extends AbstractJadeStageState {
 
   public String getName() {
-    return "Completed";
+    return "Interrupted";
   }
 
   @Override
   protected void addUserActions(Set<ActionType> types) {
     types.add(ActionType.STOP);
+    types.add(ActionType.EXECUTE);
   }
 
   @Override
   public void stop(Action action) {
-    super.execute(action);
-    log.debug("Jade Stage {} is cancelling", super.getStage().getName());
+
     cancelInstrumentRuns();
+
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);
     }
+  }
+
+  @Override
+  public void execute(Action action) {
+    castEvent(TransitionEvent.RESUME);
   }
 
   @Override
@@ -58,13 +57,4 @@ public class JadeCompletedState extends AbstractJadeStageState {
     return super.wantTransitionEvent(transitionEvent);
   }
 
-  @Override
-  public boolean isCompleted() {
-    return true;
-  }
-
-  @Override
-  public ActionType getStartingActionType() {
-    return ActionType.EXECUTE;
-  }
 }

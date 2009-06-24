@@ -80,20 +80,26 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     AbstractStageState notApplicable = (AbstractStageState) applicationContext.getBean("jadeNotApplicableState");
     AbstractStageState contraIndicated = (AbstractStageState) applicationContext.getBean("jadeContraIndicatedState");
     AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
+    AbstractStageState interrupted = (AbstractStageState) applicationContext.getBean("jadeInterruptedState");
 
     exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
     exec.addEdge(ready, TransitionEvent.CONTRAINDICATED, notApplicable);
+
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
     exec.addEdge(inProgress, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(inProgress, TransitionEvent.CONTRAINDICATED, contraIndicated);
+    exec.addEdge(inProgress, TransitionEvent.INTERRUPT, interrupted);
+
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
     exec.addEdge(skipped, TransitionEvent.NOTAPPLICABLE, notApplicable);
+
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(completed, TransitionEvent.CONTRAINDICATED, notApplicable);
+    exec.addEdge(completed, TransitionEvent.RESUME, inProgress);
 
     exec.addEdge(contraIndicated, TransitionEvent.CANCEL, ready);
     exec.addEdge(contraIndicated, TransitionEvent.INVALID, waiting);
@@ -107,6 +113,11 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     exec.addEdge(ready, TransitionEvent.INVALID, waiting);
     exec.addEdge(skipped, TransitionEvent.INVALID, waiting);
     exec.addEdge(completed, TransitionEvent.INVALID, waiting);
+
+    exec.addEdge(interrupted, TransitionEvent.CANCEL, ready);
+    exec.addEdge(interrupted, TransitionEvent.RESUME, inProgress);
+    exec.addEdge(interrupted, TransitionEvent.NOTAPPLICABLE, notApplicable);
+    exec.addEdge(interrupted, TransitionEvent.INVALID, waiting);
 
     if(stage.getStageDependencyCondition() == null) {
       exec.setInitialState(ready);

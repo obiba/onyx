@@ -17,6 +17,8 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 
 /**
@@ -42,6 +44,19 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
     if(runs != null && runs.size() > 1) throw new IllegalStateException("Too many InstrumentRun objects for Participant [" + participant.getFullName() + "]. Expected [1] but found [" + runs.size() + "].");
     if(runs != null && runs.size() == 1) return runs.get(0);
     return null;
+  }
+
+  public void deleteInstrumentRun(Participant participant, String instrumentTypeName) {
+    InstrumentRun instrumentRun = getInstrumentRun(participant, instrumentTypeName);
+    if(instrumentRun != null) {
+      for(InstrumentRunValue instrumentRunValue : instrumentRun.getInstrumentRunValues()) {
+        getPersistenceManager().delete(instrumentRunValue);
+      }
+      for(Measure measure : instrumentRun.getMeasures()) {
+        getPersistenceManager().delete(measure);
+      }
+      getPersistenceManager().delete(instrumentRun);
+    }
   }
 
 }

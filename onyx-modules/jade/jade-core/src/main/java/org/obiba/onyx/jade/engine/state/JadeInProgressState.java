@@ -45,11 +45,7 @@ public class JadeInProgressState extends AbstractJadeStageState {
   @Override
   public void stop(Action action) {
     log.debug("Jade Stage {} is stopping", super.getStage().getName());
-    // Invalidate current instrument run
-    InstrumentRun run = getLastInstrumentRun();
-    if(run != null) {
-      activeInstrumentRunService.deleteInstrumentRun(run);
-    }
+    cancelInstrumentRuns();
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
@@ -85,6 +81,11 @@ public class JadeInProgressState extends AbstractJadeStageState {
   @Override
   public boolean isInteractive() {
     return true;
+  }
+
+  @Override
+  public void interrupt(Action action) {
+    castEvent(TransitionEvent.INTERRUPT);
   }
 
   public String getName() {

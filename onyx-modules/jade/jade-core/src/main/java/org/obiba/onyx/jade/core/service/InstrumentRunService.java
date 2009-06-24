@@ -33,4 +33,11 @@ public interface InstrumentRunService {
    */
   public InstrumentRunValue getInstrumentRunValue(Participant participant, String instrumentTypeName, String parameterCode, Integer measurePosition);
 
+  /**
+   * Delete the {@link InstrumentRun} associated with the participant and instrument type name. The members of
+   * InstrumentRun ({@link Measure} and {@link InstrumentRunValue}) will also be deleted.
+   * @param participant
+   * @param instrumentTypeName
+   */
+  public void deleteInstrumentRun(Participant participant, String instrumentTypeName);
 }

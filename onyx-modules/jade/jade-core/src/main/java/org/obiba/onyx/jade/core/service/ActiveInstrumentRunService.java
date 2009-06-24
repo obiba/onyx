@@ -67,8 +67,6 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    */
   public void setInstrumentRun(InstrumentRun instrumentRun);
 
-  public void deleteInstrumentRun(InstrumentRun instrumentRun);
-
   /**
    * Get the current {@link InstrumentRun}.
    * @return

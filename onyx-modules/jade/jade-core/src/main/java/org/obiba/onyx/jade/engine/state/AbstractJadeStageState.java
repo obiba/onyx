@@ -36,4 +36,12 @@ public abstract class AbstractJadeStageState extends AbstractStageState {
   public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
     this.activeInstrumentRunService = activeInstrumentRunService;
   }
+
+  /**
+   * Delete the instrument run associated with this stage. Currently each stage is associated with exactly one
+   * instrument.
+   */
+  protected void cancelInstrumentRuns() {
+    instrumentRunService.deleteInstrumentRun(activeInterviewService.getParticipant(), getStage().getName());
+  }
 }

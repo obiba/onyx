@@ -525,16 +525,4 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     update(outputParameterValue);
   }
 
-  public void deleteInstrumentRun(InstrumentRun instrumentRun) {
-    if(instrumentRun != null) {
-      for(InstrumentRunValue instrumentRunValue : instrumentRun.getInstrumentRunValues()) {
-        getPersistenceManager().delete(instrumentRunValue);
-      }
-      for(Measure measure : instrumentRun.getMeasures()) {
-        getPersistenceManager().delete(measure);
-      }
-      getPersistenceManager().delete(instrumentRun);
-    }
-  }
-
 }
