@@ -161,6 +161,44 @@
       <string>Action.Reason.SeeComment</string>      
     </reasons>
   </actionDefinition>   
+    <actionDefinition>
+    <code>action.INTERRUPT.InProgress.Jade</code>
+    <type>INTERRUPT</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>false</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>     
+  </actionDefinition> 
+  <actionDefinition>
+    <code>action.STOP.Interrupted.Jade</code>
+    <type>STOP</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>true</askPassword>
+    <commentMandatory>true</commentMandatory>
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.TechnicalProblem</string>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>      
+      <string>Action.Reason.SeeComment</string>      
+    </reasons>     
+  </actionDefinition>  
+  <actionDefinition>
+    <code>action.EXECUTE.Interrupted.Jade</code>
+    <type>EXECUTE</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>true</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>         
+  </actionDefinition> 
+  <actionDefinition>
+    <code>action.EXECUTE.Completed.Jade</code>
+    <type>EXECUTE</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>true</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>     
+  </actionDefinition>
 
   <!-- Quartz -->
   <actionDefinition>
