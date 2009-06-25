@@ -121,8 +121,10 @@ public class ConfigurableVariableFactoryBean implements FactoryBean, Application
           Resource[] resources = resolver.getResources(locationPattern);
           if(resources != null) {
             for(Resource resource : resources) {
-              Object result = handleXtreamResource(resource);
-              handleXstreamResult(resource, result);
+              if(resource.exists()) {
+                Object result = handleXtreamResource(resource);
+                handleXstreamResult(resource, result);
+              }
             }
           }
         } catch(IOException e) {
