@@ -18,6 +18,11 @@
   <!-- Loads the configuration properties. These are used throughout the spring context files to configure the deployment -->
   <bean class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
     <constructor-arg ref="configurationEncryptor" />
+    <property name="properties">
+      <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations" value="classpath*:/META-INF/onyx/defaults.properties"/>
+      </bean>
+    </property>
     <property name="locations">
       <list>
         <!-- Load the onyx.properties file in order to replace the org.obiba.onyx.config.path property
