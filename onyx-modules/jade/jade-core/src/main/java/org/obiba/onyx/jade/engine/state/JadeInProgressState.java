@@ -28,6 +28,8 @@ public class JadeInProgressState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
 
+  private boolean resuming;
+
   @Override
   protected void addUserActions(Set<ActionType> types) {
     types.add(ActionType.STOP);
@@ -39,7 +41,7 @@ public class JadeInProgressState extends AbstractJadeStageState {
   }
 
   public Component getWidget(String id) {
-    return new JadePanel(id, getStage());
+    return new JadePanel(id, getStage(), isResuming());
   }
 
   @Override
@@ -90,6 +92,24 @@ public class JadeInProgressState extends AbstractJadeStageState {
 
   public String getName() {
     return "InProgress";
+  }
+
+  private boolean isResuming() {
+    return resuming;
+  }
+
+  @Override
+  public void onEntry(TransitionEvent event) {
+    if(event.equals(TransitionEvent.RESUME)) {
+      activeInstrumentRunService.setInstrumentRun(getLastInstrumentRun());
+      resuming = true;
+    } else {
+      // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
+      // instance of the service may not have had its start method called, in which case it will have
+      // a null InstrumentRun.
+      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrumentService.getInstrumentType(getStage().getName()));
+      resuming = false;
+    }
   }
 
 }

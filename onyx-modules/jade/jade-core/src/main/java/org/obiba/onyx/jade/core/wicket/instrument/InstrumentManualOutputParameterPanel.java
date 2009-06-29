@@ -105,7 +105,10 @@ public class InstrumentManualOutputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
+        InstrumentRunValue runValue = new InstrumentRunValue();
+        runValue.setInstrumentParameter(param.getCode());
+        runValue.setInstrumentRun(activeInstrumentRunService.getInstrumentRun());
+        runValue.setCaptureMethod(param.getCaptureMethod());
 
         DataModel dataModel = new DataModel(runValue.getData(param.getDataType()));
         outputDataModels.put(param, dataModel);

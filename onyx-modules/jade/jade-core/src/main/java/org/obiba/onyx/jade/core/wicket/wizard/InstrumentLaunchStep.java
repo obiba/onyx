@@ -23,6 +23,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -83,7 +84,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutNext(form, target);
-    if(launched) {
+    if(launched || instrumentRunContainsValues()) {
       if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRun().getStatus())) {
         error(getString("InstrumentApplicationError"));
         setNextStep(null);
@@ -179,5 +180,12 @@ public class InstrumentLaunchStep extends WizardStepPanel {
     }
 
     return failedChecks;
+  }
+
+  private boolean instrumentRunContainsValues() {
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run.getInstrumentRunValues() != null && run.getInstrumentRunValues().size() > 0) return true;
+    if(run.getMeasureCount() > 0) return true;
+    return false;
   }
 }

@@ -9,22 +9,46 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.wizard;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.wicket.StageModel;
+import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class InstrumentWizardForm extends WizardForm {
+public class InstrumentWizardForm extends WizardForm {
 
   private static final long serialVersionUID = 1L;
 
@@ -55,15 +79,26 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   private WizardStepPanel warningStep;
 
+  private ActionWindow actionWindow;
+
+  private StageModel stageModel;
+
+  private FeedbackWindow feedbackWindow;
+
+  protected WizardAdministrationWindow adminWindow;
+
+  private boolean resuming;
+
+  private boolean adminWindowClosed = false;
+
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
-    super(id);
+    super(id, instrumentTypeModel);
+
+    // Add Interrupt button.
+    add(createInterrupt());
 
     InstrumentType type = (InstrumentType) instrumentTypeModel.getObject();
     log.debug("instrumentType={}", type.getName());
-    // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
-    // instance of the service may not have had its start method called, in which case it will have
-    // a null InstrumentRun.
-    activeInstrumentRunService.start(activeInterviewService.getParticipant(), type);
 
     WizardStepPanel startStep = null;
 
@@ -83,6 +118,118 @@ public abstract class InstrumentWizardForm extends WizardForm {
     add(startStep);
     startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
+
+    createModalAdministrationPanel();
+
+    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
+
+    // admin button
+    AjaxLink link = new AjaxLink("adminLink") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
+        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible(), buttonDisableBehavior);
+        adminWindow.show(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Administration", this, null)));
+    link.add(new AttributeAppender("class", new Model("ui-corner-all"), " "));
+    add(link);
+  }
+
+  @SuppressWarnings("serial")
+  private void createModalAdministrationPanel() {
+    // Create modal feedback window
+    adminWindow = new WizardAdministrationWindow("adminWindow");
+
+    AjaxLink cancelLink = new AjaxLink("cancelStage") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        Label label = new Label("content", new StringResourceModel("ConfirmCancellationOfMeasurement", this, null));
+        label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+
+        ConfirmationDialog confirmationDialog = ((ConfirmationDialogProvider) getPage()).getConfirmationDialog();
+        confirmationDialog.setContent(label);
+        confirmationDialog.setTitle(new StringResourceModel("ConfirmCancellationOfMeasurementTitle", this, null));
+        confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+          private static final long serialVersionUID = -6691702933562884991L;
+
+          public void onYesButtonClicked(AjaxRequestTarget target) {
+            adminWindow.setStatus(Status.CLOSED);
+            if(adminWindow.getCloseButtonCallback() == null || (adminWindow.getCloseButtonCallback() != null && adminWindow.getCloseButtonCallback().onCloseButtonClicked(target, adminWindow.getStatus()))) adminWindow.close(target);
+          }
+
+        });
+        confirmationDialog.show(target);
+      }
+    };
+
+    adminWindow.setCancelLink("CancelMeasurement", cancelLink);
+
+    adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+        adminWindowClosed = true;
+        return true;
+      }
+
+    });
+
+    adminWindow.setWindowClosedCallback(new WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Status status) {
+        switch(status) {
+        case OTHER:
+          onInterrupt(target);
+          break;
+        case SUCCESS:
+          onFinishSubmit(target, InstrumentWizardForm.this);
+          break;
+        case ERROR:
+          onFinishError(target, InstrumentWizardForm.this);
+          break;
+        case CLOSED:
+          onCancelClick(target);
+        }
+      }
+    });
+    adminWindowClosed = false;
+    add(adminWindow);
+  }
+
+  private AjaxLink createInterrupt() {
+    AjaxLink link = new AjaxLink("interrupt") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        onInterrupt(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", InstrumentWizardForm.this, null)));
+
+    return link;
+  }
+
+  public Component getInterruptLink() {
+    return get("interrupt");
+  }
+
+  public void onInterrupt(AjaxRequestTarget target) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
+
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef);
+    }
   }
 
   public WizardStepPanel setUpWizardFlow() {
@@ -232,6 +379,60 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   public WizardStepPanel getConclusionStep() {
     return conclusionStep;
+  }
+
+  public void setActionWindow(ActionWindow window) {
+    this.actionWindow = window;
+  }
+
+  public ActionWindow getActionWindow() {
+    return actionWindow;
+  }
+
+  public void setStageModel(StageModel stageModel) {
+    this.stageModel = stageModel;
+  }
+
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    this.feedbackWindow = feedbackWindow;
+  }
+
+  @Override
+  public void onFinish(AjaxRequestTarget target, Form form) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef);
+    }
+  }
+
+  @Override
+  public void onCancel(AjaxRequestTarget target) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef);
+    }
+  }
+
+  @Override
+  public void onError(AjaxRequestTarget target, Form form) {
+    showFeedbackWindow(target);
+  }
+
+  @Override
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
+  }
+
+  public void initStartStep(boolean resuming) {
+    this.resuming = resuming;
+
+    WizardStepPanel startStep = setUpWizardFlow();
+
+    add(startStep);
+    startStep.onStepInNext(this, null);
+    startStep.handleWizardState(this, null);
   }
 
 }
