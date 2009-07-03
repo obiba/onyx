@@ -144,6 +144,17 @@ div.wicket-modal div.onyx .interview-log-panel-content tbody {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+div.wicket-modal div.onyx .printable-report-panel {
+  height: 350px;
+  width: 560px;
+  margin-left: 10px;
+}
+
+.checkboxColumn {
+  width: 36px;
+}
+
 div.wicket-modal div.onyx .manual-input-panel {
   height: 350px;
   width: 560px;

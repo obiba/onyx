@@ -12,8 +12,6 @@ package org.obiba.onyx.webapp.participant.page;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Set;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -21,16 +19,13 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -71,7 +66,6 @@ import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
-import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
@@ -262,33 +256,23 @@ public class InterviewPage extends BasePage {
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
       add(link);
 
-      class ReportLink extends Link {
+      class ReportLink extends AjaxLink {
 
         private static final long serialVersionUID = 1L;
 
-        public ReportLink(String id, IModel report) {
-          super(id, report);
+        public ReportLink(String id) {
+          super(id);
         }
 
         @Override
-        public void onClick() {
-          ((IPrintableReport) getModelObject()).print(Locale.ENGLISH);
-        }
-
-      }
-
-      Set<IPrintableReport> reportList = printableReportsRegistry.availableReports();
-      RepeatingView reportView = new RepeatingView("reports");
-      for(IPrintableReport printableReport : reportList) {
-        WebMarkupContainer reportViewItem = new WebMarkupContainer(reportView.newChildId());
-        if(printableReport.isReady()) {
-          ReportLink printReport = new ReportLink("printReport", new PrintableReportModel(printableReport));
-          printReport.add(new Label("reportLabel", new MessageSourceResolvableStringModel(printableReport.getLabel())));
-          reportViewItem.add(printReport);
-          reportView.add(reportViewItem);
+        public void onClick(AjaxRequestTarget target) {
+          getPrintDialog().show(target);
         }
       }
-      add(reportView);
+
+      ReportLink printReportReal = new ReportLink("printReportReal");
+      printReportReal.add(new Label("reportLabelReal", new ResourceModel("PrintReport")));
+      add(printReportReal);
 
       add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
 

@@ -23,6 +23,7 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -432,5 +433,9 @@ public class Dialog extends ModalWindow {
 
       add(repeater);
     }
+  }
+
+  public void addFormValidator(IFormValidator formValidator) {
+    form.add(formValidator);
   }
 }

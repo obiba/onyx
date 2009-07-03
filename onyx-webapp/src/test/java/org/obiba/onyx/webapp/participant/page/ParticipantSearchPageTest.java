@@ -17,6 +17,7 @@ import static org.easymock.EasyMock.verify;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +45,8 @@ import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
+import org.obiba.onyx.print.IPrintableReport;
+import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -69,6 +72,8 @@ public class ParticipantSearchPageTest {
 
   private AppointmentManagementService mockAppointmentManagementService;
 
+  private PrintableReportsRegistry mockPrintableReportsRegistery;
+
   private List<Participant> participants;
 
   @Before
@@ -81,6 +86,7 @@ public class ParticipantSearchPageTest {
     mockInterviewManager = createMock(InterviewManager.class);
     mockAppointmentManagementService = createMock(AppointmentManagementService.class);
     mockOnyxDataExport = new OnyxDataExportMock();
+    mockPrintableReportsRegistery = createMock(PrintableReportsRegistry.class);
 
     mockCtx.putBean("participantService", mockParticipantService);
     mockCtx.putBean("entityQueryService", mockEntityQueryService);
@@ -88,6 +94,7 @@ public class ParticipantSearchPageTest {
     mockCtx.putBean("interviewManager", mockInterviewManager);
     mockCtx.putBean("appointmentManagementService", mockAppointmentManagementService);
     mockCtx.putBean("onyxDataExport", mockOnyxDataExport);
+    mockCtx.putBean("printableReportsRegistry", mockPrintableReportsRegistery);
 
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
     mockParticipantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
@@ -118,11 +125,13 @@ public class ParticipantSearchPageTest {
     expect(mockUserSessionService.getDateTimeFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)).anyTimes();
 
     expect(mockInterviewManager.isInterviewAvailable((Participant) EasyMock.anyObject())).andReturn(true).anyTimes();
+    expect(mockPrintableReportsRegistery.availableReports()).andReturn(Collections.<IPrintableReport> emptySet()).anyTimes();
 
     replay(mockParticipantService);
     replay(mockEntityQueryService);
     replay(mockUserSessionService);
     replay(mockInterviewManager);
+    replay(mockPrintableReportsRegistery);
 
     tester.startPage(new ITestPageSource() {
       private static final long serialVersionUID = 1L;

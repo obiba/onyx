@@ -1,0 +1,24 @@
+<wicket:panel>
+<span wicket:id="group">
+  <table class="entityTable">
+    <thead>
+      <tr>
+        <th></th>
+        <th><wicket:message key="ReportName">[Report Name]</wicket:message></th>
+        <th><wicket:message key="Status">[Status]</wicket:message></th>
+        <th><wicket:message key="Language">[Language]</wicket:message></th>
+      </tr>
+    </thead>
+    <tbody>
+      <span wicket:id="table"><span wicket:id="rows"></span></span>
+    </tbody>
+  </table>
+</span>
+<div wicket:id="feedback"></div>
+</wicket:panel>
+
+<wicket:fragment wicket:id="printableReportRow">
+  <tr wicket:id="reportRow">
+    <td class="checkboxColumn"><input wicket:id="checkbox" type="checkbox" /></td><td wicket:id="name">[Signed Consent]</td><td wicket:id="status">[Ready]</td><td ><select wicket:id="language" ></select></td>
+  </tr>
+</wicket:fragment>

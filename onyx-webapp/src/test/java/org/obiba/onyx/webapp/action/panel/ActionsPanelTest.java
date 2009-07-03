@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.action.panel;
 
+import static org.easymock.EasyMock.createMock;
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +36,8 @@ import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.print.IPrintableReport;
+import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
@@ -49,12 +54,15 @@ public class ActionsPanelTest {
 
   List<ActionDefinition> actionDefinitionList;
 
+  private PrintableReportsRegistry mockPrintableReportsRegistery;
+
   MockActionWindow window;
 
   @Before
   public void setup() {
     mockActiveInterviewService = EasyMock.createMock(ActiveInterviewService.class);
     mockStageExecution = EasyMock.createMock(IStageExecution.class);
+    mockPrintableReportsRegistery = createMock(PrintableReportsRegistry.class);
 
     mockApplicationContext = new ExtendedApplicationContextMock();
     mockApplicationContext.putBean("activeInterviewService", mockActiveInterviewService);
@@ -68,6 +76,7 @@ public class ActionsPanelTest {
 
     // InterviewPage Mocks.
     mockApplicationContext.putBean("userSessionService", EasyMock.createMock(UserSessionService.class));
+    mockApplicationContext.putBean("printableReportsRegistry", mockPrintableReportsRegistery);
     mockApplicationContext.putBean(new ActionDefinitionConfiguration());
     mockApplicationContext.putBean(EasyMock.createMock(EntityQueryService.class));
     mockApplicationContext.putBean(EasyMock.createMock(InterviewManager.class));
@@ -123,7 +132,8 @@ public class ActionsPanelTest {
     EasyMock.expect(mockActiveInterviewService.getParticipant()).andReturn(null).anyTimes();
     // This should be called twice: first for displaying the links, second for validating the clicked actionDefinition
     EasyMock.expect(mockStageExecution.getActionDefinitions()).andReturn(actionDefinitionList).times(2);
-    EasyMock.replay(mockActiveInterviewService, mockStageExecution);
+    EasyMock.expect(mockPrintableReportsRegistery.availableReports()).andReturn(Collections.<IPrintableReport> emptySet()).anyTimes();
+    EasyMock.replay(mockActiveInterviewService, mockStageExecution, mockPrintableReportsRegistery);
 
     WicketTester tester = new WicketTester(application);
 

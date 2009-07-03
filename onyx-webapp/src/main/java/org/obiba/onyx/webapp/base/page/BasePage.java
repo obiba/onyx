@@ -19,6 +19,7 @@ import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -29,6 +30,12 @@ import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.obiba.onyx.wicket.reusable.PrintableReportPanel;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.wicket.reusable.Dialog.Option;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware, ConfirmationDialogProvider {
@@ -38,10 +45,33 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
   private final ConfirmationDialog reusableConfirmationDialog = new ConfirmationDialog("reusable-confirmation-dialog");
 
+  private PrintableReportPanel printableReportPanel;
+
+  private final Dialog reusablePrintDialog = DialogBuilder.buildDialog("reusable-print-dialog", "Report Dialog", printableReportPanel = new PrintableReportPanel("content")).setOptions(Option.OK_CANCEL_OPTION, "PrintReports").getDialog();
+
   public BasePage() {
     super();
 
     add(reusableConfirmationDialog);
+
+    reusablePrintDialog.addFormValidator(printableReportPanel.getFormValidator());
+    reusablePrintDialog.setCloseButtonCallback(new CloseButtonCallback() {
+      private static final long serialVersionUID = 1L;
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+        if(status == null || status != null && status.equals(Status.WINDOW_CLOSED)) {
+          return true;
+        } else if(status.equals(Status.SUCCESS)) {
+          printableReportPanel.printReports();
+        } else if(status.equals(Status.ERROR)) {
+          printableReportPanel.getFeedbackWindow().setContent(new FeedbackPanel("content"));
+          printableReportPanel.getFeedbackWindow().show(target);
+          return false;
+        }
+        return true;
+      }
+    });
+    add(reusablePrintDialog);
 
     ContextImage img = new ContextImage("logo", new Model("images/logo/logo_on_dark.png"));
     img.setMarkupId("logo");
@@ -94,6 +124,10 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
   public ConfirmationDialog getConfirmationDialog() {
     return reusableConfirmationDialog;
+  }
+
+  public Dialog getPrintDialog() {
+    return reusablePrintDialog;
   }
 
 }
