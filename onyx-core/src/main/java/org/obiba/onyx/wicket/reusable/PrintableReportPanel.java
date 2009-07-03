@@ -145,7 +145,7 @@ public class PrintableReportPanel extends Panel {
     if(printableReport.isReady()) {
       return new ResourceModel("ready");
     } else {
-      return new ResourceModel("notready");
+      return new ResourceModel("notReady");
     }
   }
 

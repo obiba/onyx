@@ -10,11 +10,11 @@
 package org.obiba.onyx.wicket.reusable;
 
 /**
- * Implementers provide access to {@link ConfirmationDialog}. This interface is visible to all modules (quartz, jade,
- * etc.) even though the "BasePage" location of the ConfirmationDialog is not. This allows modules access to the
- * ConfirmationDialog, even though the BasePage is not visible to them.
+ * Implementers provide access to the reusable dialogs: {@link ConfirmationDialog} and printable reports dialog. This
+ * interface is visible to all modules (quartz, jade, etc.) even though the "BasePage" location of the reusable dialogs
+ * is not. This allows modules access to the reusable dialogs, even though the BasePage is not visible to them.
  */
-public interface ConfirmationDialogProvider {
+public interface ReusableDialogProvider {
 
   /**
    * Returns the reusable confirmation dialog. Since the confirmation dialog is modal, this single instance can be
@@ -22,5 +22,12 @@ public interface ConfirmationDialogProvider {
    * @return the reusable confirmation dialog.
    */
   public ConfirmationDialog getConfirmationDialog();
+
+  /**
+   * Returns the reusable printable reports dialog. Since the printable reports dialog is modal, this single instance
+   * can be reused every time a confirmation dialog is required.
+   * @return the reusable printable reports dialog.
+   */
+  public Dialog getPrintableReportsDialog();
 
 }

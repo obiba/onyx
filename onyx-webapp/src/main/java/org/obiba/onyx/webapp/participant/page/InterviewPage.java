@@ -266,13 +266,13 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          getPrintDialog().show(target);
+          getPrintableReportsDialog().show(target);
         }
       }
 
-      ReportLink printReportReal = new ReportLink("printReportReal");
-      printReportReal.add(new Label("reportLabelReal", new ResourceModel("PrintReport")));
-      add(printReportReal);
+      ReportLink printReportLink = new ReportLink("printReport");
+      printReportLink.add(new Label("reportLabel", new ResourceModel("PrintReport")));
+      add(printReportLink);
 
       add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
 

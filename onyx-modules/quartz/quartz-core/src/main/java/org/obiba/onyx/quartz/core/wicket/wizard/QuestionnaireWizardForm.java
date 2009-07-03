@@ -34,7 +34,7 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
@@ -147,7 +147,7 @@ public class QuestionnaireWizardForm extends WizardForm {
         Label label = new Label("content", new StringResourceModel("ConfirmCancellationOfQuestionnaire", this, null));
         label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
 
-        ConfirmationDialog confirmationDialog = ((ConfirmationDialogProvider) getPage()).getConfirmationDialog();
+        ConfirmationDialog confirmationDialog = ((ReusableDialogProvider) getPage()).getConfirmationDialog();
         confirmationDialog.setContent(label);
         confirmationDialog.setTitle(new StringResourceModel("ConfirmCancellationOfQuestionnaireTitle", this, null));
         confirmationDialog.setYesButtonCallback(new OnYesCallback() {

@@ -29,7 +29,7 @@ import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.ConfirmationDialogProvider;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.PrintableReportPanel;
@@ -38,7 +38,7 @@ import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 
-public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware, ConfirmationDialogProvider {
+public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware, ReusableDialogProvider {
 
   @SpringBean
   UserSessionService userSessionService;
@@ -126,7 +126,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     return reusableConfirmationDialog;
   }
 
-  public Dialog getPrintDialog() {
+  public Dialog getPrintableReportsDialog() {
     return reusablePrintDialog;
   }
 
