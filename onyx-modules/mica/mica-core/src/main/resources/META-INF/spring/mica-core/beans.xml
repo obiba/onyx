@@ -38,15 +38,7 @@
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
-  <bean id="variableReportContributor" class="org.obiba.onyx.mica.core.service.impl.VariableReportContributor"
-    scope="session">
-    <property name="reportTemplateLoader" ref="reportTemplateLoader" />
-    <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="variableDirectory" ref="variableDirectory" />
-    <property name="fieldToVariableMap" value="${org.obiba.onyx.mica.report.fieldToVariable}" />
-    <property name="dateFormat" value="${org.obiba.onyx.mica.report.dateFormat}" />
-  </bean>
-  
+
   <bean id="reportTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
     <property name="resourcePath" value="${org.obiba.onyx.mica.resources.path}" />
     <property name="resourceName" value="${org.obiba.onyx.mica.report.basename}" />
