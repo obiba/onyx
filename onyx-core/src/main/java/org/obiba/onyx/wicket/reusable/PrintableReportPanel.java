@@ -143,7 +143,11 @@ public class PrintableReportPanel extends Panel {
 
   private ResourceModel getStatusResourceModel(IPrintableReport printableReport) {
     if(printableReport.isReady()) {
-      return new ResourceModel("ready");
+      if(printableReport.isElectronic()) {
+        return new ResourceModel("ready");
+      } else {
+        return new ResourceModel("manual");
+      }
     } else {
       return new ResourceModel("notReady");
     }

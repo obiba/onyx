@@ -42,6 +42,13 @@ public interface IPrintableReport extends ApplicationContextAware {
   public boolean isReady();
 
   /**
+   * Determines if the report is available in an electronic format. Some reports may be prepared manually.
+   * 
+   * @return True if an electronic format is available for printing.
+   */
+  public boolean isElectronic();
+
+  /**
    * Prints the report for a specific Locale.
    * 
    * @param locale The Locale for which the report will be printed.

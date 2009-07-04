@@ -34,6 +34,9 @@ abstract public class AbstractPrintableReport implements IPrintableReport {
 
   private IDataSource readyCondition;
 
+  /** Indicates how data for this report was collected. (e.g. manually or electronically) */
+  private IDataSource dataCollectionMode;
+
   protected ActiveInterviewService activeInterviewService;
 
   public MessageSourceResolvable getLabel() {
@@ -72,12 +75,39 @@ abstract public class AbstractPrintableReport implements IPrintableReport {
     return true;
   }
 
+  public boolean isElectronic() {
+    if(dataCollectionMode != null) {
+      Participant participant = activeInterviewService.getParticipant();
+      Data collectionModeData = dataCollectionMode.getData(participant);
+      if(collectionModeData == null) {
+        log.info("Cannot get data for dataCollectionMode of report {}. Returning false.");
+        return false;
+      } else if(collectionModeData.getType() == DataType.TEXT) {
+        log.info("Report {} dataCollectionMode is {}", getName(), collectionModeData.getValue());
+        if(collectionModeData.getValue() != null && collectionModeData.getValue().equals("ELECTRONIC")) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        throw new RuntimeException("dataCollectionMode not of type TEXT. Please review the dataCollectionMode for report : " + getName());
+      }
+    }
+
+    log.info("No dataCollectionMode exists for report {}, so assume that the report is ELECTRONIC.", getName());
+    return true;
+  }
+
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
   }
 
   public void setReadyCondition(IDataSource readyCondition) {
     this.readyCondition = readyCondition;
+  }
+
+  public void setDataCollectionMode(IDataSource dataCollectionMode) {
+    this.dataCollectionMode = dataCollectionMode;
   }
 
 }

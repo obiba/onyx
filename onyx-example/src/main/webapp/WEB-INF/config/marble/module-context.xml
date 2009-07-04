@@ -26,6 +26,12 @@
         <constructor-arg value="${org.obiba.onyx.marble.consent.accepted}" />            
       </bean>
     </property>    
+    <property name="dataCollectionMode">
+      <bean class="org.obiba.onyx.core.data.VariableDataSource">
+        <property name="variableDirectory" ref="variableDirectory" />
+        <constructor-arg value="${org.obiba.onyx.marble.consent.mode}" />            
+      </bean>
+    </property>    
   </bean>
 
 </beans>
