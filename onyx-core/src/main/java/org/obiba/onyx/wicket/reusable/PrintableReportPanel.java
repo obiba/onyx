@@ -112,10 +112,16 @@ public class PrintableReportPanel extends Panel {
       webMarkupContainer.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
 
       Check box = new Check("checkbox", storeModel);
+      if(!isPrintable(printableReport)) box.setEnabled(false);
       webMarkupContainer.add(box);
 
-      webMarkupContainer.add(new Label("name", new ResourceModel(printableReport.getName(), printableReport.getName())));
-      webMarkupContainer.add(new Label("status", getStatusResourceModel(printableReport)));
+      Label nameLabel = new Label("name", new ResourceModel(printableReport.getName(), printableReport.getName()));
+      if(!isPrintable(printableReport)) nameLabel.add(new AttributeAppender("style", true, new Model("color : #999999"), " "));
+      webMarkupContainer.add(nameLabel);
+
+      Label statusLabel = new Label("status", getStatusResourceModel(printableReport));
+      if(!isPrintable(printableReport)) statusLabel.add(new AttributeAppender("style", true, new Model("color : #A9A9A9"), " "));
+      webMarkupContainer.add(statusLabel);
 
       List<Locale> locales = new ArrayList<Locale>(printableReport.availableLocales() != null ? printableReport.availableLocales() : Collections.<Locale> emptyList());
       List<String> names = new ArrayList<String>(locales.size());
@@ -133,7 +139,7 @@ public class PrintableReportPanel extends Panel {
         }
 
       });
-
+      if(!isPrintable(printableReport)) choice.setEnabled(false);
       webMarkupContainer.add(choice);
       if(!printableReport.isLocalisable()) {
         choice.setVisible(false);
@@ -150,6 +156,18 @@ public class PrintableReportPanel extends Panel {
       }
     } else {
       return new ResourceModel("notReady");
+    }
+  }
+
+  private boolean isPrintable(IPrintableReport printableReport) {
+    if(printableReport.isReady()) {
+      if(printableReport.isElectronic()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
   }
 

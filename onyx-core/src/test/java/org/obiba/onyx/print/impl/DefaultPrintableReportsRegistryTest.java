@@ -98,6 +98,10 @@ public class DefaultPrintableReportsRegistryTest {
       public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
       }
 
+      public boolean isElectronic() {
+        return true;
+      }
+
     };
   }
 }
