@@ -29,10 +29,10 @@ import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.PrintableReportPanel;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
@@ -63,6 +63,24 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
           return true;
         } else if(status.equals(Status.SUCCESS)) {
           printableReportPanel.printReports();
+          FeedbackPanel feedbackPanel = new FeedbackPanel("content");
+          if(!feedbackPanel.anyErrorMessage()) {
+            printableReportPanel.getFeedbackWindow().setCloseButtonCallback(new CloseButtonCallback() {
+
+              private static final long serialVersionUID = 1L;
+
+              public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+                // Close the print dialog when the user dismisses the success message.
+                reusablePrintDialog.close(target);
+                return true;
+              }
+
+            });
+          }
+          printableReportPanel.getFeedbackWindow().setContent(feedbackPanel);
+          printableReportPanel.getFeedbackWindow().show(target);
+
+          return false;
         } else if(status.equals(Status.ERROR)) {
           printableReportPanel.getFeedbackWindow().setContent(new FeedbackPanel("content"));
           printableReportPanel.getFeedbackWindow().show(target);
@@ -70,7 +88,9 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
         }
         return true;
       }
+
     });
+
     add(reusablePrintDialog);
 
     ContextImage img = new ContextImage("logo", new Model("images/logo/logo_on_dark.png"));

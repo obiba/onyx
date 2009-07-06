@@ -40,16 +40,22 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.print.IPrintableReport;
 import org.obiba.onyx.print.PrintableReportsRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PrintableReportPanel extends Panel {
+
+  private static final Logger log = LoggerFactory.getLogger(PrintableReportPanel.class);
 
   private static final long serialVersionUID = 1L;
 
   @SpringBean(name = "printableReportsRegistry")
   private PrintableReportsRegistry printableReportsRegistry;
 
+  @SuppressWarnings("unchecked")
   private final CheckGroup group = new CheckGroup("group", new ArrayList());
 
   private FeedbackWindow feedbackWindow;
@@ -243,11 +249,29 @@ public class PrintableReportPanel extends Panel {
   @SuppressWarnings("unchecked")
   public void printReports() {
     List<Store> checkedReports = (List<Store>) group.getModelObject();
-    for(int i = 0; i < checkedReports.size(); i++) {
-      Store store = checkedReports.get(i);
-      IPrintableReport report = printableReportsRegistry.getReportByName(store.reportName);
-      report.print(store.getLocale());
+    IPrintableReport report = null;
+    Store store = null;
+    try {
+      for(int i = 0; i < checkedReports.size(); i++) {
+        store = checkedReports.get(i);
+        report = printableReportsRegistry.getReportByName(store.reportName);
+        report.print(store.getLocale());
+      }
+    } catch(RuntimeException e) {
+      String reportName = "";
+      if(report != null) {
+        ResourceModel nameModel = new ResourceModel(report.getName(), report.getName());
+        reportName = (String) nameModel.getObject();
+      } else {
+        reportName = store.getReportName();
+      }
+      StringResourceModel errorMessageModel = new StringResourceModel("printErrorMessage", this, new Model(new ValueMap("reportName=" + reportName)));
+      error(errorMessageModel.getString());
+      log.error("Unable to print the report [" + store.reportName + "]. ", e);
+      return;
     }
+    StringResourceModel successMessageModel = new StringResourceModel("printSuccessMessage", this, new Model(""));
+    info(successMessageModel.getString());
   }
 
   public IFormValidator getFormValidator() {
