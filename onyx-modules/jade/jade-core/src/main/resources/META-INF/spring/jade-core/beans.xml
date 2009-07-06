@@ -70,13 +70,4 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
   
-  <!-- 
-  <bean id="newInstrumentRunService"
-    class="org.obiba.onyx.jade.core.service.impl.DefaultNewInstrumentRunServiceImpl" scope="singleton">
-    <property name="sessionFactory" ref="sessionFactory" />
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="instrumentTypes" ref="instrumentTypeFactory" />
-  </bean>
-  -->
-  
 </beans>

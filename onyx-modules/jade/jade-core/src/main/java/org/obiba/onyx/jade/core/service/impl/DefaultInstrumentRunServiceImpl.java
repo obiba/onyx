@@ -17,13 +17,8 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 
-/**
- *
- */
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
 
   private Map<String, InstrumentType> instrumentTypes;
@@ -49,12 +44,6 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
   public void deleteInstrumentRun(Participant participant, String instrumentTypeName) {
     InstrumentRun instrumentRun = getInstrumentRun(participant, instrumentTypeName);
     if(instrumentRun != null) {
-      for(InstrumentRunValue instrumentRunValue : instrumentRun.getInstrumentRunValues()) {
-        getPersistenceManager().delete(instrumentRunValue);
-      }
-      for(Measure measure : instrumentRun.getMeasures()) {
-        getPersistenceManager().delete(measure);
-      }
       getPersistenceManager().delete(instrumentRun);
     }
   }

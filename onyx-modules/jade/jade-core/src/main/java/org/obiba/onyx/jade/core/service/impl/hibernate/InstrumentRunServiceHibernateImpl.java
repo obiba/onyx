@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -25,9 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- */
 @Transactional
 public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServiceImpl {
 
@@ -60,7 +58,7 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
         Measure measure = new Measure();
         measure.setInstrumentRun(instrumentRun);
 
-        List<Measure> measures = getPersistenceManager().match(measure);
+        List<Measure> measures = getPersistenceManager().match(measure, SortingClause.create("time", false));
         if(measurePosition <= measures.size()) {
           measure = measures.get(measurePosition - 1);
           assoCriteria.add("measure", Operation.eq, measure);

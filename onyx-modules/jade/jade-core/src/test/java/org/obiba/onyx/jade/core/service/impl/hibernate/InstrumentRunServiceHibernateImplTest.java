@@ -27,9 +27,6 @@ import org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- */
 @Transactional
 public class InstrumentRunServiceHibernateImplTest extends BaseDefaultSpringContextTestCase {
 
@@ -88,13 +85,6 @@ public class InstrumentRunServiceHibernateImplTest extends BaseDefaultSpringCont
   public void getInstrumentRunValueParameterCodeIsNullTest() {
     newInstrumentRunServiceHibernateImpl.getInstrumentRunValue(participantLauraDupont, "StandingHeight", null, 0);
   }
-
-  // @Test
-  // @Dataset
-  // public void getInstrumentRunValueMeasurePositionIsNullTest() {
-  // newInstrumentRunServiceHibernateImpl.getInstrumentRunValue(participantLauraDupont, "StandingHeight",
-  // "parameterCode", null);
-  // }
 
   @Test(expected = IllegalArgumentException.class)
   @Dataset

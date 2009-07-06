@@ -99,7 +99,6 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(completed, TransitionEvent.CONTRAINDICATED, notApplicable);
-    exec.addEdge(completed, TransitionEvent.RESUME, inProgress);
 
     exec.addEdge(contraIndicated, TransitionEvent.CANCEL, ready);
     exec.addEdge(contraIndicated, TransitionEvent.INVALID, waiting);
