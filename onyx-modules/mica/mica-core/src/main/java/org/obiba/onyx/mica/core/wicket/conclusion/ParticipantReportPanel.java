@@ -2,6 +2,7 @@ package org.obiba.onyx.mica.core.wicket.conclusion;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -38,6 +39,7 @@ public class ParticipantReportPanel extends Panel {
 
     ReportLink printReportLink = new ReportLink("printReport");
     printReportLink.add(new Label("reportLabel", new ResourceModel("PrintReport")));
+    printReportLink.add(new AttributeAppender("class", true, new Model("ui-corner-all"), " "));
     add(printReportLink);
 
     // Add checkbox
