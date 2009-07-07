@@ -22,8 +22,6 @@ import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.print.PdfTemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 
 /**
  * PdfReport implementation for reports that are constructed at the time of printing by filling in the template with
@@ -70,12 +68,8 @@ public class PdfTemplateReport extends PdfReport {
     return availableLocales;
   }
 
-  public boolean isLocalisable() {
-    return true;
-  }
-
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    super.setApplicationContext(applicationContext);
+  public void afterPropertiesSet() throws Exception {
+    super.afterPropertiesSet();
     pdfTemplateEngine = (PdfTemplateEngine) applicationContext.getBean("pdfTemplateEngine");
   }
 

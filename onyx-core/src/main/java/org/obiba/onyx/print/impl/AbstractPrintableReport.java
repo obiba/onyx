@@ -9,6 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.print.impl;
 
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -18,13 +22,15 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
  * Base implementation of a IPrintableReport.
  */
-abstract public class AbstractPrintableReport implements IPrintableReport {
+abstract public class AbstractPrintableReport implements IPrintableReport, ApplicationContextAware, InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractPrintableReport.class);
 
@@ -38,6 +44,8 @@ abstract public class AbstractPrintableReport implements IPrintableReport {
   private IDataSource dataCollectionMode;
 
   protected ActiveInterviewService activeInterviewService;
+
+  protected ApplicationContext applicationContext;
 
   public MessageSourceResolvable getLabel() {
     return label;
@@ -99,6 +107,10 @@ abstract public class AbstractPrintableReport implements IPrintableReport {
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  public void afterPropertiesSet() throws Exception {
     activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
   }
 
@@ -108,6 +120,17 @@ abstract public class AbstractPrintableReport implements IPrintableReport {
 
   public void setDataCollectionMode(IDataSource dataCollectionMode) {
     this.dataCollectionMode = dataCollectionMode;
+  }
+
+  public Set<Locale> availableLocales() {
+    return new HashSet<Locale>();
+  }
+
+  public boolean isLocalisable() {
+    if(availableLocales().isEmpty()) {
+      return false;
+    }
+    return true;
   }
 
 }

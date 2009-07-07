@@ -13,14 +13,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 
 /**
  * PdfReport implementation for reports that are retrieved from a variable to be printed.
@@ -48,16 +45,8 @@ public class PdfVariableReport extends PdfReport {
     return null;
   }
 
-  public Set<Locale> availableLocales() {
-    return null;
-  }
-
-  public boolean isLocalisable() {
-    return false;
-  }
-
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    super.setApplicationContext(applicationContext);
+  public void afterPropertiesSet() throws Exception {
+    super.afterPropertiesSet();
     variableDirectory = (VariableDirectory) applicationContext.getBean("variableDirectory");
   }
 

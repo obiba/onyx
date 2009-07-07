@@ -15,8 +15,6 @@ import java.util.Locale;
 import javax.print.PrintException;
 
 import org.obiba.onyx.print.PdfPrintingService;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 
 /**
  * IPrintableReport implementation for PDF reports.
@@ -35,8 +33,8 @@ public abstract class PdfReport extends AbstractPrintableReport {
 
   protected abstract InputStream getReport(Locale locale);
 
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    super.setApplicationContext(applicationContext);
+  public void afterPropertiesSet() throws Exception {
+    super.afterPropertiesSet();
     printingService = (PdfPrintingService) applicationContext.getBean("pdfPrintingService");
   }
 

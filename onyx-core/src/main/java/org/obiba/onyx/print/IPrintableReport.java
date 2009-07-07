@@ -12,13 +12,12 @@ package org.obiba.onyx.print;
 import java.util.Locale;
 import java.util.Set;
 
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
  * Main interface for Printable Reports (see http://wiki.obiba.org/confluence/display/ONYX/Printable+Reports).
  */
-public interface IPrintableReport extends ApplicationContextAware {
+public interface IPrintableReport {
 
   /**
    * Gets the name of the printable report.

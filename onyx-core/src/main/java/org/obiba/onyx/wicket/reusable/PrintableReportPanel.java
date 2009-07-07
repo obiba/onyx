@@ -129,7 +129,7 @@ public class PrintableReportPanel extends Panel {
       if(!isPrintable(printableReport)) statusLabel.add(new AttributeAppender("style", true, new Model("color : #A9A9A9"), " "));
       webMarkupContainer.add(statusLabel);
 
-      List<Locale> locales = new ArrayList<Locale>(printableReport.availableLocales() != null ? printableReport.availableLocales() : Collections.<Locale> emptyList());
+      List<Locale> locales = new ArrayList<Locale>(printableReport.availableLocales());
       List<String> names = new ArrayList<String>(locales.size());
       for(Locale locale : locales) {
         names.add(locale.getDisplayName());
