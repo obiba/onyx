@@ -30,6 +30,7 @@ public class JadeContraIndicatedState extends AbstractJadeStageState {
   public void stop(Action action) {
     super.execute(action);
     log.debug("Jade Stage {} is canceling", super.getStage().getName());
+    cancelInstrumentRuns();
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
