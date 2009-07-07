@@ -17,7 +17,7 @@
     <property name="name" value="${org.obiba.onyx.mica.report.basename}" />
     <property name="label">
       <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
-        <constructor-arg value="PrintReport" />
+        <constructor-arg value="ParticipantReportLabel" />
       </bean>
     </property>
     <property name="reportTemplateLoader">

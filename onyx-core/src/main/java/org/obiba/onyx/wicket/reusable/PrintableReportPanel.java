@@ -43,6 +43,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.print.IPrintableReport;
 import org.obiba.onyx.print.PrintableReportsRegistry;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +122,8 @@ public class PrintableReportPanel extends Panel {
       if(!isPrintable(printableReport)) box.setEnabled(false);
       webMarkupContainer.add(box);
 
-      Label nameLabel = new Label("name", new ResourceModel(printableReport.getName(), printableReport.getName()));
+      MessageSourceResolvableStringModel nameStringModel = new MessageSourceResolvableStringModel(printableReport.getLabel());
+      Label nameLabel = new Label("name", nameStringModel);
       if(!isPrintable(printableReport)) nameLabel.add(new AttributeAppender("style", true, new Model("color : #999999"), " "));
       webMarkupContainer.add(nameLabel);
 
@@ -260,8 +262,8 @@ public class PrintableReportPanel extends Panel {
     } catch(RuntimeException e) {
       String reportName = "";
       if(report != null) {
-        ResourceModel nameModel = new ResourceModel(report.getName(), report.getName());
-        reportName = (String) nameModel.getObject();
+        MessageSourceResolvableStringModel nameStringModel = new MessageSourceResolvableStringModel(report.getLabel());
+        reportName = (String) nameStringModel.getObject();
       } else {
         reportName = store.getReportName();
       }
