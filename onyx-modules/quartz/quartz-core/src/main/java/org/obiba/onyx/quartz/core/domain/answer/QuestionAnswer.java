@@ -17,10 +17,13 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "questionName", "questionnaire_participant_id" }) })
 public class QuestionAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8513736303565362142L;
