@@ -23,19 +23,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "barcode", "enrollmentId" }) })
 public class Participant extends AbstractEntity {
   //
   // Constants
@@ -59,9 +57,10 @@ public class Participant extends AbstractEntity {
   @Temporal(TemporalType.DATE)
   private Date birthDate;
 
-  @Column(length = 250)
+  @Column(length = 250, unique = true)
   private String barcode;
 
+  @Column(unique = true)
   private String enrollmentId;
 
   private String siteNo;
@@ -76,9 +75,11 @@ public class Participant extends AbstractEntity {
   private List<ParticipantAttributeValue> configuredAttributeValues;
 
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
+  @JoinColumn(unique = true)
   private Appointment appointment;
 
   @OneToOne(mappedBy = "participant")
+  @JoinColumn(unique = true)
   private Interview interview;
 
   private Boolean exported;

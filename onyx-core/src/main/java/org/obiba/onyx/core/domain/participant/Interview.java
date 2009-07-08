@@ -33,7 +33,7 @@ public class Interview extends AbstractEntity {
   private Date endDate;
 
   @OneToOne
-  @JoinColumn(name = "participant_id")
+  @JoinColumn(name = "participant_id", unique = true)
   private Participant participant;
 
   @Enumerated(EnumType.STRING)

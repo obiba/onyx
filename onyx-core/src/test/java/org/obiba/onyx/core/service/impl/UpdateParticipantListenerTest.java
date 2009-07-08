@@ -88,8 +88,9 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
     Assert.assertNotNull("Cannot find participant appointment date", p.getAppointment().getDate());
 
     // add a completed interview
-    p.setBarcode("1");
-    persistenceManager.save(p);
+    p = new Participant();
+    p.setEnrollmentId("100003");
+    p = persistenceManager.matchOne(p);
     Interview interview = new Interview();
     interview.setStatus(InterviewStatus.COMPLETED);
     interview.setParticipant(p);
@@ -97,7 +98,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
     p.setInterview(interview);
     persistenceManager.save(p);
     p = new Participant();
-    p.setEnrollmentId("100001");
+    p.setEnrollmentId("100003");
     p = persistenceManager.matchOne(p);
     Assert.assertNotNull("Cannot find participant", p);
     Assert.assertNotNull("Cannot find participant interview", p.getInterview());
@@ -111,7 +112,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
 
     Assert.assertEquals(3l, persistenceManager.match(new Participant()).size());
     p = new Participant();
-    p.setEnrollmentId("100001");
+    p.setEnrollmentId("100003");
     p = persistenceManager.matchOne(p);
     Assert.assertNotNull("Cannot find participant", p);
     Assert.assertNotNull("Cannot find participant appointment", p.getAppointment());

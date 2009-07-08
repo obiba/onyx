@@ -21,8 +21,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -32,6 +34,7 @@ import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "participant_id", "instrumentType" }) })
 public class InstrumentRun extends AbstractEntity {
 
   private static final long serialVersionUID = -2756620040202577411L;

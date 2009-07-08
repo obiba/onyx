@@ -17,8 +17,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.obiba.core.domain.AbstractEntity;
@@ -27,6 +29,7 @@ import org.obiba.core.domain.AbstractEntity;
  * The registered participant tube persistence
  */
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "barcode", "participant_tube_registration_id" }) })
 public class RegisteredParticipantTube extends AbstractEntity {
 
   private static final long serialVersionUID = -9113927705255991817L;

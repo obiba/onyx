@@ -72,21 +72,12 @@ public class ParticipantTubeRegistrationTest {
     persistenceManager = (PersistenceManager) applicationContext.getBean("persistenceManager");
     activeTubeRegistrationService = (ActiveTubeRegistrationService) applicationContext.getBean("activeTubeRegistrationService");
     tubeRegistrationConfiguration = (TubeRegistrationConfiguration) applicationContext.getBean("tubeRegistrationConfiguration");
-
-    // Persist Participant and Interview object for the use of testing
-    participant = new Participant();
-    interview = new Interview();
-    interview.setStartDate(new Date());
-    persistenceManager.save(interview);
-    participant.setBarcode("10234");
-    participant.setInterview(interview);
-    persistenceManager.save(participant);
-    interview.setParticipant(participant);
-    persistenceManager.save(interview);
   }
 
   @Test
   public void testStartAndStopParticipantTubeRegistration() {
+    createParticipantAndInterview("1111111");
+
     // Create and persist ParticipantTubeRegistration
     ParticipantTubeRegistration tubeRegistration = activeTubeRegistrationService.start(participant, TUBE_REGISTRATION_CONFIG_NAME);
 
@@ -112,6 +103,8 @@ public class ParticipantTubeRegistrationTest {
 
   @Test
   public void testRegisterAndUnregisterTube() {
+    createParticipantAndInterview("2222222");
+
     String barcode = "1234500110";
     RegisteredParticipantTube tube = new RegisteredParticipantTube();
     tube.setBarcode(barcode);
@@ -142,6 +135,8 @@ public class ParticipantTubeRegistrationTest {
 
   @Test
   public void testContraindications() {
+    createParticipantAndInterview("3333333");
+
     // set up ParticipantTubeRegistration persistence
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setTubeRegistrationConfig(tubeRegistrationConfiguration);
@@ -175,5 +170,17 @@ public class ParticipantTubeRegistrationTest {
     // There should be both asked and observed Contraindications
     Assert.assertTrue(persistedRegistration.hasContraindications(Type.ASKED));
     Assert.assertTrue(persistedRegistration.hasContraindications(Type.OBSERVED));
+  }
+
+  private void createParticipantAndInterview(String participantBarcode) {
+    participant = new Participant();
+    interview = new Interview();
+    interview.setStartDate(new Date());
+    persistenceManager.save(interview);
+    participant.setBarcode(participantBarcode);
+    participant.setInterview(interview);
+    persistenceManager.save(participant);
+    interview.setParticipant(participant);
+    persistenceManager.save(interview);
   }
 }

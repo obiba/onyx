@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * 
  */
 @Transactional
 public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContextTestCase {
@@ -94,16 +94,6 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
     InstrumentRun instrumentRun = defaultInstrumentRunService.getInstrumentRun(participant, "StandingHeight");
     Assert.assertNotNull(instrumentRun);
     Assert.assertEquals(InstrumentRunStatus.COMPLETED, instrumentRun.getStatus());
-  }
-
-  /**
-   * TODO This test may go away if uniqueness is enforced by the database.
-   */
-  @Test(expected = IllegalStateException.class)
-  @Dataset
-  public void getInstrumentRunTooManyEntriesTest() {
-    Participant participant = persistenceManager.get(Participant.class, 2l);
-    defaultInstrumentRunService.getInstrumentRun(participant, "StandingHeight");
   }
 
   /**

@@ -38,7 +38,7 @@
    participant_id="2" />
    
    <participant id="3" 
-    barcode="100002"
+    barcode="3"
     enrollment_id="100003"
     first_name="Rohn"
     last_name="Hudson"

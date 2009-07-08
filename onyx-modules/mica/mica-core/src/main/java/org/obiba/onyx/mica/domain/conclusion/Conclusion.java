@@ -13,13 +13,13 @@ public class Conclusion extends AbstractEntity {
   private static final long serialVersionUID = 1L;
 
   @OneToOne
-  @JoinColumn(name = "interview_id")
+  @JoinColumn(name = "interview_id", unique = true)
   private Interview interview;
-  
+
   private Boolean accepted;
-  
+
   private String barcode;
-  
+
   public Interview getInterview() {
     return interview;
   }

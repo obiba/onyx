@@ -25,17 +25,17 @@ public class Appointment extends AbstractEntity {
   private static final long serialVersionUID = 6009569414177913575L;
 
   private String appointmentCode;
-  
+
   @Temporal(TemporalType.TIMESTAMP)
   public Date date;
 
   @OneToOne
-  @JoinColumn(name = "participant_id")
+  @JoinColumn(name = "participant_id", unique = true)
   public Participant participant;
 
   public Appointment() {
   }
-  
+
   public Appointment(Participant participant, Date date) {
     this.participant = participant;
     this.date = date;
@@ -48,7 +48,7 @@ public class Appointment extends AbstractEntity {
   public void setAppointmentCode(String appointmentCode) {
     this.appointmentCode = appointmentCode;
   }
-  
+
   public Date getDate() {
     return date;
   }
