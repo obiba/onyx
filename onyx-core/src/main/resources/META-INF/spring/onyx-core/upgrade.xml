@@ -19,6 +19,7 @@
           <ref bean="ruby-schemaUpgrade-1.4.0" />
           <ref bean="ruby-dataUpgrade-1.4.0" />
           <ref bean="jade-dataUpgrade-1.4.0" />
+          <ref bean="schemaUpgrade-1.4.0" />
         </list>
      </property>
      <property name="stepListeners">
@@ -71,6 +72,17 @@
     </property>
     
     <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="schemaUpgrade-1.4.0" class="org.obiba.onyx.runtime.upgrade.support.SqlScriptUpgradeStep">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.4.0.sql"/>
+    <property name="description" value="Add uniqueness constraints to Onyx 1.4.0 schema."/>
+    <property name="appliesTo">
+      <bean class="org.obiba.onyx.runtime.upgrade.support.VersionBeanVersionProvider">
+        <property name="version" value="1.4.0"/>
+      </bean>      
+    </property>     
   </bean>
   
 </beans>
