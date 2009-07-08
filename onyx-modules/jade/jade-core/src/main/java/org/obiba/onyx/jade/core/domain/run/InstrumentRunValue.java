@@ -18,11 +18,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -31,7 +29,6 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "instrumentParameter", "measure_id" }) })
 public class InstrumentRunValue extends AbstractEntity {
 
   private static final long serialVersionUID = 267079755213810737L;

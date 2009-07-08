@@ -23,7 +23,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -57,10 +56,9 @@ public class Participant extends AbstractEntity {
   @Temporal(TemporalType.DATE)
   private Date birthDate;
 
-  @Column(length = 250, unique = true)
+  @Column(length = 250)
   private String barcode;
 
-  @Column(unique = true)
   private String enrollmentId;
 
   private String siteNo;
@@ -75,11 +73,9 @@ public class Participant extends AbstractEntity {
   private List<ParticipantAttributeValue> configuredAttributeValues;
 
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
-  @JoinColumn(unique = true)
   private Appointment appointment;
 
   @OneToOne(mappedBy = "participant")
-  @JoinColumn(unique = true)
   private Interview interview;
 
   private Boolean exported;
