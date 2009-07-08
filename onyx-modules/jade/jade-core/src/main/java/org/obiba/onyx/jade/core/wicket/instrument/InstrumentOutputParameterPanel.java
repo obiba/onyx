@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -47,6 +48,7 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public class InstrumentOutputParameterPanel extends Panel {
 
@@ -192,7 +194,8 @@ public class InstrumentOutputParameterPanel extends Panel {
         field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
 
         if(param.getDataType().equals(DataType.TEXT)) {
-          field.getField().setModelObject(DataBuilder.buildText(new SpringStringResourceModel(runValue.getData(param.getDataType()).getValueAsString()).getString()));
+          MessageSourceResolvableStringModel fieldModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(runValue.getData(param.getDataType()).getValueAsString()));
+          field.setFieldModel(new Model(DataBuilder.buildText(fieldModel.getObject().toString())));
         }
 
         field.setFieldEnabled(false);
