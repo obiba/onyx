@@ -175,13 +175,25 @@ div.banner {
 }
 
 .base-ajax-indicator {
-	background-color: #E97723;
-	color: #ffffff;
-	padding: 5px;
-	position: fixed;
-	right:0;
-	top:0;
-	border:thin solid #B22807;
+  color:black;
+  background: gray;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  cursor: not-allowed;
+  opacity:0.7;
+  z-index:1;  
+}
+
+.indicatorIcon {
+  position: fixed;
+  top:50%;
+  left:43%;
+  z-index:2;
+  font-weight:bold;
+  text-align:center;
 }
 
 div#leftColumn {

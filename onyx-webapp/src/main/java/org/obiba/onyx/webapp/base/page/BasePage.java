@@ -124,7 +124,8 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     add(headerPanel);
     add(menuBar);
 
-    add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
+    add(new ContextImage("indicatorImg", new Model("images/clock.png")));
+    add(new Label("indicatorLabel", new StringResourceModel("Processing", this, null)));
   }
 
   public void setMenuBarVisible(boolean visible) {

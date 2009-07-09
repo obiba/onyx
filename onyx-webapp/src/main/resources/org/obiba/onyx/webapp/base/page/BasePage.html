@@ -32,7 +32,14 @@
       
       <div class="ui-layout-center">
       	<div id="contentWrapper" class="obiba-box ui-corner-all" style="overflow: auto;">
-        	<span style="display: none;" class="base-ajax-indicator" id="base-ajax-indicator" wicket:id="baseAjaxIndicator" />
+        	<div style="display: none;" class="base-ajax-indicator" id="base-ajax-indicator">
+        		<div class="indicatorIcon">
+        			<img wicket:id="indicatorImg"/>
+        			<div>
+        				<img wicket:id="indicatorLabel"/>
+        			</div>
+        		</div>
+        	</div>
         	<div id="feedback">
           		<span wicket:id="feedback" />
         	</div>
