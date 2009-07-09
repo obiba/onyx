@@ -83,7 +83,6 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     }
   }
 
-  
   public boolean isUpdateAvailable() {
     if(getInputDir().listFiles(getFilter()).length > 0) {
       return true;
@@ -192,11 +191,10 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     });
   }
 
-  
   public FilenameFilter getFilter() {
     return (new FilenameFilter() {
       public boolean accept(File dir, String name) {
-        return (name.toLowerCase().endsWith(".xls"));
+        return participantReader.accept(dir, name);
       }
     });
   }
@@ -229,7 +227,6 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     this.participantReader = participantReader;
   }
 
-  
   public File getInputDir() {
     return inputDir;
   }
@@ -242,7 +239,6 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     this.outputDir = outputDir;
   }
 
-  
   public File getOutputDir() {
     return outputDir;
   }

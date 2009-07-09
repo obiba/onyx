@@ -16,6 +16,9 @@
 
   <!-- Import Data export pipeline -->
   <import resource="data-export.xml" />
+  
+  <!-- Import Participant reader context -->
+  <import resource="participant-reader.xml" />
 
   <!--
     A static stage ordering strategy. Override this by implementing Comparable<Stage> and defining the stageOrderingStrategy bean to point to your
