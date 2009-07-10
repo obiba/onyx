@@ -621,7 +621,8 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          if(interviewIsLocked) {
+          // Determine if the interview is locked after the user clicks the link. ONYX-664
+          if(!interviewManager.isInterviewAvailable(getParticipant())) {
             content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel());
             content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
             unlockInterviewWindow.setContent(content);
