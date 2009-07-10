@@ -23,21 +23,28 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
@@ -100,8 +107,6 @@ public class InstrumentWizardForm extends WizardForm {
     InstrumentType type = (InstrumentType) instrumentTypeModel.getObject();
     log.debug("instrumentType={}", type.getName());
 
-    WizardStepPanel startStep = null;
-
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
     instrumentSelectionStep = new InstrumentSelectionStep(getStepId(), instrumentTypeModel);
@@ -113,11 +118,6 @@ public class InstrumentWizardForm extends WizardForm {
 
     warningStep.setNextStep(conclusionStep);
     warningStep.setPreviousStep(outputParametersStep);
-
-    startStep = setUpWizardFlow();
-    add(startStep);
-    startStep.onStepInNext(this, null);
-    startStep.handleWizardState(this, null);
 
     createModalAdministrationPanel();
 
@@ -236,9 +236,13 @@ public class InstrumentWizardForm extends WizardForm {
     WizardStepPanel startStep = null;
     WizardStepPanel lastStep = null;
 
+    if(resuming) {
+      startStep = getStepWhenResuming();
+    }
+
     // are there observed contra-indications to display ?
     if(activeInstrumentRunService.hasContraindications(Contraindication.Type.OBSERVED)) {
-      if(startStep == null) {
+      if(startStep == null || startStep.equals(observedContraIndicationStep)) {
         startStep = observedContraIndicationStep;
         lastStep = startStep;
       } else {
@@ -254,7 +258,7 @@ public class InstrumentWizardForm extends WizardForm {
 
     // are there asked contra-indications to display ?
     if(activeInstrumentRunService.hasContraindications(Contraindication.Type.ASKED)) {
-      if(startStep == null) {
+      if(startStep == null || startStep.equals(askedContraIndicationStep)) {
         startStep = askedContraIndicationStep;
         lastStep = startStep;
       } else {
@@ -275,7 +279,7 @@ public class InstrumentWizardForm extends WizardForm {
     instrumentTemplate.setStatus(InstrumentStatus.ACTIVE);
     log.debug("instruments.count={}", queryService.count(instrumentTemplate));
     if(queryService.count(instrumentTemplate) > 1) {
-      if(startStep == null) {
+      if(startStep == null || startStep.equals(instrumentSelectionStep)) {
         startStep = instrumentSelectionStep;
         lastStep = startStep;
       } else {
@@ -295,7 +299,7 @@ public class InstrumentWizardForm extends WizardForm {
     log.debug("instrumentInterpretativeParameters.count={}", instrumentType.getInterpretativeParameters().size());
     log.debug("instrumentInputParameters.count={}", instrumentType.getInputParameters(false));
     if(instrumentType.hasInterpretativeParameter() || instrumentType.hasInputParameter(false)) {
-      if(startStep == null) {
+      if(startStep == null || startStep.equals(inputParametersStep)) {
         startStep = inputParametersStep;
         lastStep = startStep;
       } else {
@@ -311,7 +315,7 @@ public class InstrumentWizardForm extends WizardForm {
     // launch) ?
     log.debug("instrument.isInteractive={}", instrumentType.isInteractive());
     if(instrumentType.isInteractive()) {
-      if(startStep == null) {
+      if(startStep == null || startStep.equals(instrumentLaunchStep)) {
         startStep = instrumentLaunchStep;
         lastStep = startStep;
       } else {
@@ -326,7 +330,7 @@ public class InstrumentWizardForm extends WizardForm {
     // are there output parameters that are to be captured manually from instrument ?
     log.debug("instrumentOutputParameters.MANUAL.count={}", instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
     if(instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
-      if(startStep == null) {
+      if(startStep == null || startStep.equals(outputParametersStep)) {
         startStep = outputParametersStep;
         lastStep = startStep;
       } else {
@@ -351,6 +355,62 @@ public class InstrumentWizardForm extends WizardForm {
     }
 
     return startStep;
+  }
+
+  /**
+   * Determines the step to be displayed when resuming the stage.
+   * @return The step to resume to.
+   */
+  private WizardStepPanel getStepWhenResuming() {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    WizardStepPanel resumingStartStep = null;
+    if(hasSomeOrAllOutputParameterValues()) {
+      log.info("Has all output values.");
+      if(instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size() > 0) {
+        log.info("Resume at outputParametersStep.");
+        resumingStartStep = outputParametersStep;
+      } else {
+        log.info("Resume at instrumentLaunchStep.");
+        resumingStartStep = instrumentLaunchStep;
+      }
+    } else {
+      if(instrumentType.hasInterpretativeParameter() || instrumentType.hasInputParameter(false)) {
+        if(hasSomeOrAllInterpretiveParameterValues()) {
+          log.info("Resume at inputParametersStep.");
+          resumingStartStep = inputParametersStep;
+        } else {
+          if(activeInstrumentRunService.hasContraindications(Contraindication.Type.OBSERVED)) {
+            log.info("Resume at observedContraIndicationStep.");
+            resumingStartStep = observedContraIndicationStep;
+          } else if(activeInstrumentRunService.hasContraindications(Contraindication.Type.ASKED)) {
+            log.info("Resume at askedContraIndicationStep.");
+            resumingStartStep = askedContraIndicationStep;
+          } else {
+            log.info("Resume at inputParametersStep.");
+            resumingStartStep = inputParametersStep;
+          }
+        }
+      } else {
+        if(activeInstrumentRunService.hasContraindications(Contraindication.Type.OBSERVED)) {
+          log.info("Resume at observedContraIndicationStep.");
+          resumingStartStep = observedContraIndicationStep;
+        } else if(activeInstrumentRunService.hasContraindications(Contraindication.Type.ASKED)) {
+          log.info("Resume at askedContraIndicationStep.");
+          resumingStartStep = askedContraIndicationStep;
+        } else {
+          if(instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size() > 0) {
+            log.info("Resume at outputParametersStep.");
+            resumingStartStep = outputParametersStep;
+          } else {
+            log.info("Resume at instrumentLaunchStep.");
+            resumingStartStep = instrumentLaunchStep;
+          }
+        }
+      }
+    }
+    log.info("Set resumingStartStep to [{}].", resumingStartStep);
+
+    return resumingStartStep;
   }
 
   public WizardStepPanel getInstrumentSelectionStep() {
@@ -433,6 +493,70 @@ public class InstrumentWizardForm extends WizardForm {
     add(startStep);
     startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
+  }
+
+  /**
+   * Returns true if at least one output parameter has a value.
+   * @return True if we have at least one output parameter value;
+   */
+  private boolean hasSomeOrAllOutputParameterValues() {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    if(instrumentType.isRepeatable()) {
+      return haveSomeOrAllRepeatingOutputParameterValues();
+    } else {
+      return haveSomeOrAllNonRepeatableOutputParameterValues();
+    }
+  }
+
+  private boolean haveSomeOrAllNonRepeatableOutputParameterValues() {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
+    for(InstrumentOutputParameter instrumentOutputParameter : instrumentType.getOutputParameters()) {
+      InstrumentRunValue instrumentRunValue = instrumentRun.getInstrumentRunValue(instrumentOutputParameter);
+      if(instrumentRunValue != null) {
+        if(instrumentRunValue.getData(instrumentOutputParameter.getDataType()).getValue() != null) return true;
+      }
+    }
+    return false; // No values found
+  }
+
+  private boolean haveSomeOrAllRepeatingOutputParameterValues() {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
+    Participant participant = activeInstrumentRunService.getParticipant();
+    if(instrumentType.getExpectedMeasureCount(participant) == 0) return false; // No values
+    for(Measure measure : instrumentRun.getMeasures()) {
+      InstrumentRun measureInstrumentRun = measure.getInstrumentRun();
+      for(InstrumentOutputParameter instrumentOutputParameter : instrumentType.getOutputParameters()) {
+        InstrumentRunValue instrumentRunValue = measureInstrumentRun.getInstrumentRunValue(instrumentOutputParameter);
+        if(instrumentRunValue != null) {
+          if(instrumentRunValue.getData(instrumentOutputParameter.getDataType()).getValue() != null) return true;
+        }
+      }
+    }
+    return false; // No values found
+  }
+
+  /**
+   * Returns true if at least one interpretive parameter has a value.
+   * @return True if we have at least one interpretive parameter value.
+   */
+  private boolean hasSomeOrAllInterpretiveParameterValues() {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
+    for(InterpretativeParameter interpretiveParameter : instrumentType.getInterpretativeParameters()) {
+      InstrumentRunValue instrumentRunValue = instrumentRun.getInstrumentRunValue(interpretiveParameter);
+      if(instrumentRunValue != null) {
+        if(instrumentRunValue.getData(interpretiveParameter.getDataType()).getValue() != null) return true;
+      }
+    }
+    for(InstrumentInputParameter instrumentInputParameter : instrumentType.getInputParameters(false)) {
+      InstrumentRunValue instrumentRunValue = instrumentRun.getInstrumentRunValue(instrumentInputParameter);
+      if(instrumentRunValue != null) {
+        if(instrumentRunValue.getData(instrumentInputParameter.getDataType()).getValue() != null) return true;
+      }
+    }
+    return false;
   }
 
 }
