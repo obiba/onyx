@@ -172,6 +172,7 @@ public class DefaultAppointmentManagementServiceImplTest {
     participantServiceMock.cleanUpAppointment();
     participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>) EasyMock.anyObject());
     expectLastCall().times(1);
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).anyTimes();
     // expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String)
     // EasyMock.anyObject())).andReturn(true).times(10);
     // expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String)
