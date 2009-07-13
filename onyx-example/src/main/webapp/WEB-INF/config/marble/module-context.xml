@@ -19,13 +19,8 @@
         <constructor-arg value="ConsentFormLabel" />
       </bean>
     </property>   
-    <property name="pdfVariablePath" value="${org.obiba.onyx.marble.consent.pdfvariablepath}" />   
-    <property name="readyCondition">
-      <bean class="org.obiba.onyx.core.data.VariableDataSource">
-        <property name="variableDirectory" ref="variableDirectory" />
-        <constructor-arg value="${org.obiba.onyx.marble.consent.accepted}" />            
-      </bean>
-    </property>    
+    <property name="readyConditionConfigPath" value="${org.obiba.onyx.marble.path}" />    
+    <property name="pdfVariablePath" value="${org.obiba.onyx.marble.consent.pdfvariablepath}" />    
     <property name="dataCollectionMode">
       <bean class="org.obiba.onyx.core.data.VariableDataSource">
         <property name="variableDirectory" ref="variableDirectory" />

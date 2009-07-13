@@ -9,16 +9,26 @@
  ******************************************************************************/
 package org.obiba.onyx.print.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
+import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.print.IPrintableReport;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -26,11 +36,16 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * Base implementation of a IPrintableReport.
  */
-abstract public class AbstractPrintableReport implements IPrintableReport, ApplicationContextAware, InitializingBean {
+abstract public class AbstractPrintableReport implements IPrintableReport, ApplicationContextAware, InitializingBean, ResourceLoaderAware {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractPrintableReport.class);
 
@@ -40,12 +55,16 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
 
   private IDataSource readyCondition;
 
+  private String readyConditionConfigPath;
+
   /** Indicates how data for this report was collected. (e.g. manually or electronically) */
   private IDataSource dataCollectionMode;
 
   protected ActiveInterviewService activeInterviewService;
 
   protected ApplicationContext applicationContext;
+
+  private ResourceLoader resourceLoader;
 
   public MessageSourceResolvable getLabel() {
     return label;
@@ -67,7 +86,7 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     if(readyCondition != null) {
       Participant participant = activeInterviewService.getParticipant();
       Data readyData = readyCondition.getData(participant);
-      if(readyData == null) {
+      if(readyData == null && readyData.getValue() == null) {
         log.info("Cannot get data for readyCondition of report {}, so readyCondition is false");
         return false;
       } else if(readyData.getType() == DataType.BOOLEAN) {
@@ -110,12 +129,42 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     this.applicationContext = applicationContext;
   }
 
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
-  }
 
-  public void setReadyCondition(IDataSource readyCondition) {
-    this.readyCondition = readyCondition;
+    XStream xstream = new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
+    xstream.alias("variableDataSource", VariableDataSource.class);
+    xstream.alias("comparingDataSource", ComparingDataSource.class);
+    xstream.useAttributeFor(ComparingDataSource.class, "comparisonOperator");
+    xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
+    xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "property");
+    xstream.alias("fixedDataSource", FixedDataSource.class);
+    xstream.useAttributeFor("type", DataType.class);
+    xstream.useAttributeFor("dataType", DataType.class);
+    xstream.alias("computingDataSource", ComputingDataSource.class);
+
+    if(readyConditionConfigPath != null) {
+      Resource readyConditionFile = null;
+      InputStream readyConditionStream = null;
+      try {
+        readyConditionFile = resourceLoader.getResource(readyConditionConfigPath + File.separator + getName() + "-condition.xml");
+        readyConditionStream = readyConditionFile.getInputStream();
+
+        try {
+          readyCondition = (IDataSource) xstream.fromXML(readyConditionStream);
+        } finally {
+          try {
+            readyConditionStream.close();
+          } catch(IOException e) {
+          }
+        }
+
+        log.info("Loaded the report condition for the following report: {} ({})", getName(), readyConditionFile.getDescription());
+      } catch(IOException e) {
+        log.warn("Cannot find the report condition file for the following report: {} ({})", getName(), readyConditionFile.getDescription());
+      }
+    }
+
   }
 
   public void setDataCollectionMode(IDataSource dataCollectionMode) {
@@ -133,4 +182,11 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     return true;
   }
 
+  public void setReadyConditionConfigPath(String readyConditionConfigPath) {
+    this.readyConditionConfigPath = readyConditionConfigPath;
+  }
+
+  public void setResourceLoader(ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
+  }
 }

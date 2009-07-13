@@ -68,7 +68,7 @@ public class PdfTemplateReport extends PdfReport {
     return availableLocales;
   }
 
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     super.afterPropertiesSet();
     pdfTemplateEngine = (PdfTemplateEngine) applicationContext.getBean("pdfTemplateEngine");
   }

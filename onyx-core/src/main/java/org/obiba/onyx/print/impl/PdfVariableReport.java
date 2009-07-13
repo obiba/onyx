@@ -45,7 +45,7 @@ public class PdfVariableReport extends PdfReport {
     return null;
   }
 
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     super.afterPropertiesSet();
     variableDirectory = (VariableDirectory) applicationContext.getBean("variableDirectory");
   }

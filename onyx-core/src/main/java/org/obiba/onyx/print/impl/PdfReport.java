@@ -33,7 +33,7 @@ public abstract class PdfReport extends AbstractPrintableReport {
 
   protected abstract InputStream getReport(Locale locale);
 
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     super.afterPropertiesSet();
     printingService = (PdfPrintingService) applicationContext.getBean("pdfPrintingService");
   }
