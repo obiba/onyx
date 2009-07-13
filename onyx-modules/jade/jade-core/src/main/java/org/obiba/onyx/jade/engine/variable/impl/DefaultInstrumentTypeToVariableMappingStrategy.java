@@ -277,7 +277,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
   private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {
     InstrumentRun run = instrumentRunService.getInstrumentRun(participant, instrumentTypeName);
-    if(!run.isCompletedOrContraindicated()) run = null; // We only want the last completed run.
+    if(run != null && !run.isCompletedOrContraindicated()) run = null; // We only want the last completed run.
     return run;
   }
 
