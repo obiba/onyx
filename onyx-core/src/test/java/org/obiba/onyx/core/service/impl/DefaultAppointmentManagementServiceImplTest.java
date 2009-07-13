@@ -172,11 +172,8 @@ public class DefaultAppointmentManagementServiceImplTest {
     participantServiceMock.cleanUpAppointment();
     participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>) EasyMock.anyObject());
     expectLastCall().times(1);
-    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).anyTimes();
-    // expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String)
-    // EasyMock.anyObject())).andReturn(true).times(10);
-    // expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String)
-    // EasyMock.anyObject())).andReturn(false).times(2);
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).times(10);
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(false).times(2);
 
     replay(userSessionServiceMock);
     replay(configServiceMock);
@@ -184,8 +181,8 @@ public class DefaultAppointmentManagementServiceImplTest {
     replay(participantReaderMock);
 
     appointmentServiceImpl.updateAppointments();
-    // Assert.assertTrue(appointmentServiceImpl.getInputDir().list(appointmentServiceImpl.getFilter()).length == 0);
-    // Assert.assertTrue(appointmentServiceImpl.getOutputDir().list(appointmentServiceImpl.getFilter()).length == 2);
+    Assert.assertTrue(appointmentServiceImpl.getInputDir().list(appointmentServiceImpl.getFilter()).length == 0);
+    Assert.assertTrue(appointmentServiceImpl.getOutputDir().list(appointmentServiceImpl.getFilter()).length == 2);
 
     verify(userSessionServiceMock);
     verify(configServiceMock);
