@@ -196,7 +196,15 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       throw new IllegalStateException("Null currentTubeRegistrationId");
     }
 
-    return getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
+    ParticipantTubeRegistration participantTubeRegistration = getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
+
+    if(participantTubeRegistration != null) {
+      String tubeSetName = participantTubeRegistration.getTubeSetName();
+      TubeRegistrationConfiguration tubeRegistrationConfig = tubeRegistrationConfigMap.get(tubeSetName);
+      participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    }
+
+    return participantTubeRegistration;
   }
 
   public List<MessageSourceResolvable> registerTube(String barcode) {
@@ -343,10 +351,12 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    log.info("DSPATHIS (before save) tubeRegistrationConfig = " + tubeRegistrationConfig);
     registration.setInterview(interview);
     registration.setTubeSetName(tubeSetName);
     registration.setStartTime(new Date());
     registration = getPersistenceManager().save(registration);
+    log.info("DSPATHIS (after save) tubeRegistrationConfig = " + tubeRegistrationConfig);
     currentTubeRegistrationId = registration.getId();
     return registration;
   }
