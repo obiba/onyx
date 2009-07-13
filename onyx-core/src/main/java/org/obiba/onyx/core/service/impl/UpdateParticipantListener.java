@@ -57,9 +57,11 @@ public class UpdateParticipantListener implements IParticipantReadListener {
   public void onParticipantRead(int line, Participant participant) throws ValidationRuntimeException {
     log.debug("reading participant={} {}", participant.getEnrollmentId(), participant.getFullName());
 
+    String lineStr = (line != 0) ? "Line " + line + ": " : "";
+
     if(!getSiteCode().equals(participant.getSiteNo())) {
       // note and ignore
-      appointmentListUpdatelog.warn("Line {}: Ignoring participant for site {}.", line, participant.getSiteNo());
+      appointmentListUpdatelog.warn("{}Ignoring participant for site {}.", lineStr, participant.getSiteNo());
       addIgnoredParticipant(participant);
     } else {
       Participant persistedParticipant = new Participant();
@@ -67,9 +69,9 @@ public class UpdateParticipantListener implements IParticipantReadListener {
       persistedParticipant = participantService.getParticipant(persistedParticipant);
 
       if(persistedParticipant == null) {
-        if(!isNewAppointmentDateValid(participant, line)) {
+        if(!isNewAppointmentDateValid(participant)) {
           // log a warning for appointments scheduled in the past but add them to the system anyway
-          appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => adding appointment anyway.", line);
+          appointmentListUpdatelog.warn("{}Appointment date/time is in the past => adding appointment anyway.", lineStr);
         }
 
         log.debug("adding participant={}", participant.getEnrollmentId());
@@ -82,12 +84,12 @@ public class UpdateParticipantListener implements IParticipantReadListener {
         Interview interview = persistedParticipant.getInterview();
         if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview.getStatus() == InterviewStatus.CANCELLED)) {
           // note and ignored
-          appointmentListUpdatelog.warn("Line {}: Interview {} => participant update ignored.", line, interview.getStatus().toString().toLowerCase());
+          appointmentListUpdatelog.warn("{}Interview {} => participant update ignored.", lineStr, interview.getStatus().toString().toLowerCase());
           addIgnoredParticipant(participant);
         } else {
           // not completed
-          if(!isNewAppointmentDateValid(participant, line)) {
-            appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => participant update ignored.", line);
+          if(!isNewAppointmentDateValid(participant)) {
+            appointmentListUpdatelog.warn("{}Appointment date/time is in the past => participant update ignored.", lineStr);
             addIgnoredParticipant(participant);
             return;
           }
@@ -105,7 +107,7 @@ public class UpdateParticipantListener implements IParticipantReadListener {
           } else {
             // appointment in database exists
             if(participant.getAppointment().getDate().equals(persistedParticipant.getAppointment().getDate())) {
-              appointmentListUpdatelog.warn("Line {}: Appointment date for participant {} same in database => participant update ignored.", line, participant.getAppointment().getDate());
+              appointmentListUpdatelog.warn("{}Appointment date for participant {} same in database => participant update ignored.", lineStr, participant.getAppointment().getDate());
               addIgnoredParticipant(participant);
               return;
             }
@@ -120,7 +122,7 @@ public class UpdateParticipantListener implements IParticipantReadListener {
     }
   }
 
-  public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
+  public void onParticipantReadEnd() throws ValidationRuntimeException {
     appointmentListUpdatelog.info("Update processed by: {}", updateIssuedBy.getFullName());
     appointmentListUpdatelog.info("Number of participants treated: {}", getTotalParticipants());
     appointmentListUpdatelog.info("Number of participants created: {}", getCreatedParticipants().size());
@@ -129,7 +131,7 @@ public class UpdateParticipantListener implements IParticipantReadListener {
     appointmentListUpdatelog.info("Number of erroneous participants: {}", getErroneousParticipants().size());
   }
 
-  private boolean isNewAppointmentDateValid(Participant participant, Integer line) {
+  private boolean isNewAppointmentDateValid(Participant participant) {
     Date newAppointmentDate = participant.getAppointment().getDate();
     if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) < 0) return false;
     return true;

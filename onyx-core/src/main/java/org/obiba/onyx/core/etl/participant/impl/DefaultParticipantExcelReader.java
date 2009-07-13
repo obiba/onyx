@@ -9,17 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
@@ -32,57 +30,17 @@ import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
-import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.etl.participant.IParticipantReadListener;
-import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.io.support.ExcelReaderSupport;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class DefaultParticipantExcelReader implements IParticipantReader {
-  //
-  // Constants
-  //
-
-  @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(DefaultParticipantExcelReader.class);
-
-  private static final String ENROLLMENT_ID_ATTRIBUTE_NAME = "Enrollment ID";
-
-  private static final String ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME = "Assessment Center ID";
-
-  private static final String FIRST_NAME_ATTRIBUTE_NAME = "First Name";
-
-  private static final String LAST_NAME_ATTRIBUTE_NAME = "Last Name";
-
-  private static final String BIRTH_DATE_ATTRIBUTE_NAME = "Birth Date";
-
-  private static final String GENDER_ATTRIBUTE_NAME = "Gender";
-
-  private static final String APPOINTMENT_TIME_ATTRIBUTE_NAME = "Appointment Time";
-
+public class DefaultParticipantExcelReader extends AbstractParticipantReader {
   //
   // Instance Variables
   //
-
-  /**
-   * Participant meta-data.
-   */
-  private ParticipantMetadata participantMetadata;
-
-  /**
-   * Maps Excel column names to attribute names.
-   */
-  private Map<String, String> columnNameToAttributeNameMap;
-
-  /**
-   * Maps attribute names to column indices.
-   */
-  private Map<String, Integer> attributeNameToColumnIndexMap;
 
   /**
    * Sheet number.
@@ -158,54 +116,18 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
 
     // Notify listeners that the last participant has been processed.
     for(IParticipantReadListener listener : listeners) {
-      listener.onParticipantReadEnd(line);
+      listener.onParticipantReadEnd();
     }
 
+  }
+
+  public boolean accept(File dir, String name) {
+    return (name.toLowerCase().endsWith(".xls"));
   }
 
   //
   // Methods
   //
-
-  public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
-    this.participantMetadata = participantMetadata;
-
-    if(participantMetadata != null) {
-      addDefaultColumnNameToAttributeNameMapEntries();
-    }
-  }
-
-  public void setColumnNameToAttributeNameMap(Map<String, String> columnNameToAttributeNameMap) {
-    if(columnNameToAttributeNameMap != null) {
-      // Add map entries to columnNameToAttributeNameMap. Convert all keys to UPPERCASE.
-      Iterator<Map.Entry<String, String>> mapIter = columnNameToAttributeNameMap.entrySet().iterator();
-      while(mapIter.hasNext()) {
-        Map.Entry<String, String> mapEntry = mapIter.next();
-        this.columnNameToAttributeNameMap.put(mapEntry.getKey().toUpperCase(), mapEntry.getValue());
-      }
-    }
-  }
-
-  /**
-   * Set he column name to attribute name map with a configuration string.
-   * 
-   * @param keyValuePairs list of key/value pairs separated by a comma. For example, "<code>param1=foo,param2=bar</code>".
-   */
-  public void setColumnToAttribute(String keyValuePairs) {
-    if(columnNameToAttributeNameMap != null) {
-      // Get list of strings separated by the delimiter
-      StringTokenizer tokenizer = new StringTokenizer(keyValuePairs, ",");
-      while(tokenizer.hasMoreElements()) {
-        String token = tokenizer.nextToken();
-        String[] entry = token.split("=");
-        if(entry.length == 2) {
-          columnNameToAttributeNameMap.put(entry[0].toUpperCase().trim(), entry[1].trim());
-        } else {
-          log.error("Could not identify Participant column to attribute mapping: " + token);
-        }
-      }
-    }
-  }
 
   public void setSheetNumber(int sheetNumber) {
     this.sheetNumber = sheetNumber;
@@ -346,34 +268,6 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     }
   }
 
-  private void addDefaultColumnNameToAttributeNameMapEntries() {
-    if(columnNameToAttributeNameMap == null) {
-      columnNameToAttributeNameMap = new HashMap<String, String>();
-    }
-
-    // Set default mappings for essential attributes.
-    for(ParticipantAttribute essentialAttribute : participantMetadata.getEssentialAttributes()) {
-      if(!essentialAttribute.isAssignableAtEnrollment()) {
-        continue;
-      }
-
-      String essentialAttributeName = essentialAttribute.getName();
-
-      if(!columnNameToAttributeNameMap.containsValue(essentialAttributeName)) {
-        columnNameToAttributeNameMap.put(essentialAttributeName.toUpperCase(), essentialAttributeName);
-      }
-    }
-
-    // Set default mappings for configured attributes.
-    for(ParticipantAttribute configuredAttribute : participantMetadata.getConfiguredAttributes()) {
-      String configuredAttributeName = configuredAttribute.getName();
-
-      if(!columnNameToAttributeNameMap.containsValue(configuredAttributeName)) {
-        columnNameToAttributeNameMap.put(configuredAttributeName.toUpperCase(), configuredAttributeName);
-      }
-    }
-  }
-
   private void setConfiguredAttribute(Participant participant, ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
     Data data = getAttributeValue(attribute, cell, evaluator);
     participant.setConfiguredAttributeValue(attribute.getName(), data);
@@ -455,65 +349,6 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     checkMandatoryCondition(attribute, data);
 
     return data;
-  }
-
-  private void checkColumnsForMandatoryAttributesPresent() {
-    List<ParticipantAttribute> allAttributes = new ArrayList<ParticipantAttribute>();
-    allAttributes.addAll(participantMetadata.getEssentialAttributes());
-    allAttributes.addAll(participantMetadata.getConfiguredAttributes());
-
-    // Check that all attributes mandatory at enrollment are present.
-    for(ParticipantAttribute attribute : allAttributes) {
-      if(attribute.isMandatoryAtEnrollment()) {
-        if(!attributeNameToColumnIndexMap.containsKey(attribute.getName().toUpperCase())) {
-          throw new IllegalArgumentException("Invalid worksheet; no column exists for mandatory field '" + attribute.getName() + "'");
-        }
-      }
-    }
-  }
-
-  private void checkMandatoryCondition(ParticipantAttribute attribute, Data attributeValue) {
-    if(attribute.isMandatoryAtEnrollment()) {
-      if(attributeValue == null || attributeValue.getValue() == null) {
-        throw new IllegalArgumentException("No value for mandatory field: " + attribute.getName());
-      }
-    }
-  }
-
-  private void checkValueAllowed(ParticipantAttribute attribute, Data data) {
-    Set<String> allowedValues = attribute.getAllowedValues();
-
-    if(!allowedValues.isEmpty()) {
-      String textValue = data.getValue();
-
-      Iterator<String> iter = allowedValues.iterator();
-      String matchingValue = null;
-
-      while(iter.hasNext()) {
-        String s = iter.next();
-        if(s.equalsIgnoreCase(textValue)) {
-          matchingValue = s;
-          data.setValue(matchingValue);
-          break;
-        }
-      }
-
-      if(matchingValue == null) {
-        if(attribute.isMandatoryAtEnrollment()) {
-          throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
-        } else {
-          data.setValue("");
-        }
-      }
-    }
-  }
-
-  private void checkUniqueEnrollmentId(Set<String> enrollmentIds, String enrollmentId) {
-    if(enrollmentIds.contains(enrollmentId)) {
-      throw new IllegalArgumentException("Duplicate " + ENROLLMENT_ID_ATTRIBUTE_NAME);
-    }
-
-    enrollmentIds.add(enrollmentId);
   }
 
   @SuppressWarnings("unchecked")

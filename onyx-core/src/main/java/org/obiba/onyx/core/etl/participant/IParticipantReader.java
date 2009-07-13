@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -16,5 +17,7 @@ import java.util.List;
 public interface IParticipantReader {
 
   public void process(InputStream input, List<IParticipantReadListener> listeners) throws IOException, IllegalArgumentException;
+
+  public boolean accept(File dir, String name);
 
 }

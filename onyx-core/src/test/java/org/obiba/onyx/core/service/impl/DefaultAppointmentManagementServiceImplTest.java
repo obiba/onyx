@@ -116,20 +116,29 @@ public class DefaultAppointmentManagementServiceImplTest {
 
   @Test
   public void testIsUpdateAvailableFalse() {
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(false).anyTimes();
+    replay(participantReaderMock);
     appointmentServiceImpl.setInputDirectory("file:./src/test/resources/appointments/inNoData");
     appointmentServiceImpl.initialize();
     Assert.assertEquals(false, appointmentServiceImpl.isUpdateAvailable());
+    verify(participantReaderMock);
   }
 
   @Test
   public void testIsUpdateAvailableTrue() {
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).anyTimes();
+    replay(participantReaderMock);
     appointmentServiceImpl.setInputDirectory("file:./src/test/resources/appointments/in");
     appointmentServiceImpl.initialize();
     Assert.assertEquals(true, appointmentServiceImpl.isUpdateAvailable());
+    verify(participantReaderMock);
   }
 
   @Test
   public void testSortFilesOnDateAsc() {
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).anyTimes();
+    replay(participantReaderMock);
+
     appointmentServiceImpl.setInputDirectory("file:./src/test/resources/appointments/in");
     appointmentServiceImpl.initialize();
 
@@ -151,6 +160,7 @@ public class DefaultAppointmentManagementServiceImplTest {
     for(int i = 0; i < appointmentFiles.length; i++) {
       Assert.assertEquals(appointmentFiles[appointmentFiles.length - i - 1].getName(), sortedAppointmentFiles[i].getName());
     }
+    verify(participantReaderMock);
   }
 
   @Test
@@ -162,6 +172,7 @@ public class DefaultAppointmentManagementServiceImplTest {
     participantServiceMock.cleanUpAppointment();
     participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>) EasyMock.anyObject());
     expectLastCall().times(1);
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).times(6);
 
     replay(userSessionServiceMock);
     replay(configServiceMock);
@@ -169,14 +180,14 @@ public class DefaultAppointmentManagementServiceImplTest {
     replay(participantReaderMock);
 
     appointmentServiceImpl.updateAppointments();
+    Assert.assertTrue(appointmentServiceImpl.getInputDir().list(appointmentServiceImpl.getFilter()).length == 0);
+    Assert.assertTrue(appointmentServiceImpl.getOutputDir().list(appointmentServiceImpl.getFilter()).length == 2);
 
     verify(userSessionServiceMock);
     verify(configServiceMock);
     verify(participantServiceMock);
     verify(participantReaderMock);
 
-    Assert.assertTrue(appointmentServiceImpl.getInputDir().list(appointmentServiceImpl.getFilter()).length == 0);
-    Assert.assertTrue(appointmentServiceImpl.getOutputDir().list(appointmentServiceImpl.getFilter()).length == 2);
   }
 
   private void setDirectories() {
@@ -187,14 +198,17 @@ public class DefaultAppointmentManagementServiceImplTest {
     File targetOutputDirectory = new File(targetRootDirectory, "out");
     targetOutputDirectory.mkdirs();
 
+    File sourceDirectory = new File("src/test/resources/appointments/in");
     try {
-      FileUtil.copyDirectory(new File("src/test/resources/appointments/in"), targetInputDirectory);
+      for(File file : sourceDirectory.listFiles()) {
+        if(file.getName().toLowerCase().endsWith(".xls")) FileUtil.copyFile(file, targetInputDirectory);
+      }
     } catch(IOException ex) {
       System.out.println(ex.getMessage());
     }
 
-    appointmentServiceImpl.setInputDirectory("file:./target/appointments/in");
-    appointmentServiceImpl.setOutputDirectory("file:./target/appointments/out");
+    appointmentServiceImpl.setInputDirectory("file:" + targetInputDirectory.getAbsolutePath().replace('\\', '/'));
+    appointmentServiceImpl.setOutputDirectory("file:" + targetOutputDirectory.getAbsolutePath().replace('\\', '/'));
     appointmentServiceImpl.initialize();
   }
 
