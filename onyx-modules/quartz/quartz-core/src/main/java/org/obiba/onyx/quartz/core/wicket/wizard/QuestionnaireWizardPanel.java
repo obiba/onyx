@@ -26,15 +26,29 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
+  FeedbackWindow feedbackWindow = new FeedbackWindow("feedback");
+
   //
   // Constructors
   //
 
+  @SuppressWarnings("serial")
   public QuestionnaireWizardPanel(String id, IModel questionnaireModel, StageModel stageModel, boolean resuming) {
     super(id, questionnaireModel);
 
     getQuestionnaireWizardForm().setStageModel(stageModel);
     getQuestionnaireWizardForm().initStartStep(resuming);
+
+    feedbackWindow = new FeedbackWindow("feedback") {
+      @Override
+      public Locale getLocale() {
+        return QuestionnaireWizardPanel.this.getLocale();
+      }
+    };
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
+
+    getQuestionnaireWizardForm().setFeedbackWindow(this.feedbackWindow);
   }
 
   //
@@ -59,11 +73,10 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   }
 
   public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    getQuestionnaireWizardForm().setFeedbackWindow(feedbackWindow);
   }
 
   public FeedbackWindow getFeedbackWindow() {
-    return getQuestionnaireWizardForm().getFeedbackWindow();
+    return feedbackWindow;
   }
 
   /**
