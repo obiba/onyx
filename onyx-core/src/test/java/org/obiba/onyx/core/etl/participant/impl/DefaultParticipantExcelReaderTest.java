@@ -371,9 +371,7 @@ public class DefaultParticipantExcelReaderTest {
         Assert.assertEquals("514-343-9898 ext 9494", participant.getConfiguredAttributeValue("Phone").getValue());
       }
 
-      public void onParticipantReadEnd(int line) {
-        // Verify that the last (and ONLY) participant read was on the expected line (3).
-        Assert.assertEquals(line, 3);
+      public void onParticipantReadEnd() {
       }
     });
 
