@@ -172,8 +172,7 @@ public class DefaultAppointmentManagementServiceImplTest {
     participantServiceMock.cleanUpAppointment();
     participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>) EasyMock.anyObject());
     expectLastCall().times(1);
-    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).times(10);
-    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(false).times(2);
+    expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(true).times(6);
 
     replay(userSessionServiceMock);
     replay(configServiceMock);
@@ -199,14 +198,17 @@ public class DefaultAppointmentManagementServiceImplTest {
     File targetOutputDirectory = new File(targetRootDirectory, "out");
     targetOutputDirectory.mkdirs();
 
+    File sourceDirectory = new File("src/test/resources/appointments/in");
     try {
-      FileUtil.copyDirectory(new File("src/test/resources/appointments/in"), targetInputDirectory);
+      for(File file : sourceDirectory.listFiles()) {
+        if(file.getName().toLowerCase().endsWith(".xls")) FileUtil.copyFile(file, targetInputDirectory);
+      }
     } catch(IOException ex) {
       System.out.println(ex.getMessage());
     }
 
-    appointmentServiceImpl.setInputDirectory("file:./target/appointments/in");
-    appointmentServiceImpl.setOutputDirectory("file:./target/appointments/out");
+    appointmentServiceImpl.setInputDirectory("file:" + targetInputDirectory.getAbsolutePath().replace('\\', '/'));
+    appointmentServiceImpl.setOutputDirectory("file:" + targetOutputDirectory.getAbsolutePath().replace('\\', '/'));
     appointmentServiceImpl.initialize();
   }
 
