@@ -11,14 +11,19 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import java.util.Map;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.ruby.core.domain.ConditionalMessage;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public class TubeRegistrationPanel extends Panel {
   //
@@ -30,6 +35,9 @@ public class TubeRegistrationPanel extends Panel {
   //
   // Instance Variables
   //
+
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveTubeRegistrationService activeTubeRegistrationService;
@@ -50,6 +58,14 @@ public class TubeRegistrationPanel extends Panel {
     String tubeSetName = participantTubeRegistration.getTubeSetName();
     TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(tubeSetName);
 
+    RepeatingView infoMessageRepeater = new RepeatingView("infoMessageRepeater");
+    for(ConditionalMessage infoMessage : tubeRegistrationConfiguration.getInfoMessages()) {
+      if(infoMessage.shouldDisplay(activeInterviewService.getParticipant())) {
+        infoMessageRepeater.add(new Label(infoMessageRepeater.newChildId(), new MessageSourceResolvableStringModel(infoMessage)));
+      }
+    }
+
+    add(infoMessageRepeater);
     add(new TubeBarcodePanel("tubeBarcodePanel"));
     add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new Model("")));
   }

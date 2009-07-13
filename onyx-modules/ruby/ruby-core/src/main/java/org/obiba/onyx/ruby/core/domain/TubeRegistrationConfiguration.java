@@ -18,9 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 
@@ -41,7 +44,7 @@ import com.thoughtworks.xstream.XStream;
  * </ul>
  * </p>
  */
-public class TubeRegistrationConfiguration implements ResourceLoaderAware, InitializingBean {
+public class TubeRegistrationConfiguration implements ApplicationContextAware, ResourceLoaderAware, InitializingBean {
   //
   // Constants
   //
@@ -66,6 +69,10 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
   private List<Contraindication> askedContraindications;
 
   private List<Remark> availableRemarks;
+
+  private List<ConditionalMessage> infoMessages;
+
+  private ApplicationContext applicationContext;
 
   //
   // Constructors
@@ -92,10 +99,19 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
     observedContraindications = new ArrayList<Contraindication>();
     askedContraindications = new ArrayList<Contraindication>();
     availableRemarks = new ArrayList<Remark>();
+    infoMessages = new ArrayList<ConditionalMessage>();
   }
 
   public TubeRegistrationConfiguration() {
     this(null);
+  }
+
+  //
+  // ApplicationContextAware Methods
+  //
+
+  public void setApplicationContext(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
   }
 
   //
@@ -146,6 +162,11 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
       File remarksFile = new File(configDir, "remarks.xml");
       if(remarksFile.exists()) {
         initRemarks(remarksFile);
+      }
+
+      File infoMessagesFile = new File(configDir, "info-messages.xml");
+      if(infoMessagesFile.exists()) {
+        initInfoMessages(infoMessagesFile);
       }
     }
   }
@@ -201,6 +222,18 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
     return Collections.unmodifiableList(availableRemarks);
   }
 
+  public void setInfoMessages(List<ConditionalMessage> infoMessages) {
+    this.infoMessages.clear();
+
+    if(infoMessages != null) {
+      this.infoMessages.addAll(infoMessages);
+    }
+  }
+
+  public List<ConditionalMessage> getInfoMessages() {
+    return Collections.unmodifiableList(infoMessages);
+  }
+
   /**
    * Sets the list of contra-indications to the contents of the specified file.
    * 
@@ -248,6 +281,27 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
       setAvailableRemarks(remarks);
 
       log.info("Configured tube registration remarks ({})", new Object[] { getAvailableRemarks().size() });
+    } finally {
+      if(fis != null) {
+        fis.close();
+      }
+    }
+  }
+
+  private void initInfoMessages(File infoMessagesFile) throws IOException {
+    FileInputStream fis = null;
+
+    try {
+      fis = new FileInputStream(infoMessagesFile);
+
+      XStream xstream = new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
+      xstream.alias("info-messages", LinkedList.class);
+      xstream.alias("message", ConditionalMessage.class);
+
+      List<ConditionalMessage> infoMessages = (List<ConditionalMessage>) xstream.fromXML(fis);
+      setInfoMessages(infoMessages);
+
+      log.info("Configured tube registration info messages ({})", new Object[] { getInfoMessages().size() });
     } finally {
       if(fis != null) {
         fis.close();
