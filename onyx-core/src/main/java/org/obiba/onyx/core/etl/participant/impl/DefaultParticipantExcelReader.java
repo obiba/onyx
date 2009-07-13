@@ -116,7 +116,7 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
 
     // Notify listeners that the last participant has been processed.
     for(IParticipantReadListener listener : listeners) {
-      listener.onParticipantReadEnd(line);
+      listener.onParticipantReadEnd();
     }
 
   }

@@ -31,15 +31,6 @@
   <!-- Converts a variable to a path representing its unique identification -->
   <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy"/>
 
-  <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
-  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader" scope="prototype">
-    <property name="participantMetadata" ref="participantMetadata" />
-    <property name="sheetNumber" value="${org.obiba.onyx.participantReader.sheetNumber}" />
-    <property name="headerRowNumber" value="${org.obiba.onyx.participantReader.headerRowNumber}" />
-    <property name="firstDataRowNumber" value="${org.obiba.onyx.participantReader.firstDataRowNumber}" />
-    <property name="columnToAttribute" value="${org.obiba.onyx.participantReader.columnToAttribute}" />
-  </bean>
-
   <!-- Implementation of UserService. Should not need to be overriden. -->
   <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl" init-method="initialize" scope="session">
     <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
