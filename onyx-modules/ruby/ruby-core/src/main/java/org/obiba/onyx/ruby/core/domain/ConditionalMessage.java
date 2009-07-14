@@ -18,6 +18,7 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public class ConditionalMessage implements MessageSourceResolvable, Serializable {
   //
@@ -54,15 +55,17 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
 
   public Object[] getArguments() {
     if(arguments != null && arguments.length > 0) {
-      Object[] stringArgs = new Object[arguments.length];
+      MessageSourceResolvable[] resolvableArgs = new MessageSourceResolvable[arguments.length];
 
       for(int i = 0; i < arguments.length; i++) {
         IDataSource dataSource = arguments[i];
         Data data = dataSource.getData(activeInterviewService.getParticipant());
-        stringArgs[i] = data.getValueAsString();
+        String argCode = data.getValueAsString();
+
+        resolvableArgs[i] = new DefaultMessageSourceResolvable(new String[] { argCode }, argCode);
       }
 
-      return stringArgs;
+      return resolvableArgs;
     }
 
     return null;
