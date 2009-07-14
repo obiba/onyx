@@ -12,7 +12,7 @@ package org.obiba.onyx.ruby.core.domain;
 import java.io.Serializable;
 
 import org.obiba.onyx.core.data.IDataSource;
-import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -32,9 +32,11 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
   // Instance Variables
   //
 
+  private transient ActiveInterviewService activeInterviewService;
+
   private String code;
 
-  private Object[] arguments;
+  private IDataSource[] arguments;
 
   private IDataSource condition;
 
@@ -51,7 +53,19 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
   //
 
   public Object[] getArguments() {
-    return arguments;
+    if(arguments != null && arguments.length > 0) {
+      Object[] stringArgs = new Object[arguments.length];
+
+      for(int i = 0; i < arguments.length; i++) {
+        IDataSource dataSource = arguments[i];
+        Data data = dataSource.getData(activeInterviewService.getParticipant());
+        stringArgs[i] = data.getValueAsString();
+      }
+
+      return stringArgs;
+    }
+
+    return null;
   }
 
   public String[] getCodes() {
@@ -65,6 +79,10 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
   //
   // Methods
   //
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
 
   public void setCode(String code) {
     this.code = code;
@@ -85,10 +103,10 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
    * @return <code>true</code> if the message should be displayed (i.e., if either there is no condition or the
    * condition is satisfied)
    */
-  public boolean shouldDisplay(Participant participant) {
+  public boolean shouldDisplay() {
     if(condition == null) return true;
 
-    Data conditionData = condition.getData(participant);
+    Data conditionData = condition.getData(activeInterviewService.getParticipant());
 
     if(conditionData != null) {
       if(conditionData.getType().equals(DataType.BOOLEAN)) {

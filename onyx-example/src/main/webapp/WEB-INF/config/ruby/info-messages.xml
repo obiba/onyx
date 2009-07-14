@@ -1,8 +1,10 @@
 <info-messages>
   <message>
-    <code>Ruby.Info.FirstInfoMessage</code>
-  </message>
-  <message>
-    <code>Ruby.Info.SecondInfoMessage</code>
+    <code>Ruby.Info.ArmChosen</code>
+    <arguments>
+      <dataSource class="variableDataSource">
+        <path>Onyx.CIPreliminaryQuestionnaire.BP_ARM_CHOSEN</path>
+      </dataSource>
+    </arguments>
   </message>
 </info-messages>

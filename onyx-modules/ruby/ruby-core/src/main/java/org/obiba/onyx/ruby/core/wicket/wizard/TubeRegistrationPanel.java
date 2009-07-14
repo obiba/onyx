@@ -60,7 +60,8 @@ public class TubeRegistrationPanel extends Panel {
 
     RepeatingView infoMessageRepeater = new RepeatingView("infoMessageRepeater");
     for(ConditionalMessage infoMessage : tubeRegistrationConfiguration.getInfoMessages()) {
-      if(infoMessage.shouldDisplay(activeInterviewService.getParticipant())) {
+      infoMessage.setActiveInterviewService(activeInterviewService);
+      if(infoMessage.shouldDisplay()) {
         infoMessageRepeater.add(new Label(infoMessageRepeater.newChildId(), new MessageSourceResolvableStringModel(infoMessage)));
       }
     }
