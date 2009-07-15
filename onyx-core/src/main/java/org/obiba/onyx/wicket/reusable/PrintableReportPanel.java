@@ -36,7 +36,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -105,6 +104,7 @@ public class PrintableReportPanel extends Panel {
   public class PrintableReportFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("serial")
     public PrintableReportFragment(String id, String markupId, MarkupContainer markupContainer, IModel model, int iteration) {
       super(id, markupId, markupContainer, model);
       setRenderBodyOnly(true);
@@ -132,11 +132,12 @@ public class PrintableReportPanel extends Panel {
       webMarkupContainer.add(statusLabel);
 
       List<Locale> locales = new ArrayList<Locale>(printableReport.availableLocales());
-      List<String> names = new ArrayList<String>(locales.size());
-      for(Locale locale : locales) {
-        names.add(locale.getDisplayName());
-      }
-      final DropDownChoice choice = new DropDownChoice("language", new PropertyModel(store, "locale"), locales, new ChoiceRenderer("displayName"));
+      final DropDownChoice choice = new DropDownChoice("language", locales, new ChoiceRenderer() {
+        public Object getDisplayValue(Object object) {
+          return ((Locale) object).getDisplayName(getLocale());
+        }
+      });
+
       choice.add(new OnChangeAjaxBehavior() {
 
         private static final long serialVersionUID = 1L;
