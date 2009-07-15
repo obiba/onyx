@@ -36,6 +36,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -132,7 +133,7 @@ public class PrintableReportPanel extends Panel {
       webMarkupContainer.add(statusLabel);
 
       List<Locale> locales = new ArrayList<Locale>(printableReport.availableLocales());
-      final DropDownChoice choice = new DropDownChoice("language", locales, new ChoiceRenderer() {
+      final DropDownChoice choice = new DropDownChoice("language", new PropertyModel(store, "locale"), locales, new ChoiceRenderer() {
         public Object getDisplayValue(Object object) {
           return ((Locale) object).getDisplayName(getLocale());
         }
