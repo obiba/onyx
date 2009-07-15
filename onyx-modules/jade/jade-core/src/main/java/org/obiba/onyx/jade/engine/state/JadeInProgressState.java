@@ -101,13 +101,8 @@ public class JadeInProgressState extends AbstractJadeStageState {
   @Override
   public void onEntry(TransitionEvent event) {
     if(event.equals(TransitionEvent.RESUME)) {
-      activeInstrumentRunService.setInstrumentRun(getLastInstrumentRun());
       resuming = true;
     } else {
-      // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
-      // instance of the service may not have had its start method called, in which case it will have
-      // a null InstrumentRun.
-      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrumentService.getInstrumentType(getStage().getName()));
       resuming = false;
     }
   }

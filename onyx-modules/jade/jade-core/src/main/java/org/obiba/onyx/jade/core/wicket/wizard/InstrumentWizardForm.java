@@ -40,6 +40,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
@@ -69,6 +70,9 @@ public class InstrumentWizardForm extends WizardForm {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
+
+  @SpringBean
+  private InstrumentRunService instrumentRunService;
 
   private WizardStepPanel instrumentSelectionStep;
 
@@ -487,6 +491,15 @@ public class InstrumentWizardForm extends WizardForm {
 
   public void initStartStep(boolean resuming) {
     this.resuming = resuming;
+
+    if(resuming) {
+      activeInstrumentRunService.setInstrumentRun(instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName()));
+    } else {
+      // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
+      // instance of the service may not have had its start method called, in which case it will have
+      // a null InstrumentRun.
+      activeInstrumentRunService.start(activeInterviewService.getParticipant(), (InstrumentType) getModelObject());
+    }
 
     WizardStepPanel startStep = setUpWizardFlow();
 
