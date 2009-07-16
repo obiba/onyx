@@ -14,6 +14,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
@@ -93,16 +94,20 @@ public abstract class InstrumentLaunchPanel extends Panel {
           private static final long serialVersionUID = 1L;
 
           public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-            switch(status) {
-            case SUCCESS:
+            if(status == null || status != null && status.equals(Status.WINDOW_CLOSED) || status != null && status.equals(Status.CANCELLED)) {
+              manualEntryDialog.getForm().clearInput();
+              return true;
+            } else if(status.equals(Status.SUCCESS)) {
               manualEntryDialog.resetStatus();
               instrumentManualOutputParameterPanel.saveOutputInstrumentRunValues();
               return true;
-            case CANCELLED:
-            case WINDOW_CLOSED:
-            default:
-              return true;
+            } else if(status.equals(Status.ERROR)) {
+              FeedbackPanel feedbackPanel = new FeedbackPanel("content");
+              instrumentManualOutputParameterPanel.getFeedbackWindow().setContent(feedbackPanel);
+              instrumentManualOutputParameterPanel.getFeedbackWindow().show(target);
+              return false;
             }
+            return true;
           }
         });
         manualEntryDialog.show(target);
