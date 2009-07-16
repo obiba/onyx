@@ -49,18 +49,7 @@
     </dataSources>
   </expectedMeasureCount>
   
-  <!--expectedMeasureCount class="fixedDataSource">
-    <data type="INTEGER">2</data>
-  </expectedMeasureCount-->
-
   <instrumentParameters>
-    <!--   <interpretative>   commented out
-      <code>IV_PHYSICAL_ACTIVITY_LAST24HOURS</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>  -->
-
     <input>
       <code>INPUT_CLOTHES_WEIGHT</code>
       <dataType>DECIMAL</dataType>
@@ -172,6 +161,7 @@
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <manualCaptureAllowed>true</manualCaptureAllowed>      
     </output>
 
     <output>
@@ -180,6 +170,7 @@
       <measurementUnit>kg/m²</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
 
     <output>
@@ -195,7 +186,6 @@
       <code>RES_BODY_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <manualCaptureAllowed>true</manualCaptureAllowed>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
@@ -259,6 +249,68 @@
           <dataSource class="instrumentParameterDataSource">
             <instrumentType>Impedance310</instrumentType>
             <parameterCode>RES_WEIGHT</parameterCode>
+            <measure>3</measure>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+    
+    <output>
+      <code>CALC_AVG_BMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        
+        <expression>
+          If[Equal[$3, 0], ($1 + $2)/2, ($1 + $2 + $3)/3]
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_BODY_MASS_INDEX</parameterCode>
+            <measure>1</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_BODY_MASS_INDEX</parameterCode>
+            <measure>2</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_BODY_MASS_INDEX</parameterCode>
+            <measure>3</measure>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+    
+    <output>
+      <code>CALC_AVG_FAT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        
+        <expression>
+          If[Equal[$3, 0], ($1 + $2)/2, ($1 + $2 + $3)/3]
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_FAT_PERCENT</parameterCode>
+            <measure>1</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_FAT_PERCENT</parameterCode>
+            <measure>2</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>RES_FAT_PERCENT</parameterCode>
             <measure>3</measure>
           </dataSource>
         </dataSources>
