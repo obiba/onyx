@@ -86,7 +86,7 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     if(readyCondition != null) {
       Participant participant = activeInterviewService.getParticipant();
       Data readyData = readyCondition.getData(participant);
-      if(readyData == null && readyData.getValue() == null) {
+      if(readyData == null || readyData.getValue() == null) {
         log.info("Cannot get data for readyCondition of report {}, so readyCondition is false");
         return false;
       } else if(readyData.getType() == DataType.BOOLEAN) {

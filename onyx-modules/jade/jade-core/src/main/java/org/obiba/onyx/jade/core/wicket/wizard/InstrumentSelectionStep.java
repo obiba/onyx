@@ -38,7 +38,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
     add(new Label(getTitleId(), new StringResourceModel("InstrumentSelection", this, null)));
 
-    add(new InstrumentSelector(getContentId(), instrumentTypeModel, new PropertyModel(activeInstrumentRunService, "instrument")));
+    add(new InstrumentSelector(getContentId(), instrumentTypeModel, new PropertyModel(activeInstrumentRunService, "instrumentRun.instrument")));
   }
 
   @Override
