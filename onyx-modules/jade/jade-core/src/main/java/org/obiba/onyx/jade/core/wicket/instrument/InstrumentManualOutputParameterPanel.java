@@ -39,6 +39,7 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,8 @@ public class InstrumentManualOutputParameterPanel extends Panel {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstrumentManualOutputParameterPanel.class);
+
+  private FeedbackWindow feedbackWindow;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
@@ -73,6 +76,9 @@ public class InstrumentManualOutputParameterPanel extends Panel {
       add(new OutputFragment("outputs"));
     }
 
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
   }
 
   public void saveOutputInstrumentRunValues() {
@@ -162,6 +168,10 @@ public class InstrumentManualOutputParameterPanel extends Panel {
         label.add(labelText);
       }
     }
+  }
+
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
   }
 
 }

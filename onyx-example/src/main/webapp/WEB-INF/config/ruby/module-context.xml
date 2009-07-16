@@ -24,6 +24,7 @@
   <util:map id="tubeRegistrationConfigurationMap">
     <entry key="BloodUrineSamplesCollection" value-ref="bloodUrineTubeRegistrationConfiguration"/>
     <entry key="UrineSamplesCollection" value-ref="urineTubeRegistrationConfiguration"/>
+    <entry key="PoopSamplesCollection" value-ref="poopTubeRegistrationConfiguration"/>
   </util:map>
   
   <bean id="bloodUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
@@ -100,6 +101,40 @@
               <property name="acceptableValues">
                 <set>
                   <value>091</value>
+                </set>
+              </property>
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="poopTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+    <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
+
+    <property name="expectedTubeCount" value="1" />
+
+    <property name="barcodeStructure">
+      <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
+        <property name="parsers">
+          <list>
+            <!-- Participant Code Parser -->
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.ParticipantCodeBarcodePartParser">
+              <property name="activeInterviewService" ref="activeInterviewService" />
+              <property name="size" value="7" />
+            </bean>
+            <!-- Tube Type Parser -->
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser">
+              <property name="variableName" value="tubeType" />
+              <property name="partTitle">
+                <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+                  <constructor-arg value="Ruby.BarcodePartColumn.TubeType" />
+                </bean>
+              </property>
+              <property name="acceptableValues">
+                <set>
+                  <value>081</value>
                 </set>
               </property>
             </bean>
