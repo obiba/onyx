@@ -147,6 +147,12 @@ public class OnyxDataExport {
 
             // Flag the participant as exported.
             participant.setExported(true);
+
+            if(sessionFactory != null) {
+              sessionFactory.getCurrentSession().flush();
+              sessionFactory.getCurrentSession().clear();
+            }
+
           }
         } catch(RuntimeException e) {
           context.fail();
