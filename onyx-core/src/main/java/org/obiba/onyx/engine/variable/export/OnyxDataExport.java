@@ -138,6 +138,10 @@ public class OnyxDataExport {
 
           // participants files
           for(Participant participant : participants) {
+            if(sessionFactory != null) {
+              // Put the participant back in the Session since we previously cleared the cache (see below)
+              sessionFactory.getCurrentSession().refresh(participant);
+            }
             String entryName = participant.getBarcode() + ".xml";
             OutputStream os = exportStrategy.newEntry(entryName);
             VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
@@ -149,7 +153,11 @@ public class OnyxDataExport {
             participant.setExported(true);
 
             if(sessionFactory != null) {
+              // Flushing the session will write the pending modifications (exported flag)
               sessionFactory.getCurrentSession().flush();
+              // Clearing the session will empty the cache, freeing memory.
+              // It will also evict participants, so we have to put them back into the session to write the modified
+              // flag.
               sessionFactory.getCurrentSession().clear();
             }
 
