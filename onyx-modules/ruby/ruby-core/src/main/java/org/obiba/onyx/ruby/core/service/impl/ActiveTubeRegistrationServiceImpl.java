@@ -351,12 +351,10 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
-    log.info("DSPATHIS (before save) tubeRegistrationConfig = " + tubeRegistrationConfig);
     registration.setInterview(interview);
     registration.setTubeSetName(tubeSetName);
     registration.setStartTime(new Date());
     registration = getPersistenceManager().save(registration);
-    log.info("DSPATHIS (after save) tubeRegistrationConfig = " + tubeRegistrationConfig);
     currentTubeRegistrationId = registration.getId();
     return registration;
   }
