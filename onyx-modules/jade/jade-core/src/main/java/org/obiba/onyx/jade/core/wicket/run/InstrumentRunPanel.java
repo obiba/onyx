@@ -24,6 +24,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -166,7 +167,7 @@ public class InstrumentRunPanel extends Panel {
     for(Object parameter : parameters) {
       InstrumentParameter param = (InstrumentParameter) parameter;
 
-      if(!activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+      if(param instanceof InstrumentInputParameter || !activeInstrumentRunService.getInstrumentType().isRepeatable()) {
         InstrumentRunValue runValue = run.getInstrumentRunValue(param);
 
         // do not show COMPUTED values or misssing values
