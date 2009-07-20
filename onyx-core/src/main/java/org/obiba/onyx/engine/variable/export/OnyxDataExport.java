@@ -108,7 +108,17 @@ public class OnyxDataExport {
       Interview interview = participant.getInterview();
       if(interview == null || interview.getStatus() != InterviewStatus.COMPLETED) {
         iterator.remove();
+      } else {
+        // Flag the participant as exported.
+        // Do this now since we clear the Hibernate session later on. Which results in losing all the modified
+        // participants.
+        participant.setExported(true);
       }
+    }
+
+    if(sessionFactory != null) {
+      // Flushing the session will write the pending modifications (exported flag)
+      sessionFactory.getCurrentSession().flush();
     }
 
     if(participants.size() > 0) {
@@ -138,10 +148,6 @@ public class OnyxDataExport {
 
           // participants files
           for(Participant participant : participants) {
-            if(sessionFactory != null) {
-              // Put the participant back in the Session since we previously cleared the cache (see below)
-              sessionFactory.getCurrentSession().refresh(participant);
-            }
             String entryName = participant.getBarcode() + ".xml";
             OutputStream os = exportStrategy.newEntry(entryName);
             VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
@@ -149,15 +155,9 @@ public class OnyxDataExport {
             VariableStreamer.toXML(participantData, os);
             os.flush();
 
-            // Flag the participant as exported.
-            participant.setExported(true);
-
             if(sessionFactory != null) {
-              // Flushing the session will write the pending modifications (exported flag)
-              sessionFactory.getCurrentSession().flush();
               // Clearing the session will empty the cache, freeing memory.
-              // It will also evict participants, so we have to put them back into the session to write the modified
-              // flag.
+              // It will also delete any pending updates, which is why we already marked all participants as exported.
               sessionFactory.getCurrentSession().clear();
             }
 
