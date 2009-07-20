@@ -108,7 +108,17 @@ public class OnyxDataExport {
       Interview interview = participant.getInterview();
       if(interview == null || interview.getStatus() != InterviewStatus.COMPLETED) {
         iterator.remove();
+      } else {
+        // Flag the participant as exported.
+        // Do this now since we clear the Hibernate session later on. Which results in losing all the modified
+        // participants.
+        participant.setExported(true);
       }
+    }
+
+    if(sessionFactory != null) {
+      // Flushing the session will write the pending modifications (exported flag)
+      sessionFactory.getCurrentSession().flush();
     }
 
     if(participants.size() > 0) {
@@ -145,8 +155,12 @@ public class OnyxDataExport {
             VariableStreamer.toXML(participantData, os);
             os.flush();
 
-            // Flag the participant as exported.
-            participant.setExported(true);
+            if(sessionFactory != null) {
+              // Clearing the session will empty the cache, freeing memory.
+              // It will also delete any pending updates, which is why we already marked all participants as exported.
+              sessionFactory.getCurrentSession().clear();
+            }
+
           }
         } catch(RuntimeException e) {
           context.fail();
