@@ -81,7 +81,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
-    final InstrumentManualOutputParameterPanel instrumentManualOutputParameterPanel = new InstrumentManualOutputParameterPanel("content");
+    final InstrumentManualOutputParameterPanel instrumentManualOutputParameterPanel = new InstrumentManualOutputParameterPanel("content", 340);
     final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), instrumentManualOutputParameterPanel).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
     add(manualEntryDialog);
     WebMarkupContainer manualButtonBlock = new WebMarkupContainer("manualButtonBlock");

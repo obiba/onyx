@@ -36,6 +36,7 @@ import org.obiba.onyx.jade.core.wicket.DataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.behavior.ScrollableTableBodyBehaviour;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -63,10 +64,11 @@ public class InstrumentManualOutputParameterPanel extends Panel {
 
   private final Map<InstrumentOutputParameter, DataModel> outputDataModels = new HashMap<InstrumentOutputParameter, DataModel>();
 
-  public InstrumentManualOutputParameterPanel(String id) {
+  public InstrumentManualOutputParameterPanel(String id, final int tableBodyHeight) {
     super(id);
     setOutputMarkupId(true);
     add(new AttributeModifier("class", true, new Model("manual-input-panel")));
+    add(new ScrollableTableBodyBehaviour(tableBodyHeight));
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
 
