@@ -11,12 +11,16 @@ package org.obiba.onyx.ruby.core.domain;
 
 import java.io.Serializable;
 
+import org.apache.wicket.model.IModel;
 import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
@@ -33,7 +37,7 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
   // Instance Variables
   //
 
-  private transient ActiveInterviewService activeInterviewService;
+  private IModel applicationContextModel;
 
   private String code;
 
@@ -57,8 +61,17 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
     if(arguments != null && arguments.length > 0) {
       MessageSourceResolvable[] resolvableArgs = new MessageSourceResolvable[arguments.length];
 
+      ApplicationContext applicationContext = (ApplicationContext) applicationContextModel.getObject();
+      ActiveInterviewService activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
+
       for(int i = 0; i < arguments.length; i++) {
         IDataSource dataSource = arguments[i];
+
+        if(dataSource instanceof VariableDataSource) {
+          VariableDirectory variableDirectory = (VariableDirectory) applicationContext.getBean("variableDirectory");
+          ((VariableDataSource) dataSource).setVariableDirectory(variableDirectory);
+        }
+
         Data data = dataSource.getData(activeInterviewService.getParticipant());
         String argCode = data.getValueAsString();
 
@@ -83,8 +96,8 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
   // Methods
   //
 
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
-    this.activeInterviewService = activeInterviewService;
+  public void setApplicationContext(IModel applicationContextModel) {
+    this.applicationContextModel = applicationContextModel;
   }
 
   public void setCode(String code) {
@@ -108,6 +121,9 @@ public class ConditionalMessage implements MessageSourceResolvable, Serializable
    */
   public boolean shouldDisplay() {
     if(condition == null) return true;
+
+    ApplicationContext applicationContext = (ApplicationContext) applicationContextModel.getObject();
+    ActiveInterviewService activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
 
     Data conditionData = condition.getData(activeInterviewService.getParticipant());
 

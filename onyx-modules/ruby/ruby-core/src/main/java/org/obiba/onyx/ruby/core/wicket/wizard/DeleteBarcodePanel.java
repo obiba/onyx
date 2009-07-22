@@ -39,7 +39,7 @@ public class DeleteBarcodePanel extends Panel {
   // Instance Variables
   //
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   //

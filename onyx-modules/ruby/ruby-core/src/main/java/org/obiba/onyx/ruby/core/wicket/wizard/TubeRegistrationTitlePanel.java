@@ -18,7 +18,7 @@ import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
 public class TubeRegistrationTitlePanel extends Panel {
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   ActiveTubeRegistrationService tubeRegistration;
 
   private static final long serialVersionUID = 1L;

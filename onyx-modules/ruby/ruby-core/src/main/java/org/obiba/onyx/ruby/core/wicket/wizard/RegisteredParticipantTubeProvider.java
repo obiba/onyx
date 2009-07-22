@@ -33,7 +33,7 @@ public class RegisteredParticipantTubeProvider extends SortableDataProvider {
   // Instance Variables
   //
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   //

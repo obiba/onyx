@@ -33,7 +33,7 @@ public class ValidationStep extends WizardStepPanel {
   // Instance Variables
   //
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   protected ActiveTubeRegistrationService activeTubeRegistrationService;
 
   //

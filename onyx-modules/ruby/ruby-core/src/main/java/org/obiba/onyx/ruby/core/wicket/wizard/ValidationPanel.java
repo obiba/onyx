@@ -31,7 +31,7 @@ public class ValidationPanel extends Panel {
   // Instance Variables
   //
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   protected ActiveTubeRegistrationService activeTubeRegistrationService;
 
   //
