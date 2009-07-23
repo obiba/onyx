@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -314,6 +315,21 @@ public class Dialog extends ModalWindow {
 
     public void onClose(AjaxRequestTarget target, Status status);
 
+  }
+
+  /**
+   * Returns a truncated version of the title when title is too long
+   */
+  @Override
+  public IModel getTitle() {
+    String titleStr = (super.getTitle() != null) ? (String) super.getTitle().getObject() : null;
+
+    if(titleStr != null && titleStr.length() > 50) {
+      titleStr = titleStr.substring(0, 45);
+      titleStr += "...";
+    }
+
+    return new Model(titleStr);
   }
 
   /**
