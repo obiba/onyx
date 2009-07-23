@@ -18,7 +18,7 @@ public class ConfirmationDialog extends Dialog {
 
   private static final long serialVersionUID = 3542344658891842366L;
 
-  private static final int DEFAULT_CONFIRMATION_DIALOG_HEIGHT = 100;
+  private static final int DEFAULT_CONFIRMATION_DIALOG_HEIGHT = 115;
 
   private static final int DEFAULT_CONFIRMATION_DIALOG_WIDTH = 400;
 
