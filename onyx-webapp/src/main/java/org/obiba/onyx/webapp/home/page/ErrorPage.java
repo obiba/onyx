@@ -7,17 +7,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.service.impl;
+package org.obiba.onyx.webapp.home.page;
 
-/**
- * 
- */
-public class UserPasswordServiceException extends Exception {
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
-  private static final long serialVersionUID = -4973108527779970501L;
+public class ErrorPage extends HomePage {
 
-  public UserPasswordServiceException(String message) {
-    super(message);
+  public ErrorPage() {
+    super();
+
+    FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+    replace(feedbackPanel);
+
   }
-
 }

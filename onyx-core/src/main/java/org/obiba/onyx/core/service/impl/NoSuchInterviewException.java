@@ -12,12 +12,11 @@ package org.obiba.onyx.core.service.impl;
 /**
  * 
  */
-public class UserPasswordServiceException extends Exception {
+public class NoSuchInterviewException extends RuntimeException {
 
-  private static final long serialVersionUID = -4973108527779970501L;
+  private static final long serialVersionUID = 4582301778615680804L;
 
-  public UserPasswordServiceException(String message) {
-    super(message);
+  public NoSuchInterviewException(String msg) {
+    super(msg);
   }
-
 }

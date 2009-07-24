@@ -15,6 +15,7 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.Session;
@@ -23,11 +24,14 @@ import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.pages.AccessDeniedPage;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
+import org.obiba.onyx.runtime.management.CheesrRequestCycle;
 import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
 import org.obiba.onyx.webapp.config.page.ApplicationConfigurationPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
@@ -256,6 +260,11 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     public void handleListener(String beanName, WebApplicationStartupListener listener);
 
     public boolean terminateOnException();
+  }
+
+  @Override
+  public RequestCycle newRequestCycle(final Request request, final Response response) {
+    return new CheesrRequestCycle(this, (WebRequest) request, (WebResponse) response);
   }
 
 }

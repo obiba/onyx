@@ -54,7 +54,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     if(lock != null) {
       return lock.getParticipant();
     }
-    throw new IllegalStateException("No current interview");
+    throw new NoSuchInterviewException("No current interview");
   }
 
   synchronized public Map<String, StageExecutionContext> getStageContexts() {
@@ -67,7 +67,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
       }
       return contexts;
     }
-    throw new IllegalStateException("No current interview");
+    throw new NoSuchInterviewException("No current interview");
   }
 
   synchronized public User getInterviewer(Participant participant) {
