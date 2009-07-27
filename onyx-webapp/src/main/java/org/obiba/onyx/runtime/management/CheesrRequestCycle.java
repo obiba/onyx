@@ -37,7 +37,6 @@ public class CheesrRequestCycle extends WebRequestCycle {
 
     if(cause instanceof NoSuchInterviewException) {
       page = new ErrorPage();
-      // page.error("No current interview");
       getSession().get().error("No current interview");
       return page;
     } else {

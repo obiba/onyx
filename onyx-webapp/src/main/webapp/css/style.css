@@ -293,6 +293,17 @@ div#feedback {
 	margin:0 !important;
 	padding:0 !important;
 }
+
+.page-feedback{
+	width: 300px;
+	margin-left:20px !important;
+	margin-top:20px !important;
+	background-color: #FFFFFF;
+  border-color: #B8B8B8;
+  border-style: solid;
+  border-width: 1px;
+}
+
 div#feedback ul {
   text-align: left;
   /*width:600px;
