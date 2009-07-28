@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -76,11 +76,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
   }
 
   public void afterPropertiesSet() throws Exception {
-    participantFirstName = instrumentExecutionService.getParticipantFirstName();
-    participantLastName = instrumentExecutionService.getParticipantLastName();
+    participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
+    participantLastName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME").getValue();
     participantID = instrumentExecutionService.getParticipantID();
-    participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
-    participantGender = instrumentExecutionService.getParticipantGender();
+    participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
+    participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
   }
 
   public void setAchillesExpressConfig() {
