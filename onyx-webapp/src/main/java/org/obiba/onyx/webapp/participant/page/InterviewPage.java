@@ -258,6 +258,7 @@ public class InterviewPage extends BasePage {
       add(link);
 
       // Interview closing
+      final ActionDefinition closeInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.STOP, "Closed.Interview", null, null);
       final ActionWindow closeInterviewActionWindow = new ActionWindow("closeModal") {
 
         private static final long serialVersionUID = 1L;
@@ -288,7 +289,7 @@ public class InterviewPage extends BasePage {
             private static final long serialVersionUID = -6691702933562884991L;
 
             public void onYesButtonClicked(AjaxRequestTarget target) {
-              closeInterviewActionWindow.show(target, null, cancelInterviewDef);
+              closeInterviewActionWindow.show(target, null, closeInterviewDef);
             }
 
           });

@@ -434,4 +434,18 @@
       <string>Action.Reason.SeeComment</string>
     </reasons>     
   </actionDefinition>
+  <actionDefinition>
+    <code>action.STOP.Closed.Interview</code>
+    <type>STOP</type>
+    <askParticipantId>true</askParticipantId>     
+    <askPassword>true</askPassword>
+    <commentMandatory>true</commentMandatory>
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.TechnicalProblem</string>
+      <string>Action.Reason.ParticipantWithdrawal</string>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>
+    </reasons>     
+  </actionDefinition>
 </actionDefinitions>
