@@ -1,0 +1,23 @@
+<wicket:panel>
+	<table class="entityTable">
+		<thead>
+			<tr>
+				<th colspan="3"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</th>
+				<th><a wicket:id="refresh" href=""><wicket:message key="Refresh"/></a></th>			
+			</tr>		
+			<tr>
+				<th><wicket:message key="Date"/></th>
+				<th><wicket:message key="User"/></th>				
+				<th colspan="2"><wicket:message key="Actions"/></th>			
+			</tr>
+		</thead>
+		<tbody>
+			<tr wicket:id="measure">
+				<td><span wicket:id="measureDate"/></td>
+				<td><span wicket:id="measureUser"/></td>				
+				<td><a href=""><wicket:message key="View"/></a></td>
+				<td><a href=""><wicket:message key="Delete"/></a></td>
+			</tr>
+		</tbody>
+	</table>  
+</wicket:panel>

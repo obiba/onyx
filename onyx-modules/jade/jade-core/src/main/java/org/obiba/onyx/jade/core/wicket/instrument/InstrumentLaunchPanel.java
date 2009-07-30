@@ -58,6 +58,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
+  MeasuresListPanel measuresList;
+
   @SuppressWarnings("serial")
   public InstrumentLaunchPanel(String id) {
     super(id);
@@ -100,6 +102,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
             } else if(status.equals(Status.SUCCESS)) {
               manualEntryDialog.resetStatus();
               instrumentManualOutputParameterPanel.saveOutputInstrumentRunValues();
+              target.addComponent(measuresList);
               return true;
             } else if(status.equals(Status.ERROR)) {
               FeedbackPanel feedbackPanel = new FeedbackPanel("content");
@@ -164,6 +167,10 @@ public abstract class InstrumentLaunchPanel extends Panel {
     Label instructions = new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null));
     instructions.setVisible(manualCaptureRequired);
     add(instructions);
+
+    add(measuresList = new MeasuresListPanel("measuresList"));
+    measuresList.setOutputMarkupId(true);
+
   }
 
   /**
