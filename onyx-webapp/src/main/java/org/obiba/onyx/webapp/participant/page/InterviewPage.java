@@ -250,12 +250,61 @@ public class InterviewPage extends BasePage {
 
         @Override
         public boolean isVisible() {
-          return activeInterviewService.getInterview().getStatus() != InterviewStatus.CANCELLED;
+          InterviewStatus status = activeInterviewService.getInterview().getStatus();
+          return (status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED);
         }
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
       add(link);
 
+      // Interview closing
+      final ActionWindow closeInterviewActionWindow = new ActionWindow("closeModal") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
+          activeInterviewService.setStatus(InterviewStatus.CLOSED);
+          setResponsePage(InterviewPage.class);
+        }
+
+      };
+      add(closeInterviewActionWindow);
+
+      AjaxLink closeLink = new AjaxLink("closeInterview") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          Label label = new Label("content", new StringResourceModel("ConfirmClosingOfInterview", InterviewPage.this, null));
+          label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+          ConfirmationDialog confirmationDialog = getConfirmationDialog();
+
+          confirmationDialog.setContent(label);
+          confirmationDialog.setTitle(new StringResourceModel("ConfirmClosingOfInterviewTitle", this, null));
+          confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+            private static final long serialVersionUID = -6691702933562884991L;
+
+            public void onYesButtonClicked(AjaxRequestTarget target) {
+              closeInterviewActionWindow.show(target, null, cancelInterviewDef);
+            }
+
+          });
+          confirmationDialog.show(target);
+        }
+
+        @Override
+        public boolean isVisible() {
+          InterviewStatus status = activeInterviewService.getInterview().getStatus();
+          return (status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED);
+        }
+      };
+      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
+      add(closeLink);
+
+      // Print report link
       class ReportLink extends AjaxLink {
 
         private static final long serialVersionUID = 1L;
