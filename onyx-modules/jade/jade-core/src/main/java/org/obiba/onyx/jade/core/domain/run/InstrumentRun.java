@@ -188,7 +188,7 @@ public class InstrumentRun extends AbstractEntity {
   }
 
   public boolean isCompletedOrContraindicated() {
-    if(getStatus().equals(InstrumentRunStatus.COMPLETED) || getStatus().equals(InstrumentRunStatus.CONTRA_INDICATED)) {
+    if(getStatus().equals(InstrumentRunStatus.COMPLETED) || getStatus().equals(InstrumentRunStatus.IN_PROGRESS) || getStatus().equals(InstrumentRunStatus.CONTRA_INDICATED)) {
       return true;
     }
     return false;

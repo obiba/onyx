@@ -347,4 +347,15 @@ public class Participant extends AbstractEntity {
     return "Participant[" + barcode + "]";
   }
 
+  /**
+   * Defines if a participant and his interview are in the right states to allow the data export.
+   * @return
+   */
+  public boolean isExportable() {
+    if(exported != null && exported == true) return false;
+    if(getInterview() == null) return false;
+    InterviewStatus status = getInterview().getStatus();
+    return (status == InterviewStatus.COMPLETED || status == InterviewStatus.CLOSED);
+  }
+
 }
