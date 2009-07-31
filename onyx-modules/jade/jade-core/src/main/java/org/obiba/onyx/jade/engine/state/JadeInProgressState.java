@@ -100,6 +100,7 @@ public class JadeInProgressState extends AbstractJadeStageState {
 
   @Override
   public void onEntry(TransitionEvent event) {
+    super.onEntry(event);
     if(event.equals(TransitionEvent.RESUME)) {
       resuming = true;
     } else {

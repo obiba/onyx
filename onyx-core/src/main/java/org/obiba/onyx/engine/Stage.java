@@ -16,11 +16,11 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 /**
- * A <code>Stage</code> is a step of an {@link Interview}. They are contributed by {@link Module}s. A
- * <code>Stage</code>'s name must be unique throughout all contributed stages.
+ * A <code>Stage</code> is a step of an {@link Interview}. They are contributed by {@link Module}s. A <code>Stage</code>
+ * 's name must be unique throughout all contributed stages.
  * <p>
- * Some <code>Stage</code>s have dependencies on other <code>Stage</code>s. The actual dependency logic is
- * encapsulated in its {@link StageDependencyCondition} instance.
+ * Some <code>Stage</code>s have dependencies on other <code>Stage</code>s. The actual dependency logic is encapsulated
+ * in its {@link StageDependencyCondition} instance.
  * 
  * @see Module
  */
@@ -36,6 +36,8 @@ public class Stage {
   private String module;
 
   private StageDependencyCondition stageDependencyCondition;
+
+  private boolean interviewConclusion;
 
   public String getName() {
     return name;
@@ -66,8 +68,28 @@ public class Stage {
     this.stageDependencyCondition = stageDependencyCondition;
   }
 
+  public void setInterviewConclusion(boolean interviewConclusion) {
+    this.interviewConclusion = interviewConclusion;
+  }
+
+  public boolean isInterviewConclusion() {
+    return interviewConclusion;
+  }
+
   @Override
   public String toString() {
     return module + ":" + name;
   }
+
+  private void validateConclusionStageDoesNotHaveDependencies() {
+    if(interviewConclusion && stageDependencyCondition != null) {
+      log.warn("The StageDependencyCondition [{}] was found for the conclusion stage [{}]. It will be ignored. Please remove the StageDependencyCondition from the [{}] configuration. Conclusion stages must not contain a StageDependencyCondition.", new Object[] { stageDependencyCondition, name, name });
+    }
+  }
+
+  private Object readResolve() {
+    validateConclusionStageDoesNotHaveDependencies();
+    return this;
+  }
+
 }

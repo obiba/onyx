@@ -85,7 +85,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
       for(StageExecutionContext sec : getStageExecutionContexts(currentParticipant)) {
         if(exec.getStage().getStageDependencyCondition() != null) {
-          if(exec.getStage().getStageDependencyCondition().isDependentOn(sec.getStage().getName())) {
+          if(exec.getStage().getStageDependencyCondition().isDependentOn(stage, sec.getStage().getName())) {
             sec.addTransitionListener(exec);
           }
         }

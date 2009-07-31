@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.Component;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -61,9 +62,12 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     this.actionDefinitionConfig = actionDefinitionConfig;
   }
 
+  // make sure there is no possibility for getting out of this stage final state.
   public void afterPropertiesSet() throws Exception {
-    addUserActions(userActions);
-    addSystemActions(systemActions);
+    if(!isFinal()) {
+      addUserActions(userActions);
+      addSystemActions(systemActions);
+    }
   }
 
   public void setStage(Stage stage) {
@@ -92,7 +96,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   protected Boolean areDependenciesCompleted() {
     if(stage.getStageDependencyCondition() != null) {
-      return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+      return stage.getStageDependencyCondition().isDependencySatisfied(stage, activeInterviewService);
     }
     return true;
   }
@@ -125,7 +129,11 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return buildActionDefinitionList(systemActions);
   }
 
+  // if final stage state, complete the interview
   public void onEntry(TransitionEvent event) {
+    if(isFinal()) {
+      activeInterviewService.setStatus(InterviewStatus.COMPLETED);
+    }
   }
 
   public void onExit(TransitionEvent event) {
@@ -158,7 +166,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public boolean isFinal() {
-    return false;
+    return isCompleted() && stage != null && stage.isInterviewConclusion();
   }
 
   public boolean isInteractive() {

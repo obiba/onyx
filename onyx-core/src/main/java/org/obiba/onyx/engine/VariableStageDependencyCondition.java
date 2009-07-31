@@ -56,12 +56,12 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
    * if a comparison operator is provided, else the value of the dependent stage's data if it is a boolean, or simply
    * the fact that the data is not null.
    */
-  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     // if stage is defined, check it is completed first
     if(stageName != null) {
-      IStageExecution stage = activeInterviewService.getStageExecution(stageName);
-      if(stage != null) {
-        if(stage.isCompleted() == false) {
+      IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
+      if(stageExecution != null) {
+        if(stageExecution.isCompleted() == false) {
           return null;
         }
       }
@@ -106,7 +106,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
     return rval;
   }
 
-  public boolean isDependentOn(String stageName) {
+  public boolean isDependentOn(Stage stage, String stageName) {
     return this.stageName.equals(stageName);
   }
 

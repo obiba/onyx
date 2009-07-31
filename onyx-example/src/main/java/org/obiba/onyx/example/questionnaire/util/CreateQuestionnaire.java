@@ -31,6 +31,7 @@ public class CreateQuestionnaire {
       creator.createQuestionnaire(AssistedHealthQuestionnaireContentBuilder.buildQuestionnaire(), Locale.FRENCH, Locale.ENGLISH);
       creator.createQuestionnaire(CIPreliminaryQuestionnaireContentBuilder.buildQuestionnaire(), Locale.ENGLISH);
       creator.createQuestionnaire(QuartzDemoQuestionnaireContentBuilder.buildQuestionnaire(), Locale.ENGLISH);
+      creator.createQuestionnaire(ConclusionQuestionnaireContentBuilder.buildQuestionnaire(), Locale.ENGLISH);
     } catch(Exception e) {
       e.printStackTrace();
     }

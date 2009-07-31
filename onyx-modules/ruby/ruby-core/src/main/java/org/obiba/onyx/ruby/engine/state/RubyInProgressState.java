@@ -102,6 +102,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
   @Override
   public void onEntry(TransitionEvent event) {
+    super.onEntry(event);
     Participant participant = activeInterviewService.getParticipant();
 
     if(event.equals(TransitionEvent.RESUME)) {

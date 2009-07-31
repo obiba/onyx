@@ -42,12 +42,12 @@ public class MultipleStageDependencyConditionTest {
 
   @Test
   public void testAndWhenBothReturnTrue() {
-    EasyMock.expect(first.isDependencySatisfied(activeInterviewServiceMock)).andReturn(true);
-    EasyMock.expect(second.isDependencySatisfied(activeInterviewServiceMock)).andReturn(true);
+    EasyMock.expect(first.isDependencySatisfied(null, activeInterviewServiceMock)).andReturn(true);
+    EasyMock.expect(second.isDependencySatisfied(null, activeInterviewServiceMock)).andReturn(true);
 
     EasyMock.replay(first, second);
     MultipleStageDependencyCondition condition = setupCondition(Operator.AND);
-    Boolean result = condition.isDependencySatisfied(activeInterviewServiceMock);
+    Boolean result = condition.isDependencySatisfied(null, activeInterviewServiceMock);
     EasyMock.verify(first, second);
     Assert.assertNotNull(result);
     Assert.assertTrue(result);
@@ -75,12 +75,12 @@ public class MultipleStageDependencyConditionTest {
 
   @Test
   public void testOrWhenBothReturnFalse() {
-    EasyMock.expect(first.isDependencySatisfied(activeInterviewServiceMock)).andReturn(false);
-    EasyMock.expect(second.isDependencySatisfied(activeInterviewServiceMock)).andReturn(false);
+    EasyMock.expect(first.isDependencySatisfied(null, activeInterviewServiceMock)).andReturn(false);
+    EasyMock.expect(second.isDependencySatisfied(null, activeInterviewServiceMock)).andReturn(false);
 
     EasyMock.replay(first, second);
     MultipleStageDependencyCondition condition = setupCondition(Operator.OR);
-    Boolean result = condition.isDependencySatisfied(activeInterviewServiceMock);
+    Boolean result = condition.isDependencySatisfied(null, activeInterviewServiceMock);
     EasyMock.verify(first, second);
     Assert.assertNotNull(result);
     Assert.assertFalse(result);
@@ -121,9 +121,9 @@ public class MultipleStageDependencyConditionTest {
     MultipleStageDependencyCondition condition = setupCondition(op);
     for(int i = 0; i < testValues.length; i++) {
       callback.setupStableCondition();
-      EasyMock.expect(changingCondition.isDependencySatisfied(activeInterviewServiceMock)).andReturn(testValues[i]);
+      EasyMock.expect(changingCondition.isDependencySatisfied(null, activeInterviewServiceMock)).andReturn(testValues[i]);
       EasyMock.replay(first, second);
-      Boolean result = condition.isDependencySatisfied(activeInterviewServiceMock);
+      Boolean result = condition.isDependencySatisfied(null, activeInterviewServiceMock);
       EasyMock.verify(first, second);
       Assert.assertEquals(assertValue, result);
 
@@ -142,7 +142,7 @@ public class MultipleStageDependencyConditionTest {
     }
 
     void setupStableCondition() {
-      EasyMock.expect(condition.isDependencySatisfied(activeInterviewServiceMock)).andReturn(returnValue);
+      EasyMock.expect(condition.isDependencySatisfied(null, activeInterviewServiceMock)).andReturn(returnValue);
     }
   }
 }

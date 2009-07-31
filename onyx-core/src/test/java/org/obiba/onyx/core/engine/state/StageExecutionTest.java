@@ -574,11 +574,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       this.stageName = name;
     }
 
-    public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+    public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
       return activeInterviewService.getStageExecution(stageName).isCompleted();
     }
 
-    public boolean isDependentOn(String stageName) {
+    public boolean isDependentOn(Stage stage, String stageName) {
       return this.stageName.equals(stageName);
     }
 

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Instances of this class are configured by setting the {@link #stageName} attribute to the pre-requisite stage.
  * <p>
- * The {@link #isDependencySatisfied(ActiveInterviewService)} method returns true when the pre-requisite stage is
+ * The {@link #isDependencySatisfied(Stage, ActiveInterviewService)} method returns true when the pre-requisite stage is
  * complete. Otherwise null is returned. Note that this implementation never returns false.
  * @see IStageExecution#isCompleted()
  */
@@ -36,7 +36,7 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
     this.stageName = name;
   }
 
-  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     log.info("stageName={}", stageName);
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
     if(stageExecution == null) {
@@ -51,7 +51,7 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
     }
   }
 
-  public boolean isDependentOn(String stageName) {
+  public boolean isDependentOn(Stage stage, String stageName) {
     return this.stageName.equals(stageName);
   }
 

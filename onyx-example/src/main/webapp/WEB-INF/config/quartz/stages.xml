@@ -27,4 +27,10 @@
     </stageDependencyCondition>
   </stage>
 
+  <stage>
+    <name>ConclusionQuestionnaire</name>
+    <module>quartz</module>
+    <interviewConclusion>true</interviewConclusion>
+  </stage>
+
 </stages>

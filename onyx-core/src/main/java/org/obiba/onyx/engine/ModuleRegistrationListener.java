@@ -69,7 +69,19 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
   public void startup(WebApplication application) {
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
     if(modules != null) {
+      boolean finalStageFound = false;
       for(Module module : modules.values()) {
+
+        for(Stage stage : module.getStages()) {
+          if(stage.isInterviewConclusion()) {
+            if(!finalStageFound) {
+              stage.setStageDependencyCondition(new FinalDependencyCondition(registry));
+              finalStageFound = true;
+            } else {
+              throw new IllegalArgumentException("Several interview conclusion stages is not allowed.");
+            }
+          }
+        }
 
         try {
           log.info("Initializing module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
@@ -91,6 +103,9 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
           }
         }
       }
+      if(!finalStageFound) {
+        throw new IllegalArgumentException("An interview conclusion stage is required. Add <interviewConclusion>true</interviewConclusion> to the conclusion stage configuration file.");
+      }
     }
 
     // get the variables after module registration
@@ -100,13 +115,6 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         variableDirectory.registerVariables(provider);
       }
     }
-    // try {
-    // VariableStreamer.toXLS(variableDirectory.getVariableRoot(), new FileOutputStream("variables.xls"),
-    // variableDirectory.getVariablePathNamingStrategy());
-    // } catch(FileNotFoundException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {

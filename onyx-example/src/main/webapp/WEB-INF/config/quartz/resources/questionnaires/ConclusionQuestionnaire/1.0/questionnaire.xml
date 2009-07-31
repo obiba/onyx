@@ -1,0 +1,33 @@
+<questionnaire id="1" name="ConclusionQuestionnaire" version="1.0">
+  <locales id="2">
+    <locale id="3">en</locale>
+  </locales>
+  <sections id="4">
+    <section id="5" name="CHECKLIST">
+      <pages id="6">
+        <page id="7" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="5"/>
+          <questions id="8">
+            <question id="9" name="PARTICIPANT_OFFERED_DOCUMENT" multiple="true" minCount="2" maxCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="10">
+                <questionCategory id="11" exportName="1">
+                  <question reference="9"/>
+                  <category id="12" name="CONSENT_FORM" escape="false"/>
+                </questionCategory>
+                <questionCategory id="13" exportName="2">
+                  <question reference="9"/>
+                  <category id="14" name="PHYSICAL_MEASURES_REPORT" escape="false"/>
+                </questionCategory>
+              </questionCategories>
+            </question>
+          </questions>
+        </page>
+      </pages>
+      <sections id="15"/>
+    </section>
+  </sections>
+  <pages id="16">
+    <page reference="7"/>
+  </pages>
+</questionnaire>

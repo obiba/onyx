@@ -33,7 +33,7 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
   public ModuleDependencyCondition() {
   }
 
-  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
 
     Module module = moduleRegistry.getModule(moduleName);
     if(module == null) {
@@ -57,7 +57,7 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
     return true;
   }
 
-  public boolean isDependentOn(String stageName) {
+  public boolean isDependentOn(Stage stage, String stageName) {
 
     Module module = moduleRegistry.getModule(moduleName);
     if(module == null) {
