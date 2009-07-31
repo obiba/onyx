@@ -57,16 +57,15 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     interview.setStatus(InterviewStatus.IN_PROGRESS);
     getPersistenceManager().save(interview);
 
-    // Persist the reception comment, if there is one.
-    if(receptionComment != null && receptionComment.trim().length() != 0) {
-      Action receptionCommentAction = new Action();
-      receptionCommentAction.setActionType(ActionType.COMMENT);
-      receptionCommentAction.setDateTime(new Date());
-      receptionCommentAction.setComment(receptionComment);
-      receptionCommentAction.setUser(user);
-      receptionCommentAction.setInterview(interview);
-      getPersistenceManager().save(receptionCommentAction);
-    }
+    // Persist the start action
+    Action receptionAction = new Action();
+    receptionAction.setActionType(ActionType.START);
+    receptionAction.setDateTime(new Date());
+    if(receptionComment != null && receptionComment.trim().length() != 0) receptionAction.setComment(receptionComment);
+    receptionAction.setUser(user);
+    receptionAction.setInterview(interview);
+    getPersistenceManager().save(receptionAction);
+
   }
 
   public void updateParticipant(Participant participant) {

@@ -170,6 +170,10 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     currentState.skip(action);
   }
 
+  public void start(Action action) {
+    currentState.start(action);
+  }
+
   public void stop(Action action) {
     currentState.stop(action);
   }

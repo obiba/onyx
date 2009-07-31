@@ -140,6 +140,9 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   public void skip(Action action) {
   }
 
+  public void start(Action action) {
+  }
+
   public void stop(Action action) {
   }
 

@@ -464,6 +464,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     }
 
     @Override
+    public void start(Action action) {
+      log.info("Stage {} is starting", super.getStage().getName());
+      castEvent(TransitionEvent.START);
+    }
+
+    @Override
     public void stop(Action action) {
       log.info("Stage {} is stopping", super.getStage().getName());
       // Invalidate current instrument run

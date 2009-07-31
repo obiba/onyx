@@ -56,6 +56,15 @@ public enum ActionType {
     }
   },
   /**
+   * {@link IStageExecution#start(Action)}
+   */
+  START {
+    @Override
+    public void act(IStageExecution execution, Action action) {
+      execution.start(action);
+    }
+  },
+  /**
    * {@link IStageExecution#stop(Action)}
    */
   STOP {

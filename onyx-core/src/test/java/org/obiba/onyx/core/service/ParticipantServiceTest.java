@@ -90,6 +90,15 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     // Verify that the barcode was persisted.
     participant = persistenceManager.get(Participant.class, 4l);
     Assert.assertEquals(barcode, participant.getBarcode());
+
+    // Verify that the action was persisted.
+    Action template = new Action();
+    template.setActionType(ActionType.START);
+    template.setUser(user);
+    template.setInterview(participant.getInterview());
+    List<Action> actions = persistenceManager.match(template, new PagingClause(0));
+    Assert.assertTrue(actions.size() == 1);
+    Assert.assertNull(actions.get(0).getComment());
   }
 
   @Test
@@ -114,7 +123,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
     // Verify that the comment was persisted.
     Action commentTemplate = new Action();
-    commentTemplate.setActionType(ActionType.COMMENT);
+    commentTemplate.setActionType(ActionType.START);
     commentTemplate.setComment(receptionComment);
     commentTemplate.setUser(user);
     commentTemplate.setInterview(participant.getInterview());

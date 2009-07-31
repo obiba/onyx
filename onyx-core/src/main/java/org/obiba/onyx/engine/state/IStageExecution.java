@@ -86,6 +86,13 @@ public interface IStageExecution {
   public void skip(Action action);
 
   /**
+   * Do start.
+   * @see ActionType
+   * @param action
+   */
+  public void start(Action action);
+
+  /**
    * Do stop.
    * @see ActionType
    * @param action
