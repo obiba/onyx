@@ -13,15 +13,19 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -58,11 +62,12 @@ public abstract class InstrumentLaunchPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  MeasuresListPanel measuresList;
+  private MeasuresListPanel measuresList;
 
   @SuppressWarnings("serial")
   public InstrumentLaunchPanel(String id) {
     super(id);
+    setModel(new Model(activeInstrumentRunService.getInstrumentRun()));
     setOutputMarkupId(true);
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
@@ -170,6 +175,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     add(measuresList = new MeasuresListPanel("measuresList"));
     measuresList.setOutputMarkupId(true);
+
+    CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(getModelObject(), "skipMeasurement"));
+    add(box);
+
+    TextArea comment = new TextArea("comment", new PropertyModel(getModelObject(), "skipComment"));
+    comment.add(new StringValidator.MaximumLengthValidator(2000));
+    add(comment);
 
   }
 

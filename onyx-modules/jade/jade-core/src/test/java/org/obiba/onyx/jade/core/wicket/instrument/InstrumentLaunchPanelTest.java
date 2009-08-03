@@ -22,6 +22,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -65,6 +66,7 @@ public class InstrumentLaunchPanelTest {
 
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
+    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun());
 
     replay(activeInstrumentRunServiceMock);
 
@@ -87,6 +89,7 @@ public class InstrumentLaunchPanelTest {
 
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
+    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun());
 
     replay(activeInstrumentRunServiceMock);
 
@@ -110,6 +113,7 @@ public class InstrumentLaunchPanelTest {
 
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
+    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun());
 
     replay(activeInstrumentRunServiceMock);
 
