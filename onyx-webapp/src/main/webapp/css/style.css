@@ -1706,6 +1706,13 @@ div.log-comment {
 }
 /******************* End Sample Collection *********************************************/
 
-div.measuresListPanel table.entityTable th a {
+div.measuresListPanel table.entityTable thead td.link {
   text-align:right;
+  text-decoration:none;  
+}
+
+div.measuresListPanel table.entityTable thead td, div.measuresListPanel table.entityTable thead td a {
+  color:#C65F02;
+  font-size:11px;
+  border-bottom: solid 1px #C65F02;
 }
