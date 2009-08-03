@@ -63,6 +63,8 @@ public class InstrumentRunPanel extends Panel {
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
+  private Measure measure = null;
+
   /**
    * Build the panel with the current instrument run.
    * @param id
@@ -76,6 +78,26 @@ public class InstrumentRunPanel extends Panel {
     }
 
     setModel(new DetachableEntityModel(queryService, run));
+
+    build();
+  }
+
+  /**
+   * Build the panel with the current instrument run and a specified measure.
+   * @param id
+   * @param modal
+   * @param measure
+   */
+  public InstrumentRunPanel(String id, final ModalWindow modal, Measure measure) {
+    super(id);
+
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run == null) {
+      throw new IllegalStateException("No instrument run in session.");
+    }
+
+    setModel(new DetachableEntityModel(queryService, run));
+    if(measure != null) setMeasure(measure);
 
     build();
   }
@@ -106,7 +128,12 @@ public class InstrumentRunPanel extends Panel {
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("run", new StringResourceModel("RunInfo", this, null));
     add(kvPanel);
     kvPanel.addRow(new StringResourceModel("Operator", this, null), new PropertyModel(run, "user.fullName"));
-    kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(run, "timeStart")));
+
+    if(getMeasure() != null) {
+      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(getMeasure(), "time")));
+    } else {
+      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(run, "timeStart")));
+    }
 
     if(run.getTimeEnd() != null) {
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
@@ -169,19 +196,20 @@ public class InstrumentRunPanel extends Panel {
       if(!activeInstrumentRunService.getInstrumentType().isRepeatable()) {
         InstrumentRunValue runValue = run.getInstrumentRunValue(param);
 
-        // do not show COMPUTED values or misssing values
+        // do not show COMPUTED values or missing values
         if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
           addRow(kvPanel, param, runValue, null);
         }
       } else {
-        int pos = 1;
+        Integer pos = (getMeasure() == null) ? 1 : null;
         for(Measure measure : run.getMeasures()) {
+          if(getMeasure() != null && !getMeasure().getId().equals(measure.getId())) continue;
           for(InstrumentRunValue runValue : measure.getInstrumentRunValues()) {
             if(runValue.getInstrumentParameter().equals(param.getCode())) {
               addRow(kvPanel, param, runValue, pos);
             }
           }
-          pos++;
+          if(pos != null) pos++;
         }
       }
     }
@@ -246,6 +274,14 @@ public class InstrumentRunPanel extends Panel {
     }
 
     return formattedValue;
+  }
+
+  public Measure getMeasure() {
+    return measure;
+  }
+
+  public void setMeasure(Measure measure) {
+    this.measure = measure;
   }
 
 }

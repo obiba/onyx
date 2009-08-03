@@ -29,7 +29,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,14 +51,25 @@ public class MeasuresListPanel extends Panel {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  ConfirmationDialog confirmationDialog;
+  private static final int DEFAULT_INITIAL_HEIGHT = 420;
+
+  private static final int DEFAULT_INITIAL_WIDTH = 400;
+
+  private ConfirmationDialog confirmationDialog;
 
   @SuppressWarnings("serial")
   public MeasuresListPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    addMeasuresList();
+    final Dialog modal;
+    add(modal = new Dialog("modal"));
+
+    modal.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
+    modal.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+    modal.setOptions(Dialog.Option.CLOSE_OPTION);
+
+    addMeasuresList(modal);
     addMeasureCounts();
     addRefreshLink();
     addConfirmDeleteMeasureDialog();
@@ -69,7 +82,7 @@ public class MeasuresListPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private ListView addMeasuresList() {
+  private ListView addMeasuresList(final Dialog modal) {
     ListView repeater = new ListView("measure", new PropertyModel(this, "measures")) {
 
       private void deleteMeasure(final Measure measure, AjaxRequestTarget target) {
@@ -101,6 +114,18 @@ public class MeasuresListPanel extends Panel {
 
         });
         item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(item.getIndex())), " "));
+
+        item.add(new AjaxLink("view") {
+
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+            InstrumentRunPanel instrumentRunPanel = new InstrumentRunPanel(modal.getContentId(), modal, measure);
+            instrumentRunPanel.add(new AttributeModifier("class", true, new Model("obiba-content instrument-run-panel-content")));
+            modal.setContent(instrumentRunPanel);
+            modal.show(target);
+          }
+
+        });
       }
 
     };
