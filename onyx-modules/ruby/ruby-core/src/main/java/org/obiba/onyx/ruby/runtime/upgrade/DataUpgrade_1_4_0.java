@@ -20,8 +20,8 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.obiba.onyx.runtime.upgrade.AbstractUpgradeStep;
 import org.obiba.runtime.Version;
+import org.obiba.runtime.upgrade.AbstractUpgradeStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
