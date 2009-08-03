@@ -795,50 +795,6 @@ td.gertTableFormValueOdd {
 	background-color: #E1E3E5;
 	padding: 5px;
 }
-/*
-
-div.gertTab div.tab-row ul {
-    height: 20px;
-    margin: 0;
-    padding-left: 10px;
-    /*background: url( tabs4/tab_bottom.gif ) repeat-x bottom;*/
-/*}
-
-div.gertTab div.tab-row li {
-    margin: 0;
-    padding: 0;
-    display: inline;
-    list-style-type: none;
-}
-
-div.gertTab div.tab-row a:link, div.gertTab div.tab-row a:visited {
-    float: left;
-    background: #003366;
-    font-size: 12px;
-    line-height: 14px;
-    padding: 2px 10px 2px 10px;
-    margin-right: 4px;
-    border: 1px solid #003366;
-    text-decoration: none;
-    color: #c1cedd;
-}
-
-div.gertTab div.tab-row li.selected a:link, div.gertTab div.tab-row a:visited.active {
-    border-bottom: 1px solid #375FB7;
-    background: #375FB7;
-    color: #F6F8FF;
-    font-weight: bold;
-}
-
-div.gertTab div.tab-row a:hover {
-    background: #375FB7;
-}
-
-div.gertTab div.tab-panel {
-	/*border-top-width: 1px;
-	border-top-style: solid;
-	border-top-color: #003366;*/
-/*}*/
 
 div.tab-panel {
 	clear:both;
@@ -1749,3 +1705,7 @@ div.log-comment {
   
 }
 /******************* End Sample Collection *********************************************/
+
+div.measuresListPanel table.entityTable th a {
+  text-align:right;
+}

@@ -11,19 +11,26 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +49,8 @@ public class MeasuresListPanel extends Panel {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  ConfirmationDialog confirmationDialog;
+
   @SuppressWarnings("serial")
   public MeasuresListPanel(String id) {
     super(id);
@@ -50,6 +59,7 @@ public class MeasuresListPanel extends Panel {
     addMeasuresList();
     addMeasureCounts();
     addRefreshLink();
+    addConfirmDeleteMeasureDialog();
 
   }
 
@@ -62,11 +72,34 @@ public class MeasuresListPanel extends Panel {
   private ListView addMeasuresList() {
     ListView repeater = new ListView("measure", new PropertyModel(this, "measures")) {
 
+      private void deleteMeasure(final Measure measure, AjaxRequestTarget target) {
+        Fragment measureDetailsFragment = new Fragment("content", "measureDetails", MeasuresListPanel.this);
+        addMeasureDetails(measureDetailsFragment, measure);
+        measureDetailsFragment.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
+        confirmationDialog.setContent(measureDetailsFragment);
+        confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+          public void onYesButtonClicked(AjaxRequestTarget target) {
+            activeInstrumentRunService.deleteMeasure(measure);
+            target.addComponent(MeasuresListPanel.this);
+          }
+        });
+        confirmationDialog.show(target);
+      }
+
       @Override
       protected void populateItem(ListItem item) {
-        Measure measure = (Measure) item.getModelObject();
-        item.add(new Label("measureDate", measure.getTime().toString()));
-        item.add(new Label("measureUser", measure.getUser().getFullName()));
+        final Measure measure = (Measure) item.getModelObject();
+
+        addMeasureDetails(item, measure);
+
+        item.add(new AjaxLink("deleteMeasure") {
+
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+            deleteMeasure(measure, target);
+          }
+
+        });
         item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(item.getIndex())), " "));
       }
 
@@ -86,6 +119,19 @@ public class MeasuresListPanel extends Panel {
 
     };
     add(refresh);
+  }
+
+  private void addConfirmDeleteMeasureDialog() {
+    confirmationDialog = new ConfirmationDialog("confirmDeleteMeasureDialog");
+    confirmationDialog.setTitle(new ResourceModel("ConfirmDeleteMeasure"));
+    confirmationDialog.setInitialHeight(140);
+    add(confirmationDialog);
+  }
+
+  private void addMeasureDetails(MarkupContainer component, Measure measure) {
+    component.add(new Label("measureDate", measure.getTime().toString()));
+    component.add(new Label("measureUser", measure.getUser().getFullName()));
+    component.add(new Label("measureMethod", new StringResourceModel(measure.getCaptureMethod().toString(), this, null).getString()));
   }
 
   public List<Measure> getMeasures() {

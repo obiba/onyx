@@ -22,6 +22,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.util.data.Data;
 
 public interface ActiveInstrumentRunService extends IContraindicatable {
@@ -152,4 +153,12 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @param values A map of parameter names to {@link Data} values.
    */
   public void addManuallyCapturedOutputParameterValues(Map<String, Data> values);
+
+  /**
+   * Deletes the selected measure from the current InstrumentRun.
+   * 
+   * @param measure The measure to delete.
+   */
+  public void deleteMeasure(Measure measure);
+
 }

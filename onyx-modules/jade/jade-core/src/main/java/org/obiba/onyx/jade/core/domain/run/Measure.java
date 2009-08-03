@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,6 +23,7 @@ import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 
 /**
  * 
@@ -35,7 +37,7 @@ public class Measure extends AbstractEntity {
   @JoinColumn(name = "instrument_run_id")
   private InstrumentRun instrumentRun;
 
-  @OneToMany(mappedBy = "measure")
+  @OneToMany(mappedBy = "measure", cascade = CascadeType.ALL)
   private List<InstrumentRunValue> instrumentRunValues;
 
   @ManyToOne
@@ -81,6 +83,25 @@ public class Measure extends AbstractEntity {
 
   public void setInstrumentBarcode(String instrumentBarcode) {
     this.instrumentBarcode = instrumentBarcode;
+  }
+
+  /**
+   * Get the capture method used for this measure.
+   * 
+   * @return The capture method.
+   */
+  public InstrumentParameterCaptureMethod getCaptureMethod() {
+    List<InstrumentRunValue> instrumentRunValues = getInstrumentRunValues();
+    for(InstrumentRunValue instrumentRunValue : instrumentRunValues) {
+      switch(instrumentRunValue.getCaptureMethod()) {
+      case MANUAL:
+      case AUTOMATIC:
+        return instrumentRunValue.getCaptureMethod();
+      default:
+        break;
+      }
+    }
+    return null;
   }
 
 }

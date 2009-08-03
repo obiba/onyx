@@ -1,23 +1,46 @@
 <wicket:panel>
-	<table class="entityTable">
-		<thead>
-			<tr>
-				<th colspan="3"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</th>
-				<th><a wicket:id="refresh" href=""><wicket:message key="Refresh"/></a></th>			
-			</tr>		
-			<tr>
-				<th><wicket:message key="Date"/></th>
-				<th><wicket:message key="User"/></th>				
-				<th colspan="2"><wicket:message key="Actions"/></th>			
-			</tr>
-		</thead>
-		<tbody>
-			<tr wicket:id="measure">
-				<td><span wicket:id="measureDate"/></td>
-				<td><span wicket:id="measureUser"/></td>				
-				<td><a href=""><wicket:message key="View"/></a></td>
-				<td><a href=""><wicket:message key="Delete"/></a></td>
-			</tr>
-		</tbody>
-	</table>  
+	<div class="measuresListPanel">
+		<table class="entityTable">
+			<thead>
+				<tr>
+					<th colspan="4"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</th>
+					<th style="text-align:right;"><a wicket:id="refresh" href=""><wicket:message key="Refresh"/></a></th>			
+				</tr>		
+				<tr>
+					<th><wicket:message key="Date"/></th>
+					<th><wicket:message key="Operator"/></th>				
+					<th><wicket:message key="CaptureMethod"/></th>				
+					<th colspan="2"><wicket:message key="Actions"/></th>			
+				</tr>
+			</thead>
+			<tbody>
+				<tr wicket:id="measure">
+					<td><span wicket:id="measureDate"/></td>
+					<td><span wicket:id="measureUser"/></td>				
+					<td><span wicket:id="measureMethod"/></td>												
+					<td><a href=""><wicket:message key="View"/></a></td>
+					<td><a wicket:id="deleteMeasure" href=""><wicket:message key="Delete"/></a></td>
+				</tr>
+			</tbody>
+		</table>  
+		
+		<div wicket:id="confirmDeleteMeasureDialog"/>
+		
+		<wicket:fragment wicket:id="measureDetails">
+			<table>
+				<tr>
+					<th><wicket:message key="Date"/>:</th>
+					<td><div wicket:id="measureDate"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="CaptureMethod"/>:</th>
+					<td><div wicket:id="measureMethod"/></td>
+				</tr>			
+				<tr>
+					<th><wicket:message key="Operator"/>:</th>
+					<td><div wicket:id="measureUser"/></td>
+				</tr>			
+			</table>	
+		</wicket:fragment>
+	</div>
 </wicket:panel>

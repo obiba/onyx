@@ -315,8 +315,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     measure.setInstrumentBarcode(instrumentRun.getInstrument().getBarcode());
     measure.setInstrumentRun(instrumentRun);
 
-    measure = getPersistenceManager().save(measure);
-
     for(Map.Entry<String, Data> entry : repeatableData.entrySet()) {
       InstrumentParameter parameter = getAndCheckInstrumentParameter(entry.getKey());
       InstrumentRunValue runValue = new InstrumentRunValue();
@@ -332,9 +330,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       } else {
         runValue.setCaptureMethod(parameter.getCaptureMethod());
       }
+      measure.getInstrumentRunValues().add(runValue);
 
-      getPersistenceManager().save(runValue);
     }
+    getPersistenceManager().save(measure);
+
   }
 
   public String updateReadOnlyInputParameterRunValue() {
@@ -523,6 +523,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentRunValue outputParameterValue = getOrCreateInstrumentRunValue(parameter);
     outputParameterValue.setData(value);
     update(outputParameterValue);
+  }
+
+  public void deleteMeasure(Measure measure) {
+    getPersistenceManager().delete(measure);
   }
 
 }
