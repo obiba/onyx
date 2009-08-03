@@ -21,6 +21,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -145,6 +146,8 @@ public class InstrumentLaunchPanelTest {
 
     instrumentServiceMock = createMock(InstrumentService.class);
     applicationContextMock.putBean("instrumentService", instrumentServiceMock);
+
+    applicationContextMock.putBean(createMock(UserSessionService.class));
   }
 
   private void initDomainObjects() {

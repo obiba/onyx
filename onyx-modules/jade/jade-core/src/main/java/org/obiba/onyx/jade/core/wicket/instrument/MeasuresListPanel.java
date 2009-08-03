@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -27,12 +29,14 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,29 +55,35 @@ public class MeasuresListPanel extends Panel {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 420;
+  @SpringBean
+  private UserSessionService userSessionService;
+
+  ConfirmationDialog confirmationDialog;
+
+  Dialog measuresDetailsDialog;
 
   private static final int DEFAULT_INITIAL_WIDTH = 400;
 
-  private ConfirmationDialog confirmationDialog;
+  private static final int DEFAULT_INITIAL_HEIGHT = 420;
 
   @SuppressWarnings("serial")
   public MeasuresListPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    final Dialog modal;
-    add(modal = new Dialog("modal"));
-
-    modal.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
-    modal.setInitialWidth(DEFAULT_INITIAL_WIDTH);
-    modal.setOptions(Dialog.Option.CLOSE_OPTION);
-
-    addMeasuresList(modal);
+    addViewMeasureDetailsDialog();
+    addMeasuresList();
     addMeasureCounts();
     addRefreshLink();
     addConfirmDeleteMeasureDialog();
+    addNoMeasureAvailableMessage();
+  }
 
+  private void addViewMeasureDetailsDialog() {
+    add(measuresDetailsDialog = new Dialog("measuresDetailsDialog"));
+    measuresDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
+    measuresDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+    measuresDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
   }
 
   private void addMeasureCounts() {
@@ -82,7 +92,7 @@ public class MeasuresListPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private ListView addMeasuresList(final Dialog modal) {
+  private void addMeasuresList() {
     ListView repeater = new ListView("measure", new PropertyModel(this, "measures")) {
 
       private void deleteMeasure(final Measure measure, AjaxRequestTarget target) {
@@ -97,6 +107,13 @@ public class MeasuresListPanel extends Panel {
           }
         });
         confirmationDialog.show(target);
+      }
+
+      private void viewMeasure(final Measure measure, AjaxRequestTarget target) {
+        InstrumentRunPanel instrumentRunPanel = new InstrumentRunPanel(measuresDetailsDialog.getContentId(), measuresDetailsDialog, measure);
+        instrumentRunPanel.add(new AttributeModifier("class", true, new Model("obiba-content instrument-run-panel-content")));
+        measuresDetailsDialog.setContent(instrumentRunPanel);
+        measuresDetailsDialog.show(target);
       }
 
       @Override
@@ -119,10 +136,7 @@ public class MeasuresListPanel extends Panel {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
-            InstrumentRunPanel instrumentRunPanel = new InstrumentRunPanel(modal.getContentId(), modal, measure);
-            instrumentRunPanel.add(new AttributeModifier("class", true, new Model("obiba-content instrument-run-panel-content")));
-            modal.setContent(instrumentRunPanel);
-            modal.show(target);
+            viewMeasure(measure, target);
           }
 
         });
@@ -130,7 +144,23 @@ public class MeasuresListPanel extends Panel {
 
     };
     add(repeater);
-    return repeater;
+  }
+
+  @SuppressWarnings("serial")
+  private void addNoMeasureAvailableMessage() {
+    MarkupContainer noMeasureAvailable = new MarkupContainer("noMeasureAvailable", new PropertyModel(this, "measures")) {
+      @SuppressWarnings("unchecked")
+      @Override
+      public boolean isVisible() {
+        if(((List<Measure>) getModelObject()).size() == 0) {
+          return true;
+        }
+        return false;
+      }
+
+    };
+    noMeasureAvailable.setOutputMarkupPlaceholderTag(true);
+    add(noMeasureAvailable);
   }
 
   @SuppressWarnings("serial")
@@ -154,9 +184,14 @@ public class MeasuresListPanel extends Panel {
   }
 
   private void addMeasureDetails(MarkupContainer component, Measure measure) {
-    component.add(new Label("measureDate", measure.getTime().toString()));
+
+    DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
+    Date date = measure.getTime();
+    component.add(new Label("measureDate", DateModelUtils.getDateTimeModel(new Model(dateTimeFormat), new Model(date)).getObject().toString()));
+
     component.add(new Label("measureUser", measure.getUser().getFullName()));
     component.add(new Label("measureMethod", new StringResourceModel(measure.getCaptureMethod().toString(), this, null).getString()));
+
   }
 
   public List<Measure> getMeasures() {
