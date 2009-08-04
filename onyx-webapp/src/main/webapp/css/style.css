@@ -1703,16 +1703,18 @@ div.log-comment {
   padding-left:15px !important;
 }
   
-}
 /******************* End Sample Collection *********************************************/
 
-div.measuresListPanel table.entityTable thead td.link {
-  text-align:right;
-  text-decoration:none;  
-}
-
-div.measuresListPanel table.entityTable thead td, div.measuresListPanel table.entityTable thead td a {
+div.measuresListPanel table.entityTable td.count, div.measuresListPanel table.entityTable td.refresh {
   color:#C65F02;
   font-size:11px;
   border-bottom: solid 1px #C65F02;
+}
+
+div.measuresListPanel table.entityTable td.refresh {
+  text-align:right;
+}
+
+div.measuresListPanel table.entityTable td.refresh a {
+  color:#C65F02;
 }
