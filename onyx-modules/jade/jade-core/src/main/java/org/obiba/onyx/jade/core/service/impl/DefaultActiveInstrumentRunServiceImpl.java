@@ -529,4 +529,12 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().delete(measure);
   }
 
+  public void setSkipMeasurementForInstrumentRun(Boolean skipMeasurement, String comment) {
+    InstrumentRun currentRun = getInstrumentRun();
+
+    currentRun.setSkipMeasurement(skipMeasurement);
+    currentRun.setSkipComment(comment);
+    getPersistenceManager().save(currentRun);
+  }
+
 }

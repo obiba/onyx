@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -30,6 +31,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -188,6 +190,15 @@ public abstract class InstrumentLaunchPanel extends Panel {
     });
 
     CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(getModelObject(), "skipMeasurement"));
+    box.add(new AjaxEventBehavior("onchange") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        System.out.println("************************************ " + ((InstrumentRun) InstrumentLaunchPanel.this.getModelObject()).getSkipMeasurement());
+        setCommentEnabled(get("comment"));
+      }
+
+    });
     add(box);
 
     TextArea comment = new TextArea("comment", new PropertyModel(getModelObject(), "skipComment"));
@@ -210,8 +221,17 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
     comment.add(new StringValidator.MaximumLengthValidator(2000));
+    comment.setRequired(true);
+    setCommentEnabled(comment);
     add(comment);
+  }
 
+  private void setCommentEnabled(Component comment) {
+    // if() {
+    // comment.setEnabled(true);
+    // } else {
+    // comment.setEnabled(false);
+    // }
   }
 
   /**

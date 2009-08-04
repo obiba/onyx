@@ -114,13 +114,20 @@ public class InstrumentLaunchStep extends WizardStepPanel {
             }
           }
         } else {
-          // minimum is having the expected count of repeatable measures
+
+          InstrumentRun instrumentRun = (InstrumentRun) ((InstrumentLaunchPanel) get(getContentId())).getModelObject();
+          activeInstrumentRunService.setSkipMeasurementForInstrumentRun(instrumentRun.getSkipMeasurement(), instrumentRun.getSkipComment());
+
           int currentCount = activeInstrumentRunService.getInstrumentRun().getMeasureCount();
-          int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
-          if(currentCount < expectedCount) {
-            completed = false;
-            error(getString("MissingMeasure", new Model(new ValueMap("count=" + (expectedCount - currentCount)))));
-            setNextStep(null);
+
+          if(!activeInstrumentRunService.getInstrumentRun().getSkipMeasurement() || currentCount == 0) {
+            // minimum is having the expected count of repeatable measures
+            int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
+            if(currentCount < expectedCount) {
+              completed = false;
+              error(getString("MissingMeasure", new Model(new ValueMap("count=" + (expectedCount - currentCount)))));
+              setNextStep(null);
+            }
           }
         }
 
