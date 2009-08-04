@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -107,7 +108,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
             } else if(status.equals(Status.SUCCESS)) {
               manualEntryDialog.resetStatus();
               instrumentManualOutputParameterPanel.saveOutputInstrumentRunValues();
-              target.addComponent(measuresList);
+              measuresList.refresh(target);
               return true;
             } else if(status.equals(Status.ERROR)) {
               FeedbackPanel feedbackPanel = new FeedbackPanel("content");
@@ -173,13 +174,36 @@ public abstract class InstrumentLaunchPanel extends Panel {
     instructions.setVisible(manualCaptureRequired);
     add(instructions);
 
-    add(measuresList = new MeasuresListPanel("measuresList"));
-    measuresList.setOutputMarkupId(true);
+    add(measuresList = new MeasuresListPanel("measuresList") {
+
+      @Override
+      public void onRefresh(AjaxRequestTarget target) {
+        // TODO Auto-generated method stub
+
+      }
+
+    });
 
     CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(getModelObject(), "skipMeasurement"));
     add(box);
 
     TextArea comment = new TextArea("comment", new PropertyModel(getModelObject(), "skipComment"));
+    comment.add(new AjaxEventBehavior("onfocus") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        measuresList.disableAutoRefresh();
+      }
+
+    });
+    comment.add(new AjaxEventBehavior("onblur") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        measuresList.enableAutoRefresh();
+      }
+
+    });
     comment.add(new StringValidator.MaximumLengthValidator(2000));
     add(comment);
 

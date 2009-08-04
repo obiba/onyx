@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -28,6 +29,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.run.Measure;
@@ -43,11 +45,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Panel that lists the existing measures of the current InstrumentRun.
  */
-public class MeasuresListPanel extends Panel {
+public abstract class MeasuresListPanel extends Panel {
 
   private static final Logger log = LoggerFactory.getLogger(MeasuresListPanel.class);
 
   private static final long serialVersionUID = 1L;
+
+  private static final int DEFAULT_INITIAL_WIDTH = 400;
+
+  private static final int DEFAULT_INITIAL_HEIGHT = 420;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
@@ -62,9 +68,9 @@ public class MeasuresListPanel extends Panel {
 
   Dialog measuresDetailsDialog;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 400;
+  AbstractAjaxTimerBehavior autoRefreshBehavior;
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 420;
+  private Duration autoRefreshInterval = Duration.seconds(10);
 
   @SuppressWarnings("serial")
   public MeasuresListPanel(String id) {
@@ -77,6 +83,8 @@ public class MeasuresListPanel extends Panel {
     addRefreshLink();
     addConfirmDeleteMeasureDialog();
     addNoMeasureAvailableMessage();
+    addAutoRefreshBehavior();
+
   }
 
   private void addViewMeasureDetailsDialog() {
@@ -103,8 +111,9 @@ public class MeasuresListPanel extends Panel {
         confirmationDialog.setYesButtonCallback(new OnYesCallback() {
           public void onYesButtonClicked(AjaxRequestTarget target) {
             activeInstrumentRunService.deleteMeasure(measure);
-            target.addComponent(MeasuresListPanel.this);
+            refresh(target);
           }
+
         });
         confirmationDialog.show(target);
       }
@@ -143,6 +152,7 @@ public class MeasuresListPanel extends Panel {
       }
 
     };
+
     add(repeater);
   }
 
@@ -165,15 +175,15 @@ public class MeasuresListPanel extends Panel {
 
   @SuppressWarnings("serial")
   private void addRefreshLink() {
-    AjaxLink refresh = new AjaxLink("refresh") {
+    AjaxLink refreshLink = new AjaxLink("refresh") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        target.addComponent(MeasuresListPanel.this);
+        refresh(target);
       }
 
     };
-    add(refresh);
+    add(refreshLink);
   }
 
   private void addConfirmDeleteMeasureDialog() {
@@ -194,6 +204,37 @@ public class MeasuresListPanel extends Panel {
 
   }
 
+  /**
+   * Add a behavior that will refresh the panel at regular time intervals.
+   */
+  @SuppressWarnings("serial")
+  private void addAutoRefreshBehavior() {
+    add(autoRefreshBehavior = new AbstractAjaxTimerBehavior(getAutoRefreshInterval()) {
+
+      @Override
+      protected void onTimer(AjaxRequestTarget target) {
+        refresh(target);
+      }
+
+    });
+  }
+
+  public void enableAutoRefresh() {
+
+  }
+
+  public void disableAutoRefresh() {
+
+  }
+
+  public void refresh(AjaxRequestTarget target) {
+    log.debug("Refreshing MeasureListPanel...");
+    target.addComponent(MeasuresListPanel.this);
+    onRefresh(target);
+  }
+
+  public abstract void onRefresh(AjaxRequestTarget target);
+
   public List<Measure> getMeasures() {
     return activeInstrumentRunService.getInstrumentRun().getMeasures();
   }
@@ -208,6 +249,14 @@ public class MeasuresListPanel extends Panel {
 
   private String getOddEvenCssClass(int row) {
     return row % 2 == 1 ? "odd" : "even";
+  }
+
+  public Duration getAutoRefreshInterval() {
+    return autoRefreshInterval;
+  }
+
+  public void setAutoRefreshInterval(Duration autoRefreshInterval) {
+    this.autoRefreshInterval = autoRefreshInterval;
   }
 
 }
