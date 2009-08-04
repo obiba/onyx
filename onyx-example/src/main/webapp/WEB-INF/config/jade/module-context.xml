@@ -23,5 +23,22 @@
       </bean>
     </property>
   </bean>
+  
+  <bean id="participantReport" class="org.obiba.onyx.print.impl.PdfTemplateReport" scope="session">
+    <property name="name" value="${org.obiba.onyx.jade.report.basename}" />
+    <property name="label">
+      <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+        <constructor-arg value="ParticipantReportLabel" />
+      </bean>
+    </property>
+    <property name="reportTemplateLoader">
+      <bean class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
+        <property name="resourcePath" value="${org.obiba.onyx.jade.resources.path}" />
+        <property name="resourceName" value="${org.obiba.onyx.jade.report.basename}" />
+        <property name="resourceExtension" value=".pdf" />
+      </bean> 
+    </property>    
+    <property name="fieldToVariableMap" value="${org.obiba.onyx.jade.report.fieldToVariable}" />   
+  </bean>
 
 </beans>
