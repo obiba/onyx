@@ -20,7 +20,6 @@
     <module>marble</module>
     <module>jade</module>
     <module>quartz</module>
-    <module>mica</module>
     <module>ruby</module>
   </modules>
 
