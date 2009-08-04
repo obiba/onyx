@@ -39,6 +39,8 @@ import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,8 +180,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
       @Override
       public void onRefresh(AjaxRequestTarget target) {
-        // TODO Auto-generated method stub
-
+        WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
+        WizardStepPanel step = (WizardStepPanel) form.get("step");
+        step.handleWizardState(form, target);
       }
 
     });
@@ -192,6 +195,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
+        log.debug("Disable auto refresh");
         measuresList.disableAutoRefresh();
       }
 
@@ -200,6 +204,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
+        log.debug("Enabled auto refresh");
         measuresList.enableAutoRefresh();
       }
 

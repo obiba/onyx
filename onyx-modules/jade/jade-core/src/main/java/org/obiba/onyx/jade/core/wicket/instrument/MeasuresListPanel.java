@@ -220,11 +220,11 @@ public abstract class MeasuresListPanel extends Panel {
   }
 
   public void enableAutoRefresh() {
-
+    // To be implemented
   }
 
   public void disableAutoRefresh() {
-
+    // To be implemented
   }
 
   public void refresh(AjaxRequestTarget target) {
