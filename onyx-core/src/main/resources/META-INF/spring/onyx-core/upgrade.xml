@@ -26,13 +26,14 @@
        </bean>
      </property>
      <property name="upgradeSteps">
-       <list>
-         <ref bean="upgrade-to-1.3.0" />
-         <ref bean="ruby-schemaUpgrade-1.4.0" />
-         <ref bean="ruby-dataUpgrade-1.4.0" />
-         <ref bean="jade-dataUpgrade-1.4.0" />
-         <ref bean="schemaUpgrade-1.4.0" />
-       </list>
+        <list>
+          <ref bean="upgrade-to-1.3.0" />
+          <ref bean="ruby-schemaUpgrade-1.4.0" />
+          <ref bean="ruby-dataUpgrade-1.4.0" />
+          <ref bean="jade-dataUpgrade-1.4.0" />
+          <ref bean="schemaUpgrade-1.4.0" />
+          <ref bean="mica-schemaUpgrade-1.5.0" />
+        </list>
      </property>
      <property name="stepListeners">
         <list>
@@ -76,5 +77,12 @@
     <property name="description" value="Add uniqueness constraints to Onyx 1.4.0 schema."/>
     <property name="appliesTo" value="1.4.0" />     
   </bean>
+
+  <bean id="mica-schemaUpgrade-1.5.0" class="org.obiba.onyx.jade.runtime.upgrade.SchemaUpgrade_1_5_0">
+    <property name="description" value="Mica Schema Upgrade 1.5.0"/>
+    <property name="appliesTo" value="1.5.0" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
   
 </beans>
