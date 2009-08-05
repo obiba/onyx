@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -19,6 +20,7 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
@@ -170,7 +172,6 @@ public abstract class InstrumentLaunchPanel extends Panel {
             return map;
           }
         })));
-
       }
     }
 
@@ -189,49 +190,68 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
-    CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(getModelObject(), "skipMeasurement"));
-    box.add(new AjaxEventBehavior("onchange") {
+    SkipMeasureFragment skipMeasure = new SkipMeasureFragment("skipMeasure");
+    skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
+    add(skipMeasure);
 
-      @Override
-      protected void onEvent(AjaxRequestTarget target) {
-        System.out.println("************************************ " + ((InstrumentRun) InstrumentLaunchPanel.this.getModelObject()).getSkipMeasurement());
-        setCommentEnabled(get("comment"));
-      }
-
-    });
-    add(box);
-
-    TextArea comment = new TextArea("comment", new PropertyModel(getModelObject(), "skipComment"));
-    comment.add(new AjaxEventBehavior("onfocus") {
-
-      @Override
-      protected void onEvent(AjaxRequestTarget target) {
-        log.debug("Disable auto refresh");
-        measuresList.disableAutoRefresh();
-      }
-
-    });
-    comment.add(new AjaxEventBehavior("onblur") {
-
-      @Override
-      protected void onEvent(AjaxRequestTarget target) {
-        log.debug("Enabled auto refresh");
-        measuresList.enableAutoRefresh();
-      }
-
-    });
-    comment.add(new StringValidator.MaximumLengthValidator(2000));
-    comment.setRequired(true);
-    setCommentEnabled(comment);
-    add(comment);
   }
 
   private void setCommentEnabled(Component comment) {
-    // if() {
-    // comment.setEnabled(true);
-    // } else {
-    // comment.setEnabled(false);
-    // }
+    InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getModelObject();
+    if(currentRun != null && currentRun.getSkipMeasurement() != null && currentRun.getSkipMeasurement() == true) {
+      comment.setEnabled(true);
+    } else {
+      comment.setEnabled(false);
+    }
+  }
+
+  private class SkipMeasureFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    public SkipMeasureFragment(String id) {
+      super(id, "skipMeasureFragment", InstrumentLaunchPanel.this);
+      Object modelObject = InstrumentLaunchPanel.this.getModelObject();
+
+      CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(modelObject, "skipMeasurement"));
+      box.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onUpdate(AjaxRequestTarget target) {
+          Component component = get("comment");
+          setCommentEnabled(component);
+          target.addComponent(component);
+        }
+
+      });
+      add(box);
+
+      TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));
+      comment.add(new AjaxEventBehavior("onfocus") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          log.debug("Disable auto refresh");
+          measuresList.disableAutoRefresh();
+        }
+
+      });
+      comment.add(new AjaxEventBehavior("onblur") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          log.debug("Enabled auto refresh");
+          measuresList.enableAutoRefresh();
+        }
+
+      });
+      comment.add(new StringValidator.MaximumLengthValidator(2000));
+      comment.setRequired(true);
+      setCommentEnabled(comment);
+      add(comment);
+    }
   }
 
   /**
