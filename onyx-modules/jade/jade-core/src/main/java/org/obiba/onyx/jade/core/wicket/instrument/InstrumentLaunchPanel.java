@@ -188,6 +188,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
       }
 
     });
+    measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
 
     SkipMeasureFragment skipMeasure = new SkipMeasureFragment("skipMeasure");
     skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
