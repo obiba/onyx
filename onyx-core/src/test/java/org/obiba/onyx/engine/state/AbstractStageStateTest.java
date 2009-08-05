@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 
-public class AbstractStageStageTest {
+public class AbstractStageStateTest {
 
   private Stage stage;
 
