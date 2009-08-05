@@ -44,12 +44,14 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
     List<Stage> moduleStage = module.getStages();
 
     for(Stage oneStage : moduleStage) {
-      IStageExecution stageExecution = activeInterviewService.getStageExecution(oneStage.getName());
+      if(!stage.equals(oneStage)) {
+        IStageExecution stageExecution = activeInterviewService.getStageExecution(oneStage.getName());
 
-      if(!stageExecution.isCompleted()) {
-        // At least one stage is not complete, return null since
-        log.debug("Dependendant module {} not complete due to stage {}", moduleName, oneStage.getName());
-        return null;
+        if(!stageExecution.isCompleted()) {
+          // At least one stage is not complete, return null since
+          log.debug("Dependendant module {} not complete due to stage {}", moduleName, oneStage.getName());
+          return null;
+        }
       }
     }
 
@@ -69,8 +71,10 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
 
     for(Stage oneStage : moduleStage) {
 
-      if(oneStage.getName().equals(stageName)) {
-        return true;
+      if(!stage.equals(oneStage)) {
+        if(oneStage.getName().equals(stageName)) {
+          return true;
+        }
       }
     }
 
