@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -35,6 +34,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
+import org.obiba.onyx.wicket.behavior.AbstractAjaxTimerBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
@@ -219,12 +219,12 @@ public abstract class MeasuresListPanel extends Panel {
     });
   }
 
-  public void enableAutoRefresh() {
-    // To be implemented
+  public void enableAutoRefresh(AjaxRequestTarget target) {
+    autoRefreshBehavior.start(target);
   }
 
   public void disableAutoRefresh() {
-    // To be implemented
+    autoRefreshBehavior.stop();
   }
 
   public void refresh(AjaxRequestTarget target) {

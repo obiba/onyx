@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -196,12 +195,20 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   }
 
-  private void setCommentEnabled(Component comment) {
+  private void setCommentEnabled(Component comment, AjaxRequestTarget target) {
     InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getModelObject();
     if(currentRun != null && currentRun.getSkipMeasurement() != null && currentRun.getSkipMeasurement() == true) {
       comment.setEnabled(true);
+
+      // Disable measures list autorefresh when "skip remaining measure" is selected.
+      measuresList.disableAutoRefresh();
     } else {
       comment.setEnabled(false);
+
+      // Reactivate measures list autorefresh when "skip remaining measure" is deselected.
+      if(target != null) {
+        measuresList.enableAutoRefresh(target);
+      }
     }
   }
 
@@ -219,7 +226,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
           Component component = get("comment");
-          setCommentEnabled(component);
+          setCommentEnabled(component, target);
           target.addComponent(component);
         }
 
@@ -227,30 +234,11 @@ public abstract class InstrumentLaunchPanel extends Panel {
       add(box);
 
       TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));
-      comment.add(new AjaxEventBehavior("onfocus") {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void onEvent(AjaxRequestTarget target) {
-          log.debug("Disable auto refresh");
-          measuresList.disableAutoRefresh();
-        }
-
-      });
-      comment.add(new AjaxEventBehavior("onblur") {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void onEvent(AjaxRequestTarget target) {
-          log.debug("Enabled auto refresh");
-          measuresList.enableAutoRefresh();
-        }
-
-      });
       comment.add(new StringValidator.MaximumLengthValidator(2000));
       comment.setRequired(true);
-      setCommentEnabled(comment);
+      setCommentEnabled(comment, null);
       add(comment);
+      comment.setOutputMarkupId(true);
     }
   }
 
