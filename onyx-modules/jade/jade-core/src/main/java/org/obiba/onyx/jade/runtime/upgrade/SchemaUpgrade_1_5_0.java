@@ -1,19 +1,27 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.jade.runtime.upgrade;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.obiba.runtime.Version;
 import org.obiba.runtime.upgrade.AbstractUpgradeStep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.DatabaseMetaDataCallback;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.MetaDataAccessException;
 
 /**
  * Drops the conclusion table previously used by the Mica module. This upgrade step exists in the Jade module since the
@@ -21,16 +29,54 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
 
+  private static final Logger log = LoggerFactory.getLogger(SchemaUpgrade_1_5_0.class);
+
   private static final String DROP_CONCLUSION_TABLE = "DROP TABLE IF EXISTS conclusion;";
+
+  private static final String INSTRUMENT_RUN_TABLE = "instrument_run";
+
+  private static final String ADD_SKIP_MEASUREMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_masurement bit(1) DEFAULT NULL;";
+
+  private static final String ADD_SKIP_COMMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_comment varchar(2000) DEFAULT NULL;";
 
   private JdbcTemplate jdbcTemplate;
 
   public void execute(Version currentVersion) {
     jdbcTemplate.execute(DROP_CONCLUSION_TABLE);
+
+    if(isTableExists(INSTRUMENT_RUN_TABLE)) {
+      jdbcTemplate.execute(ADD_SKIP_MEASUREMENT_COLUMN);
+      jdbcTemplate.execute(ADD_SKIP_COMMENT_COLUMN);
+    } else {
+      log.info("skip_masurement and skip_comment columns not added (table instrument_run does not exist)");
+    }
   }
 
   public void setDataSource(DataSource dataSource) {
     jdbcTemplate = new JdbcTemplate(dataSource);
+  }
+
+  /**
+   * Indicates whether the specified table exists.
+   * 
+   * @param tableName the table name
+   * @return <code>true</code> if the table exists
+   */
+
+  private boolean isTableExists(final String tableName) {
+    boolean tablePresent = false;
+
+    try {
+      tablePresent = (Boolean) JdbcUtils.extractDatabaseMetaData(jdbcTemplate.getDataSource(), new DatabaseMetaDataCallback() {
+        public Object processMetaData(DatabaseMetaData dbmd) throws SQLException, MetaDataAccessException {
+          return dbmd.getTables(null, null, tableName, null).next();
+        }
+      });
+    } catch(MetaDataAccessException ex) {
+      throw new RuntimeException(ex);
+    }
+
+    return tablePresent;
   }
 
 }
