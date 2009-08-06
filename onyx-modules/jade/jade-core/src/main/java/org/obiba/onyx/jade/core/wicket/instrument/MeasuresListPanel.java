@@ -103,9 +103,9 @@ public abstract class MeasuresListPanel extends Panel {
   private void addMeasuresList() {
     ListView repeater = new ListView("measure", new PropertyModel(this, "measures")) {
 
-      private void deleteMeasure(final Measure measure, AjaxRequestTarget target) {
+      private void deleteMeasure(final Measure measure, AjaxRequestTarget target, int measureNo) {
         Fragment measureDetailsFragment = new Fragment("content", "measureDetails", MeasuresListPanel.this);
-        addMeasureDetails(measureDetailsFragment, measure);
+        addMeasureDetails(measureDetailsFragment, measure, measureNo);
         measureDetailsFragment.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
         confirmationDialog.setContent(measureDetailsFragment);
         confirmationDialog.setYesButtonCallback(new OnYesCallback() {
@@ -126,20 +126,21 @@ public abstract class MeasuresListPanel extends Panel {
       }
 
       @Override
-      protected void populateItem(ListItem item) {
+      protected void populateItem(final ListItem item) {
         final Measure measure = (Measure) item.getModelObject();
 
-        addMeasureDetails(item, measure);
+        final int measureNo = item.getIndex() + 1;
+        addMeasureDetails(item, measure, measureNo);
 
         item.add(new AjaxLink("deleteMeasure") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
-            deleteMeasure(measure, target);
+            deleteMeasure(measure, target, measureNo);
           }
 
         });
-        item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(item.getIndex())), " "));
+        item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(measureNo - 1)), " "));
 
         item.add(new AjaxLink("view") {
 
@@ -193,7 +194,9 @@ public abstract class MeasuresListPanel extends Panel {
     add(confirmationDialog);
   }
 
-  private void addMeasureDetails(MarkupContainer component, Measure measure) {
+  private void addMeasureDetails(MarkupContainer component, Measure measure, int measureNo) {
+
+    component.add(new Label("measureNo", String.valueOf(measureNo)));
 
     DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
     Date date = measure.getTime();
@@ -241,6 +244,10 @@ public abstract class MeasuresListPanel extends Panel {
 
   public int getRemainingMeasureCount() {
     return getExpectedMeasureCount() - activeInstrumentRunService.getInstrumentRun().getMeasureCount();
+  }
+
+  public int getMeasureCount() {
+    return activeInstrumentRunService.getInstrumentRun().getMeasureCount();
   }
 
   public int getExpectedMeasureCount() {

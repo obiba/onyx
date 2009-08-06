@@ -3,10 +3,11 @@
 		<table class="entityTable">
 			<thead>
 				<tr>
-					<td class="count" colspan="4"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</td>
+					<td class="count" colspan="5"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</td>
 					<td class="refresh"><a wicket:id="refresh" href=""><wicket:message key="Refresh"/></a></td>			
 				</tr>		
 				<tr>
+					<th><wicket:message key="MeasureNo"/></th>				
 					<th><wicket:message key="Date"/></th>
 					<th><wicket:message key="Operator"/></th>				
 					<th><wicket:message key="CaptureMethod"/></th>				
@@ -15,6 +16,7 @@
 			</thead>
 			<tbody>
 				<tr wicket:id="measure">
+					<td><span wicket:id="measureNo"/></td>
 					<td><span wicket:id="measureDate"/></td>
 					<td><span wicket:id="measureUser"/></td>				
 					<td><span wicket:id="measureMethod"/></td>												
@@ -32,6 +34,10 @@
 		
 		<wicket:fragment wicket:id="measureDetails">
 			<table>
+				<tr>
+					<th><wicket:message key="MeasureNo"/>:</th>
+					<td><div wicket:id="measureNo"/></td>
+				</tr>			
 				<tr>
 					<th><wicket:message key="Date"/>:</th>
 					<td><div wicket:id="measureDate"/></td>
