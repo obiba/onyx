@@ -43,6 +43,7 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
@@ -125,7 +126,7 @@ public class InstrumentWizardForm extends WizardForm {
 
     createModalAdministrationPanel();
 
-    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
+    final IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {

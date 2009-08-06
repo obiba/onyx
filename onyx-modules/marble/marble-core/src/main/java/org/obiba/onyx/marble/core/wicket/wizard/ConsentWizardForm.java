@@ -32,6 +32,7 @@ import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
@@ -82,7 +83,7 @@ public class ConsentWizardForm extends WizardForm {
 
     createModalAdministrationPanel();
 
-    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
+    final IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {

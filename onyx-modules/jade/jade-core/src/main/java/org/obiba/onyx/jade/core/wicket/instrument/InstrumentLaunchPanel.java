@@ -13,6 +13,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -37,6 +38,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
@@ -84,7 +86,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase);
 
-    add(new Link("start") {
+    IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
+
+    Link startLink = new Link("start") {
 
       @Override
       public void onClick() {
@@ -92,14 +96,19 @@ public abstract class InstrumentLaunchPanel extends Panel {
         InstrumentLaunchPanel.this.onInstrumentLaunch();
       }
 
-    });
+    };
+    add(startLink);
+    startLink.add(buttonDisableBehavior);
+    startLink.setOutputMarkupId(true);
+    setComponentEnabledOnSkip(startLink, false, null);
 
     final InstrumentManualOutputParameterPanel instrumentManualOutputParameterPanel = new InstrumentManualOutputParameterPanel("content", 340);
     final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), instrumentManualOutputParameterPanel).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
     add(manualEntryDialog);
     WebMarkupContainer manualButtonBlock = new WebMarkupContainer("manualButtonBlock");
     add(manualButtonBlock);
-    manualButtonBlock.add(new AjaxLink("manualButton") {
+
+    AjaxLink manualButtonLink = new AjaxLink("manualButton") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -129,8 +138,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
         InstrumentLaunchPanel.this.onInstrumentLaunch();
       }
 
-    });
+    };
+
+    manualButtonBlock.add(manualButtonLink);
     manualButtonBlock.setVisible(instrumentType.isManualCaptureAllowed());
+    manualButtonLink.setOutputMarkupId(true);
+    manualButtonLink.add(buttonDisableBehavior);
+    setComponentEnabledOnSkip(manualButtonLink, false, null);
 
     String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
     if(errMessage != null) error(errMessage);
@@ -196,21 +210,22 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   }
 
-  private void setCommentEnabled(Component comment, AjaxRequestTarget target) {
+  private void setComponentEnabledOnSkip(Component component, boolean enabled, AjaxRequestTarget target) {
     InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getModelObject();
     if(currentRun != null && currentRun.getSkipMeasurement() != null && currentRun.getSkipMeasurement() == true) {
-      comment.setEnabled(true);
+      component.setEnabled(enabled == true);
 
       // Disable measures list autorefresh when "skip remaining measure" is selected.
       measuresList.disableAutoRefresh();
     } else {
-      comment.setEnabled(false);
+      component.setEnabled(enabled == false);
 
       // Reactivate measures list autorefresh when "skip remaining measure" is deselected.
       if(target != null) {
         measuresList.enableAutoRefresh(target);
       }
     }
+    if(target != null) target.addComponent(component);
   }
 
   private class SkipMeasureFragment extends Fragment {
@@ -226,9 +241,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
-          Component component = get("comment");
-          setCommentEnabled(component, target);
-          target.addComponent(component);
+          setComponentEnabledOnSkip(get("comment"), true, target);
+          setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("start"), false, target);
+          setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton"), false, target);
         }
 
       });
@@ -237,7 +252,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
       TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));
       comment.add(new StringValidator.MaximumLengthValidator(2000));
       comment.setRequired(true);
-      setCommentEnabled(comment, null);
+      setComponentEnabledOnSkip(comment, true, null);
       add(comment);
       comment.setOutputMarkupId(true);
     }

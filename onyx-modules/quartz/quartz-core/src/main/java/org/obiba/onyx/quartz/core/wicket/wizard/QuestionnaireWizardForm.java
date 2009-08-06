@@ -33,9 +33,10 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
@@ -113,7 +114,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     createModalAdministrationPanel();
 
-    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
+    final IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {

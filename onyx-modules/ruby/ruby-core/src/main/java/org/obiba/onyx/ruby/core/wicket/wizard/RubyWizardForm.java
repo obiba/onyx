@@ -29,6 +29,7 @@ import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
@@ -100,7 +101,7 @@ public class RubyWizardForm extends WizardForm {
 
     createModalAdministrationPanel();
 
-    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
+    final IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {
