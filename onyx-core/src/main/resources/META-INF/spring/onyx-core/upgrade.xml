@@ -32,7 +32,7 @@
           <ref bean="ruby-dataUpgrade-1.4.0" />
           <ref bean="jade-dataUpgrade-1.4.0" />
           <ref bean="schemaUpgrade-1.4.0" />
-          <ref bean="mica-schemaUpgrade-1.5.0" />
+          <ref bean="jade-schemaUpgrade-1.5.0" />
         </list>
      </property>
      <property name="stepListeners">
@@ -78,8 +78,8 @@
     <property name="appliesTo" value="1.4.0" />     
   </bean>
 
-  <bean id="mica-schemaUpgrade-1.5.0" class="org.obiba.onyx.jade.runtime.upgrade.SchemaUpgrade_1_5_0">
-    <property name="description" value="Mica Schema Upgrade 1.5.0"/>
+  <bean id="jade-schemaUpgrade-1.5.0" class="org.obiba.onyx.jade.runtime.upgrade.SchemaUpgrade_1_5_0">
+    <property name="description" value="Jade and Mica Schema Upgrade 1.5.0"/>
     <property name="appliesTo" value="1.5.0" />    
     <property name="dataSource" ref="dataSource" />
   </bean>

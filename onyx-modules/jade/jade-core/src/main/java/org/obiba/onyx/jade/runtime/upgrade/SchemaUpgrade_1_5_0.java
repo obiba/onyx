@@ -31,6 +31,10 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
 
   private static final Logger log = LoggerFactory.getLogger(SchemaUpgrade_1_5_0.class);
 
+  private static final String CONCLUSION_TABLE = "conclusion";
+
+  private static final String BACKUP_CONCLUSION_TABLE = "CREATE TABLE IF NOT EXISTS TMP_CONCLUSION_BACKUP SELECT * from conclusion;";
+
   private static final String DROP_CONCLUSION_TABLE = "DROP TABLE IF EXISTS conclusion;";
 
   private static final String INSTRUMENT_RUN_TABLE = "instrument_run";
@@ -42,7 +46,14 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
   private JdbcTemplate jdbcTemplate;
 
   public void execute(Version currentVersion) {
-    jdbcTemplate.execute(DROP_CONCLUSION_TABLE);
+    if(isTableExists(CONCLUSION_TABLE)) {
+      jdbcTemplate.execute(BACKUP_CONCLUSION_TABLE);
+      log.info("Backed up contents of [conclusion] table to [TMP_CONCLUSION_BACKUP] table.");
+      jdbcTemplate.execute(DROP_CONCLUSION_TABLE);
+      log.info("Removed [conclusion] table. The [conclusion] table is no longer required, since the Mica module has been removed.");
+    } else {
+      log.info("Skipping the removal of the [conclusion] table. The [conclusion] table does not exist.");
+    }
 
     if(isTableExists(INSTRUMENT_RUN_TABLE)) {
       jdbcTemplate.execute(ADD_SKIP_MEASUREMENT_COLUMN);
