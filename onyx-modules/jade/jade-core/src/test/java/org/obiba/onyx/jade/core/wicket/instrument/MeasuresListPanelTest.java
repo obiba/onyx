@@ -15,6 +15,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -38,7 +39,9 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 
-public class MeasuresListPanelTest {
+public class MeasuresListPanelTest implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private ExtendedApplicationContextMock applicationContextMock;
 
@@ -50,13 +53,13 @@ public class MeasuresListPanelTest {
 
   private WicketTester tester;
 
-  InstrumentType instrumentType;
+  private transient InstrumentType instrumentType;
 
-  InstrumentRun instrumentRun;
+  private InstrumentRun instrumentRun;
 
-  Measure measure;
+  private Measure measure;
 
-  transient TestPanelSource testPanel;
+  private transient TestPanelSource testPanel;
 
   @Before
   public void setUp() throws Exception {
@@ -98,6 +101,9 @@ public class MeasuresListPanelTest {
     instrumentType = new InstrumentType("test", "test");
     instrumentType.setExpectedMeasureCount(new FixedDataSource(DataBuilder.buildInteger(3)));
     measure = new Measure() {
+
+      private static final long serialVersionUID = 1L;
+
       @Override
       public InstrumentParameterCaptureMethod getCaptureMethod() {
         return InstrumentParameterCaptureMethod.AUTOMATIC;
@@ -148,12 +154,12 @@ public class MeasuresListPanelTest {
     tester.executeAjaxEvent("panel:measure:0:deleteMeasure", "onclick");
     tester.executeAjaxEvent("panel:confirmDeleteMeasureDialog:content:form:yes", "onclick");
 
-    // TODO This test does not work. YesCallback of confirmation dialog is not getting called for some reason.
-    // assertTrue(measuresListPanel.getMeasureCount() == 2);
-
     verify(activeInstrumentRunServiceMock);
     verify(userSessionServiceMock);
     verify(activeInterviewServiceMock);
 
+    // This test does not work. YesCallback of confirmation dialog is not getting called for some reason.
+    // It seems wicket tester never execute the callback when test is mocking an onclick action
+    // assertTrue(measuresListPanel.getMeasureCount() == 2);
   }
 }

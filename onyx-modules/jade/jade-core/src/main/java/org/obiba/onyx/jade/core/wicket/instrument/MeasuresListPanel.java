@@ -64,11 +64,11 @@ public abstract class MeasuresListPanel extends Panel {
   @SpringBean
   private UserSessionService userSessionService;
 
-  ConfirmationDialog confirmationDialog;
+  private ConfirmationDialog confirmationDialog;
 
-  Dialog measuresDetailsDialog;
+  private Dialog measuresDetailsDialog;
 
-  AbstractAjaxTimerBehavior autoRefreshBehavior;
+  private AbstractAjaxTimerBehavior autoRefreshBehavior;
 
   private Duration autoRefreshInterval = Duration.seconds(10);
 
@@ -109,7 +109,9 @@ public abstract class MeasuresListPanel extends Panel {
         measureDetailsFragment.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
         confirmationDialog.setContent(measureDetailsFragment);
         confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
           public void onYesButtonClicked(AjaxRequestTarget target) {
+            System.out.println("******************** IN YES CALLBACK");
             activeInstrumentRunService.deleteMeasure(measure);
             refresh(target);
           }
