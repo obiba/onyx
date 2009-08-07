@@ -72,6 +72,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
       boolean finalStageFound = false;
       for(Module module : modules.values()) {
 
+        // check there is one and only one conclusion stage defined
         for(Stage stage : module.getStages()) {
           if(stage.isInterviewConclusion()) {
             if(!finalStageFound) {
