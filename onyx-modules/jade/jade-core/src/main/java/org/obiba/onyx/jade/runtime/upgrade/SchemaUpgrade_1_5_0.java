@@ -34,11 +34,7 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
 
   private static final String INSTRUMENT_RUN_TABLE = "instrument_run";
 
-  private static final String SKIP_MEASUREMENT_COLUMN = "skip_measurement";
-
   private static final String SKIP_COMMENT_COLUMN = "skip_comment";
-
-  private static final String ADD_SKIP_MEASUREMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_measurement bit(1) DEFAULT NULL;";
 
   private static final String ADD_SKIP_COMMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_comment varchar(2000) DEFAULT NULL;";
 
@@ -57,7 +53,6 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
     }
 
     if(databaseChecker.isTableExists(INSTRUMENT_RUN_TABLE)) {
-      if(!databaseChecker.hasColumn(INSTRUMENT_RUN_TABLE, SKIP_MEASUREMENT_COLUMN)) jdbcTemplate.execute(ADD_SKIP_MEASUREMENT_COLUMN);
       if(!databaseChecker.hasColumn(INSTRUMENT_RUN_TABLE, SKIP_COMMENT_COLUMN)) jdbcTemplate.execute(ADD_SKIP_COMMENT_COLUMN);
     } else {
       log.info("skip_measurement and skip_comment columns not added (table instrument_run does not exist)");

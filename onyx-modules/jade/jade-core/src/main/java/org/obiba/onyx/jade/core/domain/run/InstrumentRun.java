@@ -76,8 +76,6 @@ public class InstrumentRun extends AbstractEntity {
   @Column(length = 2000)
   private String otherContraindication;
 
-  private Boolean skipMeasurement;
-
   @Column(length = 2000)
   private String skipComment;
 
@@ -197,14 +195,6 @@ public class InstrumentRun extends AbstractEntity {
       return true;
     }
     return false;
-  }
-
-  public Boolean getSkipMeasurement() {
-    return skipMeasurement;
-  }
-
-  public void setSkipMeasurement(Boolean skipMeasurement) {
-    this.skipMeasurement = skipMeasurement;
   }
 
   public String getSkipComment() {

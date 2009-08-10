@@ -529,12 +529,17 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().delete(measure);
   }
 
-  public void setSkipMeasurementForInstrumentRun(Boolean skipMeasurement, String comment) {
-    InstrumentRun currentRun = getInstrumentRun();
+  public void setSkipMeasurementForInstrumentRun(String comment) {
+    if(comment == null) throw new IllegalArgumentException("Cannot add a null comment on the instrumentRun");
 
-    currentRun.setSkipMeasurement(skipMeasurement);
+    InstrumentRun currentRun = getInstrumentRun();
     currentRun.setSkipComment(comment);
     getPersistenceManager().save(currentRun);
   }
 
+  public void removeSkipMeasurementForInstrumentRun() {
+    InstrumentRun currentRun = getInstrumentRun();
+    currentRun.setSkipComment(null);
+    getPersistenceManager().save(currentRun);
+  }
 }

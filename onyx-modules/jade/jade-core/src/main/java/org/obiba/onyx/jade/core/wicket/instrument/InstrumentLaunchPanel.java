@@ -72,10 +72,14 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   private MeasuresListPanel measuresList;
 
+  private boolean skipMeasurement = false;
+
   @SuppressWarnings("serial")
   public InstrumentLaunchPanel(String id) {
     super(id);
-    setModel(new Model(activeInstrumentRunService.getInstrumentRun()));
+    InstrumentRun currentRun = activeInstrumentRunService.getInstrumentRun();
+    setModel(new Model(currentRun));
+    setSkipMeasurement(currentRun.getSkipComment() != null);
     setOutputMarkupId(true);
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
@@ -212,16 +216,16 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   private void setComponentEnabledOnSkip(Component component, boolean enabled, AjaxRequestTarget target) {
     InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getModelObject();
-    if(currentRun != null && currentRun.getSkipMeasurement() != null && currentRun.getSkipMeasurement() == true) {
+    if(currentRun != null && getSkipMeasurement() == true) {
       component.setEnabled(enabled == true);
 
       // Disable measures list autorefresh when "skip remaining measure" is selected.
-      measuresList.disableAutoRefresh();
+      if(measuresList != null) measuresList.disableAutoRefresh();
     } else {
       component.setEnabled(enabled == false);
 
       // Reactivate measures list autorefresh when "skip remaining measure" is deselected.
-      if(target != null) {
+      if(target != null && measuresList != null) {
         measuresList.enableAutoRefresh(target);
       }
     }
@@ -235,7 +239,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
       super(id, "skipMeasureFragment", InstrumentLaunchPanel.this);
       Object modelObject = InstrumentLaunchPanel.this.getModelObject();
 
-      CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(modelObject, "skipMeasurement"));
+      CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(InstrumentLaunchPanel.this, "skipMeasurement"));
       box.add(new AjaxFormComponentUpdatingBehavior("onchange") {
         private static final long serialVersionUID = 1L;
 
@@ -262,5 +266,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
    * Called when instrument launcher is clicked.
    */
   public abstract void onInstrumentLaunch();
+
+  public boolean getSkipMeasurement() {
+    return skipMeasurement;
+  }
+
+  public void setSkipMeasurement(boolean skipMeasurement) {
+    this.skipMeasurement = skipMeasurement;
+  }
 
 }

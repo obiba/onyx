@@ -162,11 +162,15 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public void deleteMeasure(Measure measure);
 
   /**
-   * Updates the skipMeasurement value and the comment associated for current instrumentRun
+   * Updates the skip comment for current instrumentRun
    * 
-   * @param skipMeasurement Boolean value
    * @param comment
    */
-  public void setSkipMeasurementForInstrumentRun(Boolean skipMeasurement, String comment);
+  public void setSkipMeasurementForInstrumentRun(String comment);
+
+  /**
+   * Removes the skip comment for current instrumentRun
+   */
+  public void removeSkipMeasurementForInstrumentRun();
 
 }
