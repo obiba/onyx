@@ -79,7 +79,15 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
   }
 
   public ActionDefinition getActionDefinition(String code) {
-    return this.actionDefinitionCache.get(code);
+    ActionDefinition actionDefinition;
+
+    while(code.lastIndexOf(".") > code.indexOf(".")) {
+      actionDefinition = this.actionDefinitionCache.get(code.toLowerCase());
+      if(actionDefinition != null) return actionDefinition;
+      code = code.substring(0, code.lastIndexOf("."));
+    }
+
+    return null;
   }
 
   public void afterPropertiesSet() throws Exception {
