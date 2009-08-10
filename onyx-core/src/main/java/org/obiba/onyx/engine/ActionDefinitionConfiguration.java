@@ -78,6 +78,10 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
     return null;
   }
 
+  public ActionDefinition getActionDefinition(String code) {
+    return this.actionDefinitionCache.get(code);
+  }
+
   public void afterPropertiesSet() throws Exception {
     findDefinitions();
   }

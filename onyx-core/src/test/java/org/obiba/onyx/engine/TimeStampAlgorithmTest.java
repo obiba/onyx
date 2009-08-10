@@ -155,7 +155,7 @@ public class TimeStampAlgorithmTest {
   }
 
   private Action constructAction(ActionType actionType, Date dateTime) {
-    Action action = new Action(actionType);
+    Action action = new Action(actionType, null);
     action.setDateTime(dateTime);
     return action;
   }

@@ -57,16 +57,19 @@ public class Action extends AbstractEntity {
 
   private String eventReason;
 
+  private String actionDefinitionCode;
+
   public Action() {
   }
 
   public Action(ActionDefinition definition) {
-    this(definition.getType());
+    this(definition.getType(), definition.getCode());
   }
 
-  public Action(ActionType type) {
+  public Action(ActionType type, String code) {
     this.type = type;
     this.dateTime = new Date();
+    this.actionDefinitionCode = code;
   }
 
   public final User getUser() {
@@ -99,6 +102,14 @@ public class Action extends AbstractEntity {
 
   public final void setStage(String stage) {
     this.stage = stage;
+  }
+
+  public String getActionDefinitionCode() {
+    return actionDefinitionCode;
+  }
+
+  public final void setActionDefinitionCode(String actionDefinitionCode) {
+    this.actionDefinitionCode = actionDefinitionCode;
   }
 
   public final Date getDateTime() {

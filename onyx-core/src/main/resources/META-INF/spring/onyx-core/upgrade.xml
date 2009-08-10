@@ -33,6 +33,8 @@
           <ref bean="jade-dataUpgrade-1.4.0" />
           <ref bean="schemaUpgrade-1.4.0" />
           <ref bean="jade-schemaUpgrade-1.5.0" />
+          <ref bean="onyx-schemaUpgrade-1.5.0" />
+          <ref bean="onyx-dataUpgrade-1.5.0"/>
         </list>
      </property>
      <property name="stepListeners">
@@ -83,6 +85,17 @@
     <property name="appliesTo" value="1.5.0" />    
     <property name="dataSource" ref="dataSource" />
   </bean>
-
   
+  <bean id="onyx-schemaUpgrade-1.5.0" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_5_0">
+    <property name="description" value="Onyx Core Schema Upgrade 1.5.0"/>
+    <property name="appliesTo" value="1.5.0" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="onyx-dataUpgrade-1.5.0" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_0">
+    <property name="description" value="Update action table by setting action_definition_code"/>
+    <property name="appliesTo" value="1.5.0" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+    
 </beans>

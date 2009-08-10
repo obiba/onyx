@@ -30,6 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.Strings;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
@@ -177,15 +178,9 @@ public class InterviewLogPanel extends Panel {
 
   private IModel getActionModel(Action action) {
     IModel actionModel;
-    // Needs to be fixed: ONYX-777
-    // if(action.getActionType() != null) {
-    // ActionDefinition actionDefinition = actionDefinitionConfiguration.getActionDefinition(action.getActionType(),
-    // null,
-    // moduleRegistry.getStage(action.getStage()).getModule(), action.getStage());
-    // actionModel = new MessageSourceResolvableStringModel(actionDefinition.getLabel());
-    // }
     if(action.getActionType() != null) {
-      actionModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable("action." + action.getActionType()));
+      ActionDefinition actionDefinition = actionDefinitionConfiguration.getActionDefinition(action.getActionDefinitionCode());
+      actionModel = (actionDefinition != null) ? new MessageSourceResolvableStringModel(actionDefinition.getLabel()) : new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getActionDefinitionCode()));
     } else {
       actionModel = new Model("");
     }

@@ -373,7 +373,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
    * @param definition
    */
   private void doAction(StageExecutionContext context, ActionType type) {
-    type.act(context, new Action(type));
+    type.act(context, new Action(type, null));
   }
 
   private void assertStateName(StageExecutionContext context, String stateName) {
