@@ -9,19 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.runtime.upgrade;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
+import org.obiba.onyx.runtime.upgrade.DatabaseChecker;
 import org.obiba.runtime.Version;
 import org.obiba.runtime.upgrade.AbstractUpgradeStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 
 /**
  * Drops the conclusion table previously used by the Mica module. This upgrade step exists in the Jade module since the
@@ -39,14 +34,20 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
 
   private static final String INSTRUMENT_RUN_TABLE = "instrument_run";
 
-  private static final String ADD_SKIP_MEASUREMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_masurement bit(1) DEFAULT NULL;";
+  private static final String SKIP_MEASUREMENT_COLUMN = "skip_measurement";
+
+  private static final String SKIP_COMMENT_COLUMN = "skip_comment";
+
+  private static final String ADD_SKIP_MEASUREMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_measurement bit(1) DEFAULT NULL;";
 
   private static final String ADD_SKIP_COMMENT_COLUMN = "ALTER TABLE instrument_run ADD COLUMN skip_comment varchar(2000) DEFAULT NULL;";
 
   private JdbcTemplate jdbcTemplate;
 
   public void execute(Version currentVersion) {
-    if(isTableExists(CONCLUSION_TABLE)) {
+    DatabaseChecker databaseChecker = new DatabaseChecker(jdbcTemplate);
+
+    if(databaseChecker.isTableExists(CONCLUSION_TABLE)) {
       jdbcTemplate.execute(BACKUP_CONCLUSION_TABLE);
       log.info("Backed up contents of [conclusion] table to [TMP_CONCLUSION_BACKUP] table.");
       jdbcTemplate.execute(DROP_CONCLUSION_TABLE);
@@ -55,39 +56,15 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
       log.info("Skipping the removal of the [conclusion] table. The [conclusion] table does not exist.");
     }
 
-    if(isTableExists(INSTRUMENT_RUN_TABLE)) {
-      jdbcTemplate.execute(ADD_SKIP_MEASUREMENT_COLUMN);
-      jdbcTemplate.execute(ADD_SKIP_COMMENT_COLUMN);
+    if(databaseChecker.isTableExists(INSTRUMENT_RUN_TABLE)) {
+      if(!databaseChecker.hasColumn(INSTRUMENT_RUN_TABLE, SKIP_MEASUREMENT_COLUMN)) jdbcTemplate.execute(ADD_SKIP_MEASUREMENT_COLUMN);
+      if(!databaseChecker.hasColumn(INSTRUMENT_RUN_TABLE, SKIP_COMMENT_COLUMN)) jdbcTemplate.execute(ADD_SKIP_COMMENT_COLUMN);
     } else {
-      log.info("skip_masurement and skip_comment columns not added (table instrument_run does not exist)");
+      log.info("skip_measurement and skip_comment columns not added (table instrument_run does not exist)");
     }
   }
 
   public void setDataSource(DataSource dataSource) {
     jdbcTemplate = new JdbcTemplate(dataSource);
   }
-
-  /**
-   * Indicates whether the specified table exists.
-   * 
-   * @param tableName the table name
-   * @return <code>true</code> if the table exists
-   */
-
-  private boolean isTableExists(final String tableName) {
-    boolean tablePresent = false;
-
-    try {
-      tablePresent = (Boolean) JdbcUtils.extractDatabaseMetaData(jdbcTemplate.getDataSource(), new DatabaseMetaDataCallback() {
-        public Object processMetaData(DatabaseMetaData dbmd) throws SQLException, MetaDataAccessException {
-          return dbmd.getTables(null, null, tableName, null).next();
-        }
-      });
-    } catch(MetaDataAccessException ex) {
-      throw new RuntimeException(ex);
-    }
-
-    return tablePresent;
-  }
-
 }

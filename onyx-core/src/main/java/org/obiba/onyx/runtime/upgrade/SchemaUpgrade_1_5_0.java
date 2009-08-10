@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.runtime.upgrade;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.obiba.runtime.Version;
@@ -19,9 +16,6 @@ import org.obiba.runtime.upgrade.AbstractUpgradeStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 
 /**
  * Upgrade step for ONYX-777 (version 1.5.0).
@@ -37,6 +31,8 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
 
   private static final String ACTION_TABLE = "action";
 
+  private static final String ACTIONE_DEFINITION_CODE_COLUMN = "action_definition_code";
+
   private static final String ADD_ACTIONE_DEFINITION_CODE_COLUMN = "ALTER TABLE action ADD COLUMN action_definition_code VARCHAR(255) NOT NULL;";
 
   //
@@ -50,8 +46,13 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
   //
 
   public void execute(Version currentVersion) {
-    if(isTableExists(ACTION_TABLE)) {
-      if () jdbcTemplate.execute(ADD_ACTIONE_DEFINITION_CODE_COLUMN);
+    DatabaseChecker databaseChecker = new DatabaseChecker(jdbcTemplate);
+    if(databaseChecker.isTableExists(ACTION_TABLE)) {
+      if(!databaseChecker.hasColumn(ACTION_TABLE, ACTIONE_DEFINITION_CODE_COLUMN)) {
+        jdbcTemplate.execute(ADD_ACTIONE_DEFINITION_CODE_COLUMN);
+      } else {
+        log.info("action_definition_code column not added (action table has this column already)");
+      }
     } else {
       log.info("action_definition_code column not added (action table does not exist)");
     }
@@ -65,25 +66,4 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
     jdbcTemplate = new JdbcTemplate(dataSource);
   }
 
-  /**
-   * Indicates whether the specified table exists.
-   * 
-   * @param tableName the table name
-   * @return <code>true</code> if the table exists
-   */
-  private boolean isTableExists(final String tableName) {
-    boolean tablePresent = false;
-
-    try {
-      tablePresent = (Boolean) JdbcUtils.extractDatabaseMetaData(jdbcTemplate.getDataSource(), new DatabaseMetaDataCallback() {
-        public Object processMetaData(DatabaseMetaData dbmd) throws SQLException, MetaDataAccessException {
-          return dbmd.getTables(null, null, tableName, null).next();
-        }
-      });
-    } catch(MetaDataAccessException ex) {
-      throw new RuntimeException(ex);
-    }
-
-    return tablePresent;
-  }
 }

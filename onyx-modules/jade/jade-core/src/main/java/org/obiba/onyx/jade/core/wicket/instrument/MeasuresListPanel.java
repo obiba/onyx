@@ -111,7 +111,6 @@ public abstract class MeasuresListPanel extends Panel {
         confirmationDialog.setYesButtonCallback(new OnYesCallback() {
 
           public void onYesButtonClicked(AjaxRequestTarget target) {
-            System.out.println("******************** IN YES CALLBACK");
             activeInstrumentRunService.deleteMeasure(measure);
             refresh(target);
           }
