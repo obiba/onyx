@@ -246,6 +246,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
           setComponentEnabledOnSkip(get("comment"), true, target);
+          if(!get("comment").isEnabled()) get("comment").setModelObject(null);
           setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("start"), false, target);
           setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton"), false, target);
         }
