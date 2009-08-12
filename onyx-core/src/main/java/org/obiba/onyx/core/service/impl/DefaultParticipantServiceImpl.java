@@ -41,6 +41,8 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   @SuppressWarnings("unused")
   private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
 
+  private static final String START_ACTION_DEFINITION_CODE = "action.START";
+
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user) {
     participant.setBarcode(barcode);
     getPersistenceManager().save(participant);
@@ -60,6 +62,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     // Persist the start action
     Action receptionAction = new Action();
     receptionAction.setActionType(ActionType.START);
+    receptionAction.setActionDefinitionCode(START_ACTION_DEFINITION_CODE);
     receptionAction.setDateTime(new Date());
     if(receptionComment != null && receptionComment.trim().length() != 0) receptionAction.setComment(receptionComment);
     receptionAction.setUser(user);
