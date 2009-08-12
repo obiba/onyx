@@ -234,6 +234,7 @@ public abstract class MeasuresListPanel extends Panel {
   public void refresh(AjaxRequestTarget target) {
     log.debug("Refreshing MeasureListPanel...");
     target.addComponent(MeasuresListPanel.this);
+    if(MeasuresListPanel.this.getParent() instanceof InstrumentLaunchPanel) ((InstrumentLaunchPanel) MeasuresListPanel.this.getParent()).getSkipMeasure().refresh(target);
     onRefresh(target);
   }
 

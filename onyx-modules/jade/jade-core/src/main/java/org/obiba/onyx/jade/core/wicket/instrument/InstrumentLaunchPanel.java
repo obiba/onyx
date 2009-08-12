@@ -72,6 +72,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   private MeasuresListPanel measuresList;
 
+  private SkipMeasureFragment skipMeasure;
+
   private boolean skipMeasurement = false;
 
   @SuppressWarnings("serial")
@@ -208,8 +210,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
     });
     measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
 
-    SkipMeasureFragment skipMeasure = new SkipMeasureFragment("skipMeasure");
+    skipMeasure = new SkipMeasureFragment("skipMeasure");
     skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
+    skipMeasure.setOutputMarkupId(true);
     add(skipMeasure);
 
   }
@@ -232,7 +235,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     if(target != null) target.addComponent(component);
   }
 
-  private class SkipMeasureFragment extends Fragment {
+  public class SkipMeasureFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
     public SkipMeasureFragment(String id) {
@@ -252,6 +255,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
         }
 
       });
+      box.setEnabled(((InstrumentRun) modelObject).getMeasureCount() > 0);
       add(box);
 
       TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));
@@ -260,6 +264,26 @@ public abstract class InstrumentLaunchPanel extends Panel {
       setComponentEnabledOnSkip(comment, true, null);
       add(comment);
       comment.setOutputMarkupId(true);
+    }
+
+    public void refresh(AjaxRequestTarget target) {
+      MeasuresListPanel measuresList = InstrumentLaunchPanel.this.measuresList;
+
+      Component startButton = InstrumentLaunchPanel.this.get("start");
+      startButton.setEnabled(measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
+      target.addComponent(startButton);
+
+      Component addButton = InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton");
+      addButton.setEnabled(measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
+      target.addComponent(addButton);
+
+      get("skipMeasurements").setEnabled(measuresList.getMeasureCount() > 0 && measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
+      if(!get("skipMeasurements").isEnabled()) {
+        get("skipMeasurements").setModelObject(false);
+        get("comment").setModelObject(null);
+      }
+      get("comment").setEnabled(getSkipMeasurement() == true && get("skipMeasurements").isEnabled());
+      target.addComponent(SkipMeasureFragment.this);
     }
   }
 
@@ -274,6 +298,10 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   public void setSkipMeasurement(boolean skipMeasurement) {
     this.skipMeasurement = skipMeasurement;
+  }
+
+  public SkipMeasureFragment getSkipMeasure() {
+    return skipMeasure;
   }
 
 }
