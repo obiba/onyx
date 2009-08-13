@@ -68,6 +68,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
   @SuppressWarnings("unchecked")
   public void startup(WebApplication application) {
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
+    Stage conclusionStage = null;
     if(modules != null) {
       boolean finalStageFound = false;
       for(Module module : modules.values()) {
@@ -78,6 +79,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
             if(!finalStageFound) {
               stage.setStageDependencyCondition(new FinalDependencyCondition(registry));
               finalStageFound = true;
+              conclusionStage = stage;
             } else {
               throw new IllegalArgumentException("Several interview conclusion stages is not allowed.");
             }
@@ -107,6 +109,8 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
       if(!finalStageFound) {
         throw new IllegalArgumentException("An interview conclusion stage is required. Add <interviewConclusion>true</interviewConclusion> to the conclusion stage configuration file.");
       }
+
+      if(existsDependenciesOnConclusion(modules, conclusionStage)) throw new IllegalArgumentException("A StageDependencyCondition based on the conclusion was found on another stage. Please remove the StageDependencyCondition: no stage should depend on the conclusion");
     }
 
     // get the variables after module registration
@@ -116,6 +120,17 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         variableDirectory.registerVariables(provider);
       }
     }
+  }
+
+  // check if any stage depends on conclusion
+  private boolean existsDependenciesOnConclusion(Map<String, Module> modules, Stage conclusion) {
+    for(Module module : modules.values()) {
+      for(Stage stage : module.getStages()) {
+        if(stage.equals(conclusion)) continue;
+        if(stage.getStageDependencyCondition() != null && stage.getStageDependencyCondition().isDependentOn(conclusion, conclusion.getName())) return true;
+      }
+    }
+    return false;
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {
