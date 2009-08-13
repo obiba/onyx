@@ -124,6 +124,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
           public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
             if(status == null || status != null && status.equals(Status.WINDOW_CLOSED) || status != null && status.equals(Status.CANCELLED)) {
               manualEntryDialog.getForm().clearInput();
+              manualEntryDialog.getForm().setEnabled(false);
               return true;
             } else if(status.equals(Status.SUCCESS)) {
               manualEntryDialog.resetStatus();
@@ -139,6 +140,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
             return true;
           }
         });
+        manualEntryDialog.getForm().setEnabled(true);
         manualEntryDialog.show(target);
         // Note that "Manual" instrument has been launched.
         InstrumentLaunchPanel.this.onInstrumentLaunch();
