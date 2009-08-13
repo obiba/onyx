@@ -209,7 +209,6 @@ public class InterviewPage extends BasePage {
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), new PropertyModel(interviewModel, "startDate"));
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), new PropertyModel(interviewModel, "endDate"));
       kvPanel.addRow(new StringResourceModel("Status", this, null), new PropertyModel(interviewModel, "status"));
-      kvPanel.setOutputMarkupId(true);
       add(kvPanel);
 
       // Interview cancellation
