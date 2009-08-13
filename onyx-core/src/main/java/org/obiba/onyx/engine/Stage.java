@@ -16,11 +16,11 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 /**
- * A <code>Stage</code> is a step of an {@link Interview}. They are contributed by {@link Module}s. A <code>Stage</code>
- * 's name must be unique throughout all contributed stages.
+ * A <code>Stage</code> is a step of an {@link Interview}. They are contributed by {@link Module}s. A
+ * <code>Stage</code> 's name must be unique throughout all contributed stages.
  * <p>
- * Some <code>Stage</code>s have dependencies on other <code>Stage</code>s. The actual dependency logic is encapsulated
- * in its {@link StageDependencyCondition} instance.
+ * Some <code>Stage</code>s have dependencies on other <code>Stage</code>s. The actual dependency logic is
+ * encapsulated in its {@link StageDependencyCondition} instance.
  * 
  * @see Module
  */
@@ -83,7 +83,8 @@ public class Stage {
 
   private void validateConclusionStageDoesNotHaveDependencies() {
     if(interviewConclusion && stageDependencyCondition != null) {
-      log.warn("The StageDependencyCondition [{}] was found for the conclusion stage [{}]. It will be ignored. Please remove the StageDependencyCondition from the [{}] configuration. Conclusion stages must not contain a StageDependencyCondition.", new Object[] { stageDependencyCondition, name, name });
+      String message = "The StageDependencyCondition [" + stageDependencyCondition + "] was found for the conclusion stage [" + name + "]. It will be ignored. Please remove the StageDependencyCondition from the [" + name + "] configuration. Conclusion stages must not contain a StageDependencyCondition.";
+      throw new IllegalArgumentException(message);
     }
   }
 
