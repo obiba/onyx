@@ -91,6 +91,8 @@ public class InterviewPage extends BasePage {
 
   AjaxLink viewComments;
 
+  private KeyValueDataPanel kvPanel;
+
   @SpringBean
   private InterviewManager interviewManager;
 
@@ -203,10 +205,11 @@ public class InterviewPage extends BasePage {
 
       ActiveInterviewModel interviewModel = new ActiveInterviewModel();
 
-      KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
+      kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), new PropertyModel(interviewModel, "startDate"));
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), new PropertyModel(interviewModel, "endDate"));
       kvPanel.addRow(new StringResourceModel("Status", this, null), new PropertyModel(interviewModel, "status"));
+      kvPanel.setOutputMarkupId(true);
       add(kvPanel);
 
       // Interview cancellation
@@ -353,8 +356,13 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
-          InterviewPage.this.updateCommentsCount();
-          target.addComponent(InterviewPage.this.commentsCount);
+          if(activeInterviewService.getStageExecution(action.getStage()).isFinal()) {
+            setResponsePage(InterviewPage.class);
+          } else {
+            InterviewPage.this.updateCommentsCount();
+            target.addComponent(InterviewPage.this.commentsCount);
+          }
+
         }
 
       });
