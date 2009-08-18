@@ -17,7 +17,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
+import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -297,6 +304,16 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
       XStream xstream = new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
       xstream.alias("info-messages", LinkedList.class);
       xstream.alias("message", ConditionalMessage.class);
+      xstream.alias("arguments", LinkedList.class);
+      xstream.alias("variableDataSource", VariableDataSource.class);
+      xstream.alias("comparingDataSource", ComparingDataSource.class);
+      xstream.useAttributeFor(ComparingDataSource.class, "comparisonOperator");
+      xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
+      xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "property");
+      xstream.alias("fixedDataSource", FixedDataSource.class);
+      xstream.useAttributeFor("type", DataType.class);
+      xstream.useAttributeFor("dataType", DataType.class);
+      xstream.alias("computingDataSource", ComputingDataSource.class);
 
       List<ConditionalMessage> infoMessages = (List<ConditionalMessage>) xstream.fromXML(fis);
       setInfoMessages(infoMessages);

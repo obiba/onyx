@@ -1,8 +1,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
@@ -12,5 +14,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
+    
+    <aop:scoped-proxy />
   </bean>
 </beans>

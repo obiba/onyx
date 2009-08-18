@@ -28,7 +28,7 @@ public class RegisteredParticipantTubeModel extends SpringDetachableModel {
   // Instance Variables
   //
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   private String barcode;

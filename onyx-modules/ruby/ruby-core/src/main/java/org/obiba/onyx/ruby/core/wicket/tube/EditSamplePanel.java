@@ -26,7 +26,7 @@ public class EditSamplePanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   ActiveTubeRegistrationService activeTubeRegistrationService;
 
   private CommentPanel commentPanel;

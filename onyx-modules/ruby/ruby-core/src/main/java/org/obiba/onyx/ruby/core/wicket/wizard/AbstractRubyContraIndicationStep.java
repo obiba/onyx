@@ -33,7 +33,7 @@ public abstract class AbstractRubyContraIndicationStep extends AbstractContraInd
   // Instance Variables
   //
 
-  @SpringBean
+  @SpringBean(name = "activeTubeRegistrationService")
   protected ActiveTubeRegistrationService activeTubeRegistrationService;
 
   //

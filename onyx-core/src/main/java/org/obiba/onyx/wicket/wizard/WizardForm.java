@@ -22,7 +22,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
@@ -53,7 +52,7 @@ public abstract class WizardForm extends Form {
     setMultiPart(true);
 
     IBehavior buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
-    IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
+    IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
 
     // finish button
     AjaxButton finish = createFinish();
@@ -327,6 +326,24 @@ public abstract class WizardForm extends Form {
 
   public static String getStepId() {
     return "step";
+  }
+
+  protected class WizardButtonDisableBehavior extends AttributeAppender {
+
+    private static final long serialVersionUID = -2793180600410649652L;
+
+    public WizardButtonDisableBehavior() {
+      super("class", new Model("ui-state-disabled"), " ");
+    }
+
+    /**
+     * Overriden to enable the behaviour if the component is disabled. We want to append the attribute when the
+     * component is disabled.
+     */
+    @Override
+    public boolean isEnabled(Component component) {
+      return component.isEnabled() == false;
+    }
   }
 
   public LoadableDetachableModel getLabelModel(String label) {
