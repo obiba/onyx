@@ -8,6 +8,7 @@
       <vendorName>RESULT_FILE</vendorName>
       <code>RES_RESULT_FILE</code>
       <dataType>DATA</dataType>
+      <mimeType>application/vnd.ms-excel</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>

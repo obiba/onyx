@@ -524,6 +524,7 @@
       <vendorName>PIC_CLINIC</vendorName>
       <code>RES_PIC_CLINIC</code>
       <dataType>DATA</dataType>
+      <mimeType>image/jpeg</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     
@@ -531,6 +532,7 @@
       <vendorName>PIC_DETAIL</vendorName>
       <code>RES_PIC_DETAIL</code>
       <dataType>DATA</dataType>
+      <mimeType>image/jpeg</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     
@@ -538,6 +540,7 @@
       <vendorName>PIC_CLASSIFICATION</vendorName>
       <code>RES_PIC_CLASSIFICATION</code>
       <dataType>DATA</dataType>
+      <mimeType>image/jpeg</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     

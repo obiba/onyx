@@ -438,6 +438,7 @@
       <vendorName>xmlFile</vendorName>
       <code>RES_XML_FILE</code>
       <dataType>DATA</dataType>
+      <mimeType>text/xml</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
@@ -445,6 +446,7 @@
       <vendorName>pdfFile</vendorName>
       <code>RES_PDF_FILE</code>
       <dataType>DATA</dataType>
+      <mimeType>application/pdf</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
   </instrumentParameters>

@@ -47,6 +47,8 @@ public abstract class InstrumentParameter implements Serializable {
 
   private List<Data> allowedValues;
 
+  private String mimeType;
+
   public String getCode() {
     return code;
   }
@@ -116,7 +118,7 @@ public abstract class InstrumentParameter implements Serializable {
   public IDataSource getDataSource() {
     return dataSource;
   }
-  
+
   public IDataSource getCondition() {
     return condition;
   }
@@ -161,6 +163,14 @@ public abstract class InstrumentParameter implements Serializable {
 
   public void setManualCaptureAllowed(boolean manualCaptureAllowed) {
     this.manualCaptureAllowed = manualCaptureAllowed;
+  }
+
+  public String getMimeType() {
+    return mimeType;
+  }
+
+  public void setMimeType(String mimeType) {
+    this.mimeType = mimeType;
   }
 
 }

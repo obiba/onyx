@@ -498,6 +498,7 @@
       <vendorName>FVCImage</vendorName>
       <code>RES_FVC_IMAGE</code>
       <dataType>DATA</dataType>
+      <mimeType>image/jpeg</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     

@@ -102,8 +102,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
     if(parameters.size() > 0) {
       for(InstrumentParameter parameter : parameters) {
-
-        Variable paramVariable = new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit());
+        Variable paramVariable = new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit()).setMimeType(parameter.getMimeType());
 
         if(type.isRepeatable() && parameter instanceof InstrumentOutputParameter && !parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
 

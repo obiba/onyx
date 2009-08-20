@@ -267,6 +267,7 @@
       <vendorName>achillesbitmap</vendorName>
       <code>RES_STIFFNESS_INDEX_GRAPH</code>
       <dataType>DATA</dataType>
+      <mimeType>image/bmp</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
