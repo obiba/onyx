@@ -35,6 +35,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
@@ -299,21 +300,22 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return runValues;
   }
 
-  public void addMeasure(Map<String, Data> repeatableData) {
-    addMeasure(repeatableData, null);
+  public Measure addMeasure(Map<String, Data> repeatableData) {
+    return addMeasure(repeatableData, null);
   }
 
   private void addManuallyCapturedMeasure(Map<String, Data> repeatableData) {
     addMeasure(repeatableData, InstrumentParameterCaptureMethod.MANUAL);
   }
 
-  private void addMeasure(Map<String, Data> repeatableData, InstrumentParameterCaptureMethod captureMethod) {
+  private Measure addMeasure(Map<String, Data> repeatableData, InstrumentParameterCaptureMethod captureMethod) {
     InstrumentRun instrumentRun = getInstrumentRun();
     Measure measure = new Measure();
     measure.setUser(userSessionService.getUser());
     measure.setTime(new Date());
     measure.setInstrumentBarcode(instrumentRun.getInstrument().getBarcode());
     measure.setInstrumentRun(instrumentRun);
+    measure.setStatus(MeasureStatus.VALID);
 
     for(Map.Entry<String, Data> entry : repeatableData.entrySet()) {
       InstrumentParameter parameter = getAndCheckInstrumentParameter(entry.getKey());
@@ -334,6 +336,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     }
     getPersistenceManager().save(measure);
+
+    return measure;
 
   }
 
@@ -542,4 +546,40 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun.setSkipComment(null);
     getPersistenceManager().save(currentRun);
   }
+
+  public List<IntegrityCheck> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
+    List<IntegrityCheck> failedChecks = new ArrayList<IntegrityCheck>();
+
+    for(InstrumentOutputParameter param : outputParams) {
+      List<IntegrityCheck> integrityChecks = param.getIntegrityChecks();
+
+      for(IntegrityCheck integrityCheck : integrityChecks) {
+
+        // Skip non-ERROR type checks.
+        if(!integrityCheck.getType().equals(IntegrityCheckType.ERROR)) {
+          continue;
+        }
+
+        boolean checkFailed = false;
+        for(InstrumentRunValue runValue : getInstrumentRunValues(param.getCode())) {
+
+          Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
+
+          if(!integrityCheck.checkParameterValue(param, paramData, null, this)) {
+            failedChecks.add(integrityCheck);
+            // MessageSourceResolvable resolvable = integrityCheck.getDescription(param, this);
+            // error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+            checkFailed = true;
+          }
+        }
+
+        if(checkFailed) {
+          break; // stop checking parameter after first failure (but continue checking other parameters!)
+        }
+      }
+    }
+
+    return failedChecks;
+  }
+
 }

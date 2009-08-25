@@ -11,15 +11,21 @@ package org.obiba.onyx.jade.instrument.service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class InstrumentExecutionServiceImpl implements InstrumentExecutionService {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentExecutionServiceImpl.class);
+
+  private InstrumentRunService instrumentRunService;
 
   private ActiveInstrumentRunService activeInstrumentRunService;
 
@@ -107,14 +115,18 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {
-    if(!activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    if(!instrumentType.isRepeatable()) {
       for(Map.Entry<String, Data> entry : values.entrySet()) {
         String paramName = entry.getKey();
         InstrumentParameter parameter = getInstrumentParameter(paramName);
         updateParameterValue(parameter, entry.getValue());
       }
     } else {
-      activeInstrumentRunService.addMeasure(values);
+      Measure measure = activeInstrumentRunService.addMeasure(values);
+      List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
+      MeasureStatus status = activeInstrumentRunService.checkIntegrity(outputParams).isEmpty() ? MeasureStatus.VALID : MeasureStatus.INVALID;
+      instrumentRunService.updateMeasureStatus(measure, status);
     }
   }
 
@@ -145,6 +157,14 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   public int getExpectedMeasureCount() {
     return activeInstrumentRunService.getInstrumentType().getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
+  }
+
+  public InstrumentRunService getInstrumentRunService() {
+    return instrumentRunService;
+  }
+
+  public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
+    this.instrumentRunService = instrumentRunService;
   }
 
 }

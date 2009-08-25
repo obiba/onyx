@@ -34,6 +34,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -114,6 +115,7 @@ public class MeasuresListPanelTest implements Serializable {
     user.setFirstName("test");
     user.setLastName("test");
     measure.setUser(user);
+    measure.setStatus(MeasureStatus.VALID);
     instrumentRun.getMeasures().add(measure);
   }
 
@@ -151,7 +153,9 @@ public class MeasuresListPanelTest implements Serializable {
     assertTrue(measuresListPanel.getMeasureCount() == 1);
     assertTrue(measuresListPanel.getExpectedMeasureCount() == 3);
 
-    tester.executeAjaxEvent("panel:measure:0:deleteMeasure", "onclick");
+    tester.dumpPage();
+
+    tester.executeAjaxEvent("panel:measure:0:measureActions:deleteMeasure", "onclick");
     tester.executeAjaxEvent("panel:confirmDeleteMeasureDialog:content:form:yes", "onclick");
 
     verify(activeInstrumentRunServiceMock);

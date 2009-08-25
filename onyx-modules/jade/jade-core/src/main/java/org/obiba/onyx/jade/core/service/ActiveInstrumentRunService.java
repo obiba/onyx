@@ -19,6 +19,7 @@ import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -134,7 +135,7 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * Persists repeatable instrument parameters.
    * @param repeatableData A map of parameter names to {@link Data} values.
    */
-  public void addMeasure(Map<String, Data> repeatableData);
+  public Measure addMeasure(Map<String, Data> repeatableData);
 
   /**
    * Get the count of measures (repeatable or not).
@@ -172,5 +173,13 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * Removes the skip comment for current instrumentRun
    */
   public void removeSkipMeasurementForInstrumentRun();
+
+  /**
+   * For each output parameter, performs all integrity checks of type <code>ERROR</code>.
+   * 
+   * @param outputParams output parameters
+   * @return list of integrity checks that failed (empty list if none)
+   */
+  public List<IntegrityCheck> checkIntegrity(List<InstrumentOutputParameter> outputParams);
 
 }

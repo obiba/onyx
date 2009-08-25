@@ -32,6 +32,7 @@ import org.apache.wicket.util.time.Duration;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
 import org.obiba.onyx.wicket.behavior.AbstractAjaxTimerBehavior;
@@ -126,14 +127,11 @@ public abstract class MeasuresListPanel extends Panel {
         measuresDetailsDialog.show(target);
       }
 
-      @Override
-      protected void populateItem(final ListItem item) {
-        final Measure measure = (Measure) item.getModelObject();
+      private Fragment addMeasureActions(final Measure measure, final int measureNo) {
+        Fragment measureActionsFragment;
+        measureActionsFragment = new Fragment("measureActions", "measureActionsFragment", MeasuresListPanel.this);
 
-        final int measureNo = item.getIndex() + 1;
-        addMeasureDetails(item, measure, measureNo);
-
-        item.add(new AjaxLink("deleteMeasure") {
+        measureActionsFragment.add(new AjaxLink("deleteMeasure") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
@@ -141,9 +139,8 @@ public abstract class MeasuresListPanel extends Panel {
           }
 
         });
-        item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(measureNo - 1)), " "));
 
-        item.add(new AjaxLink("view") {
+        measureActionsFragment.add(new AjaxLink("view") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
@@ -151,6 +148,44 @@ public abstract class MeasuresListPanel extends Panel {
           }
 
         });
+        return measureActionsFragment;
+      }
+
+      private Fragment addInvalidMeasureMessage(final ListItem item) {
+        Fragment measureActionsFragment;
+        item.add(new AttributeAppender("class", true, new Model("ui-state-error"), " "));
+        measureActionsFragment = new Fragment("measureActions", "measureInvalidFragment", MeasuresListPanel.this);
+        measureActionsFragment.add(new AjaxLink("errorDetails") {
+
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+            // TODO Auto-generated method stub
+          }
+
+        });
+        return measureActionsFragment;
+      }
+
+      @Override
+      protected void populateItem(final ListItem item) {
+        final Measure measure = (Measure) item.getModelObject();
+
+        final int measureNo = item.getIndex() + 1;
+        addMeasureDetails(item, measure, measureNo);
+
+        item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(measureNo - 1)), " "));
+
+        boolean measureIsValid = measure.getStatus() == MeasureStatus.VALID ? true : false;
+        Fragment measureActionsFragment;
+
+        if(measureIsValid) {
+          measureActionsFragment = addMeasureActions(measure, measureNo);
+        } else {
+          measureActionsFragment = addInvalidMeasureMessage(item);
+        }
+
+        item.add(measureActionsFragment);
+
       }
 
     };

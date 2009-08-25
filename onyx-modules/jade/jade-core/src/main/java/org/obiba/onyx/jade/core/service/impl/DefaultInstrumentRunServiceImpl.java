@@ -17,6 +17,8 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
@@ -46,6 +48,11 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
     if(instrumentRun != null) {
       getPersistenceManager().delete(instrumentRun);
     }
+  }
+
+  public void updateMeasureStatus(Measure measure, MeasureStatus status) {
+    measure.setStatus(status);
+    getPersistenceManager().save(measure);
   }
 
 }

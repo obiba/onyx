@@ -9,6 +9,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean id="instrumentExecutionService" class="org.obiba.onyx.jade.instrument.service.InstrumentExecutionServiceImpl"
     scope="session">
     <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
+    <property name="instrumentRunService" ref="instrumentRunService" />    
   </bean>
 
   <bean id="clientLoggingService" class="org.obiba.onyx.jade.instrument.service.ClientLoggingServiceImpl" />

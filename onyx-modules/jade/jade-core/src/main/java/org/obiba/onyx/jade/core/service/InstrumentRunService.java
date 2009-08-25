@@ -12,6 +12,8 @@ package org.obiba.onyx.jade.core.service;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 
 public interface InstrumentRunService {
 
@@ -40,4 +42,13 @@ public interface InstrumentRunService {
    * @param instrumentTypeName
    */
   public void deleteInstrumentRun(Participant participant, String instrumentTypeName);
+
+  /**
+   * Updates the status of the selected measure.
+   * 
+   * @param measure The measure to update.
+   * @param measure The status.
+   */
+  public void updateMeasureStatus(Measure measure, MeasureStatus status);
+
 }

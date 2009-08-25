@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.wizard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -22,7 +21,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
-import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -31,10 +29,8 @@ import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLaunchPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
-import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSourceResolvable;
 
 public class InstrumentLaunchStep extends WizardStepPanel {
 
@@ -130,7 +126,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
         if(completed) {
           // Perform each output parameter's integrity checks.
-          List<IntegrityCheck> failedChecks = checkIntegrity(outputParams);
+          List<IntegrityCheck> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams);
 
           if(failedChecks.isEmpty()) {
             ((InstrumentWizardForm) form).setUpWizardFlow();
@@ -144,46 +140,6 @@ public class InstrumentLaunchStep extends WizardStepPanel {
       error(getString("InstrumentApplicationMustBeStarted"));
       setNextStep(null);
     }
-  }
-
-  /**
-   * For each output parameter, performs all integrity checks of type <code>ERROR</code>.
-   * 
-   * @param outputParams output parameters
-   * @return list of integrity checks that failed (empty list if none)
-   */
-  private List<IntegrityCheck> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
-    List<IntegrityCheck> failedChecks = new ArrayList<IntegrityCheck>();
-
-    for(InstrumentOutputParameter param : outputParams) {
-      List<IntegrityCheck> integrityChecks = param.getIntegrityChecks();
-
-      for(IntegrityCheck integrityCheck : integrityChecks) {
-        // Skip non-ERROR type checks.
-        if(!integrityCheck.getType().equals(IntegrityCheckType.ERROR)) {
-          continue;
-        }
-
-        boolean checkFailed = false;
-        for(InstrumentRunValue runValue : activeInstrumentRunService.getInstrumentRunValues(param.getCode())) {
-
-          Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
-
-          if(!integrityCheck.checkParameterValue(param, paramData, null, activeInstrumentRunService)) {
-            failedChecks.add(integrityCheck);
-            MessageSourceResolvable resolvable = integrityCheck.getDescription(param, activeInstrumentRunService);
-            error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
-            checkFailed = true;
-          }
-        }
-
-        if(checkFailed) {
-          break; // stop checking parameter after first failure (but continue checking other parameters!)
-        }
-      }
-    }
-
-    return failedChecks;
   }
 
   private boolean instrumentRunContainsValues() {

@@ -3,7 +3,7 @@
 		<table class="entityTable">
 			<thead>
 				<tr>
-					<td class="count" colspan="5"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</td>
+					<td class="count" colspan="4"><wicket:message key="Measures"/> (<span wicket:id="expectedMeasureCount"/> <wicket:message key="ExpectedMeasures"/>)</td>
 					<td class="refresh"><a wicket:id="refresh" href=""><wicket:message key="Refresh"/></a></td>			
 				</tr>		
 				<tr>
@@ -11,7 +11,7 @@
 					<th><wicket:message key="Date"/></th>
 					<th><wicket:message key="Operator"/></th>				
 					<th><wicket:message key="CaptureMethod"/></th>				
-					<th colspan="2"><wicket:message key="Actions"/></th>			
+					<th><wicket:message key="Actions"/></th>			
 				</tr>
 			</thead>
 			<tbody>
@@ -20,8 +20,7 @@
 					<td><span wicket:id="measureDate"/></td>
 					<td><span wicket:id="measureUser"/></td>				
 					<td><span wicket:id="measureMethod"/></td>												
-					<td><a wicket:id="view"><wicket:message key="View" /></a></td>
-					<td><a wicket:id="deleteMeasure" href=""><wicket:message key="Delete"/></a></td>
+					<td><span wicket:id="measureActions"/></td>
 				</tr>
 				<tr wicket:id="noMeasureAvailable">
 					<td><wicket:message key="NoMeasureAvailable" /></td>
@@ -43,14 +42,23 @@
 					<td><div wicket:id="measureDate"/></td>
 				</tr>
 				<tr>
-					<th><wicket:message key="CaptureMethod"/>:</th>
-					<td><div wicket:id="measureMethod"/></td>
-				</tr>			
-				<tr>
 					<th><wicket:message key="Operator"/>:</th>
 					<td><div wicket:id="measureUser"/></td>
-				</tr>			
+				</tr>				
+				<tr>
+					<th><wicket:message key="CaptureMethod"/>:</th>
+					<td><div wicket:id="measureMethod"/></td>
+				</tr>						
 			</table>	
 		</wicket:fragment>
+		
+		<wicket:fragment wicket:id="measureActionsFragment">
+			<a wicket:id="view"><wicket:message key="View" /></a>
+			<a wicket:id="deleteMeasure" href=""><wicket:message key="Delete"/></a>		
+		</wicket:fragment>
+		
+		<wicket:fragment wicket:id="measureInvalidFragment">
+			<wicket:message key="MeasureRejected1" /> <a style="padding-right:0px;" wicket:id="errorDetails" href=""><wicket:message key="ClickHere" /></a> <wicket:message key="MeasureRejected2" />
+		</wicket:fragment>		
 	</div>
 </wicket:panel>

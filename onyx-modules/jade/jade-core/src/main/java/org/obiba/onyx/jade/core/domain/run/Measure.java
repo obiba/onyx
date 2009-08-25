@@ -15,6 +15,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -48,6 +50,9 @@ public class Measure extends AbstractEntity {
   private Date time;
 
   private String instrumentBarcode;
+
+  @Enumerated(EnumType.STRING)
+  private MeasureStatus status;
 
   public InstrumentRun getInstrumentRun() {
     return instrumentRun;
@@ -102,6 +107,14 @@ public class Measure extends AbstractEntity {
       }
     }
     return null;
+  }
+
+  public MeasureStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(MeasureStatus status) {
+    this.status = status;
   }
 
 }
