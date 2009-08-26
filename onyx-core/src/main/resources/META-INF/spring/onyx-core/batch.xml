@@ -1,0 +1,21 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:batch="http://www.springframework.org/schema/batch"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+  http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+
+  <import resource="classpath*:/META-INF/onyx-job.xml"/>
+
+  <!-- Spring batch database schema property -->
+  <batch:job-repository id="jobRepository" data-source="dataSource" isolation-level-for-create="DEFAULT"/>
+  
+  <!-- Spring batch In-memory property -->
+  <!-- <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+      <property name="transactionManager" ref="transactionManager"/>
+  </bean> -->
+
+  <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+    <property name="jobRepository" ref="jobRepository"/>
+  </bean>
+  
+</beans>

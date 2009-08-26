@@ -16,7 +16,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReaderTest;
+import org.obiba.onyx.core.etl.participant.impl.ParticipantReaderTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -92,7 +92,7 @@ public class ParticipantAttributeReaderTest {
 
   @Test
   public void testOldXmlFileWithoutGroups() throws IOException {
-    String oldXmlFileDirectory = DefaultParticipantExcelReaderTest.class.getSimpleName();
+    String oldXmlFileDirectory = ParticipantReaderTest.class.getSimpleName();
     ParticipantAttributeReader attributeReader = new ParticipantAttributeReader();
     attributeReader.setResources(new Resource[] { new ClassPathResource(oldXmlFileDirectory + "/configured-attributes.xml") });
     List<ParticipantAttribute> participantAttributes = attributeReader.read();

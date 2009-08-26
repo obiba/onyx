@@ -11,36 +11,33 @@ package org.obiba.onyx.core.etl.participant.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.Validatable;
+import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
-import org.obiba.onyx.core.etl.participant.IParticipantReadListener;
 import org.obiba.onyx.core.io.support.ExcelReaderSupport;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemStreamException;
+import org.springframework.batch.item.ParseException;
+import org.springframework.batch.item.UnexpectedInputException;
 
-public class DefaultParticipantExcelReader extends AbstractParticipantReader {
-  //
-  // Instance Variables
-  //
+/**
+ * Default ItemReader for reading Participant items from an Excel workbook
+ */
+public class ParticipantReader extends AbstractParticipantReader {
 
   /**
    * Sheet number.
@@ -58,93 +55,70 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
   private int firstDataRowNumber;
 
   //
-  // Constructors
-  //
+  // HSSF instance variables.
+  //   
+  private Iterator<HSSFRow> rowIter;
 
-  public DefaultParticipantExcelReader() {
-    columnNameToAttributeNameMap = new HashMap<String, String>();
-  }
+  private HSSFFormulaEvaluator evaluator;
+
+  private HSSFRow row;
 
   @SuppressWarnings("unchecked")
-  public void process(InputStream input, List<IParticipantReadListener> listeners) throws IOException, IllegalArgumentException {
-    HSSFWorkbook wb = new HSSFWorkbook(input);
-    HSSFSheet sheet = wb.getSheetAt(sheetNumber - 1);
-    HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(wb);
+  @Override
+  public void open(ExecutionContext context) throws ItemStreamException {
+    super.open(context);
 
-    // Keep track of enrollment ids -- duplicates not allowed!
-    Set<String> enrollmentIds = new HashSet<String>();
+    try {
+      HSSFWorkbook wb = new HSSFWorkbook(getFileInputStream());
+      HSSFSheet sheet = wb.getSheetAt(sheetNumber - 1);
+      evaluator = new HSSFFormulaEvaluator(wb);
 
-    initAttributeNameToColumnIndexMap(sheet.getRow(headerRowNumber - 1));
+      initAttributeNameToColumnIndexMap(sheet.getRow(headerRowNumber - 1));
 
-    Iterator<HSSFRow> rowIter = (Iterator<HSSFRow>) sheet.rowIterator();
+      rowIter = (Iterator<HSSFRow>) sheet.rowIterator();
 
-    // Skip ahead to the first data row.
-    HSSFRow row = skipToFirstDataRow(rowIter);
+      // Skip ahead to the first data row.
+      row = skipToFirstDataRow(rowIter);
 
-    // Go ahead and process all the data rows.
-    int line = 0;
+    } catch(IOException e) {
+      appointmentListUpdatelog.error("Abort updating appointments: Reading file error: {}", e.getMessage());
 
-    while(row != null) {
-      // Need this check because even though the row iterator only returns "physical" rows, rows containing
-      // cells with whitespace only are also returned. We want to ignore those rows.
-      if(!rowContainsWhitespaceOnly(evaluator, row)) {
-        line = row.getRowNum() + 1;
-
-        Participant participant = null;
-
-        try {
-          participant = processParticipant(row, evaluator);
-          participant.setAppointment(processAppointment(row, evaluator));
-
-          checkUniqueEnrollmentId(enrollmentIds, participant.getEnrollmentId());
-        } catch(IllegalArgumentException ex) {
-          throw new IllegalArgumentException("Line " + line + ": " + ex.getMessage());
-        }
-
-        // Notify listeners that a participant has been processed.
-        for(IParticipantReadListener listener : listeners) {
-          listener.onParticipantRead(line, participant);
-        }
-      }
-
-      if(rowIter.hasNext()) {
-        row = rowIter.next();
-      } else {
-        row = null;
-      }
-    }
-
-    // Notify listeners that the last participant has been processed.
-    for(IParticipantReadListener listener : listeners) {
-      listener.onParticipantReadEnd();
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());
+      throw vex;
     }
 
   }
 
-  public boolean accept(File dir, String name) {
+  public Participant read() throws Exception, UnexpectedInputException, ParseException {
+    Participant participant = null;
+
+    // Need this check because even though the row iterator only returns "physical" rows, rows containing
+    // cells with whitespace only are also returned. We want to ignore those rows.
+    if(row != null && !rowContainsWhitespaceOnly(evaluator, row)) {
+
+      participant = processParticipant(row, evaluator);
+      participant.setAppointment(processAppointment(row, evaluator));
+
+    }
+
+    if(rowIter.hasNext()) {
+      row = rowIter.next();
+    } else {
+      row = null;
+    }
+    return participant;
+  }
+
+  @Override
+  protected boolean accept(File dir, String name) {
     return (name.toLowerCase().endsWith(".xls"));
   }
 
   //
-  // Methods
+  // Local methods
   //
-
-  public void setSheetNumber(int sheetNumber) {
-    this.sheetNumber = sheetNumber;
-  }
-
-  public void setHeaderRowNumber(int headerRowNumber) {
-    this.headerRowNumber = headerRowNumber;
-  }
-
-  public void setFirstDataRowNumber(int firstDataRowNumber) {
-    this.firstDataRowNumber = firstDataRowNumber;
-  }
-
-  public int getFirstDataRowNumber() {
-    return firstDataRowNumber;
-  }
-
+  @SuppressWarnings("unchecked")
   private void initAttributeNameToColumnIndexMap(HSSFRow headerRow) {
     if(headerRow == null) {
       throw new IllegalArgumentException("Null headerRow");
@@ -195,6 +169,24 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
     return row;
   }
 
+  @SuppressWarnings("unchecked")
+  private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, HSSFRow row) {
+    boolean rowContainsWhitespaceOnly = true;
+
+    Iterator cellIter = row.cellIterator();
+
+    while(cellIter.hasNext()) {
+      HSSFCell cell = (HSSFCell) cellIter.next();
+
+      if(!ExcelReaderSupport.containsWhitespace(evaluator, cell)) {
+        rowContainsWhitespaceOnly = false;
+        break;
+      }
+    }
+
+    return rowContainsWhitespaceOnly;
+  }
+
   private Participant processParticipant(HSSFRow row, HSSFFormulaEvaluator evaluator) {
     Participant participant = new Participant();
 
@@ -209,11 +201,11 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
     Data data = null;
 
     data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String enrollmentId = data.getValue();
+    String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     appointment.setAppointmentCode(enrollmentId);
 
     data = getEssentialAttributeValue(APPOINTMENT_TIME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    Date appointmentTime = data.getValue();
+    Date appointmentTime = (data != null) ? (Date) data.getValue() : null;
     appointment.setDate(appointmentTime);
 
     return appointment;
@@ -225,19 +217,19 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
     Data data = null;
 
     data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String enrollmentId = data.getValue();
+    String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     participant.setEnrollmentId(enrollmentId);
 
     data = getEssentialAttributeValue(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String assessmentCenterId = data.getValue();
+    String assessmentCenterId = (String) ((data != null) ? data.getValue() : null);
     participant.setSiteNo(assessmentCenterId);
 
     data = getEssentialAttributeValue(FIRST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String firstName = data.getValue();
+    String firstName = (String) ((data != null) ? data.getValue() : null);
     participant.setFirstName(firstName);
 
     data = getEssentialAttributeValue(LAST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(LAST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String lastName = data.getValue();
+    String lastName = (String) ((data != null) ? data.getValue() : null);
     participant.setLastName(lastName);
 
     if(attributeNameToColumnIndexMap.containsKey(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
@@ -260,7 +252,7 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
   }
 
   protected void setParticipantConfiguredAttributes(Participant participant, HSSFRow row, HSSFFormulaEvaluator evaluator) {
-    for(ParticipantAttribute configuredAttribute : participantMetadata.getConfiguredAttributes()) {
+    for(ParticipantAttribute configuredAttribute : getParticipantMetadata().getConfiguredAttributes()) {
       if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToColumnIndexMap.containsKey(configuredAttribute.getName().toUpperCase())) {
         HSSFCell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName().toUpperCase()));
         setConfiguredAttribute(participant, configuredAttribute, cell, evaluator);
@@ -274,7 +266,7 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
   }
 
   private Data getEssentialAttributeValue(String attributeName, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
-    ParticipantAttribute attribute = participantMetadata.getEssentialAttribute(attributeName);
+    ParticipantAttribute attribute = getParticipantMetadata().getEssentialAttribute(attributeName);
     Data data = getAttributeValue(attribute, cell, evaluator);
 
     return data;
@@ -287,15 +279,11 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
    * @param cell data cell
    * @param evaluator cell evaluator
    * @return attribute value (or <code>null</code> if none)
-   * @throws IllegalArgumentException if the cell type is not compatible with the attribute type, or if the attribute is
-   * mandatory but its value is <code>null</code>
+   * @throws IllegalArgumentException if the cell type is not compatible with the attribute type
    */
   private Data getAttributeValue(ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
-    if(cell == null) {
-      checkMandatoryCondition(attribute, null);
-      return null;
-    }
 
+    if(cell == null) return null;
     Data data = null;
 
     try {
@@ -326,46 +314,29 @@ public class DefaultParticipantExcelReader extends AbstractParticipantReader {
       }
     }
 
-    // For TEXT-type attributes, if the attribute has a list of allowed values, validate that the value
-    // is within that list.
-    if(attribute.getType().equals(DataType.TEXT) && data != null) {
-      checkValueAllowed(attribute, data);
-    }
-
-    // For non-null attribute values, execute the attribute's validators.
-    if(data != null && data.getValue() != null) {
-      Validatable validatableData = new Validatable(data);
-
-      for(IValidator validator : attribute.getValidators()) {
-        validator.validate(validatableData);
-      }
-
-      // In case of any errors, substitute null.
-      if(!validatableData.getErrors().isEmpty()) {
-        data.setValue(null);
-      }
-    }
-
-    checkMandatoryCondition(attribute, data);
-
     return data;
   }
 
-  @SuppressWarnings("unchecked")
-  private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, HSSFRow row) {
-    boolean rowContainsWhitespaceOnly = true;
+  //
+  // Getters and setters
+  //
+  public void setSheetNumber(int sheetNumber) {
+    this.sheetNumber = sheetNumber;
+  }
 
-    Iterator cellIter = row.cellIterator();
+  public void setHeaderRowNumber(int headerRowNumber) {
+    this.headerRowNumber = headerRowNumber;
+  }
 
-    while(cellIter.hasNext()) {
-      HSSFCell cell = (HSSFCell) cellIter.next();
+  public void setFirstDataRowNumber(int firstDataRowNumber) {
+    this.firstDataRowNumber = firstDataRowNumber;
+  }
 
-      if(!ExcelReaderSupport.containsWhitespace(evaluator, cell)) {
-        rowContainsWhitespaceOnly = false;
-        break;
-      }
-    }
+  public int getFirstDataRowNumber() {
+    return firstDataRowNumber;
+  }
 
-    return rowContainsWhitespaceOnly;
+  public HSSFRow getRow() {
+    return row;
   }
 }

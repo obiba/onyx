@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service;
 
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
+
 /**
  * Interface that manages the process of updating the appointment list
  */
@@ -20,9 +22,9 @@ public interface AppointmentManagementService {
   public void updateAppointments();
 
   /**
-   * returns true when an update of the appointments is available
-   * @return
+   * Save the AppointmentUpdateStats
+   * @param appointmentUpdateStats
    */
-  public boolean isUpdateAvailable();
+  public void saveAppointmentUpdateStats(AppointmentUpdateStats appointmentUpdateStats);
 
 }

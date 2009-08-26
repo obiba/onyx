@@ -2,7 +2,8 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
-  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader" scope="prototype">
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.ParticipantReader" scope="prototype">
+    <property name="inputDirectory" value="${org.obiba.onyx.appointments.inputDirectory}"/>
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="sheetNumber" value="${org.obiba.onyx.participantReader.sheetNumber}" />
     <property name="headerRowNumber" value="${org.obiba.onyx.participantReader.headerRowNumber}" />

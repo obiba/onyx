@@ -30,7 +30,7 @@
     <property name="ignoreUnresolvablePlaceholders" value="true" />
   </bean>
 
-  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.ParticipantReader"
     scope="prototype">
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="sheetNumber" value="1" />

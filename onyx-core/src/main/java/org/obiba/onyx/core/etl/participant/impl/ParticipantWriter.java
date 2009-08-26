@@ -7,17 +7,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.etl.participant;
+package org.obiba.onyx.core.etl.participant.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.springframework.batch.item.database.HibernateItemWriter;
 
-public interface IParticipantReader {
-
-  public void process(InputStream input, List<IParticipantReadListener> listeners) throws IOException, IllegalArgumentException;
-
-  public boolean accept(File dir, String name);
+/**
+ * Spring Batch ItemWriter for Participant items, used in the second step of Appointment List Update job.
+ */
+public class ParticipantWriter extends HibernateItemWriter<Participant> {
 
 }

@@ -51,14 +51,14 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
   @Autowired(required = true)
   private ParticipantMetadata participantMetadata;
 
-  private UpdateParticipantListener updateParticipantListener;
+  // private UpdateParticipantListener updateParticipantListener;
 
   private Map<String, String> participantAttributesMap;
 
   @Before
   public void setUp() {
     participantAttributesMap = getParticipantAttributes();
-    updateParticipantListener = new UpdateParticipantListener("cag001", getUser(), participantService);
+    // updateParticipantListener = new UpdateParticipantListener("cag001", getUser(), participantService);
   }
 
   @Test
@@ -66,7 +66,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
   public void testOnParticipantRead() {
     int i = 1;
     for(Participant participant : getParticipants()) {
-      updateParticipantListener.onParticipantRead(i, participant);
+      // updateParticipantListener.onParticipantRead(i, participant);
       i++;
     }
 
@@ -75,7 +75,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
     // test we can run same file multiple times without breaking the db
     i = 1;
     for(Participant participant : getParticipants()) {
-      updateParticipantListener.onParticipantRead(i, participant);
+      // updateParticipantListener.onParticipantRead(i, participant);
       i++;
     }
 
@@ -106,7 +106,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
 
     i = 1;
     for(Participant participant : getParticipants()) {
-      updateParticipantListener.onParticipantRead(i, participant);
+      // updateParticipantListener.onParticipantRead(i, participant);
       i++;
     }
 

@@ -7,6 +7,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <import resource="version.xml" />
+  <import resource="batch.xml"/>
 
   <bean name="version" class="org.obiba.runtime.Version" primary="true">
     <constructor-arg value="${project.version}-b${buildNumber}" />
@@ -28,14 +29,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="appointmentManagementService" class="org.obiba.onyx.core.service.impl.DefaultAppointmentManagementServiceImpl" init-method="initialize">
     <property name="inputDirectory" value="${org.obiba.onyx.appointments.inputDirectory}" />
     <property name="outputDirectory" value="${org.obiba.onyx.appointments.outputDirectory}" />
-    <property name="applicationConfigurationService" ref="appConfigService" />
-    <property name="participantService" ref="participantService" />
-    <property name="participantReader" ref="participantReader" />
-    <property name="userSessionService">
-      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
-        <property name="targetBeanName" value="userSessionService" />
-      </bean>
-    </property>
+    <property name="jobLauncher" ref="jobLauncher" />
+    <property name="job" ref="appointmentListUpdateJob" />
+    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
   <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
@@ -136,5 +132,5 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </list>
     </property>
   </bean>
-
+  
 </beans>
