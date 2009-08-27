@@ -221,13 +221,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   private void setComponentEnabledOnSkip(Component component, boolean enabled, AjaxRequestTarget target) {
     InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getModelObject();
-    if(currentRun != null && getSkipMeasurement() == true) {
-      component.setEnabled(enabled == true);
+    if(currentRun != null && getSkipMeasurement()) {
+      component.setEnabled(enabled);
 
       // Disable measures list autorefresh when "skip remaining measure" is selected.
       if(measuresList != null) measuresList.disableAutoRefresh();
     } else {
-      component.setEnabled(enabled == false);
+      component.setEnabled(!enabled);
 
       // Reactivate measures list autorefresh when "skip remaining measure" is deselected.
       if(target != null && measuresList != null) {
@@ -255,12 +255,17 @@ public abstract class InstrumentLaunchPanel extends Panel {
             get("comment").setModelObject(null);
             activeInstrumentRunService.removeSkipMeasurementForInstrumentRun();
           }
+
+          WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
+          WizardStepPanel step = (WizardStepPanel) form.get("step");
+          step.handleWizardState(form, target);
+
           setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("start"), false, target);
           setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton"), false, target);
         }
 
       });
-      box.setEnabled(((InstrumentRun) modelObject).getMeasureCount() > 0);
+      box.setEnabled(((InstrumentRun) modelObject).getValidMeasureCount() > 0);
       add(box);
 
       final TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));

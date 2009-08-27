@@ -641,6 +641,10 @@ table.entityTable td A img {
   border:none;
 }
 
+table.entityTable tr.ui-state-error td {
+  color:red;
+}
+
 /*************** End Entity Table ********************/
 
 /*******************KEY VALUE TABLE LAYOUT************************************/

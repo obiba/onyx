@@ -20,7 +20,6 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -53,11 +52,30 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     form.getPreviousLink().setEnabled(getPreviousStep() != null);
-    form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
+    form.getNextLink().setEnabled(isEnableNextLink(form));
+
     if(target != null) {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());
+    }
+
+  }
+
+  private boolean isEnableNextLink(WizardForm form) {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    if(instrumentType.isRepeatable()) {
+      // minimum is having the expected count of repeatable measures
+      int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
+      int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
+      boolean skipped = ((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement();
+      if(currentCount < expectedCount && !skipped) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
     }
   }
 
@@ -82,10 +100,12 @@ public class InstrumentLaunchStep extends WizardStepPanel {
     super.onStepOutNext(form, target);
 
     if(launched || instrumentRunContainsValues()) {
+
       if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRun().getStatus())) {
         error(getString("InstrumentApplicationError"));
         setNextStep(null);
       } else {
+
         InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
 
         List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
@@ -93,6 +113,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         boolean completed = true;
 
         if(!instrumentType.isRepeatable()) {
+
           for(InstrumentOutputParameter param : outputParams) {
             InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
             if(runValue == null) {
@@ -112,8 +133,9 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           }
         } else {
 
-          int currentCount = activeInstrumentRunService.getInstrumentRun().getMeasureCount();
+          int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
           if(!((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement() || currentCount == 0) {
+
             // minimum is having the expected count of repeatable measures
             int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
             if(currentCount < expectedCount) {
@@ -124,16 +146,6 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           }
         }
 
-        if(completed) {
-          // Perform each output parameter's integrity checks.
-          List<IntegrityCheck> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams);
-
-          if(failedChecks.isEmpty()) {
-            ((InstrumentWizardForm) form).setUpWizardFlow();
-          } else {
-            setNextStep(null);
-          }
-        }
       }
 
     } else {
@@ -145,7 +157,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   private boolean instrumentRunContainsValues() {
     InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
     if(run.getInstrumentRunValues() != null && run.getInstrumentRunValues().size() > 0) return true;
-    if(run.getMeasureCount() > 0) return true;
+    if(run.getValidMeasureCount() > 0) return true;
     return false;
   }
 }

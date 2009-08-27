@@ -107,6 +107,20 @@ public class InstrumentRun extends AbstractEntity {
     return getMeasures().size();
   }
 
+  public List<Measure> getValidMeasure() {
+    List<Measure> measures = new ArrayList<Measure>();
+    for(Measure measure : getMeasures()) {
+      if(measure.getStatus() == MeasureStatus.VALID) {
+        measures.add(measure);
+      }
+    }
+    return measures;
+  }
+
+  public int getValidMeasureCount() {
+    return getValidMeasure().size();
+  }
+
   public List<InstrumentRunValue> getInstrumentRunValues() {
     return instrumentRunValues != null ? instrumentRunValues : (instrumentRunValues = new ArrayList<InstrumentRunValue>());
   }

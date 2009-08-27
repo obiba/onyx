@@ -475,7 +475,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentRun run = getInstrumentRun();
     InstrumentType type = getInstrumentType();
     if(type.isRepeatable()) {
-      return run.getMeasureCount();
+      return run.getValidMeasureCount();
     } else {
       for(InstrumentRunValue runValue : run.getInstrumentRunValues()) {
         InstrumentParameter parameter = type.getInstrumentParameter(runValue.getInstrumentParameter());

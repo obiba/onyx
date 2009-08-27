@@ -280,11 +280,11 @@ public abstract class MeasuresListPanel extends Panel {
   }
 
   public int getRemainingMeasureCount() {
-    return getExpectedMeasureCount() - activeInstrumentRunService.getInstrumentRun().getMeasureCount();
+    return getExpectedMeasureCount() - activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
   }
 
   public int getMeasureCount() {
-    return activeInstrumentRunService.getInstrumentRun().getMeasureCount();
+    return activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
   }
 
   public int getExpectedMeasureCount() {
