@@ -533,7 +533,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().delete(measure);
   }
 
-  public void setSkipMeasurementForInstrumentRun(String comment) {
+  public void setSkipRemainingMeasuresCommentFromInstrumentRun(String comment) {
     if(comment == null) throw new IllegalArgumentException("Cannot add a null comment on the instrumentRun");
 
     InstrumentRun currentRun = getInstrumentRun();
@@ -541,7 +541,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRun);
   }
 
-  public void removeSkipMeasurementForInstrumentRun() {
+  public void removeSkipRemainingMeasuresCommentFromInstrumentRun() {
     InstrumentRun currentRun = getInstrumentRun();
     currentRun.setSkipComment(null);
     getPersistenceManager().save(currentRun);
@@ -582,4 +582,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return failedChecks;
   }
 
+  public void removeInvalidMeasuresFromInstrumentRun() {
+    log.info("removing invalid measures");
+    List<Measure> invalidMeasures = getInstrumentRun().getMeasures(MeasureStatus.INVALID);
+    for(Measure measure : invalidMeasures) {
+      deleteMeasure(measure);
+    }
+  }
 }

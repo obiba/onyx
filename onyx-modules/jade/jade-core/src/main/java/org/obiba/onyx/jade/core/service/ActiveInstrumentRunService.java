@@ -163,16 +163,22 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public void deleteMeasure(Measure measure);
 
   /**
+   * 
    * Updates the skip comment for current instrumentRun
    * 
    * @param comment
    */
-  public void setSkipMeasurementForInstrumentRun(String comment);
+  public void setSkipRemainingMeasuresCommentFromInstrumentRun(String comment);
 
   /**
    * Removes the skip comment for current instrumentRun
    */
-  public void removeSkipMeasurementForInstrumentRun();
+  public void removeSkipRemainingMeasuresCommentFromInstrumentRun();
+
+  /**
+   * Removes measures marked as invalid from current instrumentRun
+   */
+  public void removeInvalidMeasuresFromInstrumentRun();
 
   /**
    * For each output parameter, performs all integrity checks of type <code>ERROR</code>.

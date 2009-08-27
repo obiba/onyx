@@ -253,7 +253,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
           setComponentEnabledOnSkip(get("comment"), true, target);
           if(!get("comment").isEnabled()) {
             get("comment").setModelObject(null);
-            activeInstrumentRunService.removeSkipMeasurementForInstrumentRun();
+            activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
           }
 
           WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
@@ -277,9 +277,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
           if(comment.getModelObject() != null) {
-            activeInstrumentRunService.setSkipMeasurementForInstrumentRun(comment.getModelObject().toString());
+            activeInstrumentRunService.setSkipRemainingMeasuresCommentFromInstrumentRun(comment.getModelObject().toString());
           } else {
-            activeInstrumentRunService.removeSkipMeasurementForInstrumentRun();
+            activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
           }
         }
 
@@ -306,7 +306,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
       if(!skipCheckbox.isEnabled()) {
         skipCheckbox.setModelObject(false);
         get("comment").setModelObject(null);
-        activeInstrumentRunService.removeSkipMeasurementForInstrumentRun();
+        activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
       }
       get("comment").setEnabled(getSkipMeasurement() == true && skipCheckbox.isEnabled());
       target.addComponent(SkipMeasureFragment.this);
