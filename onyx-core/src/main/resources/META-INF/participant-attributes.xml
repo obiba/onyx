@@ -58,8 +58,8 @@
     <editableAfterReception>true</editableAfterReception>
     <type>TEXT</type>
     <allowedValues>
-      <string>F</string>
-      <string>M</string>
+      <string>FEMALE</string>
+      <string>MALE</string>
     </allowedValues>
   </attribute>
   <attribute>
