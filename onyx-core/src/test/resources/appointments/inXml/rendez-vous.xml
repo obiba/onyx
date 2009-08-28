@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<participants>
+	<participant>
+        <attribute key="Code_participant" value="104"/>
+        <attribute key="Site" value="onyx001"/>
+        <attribute key="Sexe" value="M"/>
+        <attribute key="Date_heure_RDV" value="2009-07-15 03:30:00"/>
+        <attribute key="Prenom" value="PRENOM 9"/>
+        <attribute key="Nom" value="NOM 9"/>
+        <attribute key="Date_naissance" value="1958-03-01 00:00:00"/>
+	</participant>
+	<participant>
+		<attribute key="Code_participant" value="105"/>
+		<attribute key="Site" value="onyx001"/>
+		<attribute key="Sexe" value="M"/>
+		<attribute key="Date_heure_RDV" value="2009-07-25 08:30:00"/>
+		<attribute key="Prenom" value="PRENOM 10"/>
+		<attribute key="Nom" value="NOM 10"/>
+		<attribute key="Date_naissance" value="1958-03-01 00:00:00"/>
+	</participant>
+	<participant>
+		<attribute key="Code_participant" value="233"/>
+		<attribute key="Site" value="onyx001"/>
+		<attribute key="Sexe" value="M"/>
+		<attribute key="Date_heure_RDV" value="2009-07-10 00:00:00"/>
+		<attribute key="Prenom" value="PRENOM 3"/>
+		<attribute key="Nom" value="NOM 3"/>
+		<attribute key="Date_naissance" value="1959-03-01 00:00:00"/>
+	</participant>
+</participants>

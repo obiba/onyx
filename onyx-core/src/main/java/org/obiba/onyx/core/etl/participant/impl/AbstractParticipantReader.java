@@ -251,5 +251,4 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
   public ParticipantMetadata getParticipantMetadata() {
     return participantMetadata;
   }
-
 }

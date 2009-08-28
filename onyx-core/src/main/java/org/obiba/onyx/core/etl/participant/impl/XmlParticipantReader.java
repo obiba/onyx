@@ -77,7 +77,7 @@ public class XmlParticipantReader extends AbstractParticipantReader {
 
   public Participant read() throws Exception, UnexpectedInputException, ParseException {
     Participant participant = null;
-    XmlParticipantInput participantInput = iterator.next();
+    XmlParticipantInput participantInput = (iterator.hasNext()) ? iterator.next() : null;
     if(participantInput == null) return null;
 
     try {
@@ -117,6 +117,8 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     attributeNameToTagMap = new HashMap<String, String>();
     if(columnNameToAttributeNameMap != null) {
       for(Entry entry : columnNameToAttributeNameMap.entrySet()) {
+        System.out.println("******* 1  " + entry.getValue().toString().toUpperCase());
+        System.out.println("******* 2 " + entry.getKey().toString());
         attributeNameToTagMap.put(entry.getValue().toString().toUpperCase(), entry.getKey().toString());
       }
     }
@@ -152,7 +154,6 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     Data data = null;
 
     Map<String, String> attributes = participantInput.getAttributesMap();
-
     data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
     String enrollmentId = data.getValue();
     participant.setEnrollmentId(enrollmentId);
@@ -253,5 +254,9 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     }
 
     return data;
+  }
+
+  public Iterator<XmlParticipantInput> getIterator() {
+    return iterator;
   }
 }
