@@ -367,32 +367,6 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     return participantMetadata;
   }
 
-  //  
-  // 
-  //
-  // @Autowired(required = true)
-  // private ParticipantService participantService;
-  //
-  //
-  // // private UpdateParticipantListener updateParticipantListener;
-  //
-  // 
-  //
-  // 
-  //
-
-  //
-  // 
-  //
-  // }
-  //
-  // private User getUser() {
-  // User u = new User();
-  // u.setLastName("Onyx");
-  // u.setFirstName("Admin");
-  // return u;
-  // }
-  //
   private List<Participant> getParticipants() {
     List<Participant> participants = new ArrayList<Participant>();
 
