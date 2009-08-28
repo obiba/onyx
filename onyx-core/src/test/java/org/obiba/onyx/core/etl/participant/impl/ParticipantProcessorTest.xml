@@ -1,0 +1,73 @@
+<dataset>
+  <role id="1" name="SYSTEM_ADMINISTRATOR"/>
+  <user id="1" last_name="Administrator" first_name="ONYX" login="administrator" password="password" email="test@obiba.org" status="ACTIVE" deleted="false"/>
+  <user_roles user_id="1" role_id="1"/>
+      
+  <participant id="1" 
+    barcode="1" 
+    enrollment_id="100001"
+    first_name="Suzan"
+    last_name="Tremblay"
+    gender="FEMALE"
+    birth_date="1964-10-01 00:00:00" />
+    
+  <appointment id="1"
+    appointment_code="100001"
+    date="2008-09-01 09:00:00"
+    participant_id="1" />
+
+  <interview id="1"
+   status="IN_PROGRESS" 
+   participant_id="1" />
+
+  <participant id="2" 
+    barcode="2"
+    enrollment_id="100002"
+    first_name="John"
+    last_name="Hudson"
+    gender="MALE"
+    birth_date="1964-10-01 00:00:00" />
+
+  <appointment id="2"
+    appointment_code="100002"
+    date="2008-09-01 09:00:00"
+    participant_id="2" />
+
+  <interview id="2"
+   status="COMPLETED" 
+   participant_id="2" />
+   
+   <participant id="3" 
+    barcode="3"
+    enrollment_id="100003"
+    first_name="Rohn"
+    last_name="Hudson"
+    gender="MALE"
+    birth_date="1984-10-01 00:00:00" />
+
+  <appointment id="3"
+    appointment_code="100003"
+    date="2008-10-01 10:00:00"
+    participant_id="3" />
+    
+  <!-- <participant id="4" 
+    enrollment_id="100004"
+    first_name="Dennis"
+    last_name="Spathis"
+    gender="MALE"
+    birth_date="1972-10-01 00:00:00" />
+  
+  <appointment id="4"
+    appointment_code="100004"
+    date="2008-07-01 09:00:00"
+    participant_id="4" /> -->
+
+  <!--
+    Need this, otherwise DbUnit will delete interviews prior to actions, causing
+    an Integrity constraint violation.
+  -->
+  <action />
+  
+  <participant_attribute_value />
+  
+</dataset>

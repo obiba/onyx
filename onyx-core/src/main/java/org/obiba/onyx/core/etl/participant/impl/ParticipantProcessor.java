@@ -106,6 +106,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         // Validate interview status
         if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview.getStatus() == InterviewStatus.CANCELLED)) {
           appointmentListUpdatelog.warn("{}Interview {} => participant update ignored.", idStr, interview.getStatus().toString().toLowerCase());
+          return null;
         } else {
 
           // Validate appointment date
