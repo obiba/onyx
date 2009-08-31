@@ -1482,6 +1482,24 @@ div#participantPageSearchResults #newNavigator em {
   top:18px;  
 }
 
+.navigation {
+  border-bottom:1px solid #C65F02;
+}
+
+.experimental-condition-history-panel table.entityTable th {
+  border-top:1px solid #C65F02;
+}
+
+.experimental-condition-history-panel table.entityTable {
+  border-bottom:1px solid #C65F02;
+}
+
+.experimental-condition-history-panel tr.titleToolbar div.title {
+  color: #C65F02;
+  font-size: 12px;
+}
+
+
 ul#interviewMenuBar li {
  width:200px;
 }

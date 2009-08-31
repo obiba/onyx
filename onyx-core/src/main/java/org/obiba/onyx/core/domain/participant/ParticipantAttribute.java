@@ -10,30 +10,18 @@
 package org.obiba.onyx.core.domain.participant;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
-import org.apache.wicket.validation.IValidator;
-import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.core.domain.Attribute;
 
 /**
  * Participant attribute.
  */
-public class ParticipantAttribute implements Serializable, ParticipantElement {
+public class ParticipantAttribute extends Attribute implements Serializable, ParticipantElement {
   //
   // Instance Variables
   //
 
   private static final long serialVersionUID = 1L;
-
-  private String name;
-
-  private DataType type;
-
-  private Set<String> allowedValues;
 
   private boolean assignableAtEnrollment;
 
@@ -45,86 +33,11 @@ public class ParticipantAttribute implements Serializable, ParticipantElement {
 
   private boolean editableAfterReception;
 
-  private List<IValidator> validators;
-
   private Group group;
 
   //
   // Methods
   //
-
-  public List<IValidator> getValidators() {
-    return (validators != null) ? validators : (validators = new ArrayList<IValidator>());
-  }
-
-  public void addValidators(IValidator validator) {
-    getValidators().add(validator);
-  }
-
-  /**
-   * Sets the name of the attribute.
-   * 
-   * @param name attribute name
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * Returns the attribute's name.
-   * 
-   * @return attribute name
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * Sets the attribute's data type.
-   * 
-   * @param type attribute data type
-   */
-  public void setType(DataType type) {
-    this.type = type;
-  }
-
-  /**
-   * Returns the attribute's data type.
-   * 
-   * @return attribute data type
-   */
-  public DataType getType() {
-    return type;
-  }
-
-  /**
-   * Sets the attribute's allowed values (assuming a discrete set of values is allowed).
-   * 
-   * @param allowedValues allowed values of attribute
-   */
-  public void setAllowedValues(Set<String> allowedValues) {
-    if(this.allowedValues == null) {
-      this.allowedValues = new LinkedHashSet<String>();
-    } else {
-      this.allowedValues.clear();
-    }
-
-    if(allowedValues != null) {
-      this.allowedValues.addAll(allowedValues);
-    }
-  }
-
-  /**
-   * Returns the attribute's allowed values.
-   * 
-   * @return allowed values of attribute
-   */
-  public Set<String> getAllowedValues() {
-    if(allowedValues == null) {
-      allowedValues = new LinkedHashSet<String>();
-    }
-    return Collections.unmodifiableSet(allowedValues);
-  }
 
   /**
    * Sets whether the attribute is assignable at the time of enrollment.
@@ -214,10 +127,6 @@ public class ParticipantAttribute implements Serializable, ParticipantElement {
    */
   public boolean isEditableAfterReception() {
     return editableAfterReception;
-  }
-
-  public void setValidators(List<IValidator> validators) {
-    this.validators = validators;
   }
 
   public Group getGroup() {
