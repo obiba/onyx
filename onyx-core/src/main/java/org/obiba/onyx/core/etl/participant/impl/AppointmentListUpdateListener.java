@@ -59,12 +59,14 @@ public class AppointmentListUpdateListener {
    */
   @AfterProcess
   public void afterParticipantProcessed(Participant item, Participant result) {
-    if(item != null && result == null) {
-      addIgnoredParticipant();
-    } else if(item.getId() != null) {
-      addUpdatedParticipant();
-    } else {
-      addAddedParticipant();
+    if(item != null) {
+      if(result == null) {
+        addIgnoredParticipant();
+      } else if(item.getId() != null) {
+        addUpdatedParticipant();
+      } else {
+        addAddedParticipant();
+      }
     }
   }
 
