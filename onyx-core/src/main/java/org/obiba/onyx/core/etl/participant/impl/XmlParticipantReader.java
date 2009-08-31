@@ -78,7 +78,7 @@ public class XmlParticipantReader extends AbstractParticipantReader {
   public Participant read() throws Exception, UnexpectedInputException, ParseException {
     Participant participant = null;
     XmlParticipantInput participantInput = (iterator.hasNext()) ? iterator.next() : null;
-    if(participantInput == null) return null;
+    if(participantInput == null || participantInput.getAttributes().size() == 0 || participantInput.containsWhitespaceOnly()) return null;
 
     try {
       participantInput.setAttributesMap();
@@ -117,8 +117,6 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     attributeNameToTagMap = new HashMap<String, String>();
     if(columnNameToAttributeNameMap != null) {
       for(Entry entry : columnNameToAttributeNameMap.entrySet()) {
-        System.out.println("******* 1  " + entry.getValue().toString().toUpperCase());
-        System.out.println("******* 2 " + entry.getKey().toString());
         attributeNameToTagMap.put(entry.getValue().toString().toUpperCase(), entry.getKey().toString());
       }
     }
@@ -138,11 +136,11 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     Data data = null;
 
     data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
-    String enrollmentId = data.getValue();
+    String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     appointment.setAppointmentCode(enrollmentId);
 
     data = getEssentialAttributeValue(APPOINTMENT_TIME_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())));
-    Date appointmentTime = data.getValue();
+    Date appointmentTime = (data != null) ? (Date) data.getValue() : null;
     appointment.setDate(appointmentTime);
 
     return appointment;
@@ -155,19 +153,19 @@ public class XmlParticipantReader extends AbstractParticipantReader {
 
     Map<String, String> attributes = participantInput.getAttributesMap();
     data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
-    String enrollmentId = data.getValue();
+    String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     participant.setEnrollmentId(enrollmentId);
 
     data = getEssentialAttributeValue(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())));
-    String assessmentCenterId = data.getValue();
+    String assessmentCenterId = (String) ((data != null) ? data.getValue() : null);
     participant.setSiteNo(assessmentCenterId);
 
     data = getEssentialAttributeValue(FIRST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())));
-    String firstName = data.getValue();
+    String firstName = (String) ((data != null) ? data.getValue() : null);
     participant.setFirstName(firstName);
 
     data = getEssentialAttributeValue(LAST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(LAST_NAME_ATTRIBUTE_NAME.toUpperCase())));
-    String lastName = data.getValue();
+    String lastName = (String) ((data != null) ? data.getValue() : null);
     participant.setLastName(lastName);
 
     if(attributeNameToTagMap.containsKey(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
@@ -192,9 +190,12 @@ public class XmlParticipantReader extends AbstractParticipantReader {
   private void setParticipantConfiguredAttributes(Participant participant, XmlParticipantInput participantInput) {
     Map<String, String> attributes = participantInput.getAttributesMap();
 
+    for(Map.Entry<String, String> attr : attributes.entrySet()) {
+    }
+
     for(ParticipantAttribute configuredAttribute : getParticipantMetadata().getConfiguredAttributes()) {
-      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToTagMap.containsKey(attributeNameToTagMap.get(configuredAttribute.getName().toUpperCase()))) {
-        setConfiguredAttribute(participant, configuredAttribute, attributes.get(configuredAttribute.getName().toUpperCase()));
+      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToTagMap.containsKey(configuredAttribute.getName().toUpperCase())) {
+        setConfiguredAttribute(participant, configuredAttribute, attributes.get(attributeNameToTagMap.get(configuredAttribute.getName().toUpperCase())));
       }
     }
   }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<participants>
+	<participant>
+        <attribute key="Code_participant" value="100001"/>
+        <attribute key="Site" value="cag001"/>
+        <attribute key="Sexe" value="F"/>
+        <attribute key="Date_heure_RDV" value="2008-09-01 9:00:00"/>
+        <attribute key="Prenom" value="Chantal"/>
+        <attribute key="Nom" value="Tremblay"/>
+        <attribute key="Date_naissance" value="1964-10-01 00:00:00"/>
+	</participant>
+	<participant>
+		<attribute key="Code_participant" value="100002"/>
+		<attribute key="Site" value="cag001"/>
+		<attribute key="Sexe" value="M"/>
+		<attribute key="Date_heure_RDV" value="2008-09-02 9:00:00"/>
+		<attribute key="Prenom" value="Steve"/>
+		<attribute key="Nom" value="Smith"/>
+		<attribute key="Date_naissance" value="1964-10-02 00:00:00"/>
+	</participant>
+	<participant>
+		<attribute key="Code_participant" value="100003"/>
+		<attribute key="Site" value="cag001"/>
+		<attribute key="Sexe" value="F"/>
+		<attribute key="Date_heure_RDV" value="TEST"/>
+		<attribute key="Prenom" value="Chantal"/>
+		<attribute key="Nom" value="Casserly"/>
+		<attribute key="Date_naissance" value="1964-10-03 00:00:00"/>
+	</participant>
+</participants>

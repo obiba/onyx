@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<participants>
+	<participant>
+        <attribute key="Code_participant" value="100001"/>
+        <attribute key="Site" value="cag001"/>
+        <attribute key="Sexe" value="F"/>
+        <attribute key="Date_heure_RDV" value="2008-09-01 9:00:00"/>
+        <attribute key="Prenom" value="Chantal"/>
+        <attribute key="Nom" value="Tremblay"/>
+        <attribute key="Date_naissance" value="1964-10-01 00:00:00"/>
+        <attribute key="Rue" value="299, Avenue des Pins Ouest"/>
+        <attribute key="Ville" value="Montréal"/>
+        <attribute key="Province" value="QC"/>
+        <attribute key="Pays" value="Canada"/>
+        <attribute key="Code_postal" value="H1T 2M4"/>
+        <attribute key="Telephone" value="514-343-9898 ext 9494"/>
+	</participant>
+</participants>

@@ -27,7 +27,7 @@ public class XmlParticipantInput implements Serializable {
   Map<String, String> attributesMap;
 
   public List<Attribute> getAttributes() {
-    return attributes;
+    return (this.attributes != null) ? attributes : new ArrayList<Attribute>();
   }
 
   public Map<String, String> getAttributesMap() {
@@ -36,9 +36,21 @@ public class XmlParticipantInput implements Serializable {
 
   public void setAttributesMap() {
     attributesMap = new HashMap<String, String>();
-    for(Attribute attribute : attributes) {
-      attributesMap.put(attribute.getKey().toUpperCase(), attribute.getValue());
+    for(Attribute attribute : getAttributes()) {
+      String attributeKey = attribute.getKey().toUpperCase();
+      if(!attributesMap.containsKey(attributeKey)) {
+        attributesMap.put(attributeKey, attribute.getValue());
+      } else {
+        throw new IllegalArgumentException("Duplicate tag for field: " + attributeKey);
+      }
     }
+  }
+
+  public boolean containsWhitespaceOnly() {
+    for(Attribute attribute : getAttributes()) {
+      if(attribute.getValue() != null && attribute.getValue().trim().length() != 0) return false;
+    }
+    return true;
   }
 
   public class Attribute {
