@@ -336,7 +336,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(2, processedParticipants.size());
     Assert.assertEquals(1l, processedParticipants.get(0).getId());
     Assert.assertEquals("Suzan", processedParticipants.get(0).getFirstName());
-    Assert.assertEquals("2009-09-01", getDateFormat().format(processedParticipants.get(0).getAppointment().getDate()));
+    Assert.assertEquals("2010-09-01", getDateFormat().format(processedParticipants.get(0).getAppointment().getDate()));
 
     // Participant 100002 is ignored because his interview is completed
     p = new Participant();
@@ -379,7 +379,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     p1.setLastName("Tremblay");
     p1.setSiteNo("cag001");
 
-    Appointment a = new Appointment(p1, getDate(2009, 9, 1, 9, 0));
+    Appointment a = new Appointment(p1, getDate(2010, 9, 1, 9, 0));
     a.setAppointmentCode("100001");
     p1.setAppointment(a);
 
