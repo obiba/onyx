@@ -36,6 +36,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
@@ -57,6 +58,8 @@ public class MeasuresListPanelTest implements Serializable {
   private transient InstrumentType instrumentType;
 
   private InstrumentRun instrumentRun;
+
+  private InstrumentService instrumentServiceMock;
 
   private Measure measure;
 
@@ -94,6 +97,9 @@ public class MeasuresListPanelTest implements Serializable {
 
     userSessionServiceMock = createMock(UserSessionService.class);
     applicationContextMock.putBean("userSessionService", userSessionServiceMock);
+
+    instrumentServiceMock = createMock(InstrumentService.class);
+    applicationContextMock.putBean("instrumentServiceMock", instrumentServiceMock);
 
   }
 

@@ -10,8 +10,10 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
@@ -31,17 +33,25 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
 import org.obiba.onyx.wicket.behavior.AbstractAjaxTimerBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSourceResolvable;
 
 /**
  * Panel that lists the existing measures of the current InstrumentRun.
@@ -63,11 +73,16 @@ public abstract class MeasuresListPanel extends Panel {
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
+  private InstrumentService instrumentService;
+
+  @SpringBean
   private UserSessionService userSessionService;
 
   private ConfirmationDialog confirmationDialog;
 
   private Dialog measuresDetailsDialog;
+
+  private Dialog invalidMeasureDetailsDialog;
 
   private AbstractAjaxTimerBehavior autoRefreshBehavior;
 
@@ -79,6 +94,7 @@ public abstract class MeasuresListPanel extends Panel {
     setOutputMarkupId(true);
 
     addViewMeasureDetailsDialog();
+    addViewInvalidMeasureDetailsDialog();
     addMeasuresList();
     addMeasureCounts();
     addRefreshLink();
@@ -93,6 +109,13 @@ public abstract class MeasuresListPanel extends Panel {
     measuresDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     measuresDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
     measuresDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
+  }
+
+  private void addViewInvalidMeasureDetailsDialog() {
+    add(invalidMeasureDetailsDialog = new Dialog("invalidMeasureDetailsDialog"));
+    invalidMeasureDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
+    invalidMeasureDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+    invalidMeasureDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
   }
 
   private void addMeasureCounts() {
@@ -151,19 +174,71 @@ public abstract class MeasuresListPanel extends Panel {
         return measureActionsFragment;
       }
 
-      private Fragment addInvalidMeasureMessage(final ListItem item) {
+      private Fragment addInvalidMeasureMessage(final Measure measure, final ListItem item, final int measureNo) {
         Fragment measureActionsFragment;
         item.add(new AttributeAppender("class", true, new Model("ui-state-error"), " "));
         measureActionsFragment = new Fragment("measureActions", "measureInvalidFragment", MeasuresListPanel.this);
-        measureActionsFragment.add(new AjaxLink("errorDetails") {
+        measureActionsFragment.add(getErrorDetailsLink(measure, measureNo));
+
+        return measureActionsFragment;
+      }
+
+      private AjaxLink getErrorDetailsLink(final Measure measure, final int measureNo) {
+        return new AjaxLink("errorDetails") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
-            // TODO Auto-generated method stub
+
+            Fragment invalidMeasureDetailsFragment = new Fragment("content", "invalidMeasureDetailsFragment", MeasuresListPanel.this);
+
+            ListView repeater = new ListView("invalidMeasureMessage", new PropertyModel(this, "invalidMeasureMessages")) {
+
+              @Override
+              protected void populateItem(ListItem item) {
+                String errorMessage = (String) item.getModelObject();
+                item.add(new Label("errorMessage", errorMessage));
+              }
+
+            };
+            invalidMeasureDetailsFragment.add(repeater);
+            invalidMeasureDetailsFragment.add(new AttributeModifier("class", true, new Model("obiba-content invalid-measure-details-content")));
+            invalidMeasureDetailsDialog.setContent(invalidMeasureDetailsFragment);
+            invalidMeasureDetailsDialog.setTitle(new StringResourceModel("ErrorDetailsForMeasure", null, null, new Object[] { measureNo }));
+
+            invalidMeasureDetailsDialog.show(target);
+
           }
 
-        });
-        return measureActionsFragment;
+          @SuppressWarnings("unused")
+          public List<String> getInvalidMeasureMessages() {
+            List<InstrumentOutputParameter> outputParams = getMeasureOutputParams(measure);
+
+            Map<IntegrityCheck, InstrumentOutputParameter> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams);
+
+            List<String> errorMessages = new ArrayList<String>();
+            for(Map.Entry<IntegrityCheck, InstrumentOutputParameter> entry : failedChecks.entrySet()) {
+
+              MessageSourceResolvable resolvable = entry.getKey().getDescription((InstrumentParameter) entry.getValue(), activeInstrumentRunService);
+              errorMessages.add((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+            }
+
+            return errorMessages;
+          }
+
+          private List<InstrumentOutputParameter> getMeasureOutputParams(Measure measure) {
+            String instrumentTypeName = activeInstrumentRunService.getInstrumentType().getName();
+            List<InstrumentOutputParameter> outputParams = new ArrayList<InstrumentOutputParameter>();
+            InstrumentParameter instrumentParam;
+            for(InstrumentRunValue runValue : measure.getInstrumentRunValues()) {
+              instrumentParam = instrumentService.getInstrumentType(instrumentTypeName).getInstrumentParameter(runValue.getInstrumentParameter());
+              if(instrumentParam instanceof InstrumentOutputParameter && instrumentParam.getCaptureMethod() == InstrumentParameterCaptureMethod.AUTOMATIC) {
+                outputParams.add((InstrumentOutputParameter) instrumentParam);
+              }
+            }
+            return outputParams;
+          }
+
+        };
       }
 
       @Override
@@ -181,7 +256,7 @@ public abstract class MeasuresListPanel extends Panel {
         if(measureIsValid) {
           measureActionsFragment = addMeasureActions(measure, measureNo);
         } else {
-          measureActionsFragment = addInvalidMeasureMessage(item);
+          measureActionsFragment = addInvalidMeasureMessage(measure, item, measureNo);
         }
 
         item.add(measureActionsFragment);

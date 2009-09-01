@@ -494,6 +494,15 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
   font-size:11px;
 }
 
+.obiba-content.invalid-measure-details-content {
+  height:365px;
+}
+
+.obiba-content.invalid-measure-details-content > div {
+  padding-bottom:5px;
+  padding-top:5px;
+}
+
 /*************** End Dialog ********************/
 
 /*************** Wizard ********************/

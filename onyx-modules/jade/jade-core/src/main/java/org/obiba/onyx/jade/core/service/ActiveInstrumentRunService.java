@@ -184,8 +184,8 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * For each output parameter, performs all integrity checks of type <code>ERROR</code>.
    * 
    * @param outputParams output parameters
-   * @return list of integrity checks that failed (empty list if none)
+   * @return list of integrity checks (description) that failed (empty list if none)
    */
-  public List<IntegrityCheck> checkIntegrity(List<InstrumentOutputParameter> outputParams);
+  public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams);
 
 }

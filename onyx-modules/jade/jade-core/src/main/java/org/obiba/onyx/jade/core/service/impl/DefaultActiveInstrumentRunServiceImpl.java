@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.service.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -547,8 +548,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRun);
   }
 
-  public List<IntegrityCheck> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
-    List<IntegrityCheck> failedChecks = new ArrayList<IntegrityCheck>();
+  public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
+    HashMap<IntegrityCheck, InstrumentOutputParameter> failedChecks = new HashMap<IntegrityCheck, InstrumentOutputParameter>();
 
     for(InstrumentOutputParameter param : outputParams) {
       List<IntegrityCheck> integrityChecks = param.getIntegrityChecks();
@@ -566,9 +567,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
           Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
 
           if(!integrityCheck.checkParameterValue(param, paramData, null, this)) {
-            failedChecks.add(integrityCheck);
-            // MessageSourceResolvable resolvable = integrityCheck.getDescription(param, this);
-            // error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+            failedChecks.put(integrityCheck, param);
             checkFailed = true;
           }
         }

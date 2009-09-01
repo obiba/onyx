@@ -30,6 +30,7 @@
 		
 		<div wicket:id="confirmDeleteMeasureDialog"/>
 		<div wicket:id="measuresDetailsDialog"></div>
+		<div wicket:id="invalidMeasureDetailsDialog"></div>
 		
 		<wicket:fragment wicket:id="measureDetails">
 			<table>
@@ -50,6 +51,12 @@
 					<td><div wicket:id="measureMethod"/></td>
 				</tr>						
 			</table>	
+		</wicket:fragment>
+		
+		<wicket:fragment wicket:id="invalidMeasureDetailsFragment">
+			<div wicket:id="invalidMeasureMessage">
+				<span wicket:id="errorMessage"/>	
+			</div>
 		</wicket:fragment>
 		
 		<wicket:fragment wicket:id="measureActionsFragment">
