@@ -13,44 +13,38 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.core.service.PersistenceManager;
+import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.core.test.spring.Dataset;
 import org.obiba.core.util.FileUtil;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.domain.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
  */
-public class DefaultAppointmentManagementServiceImplTest {
+@Transactional
+public class DefaultAppointmentManagementServiceImplTest extends BaseDefaultSpringContextTestCase {
 
-  // private ApplicationConfiguration config;
-
-  // private ApplicationConfigurationService configServiceMock;
-  //
-  // private UserSessionService userSessionServiceMock;
-  //
-  // private ParticipantService participantServiceMock;
-  //
-  // private ParticipantReader participantReaderMock;
+  @Autowired(required = true)
+  private PersistenceManager persistenceManager;
 
   private DefaultAppointmentManagementServiceImpl appointmentServiceImpl;
 
   @Before
   public void setUp() {
-    // configServiceMock = createMock(ApplicationConfigurationService.class);
-    // userSessionServiceMock = createMock(UserSessionService.class);
-    // participantServiceMock = createMock(ParticipantService.class);
-    // participantReaderMock = createMock(ParticipantReader.class);
-
     appointmentServiceImpl = new DefaultAppointmentManagementServiceImpl();
     appointmentServiceImpl.setResourceLoader(new PathMatchingResourcePatternResolver());
-
-    // config = new ApplicationConfiguration();
-    // config.setSiteNo("cag001");
+    appointmentServiceImpl.setPersistenceManager(persistenceManager);
   }
 
   @Test
@@ -99,37 +93,21 @@ public class DefaultAppointmentManagementServiceImplTest {
   // @Test
   public void testUpdateAppointments() throws IllegalArgumentException, IOException {
     // TODO: Implement this test
-    // setDirectories();
-    //
-    // expect(userSessionServiceMock.getUser()).andReturn(getUser());
-    // expect(configServiceMock.getApplicationConfiguration()).andReturn(config);
-    // // participantServiceMock.cleanUpAppointment();
-    // participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>)
-    // EasyMock.anyObject());
-    // expectLastCall().times(1);
-    // expect(participantReaderMock.accept((File) EasyMock.anyObject(), (String)
-    // EasyMock.anyObject())).andReturn(true).times(6);
-    //
-    // replay(userSessionServiceMock);
-    // replay(configServiceMock);
-    // replay(participantServiceMock);
-    // replay(participantReaderMock);
-    //
-    // appointmentServiceImpl.updateAppointments();
-    // Assert.assertTrue(appointmentServiceImpl.getInputDir().list(appointmentServiceImpl.getFilter()).length == 0);
-    // Assert.assertTrue(appointmentServiceImpl.getOutputDir().list(appointmentServiceImpl.getFilter()).length == 2);
-    //
-    // verify(userSessionServiceMock);
-    // verify(configServiceMock);
-    // verify(participantServiceMock);
-    // verify(participantReaderMock);
-
   }
 
-  // @Test
-  // @Dataset
+  @Test
+  @Dataset
   public void testSaveAppointmentUpdateStats() {
-    // TODO: Implement this test
+    Date currentDate = new Date();
+    AppointmentUpdateStats appointmentUpdateStats = new AppointmentUpdateStats(currentDate, 43, 2, 20, 3);
+    appointmentServiceImpl.saveAppointmentUpdateStats(appointmentUpdateStats);
+
+    AppointmentUpdateStats persistedUpdateStats = persistenceManager.get(AppointmentUpdateStats.class, 1l);
+    Assert.assertEquals(currentDate, persistedUpdateStats.getDate());
+    Assert.assertEquals(43, (int) persistedUpdateStats.getAddedParticipants());
+    Assert.assertEquals(2, (int) persistedUpdateStats.getUpdatedParticipants());
+    Assert.assertEquals(20, (int) persistedUpdateStats.getIgnoredParticipants());
+    Assert.assertEquals(3, (int) persistedUpdateStats.getUnreadableParticipants());
   }
 
   private void setDirectories() {
