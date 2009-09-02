@@ -35,6 +35,7 @@
           <ref bean="jade-schemaUpgrade-1.5.0" />
           <ref bean="onyx-schemaUpgrade-1.5.0" />
           <ref bean="onyx-dataUpgrade-1.5.0"/>
+          <ref bean="schemaUpgrade-1.5.1" />
           <ref bean="schemaUpgrade-1.6.0" />
         </list>
      </property>
@@ -99,6 +100,13 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
     
+  <bean id="schemaUpgrade-1.5.1" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.5.1.sql"/>
+    <property name="description" value="Add indexes to various tables."/>
+    <property name="appliesTo" value="1.5.1" />
+  </bean>
+
   <bean id="schemaUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource"/>
     <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.6.0-mysql.sql"/>

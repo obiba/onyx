@@ -20,12 +20,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
+@Table(appliesTo = "open_answer", indexes = { @Index(name = "open_answer_definition_name_index", columnNames = { "openAnswerDefinitionName" }) })
 public class OpenAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8772952316177874064L;
