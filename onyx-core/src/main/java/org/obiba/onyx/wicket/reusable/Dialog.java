@@ -197,7 +197,7 @@ public class Dialog extends ModalWindow {
 
   public void setOptions(Option option, String... labels) {
     if(option == null) {
-      setEnabledOptions(true, false, false, false, false);
+      setEnabledOptions(false, false, false, false, false);
       return;
     }
 

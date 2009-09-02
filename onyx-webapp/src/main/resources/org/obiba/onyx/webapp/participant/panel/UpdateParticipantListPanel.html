@@ -1,0 +1,25 @@
+<wicket:panel>
+	<div wicket:id="contentFragment" />
+</wicket:panel>
+
+<wicket:fragment wicket:id="confirmationFragment">
+    <div class="dialogContent smallTopMargin">
+      <img src="question.gif" wicket:id="confirmIcon" class="dialogIcon" />
+      <div wicket:id="confirmMessage" class="dialogMessage" />
+    </div>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="progressFragment">
+  <div class="dialogContent largeTopMargin centeredHorizontally">
+    <span wicket:id="progressLabel">Progress Label</span>
+    <div>
+      <img src="progress.gif" wicket:id="progressImage" class="progressBar" />
+    </div>
+  </div>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="resultFragment">
+  <div class="dialogContent largeTopMargin centeredHorizontally">
+    <span wicket:id="resultLabel">Result Label</span>
+  </div>
+</wicket:fragment>

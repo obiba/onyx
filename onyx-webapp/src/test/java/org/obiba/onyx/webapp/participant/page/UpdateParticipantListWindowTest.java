@@ -10,13 +10,13 @@
 package org.obiba.onyx.webapp.participant.page;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.webapp.participant.panel.UpdateParticipantListPanel;
 
 public class UpdateParticipantListWindowTest {
   //
@@ -41,9 +41,9 @@ public class UpdateParticipantListWindowTest {
   @Test
   public void testShowConfirmationOnCreation() {
     UpdateParticipantListWindow window = new UpdateParticipantListWindow("window");
+    Component confirmationFragment = getContentFragment(window);
 
-    Component confirmationFragment = window.get("content:contentFragment");
-    Assert.assertTrue(confirmationFragment instanceof UpdateParticipantListWindow.ConfirmationFragment);
+    Assert.assertTrue(confirmationFragment instanceof UpdateParticipantListPanel.ConfirmationFragment);
   }
 
   @Test
@@ -52,7 +52,7 @@ public class UpdateParticipantListWindowTest {
     window.showConfirmation();
 
     Component confirmationFragment = getContentFragment(window);
-    Assert.assertTrue(confirmationFragment instanceof UpdateParticipantListWindow.ConfirmationFragment);
+    Assert.assertTrue(confirmationFragment instanceof UpdateParticipantListPanel.ConfirmationFragment);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class UpdateParticipantListWindowTest {
     window.showProgress();
 
     Component progressFragment = getContentFragment(window);
-    Assert.assertTrue(progressFragment instanceof UpdateParticipantListWindow.ProgressFragment);
+    Assert.assertTrue(progressFragment instanceof UpdateParticipantListPanel.ProgressFragment);
   }
 
   @Test
@@ -70,7 +70,7 @@ public class UpdateParticipantListWindowTest {
     window.showResult(true);
 
     Fragment resultFragment = getContentFragment(window);
-    Assert.assertTrue(resultFragment instanceof UpdateParticipantListWindow.ResultFragment);
+    Assert.assertTrue(resultFragment instanceof UpdateParticipantListPanel.ResultFragment);
 
     Label resultLabel = (Label) resultFragment.get("resultLabel");
     Assert.assertEquals("ParticipantsListSuccessfullyUpdated", resultLabel.getModelObject());
@@ -82,7 +82,7 @@ public class UpdateParticipantListWindowTest {
     window.showResult(false);
 
     Fragment resultFragment = getContentFragment(window);
-    Assert.assertTrue(resultFragment instanceof UpdateParticipantListWindow.ResultFragment);
+    Assert.assertTrue(resultFragment instanceof UpdateParticipantListPanel.ResultFragment);
 
     Label resultLabel = (Label) resultFragment.get("resultLabel");
     Assert.assertEquals("ParticipantListUpdateFailed", resultLabel.getModelObject());
@@ -92,7 +92,8 @@ public class UpdateParticipantListWindowTest {
   // Helper Methods
   //
 
-  private Fragment getContentFragment(MarkupContainer container) {
-    return (Fragment) container.get("content:contentFragment");
+  private Fragment getContentFragment(UpdateParticipantListWindow window) {
+    UpdateParticipantListPanel panel = window.getContent();
+    return (Fragment) panel.get("contentFragment");
   }
 }
