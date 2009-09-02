@@ -2,20 +2,16 @@
 <instrumentType>
 
   <name>ECG</name>
-
-  <!-- <contraindications>(removed)
-   <contraIndication>
-      <code>Other_CI</code>
-      <requiresDescription>true</requiresDescription>
-      <type>OBSERVED</type>
-    </contraIndication>
-  </contraindications> -->
+  
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">3</data>
+  </expectedMeasureCount>
 
   <instrumentParameters>
     <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>     
       <dataSource class="fixedDataSource">
         <data type="TEXT">TEST DEMO 000000</data>
       </dataSource>
@@ -24,7 +20,7 @@
     <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>     
       <dataSource class="fixedDataSource">
         <data type="TEXT">TEST-DEMO</data>
       </dataSource>
@@ -33,7 +29,7 @@
     <input>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>  
       <dataSource class="fixedDataSource">
         <data type="TEXT">TEST-DEMO</data>
       </dataSource>
@@ -438,6 +434,7 @@
       <vendorName>xmlFile</vendorName>
       <code>RES_XML_FILE</code>
       <dataType>DATA</dataType>
+      <mimeType>text/xml</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
@@ -445,6 +442,7 @@
       <vendorName>pdfFile</vendorName>
       <code>RES_PDF_FILE</code>
       <dataType>DATA</dataType>
+      <mimeType>application/pdf</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
   </instrumentParameters>

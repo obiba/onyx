@@ -26,8 +26,12 @@
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>lastName</property>
+      <dataSource class="hashedDataSource">  
+        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>        
+        <hashedStringMaxLength>10</hashedStringMaxLength>        
+        <dataSource class="participantPropertyDataSource">
+          <property>lastName</property>
+        </dataSource>
       </dataSource>
     </input>
 
@@ -35,8 +39,12 @@
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>firstName</property>
+      <dataSource class="hashedDataSource">  
+        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>         
+        <hashedStringMaxLength>10</hashedStringMaxLength>        
+        <dataSource class="participantPropertyDataSource">
+          <property>firstName</property>
+        </dataSource>
       </dataSource>
     </input>
 

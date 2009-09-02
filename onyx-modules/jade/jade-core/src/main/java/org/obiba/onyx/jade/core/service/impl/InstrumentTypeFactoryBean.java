@@ -21,6 +21,7 @@ import java.util.Set;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FirstNotNullDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.HashedDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -151,6 +152,7 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ApplicationContex
     xstream.alias("instrumentParameterDataSource", InstrumentParameterDataSource.class);
     xstream.alias("firstNotNullDataSource", FirstNotNullDataSource.class);
     xstream.alias("computingDataSource", ComputingDataSource.class);
+    xstream.alias("hashedDataSource", HashedDataSource.class);
 
     xstream.alias("equalsValueCheck", EqualsValueCheck.class);
     xstream.alias("equalsParameterCheck", EqualsParameterCheck.class);

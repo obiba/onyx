@@ -16,8 +16,11 @@
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>barcode</property>
+      <dataSource class="hashedDataSource">  
+        <hashedStringMaxLength>10</hashedStringMaxLength>  
+        <dataSource class="participantPropertyDataSource">
+          <property>barcode</property>
+        </dataSource>
       </dataSource>
     </input>
 
@@ -25,8 +28,11 @@
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>lastName</property>
+      <dataSource class="hashedDataSource">  
+        <hashedStringMaxLength>10</hashedStringMaxLength>  
+        <dataSource class="participantPropertyDataSource">
+          <property>lastName</property>
+        </dataSource>    
       </dataSource>
     </input>
 
@@ -34,8 +40,11 @@
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>firstName</property>
+      <dataSource class="hashedDataSource">  
+        <hashedStringMaxLength>10</hashedStringMaxLength>     
+        <dataSource class="participantPropertyDataSource">
+          <property>firstName</property>
+        </dataSource>
       </dataSource>
     </input>
 
