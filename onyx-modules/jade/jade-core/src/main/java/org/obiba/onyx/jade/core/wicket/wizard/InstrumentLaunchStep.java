@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.wizard;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -20,6 +21,7 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -28,8 +30,10 @@ import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLaunchPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSourceResolvable;
 
 public class InstrumentLaunchStep extends WizardStepPanel {
 
@@ -75,7 +79,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         return true;
       }
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -129,6 +133,22 @@ public class InstrumentLaunchStep extends WizardStepPanel {
               error(getString("NoInstrumentDataSaveThem"));
               setNextStep(null);
               break;
+            }
+          }
+
+          if(completed) {
+            // Perform each output parameter's integrity checks.
+            Map<IntegrityCheck, InstrumentOutputParameter> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams);
+
+            for(Map.Entry<IntegrityCheck, InstrumentOutputParameter> entry : failedChecks.entrySet()) {
+              MessageSourceResolvable resolvable = entry.getKey().getDescription(entry.getValue(), activeInstrumentRunService);
+              error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+            }
+
+            if(failedChecks.isEmpty()) {
+              ((InstrumentWizardForm) form).setUpWizardFlow();
+            } else {
+              setNextStep(null);
             }
           }
         } else {
