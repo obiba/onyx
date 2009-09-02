@@ -16,9 +16,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
+@Table(appliesTo = "category_answer", indexes = { @Index(name = "category_name_index", columnNames = { "categoryName" }) })
 public class CategoryAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8308345423791582240L;

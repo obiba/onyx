@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 
@@ -25,6 +27,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
 @Entity
+@Table(appliesTo = "consent", indexes = { @Index(name = "deleted_index", columnNames = { "deleted" }) })
 public class Consent extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;

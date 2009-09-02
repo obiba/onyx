@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.util.data.Data;
@@ -29,6 +31,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
+@Table(appliesTo = "instrument_run_value", indexes = { @Index(name = "instrument_parameter_index", columnNames = { "instrumentParameter" }) })
 public class InstrumentRunValue extends AbstractEntity {
 
   private static final long serialVersionUID = 267079755213810737L;
