@@ -135,7 +135,9 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     }
     log.debug("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
 
-    log.info("TransitionEventLog: {}/{}/{}/{}/{}", new Object[] { stage.getName(), fromState, event, currentState.getName(), userSessionService.getUser().getLogin() });
+    if(userSessionService != null) {
+      log.info("TransitionEventLog: {}/{}/{}/{}/{}", new Object[] { stage.getName(), fromState, event, currentState.getName(), userSessionService.getUser().getLogin() });
+    }
 
     saveState();
   }
