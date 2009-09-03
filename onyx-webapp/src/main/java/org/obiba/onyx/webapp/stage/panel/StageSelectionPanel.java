@@ -221,8 +221,6 @@ public abstract class StageSelectionPanel extends Panel {
         List<Action> interviewActions;
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          interviewComments = activeInterviewService.getInterviewComments();
-          interviewActions = activeInterviewService.getInterviewActions();
           Stage stage = (Stage) rowModel.getObject();
 
           final String stageName = stage.getName();
@@ -261,6 +259,10 @@ public abstract class StageSelectionPanel extends Panel {
         }
 
         private boolean logEntryExistsForStage(String stageName) {
+          if(interviewActions == null) {
+            interviewActions = activeInterviewService.getInterviewActions();
+          }
+
           for(Action action : interviewActions) {
             if(action.getStage() != null && action.getStage().equals(stageName)) {
               return true;
@@ -270,6 +272,10 @@ public abstract class StageSelectionPanel extends Panel {
         }
 
         private boolean logCommentExistsForStage(String stageName) {
+          if(interviewComments == null) {
+            interviewComments = activeInterviewService.getInterviewComments();
+          }
+
           for(Action action : interviewComments) {
             if(action.getStage() != null && action.getStage().equals(stageName)) {
               return true;
