@@ -97,17 +97,13 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
         getPersistenceManager().refresh(participant);
       }
 
-      log.info("User {} has locked interview for participant {}.", userSessionService.getUser().getLogin(), participant.getBarcode());
       return participant.getInterview();
     }
     throw new IllegalStateException("Cannot obtain interview. Interview is locked.");
   }
 
   synchronized public Interview overrideInterview(Participant participant) {
-    InterviewLock existingLock = findLock(participant);
-    if(existingLock != null) {
-      this.interviewLocks.remove(existingLock);
-    }
+    unlockInterview(findLock(participant));
     lockInterview(participant);
     return participant.getInterview();
   }
@@ -117,15 +113,20 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
   }
 
   synchronized public void releaseInterview(String sessionId) {
-    InterviewLock existingLock = findLock(sessionId);
-    if(existingLock != null) {
-      this.interviewLocks.remove(existingLock);
+    unlockInterview(findLock(sessionId));
+  }
+
+  protected void unlockInterview(InterviewLock lock) {
+    if(lock != null) {
+      log.info("User {} has locked interview during {}s for participant {}.", new Object[] { lock.getOperator().getLogin(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getBarcode() });
+      this.interviewLocks.remove(lock);
     }
   }
 
   protected InterviewLock lockInterview(Participant participant) {
     InterviewLock lock = new InterviewLock(participant);
     interviewLocks.add(lock);
+    log.info("User {} has locked interview for participant {}.", userSessionService.getUser().getLogin(), participant.getBarcode());
     return lock;
   }
 
@@ -155,10 +156,17 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
     private Serializable operatorId;
 
+    private long timeLock;
+
     InterviewLock(Participant participant) {
       this.participantId = participant.getId();
       this.operatorSessionId = userSessionService.getSessionId();
       this.operatorId = userSessionService.getUser().getId();
+      this.timeLock = System.currentTimeMillis();
+    }
+
+    public long getTimeLock() {
+      return timeLock;
     }
 
     public Participant getParticipant() {
