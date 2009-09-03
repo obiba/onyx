@@ -37,6 +37,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="userSessionService" ref="userSessionService" />
   </bean>
 
   <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultApplicationConfigurationServiceImpl">

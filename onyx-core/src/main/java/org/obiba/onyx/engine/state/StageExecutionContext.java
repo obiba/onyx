@@ -22,6 +22,7 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -48,6 +49,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   private ModuleRegistry moduleRegistry;
 
+  private UserSessionService userSessionService;
+
   private Stage stage;
 
   private Interview interview;
@@ -68,6 +71,14 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
     this.moduleRegistry = moduleRegistry;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
   public void addTransitionListener(ITransitionListener listener) {
@@ -96,7 +107,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void castEvent(TransitionEvent event) {
-    log.info("castEvent({}) from stage '{}' in state '{}'", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
+    String fromState = currentState.getName();
+    log.debug("castEvent({}) from stage '{}' in state '{}'", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
       IStageExecution newState = stateEdges.get(event);
@@ -122,6 +134,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
       }
     }
     log.debug("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
+
+    log.info("TransitionEventLog: {}/{}/{}/{}/{}", new Object[] { stage.getName(), fromState, event, currentState.getName(), userSessionService.getUser().getLogin() });
 
     saveState();
   }
@@ -223,15 +237,18 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void onTransition(IStageExecution execution, TransitionEvent event) {
-    log.debug("Stage {} in state {} receiving onTransition({}, {})", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), execution.getName(), event });
+    log.debug("Stage {} in state {} receiving onTransition({}, {})", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), execution.toString(), event });
     if(currentState instanceof ITransitionListener) {
       ((ITransitionListener) currentState).onTransition(execution, event);
     }
   }
 
   public String getName() {
-    // do not expose current state name
-    return stage.getModule() + ":" + stage.getName();
+    return currentState.getName();
+  }
+
+  public String toString() {
+    return stage.getModule() + ":" + stage.getName() + ":" + getName();
   }
 
   public void setReason(Action reason) {
