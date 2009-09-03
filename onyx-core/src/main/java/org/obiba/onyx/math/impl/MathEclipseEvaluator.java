@@ -112,7 +112,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     DoubleEvaluator engine = createEvaluator();
     String newExpression = defineDefaultVariables(engine, algorithm, participant);
     newExpression = defineVariables(engine, newExpression, datas);
-    log.info("Evaluating {}", newExpression);
+    log.debug("Evaluating {}", newExpression);
     double d = engine.evaluate("If[" + newExpression + ", 1, 0]");
     return d == 1d;
   }
