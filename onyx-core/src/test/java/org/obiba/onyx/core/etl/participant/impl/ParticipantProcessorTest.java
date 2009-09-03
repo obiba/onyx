@@ -399,7 +399,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     p2.setLastName("Smith");
     p2.setSiteNo("cag001");
 
-    a = new Appointment(p2, getDate(2009, 9, 2, 9, 0));
+    a = new Appointment(p2, getDate(2050, 9, 2, 9, 0));
     a.setAppointmentCode("100002");
     p2.setAppointment(a);
 
@@ -419,7 +419,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     p3.setLastName("Casserly");
     p3.setSiteNo("cag001");
 
-    a = new Appointment(p3, getDate(2009, 9, 3, 9, 0));
+    a = new Appointment(p3, getDate(2050, 9, 3, 9, 0));
     a.setAppointmentCode("100003");
     p3.setAppointment(a);
 
