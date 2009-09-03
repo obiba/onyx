@@ -102,6 +102,7 @@ public abstract class StageSelectionPanel extends Panel {
           target.addComponent(list);
           StageSelectionPanel.this.onActionPerformed(target, stage, action);
         } else {
+          log.debug("GOTO stage {}/{}", stage.getName(), action.getDateTime());
           setResponsePage(new StagePage(new StageModel(moduleRegistry, stage)));
         }
       }

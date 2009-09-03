@@ -73,8 +73,10 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
         public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
           IStageExecution exec = activeInterviewService.getStageExecution(stage);
           if(!exec.isInteractive()) {
+            log.debug("BACK from Stage {}/{}/{}", new Object[] { stage.getName(), action.getDateTime(), exec.getName() });
             setResponsePage(InterviewPage.class);
           } else {
+            log.debug("STAY in stage");
             setResponsePage(new StagePage(StagePage.this.getModel()));
           }
         }
