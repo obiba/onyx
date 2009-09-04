@@ -2,8 +2,18 @@
 <instrumentType>
 
   <name>CognitiveTest</name>
-
   <instrumentParameters>
+  
+    <input> 
+      <code>COGNITIVE_TEST_LANGUAGE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <allowedValues>
+        <data type="TEXT">ENGLISH</data>
+        <data type="TEXT">FRENCH</data>
+      </allowedValues>  
+    </input>  
+  
     <output>
       <vendorName>RESULT_FILE</vendorName>
       <code>RES_RESULT_FILE</code>

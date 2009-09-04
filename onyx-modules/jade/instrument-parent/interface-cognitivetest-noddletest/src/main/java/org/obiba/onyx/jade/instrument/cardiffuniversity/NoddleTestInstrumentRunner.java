@@ -89,8 +89,8 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
     params.append(" /c" + CLINIC_NAME + "_");
 
-    String language = instrumentExecutionService.getInstrumentOperatorLocale().toString().startsWith("fr") ? "F" : "E";
-    params.append(" /l" + instrumentExecutionService.getInstrumentOperatorLocale());
+    String language = instrumentExecutionService.getInputParameterValue("COGNITIVE_TEST_LANGUAGE").getValueAsString().equals("FRENCH") ? "F" : "E";
+    params.append(" /l" + language);
 
     externalAppHelper.setParameterStr(params.toString());
     externalAppHelper.launch();
