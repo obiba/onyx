@@ -137,7 +137,8 @@
     <askParticipantId>true</askParticipantId>    
     <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
-    <reasonMandatory>false</reasonMandatory>     
+    <reasonMandatory>false</reasonMandatory>    
+    <commentNote>action.COMPLETE.InProgress.Jade.CommentNote</commentNote>      
   </actionDefinition> 
   <actionDefinition>
     <code>action.STOP.Skipped.Jade</code>

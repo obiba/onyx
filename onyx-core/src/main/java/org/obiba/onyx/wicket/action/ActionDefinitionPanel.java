@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
@@ -98,6 +99,10 @@ public abstract class ActionDefinitionPanel extends Panel {
     });
     add(barcode.setEnabled(definition.isAskParticipantId()));
 
+    Object commentNoteKey = new PropertyModel(definition, "commentNote").getObject();
+    String defaultNote = new StringResourceModel("AnonymousComments", this, null).getString();
+    add(new Label("commentNote", new SpringStringResourceModel(commentNoteKey != null ? commentNoteKey.toString() : "", defaultNote).getString()));
+
     TextArea commentArea = new TextArea("comment", new PropertyModel(this, "action.comment"));
     commentArea.setRequired(definition.isCommentMandatory());
     commentArea.add(new StringValidator.MaximumLengthValidator(2000));
@@ -168,4 +173,5 @@ public abstract class ActionDefinitionPanel extends Panel {
   public void setFeedback(FeedbackWindow feedback) {
     this.feedback = feedback;
   }
+
 }

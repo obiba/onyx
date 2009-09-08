@@ -21,6 +21,9 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
  * 
  * @see ActionType
  */
+/**
+ * 
+ */
 public class ActionDefinition implements Serializable {
 
   private static final long serialVersionUID = 5052458659458743800L;
@@ -44,6 +47,11 @@ public class ActionDefinition implements Serializable {
    * Says if a comment is mandatory.
    */
   private boolean commentMandatory = true;
+
+  /**
+   * Note related to the comment. To be displayed to the user on the UI.
+   */
+  private String commentNote;
 
   /**
    * Says if a reason is mandatory.
@@ -70,6 +78,7 @@ public class ActionDefinition implements Serializable {
     this.code = rhs.code;
     this.askPassword = rhs.askPassword;
     this.askParticipantId = rhs.askParticipantId;
+    this.commentNote = rhs.commentNote;
     this.commentMandatory = rhs.commentMandatory;
     this.reasonMandatory = rhs.reasonMandatory;
     this.defaultReason = rhs.defaultReason;
@@ -150,6 +159,14 @@ public class ActionDefinition implements Serializable {
   @Override
   public String toString() {
     return code.toString();
+  }
+
+  public String getCommentNote() {
+    return commentNote;
+  }
+
+  public void setCommentNote(String commentNote) {
+    this.commentNote = commentNote;
   }
 
 }
