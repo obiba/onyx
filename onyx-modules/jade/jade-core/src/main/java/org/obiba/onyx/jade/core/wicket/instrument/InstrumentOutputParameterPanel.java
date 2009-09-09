@@ -74,7 +74,7 @@ public class InstrumentOutputParameterPanel extends Panel {
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
 
-    if(!instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
+    if(getOutputParametersOriginallyMarkedForManualCapture().size() == 0) {
       add(new EmptyPanel("outputs"));
     } else {
       add(new OutputFragment("outputs"));
@@ -85,6 +85,19 @@ public class InstrumentOutputParameterPanel extends Panel {
     } else {
       add(new InputFragment("inputs"));
     }
+  }
+
+  private List<InstrumentOutputParameter> getOutputParametersOriginallyMarkedForManualCapture() {
+    List<InstrumentOutputParameter> result = new ArrayList<InstrumentOutputParameter>();
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL);
+
+    for(InstrumentOutputParameter param : outputParams) {
+      if(!param.isManualCaptureAllowed()) {
+        result.add(param);
+      }
+    }
+    return result;
   }
 
   public void saveOutputInstrumentRunValues() {
@@ -107,7 +120,7 @@ public class InstrumentOutputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(InstrumentOutputParameter param : activeInstrumentRunService.getInstrumentType().getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+      for(InstrumentOutputParameter param : getOutputParametersOriginallyMarkedForManualCapture()) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 

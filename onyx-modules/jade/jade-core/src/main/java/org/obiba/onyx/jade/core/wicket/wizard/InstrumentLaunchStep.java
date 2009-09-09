@@ -97,21 +97,36 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         boolean completed = true;
 
         if(!instrumentType.isRepeatable()) {
-          for(InstrumentOutputParameter param : outputParams) {
-            InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
-            if(runValue == null) {
-              completed = false;
-            } else {
-              Data data = runValue.getData(param.getDataType());
-              if(data == null || data.getValue() == null) {
-                completed = false;
+          if(isOutputParamCapturedManually()) {
+            for(InstrumentOutputParameter param : instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+              if(param.isManualCaptureAllowed()) {
+                InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
+                if(param.isRequired(activeInstrumentRunService.getParticipant()) && runValue == null) {
+                  log.warn("Missing value for the following manually captured and required output parameter: {}", param.getVendorName());
+                  error(getString("NoInstrumentDataSaveThem"));
+                  completed = false;
+                  setNextStep(null);
+                  break;
+                }
               }
             }
-            if(!completed) {
-              log.warn("Missing value for the following output parameter: {}", param.getVendorName());
-              error(getString("NoInstrumentDataSaveThem"));
-              setNextStep(null);
-              break;
+          } else {
+            for(InstrumentOutputParameter param : outputParams) {
+              InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
+              if(runValue == null) {
+                completed = false;
+              } else {
+                Data data = runValue.getData(param.getDataType());
+                if(data == null || data.getValue() == null) {
+                  completed = false;
+                }
+              }
+              if(!completed) {
+                log.warn("Missing value for the following output parameter: {}", param.getVendorName());
+                error(getString("NoInstrumentDataSaveThem"));
+                setNextStep(null);
+                break;
+              }
             }
           }
         } else {
@@ -144,6 +159,18 @@ public class InstrumentLaunchStep extends WizardStepPanel {
       error(getString("InstrumentApplicationMustBeStarted"));
       setNextStep(null);
     }
+  }
+
+  private boolean isOutputParamCapturedManually() {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL);
+    for(InstrumentOutputParameter param : outputParams) {
+      InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
+      if(param.isManualCaptureAllowed() && runValue != null && runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
