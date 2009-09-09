@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -333,7 +336,7 @@ public class InstrumentWizardForm extends WizardForm {
 
     // are there output parameters that are to be captured manually from instrument ?
     log.debug("instrumentOutputParameters.MANUAL.count={}", instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
-    if(instrumentType.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
+    if(getOutputParametersOriginallyMarkedForManualCapture().size() > 0) {
       if(startStep == null || startStep.equals(outputParametersStep)) {
         startStep = outputParametersStep;
         lastStep = startStep;
@@ -370,7 +373,7 @@ public class InstrumentWizardForm extends WizardForm {
     WizardStepPanel resumingStartStep = null;
     if(hasSomeOrAllOutputParameterValues()) {
       log.info("Has all output values.");
-      if(instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size() > 0) {
+      if(getOutputParametersOriginallyMarkedForManualCapture().size() > 0) {
         log.info("Resume at outputParametersStep.");
         resumingStartStep = outputParametersStep;
       } else {
@@ -402,7 +405,7 @@ public class InstrumentWizardForm extends WizardForm {
           log.info("Resume at askedContraIndicationStep.");
           resumingStartStep = askedContraIndicationStep;
         } else {
-          if(instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size() > 0) {
+          if(getOutputParametersOriginallyMarkedForManualCapture().size() > 0) {
             log.info("Resume at outputParametersStep.");
             resumingStartStep = outputParametersStep;
           } else {
@@ -570,6 +573,19 @@ public class InstrumentWizardForm extends WizardForm {
       }
     }
     return false;
+  }
+
+  private List<InstrumentOutputParameter> getOutputParametersOriginallyMarkedForManualCapture() {
+    List<InstrumentOutputParameter> result = new ArrayList<InstrumentOutputParameter>();
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL);
+
+    for(InstrumentOutputParameter param : outputParams) {
+      if(!param.isManualCaptureAllowed()) {
+        result.add(param);
+      }
+    }
+    return result;
   }
 
 }
