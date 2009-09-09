@@ -32,6 +32,8 @@ public class InstrumentType {
 
   private List<Contraindication> contraindications;
 
+  private boolean allowPartial;
+
   public InstrumentType() {
   }
 
@@ -116,8 +118,8 @@ public class InstrumentType {
   }
 
   /**
-   * Returns a list of {@link InstrumentOutputParameter}s that permit manual capture. Normally these parameters would be
-   * captured automatically, but if required they may also be captured manually.
+   * Returns a list of {@link InstrumentOutputParameter}s that permit manual capture. Normally these parameters would
+   * be captured automatically, but if required they may also be captured manually.
    * @return A list of output parameters that permit manual capture.
    */
   public List<InstrumentOutputParameter> getManualCaptureAllowedOutputParameters() {
@@ -173,8 +175,8 @@ public class InstrumentType {
   }
 
   /**
-   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a data
-   * source.
+   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a
+   * data source.
    * 
    * @param parameterType type of parameter to return (i.e., the class)
    * @param hasDataSource indicates whether the parameters returned should include those with or without a data source
@@ -345,5 +347,13 @@ public class InstrumentType {
   @Override
   public String toString() {
     return name;
+  }
+
+  public boolean isAllowPartial() {
+    return allowPartial;
+  }
+
+  public void setAllowPartial(boolean allowPartial) {
+    this.allowPartial = allowPartial;
   }
 }

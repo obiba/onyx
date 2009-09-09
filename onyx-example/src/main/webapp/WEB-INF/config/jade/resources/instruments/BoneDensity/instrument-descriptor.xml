@@ -3,6 +3,8 @@
 
   <name>BoneDensity</name>
   
+  <allowPartial>true</allowPartial>
+  
   <contraindications>
     <contraIndication>
       <code>OpenWoundsBreaksSoresOnFeet</code>
