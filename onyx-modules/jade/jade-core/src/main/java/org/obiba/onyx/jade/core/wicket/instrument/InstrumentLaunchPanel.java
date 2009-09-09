@@ -213,7 +213,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
 
     skipMeasure = new SkipMeasureFragment("skipMeasure");
-    skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
+    skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable() && activeInstrumentRunService.getInstrumentType().isAllowPartial());
     skipMeasure.setOutputMarkupId(true);
     add(skipMeasure);
 
