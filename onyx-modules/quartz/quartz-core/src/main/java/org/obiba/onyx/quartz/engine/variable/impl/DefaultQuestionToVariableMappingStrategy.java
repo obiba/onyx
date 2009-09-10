@@ -24,6 +24,7 @@ import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableHelper;
+import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -280,12 +281,12 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     OpenAnswerDefinition open = questionCategory.getCategory().getOpenAnswerDefinition();
     if(open != null) {
       if(open.getOpenAnswerDefinitions().size() == 0) {
-        categoryVariable.addVariable(getOpenAnswerVariable(open));
+        categoryVariable.addVariable(getOpenAnswerVariable(questionCategory, open));
       } else {
         // we do not have values for englobing open answer
         // only for children
         for(OpenAnswerDefinition openChild : open.getOpenAnswerDefinitions()) {
-          categoryVariable.addVariable(getOpenAnswerVariable(openChild));
+          categoryVariable.addVariable(getOpenAnswerVariable(questionCategory, openChild));
         }
       }
     }
@@ -297,10 +298,11 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   /**
    * Open answer variable.
+   * @param questionCategory
    * @param openAnswerDefinition
    * @return
    */
-  private Variable getOpenAnswerVariable(OpenAnswerDefinition openAnswerDefinition) {
+  private Variable getOpenAnswerVariable(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
     Variable variable = null;
 
     variable = new Variable(openAnswerDefinition.getName()).setDataType(openAnswerDefinition.getDataType()).setUnit(openAnswerDefinition.getUnit());
@@ -345,6 +347,11 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     }
 
     VariableHelper.addRequiredAttribute(variable, openAnswerDefinition.isRequired());
+
+    // an open answer is implicitly always conditioned by the selection of its parent category.
+    if(questionnaireBundle != null) {
+      VariableHelper.addConditionAttribute(variable, new QuestionnaireDataSource(questionnaireBundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(), questionCategory.getCategory().getName()).toString());
+    }
 
     return variable;
   }
