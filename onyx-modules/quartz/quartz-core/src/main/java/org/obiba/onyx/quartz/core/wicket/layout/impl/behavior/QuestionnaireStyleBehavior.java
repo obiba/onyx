@@ -25,7 +25,7 @@ public class QuestionnaireStyleBehavior extends AbstractBehavior {
 
   @Override
   public void onComponentTag(Component component, ComponentTag tag) {
-    IModel model = component.getModel();
+    IModel model = component.getDefaultModel();
 
     if(QuestionnaireModel.class.isInstance(model)) {
       QuestionnaireModel qModel = (QuestionnaireModel) model;

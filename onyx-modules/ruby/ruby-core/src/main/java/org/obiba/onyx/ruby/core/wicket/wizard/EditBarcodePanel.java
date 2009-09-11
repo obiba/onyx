@@ -46,7 +46,7 @@ public class EditBarcodePanel extends Panel {
     editSampleDialog.setInitialHeight(425);
     editSampleDialog.setInitialWidth(400);
 
-    editSamplePanel = new EditSamplePanel("content", getModel(), tubeRegistrationConfiguration);
+    editSamplePanel = new EditSamplePanel("content", getDefaultModel(), tubeRegistrationConfiguration);
     editSampleDialog.setContent(editSamplePanel);
 
     add(editSampleDialog);

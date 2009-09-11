@@ -27,14 +27,14 @@ public class SimplifiedQuestionPanel extends BaseQuestionPanel {
 
   @Override
   protected void setContent(String id) {
-    Question question = (Question) getModelObject();
+    Question question = (Question) getDefaultModelObject();
 
     if(!question.hasSubQuestions()) {
-      add(new SimplifiedQuestionCategoriesPanel(id, getModel()));
+      add(new SimplifiedQuestionCategoriesPanel(id, getDefaultModel()));
     } else if(!question.hasCategories()) {
       throw new UnsupportedOperationException("Sub questions are not supported in the simplified question UI.");
     } else if(question.isArrayOfSharedCategories()) {
-      add(new SimplifiedQuestionSharedCategoriesPanel(id, getModel()));
+      add(new SimplifiedQuestionSharedCategoriesPanel(id, getDefaultModel()));
     } else {
       throw new UnsupportedOperationException("Joined or shared categories array questions are not supported in the simplified question UI.");
     }

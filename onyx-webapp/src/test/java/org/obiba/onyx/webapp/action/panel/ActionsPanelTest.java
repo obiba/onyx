@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -162,7 +163,7 @@ public class ActionsPanelTest {
 
     // It should have redirected to the interview page, but we didn't Mock the services properly, so the InterviewPage
     // itself then redirected to the HomePage.
-    tester.assertRenderedPage(application.getHomePage());
+    tester.assertRenderedPage((Class<? extends Page>) application.getHomePage());
 
     EasyMock.verify(mockActiveInterviewService, mockStageExecution);
   }

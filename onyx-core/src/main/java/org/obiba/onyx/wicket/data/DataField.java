@@ -60,7 +60,7 @@ public class DataField extends Panel {
    * @param dataType
    * @param unit the representation of the unit for the value
    */
-  public DataField(String id, IModel model, final DataType dataType, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, String unit) {
     super(id, model);
 
     input = new InputFragment("input", model, dataType);
@@ -195,7 +195,7 @@ public class DataField extends Panel {
    * Add a behavior to underlying field.
    * @return this for chaining
    */
-  @Override
+  // @Override
   public Component add(IBehavior behavior) {
     input.getField().add(behavior);
     return this;
@@ -282,11 +282,11 @@ public class DataField extends Panel {
         break;
       case BOOLEAN:
         field = new CheckBox("field", model) {
-          @SuppressWarnings("unchecked")
-          @Override
-          public IConverter getConverter(Class type) {
-            return new DataConverter(dataType);
-          }
+          // @SuppressWarnings("unchecked")
+          // @Override
+          // public IConverter getConverter(Class type) {
+          // return new DataConverter(dataType);
+          // }
 
           @Override
           public boolean isRequired() {

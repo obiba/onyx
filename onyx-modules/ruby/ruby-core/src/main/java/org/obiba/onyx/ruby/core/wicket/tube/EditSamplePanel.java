@@ -54,13 +54,13 @@ public class EditSamplePanel extends Panel {
   }
 
   public void updateSample() {
-    String comment = commentPanel.getCommentField().getModelObjectAsString();
+    String comment = commentPanel.getCommentField().getDefaultModelObjectAsString();
 
     if(comment != null && comment.trim().length() == 0) {
       comment = null;
     }
 
-    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) getModelObject();
+    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) getDefaultModelObject();
     String participantBarcode = registeredParticipantTube.getBarcode();
     activeTubeRegistrationService.setTubeComment(participantBarcode, comment);
     activeTubeRegistrationService.setTubeRemark(participantBarcode, remarkPanel.getSelectedRemark());

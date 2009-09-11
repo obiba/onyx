@@ -40,6 +40,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.etl.participant.impl.ParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
@@ -74,6 +75,8 @@ public class ParticipantSearchPageTest {
 
   private PrintableReportsRegistry mockPrintableReportsRegistery;
 
+  private ParticipantReader mockParticipantReader;
+
   private List<Participant> participants;
 
   @Before
@@ -99,6 +102,9 @@ public class ParticipantSearchPageTest {
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
     mockParticipantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
     mockCtx.putBean("participantMetadata", mockParticipantMetadata);
+
+    mockParticipantReader = (ParticipantReader) context.getBean("participantReader");
+    mockCtx.putBean("participantReader", mockParticipantReader);
 
     MockSpringApplication application = new MockSpringApplication();
     application.setApplicationContext(mockCtx);

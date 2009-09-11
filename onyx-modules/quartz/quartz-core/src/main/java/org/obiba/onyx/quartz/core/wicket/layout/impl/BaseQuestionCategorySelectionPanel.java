@@ -54,11 +54,11 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
   }
 
   public IModel getQuestionCategoryModel() {
-    return getModel();
+    return getDefaultModel();
   }
 
   public QuestionCategory getQuestionCategory() {
-    return (QuestionCategory) getModel().getObject();
+    return (QuestionCategory) getDefaultModel().getObject();
   }
 
   /**

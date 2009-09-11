@@ -83,7 +83,7 @@ public class InterviewLogPanel extends Panel {
   @SuppressWarnings("unchecked")
   public void addInterviewLogComponent() {
 
-    final List<Action> interviewLogList = (List<Action>) getModelObject();
+    final List<Action> interviewLogList = (List<Action>) getDefaultModelObject();
 
     if(logItemLoop != null) {
       remove(logItemLoop);
@@ -111,7 +111,7 @@ public class InterviewLogPanel extends Panel {
   }
 
   public void setStageName(String stageName) {
-    ((LoadableInterviewLogModel) getModel()).showLogEntriesForStage(stageName);
+    ((LoadableInterviewLogModel) getDefaultModel()).showLogEntriesForStage(stageName);
     addInterviewLogComponent();
   }
 
@@ -121,7 +121,7 @@ public class InterviewLogPanel extends Panel {
     public CommentFragment(String id, String markupId, MarkupContainer markupContainer, IModel model, int iteration) {
       super(id, markupId, markupContainer, model);
       setRenderBodyOnly(true);
-      Action action = (Action) getModelObject();
+      Action action = (Action) getDefaultModelObject();
       WebMarkupContainer webMarkupContainer = new WebMarkupContainer("logEntryRow");
       add(webMarkupContainer);
       webMarkupContainer.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
@@ -206,7 +206,7 @@ public class InterviewLogPanel extends Panel {
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setStatus(Status.OTHER);
         // Redraw, but show all log entries.
-        ((LoadableInterviewLogModel) InterviewLogPanel.this.getModel()).showAllLogEntries();
+        ((LoadableInterviewLogModel) InterviewLogPanel.this.getDefaultModel()).showAllLogEntries();
         addInterviewLogComponent();
         // Disable Show All Button
         target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
@@ -251,7 +251,7 @@ public class InterviewLogPanel extends Panel {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
         if(status.equals(Status.SUCCESS)) {
-          Action comment = (Action) dialogContent.getModelObject();
+          Action comment = (Action) dialogContent.getDefaultModelObject();
           activeInterviewService.doAction(null, comment);
 
           // Scroll to bottom of log to make the recently added comment visible.
@@ -259,7 +259,7 @@ public class InterviewLogPanel extends Panel {
           // Disable Show All Button
           target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
 
-          ((LoadableInterviewLogModel) InterviewLogPanel.this.getModel()).showAllLogEntries();
+          ((LoadableInterviewLogModel) InterviewLogPanel.this.getDefaultModel()).showAllLogEntries();
           InterviewLogPanel.this.addInterviewLogComponent();
           target.addComponent(InterviewLogPanel.this);
         }

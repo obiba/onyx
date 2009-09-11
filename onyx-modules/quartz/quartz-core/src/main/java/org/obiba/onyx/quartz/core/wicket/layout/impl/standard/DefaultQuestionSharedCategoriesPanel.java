@@ -77,7 +77,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
       @Override
       public List<Question> getDataList() {
         List<Question> questionToAnswer = new ArrayList<Question>();
-        for(Question question : ((Question) DefaultQuestionSharedCategoriesPanel.this.getModelObject()).getQuestions()) {
+        for(Question question : ((Question) DefaultQuestionSharedCategoriesPanel.this.getDefaultModelObject()).getQuestions()) {
           if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
         }
         return questionToAnswer;
@@ -103,14 +103,14 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
     });
 
     // following columns: the question's categories
-    Question parentQuestion = (Question) getModelObject();
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getModel());
+    Question parentQuestion = (Question) getDefaultModelObject();
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getDefaultModel());
     if(!parentQuestion.isMultiple()) {
       for(IModel questionCategoryModel : provider.getDataList()) {
         columns.add(new QuestionCategoryRadioColumn(questionCategoryModel, new PropertyModel(this, "radioGroupView.groups")));
       }
 
-      add(array = new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
+      add(array = new AbstractQuestionArray("array", getDefaultModel(), columns, questionsProvider) {
 
         @Override
         public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
@@ -123,7 +123,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
         columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")));
       }
 
-      add(array = new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
+      add(array = new AbstractQuestionArray("array", getDefaultModel(), columns, questionsProvider) {
 
         @Override
         public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {

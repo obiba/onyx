@@ -63,9 +63,9 @@ public class InstrumentOutputParameterPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  private List<IModel> outputRunValueModels = new ArrayList<IModel>();
+  private List<IModel<InstrumentRunValue>> outputRunValueModels = new ArrayList<IModel<InstrumentRunValue>>();
 
-  private List<IModel> inputRunValueModels = new ArrayList<IModel>();
+  private List<IModel<InstrumentRunValue>> inputRunValueModels = new ArrayList<IModel<InstrumentRunValue>>();
 
   @SuppressWarnings("serial")
   public InstrumentOutputParameterPanel(String id) {
@@ -101,8 +101,8 @@ public class InstrumentOutputParameterPanel extends Panel {
   }
 
   public void saveOutputInstrumentRunValues() {
-    for(IModel runValueModel : outputRunValueModels) {
-      activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+    for(IModel<InstrumentRunValue> runValueModel : outputRunValueModels) {
+      activeInstrumentRunService.update(runValueModel.getObject());
     }
   }
 
@@ -126,7 +126,7 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
         final String paramCode = param.getCode();
-        final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        final IModel<InstrumentRunValue> runValueModel = new DetachableEntityModel<InstrumentRunValue>(queryService, runValue);
         outputRunValueModels.add(runValueModel);
 
         List<Data> choices = null;
@@ -200,7 +200,7 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
 
-        IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        IModel<InstrumentRunValue> runValueModel = new DetachableEntityModel<InstrumentRunValue>(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 
         DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
@@ -208,7 +208,7 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         if(param.getDataType().equals(DataType.TEXT)) {
           MessageSourceResolvableStringModel fieldModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(runValue.getData(param.getDataType()).getValueAsString()));
-          field.setFieldModel(new Model(DataBuilder.buildText(fieldModel.getObject().toString())));
+          field.setFieldModel(new Model<Data>(DataBuilder.buildText(fieldModel.getObject().toString())));
         }
 
         field.setFieldEnabled(false);

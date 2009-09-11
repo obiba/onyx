@@ -51,7 +51,7 @@ public class ObservedContraIndicationPanel extends Panel {
   private TextArea otherContraIndication;
 
   @SuppressWarnings("serial")
-  public ObservedContraIndicationPanel(String id, IModel contraindicatable) {
+  public ObservedContraIndicationPanel(String id, IModel<IContraindicatable> contraindicatable) {
     super(id, contraindicatable);
     setOutputMarkupId(true);
 
@@ -85,7 +85,7 @@ public class ObservedContraIndicationPanel extends Panel {
     radioGroup.add(radioList);
     radioGroup.setRequired(true);
 
-    contraIndicationDropDownChoice = new DropDownChoice("ciChoice", new PropertyModel(getModel(), "contraindication"), getContraindicatable().getContraindications(Contraindication.Type.OBSERVED), new ContraindicationChoiceRenderer()) {
+    contraIndicationDropDownChoice = new DropDownChoice("ciChoice", new PropertyModel(getDefaultModel(), "contraindication"), getContraindicatable().getContraindications(Contraindication.Type.OBSERVED), new ContraindicationChoiceRenderer()) {
 
       @Override
       public boolean isEnabled() {
@@ -120,7 +120,7 @@ public class ObservedContraIndicationPanel extends Panel {
     });
     add(contraIndicationDropDownChoice);
 
-    otherContraIndication = new TextArea("otherCi", new PropertyModel(getModel(), "otherContraindication")) {
+    otherContraIndication = new TextArea("otherCi", new PropertyModel(getDefaultModel(), "otherContraindication")) {
 
       @Override
       public boolean isVisible() {
@@ -147,7 +147,7 @@ public class ObservedContraIndicationPanel extends Panel {
   }
 
   private IContraindicatable getContraindicatable() {
-    return (IContraindicatable) getModelObject();
+    return (IContraindicatable) getDefaultModelObject();
   }
 
   private class ContraindicationChoiceRenderer implements IChoiceRenderer {

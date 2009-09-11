@@ -39,7 +39,7 @@ public class UnlockInterviewPanel extends Panel {
   }
 
   public Participant getParticipant() {
-    return (Participant) getModelObject();
+    return (Participant) getDefaultModelObject();
   }
 
   public User getInterviewer() {

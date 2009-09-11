@@ -16,6 +16,7 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterProcess;
 import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.annotation.OnReadError;
 
 /**
@@ -51,6 +52,17 @@ public class AppointmentListUpdateListener {
   }
 
   /**
+   * Called before the step of the AppointmentUpdateList job. Clears the previous participantProcessor data (needed when
+   * several lists are submitted)
+   * @param stepExecution
+   * @return
+   */
+  @BeforeStep
+  public void beforeStep(StepExecution stepExecution) {
+    ParticipantProcessor.initProcessor();
+  }
+
+  /**
    * Called on the return of the ParticipantProcessor. Increments: 1) the ignoredParticipants counter when the result is
    * null, 2) the addedParticipants counter when result is not null and item.getId() is null, 3) the updatedParticipants
    * counter when result and item.getId() are not null
@@ -79,7 +91,6 @@ public class AppointmentListUpdateListener {
   public ExitStatus afterUpdateCompleted(StepExecution stepExecution) {
     AppointmentUpdateStats appointmentUpdateStats = new AppointmentUpdateStats(stepExecution.getJobParameters().getDate("date"), getAddedParticipants(), getUpdatedParticipants(), getIgnoredParticipants(), getUnreadableParticipants());
     appointmentManagementService.saveAppointmentUpdateStats(appointmentUpdateStats);
-
     return stepExecution.getExitStatus();
   }
 

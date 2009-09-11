@@ -29,7 +29,7 @@ public class DropDownQuestionPanel extends BaseQuestionPanel {
 
   @Override
   protected void setContent(String id) {
-    add(new DropDownQuestionCategoriesPanel(id, getModel()));
+    add(new DropDownQuestionCategoriesPanel(id, getDefaultModel()));
 
   }
 

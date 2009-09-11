@@ -57,7 +57,7 @@ public class QuestionnaireWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    return new QuestionnaireWizardForm(componentId, getModel());
+    return new QuestionnaireWizardForm(componentId, getDefaultModel());
   }
 
   //

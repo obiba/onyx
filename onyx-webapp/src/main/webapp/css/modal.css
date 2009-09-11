@@ -133,6 +133,11 @@ div.wicket-modal div.onyx .unlockInterview-panel-content {
   	margin-left:12px;
 }
 
+div.wicket-modal div.onyx .updateParticipantList-panel-content {
+  	height:91px;
+  	margin-left:12px;
+}
+
 div.wicket-modal div.onyx .interview-log-panel-content {
   height: 350px;
   width: 660px;

@@ -72,7 +72,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
   private List<RadioGroup> interpretativeRadioGroups = new ArrayList<RadioGroup>();
 
-  private List<IModel> inputRunValueModels = new ArrayList<IModel>();
+  private List<IModel<InstrumentRunValue>> inputRunValueModels = new ArrayList<IModel<InstrumentRunValue>>();
 
   private boolean observedTitleSet = false;
 
@@ -118,8 +118,8 @@ public class InstrumentInputParameterPanel extends Panel {
   }
 
   private void saveInputInstrumentRunValues() {
-    for(IModel runValueModel : inputRunValueModels) {
-      activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+    for(IModel<InstrumentRunValue> runValueModel : inputRunValueModels) {
+      activeInstrumentRunService.update(runValueModel.getObject());
     }
   }
 
@@ -157,12 +157,12 @@ public class InstrumentInputParameterPanel extends Panel {
 
           @Override
           protected void populateItem(ListItem listItem) {
-            final String key = listItem.getModelObjectAsString();
+            final String key = listItem.getDefaultModelObjectAsString();
             InterpretativeSelection selection = new InterpretativeSelection();
             selection.setSelectionKey(key);
             selection.setParameterName(param.getCode());
 
-            Model selectionModel = new Model(selection);
+            Model<InterpretativeSelection> selectionModel = new Model<InterpretativeSelection>(selection);
 
             if(key.equals(defaultDataValue)) {
               radioGroup.setModel(selectionModel);
@@ -234,7 +234,7 @@ public class InstrumentInputParameterPanel extends Panel {
         repeat.add(item);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
-        final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        final IModel<InstrumentRunValue> runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 
         List<Data> choices = null;

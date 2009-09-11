@@ -83,7 +83,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
 
     this.parentQuestionCategoryModel = parentQuestionCategoryModel;
 
-    Question question = (Question) getModelObject();
+    Question question = (Question) getDefaultModelObject();
     if(!question.isMultiple()) {
       addRadioGroup(question);
     } else {
@@ -99,11 +99,11 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    * @see DefaultEscapeQuestionCategoriesPanel
    */
   private boolean hasEscapeQuestionCategories() {
-    return ((Question) getModelObject()).hasEscapeCategories();
+    return ((Question) getDefaultModelObject()).hasEscapeCategories();
   }
 
   private IModel getQuestionModel() {
-    return getModel();
+    return getDefaultModel();
   }
 
   /**
@@ -122,7 +122,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     radioGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), null, new QuestionCategoryListToGridPermutator(getModel())) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), null, new QuestionCategoryListToGridPermutator(getDefaultModel())) {
 
       @Override
       protected void populateItem(Item item) {
@@ -149,7 +149,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     checkGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(checkGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getModel())) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getDefaultModel())) {
 
       @Override
       protected void populateItem(Item item) {

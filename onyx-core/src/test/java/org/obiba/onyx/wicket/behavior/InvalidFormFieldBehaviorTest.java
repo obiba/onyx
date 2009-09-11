@@ -14,15 +14,15 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.DummyHomePage;
 import org.apache.wicket.util.tester.FormTester;
+import org.apache.wicket.util.tester.TagTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
-import org.apache.wicket.util.tester.TagTester;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.Validatable;
-import org.apache.wicket.validation.validator.NumberValidator;
-import org.junit.Test;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Assert;
+import org.junit.Test;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -50,13 +50,14 @@ public class InvalidFormFieldBehaviorTest {
           @Override
           public Component populateContent(String id) {
             DataField panel = new DataField(id, new Model(DataBuilder.buildInteger(10)), DataType.INTEGER);
-            panel.add(new NumberValidator.RangeValidator(0, 2) {
+            panel.add(new RangeValidator(0l, 2l) {
+
               @Override
-              protected void onValidate(IValidatable validatable) {
+              public void validate(IValidatable validatable) {
                 Data data = (Data) validatable.getValue();
                 Long value = data.getValue();
                 Validatable intValidatable = new Validatable(value);
-                super.onValidate(intValidatable);
+                super.validate(intValidatable);
                 if(intValidatable.getErrors() != null) {
                   for(Object error : intValidatable.getErrors()) {
                     validatable.error((IValidationError) error);
@@ -82,7 +83,7 @@ public class InvalidFormFieldBehaviorTest {
     Assert.assertEquals("10", tagTester.getAttribute("value"));
 
     FormTester formTester = tester.newFormTester("panel:form");
-    formTester.setValue("panel:form:content:input:field", "10");
+    formTester.setValue("content:input:field", "10");
     formTester.submit();
 
     // tester.dumpPage();

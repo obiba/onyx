@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.behavior.ajaxbackbutton;
 
-/**
- * 
- */
 public interface IHistoryAjaxBehaviorOwner {
 
   public HistoryAjaxBehavior getHistoryAjaxBehavior();

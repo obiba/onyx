@@ -109,7 +109,7 @@ public class PrintableReportPanel extends Panel {
     public PrintableReportFragment(String id, String markupId, MarkupContainer markupContainer, IModel model, int iteration) {
       super(id, markupId, markupContainer, model);
       setRenderBodyOnly(true);
-      IPrintableReport printableReport = (IPrintableReport) getModelObject();
+      IPrintableReport printableReport = (IPrintableReport) getDefaultModelObject();
       Store store = new Store();
       store.setReportName(printableReport.getName());
       StoreModel storeModel = new StoreModel();

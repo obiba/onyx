@@ -106,7 +106,7 @@ public class AskedContraIndicationPanel extends Panel {
   }
 
   private IContraindicatable getContraindicatable() {
-    return (IContraindicatable) getModelObject();
+    return (IContraindicatable) getDefaultModelObject();
   }
 
   public void saveContraIndicationSelection() {

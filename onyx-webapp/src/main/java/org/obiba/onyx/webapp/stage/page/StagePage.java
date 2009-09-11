@@ -45,7 +45,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
     super();
-    setModel(stageModel);
+    setDefaultModel(stageModel);
 
     Participant participant = activeInterviewService.getParticipant();
 
@@ -64,7 +64,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
       remove("menuBar");
       add(new StageMenuBar("menuBar", stageModel));
 
-      IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
+      IStageExecution exec = activeInterviewService.getStageExecution((Stage) getDefaultModelObject());
 
       final ActionWindow modal;
       add(modal = new ActionWindow("modal") {
@@ -77,7 +77,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
             setResponsePage(InterviewPage.class);
           } else {
             log.debug("STAY in stage");
-            setResponsePage(new StagePage(StagePage.this.getModel()));
+            setResponsePage(new StagePage(StagePage.this.getDefaultModel()));
           }
         }
 

@@ -103,7 +103,7 @@ public class TubeBarcodePanel extends Panel {
 
     @Override
     protected void onSubmit() {
-      log.info("form:TubeBarcodeForm submit (" + tubeBarcode.getModelObjectAsString() + ")");
+      log.info("form:TubeBarcodeForm submit (" + tubeBarcode.getDefaultModelObjectAsString() + ")");
     }
 
     //
@@ -118,7 +118,7 @@ public class TubeBarcodePanel extends Panel {
         protected void onSubmit(AjaxRequestTarget target, Form form) {
           feedbackPanel.setVisible(true);
 
-          String barcode = tubeBarcode.getModelObjectAsString();
+          String barcode = tubeBarcode.getDefaultModelObjectAsString();
 
           if(barcode.trim().length() != 0) {
             List<MessageSourceResolvable> errors = activeTubeRegistrationService.registerTube(barcode);

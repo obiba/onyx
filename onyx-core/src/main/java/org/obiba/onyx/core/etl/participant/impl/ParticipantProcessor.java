@@ -45,13 +45,9 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   private ParticipantMetadata participantMetadata;
 
-  private Set<String> enrollmentIds;
+  private static Set<String> enrollmentIds = new HashSet<String>();
 
   private String idStr;
-
-  public ParticipantProcessor() {
-    enrollmentIds = new HashSet<String>();
-  }
 
   public Participant process(Participant participantItem) throws Exception {
     setIdStr("Participant " + participantItem.getEnrollmentId() + " : ");
@@ -173,9 +169,9 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // For non-null attribute values, execute the attribute's validators.
     if(data != null && data.getValue() != null) {
-      Validatable validatableData = new Validatable(data);
+      Validatable<Data> validatableData = new Validatable<Data>(data);
 
-      for(IValidator validator : attribute.getValidators()) {
+      for(IValidator<Data> validator : attribute.getValidators()) {
         validator.validate(validatableData);
       }
 
@@ -241,6 +237,10 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) < 0) return false;
     return true;
 
+  }
+
+  public static void initProcessor() {
+    enrollmentIds = new HashSet<String>();
   }
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {

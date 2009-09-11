@@ -39,7 +39,7 @@ public class AddCommentPanel extends Panel {
 
   public AddCommentPanel(String id) {
     super(id);
-    setModel(new Model(new Action()));
+    setDefaultModel(new Model(new Action()));
 
     initPanel();
   }
@@ -51,7 +51,7 @@ public class AddCommentPanel extends Panel {
   private void initPanel() {
     add(new MultiLineLabel("instructions", new ResourceModel("AnonymousComments")));
 
-    commentField = new TextArea("comment", new PropertyModel(getModelObject(), "comment"));
+    commentField = new TextArea("comment", new PropertyModel(getDefaultModelObject(), "comment"));
     commentField.setOutputMarkupId(true);
     commentField.add(new AttributeModifier("class", true, new Model("comment-text")));
     commentField.add(new FocusBehavior());
@@ -63,7 +63,7 @@ public class AddCommentPanel extends Panel {
   }
 
   public void clearCommentField() {
-    ((Action) getModelObject()).setComment("");
+    ((Action) getDefaultModelObject()).setComment("");
     commentField.clearInput();
   }
 }

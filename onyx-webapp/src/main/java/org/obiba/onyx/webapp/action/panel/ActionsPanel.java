@@ -66,7 +66,7 @@ public class ActionsPanel extends Panel {
             }
           }
           if(actionDefinition != null) {
-            modal.show(target, ActionsPanel.this.getModel(), actionDefinition);
+            modal.show(target, ActionsPanel.this.getDefaultModel(), actionDefinition);
           } else {
             log.warn("Concurrent interview administration. Session {} tried to execute ActionDefinition {} on stage {}, yet that ActionDefinition is not available for the current stage's state.", new Object[] { WebSession.get().getId(), getModelObject(), getStage() });
             setResponsePage(InterviewPage.class);
@@ -96,7 +96,7 @@ public class ActionsPanel extends Panel {
   }
 
   private Stage getStage() {
-    return (Stage) getModelObject();
+    return (Stage) getDefaultModelObject();
   }
 
   private IStageExecution getStageExecution() {

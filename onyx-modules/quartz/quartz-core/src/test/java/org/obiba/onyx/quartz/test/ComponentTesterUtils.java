@@ -41,7 +41,7 @@ public class ComponentTesterUtils {
     return (Component) parent.visitChildren(new Component.IVisitor() {
 
       public Object component(Component component) {
-        if(clazz.isAssignableFrom(component.getClass()) && component.getModel().equals(model)) {
+        if(clazz.isAssignableFrom(component.getClass()) && component.getDefaultModel().equals(model)) {
           log.debug("child.path: {}", component.getPath());
           return component;
         }
@@ -68,7 +68,7 @@ public class ComponentTesterUtils {
 
       public Object component(Component component) {
         if(clazz.isAssignableFrom(component.getClass())) {
-          if(component.getModelObject() != null && localizable.getClass().isAssignableFrom(component.getModelObject().getClass()) && localizable.getName().equals(((IQuestionnaireElement) component.getModelObject()).getName())) {
+          if(component.getDefaultModelObject() != null && localizable.getClass().isAssignableFrom(component.getDefaultModelObject().getClass()) && localizable.getName().equals(((IQuestionnaireElement) component.getDefaultModelObject()).getName())) {
             log.debug("child.{}.path: {}", localizable.getName(), component.getPath());
             return component;
           }

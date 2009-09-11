@@ -11,8 +11,8 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization;
 
 import junit.framework.Assert;
 
-import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
@@ -47,7 +47,7 @@ public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestC
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
     Assert.assertEquals("Questionnaire.HealthQuestionnaire.tata", propertyKeyProvider.getPropertyKey(builder.getQuestionnaire(), "tata"));

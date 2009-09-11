@@ -145,7 +145,7 @@ public class UserPanel extends Panel {
         public void onSubmit(AjaxRequestTarget target, Form form) {
           super.onSubmit();
           User user = (User) UserPanelForm.this.getModelObject();
-          String newPassword = UserPanel.this.password.getModelObjectAsString();
+          String newPassword = UserPanel.this.password.getDefaultModelObjectAsString();
           // password is changed only if new password is entered
           if(newPassword != null && newPassword.length() > 0) {
             user.setPassword(User.digest(newPassword));

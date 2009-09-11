@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -61,7 +62,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     super(id, pageModel);
     setOutputMarkupId(true);
 
-    Page page = (Page) getModelObject();
+    Page page = (Page) getDefaultModelObject();
     Section section = page.getSection();
     String sectionString = (new QuestionnaireStringResourceModel(section, "label")).getString();
     section = section.getParentSection();
@@ -149,7 +150,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     boolean questionListChanged = false;
     List<QuestionPanel> questionPanels = getQuestionPanels();
     for(QuestionPanel panel : questionPanels) {
-      Question question = (Question) panel.getModelObject();
+      Question question = (Question) panel.getDefaultModelObject();
       if(!question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
         // a question is not to be answered any more due to in-page conditions, make sure subsequent conditions will be
         // correctly resolved.
@@ -182,7 +183,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
    */
   private int getQuestionToBeAnsweredCount() {
     int count = 0;
-    Page page = (Page) getModelObject();
+    Page page = (Page) getDefaultModelObject();
 
     for(Question question : page.getQuestions()) {
       if(!question.hasDataSource() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {

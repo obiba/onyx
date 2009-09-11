@@ -31,7 +31,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -740,7 +740,8 @@ public class SimplifiedQuestionPanelTest {
     String category = "panel:form:content:content:" + categoryType + ":category";
 
     tester.assertComponent(category + ":" + row + ":cols:" + col + ":input", QuestionCategoryLink.class);
-    tester.assertComponent(category + ":" + row + ":cols:" + col + ":input", IQuestionCategorySelectionStateHolder.class);
+    // tester.assertComponent(category + ":" + row + ":cols:" + col + ":input",
+    // IQuestionCategorySelectionStateHolder.class);
     IQuestionCategorySelectionStateHolder stateHolder = (IQuestionCategorySelectionStateHolder) tester.getComponentFromLastRenderedPage(category + ":" + row + ":cols:" + col + ":input");
     Assert.assertEquals(selected, stateHolder.wasSelected());
 
@@ -761,7 +762,8 @@ public class SimplifiedQuestionPanelTest {
     String rows = "panel:form:content:content:array:rows:rows";
 
     tester.assertComponent(rows + ":" + row + ":cells:" + col + ":cell", QuestionCategoryLink.class);
-    tester.assertComponent(rows + ":" + row + ":cells:" + col + ":cell", IQuestionCategorySelectionStateHolder.class);
+    // tester.assertComponent(rows + ":" + row + ":cells:" + col + ":cell",
+    // IQuestionCategorySelectionStateHolder.class);
     IQuestionCategorySelectionStateHolder stateHolder = (IQuestionCategorySelectionStateHolder) tester.getComponentFromLastRenderedPage(rows + ":" + row + ":cells:" + col + ":cell");
     Assert.assertEquals(selected, stateHolder.wasSelected());
 
@@ -787,13 +789,13 @@ public class SimplifiedQuestionPanelTest {
     builder.inQuestion("Q3").withQuestion("Q3_2");
 
     builder.withSection("S_MULTIPLE_OPEN").withPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_OPEN").withSharedCategory("DURATION").withOpenAnswerDefinition("DURATION_OPEN", DataType.INTEGER);
-    builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
-    builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
+    builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new RangeValidator(0, 16));
+    builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new RangeValidator(0, 960));
     builder.inQuestion("MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     builder.inPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_MULTIPLE_OPEN", "3", true).withSharedCategory("MULTIPLE_DURATION").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN", DataType.INTEGER);
-    builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
-    builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
+    builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new RangeValidator(0, 16));
+    builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new RangeValidator(0, 960));
     builder.inQuestion("MULTIPLE_MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     Questionnaire q = builder.getQuestionnaire();

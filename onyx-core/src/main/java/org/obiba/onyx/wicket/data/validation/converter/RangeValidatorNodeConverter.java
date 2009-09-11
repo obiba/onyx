@@ -15,7 +15,9 @@ import java.util.Date;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
@@ -99,11 +101,11 @@ public class RangeValidatorNodeConverter extends AbstractValidatorNodeConverter 
       Long minimum = minimumStr == null ? null : Long.valueOf(minimumStr);
       Long maximum = maximumStr == null ? null : Long.valueOf(maximumStr);
       if(minimum != null && maximum != null) {
-        validator = NumberValidator.range(minimum, maximum);
+        validator = new RangeValidator(minimum, maximum);
       } else if(minimum != null) {
-        validator = NumberValidator.minimum(minimum);
+        validator = new MinimumValidator(minimum);
       } else if(maximum != null) {
-        validator = NumberValidator.maximum(maximum);
+        validator = new MaximumValidator(maximum);
       }
       break;
     }
@@ -111,11 +113,11 @@ public class RangeValidatorNodeConverter extends AbstractValidatorNodeConverter 
       Double minimum = minimumStr == null ? null : Double.valueOf(minimumStr);
       Double maximum = maximumStr == null ? null : Double.valueOf(maximumStr);
       if(minimum != null && maximum != null) {
-        validator = NumberValidator.range(minimum, maximum);
+        validator = new RangeValidator(minimum, maximum);
       } else if(minimum != null) {
-        validator = NumberValidator.minimum(minimum);
+        validator = new MinimumValidator(minimum);
       } else if(maximum != null) {
-        validator = NumberValidator.maximum(maximum);
+        validator = new MaximumValidator(maximum);
       }
       break;
     }

@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,8 +91,8 @@ public class XmlParticipantReader extends AbstractParticipantReader {
   }
 
   @Override
-  protected boolean accept(File dir, String name) {
-    return (name.toLowerCase().endsWith(".xml"));
+  public String getFilePattern() {
+    return ".xml";
   }
 
   //

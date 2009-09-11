@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.util;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,7 +65,7 @@ public class DateModelUtils {
     }
 
     @Override
-    public Object getObject() {
+    public Serializable getObject() {
       Date date = (Date) dateModel.getObject();
 
       if(date != null) {
@@ -105,7 +106,7 @@ public class DateModelUtils {
     }
 
     @Override
-    public Object getObject() {
+    public Serializable getObject() {
       Date date = (Date) dateModel.getObject();
 
       if(date != null) {

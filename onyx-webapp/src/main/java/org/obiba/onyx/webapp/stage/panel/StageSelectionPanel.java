@@ -334,7 +334,7 @@ public abstract class StageSelectionPanel extends Panel {
     }
 
     public IStageExecution getStageExecution() {
-      Stage stage = (Stage) getModelObject();
+      Stage stage = (Stage) getDefaultModelObject();
       return activeInterviewService.getStageExecution(stage);
     }
 
@@ -362,7 +362,7 @@ public abstract class StageSelectionPanel extends Panel {
       this.stageModel = stageModel;
     }
 
-    public Object getObject() {
+    public Serializable getObject() {
       Stage stage = (Stage) stageModel.getObject();
       IStageExecution stageExec = activeInterviewService.getStageExecution(stage);
       Date startTime = stageExec.getStartTime();
@@ -387,7 +387,7 @@ public abstract class StageSelectionPanel extends Panel {
       this.stageModel = stageModel;
     }
 
-    public Object getObject() {
+    public Serializable getObject() {
       Stage stage = (Stage) stageModel.getObject();
       IStageExecution stageExec = activeInterviewService.getStageExecution(stage);
       Date startTime = stageExec.getStartTime();

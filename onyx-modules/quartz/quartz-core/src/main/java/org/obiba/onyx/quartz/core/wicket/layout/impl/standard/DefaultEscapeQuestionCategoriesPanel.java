@@ -68,7 +68,7 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
 
     this.parentQuestionCategoryModel = parentQuestionCategoryModel;
 
-    Question question = (Question) getModelObject();
+    Question question = (Question) getDefaultModelObject();
 
     radioGroup = new RadioGroup("categories", new Model()) {
       @Override
@@ -80,7 +80,7 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getModel())) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getDefaultModel())) {
 
       @Override
       protected void populateItem(Item item) {

@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.example.questionnaire.util;
 
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.util.data.ComparisonOperator;
@@ -55,7 +55,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inSection("S1_PARTICIPANT").withPage("2").withQuestion("S1_BP2").setCondition(ComparisonOperator.eq, Gender.FEMALE);
     builder.inPage("2").withQuestion("CURRENTLY_PREGNANT"/* , "1" */).withSharedCategories(N, Y, PNA, DNK);
     builder.inQuestion("CURRENTLY_PREGNANT").setCondition(ComparisonOperator.eq, Gender.FEMALE);
-    builder.inPage("2").withQuestion("CURRENT_PREGNANCY_WEEKS"/* , "2" */).withSharedCategory(OPEN_N40).withOpenAnswerDefinition(OPEN_N40, DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 40)).setSize(2);
+    builder.inPage("2").withQuestion("CURRENT_PREGNANCY_WEEKS"/* , "2" */).withSharedCategory(OPEN_N40).withOpenAnswerDefinition(OPEN_N40, DataType.INTEGER).setSize(2).addValidator(new RangeValidator(0, 40)).setSize(2);
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").withSharedCategories(PNA, DNK);
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").setCondition("CURRENTLY_PREGNANT", Y);
 
@@ -90,7 +90,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inSection("S3_EC_IC_ASKED").withPage("19").withQuestion("LEFT_LOWER_EXTREMITY_EVENT"/* , "23" */).withSharedCategories(N, Y, DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT").setCondition("ISOPROPYL_ALCOHOL_ALLERGY", N);
     builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN"/* , "23a" */).withSharedCategory(YEAR_MONTH).withOpenAnswerDefinition(YEAR_MONTH, DataType.INTEGER).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addCurrentYearValidator(ComparisonOperator.le).setSize(4);
-    builder.inOpenAnswerDefinition(YEAR_MONTH).withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 12)).setSize(2);
+    builder.inOpenAnswerDefinition(YEAR_MONTH).withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new RangeValidator(0, 12)).setSize(2);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).setSize(2);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").withSharedCategory(DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").setCondition("LEFT_LOWER_EXTREMITY_EVENT", Y);

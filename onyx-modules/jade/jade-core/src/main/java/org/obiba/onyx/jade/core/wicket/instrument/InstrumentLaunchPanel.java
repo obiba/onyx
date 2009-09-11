@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import java.io.Serializable;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -81,7 +83,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
   public InstrumentLaunchPanel(String id) {
     super(id);
     InstrumentRun currentRun = activeInstrumentRunService.getInstrumentRun();
-    setModel(new Model(currentRun));
+    setDefaultModel(new Model<InstrumentRun>(currentRun));
     setSkipMeasurement(currentRun.getSkipComment() != null);
     setOutputMarkupId(true);
 
@@ -89,7 +91,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     String codebase = instrumentService.getInstrumentInstallPath(instrumentType);
 
     // general instructions and launcher
-    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrumentType.getName())))));
+    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model<ValueMap>(new ValueMap("name=" + instrumentType.getName())))));
 
     final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase);
 
@@ -178,8 +180,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
-          public Object getObject() {
+        item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model<Serializable>() {
+          public Serializable getObject() {
             InstrumentInputParameter param = (InstrumentInputParameter) activeInstrumentRunService.getInstrumentType().getInstrumentParameter(paramCode);
             InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(paramCode);
             ValueMap map = new ValueMap();
@@ -223,7 +225,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
   }
 
   private void setComponentEnabledOnSkip(Component component, boolean enabled, AjaxRequestTarget target) {
-    InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getModelObject();
+    InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getDefaultModelObject();
     if(currentRun != null && getSkipMeasurement()) {
       component.setEnabled(enabled);
 
@@ -245,7 +247,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     public SkipMeasureFragment(String id) {
       super(id, "skipMeasureFragment", InstrumentLaunchPanel.this);
-      Object modelObject = InstrumentLaunchPanel.this.getModelObject();
+      Object modelObject = InstrumentLaunchPanel.this.getDefaultModelObject();
 
       CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(InstrumentLaunchPanel.this, "skipMeasurement"));
       box.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -255,7 +257,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
         protected void onUpdate(AjaxRequestTarget target) {
           setComponentEnabledOnSkip(get("comment"), true, target);
           if(!get("comment").isEnabled()) {
-            get("comment").setModelObject(null);
+            get("comment").setDefaultModelObject(null);
             activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
           }
 
@@ -307,8 +309,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
       Component skipCheckbox = get("skipMeasurements");
       skipCheckbox.setEnabled(measuresList.getMeasureCount() > 0 && measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
       if(!skipCheckbox.isEnabled()) {
-        skipCheckbox.setModelObject(false);
-        get("comment").setModelObject(null);
+        skipCheckbox.setDefaultModelObject(false);
+        get("comment").setDefaultModelObject(null);
         activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
       }
       get("comment").setEnabled(getSkipMeasurement() == true && skipCheckbox.isEnabled());

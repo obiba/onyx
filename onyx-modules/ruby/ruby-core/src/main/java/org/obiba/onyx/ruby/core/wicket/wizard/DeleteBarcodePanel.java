@@ -57,7 +57,7 @@ public class DeleteBarcodePanel extends Panel {
   //
 
   private void addDeleteLink() {
-    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) DeleteBarcodePanel.this.getModelObject();
+    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) DeleteBarcodePanel.this.getDefaultModelObject();
     final String barcode = registeredParticipantTube.getBarcode();
 
     final ConfirmationDialog confirmationDialog = new ConfirmationDialog("confirmation-dialog");

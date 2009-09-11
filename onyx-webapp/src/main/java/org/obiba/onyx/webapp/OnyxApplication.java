@@ -28,7 +28,6 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.runtime.management.CheesrRequestCycle;
@@ -36,9 +35,6 @@ import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
 import org.obiba.onyx.webapp.config.page.ApplicationConfigurationPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
-import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
-import org.obiba.onyx.webapp.stage.page.StagePage;
-import org.obiba.onyx.webapp.user.page.UserSearchPage;
 import org.obiba.runtime.Version;
 import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
@@ -129,7 +125,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
   }
 
   @Override
-  public Class<?> getHomePage() {
+  public Class<? extends Page> getHomePage() {
     User template = new User();
     template.setDeleted(false);
 
@@ -198,9 +194,9 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     });
 
     // nice urls
-    mount("participant", PackageName.forClass(ParticipantSearchPage.class));
-    mount("stage", PackageName.forClass(StagePage.class));
-    mount("user", PackageName.forClass(UserSearchPage.class));
+    // mount("participant", PackageName.forClass(ParticipantSearchPage.class));
+    // mount("stage", PackageName.forClass(StagePage.class));
+    // mount("user", PackageName.forClass(UserSearchPage.class));
 
     getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);

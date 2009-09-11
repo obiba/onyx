@@ -274,7 +274,7 @@ public abstract class MeasuresListPanel extends Panel {
       @SuppressWarnings("unchecked")
       @Override
       public boolean isVisible() {
-        if(((List<Measure>) getModelObject()).size() == 0) {
+        if(((List<Measure>) getDefaultModelObject()).size() == 0) {
           return true;
         }
         return false;

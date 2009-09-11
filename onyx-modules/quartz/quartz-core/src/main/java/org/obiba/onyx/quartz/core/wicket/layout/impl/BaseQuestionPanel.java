@@ -45,7 +45,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
     setOutputMarkupId(true);
 
-    Question question = (Question) getModelObject();
+    Question question = (Question) getDefaultModelObject();
     if(question.getNumber() != null) {
       add(new Label("number", question.getNumber() + ") "));
     } else {
@@ -111,7 +111,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
       @Override
       protected Object load() {
-        String title = (new StringResourceModel("CommentsWindow", BaseQuestionPanel.this, null)).getString() + " - " + new QuestionnaireStringResourceModel(BaseQuestionPanel.this.getModel(), "label").getString();
+        String title = (new StringResourceModel("CommentsWindow", BaseQuestionPanel.this, null)).getString() + " - " + new QuestionnaireStringResourceModel(BaseQuestionPanel.this.getDefaultModel(), "label").getString();
 
         // Question label is truncated if too long for Modal Window title bar.
         if(title.length() > 50) {
@@ -135,7 +135,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
         @Override
         public void onComponentTag(Component component, ComponentTag tag) {
           super.onComponentTag(component, tag);
-          String comment = activeQuestionnaireAdministrationService.getComment((Question) BaseQuestionPanel.this.getModel().getObject());
+          String comment = activeQuestionnaireAdministrationService.getComment((Question) BaseQuestionPanel.this.getDefaultModel().getObject());
 
           if(comment != null) {
             String cssClass = "comment-edit";
@@ -150,7 +150,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       // Add comment action link.
       imageLink.add(new AjaxLink("addComment") {
         public void onClick(AjaxRequestTarget target) {
-          final QuestionCommentModalPanel contentPanel = new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel()) {
+          final QuestionCommentModalPanel contentPanel = new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getDefaultModel()) {
 
             protected void onAddComment(AjaxRequestTarget target) {
               target.addComponent(imageLink);
@@ -162,7 +162,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
             public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
 
               if(status.equals(Status.SUCCESS)) {
-                activeQuestionnaireAdministrationService.setComment((Question) contentPanel.getModelObject(), contentPanel.getComment());
+                activeQuestionnaireAdministrationService.setComment((Question) contentPanel.getDefaultModelObject(), contentPanel.getComment());
                 contentPanel.onAddComment(target);
                 commentWindow.close(target);
               } else if(status.equals(Status.ERROR)) {

@@ -28,14 +28,14 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
 
   @Override
   protected void setContent(String id) {
-    Question question = (Question) getModelObject();
+    Question question = (Question) getDefaultModelObject();
 
     if(!question.hasSubQuestions()) {
-      add(new DefaultQuestionCategoriesPanel(id, getModel()));
+      add(new DefaultQuestionCategoriesPanel(id, getDefaultModel()));
     } else if(!question.hasCategories()) {
       add(new DefaultQuestionListPanel(id, new QuestionListProvider(question)));
     } else if(question.isArrayOfSharedCategories()) {
-      add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
+      add(new DefaultQuestionSharedCategoriesPanel(id, getDefaultModel()));
     } else {
       throw new UnsupportedOperationException("Joined categories array questions not supported yet");
     }

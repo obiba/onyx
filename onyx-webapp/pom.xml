@@ -68,11 +68,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-spring-annot</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>

@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -111,8 +110,8 @@ public class ParticipantReader extends AbstractParticipantReader {
   }
 
   @Override
-  protected boolean accept(File dir, String name) {
-    return (name.toLowerCase().endsWith(".xls"));
+  public String getFilePattern() {
+    return ".xls";
   }
 
   //
@@ -121,6 +120,7 @@ public class ParticipantReader extends AbstractParticipantReader {
   @SuppressWarnings("unchecked")
   private void initAttributeNameToColumnIndexMap(HSSFRow headerRow) {
     if(headerRow == null) {
+      appointmentListUpdatelog.error("Abort updating appointments: Reading file error: Null headerRow");
       throw new IllegalArgumentException("Null headerRow");
     }
 
@@ -133,6 +133,7 @@ public class ParticipantReader extends AbstractParticipantReader {
 
       if(cell != null) {
         if(cell.getCellType() != HSSFCell.CELL_TYPE_STRING) {
+          appointmentListUpdatelog.error("Abort updating appointments: Reading file error: Header row contains unexpected cell type");
           throw new IllegalArgumentException("Header row contains unexpected cell type");
         }
 
@@ -145,6 +146,7 @@ public class ParticipantReader extends AbstractParticipantReader {
             if(!attributeNameToColumnIndexMap.containsKey(attributeName.toUpperCase())) {
               attributeNameToColumnIndexMap.put(attributeName.toUpperCase(), cell.getColumnIndex());
             } else {
+              appointmentListUpdatelog.error("Abort updating appointments: Reading file error: Duplicate column for field: " + attributeName);
               throw new IllegalArgumentException("Duplicate column for field: " + attributeName);
             }
           }

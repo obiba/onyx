@@ -46,7 +46,7 @@ public class InstrumentWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    wizardForm = new InstrumentWizardForm(componentId, getModel());
+    wizardForm = new InstrumentWizardForm(componentId, getDefaultModel());
 
     return wizardForm;
   }

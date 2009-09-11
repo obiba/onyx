@@ -83,7 +83,7 @@ public class BarcodePartColumnTest {
     // where <partLabel> is the first seven characters of the barcode.
     Label label = (Label) cellItem.get("componentId");
     Assert.assertNotNull(label);
-    MessageSourceResolvableStringModel model = (MessageSourceResolvableStringModel) label.getModel();
+    MessageSourceResolvableStringModel model = (MessageSourceResolvableStringModel) label.getDefaultModel();
     Assert.assertNotNull(model);
     // Assert.assertTrue(Arrays.asList(model.getCodes()).contains("testPartTitle.1234567"));
   }

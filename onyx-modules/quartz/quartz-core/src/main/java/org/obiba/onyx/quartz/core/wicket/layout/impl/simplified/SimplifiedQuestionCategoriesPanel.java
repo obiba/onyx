@@ -76,7 +76,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     MultipleDataListFilter<QuestionCategory> filter = new MultipleDataListFilter<QuestionCategory>();
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(true));
-    add(new QuestionCategoryComponentsView("openCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel(), 1)) {
+    add(new QuestionCategoryComponentsView("openCategories", getDefaultModel(), filter, new QuestionCategoryListToGridPermutator(getDefaultModel(), 1)) {
 
       @Override
       protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
@@ -94,7 +94,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     filter.addFilter(new QuestionCategoryImageFilter(false));
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
-    QuestionCategoryLinksView view = new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel()));
+    QuestionCategoryLinksView view = new QuestionCategoryLinksView("regularCategories", getDefaultModel(), filter, new QuestionCategoryListToGridPermutator(getDefaultModel()));
     add(view);
   }
 
@@ -102,7 +102,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * Regular image categories (i.e., categories represented by images rather than text), in a single row.
    */
   private void addRegularImageCategoriesView() {
-    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", getModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
+    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", getDefaultModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
     add(view);
   }
 
@@ -115,11 +115,11 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   }
 
   private IModel getQuestionModel() {
-    return getModel();
+    return getDefaultModel();
   }
 
   private Question getQuestion() {
-    return (Question) getModelObject();
+    return (Question) getDefaultModelObject();
   }
 
   public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {

@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import java.io.Serializable;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -32,7 +34,7 @@ public class TubeRegistrationTitlePanel extends Panel {
 
     Label tubeCount = new Label("tubeCount", new Model() {
       @Override
-      public Object getObject() {
+      public Serializable getObject() {
         return tubeRegistration.getRegisteredTubeCount();
       }
     });

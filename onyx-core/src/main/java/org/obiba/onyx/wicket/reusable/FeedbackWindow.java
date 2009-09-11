@@ -51,7 +51,7 @@ public class FeedbackWindow extends Dialog {
   }
 
   @Override
-  public void setContent(Component component) {
+  public FeedbackWindow setContent(Component component) {
     FeedbackPanel feedbackPanel = (FeedbackPanel) component;
     FeedbackMessage feedbackMessage = ((List<FeedbackMessage>) feedbackPanel.getFeedbackMessagesModel().getObject()).get(0);
 
@@ -62,6 +62,6 @@ public class FeedbackWindow extends Dialog {
       setType(Dialog.Type.valueOf(messageLevel));
       setTitle(new StringResourceModel("Dialog." + messageLevel.toLowerCase(), this, null));
     }
-    super.setContent(component);
+    return (FeedbackWindow) super.setContent(component);
   }
 }

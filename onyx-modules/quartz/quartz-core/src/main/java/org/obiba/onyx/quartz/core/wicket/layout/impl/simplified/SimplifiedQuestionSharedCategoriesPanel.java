@@ -98,7 +98,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
     });
 
     // following columns: the question's categories
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getModel());
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getDefaultModel());
     for(IModel questionCategoryModel : provider.getDataList()) {
       columns.add(new AbstractQuestionCategoryColumn(questionCategoryModel) {
 
@@ -110,7 +110,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
       });
     }
 
-    add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
+    add(new AbstractQuestionArray("array", getDefaultModel(), columns, questionsProvider) {
 
       @Override
       public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
@@ -134,11 +134,11 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
   }
 
   private IModel getQuestionModel() {
-    return getModel();
+    return getDefaultModel();
   }
 
   private Question getQuestion() {
-    return (Question) getModelObject();
+    return (Question) getDefaultModelObject();
   }
 
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {

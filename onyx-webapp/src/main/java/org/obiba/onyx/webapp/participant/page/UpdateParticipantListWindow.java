@@ -9,14 +9,25 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.page;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.lang.Bytes;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
+import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.obiba.onyx.webapp.participant.panel.UpdateParticipantListPanel;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -32,7 +43,7 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private static final Logger log = LoggerFactory.getLogger(UpdateParticipantListWindow.class);
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 120;
+  private static final int DEFAULT_INITIAL_HEIGHT = 140;
 
   private static final int DEFAULT_INITIAL_WIDTH = 400;
 
@@ -42,10 +53,13 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private UpdateParticipantListPanel content;
 
-  private AjaxLink updateSubmitLink;
+  private AjaxButton updateSubmitLink;
 
   @SpringBean
   private AppointmentManagementService appointmentManagementService;
+
+  @SpringBean
+  private AbstractParticipantReader participantReader;
 
   //
   // Constructors
@@ -65,16 +79,23 @@ public class UpdateParticipantListWindow extends Dialog {
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
 
     content = new UpdateParticipantListPanel(getContentId());
+    content.add(new AttributeModifier("class", true, new Model("obiba-content updateParticipantList-panel-content")));
     content.setOutputMarkupId(true);
     setContent(content);
 
-    addOption("UpdateAppointments", OptionSide.RIGHT, updateSubmitLink = new AjaxLink("submitUpdate") {
+    addSubmitOption("UpdateAppointments", OptionSide.RIGHT, updateSubmitLink = new AjaxButton("submitUpdate", this.getForm()) {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
-        UpdateParticipantListWindow.this.setStatus(Status.OTHER);
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
+        UpdateParticipantListWindow.this.setStatus(Status.SUCCESS);
+        FileUploadField upload = (FileUploadField) UpdateParticipantListWindow.this.getWindowContent().get("contentFragment:fileUpload");
+        System.out.println("****** " + upload);
+        System.out.println("****** " + upload.getFileUpload());
+        if(upload != null && upload.getFileUpload() != null) {
+          uploadFileForProcessing(upload.getFileUpload());
+        }
 
         // Show the progress fragment.
         showProgress();
@@ -84,10 +105,16 @@ public class UpdateParticipantListWindow extends Dialog {
         UpdateParticipantListWindow.this.add(updateCallback);
         target.appendJavascript(updateCallback.getJavascript());
 
-        target.addComponent(UpdateParticipantListWindow.this.get("content"));
+        target.addComponent(UpdateParticipantListWindow.this.getWindowContent());
       }
 
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        UpdateParticipantListWindow.this.setStatus(Status.ERROR);
+        UpdateParticipantListWindow.this.getWindowContent().displayFeedback(target);
+      }
     });
+
     updateSubmitLink.setVisible(false);
 
     // Initially show confirmation fragment.
@@ -117,6 +144,9 @@ public class UpdateParticipantListWindow extends Dialog {
         if(status != null && status.equals(Dialog.Status.CANCELLED)) UpdateParticipantListWindow.this.close(target);
       }
     });
+
+    getForm().setMaxSize(Bytes.megabytes(2));
+    getForm().setMultiPart(true);
 
     content.showConfirmation();
   }
@@ -163,8 +193,24 @@ public class UpdateParticipantListWindow extends Dialog {
     }
   }
 
-  public UpdateParticipantListPanel getContent() {
+  private void uploadFileForProcessing(FileUpload upload) {
+    try {
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
+      String fileName = formatter.format(new Date()) + "_" + upload.getClientFileName();
+      File inputFile = new File(participantReader.getInputDirectory().getFile(), fileName);
+      inputFile.createNewFile();
+      upload.writeTo(inputFile);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
+  public UpdateParticipantListPanel getWindowContent() {
     return content;
   }
 
+  public void setParticipantReader(AbstractParticipantReader participantReader) {
+    this.participantReader = participantReader;
+  }
 }

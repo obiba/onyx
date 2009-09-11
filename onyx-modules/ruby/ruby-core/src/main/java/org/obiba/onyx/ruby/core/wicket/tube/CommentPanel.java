@@ -50,7 +50,7 @@ public class CommentPanel extends Panel {
 
   @SuppressWarnings("serial")
   private void addCommentField() {
-    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) CommentPanel.this.getModelObject();
+    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) CommentPanel.this.getDefaultModelObject();
 
     commentField = new TextArea("comment", new Model(registeredParticipantTube.getComment()));
 
@@ -59,7 +59,7 @@ public class CommentPanel extends Panel {
       @Override
       protected Map variablesMap(IValidatable validatable) {
         Map map = super.variablesMap(validatable);
-        map.put("barcode", ((RegisteredParticipantTube) CommentPanel.this.getModelObject()).getBarcode());
+        map.put("barcode", ((RegisteredParticipantTube) CommentPanel.this.getDefaultModelObject()).getBarcode());
         return map;
       }
 

@@ -74,8 +74,8 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
     parentContainer.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
 
       public Object component(Component component) {
-        if(!questionCategoryModel.equals(component.getModel())) {
-          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+        if(!questionCategoryModel.equals(component.getDefaultModel())) {
+          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getDefaultModelObject());
           AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
           if(openField.getData() != null) {
             openField.resetField();

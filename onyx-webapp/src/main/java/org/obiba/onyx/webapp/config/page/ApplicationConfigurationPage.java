@@ -36,7 +36,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.user.Role;
@@ -132,7 +132,7 @@ public class ApplicationConfigurationPage extends BasePage {
 
       TextField sessionTimeout = new TextField("sessionTimeout", new PropertyModel(model, "config.sessionTimeout"));
       sessionTimeout.add(new RequiredFormFieldBehavior());
-      add(sessionTimeout.add(NumberValidator.range(0, 60 * 24)));
+      add(sessionTimeout.add(new RangeValidator(0, 60 * 24)));
 
       studyLogo = new FileUploadField("studyLogo");
 
@@ -264,12 +264,12 @@ public class ApplicationConfigurationPage extends BasePage {
     }
 
     @Override
-    public void setObject(Object object) {
+    public void setObject(Serializable object) {
       certificate = (String) object;
     }
 
     @Override
-    public Object getObject() {
+    public Serializable getObject() {
       return certificate;
     }
   }

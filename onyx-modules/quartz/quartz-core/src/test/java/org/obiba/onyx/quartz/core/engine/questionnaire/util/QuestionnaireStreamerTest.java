@@ -19,8 +19,8 @@ import java.util.Properties;
 
 import junit.framework.Assert;
 
-import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
@@ -62,12 +62,12 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
     builder.inPage("P4").withQuestion("Q6").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
-    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 12), DataType.INTEGER));
-    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 31), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(1, 12), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(1, 31), DataType.INTEGER));
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 

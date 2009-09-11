@@ -51,21 +51,21 @@ public class ParticipantPanel extends Panel {
 
   public ParticipantPanel(String id, IModel participantModel, boolean shortList) {
     super(id);
-    setModel(participantModel);
+    setDefaultModel(participantModel);
     setOutputMarkupId(true);
 
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("participant");
 
     Participant participant = (Participant) participantModel.getObject();
 
-    if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) kvPanel.addRow(new StringResourceModel("EnrollmentId", this, null), new PropertyModel(getModel(), "enrollmentId"));
-    if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(getModel(), "barcode"));
-    kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(getModel(), "fullName"));
+    if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) kvPanel.addRow(new StringResourceModel("EnrollmentId", this, null), new PropertyModel(getDefaultModel(), "enrollmentId"));
+    if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(getDefaultModel(), "barcode"));
+    kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(getDefaultModel(), "fullName"));
 
     if(!shortList) {
       kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
-      kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new PropertyModel(getModel(), "birthDate")));
-      add(new AttributeGroupsFragment("configuredAttributeGroups", getModel()));
+      kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new PropertyModel(getDefaultModel(), "birthDate")));
+      add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel()));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));
     }
@@ -74,7 +74,7 @@ public class ParticipantPanel extends Panel {
   }
 
   public String getLocalizedGender() {
-    Gender gender = ((Participant) getModelObject()).getGender();
+    Gender gender = ((Participant) getDefaultModelObject()).getGender();
     return (gender != null) ? getString("Gender." + gender) : null;
   }
 

@@ -46,7 +46,7 @@ public class RubyWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    wizardForm = new RubyWizardForm(componentId, getModel());
+    wizardForm = new RubyWizardForm(componentId, getDefaultModel());
 
     return wizardForm;
   }

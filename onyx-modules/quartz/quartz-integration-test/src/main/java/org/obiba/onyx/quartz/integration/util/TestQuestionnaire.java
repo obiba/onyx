@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.integration.util;
 
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.util.data.DataType;
@@ -35,7 +35,7 @@ public class TestQuestionnaire {
     builder.withSection("S1").withPage("P1").withQuestion("OPEN_QUESTION").withCategory("OPEN").withOpenAnswerDefinition("OPEN_MULTIPLE", DataType.TEXT);
     builder.inOpenAnswerDefinition("OPEN_MULTIPLE").withOpenAnswerDefinition("CHOICE1", DataType.TEXT).setDefaultData("A", "B", "C").setRequired(true);
     builder.inOpenAnswerDefinition("OPEN_MULTIPLE").withOpenAnswerDefinition("CHOICE2", DataType.TEXT).setDefaultData("X", "Y", "Z").setRequired(true);
-    builder.inQuestion("OPEN_QUESTION").withSharedCategory(OTHER).withOpenAnswerDefinition("NUMERIC", DataType.INTEGER).addValidator(NumberValidator.range(1, 4)).setSize(2);
+    builder.inQuestion("OPEN_QUESTION").withSharedCategory(OTHER).withOpenAnswerDefinition("NUMERIC", DataType.INTEGER).addValidator(new RangeValidator(1, 4)).setSize(2);
 
     builder.inPage("P1").withQuestion("Q_MULTIPLE", true).withCategories("1", "2", "3");
     builder.inQuestion("Q_MULTIPLE").withSharedCategory(OTHER);

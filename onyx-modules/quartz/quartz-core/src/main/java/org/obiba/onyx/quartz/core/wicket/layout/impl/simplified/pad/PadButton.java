@@ -34,7 +34,7 @@ public class PadButton extends Panel {
       public void onClick(AjaxRequestTarget target) {
         IPadSelectionListener listener = (IPadSelectionListener) PadButton.this.findParent(IPadSelectionListener.class);
         if(listener != null) {
-          listener.onPadSelection(target, PadButton.this.getModel());
+          listener.onPadSelection(target, PadButton.this.getDefaultModel());
         }
       }
 

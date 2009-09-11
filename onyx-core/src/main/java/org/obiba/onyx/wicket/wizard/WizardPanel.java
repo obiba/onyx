@@ -25,7 +25,7 @@ public abstract class WizardPanel extends Panel {
 
   public WizardPanel(String id, IModel model) {
     super(id);
-    setModel(model);
+    setDefaultModel(model);
 
     wizardForm = createForm("form");
     add(wizardForm);

@@ -40,7 +40,7 @@ public class ConsentWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    wizardForm = new ConsentWizardForm(componentId, getModel());
+    wizardForm = new ConsentWizardForm(componentId, getDefaultModel());
 
     return wizardForm;
   }

@@ -77,7 +77,7 @@ public class InstrumentRunPanel extends Panel {
       throw new IllegalStateException("No instrument run in session.");
     }
 
-    setModel(new DetachableEntityModel(queryService, run));
+    setDefaultModel(new DetachableEntityModel(queryService, run));
 
     build();
   }
@@ -96,7 +96,7 @@ public class InstrumentRunPanel extends Panel {
       throw new IllegalStateException("No instrument run in session.");
     }
 
-    setModel(new DetachableEntityModel(queryService, run));
+    setDefaultModel(new DetachableEntityModel(queryService, run));
     if(measure != null) setMeasure(measure);
 
     build();
@@ -117,13 +117,13 @@ public class InstrumentRunPanel extends Panel {
       throw new IllegalStateException("No instrument run in session.");
     }
 
-    setModel(new DetachableEntityModel(queryService, run));
+    setDefaultModel(new DetachableEntityModel(queryService, run));
 
     build();
   }
 
   private void build() {
-    InstrumentRun run = (InstrumentRun) InstrumentRunPanel.this.getModelObject();
+    InstrumentRun run = (InstrumentRun) InstrumentRunPanel.this.getDefaultModelObject();
 
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("run", new StringResourceModel("RunInfo", this, null));
     add(kvPanel);
@@ -189,7 +189,7 @@ public class InstrumentRunPanel extends Panel {
     KeyValueDataPanel kvPanel = new KeyValueDataPanel(id, titleModel);
     add(kvPanel);
 
-    InstrumentRun run = (InstrumentRun) getModelObject();
+    InstrumentRun run = (InstrumentRun) getDefaultModelObject();
     for(Object parameter : parameters) {
       InstrumentParameter param = (InstrumentParameter) parameter;
 

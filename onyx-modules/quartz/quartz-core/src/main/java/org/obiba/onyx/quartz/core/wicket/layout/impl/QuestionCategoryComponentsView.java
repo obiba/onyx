@@ -46,7 +46,7 @@ public abstract class QuestionCategoryComponentsView extends Panel {
     setOutputMarkupId(true);
 
     // escape categories are on the same line by default
-    repeater = new AbstractQuestionCategoriesView("category", getModel(), filter, permutator) {
+    repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), filter, permutator) {
 
       @Override
       protected void populateItem(Item item) {

@@ -86,8 +86,8 @@ public class UserPanelTest {
     Assert.assertEquals("Dupont", formTester.getTextComponentValue("lastName"));
     Assert.assertEquals("Nathalie", formTester.getTextComponentValue("firstName"));
     Assert.assertEquals("ndupont@obiba.org", formTester.getTextComponentValue("email"));
-    Assert.assertEquals(Locale.ENGLISH, formTester.getForm().get("language").getModelObject());
-    assertSetsEquals(getUserRoles(), (Set<Role>) formTester.getForm().get("roles").getModelObject());
+    Assert.assertEquals(Locale.ENGLISH, formTester.getForm().get("language").getDefaultModelObject());
+    assertSetsEquals(getUserRoles(), (Set<Role>) formTester.getForm().get("roles").getDefaultModelObject());
   }
 
   @Test

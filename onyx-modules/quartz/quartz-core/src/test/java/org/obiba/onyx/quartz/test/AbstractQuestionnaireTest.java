@@ -456,7 +456,7 @@ public abstract class AbstractQuestionnaireTest {
 
       public Panel getTestPanel(String panelId) {
         QuartzPanel quartzPanel = new QuartzPanel(panelId, questionnaireStage, false);
-        quartzPanel.setModel(new QuestionnaireModel(questionnaire));
+        quartzPanel.setDefaultModel(new QuestionnaireModel(questionnaire));
         return (quartzPanel);
       }
     });

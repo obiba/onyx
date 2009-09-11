@@ -42,7 +42,7 @@ public class InstrumentSelector extends Panel {
 
     // get only active instruments in this type.
     Instrument template = new Instrument();
-    template.setType(((InstrumentType) getModelObject()).getName());
+    template.setType(((InstrumentType) getDefaultModelObject()).getName());
     template.setStatus(InstrumentStatus.ACTIVE);
 
     KeyValueDataPanel selector = new KeyValueDataPanel("selector");
@@ -78,7 +78,7 @@ public class InstrumentSelector extends Panel {
         @SuppressWarnings("unchecked")
         @Override
         public IConverter getConverter(Class type) {
-          return new InstrumentBarcodeConverter(queryService, (InstrumentType) InstrumentSelector.this.getModelObject());
+          return new InstrumentBarcodeConverter(queryService, (InstrumentType) InstrumentSelector.this.getDefaultModelObject());
         }
       };
       tf.setLabel(new StringResourceModel("InstrumentBarcode", InstrumentSelector.this, null));

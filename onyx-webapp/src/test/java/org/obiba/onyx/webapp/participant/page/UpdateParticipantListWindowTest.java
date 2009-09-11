@@ -73,7 +73,7 @@ public class UpdateParticipantListWindowTest {
     Assert.assertTrue(resultFragment instanceof UpdateParticipantListPanel.ResultFragment);
 
     Label resultLabel = (Label) resultFragment.get("resultLabel");
-    Assert.assertEquals("ParticipantsListSuccessfullyUpdated", resultLabel.getModelObject());
+    Assert.assertEquals("ParticipantsListSuccessfullyUpdated", resultLabel.getDefaultModelObject());
   }
 
   @Test
@@ -85,7 +85,7 @@ public class UpdateParticipantListWindowTest {
     Assert.assertTrue(resultFragment instanceof UpdateParticipantListPanel.ResultFragment);
 
     Label resultLabel = (Label) resultFragment.get("resultLabel");
-    Assert.assertEquals("ParticipantListUpdateFailed", resultLabel.getModelObject());
+    Assert.assertEquals("ParticipantListUpdateFailed", resultLabel.getDefaultModelObject());
   }
 
   //
@@ -93,7 +93,8 @@ public class UpdateParticipantListWindowTest {
   //
 
   private Fragment getContentFragment(UpdateParticipantListWindow window) {
-    UpdateParticipantListPanel panel = window.getContent();
+    UpdateParticipantListPanel panel = window.getWindowContent();
+    ;
     return (Fragment) panel.get("contentFragment");
   }
 }

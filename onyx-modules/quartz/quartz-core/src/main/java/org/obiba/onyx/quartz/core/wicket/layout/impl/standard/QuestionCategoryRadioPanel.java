@@ -86,7 +86,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
       protected void onEvent(AjaxRequestTarget target) {
 
         // make the radio group active for the selection
-        QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getModel());
+        QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getDefaultModel());
 
         // exclusive choice, only one answer per question
         activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());

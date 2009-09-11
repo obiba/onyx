@@ -168,7 +168,7 @@ public class ParticipantSearchPage extends BasePage {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         ParticipantEntityList replacement;
-        String inputField = form.get("inputField").getModelObjectAsString();
+        String inputField = form.get("inputField").getDefaultModelObjectAsString();
 
         if(inputField == null) {
           replacement = getAllParticipantsList();
@@ -631,7 +631,7 @@ public class ParticipantSearchPage extends BasePage {
             if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
               unlockInterviewWindow.show(target);
             } else {
-              error((new StringResourceModel("InterviewLocked", this, ActionListFragment.this.getModel())).getString());
+              error((new StringResourceModel("InterviewLocked", this, ActionListFragment.this.getDefaultModel())).getString());
               getFeedbackWindow().setContent(new FeedbackPanel("content"));
               getFeedbackWindow().show(target);
             }
@@ -701,7 +701,7 @@ public class ParticipantSearchPage extends BasePage {
     }
 
     Participant getParticipant() {
-      return (Participant) getModelObject();
+      return (Participant) getDefaultModelObject();
     }
   }
 

@@ -14,8 +14,10 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.util.data.DataType;
@@ -25,7 +27,7 @@ import org.obiba.onyx.wicket.data.IDataValidator;
 import com.thoughtworks.xstream.XStream;
 
 /**
- *
+ * 
  */
 public class DataValidatorConverterTest {
 
@@ -45,9 +47,9 @@ public class DataValidatorConverterTest {
     DataValidator validator = (DataValidator) o;
     Assert.assertEquals(DataType.INTEGER, validator.getDataType());
 
-    NumberValidator.RangeValidator numberValidator = (NumberValidator.RangeValidator) validator.getValidator();
-    Assert.assertEquals(10, numberValidator.getMinimum());
-    Assert.assertEquals(100, numberValidator.getMaximum());
+    RangeValidator rangeValidator = (RangeValidator) validator.getValidator();
+    Assert.assertEquals(10l, rangeValidator.getMinimum());
+    Assert.assertEquals(100l, rangeValidator.getMaximum());
   }
 
   @Test
@@ -58,8 +60,8 @@ public class DataValidatorConverterTest {
     DataValidator validator = (DataValidator) o;
     Assert.assertEquals(DataType.INTEGER, validator.getDataType());
 
-    NumberValidator.MinimumValidator numberValidator = (NumberValidator.MinimumValidator) validator.getValidator();
-    Assert.assertEquals(10, numberValidator.getMinimum());
+    MinimumValidator minimumValidator = (MinimumValidator) validator.getValidator();
+    Assert.assertEquals(10l, minimumValidator.getMinimum());
   }
 
   @Test
@@ -70,8 +72,8 @@ public class DataValidatorConverterTest {
     DataValidator validator = (DataValidator) o;
     Assert.assertEquals(DataType.INTEGER, validator.getDataType());
 
-    NumberValidator.MaximumValidator numberValidator = (NumberValidator.MaximumValidator) validator.getValidator();
-    Assert.assertEquals(100, numberValidator.getMaximum());
+    MaximumValidator maximumValidator = (MaximumValidator) validator.getValidator();
+    Assert.assertEquals(100l, maximumValidator.getMaximum());
   }
 
   @Test
@@ -82,9 +84,9 @@ public class DataValidatorConverterTest {
     DataValidator validator = (DataValidator) o;
     Assert.assertEquals(DataType.DECIMAL, validator.getDataType());
 
-    NumberValidator.DoubleRangeValidator numberValidator = (NumberValidator.DoubleRangeValidator) validator.getValidator();
-    Assert.assertEquals(10.0, numberValidator.getMinimum());
-    Assert.assertEquals(100.0, numberValidator.getMaximum());
+    RangeValidator rangeValidator = (RangeValidator) validator.getValidator();
+    Assert.assertEquals(10.0, rangeValidator.getMinimum());
+    Assert.assertEquals(100.0, rangeValidator.getMaximum());
   }
 
   @Test
@@ -121,9 +123,9 @@ public class DataValidatorConverterTest {
     Assert.assertEquals(DataType.INTEGER, bean.dataValidator.getDataType());
 
     DataValidator validator = (DataValidator) bean.dataValidator;
-    NumberValidator.RangeValidator numberValidator = (NumberValidator.RangeValidator) validator.getValidator();
-    Assert.assertEquals(10, numberValidator.getMinimum());
-    Assert.assertEquals(100, numberValidator.getMaximum());
+    RangeValidator rangeValidator = (RangeValidator) validator.getValidator();
+    Assert.assertEquals(10l, rangeValidator.getMinimum());
+    Assert.assertEquals(100l, rangeValidator.getMaximum());
   }
 
   @Test
@@ -137,9 +139,9 @@ public class DataValidatorConverterTest {
     Assert.assertEquals(2, bean.dataValidators.size());
 
     DataValidator validator = (DataValidator) bean.dataValidators.get(0);
-    NumberValidator.RangeValidator numberValidator = (NumberValidator.RangeValidator) validator.getValidator();
-    Assert.assertEquals(10, numberValidator.getMinimum());
-    Assert.assertEquals(100, numberValidator.getMaximum());
+    RangeValidator rangeValidator = (RangeValidator) validator.getValidator();
+    Assert.assertEquals(10l, rangeValidator.getMinimum());
+    Assert.assertEquals(100l, rangeValidator.getMaximum());
 
     validator = (DataValidator) bean.dataValidators.get(1);
     Assert.assertEquals(DataType.TEXT, validator.getDataType());

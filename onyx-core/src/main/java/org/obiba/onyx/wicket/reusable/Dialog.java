@@ -296,13 +296,14 @@ public class Dialog extends ModalWindow {
    * @param component
    */
   @Override
-  public void setContent(Component component) {
+  public Dialog setContent(Component component) {
     if(component.getId().equals(getContentId()) == false) {
       throw new WicketRuntimeException("Dialog box content id is wrong.");
     }
     component.setOutputMarkupPlaceholderTag(true);
     component.setVisible(true);
     form.replace(component);
+    return this;
   }
 
   public static interface CloseButtonCallback extends Serializable {

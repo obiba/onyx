@@ -169,7 +169,11 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
     }
   }
 
-  protected abstract boolean accept(File dir, String name);
+  protected boolean accept(File dir, String name) {
+    return (name.toLowerCase().endsWith(getFilePattern()));
+  }
+
+  public abstract String getFilePattern();
 
   //  
   // Common methods used in subclasses

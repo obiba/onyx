@@ -16,8 +16,10 @@ import java.util.Locale;
 import org.apache.wicket.extensions.validation.validator.RfcCompliantEmailAddressValidator;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Category;
@@ -447,20 +449,12 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       return null;
     }
 
-    if(validator instanceof NumberValidator) {
-      if(validator instanceof NumberValidator.DoubleMaximumValidator) {
-        return "Number.Maximum[" + ((NumberValidator.DoubleMaximumValidator) validator).getMaximum() + "]";
-      } else if(validator instanceof NumberValidator.DoubleMinimumValidator) {
-        return "Number.Minimum[" + ((NumberValidator.DoubleMinimumValidator) validator).getMinimum() + "]";
-      } else if(validator instanceof NumberValidator.DoubleRangeValidator) {
-        return "Number.Range[" + ((NumberValidator.DoubleRangeValidator) validator).getMinimum() + ", " + ((NumberValidator.DoubleRangeValidator) validator).getMaximum() + "]";
-      } else if(validator instanceof NumberValidator.MaximumValidator) {
-        return "Number.Maximum[" + ((NumberValidator.MaximumValidator) validator).getMaximum() + "]";
-      } else if(validator instanceof NumberValidator.MinimumValidator) {
-        return "Number.Minimum[" + ((NumberValidator.MinimumValidator) validator).getMinimum() + "]";
-      } else if(validator instanceof NumberValidator.RangeValidator) {
-        return "Number.Range[" + ((NumberValidator.RangeValidator) validator).getMinimum() + ", " + ((NumberValidator.RangeValidator) validator).getMaximum() + "]";
-      }
+    if(validator instanceof MaximumValidator) {
+      return "Number.Maximum[" + ((MaximumValidator) validator).getMaximum() + "]";
+    } else if(validator instanceof MinimumValidator) {
+      return "Number.Minimum[" + ((MinimumValidator) validator).getMinimum() + "]";
+    } else if(validator instanceof RangeValidator) {
+      return "Number.Range[" + ((RangeValidator) validator).getMinimum() + ", " + ((RangeValidator) validator).getMaximum() + "]";
     } else if(validator instanceof StringValidator) {
       if(validator instanceof StringValidator.ExactLengthValidator) {
         return "String.ExactLength[" + ((StringValidator.ExactLengthValidator) validator).getLength() + "]";

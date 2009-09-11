@@ -235,11 +235,12 @@ public class EditParticipantPanelTest implements Serializable {
     // test EditParticipantPanel in ENROLLMENT mode => enrollementId not shown, all fields editable
     // assignCodeToParticipantPanel should be shown
 
+    tester.dumpPage();
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
     formTester.setValue("editParticipantPanel:firstName:value", "Martin");
     formTester.setValue("editParticipantPanel:lastName:value", "Dupont");
     formTester.select("editParticipantPanel:gender:gender", 1);
-    formTester.setValue("editParticipantPanel:birthDate", "05-05-1979");
+    formTester.setValue("editParticipantPanel:birthDate:value", "1979-05-05");
     formTester.setValue("editParticipantPanel:assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "B12345678");
     formTester.setValue("editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", "Peel street");
     formTester.setValue("editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field:input:field", "514-398-3311 ext 00721");

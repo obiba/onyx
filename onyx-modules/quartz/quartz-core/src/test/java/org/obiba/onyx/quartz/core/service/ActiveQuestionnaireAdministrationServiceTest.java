@@ -13,8 +13,8 @@ import java.util.Locale;
 
 import junit.framework.Assert;
 
-import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
@@ -231,8 +231,8 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     builder.inQuestion("Q3").withQuestion("Q4").withCategories("subcat1", "subcat2", "subcat3");
 
     builder.inSection("SB").withPage("P3").withQuestion("Q5").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
-    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 12), DataType.INTEGER));
-    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 31), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(1, 12), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(1, 31), DataType.INTEGER));
 
     return builder.getQuestionnaire();
   }

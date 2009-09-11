@@ -9,8 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.test;
 
-import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -101,7 +101,7 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
     builder.inQuestion("Q3").withSharedCategories(PNA, DNK);
     builder.inPage("P3").addTimestamp();
 
-    builder.inSection("BIRTHDATE").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("age", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
+    builder.inSection("BIRTHDATE").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("age", DataType.INTEGER).addValidator(new RangeValidator<Long>(40l, 70l));
     builder.inQuestion("Q4").withSharedCategories(PNA, DNK);
     builder.inQuestion("Q4").setCondition("!($1 && $2)", builder.newDataSource("Q2", "1"), builder.newDataSource("Q3", "1"));
     builder.inPage("P4").addTimestamp();
@@ -109,18 +109,18 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
     builder.withSection("MARITALSTATUS").withPage("P5").withQuestion("Q5").withCategories("1", "2", "3", "4", "5").withSharedCategories(PNA, DNK);
     builder.inQuestion("Q5").setCondition("$1 && $2 > 45", builder.newDataSource("Q4", "1"), builder.newDataSource("Q4", "1", "age"));
 
-    builder.withSection("HOUSEHOLDSTATUS").withPage("P6").withQuestion("Q6").withCategory("1").withOpenAnswerDefinition("adults", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(1, 100));
+    builder.withSection("HOUSEHOLDSTATUS").withPage("P6").withQuestion("Q6").withCategory("1").withOpenAnswerDefinition("adults", DataType.INTEGER).addValidator(new RangeValidator<Long>(1l, 100l));
     builder.inQuestion("Q6").withSharedCategories(PNA, DNK);
     builder.inQuestion("Q6").setCondition("$1", builder.newDataSource("Q5"));
 
-    builder.inSection("HOUSEHOLDSTATUS").withPage("P7").withQuestion("Q7").withCategory("1").withOpenAnswerDefinition("children", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 100));
+    builder.inSection("HOUSEHOLDSTATUS").withPage("P7").withQuestion("Q7").withCategory("1").withOpenAnswerDefinition("children", DataType.INTEGER).addValidator(new RangeValidator<Long>(0l, 100l));
     builder.inQuestion("Q7").withSharedCategories(PNA, DNK);
     builder.inQuestion("Q7").setCondition("!$1", builder.newDataSource("Q5"));
 
-    builder.inSection("HOUSEHOLDSTATUS").withPage("P8").withQuestion("Q8").withCategory("1").withOpenAnswerDefinition("siblings", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 20));
+    builder.inSection("HOUSEHOLDSTATUS").withPage("P8").withQuestion("Q8").withCategory("1").withOpenAnswerDefinition("siblings", DataType.INTEGER).addValidator(new RangeValidator<Long>(0l, 20l));
     builder.inQuestion("Q8").withSharedCategories(PNA, DNK);
 
-    builder.inSection("HOUSEHOLDSTATUS").withPage("P9").withQuestion("Q9").withCategory("1").withOpenAnswerDefinition("olderSiblings", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 20));
+    builder.inSection("HOUSEHOLDSTATUS").withPage("P9").withQuestion("Q9").withCategory("1").withOpenAnswerDefinition("olderSiblings", DataType.INTEGER).addValidator(new RangeValidator<Long>(0l, 20l));
     builder.inQuestion("Q9").withSharedCategories(PNA, DNK);
 
     builder.inSection("HOUSEHOLDSTATUS").withPage("P10").withQuestion("Q10");
@@ -131,7 +131,7 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
 
     builder.withSection("EDUCATIONLEVEL").withPage("P12").withQuestion("Q12");
 
-    builder.inSection("EDUCATIONLEVEL").withPage("P13").withQuestion("Q13").withCategory("1").withOpenAnswerDefinition("years", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 20));
+    builder.inSection("EDUCATIONLEVEL").withPage("P13").withQuestion("Q13").withCategory("1").withOpenAnswerDefinition("years", DataType.INTEGER).addValidator(new RangeValidator<Long>(0l, 20l));
     builder.inQuestion("Q13").withSharedCategories(PNA, DNK);
 
     builder.inSection("EDUCATIONLEVEL").withPage("P14").withQuestion("Q14").withCategories("1", "2", "3", "4", "5");

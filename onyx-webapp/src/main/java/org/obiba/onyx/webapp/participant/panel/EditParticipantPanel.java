@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -255,7 +256,7 @@ public class EditParticipantPanel extends Panel {
     if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
       add(new EmptyPanel("enrollmentId"));
     } else
-      add(new RowFragment("enrollmentId", getModel(), "EnrollmentId", "enrollmentId"));
+      add(new RowFragment("enrollmentId", getDefaultModel(), "EnrollmentId", "enrollmentId"));
 
     if(participant.getAppointment() == null) {
       participant.setAppointment(new Appointment(participant, new Date()));
@@ -268,31 +269,31 @@ public class EditParticipantPanel extends Panel {
     }
 
     if(mode == PanelMode.EDIT) {
-      add(new RowFragment(BARCODE, getModel(), "ParticipantCode", BARCODE));
-      add(new RowFragment(FIRST_NAME, getModel(), "FirstName", FIRST_NAME));
-      add(new RowFragment(LAST_NAME, getModel(), "LastName", LAST_NAME));
+      add(new RowFragment(BARCODE, getDefaultModel(), "ParticipantCode", BARCODE));
+      add(new RowFragment(FIRST_NAME, getDefaultModel(), "FirstName", FIRST_NAME));
+      add(new RowFragment(LAST_NAME, getDefaultModel(), "LastName", LAST_NAME));
     } else {
       add(new EmptyPanel(BARCODE));
 
-      FormComponent firstName = new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
+      FormComponent firstName = new TextField("value", new PropertyModel(getDefaultModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
       firstName.add(new StringValidator.MaximumLengthValidator(250));
-      add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", firstName));
+      add(new TextFieldFragment(FIRST_NAME, getDefaultModel(), "FirstName*", firstName));
 
-      FormComponent lastName = new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
+      FormComponent lastName = new TextField("value", new PropertyModel(getDefaultModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
       lastName.add(new StringValidator.MaximumLengthValidator(250));
-      add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", lastName));
+      add(new TextFieldFragment(LAST_NAME, getDefaultModel(), "LastName*", lastName));
     }
 
-    add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
+    add(new DropDownFragment(GENDER, getDefaultModel(), "Gender*", createGenderDropDown()));
 
     // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
     FormComponent birthDate = createBirthDateField();
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.YEAR, -130);
     birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
-    add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
+    add(new DateFragment(BIRTH_DATE, getDefaultModel(), "BirthDate*", birthDate));
 
-    add(new AttributeGroupsFragment("configuredAttributeGroups", getModel()));
+    add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel()));
 
     add(assignCodePanel = new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
 
@@ -310,7 +311,7 @@ public class EditParticipantPanel extends Panel {
    * Initializes the Panel's {@code mode} attribute. The mode is determined by examining the participant's attributes.
    */
   private void initMode() {
-    Participant participant = (Participant) getModelObject();
+    Participant participant = (Participant) getDefaultModelObject();
     if(participant.getBarcode() != null) {
       // The participant has already been received/enrolled. Obviously, we are editing
       mode = PanelMode.EDIT;
@@ -342,7 +343,7 @@ public class EditParticipantPanel extends Panel {
           private static final long serialVersionUID = 1L;
 
           @Override
-          public Object getObject() {
+          public Serializable getObject() {
             return userSessionService.getDateFormat().format(date);
           }
         };
@@ -389,7 +390,7 @@ public class EditParticipantPanel extends Panel {
   }
 
   private DateTextField createBirthDateField() {
-    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getModel(), BIRTH_DATE), new PatternDateConverter("yyyy-MM-dd", true));
+    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getDefaultModel(), BIRTH_DATE), new PatternDateConverter("yyyy-MM-dd", true));
 
     birthDateField.setRequired(true);
     birthDateField.setLabel(new ResourceModel("BirthDateWithFormat"));
@@ -407,7 +408,7 @@ public class EditParticipantPanel extends Panel {
   }
 
   private DropDownChoice createGenderDropDown() {
-    DropDownChoice genderDropDown = new DropDownChoice(GENDER, new PropertyModel(getModel(), GENDER), Arrays.asList(Gender.values()), new GenderRenderer()) {
+    DropDownChoice genderDropDown = new DropDownChoice(GENDER, new PropertyModel(getDefaultModel(), GENDER), Arrays.asList(Gender.values()), new GenderRenderer()) {
 
       private static final long serialVersionUID = 1L;
 

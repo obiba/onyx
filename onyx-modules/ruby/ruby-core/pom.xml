@@ -92,10 +92,6 @@
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>wicket-spring-annot</artifactId>
-    </dependency>
 
   </dependencies>
 </project>

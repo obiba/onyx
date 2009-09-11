@@ -94,6 +94,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
    */
   @Test
   public void testProcessWithNoConfiguredAttributes() throws IOException {
+    ParticipantProcessor.initProcessor();
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(3);
 
@@ -131,6 +132,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
    */
   @Test
   public void testProcessWithMissingMandatoryAttributeValue() throws IOException {
+    ParticipantProcessor.initProcessor();
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(2);
 
@@ -170,6 +172,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
    */
   @Test
   public void testProcessWithNotAllowedAttributeValue() throws IOException {
+    ParticipantProcessor.initProcessor();
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(2);
 
@@ -212,6 +215,8 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     cal.clear();
     cal.set(1964, 10 - 1, 1);
     final Date expectedBirthDate = cal.getTime();
+
+    ParticipantProcessor.initProcessor();
 
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(1);
@@ -263,6 +268,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
    */
   @Test
   public void testProcessWithDuplicateDuplicateEnrollmentId() throws IOException {
+    ParticipantProcessor.initProcessor();
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(2);
 
@@ -297,6 +303,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
   @Test
   @Dataset
   public void testProcessParticipantAlreadyExist() {
+    ParticipantProcessor.initProcessor();
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(3);
 

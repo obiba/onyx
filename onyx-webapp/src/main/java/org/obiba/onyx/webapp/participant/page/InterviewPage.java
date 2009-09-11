@@ -397,7 +397,7 @@ public class InterviewPage extends BasePage {
 
       public void onClose(AjaxRequestTarget target, Status status) {
         if(status.equals(Status.SUCCESS)) {
-          Action comment = (Action) dialogContent.getModelObject();
+          Action comment = (Action) dialogContent.getDefaultModelObject();
           activeInterviewService.doAction(null, comment);
           InterviewPage.this.updateCommentsCount();
           target.addComponent(InterviewPage.this.commentsCount);

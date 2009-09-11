@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.action;
 
+import java.io.Serializable;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -53,7 +55,7 @@ public abstract class ActionWindow extends Dialog {
 
     setCloseButtonCallback(new CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        ActionDefinitionPanel pane = ActionWindow.this.getContent();
+        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getContent();
 
         if(status != null && status.equals(Dialog.Status.ERROR)) {
           FeedbackWindow feedback = pane.getFeedback();
@@ -69,14 +71,14 @@ public abstract class ActionWindow extends Dialog {
     setWindowClosedCallback(new WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target, Status status) {
 
-        ActionDefinitionPanel pane = ActionWindow.this.getContent();
+        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getContent();
 
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
           Action action = pane.getAction();
           log.debug("action=" + action);
           Stage stage = null;
-          if(getModel() != null && getModelObject() != null) {
-            stage = (Stage) getModelObject();
+          if(getDefaultModel() != null && getDefaultModelObject() != null) {
+            stage = (Stage) getDefaultModelObject();
           }
           activeInterviewService.doAction(stage, action);
           onActionPerformed(target, stage, action);
@@ -104,7 +106,7 @@ public abstract class ActionWindow extends Dialog {
 
   public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition, WindowClosedCallback additionnalWindowClosedCallback) {
     this.additionnalWindowClosedCallback = additionnalWindowClosedCallback;
-    setModel(stageModel);
+    setDefaultModel(stageModel);
     ActionDefinitionPanel component = new ActionDefinitionPanel(getContentId(), actionDefinition, target) {
     };
     component.add(new AttributeModifier("class", true, new Model("obiba-content window-action-content")));
@@ -114,8 +116,8 @@ public abstract class ActionWindow extends Dialog {
     if(stageModel != null && stageModel.getObject() != null) {
       Model titleModel = new Model() {
         @Override
-        public Object getObject() {
-          Stage stage = (Stage) ActionWindow.this.getModelObject();
+        public Serializable getObject() {
+          Stage stage = (Stage) ActionWindow.this.getDefaultModelObject();
           MessageSourceResolvableStringModel stageDescriptionModel = new MessageSourceResolvableStringModel(stage.getDescription());
           return stageDescriptionModel.getObject() + ": " + labelModel.getObject();
         }
@@ -128,7 +130,7 @@ public abstract class ActionWindow extends Dialog {
     show(target);
   }
 
-  public ActionDefinitionPanel getContent() {
-    return content;
-  }
+  // public ActionDefinitionPanel getContent() {
+  // return content;
+  // }
 }

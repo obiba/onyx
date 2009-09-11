@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.wicket.contraindication.ObservedContraIndicationPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
@@ -36,7 +37,7 @@ public class ObservedContraIndicationStep extends AbstractJadeContraIndicationSt
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepInNext(form, target);
-    setContent(target, new ObservedContraIndicationPanel(getContentId(), new PropertyModel(this, "activeInstrumentRunService")));
+    setContent(target, new ObservedContraIndicationPanel(getContentId(), new PropertyModel<IContraindicatable>(this, "activeInstrumentRunService")));
   }
 
   //

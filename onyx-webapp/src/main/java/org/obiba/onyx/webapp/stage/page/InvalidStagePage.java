@@ -35,7 +35,7 @@ public class InvalidStagePage extends BasePage {
     // Modify menu bar.
     //
     remove("menuBar");
-    menuBar = new StageMenuBar("menuBar", stagePage.getModel());
+    menuBar = new StageMenuBar("menuBar", stagePage.getDefaultModel());
     add(menuBar);
 
     add(new Link("link") {

@@ -19,7 +19,7 @@ import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
 import org.apache.wicket.validation.ValidationError;
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -29,7 +29,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 /**
- *
+ * 
  */
 public class DataValidatorTest {
 
@@ -74,7 +74,7 @@ public class DataValidatorTest {
     IValidationError ierror = errors.get(0);
     Assert.assertTrue(ierror instanceof ValidationError);
     ValidationError error = (ValidationError) ierror;
-    Map<String, String> variables = error.getVariables();
+    Map<String, Object> variables = error.getVariables();
     Assert.assertTrue(variables.containsKey("expectedType"));
     Assert.assertEquals(DataType.DECIMAL, variables.get("expectedType"));
 
@@ -109,7 +109,7 @@ public class DataValidatorTest {
 
   @Test
   public void testNumberValidator() {
-    DataValidator validator = new DataValidator(new NumberValidator.MinimumValidator(1), DataType.INTEGER);
+    DataValidator validator = new DataValidator(new MinimumValidator(1), DataType.INTEGER);
     Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -117,7 +117,7 @@ public class DataValidatorTest {
 
   @Test
   public void testDoubleNumberValidator() {
-    DataValidator validator = new DataValidator(new NumberValidator.MinimumValidator(1), DataType.DECIMAL);
+    DataValidator validator = new DataValidator(new MinimumValidator(1f), DataType.DECIMAL);
     Validatable validatable = new Validatable(DataBuilder.buildDecimal(1.2f));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -125,7 +125,7 @@ public class DataValidatorTest {
 
   @Test
   public void testFailedNumberValidator() {
-    DataValidator validator = new DataValidator(new NumberValidator.MinimumValidator(1), DataType.INTEGER);
+    DataValidator validator = new DataValidator(new MinimumValidator(1), DataType.INTEGER);
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
@@ -133,7 +133,7 @@ public class DataValidatorTest {
 
   @Test
   public void testFailedDoubleNumberValidator() {
-    DataValidator validator = new DataValidator(new NumberValidator.MinimumValidator(1), DataType.DECIMAL);
+    DataValidator validator = new DataValidator(new MinimumValidator(1f), DataType.DECIMAL);
     Validatable validatable = new Validatable(DataBuilder.buildDecimal(0.2f));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());

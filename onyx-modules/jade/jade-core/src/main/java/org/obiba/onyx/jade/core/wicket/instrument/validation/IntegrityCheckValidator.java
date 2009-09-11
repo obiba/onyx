@@ -28,7 +28,7 @@ import org.obiba.onyx.wicket.data.DataField;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 
-public class IntegrityCheckValidator extends AbstractValidator {
+public class IntegrityCheckValidator extends AbstractValidator<Data> {
 
   private static final long serialVersionUID = 1L;
 
@@ -60,8 +60,8 @@ public class IntegrityCheckValidator extends AbstractValidator {
   //
 
   @Override
-  protected void onValidate(IValidatable validatable) {
-    boolean isValid = integrityCheck.checkParameterValue(getCheckedParameter(), (Data) (validatable.getValue()), instrumentRunService, activeInstrumentRunService);
+  protected void onValidate(IValidatable<Data> validatable) {
+    boolean isValid = integrityCheck.checkParameterValue(getCheckedParameter(), validatable.getValue(), instrumentRunService, activeInstrumentRunService);
 
     if(!isValid) {
       validatable.error(new IntegrityCheckValidationError(integrityCheck));

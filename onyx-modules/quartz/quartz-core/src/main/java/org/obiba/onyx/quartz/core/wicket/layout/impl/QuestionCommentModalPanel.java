@@ -38,7 +38,7 @@ public abstract class QuestionCommentModalPanel extends Panel {
 
   public QuestionCommentModalPanel(String id, ModalWindow commentWindow, IModel questionModel) {
     super(id, questionModel);
-    setComment(activeQuestionnaireAdministrationService.getComment((Question) getModelObject()));
+    setComment(activeQuestionnaireAdministrationService.getComment((Question) getDefaultModelObject()));
 
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);

@@ -313,15 +313,22 @@ public abstract class WizardForm extends Form {
     return null;
   }
 
+  @SuppressWarnings("unchecked")
   public HistoryAjaxBehavior getHistoryAjaxBehavior() {
-    HistoryAjaxBehavior behavior = (HistoryAjaxBehavior) visitParents(IHistoryAjaxBehaviorOwner.class, new Component.IVisitor() {
+    // Start here
+    Component current = getParent();
 
-      public Object component(Component component) {
-        return ((IHistoryAjaxBehaviorOwner) component).getHistoryAjaxBehavior();
+    // Walk up containment hierarchy
+    while(current != null) {
+      // Is current an instance of this class?
+      if(IHistoryAjaxBehaviorOwner.class.isInstance(current)) {
+        return ((IHistoryAjaxBehaviorOwner) current).getHistoryAjaxBehavior();
       }
 
-    });
-    return behavior;
+      // Check parent
+      current = current.getParent();
+    }
+    return null;
   }
 
   public static String getStepId() {

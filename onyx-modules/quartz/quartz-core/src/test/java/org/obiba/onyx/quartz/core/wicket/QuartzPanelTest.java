@@ -140,7 +140,7 @@ public class QuartzPanelTest {
       public Panel getTestPanel(String panelId) {
 
         QuartzPanel quartzPanel = new QuartzPanel(panelId, newTestStage(), false);
-        quartzPanel.setModel(new QuestionnaireModel(questionnaire));
+        quartzPanel.setDefaultModel(new QuestionnaireModel(questionnaire));
         return (quartzPanel);
 
       }

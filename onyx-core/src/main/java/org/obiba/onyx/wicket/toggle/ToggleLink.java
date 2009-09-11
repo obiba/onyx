@@ -44,9 +44,9 @@ public class ToggleLink extends Panel {
       public void onClick(AjaxRequestTarget target) {
         toggle.setVisible(!toggle.isVisible());
         if(toggle.isVisible()) {
-          toggleLabel.setModel(hideModel);
+          toggleLabel.setDefaultModel(hideModel);
         } else {
-          toggleLabel.setModel(showModel);
+          toggleLabel.setDefaultModel(showModel);
         }
         target.addComponent(toggle.getParent());
       }

@@ -46,7 +46,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
     super(id);
 
     InstrumentType type = getInstrumentType(stage);
-    setModel(model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new InstrumentTypeModel(type)));
+    setDefaultModel(model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new InstrumentTypeModel(type)));
 
     add(wizardPanel = new InstrumentWizardPanel("content", model.intrumentTypeModel, new StageModel(moduleRegistry, stage.getName()), resuming));
   }

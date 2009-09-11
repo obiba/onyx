@@ -9,24 +9,50 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
+import java.io.Serializable;
+
+import org.apache.wicket.ajax.AjaxEventBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IErrorMessageSource;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.IValidator;
+import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
- *
+ * 
  */
 public class UpdateParticipantListPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
+  private static final String AUTOMATIC_UPLOAD = "Automatic";
+
+  private static final String MANUAL_UPLOAD = "Manual";
+
+  @SpringBean
+  private AbstractParticipantReader participantReader;
+
   //
   // Instance variables
   //
+
+  private FeedbackWindow feedbackWindow;
 
   private ConfirmationFragment confirmationFragment;
 
@@ -41,7 +67,10 @@ public class UpdateParticipantListPanel extends Panel {
   public UpdateParticipantListPanel(String id) {
     super(id);
 
-    confirmationFragment = new ConfirmationFragment("contentFragment", new ResourceModel("ConfirmParticipantListUpdate"));
+    add(feedbackWindow = new FeedbackWindow("feedback"));
+    feedbackWindow.setOutputMarkupId(true);
+
+    confirmationFragment = new ConfirmationFragment("contentFragment");
     progressFragment = new ProgressFragment("contentFragment", new ResourceModel("ParticipantListUpdateInProgress"));
     resultFragment = new ResultFragment("contentFragment", new ResourceModel("ParticipantsListSuccessfullyUpdated"));
 
@@ -58,7 +87,7 @@ public class UpdateParticipantListPanel extends Panel {
   public void showResult(boolean updateSucceeded) {
     String messageKey = updateSucceeded ? "ParticipantsListSuccessfullyUpdated" : "ParticipantListUpdateFailed";
     IModel messageModel = new ResourceModel(messageKey, messageKey);
-    resultFragment.resultLabel.setModel(messageModel);
+    resultFragment.resultLabel.setDefaultModel(messageModel);
 
     replaceOrAddFragment(resultFragment);
   }
@@ -81,18 +110,79 @@ public class UpdateParticipantListPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private Image icon;
+    private final FileUploadField fileUpload;
 
-    private MultiLineLabel messageLabel;
-
-    public ConfirmationFragment(String id, IModel messageModel) {
+    public ConfirmationFragment(String id) {
       super(id, "confirmationFragment", UpdateParticipantListPanel.this);
 
-      icon = new Image("confirmIcon");
-      add(icon);
+      RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
+      add(radioGroup);
+      setRadioOptions(radioGroup);
 
-      messageLabel = new MultiLineLabel("confirmMessage", messageModel);
-      add(messageLabel);
+      fileUpload = new FileUploadField("fileUpload");
+      fileUpload.add(new IValidator<FileUpload>() {
+        private static final long serialVersionUID = 1L;
+
+        public void validate(IValidatable validatable) {
+          FileUpload input = (FileUpload) validatable.getValue();
+          if(!input.getClientFileName().endsWith(participantReader.getFilePattern())) {
+            validatable.error(new FileTypeError());
+          }
+        }
+      });
+
+      fileUpload.setRequired(true);
+      fileUpload.setEnabled(false);
+      fileUpload.setOutputMarkupId(true);
+      add(fileUpload);
+    }
+
+    private void setRadioOptions(final RadioGroup radioGroup) {
+
+      Radio radio = new Radio("automaticUpload", new Model(AUTOMATIC_UPLOAD));
+      radio.setLabel(new StringResourceModel("UpdateParticipantList." + AUTOMATIC_UPLOAD, UpdateParticipantListPanel.this, null));
+
+      radio.add(new AjaxEventBehavior("onchange") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          fileUpload.setEnabled(false);
+          target.addComponent(fileUpload);
+        }
+
+      });
+
+      radioGroup.add(radio);
+      radioGroup.add(new Label("alabel", radio.getLabel()).setRenderBodyOnly(true));
+
+      radio = new Radio("manualUpload", new Model(MANUAL_UPLOAD));
+      radio.setLabel(new StringResourceModel("UpdateParticipantList." + MANUAL_UPLOAD, UpdateParticipantListPanel.this, null));
+
+      radio.add(new AjaxEventBehavior("onchange") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          fileUpload.setEnabled(true);
+          target.addComponent(fileUpload);
+        }
+
+      });
+
+      radioGroup.add(radio);
+      radioGroup.add(new Label("mlabel", radio.getLabel()).setRenderBodyOnly(true));
+
+      radioGroup.setRequired(true);
+
+    }
+
+    @SuppressWarnings("serial")
+    private class FileTypeError implements IValidationError, Serializable {
+
+      public String getErrorMessage(IErrorMessageSource messageSource) {
+        return new StringResourceModel("FileWrongType", UpdateParticipantListPanel.this, null).getString();
+      }
     }
   }
 
@@ -128,5 +218,22 @@ public class UpdateParticipantListPanel extends Panel {
       add(resultLabel);
 
     }
+  }
+
+  public void setParticipantReader(AbstractParticipantReader participantReader) {
+    this.participantReader = participantReader;
+  }
+
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
+  }
+
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    this.feedbackWindow = feedbackWindow;
+  }
+
+  public void displayFeedback(AjaxRequestTarget target) {
+    feedbackWindow.setContent(new FeedbackPanel("content"));
+    feedbackWindow.show(target);
   }
 }

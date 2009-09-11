@@ -9,8 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.example.questionnaire.util;
 
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.DateField;
@@ -149,12 +150,12 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("AGE_PRESENT_ADRESS").withSharedCategory(PNA, "88");
     builder.inQuestion("AGE_PRESENT_ADRESS").withSharedCategory(DNK, "99");
 
-    builder.inSection("QUESTION_TYPES").withSection("EXCL_COMPOUND").withPage("8").withQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_DAY").withOpenAnswerDefinition("FREQ_DAY", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
-    builder.inQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_WEEK").withOpenAnswerDefinition("FREQ_WEEK", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
+    builder.inSection("QUESTION_TYPES").withSection("EXCL_COMPOUND").withPage("8").withQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_DAY").withOpenAnswerDefinition("FREQ_DAY", DataType.INTEGER).addValidator(new MinimumValidator(0)).setSize(2);
+    builder.inQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_WEEK").withOpenAnswerDefinition("FREQ_WEEK", DataType.INTEGER).addValidator(new MinimumValidator(0)).setSize(2);
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withSharedCategory(PNA, "88");
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withSharedCategory(DNK, "99");
-    builder.inPage("8").withQuestion("WEIGHT_BIRTH").withCategory("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH", DataType.INTEGER).withOpenAnswerDefinition("WEIGHT_BIRTH_LBS", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
-    builder.inOpenAnswerDefinition("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH_OUNCES", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
+    builder.inPage("8").withQuestion("WEIGHT_BIRTH").withCategory("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH", DataType.INTEGER).withOpenAnswerDefinition("WEIGHT_BIRTH_LBS", DataType.INTEGER).addValidator(new MinimumValidator(0)).setSize(2);
+    builder.inOpenAnswerDefinition("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH_OUNCES", DataType.INTEGER).addValidator(new MinimumValidator(0)).setSize(2);
     builder.inQuestion("WEIGHT_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("WEIGHT_BIRTH").withSharedCategory(DNK, "99");
 
@@ -190,7 +191,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
 
     builder.withSection("ANS_VALIDATION").withPage("11").withQuestion("VAL_BP");
 
-    builder.inSection("ANS_VALIDATION").withSection("VALUES_RANGE").withPage("12").withQuestion("TRAVEL_WALK_DAYS_WEEK").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 7)).setSize(2);
+    builder.inSection("ANS_VALIDATION").withSection("VALUES_RANGE").withPage("12").withQuestion("TRAVEL_WALK_DAYS_WEEK").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new RangeValidator(0, 7)).setSize(2);
     builder.inQuestion("TRAVEL_WALK_DAYS_WEEK").withSharedCategory(PNA, "8");
     builder.inQuestion("TRAVEL_WALK_DAYS_WEEK").withSharedCategory(DNK, "9");
 
@@ -198,10 +199,10 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("POSTAL_CODE").withSharedCategory(PNA, "888");
     builder.inQuestion("POSTAL_CODE").withSharedCategory(DNK, "999");
 
-    builder.inSection("ANS_VALIDATION").withSection("X_VAL").withPage("14").withQuestion("PARTICIPANT_AGE").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70)).setSize(2);
+    builder.inSection("ANS_VALIDATION").withSection("X_VAL").withPage("14").withQuestion("PARTICIPANT_AGE").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new RangeValidator(40, 70)).setSize(2);
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
-    builder.inPage("14").withQuestion("STARTED_SMOKING_AGE").withSharedCategory(OPEN_0_PARTICIPANT).withOpenAnswerDefinition(OPEN_0_PARTICIPANT, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
+    builder.inPage("14").withQuestion("STARTED_SMOKING_AGE").withSharedCategory(OPEN_0_PARTICIPANT).withOpenAnswerDefinition(OPEN_0_PARTICIPANT, DataType.INTEGER).addValidator(new MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
     builder.inQuestion("STARTED_SMOKING_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("STARTED_SMOKING_AGE").withSharedCategory(DNK, "99");
 
@@ -210,7 +211,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("PREGNANT").withSharedCategory(Y, "1");
     builder.inQuestion("PREGNANT").withSharedCategory(PNA, "8");
     builder.inQuestion("PREGNANT").withSharedCategory(DNK, "9");
-    builder.inPage("16").withQuestion("WEEK_PREGNANCY").withCategory("OPEN_40").withOpenAnswerDefinition("OPEN_40", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 40)).setSize(2);
+    builder.inPage("16").withQuestion("WEEK_PREGNANCY").withCategory("OPEN_40").withOpenAnswerDefinition("OPEN_40", DataType.INTEGER).addValidator(new RangeValidator(0, 40)).setSize(2);
     builder.inQuestion("WEEK_PREGNANCY").setCondition("PREGNANT", Y);
 
     builder.inSection("SKIP_PATTERNS").withSection("DIFF_SCREENS").withPage("17").withQuestion("EVER_DRUNK_ALCOHOL").withSharedCategory(N, "0");
@@ -312,7 +313,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MED_ANGINA").withSharedCategory(PNA, "8");
     builder.inQuestion("MED_ANGINA").withSharedCategory(DNK, "9");
 
-    builder.inSection("SKIP_PATTERNS").withSection("A_PRIORI_VALUE").withPage("27").withQuestion("RX_MEDICATION").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 4)).setSize(2);
+    builder.inSection("SKIP_PATTERNS").withSection("A_PRIORI_VALUE").withPage("27").withQuestion("RX_MEDICATION").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new RangeValidator(0, 4)).setSize(2);
     builder.inQuestion("RX_MEDICATION").withSharedCategory(PNA, "88");
     builder.inQuestion("RX_MEDICATION").withSharedCategory(DNK, "99");
 
@@ -366,7 +367,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MAJOR_OPERATION1TYPE").withSharedCategory(PNA, "8");
     builder.inQuestion("MAJOR_OPERATION1TYPE").withSharedCategory(DNK, "9");
     builder.inPage("33").withQuestion("MAJOR_OPERATION1AGE").setCondition("MAJOR_OPERATION1OCC", Y);
-    builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
+    builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
     builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(YEAR).withOpenAnswerDefinition(YEAR, DataType.INTEGER).addValidator(ComparisonOperator.ge, "DOB_YEAR", "DOB_YEAR", "DOB_YEAR").addCurrentYearValidator(ComparisonOperator.le).setSize(4);
     builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(PNA, "8888");
     builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(DNK, "9999");

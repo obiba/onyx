@@ -14,25 +14,25 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
-public class InstrumentRunValueDataModel implements IModel {
+public class InstrumentRunValueDataModel implements IModel<Data> {
 
   private static final long serialVersionUID = 1L;
 
-  private IModel instrumentRunValueModel;
+  private IModel<InstrumentRunValue> instrumentRunValueModel;
 
   private DataType dataType;
 
-  public InstrumentRunValueDataModel(IModel instrumentRunValueModel, DataType dataType) {
+  public InstrumentRunValueDataModel(IModel<InstrumentRunValue> instrumentRunValueModel, DataType dataType) {
     this.instrumentRunValueModel = instrumentRunValueModel;
     this.dataType = dataType;
   }
 
-  public Object getObject() {
+  public Data getObject() {
     InstrumentRunValue instrumentRunValue = (InstrumentRunValue) instrumentRunValueModel.getObject();
     return instrumentRunValue.getData(dataType);
   }
 
-  public void setObject(Object object) {
+  public void setObject(Data object) {
     InstrumentRunValue instrumentRunValue = (InstrumentRunValue) instrumentRunValueModel.getObject();
     instrumentRunValue.setData((Data) object);
   }

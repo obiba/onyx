@@ -11,7 +11,8 @@ package org.obiba.onyx.example.questionnaire.util;
 
 import java.util.Locale;
 
-import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.util.data.DataType;
@@ -64,17 +65,17 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("CURRENTLY_WORK").withSharedCategory(Y, "1");
     builder.inQuestion("CURRENTLY_WORK").withSharedCategory(PNA, "8");
     builder.inQuestion("CURRENTLY_WORK").withSharedCategory(DNK, "9");
-    builder.inSection("PART1").withPage("2a").withQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK", "3").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 7));
+    builder.inSection("PART1").withPage("2a").withQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK", "3").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new RangeValidator(0, 7));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(PNA, "8");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(DNK, "9");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").setCondition("CURRENTLY_WORK", Y);
-    builder.inSection("PART1").withPage("2b").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY", "4").withCategory("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_TIME_DAY", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_DAY", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 16));
-    builder.inOpenAnswerDefinition("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_MIN_DAY", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 960));
+    builder.inSection("PART1").withPage("2b").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY", "4").withCategory("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_TIME_DAY", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_DAY", DataType.INTEGER).setRequired(false).addValidator(new RangeValidator(0, 16));
+    builder.inOpenAnswerDefinition("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_MIN_DAY", DataType.INTEGER).setRequired(false).addValidator(new RangeValidator(0, 960));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withSharedCategory(PNA, "888");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withSharedCategory(DNK, "999");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").setCondition("$1 > 0", builder.newDataSource("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK", "DAYS_WEEK", "DAYS_WEEK"));
-    builder.inSection("PART1").withPage("3").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK", "5").withCategory("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_TIME_WEEK", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_WEEK", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 112));
-    builder.inOpenAnswerDefinition("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_MIN_WEEK", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 6720));
+    builder.inSection("PART1").withPage("3").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK", "5").withCategory("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_TIME_WEEK", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_WEEK", DataType.INTEGER).setRequired(false).addValidator(new RangeValidator(0, 112));
+    builder.inOpenAnswerDefinition("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_MIN_WEEK", DataType.INTEGER).setRequired(false).addValidator(new RangeValidator(0, 6720));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK").withSharedCategory(PNA, "8888");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK").withSharedCategory(DNK, "9999");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK").setCondition("WORK_VIGOROUS_ACTIVITY_TIME_DAY", DNK);
@@ -144,7 +145,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(Y, "1");
     builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(PNA, "8");
     builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(DNK, "9");
-    builder.inSection("PRESCRIBED_MEDICATION").withPage("9a").withQuestion("RX_MEDICATION", "11").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 3));
+    builder.inSection("PRESCRIBED_MEDICATION").withPage("9a").withQuestion("RX_MEDICATION", "11").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new RangeValidator(0, 3));
     builder.inQuestion("RX_MEDICATION").withSharedCategory(PNA, "88");
     builder.inQuestion("RX_MEDICATION").withSharedCategory(DNK, "99");
     builder.inQuestion("RX_MEDICATION").setCondition("TAKING_RX_MED_OCCURENCE", Y);
@@ -178,7 +179,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inPage("9d").addTimestamp("TS_VMH");
 
     builder.withSection("I_WOMEN_AND_MEN_HEALTH").withSection("MENSTRUATION").withPage("10").withQuestion("ME0");
-    builder.inSection("I_WOMEN_AND_MEN_HEALTH").withSection("REPRODUCTION_BREASTFEEDING").withPage("11").withQuestion("NUMBER_PREGNANCIES_ALL", "18").withSharedCategory(OPEN_N_0).withOpenAnswerDefinition(OPEN_N_0, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0l));
+    builder.inSection("I_WOMEN_AND_MEN_HEALTH").withSection("REPRODUCTION_BREASTFEEDING").withPage("11").withQuestion("NUMBER_PREGNANCIES_ALL", "18").withSharedCategory(OPEN_N_0).withOpenAnswerDefinition(OPEN_N_0, DataType.INTEGER).addValidator(new MinimumValidator(0l));
     builder.inQuestion("NUMBER_PREGNANCIES_ALL").withSharedCategory(PNA, "88");
     builder.inQuestion("NUMBER_PREGNANCIES_ALL").withSharedCategory(DNK, "99");
     builder.inQuestion("NUMBER_PREGNANCIES_ALL").setCondition("HealthQuestionnaireSelfAdministered", "SEX", "FEMALE");
@@ -208,7 +209,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("NEO_FIRST_DEG_REL_WHICH").setCondition("NEO_FIRST_DEG_REL_OCCURRENCE", Y);
     builder.inQuestion("NEO_FIRST_DEG_REL_WHICH").withQuestion("NEOPLASM_MOTHER", "1.1");
     builder.inQuestion("NEO_FIRST_DEG_REL_WHICH").withQuestion("NEOPLASM_FATHER", "1.2");
-    builder.inPage("17").withQuestion("NEO_FIRST_DEG_REL_NUMBER").withSharedCategory(OPEN_N).withOpenAnswerDefinition(OPEN_N, DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 2));
+    builder.inPage("17").withQuestion("NEO_FIRST_DEG_REL_NUMBER").withSharedCategory(OPEN_N).withOpenAnswerDefinition(OPEN_N, DataType.INTEGER).addValidator(new RangeValidator(0, 2));
     builder.inQuestion("NEO_FIRST_DEG_REL_NUMBER").withSharedCategory(PNA, "88");
     builder.inQuestion("NEO_FIRST_DEG_REL_NUMBER").withSharedCategory(DNK, "99");
     builder.inQuestion("NEO_FIRST_DEG_REL_NUMBER").setCondition("$1 > 0 || $2 > 0 || $3 > 0", builder.newExternalDataSource("HealthQuestionnaireSelfAdministered", "NUMBER_SIBLINGS_ALL", OPEN_N, OPEN_N), builder.newDataSource("NUMBER_LIVE_BIRTHS", OPEN_N_0, OPEN_N_0), builder.newDataSource("NUMBER_CHILDREN_FATHERED", OPEN_N_0, OPEN_N_0));
@@ -229,7 +230,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("NEOPLASM_OTHER_TYPE_FATHER").withSharedCategory(PNA, "88");
     builder.inQuestion("NEOPLASM_OTHER_TYPE_FATHER").withSharedCategory(DNK, "99");
     builder.inQuestion("NEOPLASM_OTHER_TYPE_FATHER").setCondition("NEOPLASM_TYPE_FATHER", OTHER);
-    builder.inPage("18").withQuestion("NEOPLASM_AGE_FATHER", "26").withSharedCategory(OTHER_AGE).withOpenAnswerDefinition(OTHER_AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0));
+    builder.inPage("18").withQuestion("NEOPLASM_AGE_FATHER", "26").withSharedCategory(OTHER_AGE).withOpenAnswerDefinition(OTHER_AGE, DataType.INTEGER).addValidator(new MinimumValidator(0));
     builder.inQuestion("NEOPLASM_AGE_FATHER").withSharedCategory(PNA, "888");
     builder.inQuestion("NEOPLASM_AGE_FATHER").withSharedCategory(DNK, "999");
     builder.inQuestion("NEOPLASM_AGE_FATHER").setCondition("NEOPLASM_FATHER", Y);
@@ -264,7 +265,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("NEOPLASM_AGE_SIB1").withSharedCategory(PNA, "888");
     builder.inQuestion("NEOPLASM_AGE_SIB1").withSharedCategory(DNK, "999");
     builder.inQuestion("NEOPLASM_AGE_SIB1").setCondition("$1 > 0", builder.newDataSource("NEOPLASM_NUMBER_SIBLINGS", OPEN_N, OPEN_N));
-    builder.inPage("19").withQuestion("BIRTH_RANK_SIB1", "33").withSharedCategory(BIRTH_RANK).withOpenAnswerDefinition(BIRTH_RANK, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0));
+    builder.inPage("19").withQuestion("BIRTH_RANK_SIB1", "33").withSharedCategory(BIRTH_RANK).withOpenAnswerDefinition(BIRTH_RANK, DataType.INTEGER).addValidator(new MinimumValidator(0));
     builder.inQuestion("BIRTH_RANK_SIB1").withSharedCategory(PNA, "88");
     builder.inQuestion("BIRTH_RANK_SIB1").withSharedCategory(DNK, "99");
     builder.inQuestion("BIRTH_RANK_SIB1").setCondition("$1 > 0", builder.newDataSource("NEOPLASM_NUMBER_SIBLINGS", OPEN_N, OPEN_N));

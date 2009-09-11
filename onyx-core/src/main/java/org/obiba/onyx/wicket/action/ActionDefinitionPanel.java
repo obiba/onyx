@@ -63,7 +63,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     super(id);
 
     Action action = new Action(definition);
-    setModel(new Model(action));
+    setDefaultModel(new Model(action));
 
     add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
@@ -137,7 +137,7 @@ public abstract class ActionDefinitionPanel extends Panel {
   }
 
   public Action getAction() {
-    return (Action) getModelObject();
+    return (Action) getDefaultModelObject();
   }
 
   public boolean isCancelled() {

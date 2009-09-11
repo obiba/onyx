@@ -74,7 +74,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     setOutputMarkupId(true);
 
     // previous answer or default selection
-    QuestionCategory questionCategory = (QuestionCategory) getModelObject();
+    QuestionCategory questionCategory = (QuestionCategory) getDefaultModelObject();
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
 
     QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(selectionsModel, questionCategoryModel);
@@ -99,12 +99,12 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
         }
         if(getOpenField() != null) {
           if(!getSelectionModel().isSelected()) {
-            resetOpenAnswerDefinitionPanels(target, getOpenField(), QuestionCategoryCheckBoxPanel.this.getModel());
+            resetOpenAnswerDefinitionPanels(target, getOpenField(), QuestionCategoryCheckBoxPanel.this.getDefaultModel());
             updateFeedbackPanel(target);
           }
         }
 
-        fireQuestionCategorySelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getModel(), getSelectionModel().isSelected());
+        fireQuestionCategorySelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getDefaultModel(), getSelectionModel().isSelected());
       }
 
     });

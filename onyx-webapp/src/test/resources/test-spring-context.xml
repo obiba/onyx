@@ -7,4 +7,14 @@
     <property name="onyxConfigPath" value="classpath:" />
     <property name="supportedRecruitmentTypesString" value="ENROLLED,VOLUNTEER" />
   </bean>
+  
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.ParticipantReader" scope="prototype">
+    <property name="inputDirectory" value=""/>
+    <property name="participantMetadata" ref="participantMetadata" />
+    <property name="sheetNumber" value="1" />
+    <property name="headerRowNumber" value="2" />
+    <property name="firstDataRowNumber" value="3" />
+    <property name="columnToAttribute" value="Participant ID=Enrollment ID,Collection Site Id=Assessment Center ID,Sex=Gender,Appointment date/time=Appointment Time" />
+  </bean>
+  
 </beans>

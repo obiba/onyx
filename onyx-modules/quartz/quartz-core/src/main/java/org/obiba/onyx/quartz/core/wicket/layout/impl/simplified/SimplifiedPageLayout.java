@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.data.IDataSource;
@@ -63,7 +62,7 @@ public class SimplifiedPageLayout extends PageLayout {
     super(id, pageModel);
     setOutputMarkupId(true);
 
-    Page page = (Page) getModelObject();
+    Page page = (Page) getDefaultModelObject();
     Question question = getQuestion(page);
 
     if(question != null) {

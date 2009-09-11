@@ -182,7 +182,7 @@ public class CommentsModalPanelTest implements Serializable {
 
     MultiLineLabel commentLabel = (MultiLineLabel) commentPanel.get("repeating:5:" + KeyValueDataPanel.getRowValueId());
     Assert.assertNotNull(commentLabel);
-    Assert.assertEquals(stageComment, commentLabel.getModelObjectAsString());
+    Assert.assertEquals(stageComment, commentLabel.getDefaultModelObjectAsString());
 
     //
     // Now get a reference to the SECOND comment panel and verify that it contains the
@@ -193,7 +193,7 @@ public class CommentsModalPanelTest implements Serializable {
 
     commentLabel = (MultiLineLabel) commentPanel.get("repeating:5:" + KeyValueDataPanel.getRowValueId());
     Assert.assertNotNull(commentLabel);
-    Assert.assertEquals(generalComment, commentLabel.getModelObjectAsString());
+    Assert.assertEquals(generalComment, commentLabel.getDefaultModelObjectAsString());
   }
 
   private User createUser() {
