@@ -497,6 +497,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   private void addOutputParameterValues(Map<String, Data> values, InstrumentParameterCaptureMethod captureMethod) {
+    values = deleteNullOutputParameterValues(values); // Avoid saving parameters with null values.
     if(!getInstrumentType().isRepeatable()) {
       for(Map.Entry<String, Data> entry : values.entrySet()) {
         String paramName = entry.getKey();
@@ -511,6 +512,22 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
         addMeasure(values);
       }
     }
+  }
+
+  /**
+   * Returns a map with null output parameters removed. Additionally the null output parameters are also removed from
+   * the database. We do not want to save null values to the database.
+   * @param values Map of output parameters to values
+   * @return A Map with the null output parameters removed
+   */
+  private Map<String, Data> deleteNullOutputParameterValues(Map<String, Data> values) {
+    Map<String, Data> result = new HashMap<String, Data>();
+    for(Map.Entry<String, Data> entry : values.entrySet()) {
+      if(entry.getValue() != null && entry.getValue().getValue() != null) {
+        result.put(entry.getKey(), entry.getValue());
+      }
+    }
+    return result;
   }
 
   private InstrumentParameter getInstrumentParameter(String name) {
@@ -587,5 +604,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     for(Measure measure : invalidMeasures) {
       deleteMeasure(measure);
     }
+  }
+
+  public void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue) {
+    getPersistenceManager().delete(instrumentRunValue);
   }
 }

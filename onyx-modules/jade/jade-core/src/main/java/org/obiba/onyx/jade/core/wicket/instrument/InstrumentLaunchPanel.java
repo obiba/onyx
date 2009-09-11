@@ -31,6 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -141,6 +142,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
           }
         });
         manualEntryDialog.getForm().setEnabled(true);
+
+        clearPreviouslyPersistedNonRepeatableOutputParameters();
         manualEntryDialog.show(target);
         // Note that "Manual" instrument has been launched.
         InstrumentLaunchPanel.this.onInstrumentLaunch();
@@ -330,4 +333,20 @@ public abstract class InstrumentLaunchPanel extends Panel {
     return skipMeasure;
   }
 
+  /**
+   * Used to clear out previously persisted non repeatable output parameters whenever the manual entry "add" button is
+   * clicked. This is important because some parameters are not required. If a 'not required' parameter were provide in
+   * a previous measure but not in a following measure then the original value would not be overridden and the result
+   * would be a mix of the two measures. To avoid this we clear out the values before taking each non repeatable
+   * measure.
+   */
+  private void clearPreviouslyPersistedNonRepeatableOutputParameters() {
+    for(InstrumentOutputParameter param : activeInstrumentRunService.getInstrumentType().getOutputParameters()) {
+      for(InstrumentRunValue outputParameterValue : activeInstrumentRunService.getInstrumentRunValues(param.getCode())) {
+        if(outputParameterValue != null && outputParameterValue.getMeasure() == null) {
+          activeInstrumentRunService.deleteInstrumentRunValue(outputParameterValue);
+        }
+      }
+    }
+  }
 }
