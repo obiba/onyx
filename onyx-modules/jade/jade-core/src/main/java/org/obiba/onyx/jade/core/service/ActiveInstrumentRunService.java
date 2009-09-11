@@ -152,4 +152,11 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @param values A map of parameter names to {@link Data} values.
    */
   public void addManuallyCapturedOutputParameterValues(Map<String, Data> values);
+
+  /**
+   * Deletes the provided {@link InstrumentRunValue} from the current {@link InstrumentRun}.
+   * @param instrumentRunValue
+   */
+  public void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue);
+
 }
