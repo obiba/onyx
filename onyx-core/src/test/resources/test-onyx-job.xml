@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:batch="http://www.springframework.org/schema/batch"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+  http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+  
+  <import resource="classpath*:/WEB-INF/spring/participant-reader.xml" />
+    
+  <bean id="appointmentListUpdateListener" class="org.obiba.onyx.core.etl.participant.impl.AppointmentListUpdateListener">
+    <property name="appointmentManagementService" ref="appointmentManagementService"/>
+  </bean>
+  
+  <batch:job id="appointmentListUpdateJob">
+    <batch:step id="deleteUnreceivedparticipantsStep" next="updateParticipantsStep">
+      <batch:tasklet ref="deleteUnreceivedParticipantsTasklet"/>
+    </batch:step>
+  
+    <batch:step id="updateParticipantsStep" next="archiveAppointmentListStep">
+      <batch:tasklet>
+        <batch:chunk reader="participantReader" processor="participantProcessor" writer="participantWriter" commit-interval="10"/>
+        <batch:listeners>
+          <batch:listener ref="appointmentListUpdateListener"/>
+        </batch:listeners>
+      </batch:tasklet>
+    </batch:step>
+    
+    <batch:step id="archiveAppointmentListStep">
+      <batch:tasklet ref="archiveAppointmentFileTasklet"/>
+    </batch:step>
+  </batch:job>
+  
+  <bean id="deleteUnreceivedParticipantsTasklet" class="org.obiba.onyx.core.etl.participant.impl.DeleteUnreceivedParticipantsTasklet">
+    <property name="participantService" ref="participantService" />
+  </bean>
+    
+  <bean id="archiveAppointmentFileTasklet" class="org.obiba.onyx.core.etl.participant.impl.ArchiveAppointmentFileTasklet">
+    <property name="inputDirectory" value="${org.obiba.onyx.appointments.inputDirectory}" />
+    <property name="outputDirectory" value="${org.obiba.onyx.appointments.outputDirectory}" />
+    <property name="participantReader" ref="participantReader" />
+  </bean>
+  
+  <bean id="participantProcessor" class="org.obiba.onyx.core.etl.participant.impl.ParticipantProcessor">
+    <property name="participantService" ref="participantService" />
+    <property name="applicationConfigurationService" ref="appConfigService" />
+    <property name="participantMetadata" ref="participantMetadata" />
+  </bean>
+  
+  <bean id="participantWriter" class="org.obiba.onyx.core.etl.participant.impl.ParticipantWriter" >
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  
+</beans>
