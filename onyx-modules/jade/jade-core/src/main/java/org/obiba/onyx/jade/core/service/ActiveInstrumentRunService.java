@@ -162,6 +162,12 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public void deleteMeasure(Measure measure);
 
   /**
+   * Deletes the provided {@link InstrumentRunValue} from the current {@link InstrumentRun}.
+   * @param instrumentRunValue
+   */
+  public void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue);
+
+  /**
    * Updates the skip comment for current instrumentRun
    * 
    * @param comment
