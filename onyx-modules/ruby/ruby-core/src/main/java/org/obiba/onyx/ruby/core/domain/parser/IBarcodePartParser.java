@@ -77,4 +77,12 @@ public interface IBarcodePartParser {
    * @return consumed barcode part size
    */
   public int getSize();
+
+  /**
+   * Defines if whether or not the parser produces variables that should be marked as "keys".
+   * 
+   * @return true if key, false if not
+   */
+  public boolean isKey();
+
 }

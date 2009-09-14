@@ -29,4 +29,8 @@ public class RandomDigitsBarcodePartParser extends FixedSizeBarcodePartParser {
     }
     return null;
   }
+
+  public boolean isKey() {
+    return false;
+  }
 }
