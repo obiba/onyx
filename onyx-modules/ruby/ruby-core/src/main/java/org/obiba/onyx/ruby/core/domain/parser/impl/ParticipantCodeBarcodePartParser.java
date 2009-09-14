@@ -55,4 +55,8 @@ public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser
   public ActiveInterviewService getActiveInterviewService() {
     return this.activeInterviewService;
   }
+
+  public boolean isKey() {
+    return true;
+  }
 }

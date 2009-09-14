@@ -94,4 +94,8 @@ public class AcceptableValuesBarcodePartParser extends DefaultBarcodePartParser 
   public Set<String> getAcceptableValues() {
     return Collections.unmodifiableSet(acceptableValues);
   }
+
+  public boolean isKey() {
+    return false;
+  }
 }

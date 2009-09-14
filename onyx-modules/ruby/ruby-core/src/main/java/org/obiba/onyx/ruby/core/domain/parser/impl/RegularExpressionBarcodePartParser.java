@@ -44,4 +44,8 @@ public class RegularExpressionBarcodePartParser extends FixedSizeBarcodePartPars
     }
     return error;
   }
+
+  public boolean isKey() {
+    return false;
+  }
 }

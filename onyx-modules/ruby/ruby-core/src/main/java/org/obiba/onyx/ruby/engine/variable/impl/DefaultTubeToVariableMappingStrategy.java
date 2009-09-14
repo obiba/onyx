@@ -114,7 +114,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   public Variable getRegisteredParticipantTubeVariable(String stageName) {
 
     TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stageName);
-    
+
     Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
     Variable subVariable = tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey("ruby"));
     addLocalizedAttributes(subVariable, "Ruby.Barcode");
@@ -224,7 +224,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
   //
   // Methods
   //
-  
+
   /**
    * Make sure there is no . in the variable name.
    */
@@ -243,6 +243,9 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
       if(variableName != null) {
         Variable partVariable = tubeVariable.addVariable(new Variable(variableName).setDataType(DataType.TEXT));
+        if(partParser.isKey()) {
+          partVariable.setKey("ruby");
+        }
 
         if(partParser instanceof AcceptableValuesBarcodePartParser) {
           AcceptableValuesBarcodePartParser acceptPartParser = (AcceptableValuesBarcodePartParser) partParser;

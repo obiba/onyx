@@ -67,4 +67,8 @@ public class FixedValueBarcodePartParser extends DefaultBarcodePartParser {
   public String getFixedValue() {
     return fixedValue;
   }
+
+  public boolean isKey() {
+    return false;
+  }
 }
