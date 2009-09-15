@@ -39,7 +39,6 @@ public class ConfirmationDialogTest implements Serializable {
     application.setHomePage(Page.class);
 
     tester = new WicketTester(application);
-    // tester = new WicketTester();
   }
 
   @Test

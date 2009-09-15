@@ -26,11 +26,13 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.service.AppointmentManagementService;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.item.ExecutionContext;
 
 /**
  * 
@@ -91,11 +93,16 @@ public class AppointmentListUpdateListenerTest {
     Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
     jobParameterMap.put("date", new JobParameter(new Date()));
     JobInstance job = new JobInstance(1l, new JobParameters(jobParameterMap), "jobTest");
+    StepExecution stepExecution = new StepExecution("complétion", new JobExecution(job));
+    stepExecution.setExitStatus(ExitStatus.COMPLETED);
+    ExecutionContext context = new ExecutionContext();
+    context.put("fileName", "fileName.xls");
+    stepExecution.setExecutionContext(context);
 
     appointmentManagementServiceMock.saveAppointmentUpdateStats((AppointmentUpdateStats) EasyMock.anyObject());
 
     replay(appointmentManagementServiceMock);
-    appointmentListUpdateListener.afterUpdateCompleted(new StepExecution("complétion", new JobExecution(job)));
+    appointmentListUpdateListener.afterUpdateCompleted(stepExecution);
     verify(appointmentManagementServiceMock);
 
   }

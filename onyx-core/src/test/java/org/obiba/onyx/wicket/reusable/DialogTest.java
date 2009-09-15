@@ -38,7 +38,6 @@ public class DialogTest {
     application.setHomePage(Page.class);
 
     tester = new WicketTester(application);
-    // tester = new WicketTester();
   }
 
   @Test

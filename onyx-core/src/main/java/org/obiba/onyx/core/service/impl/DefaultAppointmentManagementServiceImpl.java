@@ -15,10 +15,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.service.AppointmentManagementService;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -72,14 +75,15 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
     }
   }
 
-  synchronized public void updateAppointments() {
+  synchronized public ExitStatus updateAppointments() {
 
     Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
     jobParameterMap.put("date", new JobParameter(new Date()));
     JobParameters parameters = new JobParameters(jobParameterMap);
 
     try {
-      jobLauncher.run(job, parameters);
+      JobExecution jobExecution = jobLauncher.run(job, parameters);
+      return jobExecution.getExitStatus();
     } catch(JobExecutionAlreadyRunningException e) {
       // logger.error("This job is already running", e);
       throw new RuntimeException("This job is already running" + e);
@@ -90,11 +94,14 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
       // logger.error("Unspecified restart exception", e);
       throw new RuntimeException("Unspecified restart exception" + e);
     }
-
   }
 
   public void saveAppointmentUpdateStats(AppointmentUpdateStats appointmentUpdateStats) {
     getPersistenceManager().save(appointmentUpdateStats);
+  }
+
+  public AppointmentUpdateStats getLastAppointmentUpdateStats() {
+    return (getPersistenceManager().list(AppointmentUpdateStats.class, new SortingClause("date", false))).get(0);
   }
 
   public void setInputDirectory(String inputDirectory) {

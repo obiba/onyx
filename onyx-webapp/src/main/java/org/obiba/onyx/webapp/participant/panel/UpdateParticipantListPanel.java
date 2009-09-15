@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -31,8 +32,10 @@ import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 /**
  * 
@@ -84,10 +87,26 @@ public class UpdateParticipantListPanel extends Panel {
     replaceOrAddFragment(progressFragment);
   }
 
-  public void showResult(boolean updateSucceeded) {
+  public void showResult(boolean updateSucceeded, AppointmentUpdateStats stats) {
     String messageKey = updateSucceeded ? "ParticipantsListSuccessfullyUpdated" : "ParticipantListUpdateFailed";
     IModel messageModel = new ResourceModel(messageKey, messageKey);
     resultFragment.resultLabel.setDefaultModel(messageModel);
+
+    Model<AppointmentUpdateStats> statsModel = new Model<AppointmentUpdateStats>(stats);
+    KeyValueDataPanel kvPanel = new KeyValueDataPanel("stats");
+    kvPanel.addRow(new StringResourceModel("File", this, null), new PropertyModel(statsModel, "fileName"));
+    kvPanel.addRow(new StringResourceModel("TotalParticipants", this, null), new PropertyModel(statsModel, "totalParticipants"));
+    kvPanel.addRow(new StringResourceModel("UpdatedParticipants", this, null), new PropertyModel(statsModel, "updatedParticipants"));
+    kvPanel.addRow(new StringResourceModel("CreatedParticipants", this, null), new PropertyModel(statsModel, "addedParticipants"));
+    kvPanel.addRow(new StringResourceModel("IgnoredParticipants", this, null), new PropertyModel(statsModel, "ignoredParticipants"));
+    kvPanel.addRow(new StringResourceModel("UnreadableParticipants", this, null), new PropertyModel(statsModel, "unreadableParticipants"));
+
+    if(updateSucceeded) {
+      kvPanel.setVisible(true);
+    } else {
+      kvPanel.setVisible(false);
+    }
+    resultFragment.addOrReplace(kvPanel);
 
     replaceOrAddFragment(resultFragment);
   }

@@ -87,9 +87,11 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
       File[] appointmentFiles = getInputDirectory().getFile().listFiles(this.getFilter());
       if(appointmentFiles.length > 1) appointmentListUpdatelog.info("Found {} appointment lists. Will process the most recent one only and archive the others.");
       sortFilesOnDateAsc(appointmentFiles);
+
       currentFile = appointmentFiles[appointmentFiles.length - 1];
       appointmentListUpdatelog.info("Processing appointment list file {}", currentFile.getName());
 
+      context.put("fileName", currentFile.getName());
       fileInputStream = new FileInputStream(currentFile);
 
     } catch(IOException e) {

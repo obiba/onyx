@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.service;
 
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
+import org.springframework.batch.core.ExitStatus;
 
 /**
  * Interface that manages the process of updating the appointment list
@@ -19,12 +20,18 @@ public interface AppointmentManagementService {
   /**
    * executes the process of updating the appointments
    */
-  public void updateAppointments();
+  public ExitStatus updateAppointments();
 
   /**
    * Save the AppointmentUpdateStats
    * @param appointmentUpdateStats
    */
   public void saveAppointmentUpdateStats(AppointmentUpdateStats appointmentUpdateStats);
+
+  /**
+   * Get the last AppointmentUpdateStats
+   * @return AppointmentUpdateStats
+   */
+  public AppointmentUpdateStats getLastAppointmentUpdateStats();
 
 }

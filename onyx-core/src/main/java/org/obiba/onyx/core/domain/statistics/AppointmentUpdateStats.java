@@ -36,6 +36,15 @@ public class AppointmentUpdateStats extends AbstractEntity {
 
   private Integer unreadableParticipants;
 
+  private String fileName;
+
+  public AppointmentUpdateStats() {
+    this.addedParticipants = 0;
+    this.updatedParticipants = 0;
+    this.ignoredParticipants = 0;
+    this.unreadableParticipants = 0;
+  }
+
   public AppointmentUpdateStats(Date date, int addedParticipants, int updatedParticipants, int ignoredParticipants, int unreadableParticipants) {
     super();
     this.date = date;
@@ -83,6 +92,18 @@ public class AppointmentUpdateStats extends AbstractEntity {
 
   public void setUnreadableParticipants(Integer unreadableParticipants) {
     this.unreadableParticipants = unreadableParticipants;
+  }
+
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  public Integer getTotalParticipants() {
+    return (getUpdatedParticipants() + getIgnoredParticipants() + getAddedParticipants() + getUnreadableParticipants());
   }
 
 }

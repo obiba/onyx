@@ -36,10 +36,7 @@ public class AppointmentListUpdateListener {
 
   public AppointmentListUpdateListener() {
     super();
-    setAddedParticipants(0);
-    setUpdatedParticipants(0);
-    setIgnoredParticipants(0);
-    setUnreadableParticipants(0);
+    initListener();
   }
 
   /**
@@ -60,6 +57,7 @@ public class AppointmentListUpdateListener {
   @BeforeStep
   public void beforeStep(StepExecution stepExecution) {
     ParticipantProcessor.initProcessor();
+    initListener();
   }
 
   /**
@@ -89,9 +87,22 @@ public class AppointmentListUpdateListener {
    */
   @AfterStep
   public ExitStatus afterUpdateCompleted(StepExecution stepExecution) {
-    AppointmentUpdateStats appointmentUpdateStats = new AppointmentUpdateStats(stepExecution.getJobParameters().getDate("date"), getAddedParticipants(), getUpdatedParticipants(), getIgnoredParticipants(), getUnreadableParticipants());
-    appointmentManagementService.saveAppointmentUpdateStats(appointmentUpdateStats);
-    return stepExecution.getExitStatus();
+    ExitStatus status = stepExecution.getExitStatus();
+
+    if(status.getExitCode().equals("COMPLETED")) {
+      AppointmentUpdateStats appointmentUpdateStats = new AppointmentUpdateStats(stepExecution.getJobParameters().getDate("date"), getAddedParticipants(), getUpdatedParticipants(), getIgnoredParticipants(), getUnreadableParticipants());
+      appointmentUpdateStats.setFileName(stepExecution.getExecutionContext().get("fileName").toString());
+      appointmentManagementService.saveAppointmentUpdateStats(appointmentUpdateStats);
+    }
+
+    return status;
+  }
+
+  private void initListener() {
+    setAddedParticipants(0);
+    setUpdatedParticipants(0);
+    setIgnoredParticipants(0);
+    setUnreadableParticipants(0);
   }
 
   public int getAddedParticipants() {

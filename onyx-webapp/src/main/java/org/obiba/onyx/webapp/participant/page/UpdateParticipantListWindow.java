@@ -18,6 +18,7 @@ import java.util.Date;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -33,6 +34,7 @@ import org.obiba.onyx.webapp.participant.panel.UpdateParticipantListPanel;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 
 public class UpdateParticipantListWindow extends Dialog {
   //
@@ -45,7 +47,7 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private static final int DEFAULT_INITIAL_HEIGHT = 140;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 400;
+  private static final int DEFAULT_INITIAL_WIDTH = 450;
 
   //
   // Instance Variables
@@ -54,6 +56,8 @@ public class UpdateParticipantListWindow extends Dialog {
   private UpdateParticipantListPanel content;
 
   private AjaxButton updateSubmitLink;
+
+  private AjaxLink detailsLink;
 
   @SpringBean
   private AppointmentManagementService appointmentManagementService;
@@ -64,10 +68,6 @@ public class UpdateParticipantListWindow extends Dialog {
   //
   // Constructors
   //
-
-  public void setAppointmentManagementService(AppointmentManagementService appointmentManagementService) {
-    this.appointmentManagementService = appointmentManagementService;
-  }
 
   public UpdateParticipantListWindow(String id) {
     super(id);
@@ -91,11 +91,7 @@ public class UpdateParticipantListWindow extends Dialog {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         UpdateParticipantListWindow.this.setStatus(Status.SUCCESS);
         FileUploadField upload = (FileUploadField) UpdateParticipantListWindow.this.getWindowContent().get("contentFragment:fileUpload");
-        System.out.println("****** " + upload);
-        System.out.println("****** " + upload.getFileUpload());
-        if(upload != null && upload.getFileUpload() != null) {
-          uploadFileForProcessing(upload.getFileUpload());
-        }
+        if(upload != null && upload.getFileUpload() != null) uploadFileForProcessing(upload.getFileUpload());
 
         // Show the progress fragment.
         showProgress();
@@ -105,7 +101,7 @@ public class UpdateParticipantListWindow extends Dialog {
         UpdateParticipantListWindow.this.add(updateCallback);
         target.appendJavascript(updateCallback.getJavascript());
 
-        target.addComponent(UpdateParticipantListWindow.this.getWindowContent());
+        target.addComponent(UpdateParticipantListWindow.this.get("content"));
       }
 
       @Override
@@ -114,8 +110,17 @@ public class UpdateParticipantListWindow extends Dialog {
         UpdateParticipantListWindow.this.getWindowContent().displayFeedback(target);
       }
     });
-
     updateSubmitLink.setVisible(false);
+
+    addOption("Details", OptionSide.RIGHT, detailsLink = new AjaxLink("details") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        // TODO Auto-generated method stub
+
+      }
+    }, "details");
+    detailsLink.setVisible(false);
 
     // Initially show confirmation fragment.
     showConfirmation();
@@ -128,6 +133,7 @@ public class UpdateParticipantListWindow extends Dialog {
   public void showConfirmation() {
     setOptions(Option.CANCEL_OPTION);
     updateSubmitLink.setVisible(true);
+    detailsLink.setVisible(false);
 
     setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
@@ -159,7 +165,8 @@ public class UpdateParticipantListWindow extends Dialog {
 
   public void showResult(boolean updateSucceeded) {
     setOptions(Option.CLOSE_OPTION);
-    content.showResult(updateSucceeded);
+    detailsLink.setVisible(true);
+    content.showResult(updateSucceeded, (updateSucceeded) ? appointmentManagementService.getLastAppointmentUpdateStats() : null);
   }
 
   private class UpdateParticipantListBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
@@ -180,16 +187,15 @@ public class UpdateParticipantListWindow extends Dialog {
     }
 
     private boolean updateParticipants() {
-      boolean updateSucceeded = false;
+      ExitStatus exitStatus = ExitStatus.UNKNOWN;
 
       try {
-        appointmentManagementService.updateAppointments();
-        updateSucceeded = true;
+        exitStatus = appointmentManagementService.updateAppointments();
       } catch(ValidationRuntimeException e) {
         log.error("Failed to update participants: {}", e.toString());
       }
 
-      return updateSucceeded;
+      return (exitStatus.getExitCode().equals("COMPLETED"));
     }
   }
 
@@ -213,4 +219,9 @@ public class UpdateParticipantListWindow extends Dialog {
   public void setParticipantReader(AbstractParticipantReader participantReader) {
     this.participantReader = participantReader;
   }
+
+  public void setAppointmentManagementService(AppointmentManagementService appointmentManagementService) {
+    this.appointmentManagementService = appointmentManagementService;
+  }
+
 }
