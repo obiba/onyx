@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import org.obiba.runtime.Version;
 import org.obiba.runtime.upgrade.AbstractUpgradeStep;
+import org.obiba.runtime.upgrade.support.DatabaseMetadataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,9 +47,10 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
   //
 
   public void execute(Version currentVersion) {
-    DatabaseChecker databaseChecker = new DatabaseChecker(jdbcTemplate);
-    if(databaseChecker.isTableExists(ACTION_TABLE)) {
-      if(!databaseChecker.hasColumn(ACTION_TABLE, ACTIONE_DEFINITION_CODE_COLUMN)) {
+    DatabaseMetadataUtil dbMetadataUtil = new DatabaseMetadataUtil(jdbcTemplate.getDataSource());
+
+    if(dbMetadataUtil.isTableExists(ACTION_TABLE)) {
+      if(!dbMetadataUtil.hasColumn(ACTION_TABLE, ACTIONE_DEFINITION_CODE_COLUMN)) {
         jdbcTemplate.execute(ADD_ACTIONE_DEFINITION_CODE_COLUMN);
       } else {
         log.info("action_definition_code column not added (action table has this column already)");

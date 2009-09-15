@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.runtime.upgrade.support;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -20,11 +17,9 @@ import javax.sql.DataSource;
 import org.obiba.onyx.webapp.OnyxApplicationPropertyPlaceholderConfigurer;
 import org.obiba.runtime.upgrade.UpgradeException;
 import org.obiba.runtime.upgrade.UpgradeManager;
+import org.obiba.runtime.upgrade.support.DatabaseMetadataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 public class UpgradeContextServletContextListener implements ServletContextListener {
@@ -64,22 +59,14 @@ public class UpgradeContextServletContextListener implements ServletContextListe
   private void launchUpgrade(XmlWebApplicationContext appContext) throws Exception {
 
     DataSource dataSource = (DataSource) appContext.getBean("dataSource");
+    DatabaseMetadataUtil dbMetadataUtil = new DatabaseMetadataUtil(dataSource);
 
-    // Extract the database vendor name from the metadata.
-    String databaseVendor;
-    try {
-      databaseVendor = (String) JdbcUtils.extractDatabaseMetaData(dataSource, new DatabaseMetaDataCallback() {
-        public Object processMetaData(DatabaseMetaData dbmd) throws SQLException, MetaDataAccessException {
-          return dbmd.getDatabaseProductName();
-        }
-      });
-    } catch(MetaDataAccessException e) {
-      throw new RuntimeException(e);
-    }
+    // Extract the database product name from the metadata.
+    String databaseProductName = dbMetadataUtil.getDatabaseProductName();
 
     // TODO For now the only database supported by the upgrade manager is MySQL. We need to implement a generic solution
     // for database changes, so that they are not implemented using vendor specific DDL scripts.
-    if(databaseVendor.equals("MySQL")) {
+    if(databaseProductName.equals("MySQL")) {
       UpgradeManager upgradeManager = (UpgradeManager) appContext.getBean("upgradeManager");
       try {
         upgradeManager.executeUpgrade();
@@ -87,7 +74,7 @@ public class UpgradeContextServletContextListener implements ServletContextListe
         throw new RuntimeException("The was error running the upgrade manager", upgradeFailed);
       }
     } else {
-      throw new RuntimeException("The following database is not supported by the upgrade manager: " + databaseVendor);
+      throw new RuntimeException("The following database is not supported by the upgrade manager: " + databaseProductName);
     }
   }
 

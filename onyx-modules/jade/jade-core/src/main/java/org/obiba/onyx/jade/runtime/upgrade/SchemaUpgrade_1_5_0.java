@@ -11,9 +11,9 @@ package org.obiba.onyx.jade.runtime.upgrade;
 
 import javax.sql.DataSource;
 
-import org.obiba.onyx.runtime.upgrade.DatabaseChecker;
 import org.obiba.runtime.Version;
 import org.obiba.runtime.upgrade.AbstractUpgradeStep;
+import org.obiba.runtime.upgrade.support.DatabaseMetadataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,9 +41,9 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
   private JdbcTemplate jdbcTemplate;
 
   public void execute(Version currentVersion) {
-    DatabaseChecker databaseChecker = new DatabaseChecker(jdbcTemplate);
+    DatabaseMetadataUtil dbMetadataUtil = new DatabaseMetadataUtil(jdbcTemplate.getDataSource());
 
-    if(databaseChecker.isTableExists(CONCLUSION_TABLE)) {
+    if(dbMetadataUtil.isTableExists(CONCLUSION_TABLE)) {
       jdbcTemplate.execute(BACKUP_CONCLUSION_TABLE);
       log.info("Backed up contents of [conclusion] table to [TMP_CONCLUSION_BACKUP] table.");
       jdbcTemplate.execute(DROP_CONCLUSION_TABLE);
@@ -52,8 +52,8 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
       log.info("Skipping the removal of the [conclusion] table. The [conclusion] table does not exist.");
     }
 
-    if(databaseChecker.isTableExists(INSTRUMENT_RUN_TABLE)) {
-      if(!databaseChecker.hasColumn(INSTRUMENT_RUN_TABLE, SKIP_COMMENT_COLUMN)) jdbcTemplate.execute(ADD_SKIP_COMMENT_COLUMN);
+    if(dbMetadataUtil.isTableExists(INSTRUMENT_RUN_TABLE)) {
+      if(!dbMetadataUtil.hasColumn(INSTRUMENT_RUN_TABLE, SKIP_COMMENT_COLUMN)) jdbcTemplate.execute(ADD_SKIP_COMMENT_COLUMN);
     } else {
       log.info("skip_measurement and skip_comment columns not added (table instrument_run does not exist)");
     }

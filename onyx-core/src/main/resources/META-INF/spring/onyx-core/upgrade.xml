@@ -25,6 +25,14 @@
           <property name="version" ref="version"/>
        </bean>
      </property>
+     <property name="installSteps">
+      <list>
+         <bean class="org.obiba.runtime.upgrade.InstallStepAdapter">
+           <property name="upgradeStep" ref="batchSchema-1.6.0" />
+         </bean>
+         <ref bean="createOnyxSchema" />
+      </list>
+     </property>
      <property name="upgradeSteps">
         <list>
           <ref bean="upgrade-to-1.3.0" />
@@ -36,7 +44,7 @@
           <ref bean="onyx-schemaUpgrade-1.5.0" />
           <ref bean="onyx-dataUpgrade-1.5.0"/>
           <ref bean="schemaUpgrade-1.5.1" />
-          <ref bean="schemaUpgrade-1.6.0" />
+          <ref bean="batchSchema-1.6.0" />
           <ref bean="onyx-schemaUpgrade-1.6.0" />
           <ref bean="onyx-dataUpgrade-1.6.0" />
         </list>
@@ -47,7 +55,17 @@
         </list>
      </property>
   </bean>
-    
+      
+  <bean id="createOnyxSchema" class="org.obiba.runtime.upgrade.InstallStepAdapter">
+    <property name="upgradeStep">
+      <bean class="org.obiba.runtime.upgrade.support.MethodInvokingUpgradeStep">
+        <property name="description" value="Install Onyx Schema." />
+        <property name="methodOwner" ref="&amp;sessionFactory" />
+        <property name="methodName" value="createDatabaseSchema" />
+      </bean>
+    </property>
+  </bean>
+  
   <bean id="upgrade-to-1.3.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource"/>
     <property name="script" value="classpath:/upgrade-script/upgrade-1.3.0.sql"/>
@@ -108,14 +126,18 @@
     <property name="description" value="Add indexes to various tables."/>
     <property name="appliesTo" value="1.5.1" />
   </bean>
-
-  <bean id="schemaUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
-    <property name="dataSource" ref="dataSource"/>
-    <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.6.0-mysql.sql"/>
-    <property name="description" value="Add spring batch schema to Onyx 1.6.0 schema."/>
-    <property name="appliesTo" value="1.6.0" />     
+  
+  <bean id="batchSchema-1.6.0" class="org.obiba.runtime.upgrade.support.DialectAwareSqlScriptUpgradeStep">
+    <property name="description" value="Create Spring Batch Schema." />
+    <property name="dataSource" ref="dataSource" />
+    <property name="scriptDialect" value="${org.obiba.onyx.datasource.dialect}" />
+    <property name="dialectMapper" ref="defaultDialectMapper" />
+    <property name="scriptBasename" value="schema" />
+    <property name="scriptLocation" value="classpath:/upgrade-script/batch/" />
   </bean>
   
+  <bean id="defaultDialectMapper" class="org.obiba.runtime.upgrade.support.DefaultDialectMapper" />
+
   <bean id="onyx-schemaUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource"/>
     <property name="script" value="classpath:/upgrade-script/onyx-schemaUpgrade-1.6.0.sql"/>
