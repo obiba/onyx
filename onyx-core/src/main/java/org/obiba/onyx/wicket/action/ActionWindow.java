@@ -55,7 +55,7 @@ public abstract class ActionWindow extends Dialog {
 
     setCloseButtonCallback(new CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getContent();
+        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getWindowContent();
 
         if(status != null && status.equals(Dialog.Status.ERROR)) {
           FeedbackWindow feedback = pane.getFeedback();
@@ -71,7 +71,7 @@ public abstract class ActionWindow extends Dialog {
     setWindowClosedCallback(new WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target, Status status) {
 
-        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getContent();
+        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getWindowContent();
 
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
           Action action = pane.getAction();
@@ -130,7 +130,7 @@ public abstract class ActionWindow extends Dialog {
     show(target);
   }
 
-  // public ActionDefinitionPanel getContent() {
-  // return content;
-  // }
+  public ActionDefinitionPanel getWindowContent() {
+    return content;
+  }
 }
