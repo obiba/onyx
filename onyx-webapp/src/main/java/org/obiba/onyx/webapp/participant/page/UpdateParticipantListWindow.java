@@ -91,16 +91,29 @@ public class UpdateParticipantListWindow extends Dialog {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         UpdateParticipantListWindow.this.setStatus(Status.SUCCESS);
         FileUploadField upload = (FileUploadField) UpdateParticipantListWindow.this.getWindowContent().get("contentFragment:fileUpload");
-        if(upload != null && upload.getFileUpload() != null) uploadFileForProcessing(upload.getFileUpload());
+        boolean isUpdateAvailable = true;
 
-        // Show the progress fragment.
-        showProgress();
+        if(upload != null && upload.getFileUpload() != null) {
+          uploadFileForProcessing(upload.getFileUpload());
+        } else {
+          try {
+            isUpdateAvailable = (participantReader.getInputDirectory().getFile().listFiles(participantReader.getFilter()).length > 0);
+          } catch(IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
 
-        // Register update callback.
-        UpdateParticipantListBehavior updateCallback = new UpdateParticipantListBehavior();
-        UpdateParticipantListWindow.this.add(updateCallback);
-        target.appendJavascript(updateCallback.getJavascript());
+        if(!isUpdateAvailable) {
+          showNotification("UpdateParticipantList.NoFileAvailable");
+        } else {
+          // Show the progress fragment.
+          showProgress();
 
+          // Register update callback.
+          UpdateParticipantListBehavior updateCallback = new UpdateParticipantListBehavior();
+          UpdateParticipantListWindow.this.add(updateCallback);
+          target.appendJavascript(updateCallback.getJavascript());
+        }
         target.addComponent(UpdateParticipantListWindow.this.get("content"));
       }
 
@@ -163,6 +176,12 @@ public class UpdateParticipantListWindow extends Dialog {
     content.showProgress();
   }
 
+  public void showNotification(String message) {
+    setOptions(Option.CLOSE_OPTION);
+    updateSubmitLink.setVisible(false);
+    content.showNotification(message);
+  }
+
   public void showResult(boolean updateSucceeded) {
     setOptions(Option.CLOSE_OPTION);
     detailsLink.setVisible(true);
@@ -194,7 +213,6 @@ public class UpdateParticipantListWindow extends Dialog {
       } catch(ValidationRuntimeException e) {
         log.error("Failed to update participants: {}", e.toString());
       }
-
       return (exitStatus.getExitCode().equals("COMPLETED"));
     }
   }

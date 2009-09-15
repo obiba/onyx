@@ -81,7 +81,6 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
 
     try {
       if(getInputDirectory() == null || getInputDirectory().getFile() == null) return;
-      if(!isUpdateAvailable()) return;
 
       appointmentListUpdatelog.info("Start updating appointments");
       File[] appointmentFiles = getInputDirectory().getFile().listFiles(this.getFilter());
@@ -120,12 +119,6 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
   //  
   // Local methods
   //  
-  public boolean isUpdateAvailable() throws IOException {
-    if(getInputDirectory().getFile().listFiles(getFilter()).length > 0) {
-      return true;
-    }
-    return false;
-  }
 
   public FilenameFilter getFilter() {
     return (new FilenameFilter() {

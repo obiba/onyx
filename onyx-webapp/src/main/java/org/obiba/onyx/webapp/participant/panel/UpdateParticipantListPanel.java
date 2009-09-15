@@ -63,6 +63,8 @@ public class UpdateParticipantListPanel extends Panel {
 
   private ResultFragment resultFragment;
 
+  private NotificationFragment notificationFragment;
+
   //
   // Constructors
   //
@@ -76,6 +78,7 @@ public class UpdateParticipantListPanel extends Panel {
     confirmationFragment = new ConfirmationFragment("contentFragment");
     progressFragment = new ProgressFragment("contentFragment", new ResourceModel("ParticipantListUpdateInProgress"));
     resultFragment = new ResultFragment("contentFragment", new ResourceModel("ParticipantsListSuccessfullyUpdated"));
+    notificationFragment = new NotificationFragment("contentFragment");
 
   }
 
@@ -85,6 +88,11 @@ public class UpdateParticipantListPanel extends Panel {
 
   public void showProgress() {
     replaceOrAddFragment(progressFragment);
+  }
+
+  public void showNotification(String message) {
+    notificationFragment.setMessage(new ResourceModel(message));
+    replaceOrAddFragment(notificationFragment);
   }
 
   public void showResult(boolean updateSucceeded, AppointmentUpdateStats stats) {
@@ -221,6 +229,22 @@ public class UpdateParticipantListPanel extends Panel {
 
       progressImage = new Image("progressImage");
       add(progressImage);
+    }
+  }
+
+  public class NotificationFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    private Label messageLabel;
+
+    public NotificationFragment(String id) {
+      super(id, "notificationFragment", UpdateParticipantListPanel.this);
+    }
+
+    public void setMessage(IModel<String> messageModel) {
+      messageLabel = new Label("messageLabel", messageModel);
+      addOrReplace(messageLabel);
     }
   }
 

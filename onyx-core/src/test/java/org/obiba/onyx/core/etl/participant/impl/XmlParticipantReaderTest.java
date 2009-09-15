@@ -70,30 +70,30 @@ public class XmlParticipantReaderTest {
   // Test Methods
   //
 
-  @Test
-  public void testIsUpdateAvailableFalse() {
+  // @Test
+  // public void testIsUpdateAvailableFalse() {
+  //
+  // try {
+  // XmlParticipantReader reader = createXmlParticipantReader(false, APPOINTMENTS_RESOURCES_DIR + "/inNoData");
+  // Assert.assertEquals(false, reader.isUpdateAvailable());
+  // reader = createXmlParticipantReader(false, APPOINTMENTS_RESOURCES_DIR + "/in");
+  // Assert.assertEquals(false, reader.isUpdateAvailable());
+  //
+  // } catch(IOException e) {
+  // throw new RuntimeException(e);
+  // }
+  // }
 
-    try {
-      XmlParticipantReader reader = createXmlParticipantReader(false, APPOINTMENTS_RESOURCES_DIR + "/inNoData");
-      Assert.assertEquals(false, reader.isUpdateAvailable());
-      reader = createXmlParticipantReader(false, APPOINTMENTS_RESOURCES_DIR + "/in");
-      Assert.assertEquals(false, reader.isUpdateAvailable());
-
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Test
-  public void testIsUpdateAvailableTrue() {
-    XmlParticipantReader reader = createXmlParticipantReader(false, APPOINTMENTS_RESOURCES_DIR + "/inXml");
-
-    try {
-      Assert.assertEquals(true, reader.isUpdateAvailable());
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+  // @Test
+  // public void testIsUpdateAvailableTrue() {
+  // XmlParticipantReader reader = createXmlParticipantReader(false, APPOINTMENTS_RESOURCES_DIR + "/inXml");
+  //
+  // try {
+  // Assert.assertEquals(true, reader.isUpdateAvailable());
+  // } catch(IOException e) {
+  // throw new RuntimeException(e);
+  // }
+  // }
 
   /**
    * Tests processing of an appointment list that contains no configured attributes (i.e., essential attributes only).
