@@ -80,6 +80,9 @@ public class Participant extends AbstractEntity {
 
   private Boolean exported;
 
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date exportDate;
+
   //
   // Methods
   //
@@ -354,8 +357,17 @@ public class Participant extends AbstractEntity {
   public boolean isExportable() {
     if(exported != null && exported == true) return false;
     if(getInterview() == null) return false;
-    InterviewStatus status = getInterview().getStatus();
-    return (status == InterviewStatus.COMPLETED || status == InterviewStatus.CLOSED);
+    return true;
+    // InterviewStatus status = getInterview().getStatus();
+    // return (status == InterviewStatus.COMPLETED || status == InterviewStatus.CLOSED);
+  }
+
+  public Date getExportDate() {
+    return exportDate;
+  }
+
+  public void setExportDate(Date exportDate) {
+    this.exportDate = exportDate;
   }
 
 }

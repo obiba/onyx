@@ -37,6 +37,8 @@
           <ref bean="onyx-dataUpgrade-1.5.0"/>
           <ref bean="schemaUpgrade-1.5.1" />
           <ref bean="schemaUpgrade-1.6.0" />
+          <ref bean="onyx-schemaUpgrade-1.6.0" />
+          <ref bean="onyx-dataUpgrade-1.6.0" />
         </list>
      </property>
      <property name="stepListeners">
@@ -112,6 +114,20 @@
     <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.6.0-mysql.sql"/>
     <property name="description" value="Add spring batch schema to Onyx 1.6.0 schema."/>
     <property name="appliesTo" value="1.6.0" />     
+  </bean>
+  
+  <bean id="onyx-schemaUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="script" value="classpath:/upgrade-script/onyx-schemaUpgrade-1.6.0.sql"/>
+    <property name="description" value="Onyx Core Schema Upgrade 1.6.0"/>
+    <property name="appliesTo" value="1.6.0" />     
+  </bean>
+  
+  <bean id="onyx-dataUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="script" value="classpath:/upgrade-script/onyx-dataUpgrade-1.6.0.sql"/>
+    <property name="description" value="Onyx Core Data Upgrade 1.6.0"/>
+    <property name="appliesTo" value="1.6.0" />   
   </bean>
   
 </beans>
