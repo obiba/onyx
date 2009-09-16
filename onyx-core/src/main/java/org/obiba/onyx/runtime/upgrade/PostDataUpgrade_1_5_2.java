@@ -26,9 +26,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * content of the "type" field. The column "action_definition_code" is a new -- since it is non null, we are populating
  * it with values.
  */
-public class DataUpgrade_1_5_4 extends AbstractUpgradeStep {
+public class PostDataUpgrade_1_5_2 extends AbstractUpgradeStep {
 
-  private static final Logger log = LoggerFactory.getLogger(DataUpgrade_1_5_4.class);
+  private static final Logger log = LoggerFactory.getLogger(PostDataUpgrade_1_5_2.class);
 
   private static final String IDS_WITH_NULL_ACTION_DEFINITION_CODE = "SELECT id FROM action WHERE action_definition_code IS null";
 

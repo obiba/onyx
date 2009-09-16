@@ -22,9 +22,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * 
  * Adds the action_definition_code column to the action table (if present).
  */
-public class SchemaUpgrade_1_5_3 extends AbstractUpgradeStep {
+public class SchemaUpgrade_1_5_2 extends AbstractUpgradeStep {
 
-  private static final Logger log = LoggerFactory.getLogger(SchemaUpgrade_1_5_3.class);
+  private static final Logger log = LoggerFactory.getLogger(SchemaUpgrade_1_5_2.class);
 
   private static final String ACTION_TABLE = "action";
 
