@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.slf4j.Logger;
@@ -37,7 +38,8 @@ public abstract class AbstractRubyStageState extends AbstractStageState {
   // AbstractStageState Methods
   //
 
-  public void onTransition(IStageExecution execution, TransitionEvent event) {
+  @Override
+  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
     Boolean var = areDependenciesCompleted();
 
     if(var == null) {

@@ -50,9 +50,9 @@ public class JadeSkippedState extends AbstractJadeStageState {
   }
 
   @Override
-  public void onTransition(IStageExecution execution, TransitionEvent event) {
+  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
     if(event == TransitionEvent.CONTRAINDICATED) {
-      super.onTransition(execution, event);
+      super.onTransition(execution, fromState, event);
     }
     // case not applicable transition
     Boolean var = areDependenciesCompleted();

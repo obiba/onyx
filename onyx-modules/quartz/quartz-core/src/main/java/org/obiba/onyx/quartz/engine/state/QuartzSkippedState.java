@@ -49,7 +49,7 @@ public class QuartzSkippedState extends AbstractQuartzStageState {
   }
 
   @Override
-  public void onTransition(IStageExecution execution, TransitionEvent event) {
+  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
     // case not applicable transition
     Boolean var = areDependenciesCompleted();
     if(var != null && var == false) castEvent(TransitionEvent.NOTAPPLICABLE);

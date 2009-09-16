@@ -539,7 +539,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   public class NotApplicableState extends AbstractStageState {
 
-    public static final String NAME = "NotApplicableState";
+    public static final String NAME = "NotApplicable";
 
     public NotApplicableState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);

@@ -18,9 +18,11 @@ package org.obiba.onyx.engine.state;
 public interface ITransitionListener {
 
   /**
-   * Called after a transition event has occured.
+   * Called after a transition event has occurred.
+   * 
    * @param execution
+   * @param fromState the state transitioned from
+   * @param even the transition event
    */
-  public void onTransition(IStageExecution execution, TransitionEvent event);
-
+  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event);
 }

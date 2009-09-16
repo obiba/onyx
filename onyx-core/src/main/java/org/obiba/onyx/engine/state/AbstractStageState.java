@@ -78,7 +78,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return stage;
   }
 
-  public void onTransition(IStageExecution execution, TransitionEvent event) {
+  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
     Boolean var = areDependenciesCompleted();
 
     if(var == null) {

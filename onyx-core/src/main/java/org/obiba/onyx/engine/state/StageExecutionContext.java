@@ -107,7 +107,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void castEvent(TransitionEvent event) {
-    String fromState = currentState.getName();
+    StageState fromState = StageState.valueOf(currentState.getName());
     log.debug("castEvent({}) from stage '{}' in state '{}'", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
@@ -130,13 +130,13 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
       log.debug("transitionListeners.size=" + transitionListeners.size());
       for(ITransitionListener listener : transitionListeners) {
-        listener.onTransition(this, event);
+        listener.onTransition(this, fromState, event);
       }
     }
     log.debug("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
 
     if(userSessionService != null) {
-      log.info("TransitionEventLog: {}/{}/{}/{}/{}", new Object[] { stage.getName(), fromState, event, currentState.getName(), userSessionService.getUser().getLogin() });
+      log.info("TransitionEventLog: {}/{}/{}/{}/{}", new Object[] { stage.getName(), fromState.toString(), event, currentState.getName(), userSessionService.getUser().getLogin() });
     }
 
     saveState();
@@ -238,10 +238,10 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     this.currentState = stageState;
   }
 
-  public void onTransition(IStageExecution execution, TransitionEvent event) {
+  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
     log.debug("Stage {} in state {} receiving onTransition({}, {})", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), execution.toString(), event });
     if(currentState instanceof ITransitionListener) {
-      ((ITransitionListener) currentState).onTransition(execution, event);
+      ((ITransitionListener) currentState).onTransition(execution, fromState, event);
     }
   }
 
