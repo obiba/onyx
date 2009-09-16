@@ -71,6 +71,13 @@ public interface ActiveInterviewService {
   public void doAction(Stage stage, Action action);
 
   /**
+   * Returns the action currently being performed (by the invoking thread).
+   * 
+   * @return the action currently being performed (<code>null</code> if none)
+   */
+  public Action getCurrentAction();
+
+  /**
    * Set the status of the current interview.
    * @param status
    */

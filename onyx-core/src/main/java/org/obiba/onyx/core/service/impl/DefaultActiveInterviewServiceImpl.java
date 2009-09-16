@@ -48,6 +48,12 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private ModuleRegistry moduleRegistry;
 
+  private ThreadLocal<Action> currentActionHolder;
+
+  public DefaultActiveInterviewServiceImpl() {
+    currentActionHolder = new ThreadLocal<Action>();
+  }
+
   public void setInterviewManager(InterviewManager interviewManager) {
     this.interviewManager = interviewManager;
   }
@@ -129,6 +135,8 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public void doAction(Stage stage, Action action) {
+    currentActionHolder.set(action);
+
     action.setInterview(getParticipant().getInterview());
     if(stage != null) {
       action.setStage(stage.getName());
@@ -141,6 +149,12 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       IStageExecution exec = getStageExecution(stage);
       action.getActionType().act(exec, action);
     }
+
+    currentActionHolder.set(null);
+  }
+
+  public Action getCurrentAction() {
+    return currentActionHolder.get();
   }
 
   public void shutdown() {
