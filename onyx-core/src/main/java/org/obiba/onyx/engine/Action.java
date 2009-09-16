@@ -9,7 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,11 +19,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.stage.StageTransition;
 import org.obiba.onyx.core.domain.user.User;
 
 /**
@@ -48,6 +52,9 @@ public class Action extends AbstractEntity {
   private ActionType type;
 
   private String stage;
+
+  @OneToMany(mappedBy = "action")
+  private List<StageTransition> stageTransitions;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateTime;
@@ -98,6 +105,17 @@ public class Action extends AbstractEntity {
 
   public final String getStage() {
     return stage;
+  }
+
+  public List<StageTransition> getStageTransitions() {
+    return stageTransitions != null ? stageTransitions : (stageTransitions = new ArrayList<StageTransition>());
+  }
+
+  public void addStageTransition(StageTransition stageTransition) {
+    if(stageTransition != null) {
+      getStageTransitions().add(stageTransition);
+      stageTransition.setAction(this);
+    }
   }
 
   public final void setStage(String stage) {
