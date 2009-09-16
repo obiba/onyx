@@ -41,9 +41,10 @@
           <ref bean="jade-dataUpgrade-1.4.0" />
           <ref bean="schemaUpgrade-1.4.0" />
           <ref bean="jade-schemaUpgrade-1.5.0" />
-          <ref bean="onyx-schemaUpgrade-1.5.0" />
-          <ref bean="onyx-dataUpgrade-1.5.0"/>
           <ref bean="schemaUpgrade-1.5.1" />
+          <ref bean="onyx-dataUpgrade-1.5.2" />
+          <ref bean="onyx-schemaUpgrade-1.5.2" />
+          <ref bean="onyx-postDataUpgrade-1.5.2"/>
           <ref bean="batchSchema-1.6.0" />
           <ref bean="onyx-schemaUpgrade-1.6.0" />
           <ref bean="onyx-dataUpgrade-1.6.0" />
@@ -108,25 +109,31 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
   
-  <bean id="onyx-schemaUpgrade-1.5.0" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_5_0">
-    <property name="description" value="Onyx Core Schema Upgrade 1.5.0"/>
-    <property name="appliesTo" value="1.5.0" />    
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-  
-  <bean id="onyx-dataUpgrade-1.5.0" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_0">
-    <property name="description" value="Update action table by setting action_definition_code"/>
-    <property name="appliesTo" value="1.5.0" />    
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-    
   <bean id="schemaUpgrade-1.5.1" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource"/>
     <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.5.1.sql"/>
     <property name="description" value="Add indexes to various tables."/>
     <property name="appliesTo" value="1.5.1" />
   </bean>
+
+  <bean id="onyx-dataUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_2">
+    <property name="description" value="Update action table 'type' field."/>
+    <property name="appliesTo" value="1.5.2" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
   
+  <bean id="onyx-schemaUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_5_2">
+    <property name="description" value="Onyx Core Schema Upgrade 1.5.2"/>
+    <property name="appliesTo" value="1.5.2" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="onyx-postDataUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.PostDataUpgrade_1_5_2">
+    <property name="description" value="Update action table by setting action_definition_code"/>
+    <property name="appliesTo" value="1.5.2" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+    
   <bean id="batchSchema-1.6.0" class="org.obiba.runtime.upgrade.support.DialectAwareSqlScriptUpgradeStep">
     <property name="description" value="Create Spring Batch Schema." />
     <property name="dataSource" ref="dataSource" />
@@ -134,6 +141,7 @@
     <property name="dialectMapper" ref="defaultDialectMapper" />
     <property name="scriptBasename" value="schema" />
     <property name="scriptLocation" value="classpath:/upgrade-script/batch/" />
+    <property name="appliesTo" value="1.6.0" />
   </bean>
   
   <bean id="defaultDialectMapper" class="org.obiba.runtime.upgrade.support.DefaultDialectMapper" />

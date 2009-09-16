@@ -23,12 +23,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * 
  * Adds the action_definition_code column to the action table (if present).
  */
-public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
-  //
-  // Constants
-  //
+public class SchemaUpgrade_1_5_2 extends AbstractUpgradeStep {
 
-  private static final Logger log = LoggerFactory.getLogger(SchemaUpgrade_1_5_0.class);
+  private static final Logger log = LoggerFactory.getLogger(SchemaUpgrade_1_5_2.class);
 
   private static final String ACTION_TABLE = "action";
 
@@ -36,33 +33,26 @@ public class SchemaUpgrade_1_5_0 extends AbstractUpgradeStep {
 
   private static final String ADD_ACTIONE_DEFINITION_CODE_COLUMN = "ALTER TABLE action ADD COLUMN action_definition_code VARCHAR(255) NOT NULL;";
 
-  //
-  // Instance Variables
-  //
+  private static final String ALTER_TYPE_TO_NOT_NULL = "ALTER TABLE action CHANGE type type VARCHAR(255) NOT NULL;";
+
+  private static final String ALTER_ACTION_DEFINITION_CODE_TO_NOT_NULL = "ALTER TABLE action CHANGE action_definition_code action_definition_code VARCHAR(255) NOT NULL;";
 
   private JdbcTemplate jdbcTemplate;
 
-  //
-  // AbstractUpgradeStep Methods
-  //
-
   public void execute(Version currentVersion) {
     DatabaseMetadataUtil dbMetadataUtil = new DatabaseMetadataUtil(jdbcTemplate.getDataSource());
-
     if(dbMetadataUtil.isTableExists(ACTION_TABLE)) {
       if(!dbMetadataUtil.hasColumn(ACTION_TABLE, ACTIONE_DEFINITION_CODE_COLUMN)) {
         jdbcTemplate.execute(ADD_ACTIONE_DEFINITION_CODE_COLUMN);
       } else {
         log.info("action_definition_code column not added (action table has this column already)");
       }
+      jdbcTemplate.execute(ALTER_TYPE_TO_NOT_NULL);
+      jdbcTemplate.execute(ALTER_ACTION_DEFINITION_CODE_TO_NOT_NULL);
     } else {
       log.info("action_definition_code column not added (action table does not exist)");
     }
   }
-
-  //
-  // Methods
-  //
 
   public void setDataSource(DataSource dataSource) {
     jdbcTemplate = new JdbcTemplate(dataSource);
