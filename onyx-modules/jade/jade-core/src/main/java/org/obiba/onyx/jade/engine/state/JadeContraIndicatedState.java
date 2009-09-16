@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class JadeContraIndicatedState extends AbstractJadeStageState {
   }
 
   public String getName() {
-    return "Contraindicated";
+    return StageState.Contraindicated.toString();
   }
 
   @Override

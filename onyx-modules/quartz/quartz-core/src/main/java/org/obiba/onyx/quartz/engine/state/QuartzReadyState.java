@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class QuartzReadyState extends AbstractQuartzStageState {
   private static final Logger log = LoggerFactory.getLogger(QuartzReadyState.class);
 
   public String getName() {
-    return "Ready";
+    return StageState.Ready.toString();
   }
 
   @Override

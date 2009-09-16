@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -91,7 +92,7 @@ public class JadeInProgressState extends AbstractJadeStageState {
   }
 
   public String getName() {
-    return "InProgress";
+    return StageState.InProgress.toString();
   }
 
   private boolean isResuming() {

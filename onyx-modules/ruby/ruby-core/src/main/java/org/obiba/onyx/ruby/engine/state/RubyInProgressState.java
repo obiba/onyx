@@ -15,6 +15,7 @@ import org.apache.wicket.Component;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.wicket.RubyPanel;
@@ -42,7 +43,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
   //
 
   public String getName() {
-    return "InProgress";
+    return StageState.InProgress.toString();
   }
 
   @Override

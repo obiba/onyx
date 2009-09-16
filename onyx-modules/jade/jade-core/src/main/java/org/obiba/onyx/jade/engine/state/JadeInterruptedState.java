@@ -13,12 +13,13 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 
 public class JadeInterruptedState extends AbstractJadeStageState {
 
   public String getName() {
-    return "Interrupted";
+    return StageState.Interrupted.toString();
   }
 
   @Override

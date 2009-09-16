@@ -18,12 +18,13 @@ package org.obiba.onyx.quartz.engine.state;
 import java.util.Set;
 
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 
 public class QuartzNotApplicableState extends AbstractQuartzStageState {
 
   public String getName() {
-    return "NotApplicable";
+    return StageState.NotApplicable.toString();
   }
 
   @Override

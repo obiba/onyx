@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.engine.state;
 import java.util.Set;
 
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class JadeWaitingState extends AbstractJadeStageState {
   private static final Logger log = LoggerFactory.getLogger(JadeWaitingState.class);
 
   public String getName() {
-    return "Waiting";
+    return StageState.Waiting.toString();
   }
 
   @Override

@@ -18,12 +18,13 @@ package org.obiba.onyx.quartz.engine.state;
 import java.util.Set;
 
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 
 public class QuartzWaitingState extends AbstractQuartzStageState {
 
   public String getName() {
-    return "Waiting";
+    return StageState.Waiting.toString();
   }
 
   @Override

@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.marble.core.wicket.MarblePanel;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class MarbleInProgressState extends AbstractMarbleStageState {
   private static final Logger log = LoggerFactory.getLogger(MarbleInProgressState.class);
 
   public String getName() {
-    return "InProgress";
+    return StageState.InProgress.toString();
   }
 
   @Override

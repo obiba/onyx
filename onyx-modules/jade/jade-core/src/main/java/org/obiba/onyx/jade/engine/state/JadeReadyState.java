@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class JadeReadyState extends AbstractJadeStageState {
   }
 
   public String getName() {
-    return "Ready";
+    return StageState.Ready.toString();
   }
 
   @Override

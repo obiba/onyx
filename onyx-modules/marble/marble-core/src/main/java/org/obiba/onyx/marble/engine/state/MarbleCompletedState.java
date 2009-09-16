@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class MarbleCompletedState extends AbstractMarbleStageState {
   private static final Logger log = LoggerFactory.getLogger(MarbleCompletedState.class);
 
   public String getName() {
-    return "Completed";
+    return StageState.Completed.toString();
   }
 
   @Override
