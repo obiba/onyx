@@ -33,9 +33,10 @@
           <ref bean="jade-dataUpgrade-1.4.0" />
           <ref bean="schemaUpgrade-1.4.0" />
           <ref bean="jade-schemaUpgrade-1.5.0" />
-          <ref bean="onyx-schemaUpgrade-1.5.0" />
-          <ref bean="onyx-dataUpgrade-1.5.0"/>
-          <ref bean="schemaUpgrade-1.5.1" />
+          <ref bean="schemaUpgrade-1.5.1" />         
+          <ref bean="onyx-dataUpgrade-1.5.2" />
+          <ref bean="onyx-schemaUpgrade-1.5.3" />
+          <ref bean="onyx-dataUpgrade-1.5.4"/>
         </list>
      </property>
      <property name="stepListeners">
@@ -87,15 +88,15 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
   
-  <bean id="onyx-schemaUpgrade-1.5.0" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_5_0">
-    <property name="description" value="Onyx Core Schema Upgrade 1.5.0"/>
-    <property name="appliesTo" value="1.5.0" />    
+  <bean id="onyx-schemaUpgrade-1.5.3" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_5_3">
+    <property name="description" value="Onyx Core Schema Upgrade 1.5.3"/>
+    <property name="appliesTo" value="1.5.3" />    
     <property name="dataSource" ref="dataSource" />
   </bean>
   
-  <bean id="onyx-dataUpgrade-1.5.0" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_0">
+  <bean id="onyx-dataUpgrade-1.5.4" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_4">
     <property name="description" value="Update action table by setting action_definition_code"/>
-    <property name="appliesTo" value="1.5.0" />    
+    <property name="appliesTo" value="1.5.4" />    
     <property name="dataSource" ref="dataSource" />
   </bean>
     
@@ -104,6 +105,12 @@
     <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.5.1.sql"/>
     <property name="description" value="Add indexes to various tables."/>
     <property name="appliesTo" value="1.5.1" />     
+  </bean>
+  
+  <bean id="onyx-dataUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_2">
+    <property name="description" value="Update action table 'type' field."/>
+    <property name="appliesTo" value="1.5.2" />    
+    <property name="dataSource" ref="dataSource" />
   </bean>
   
 </beans>

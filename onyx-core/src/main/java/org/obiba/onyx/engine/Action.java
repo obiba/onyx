@@ -45,6 +45,7 @@ public class Action extends AbstractEntity {
   private Interview interview;
 
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private ActionType type;
 
   private String stage;
@@ -57,6 +58,7 @@ public class Action extends AbstractEntity {
 
   private String eventReason;
 
+  @Column(nullable = false)
   private String actionDefinitionCode;
 
   public Action() {

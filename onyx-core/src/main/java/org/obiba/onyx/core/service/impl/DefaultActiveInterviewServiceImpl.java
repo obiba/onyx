@@ -129,6 +129,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public void doAction(Stage stage, Action action) {
+    if(action == null) throw new IllegalArgumentException("The [action] parameter must not be null.");
+    if(action.getActionType() == null) throw new IllegalArgumentException("The [type] member of the [action] parameter must not be null.");
+
+    if(action.getActionDefinitionCode() == null) {
+      action.setActionDefinitionCode("action." + action.getActionType());
+    }
+
     action.setInterview(getParticipant().getInterview());
     if(stage != null) {
       action.setStage(stage.getName());

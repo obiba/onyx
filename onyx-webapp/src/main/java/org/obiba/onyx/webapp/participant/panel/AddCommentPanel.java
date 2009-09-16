@@ -18,6 +18,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.wicket.behavior.FocusBehavior;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
@@ -39,7 +40,9 @@ public class AddCommentPanel extends Panel {
 
   public AddCommentPanel(String id) {
     super(id);
-    setModel(new Model(new Action()));
+    Action action = new Action();
+    action.setActionType(ActionType.COMMENT);
+    setModel(new Model(action));
 
     initPanel();
   }
