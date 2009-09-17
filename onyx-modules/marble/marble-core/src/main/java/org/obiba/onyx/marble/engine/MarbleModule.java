@@ -56,6 +56,10 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
   private static final String PDF_ATTRIBUTE = "pdfForm";
 
+  private static final String TIME_START_ATTRIBUTE = "timeStart";
+
+  private static final String TIME_END_ATTRIBUTE = "timeEnd";
+
   private ApplicationContext applicationContext;
 
   private ConsentService consentService;
@@ -128,6 +132,10 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
         varData.addData(DataBuilder.buildText(consent.getMode().toString()));
       } else if(varName.equals(PDF_ATTRIBUTE) && consent.getPdfForm() != null) {
         varData.addData(DataBuilder.buildBinary(new ByteArrayInputStream(consent.getPdfForm())));
+      } else if(varName.equals(TIME_START_ATTRIBUTE) && consent.getTimeStart() != null) {
+        varData.addData(DataBuilder.buildDate(consent.getTimeStart()));
+      } else if(varName.equals(TIME_END_ATTRIBUTE) && consent.getTimeEnd() != null) {
+        varData.addData(DataBuilder.buildDate(consent.getTimeEnd()));
       } else if(consent.getPdfForm() != null) {
         String key = variableToFieldMap.get(varName);
         if(key != null && getConsentField(consent, key) != null) varData.addData(DataBuilder.buildText(getConsentField(consent, key)));
@@ -164,6 +172,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
       stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
       stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA).setMimeType("application/pdf"));
+      stageVariable.addVariable(new Variable(TIME_START_ATTRIBUTE).setDataType(DataType.DATE));
+      stageVariable.addVariable(new Variable(TIME_END_ATTRIBUTE).setDataType(DataType.DATE));
 
       for(String key : variableToFieldMap.keySet()) {
         stageVariable.addVariable(new Variable(key).setDataType(DataType.TEXT));
