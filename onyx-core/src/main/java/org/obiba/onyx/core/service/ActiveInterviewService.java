@@ -77,6 +77,8 @@ public interface ActiveInterviewService {
    */
   public Action getCurrentAction();
 
+  public void updateAction(Action action);
+
   /**
    * Set the status of the current interview.
    * @param status

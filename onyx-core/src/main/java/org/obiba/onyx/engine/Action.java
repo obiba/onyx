@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -54,7 +55,7 @@ public class Action extends AbstractEntity {
 
   private String stage;
 
-  @OneToMany(mappedBy = "action")
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "action")
   private List<StageTransition> stageTransitions;
 
   @Temporal(TemporalType.TIMESTAMP)

@@ -32,6 +32,7 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.engine.state.LoggingTransitionListener;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,11 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(exec == null) {
       Module module = moduleRegistry.getModule(stage.getModule());
       exec = (StageExecutionContext) module.createStageExecution(currentParticipant.getInterview(), stage);
+
+      // Add a transition listener to log (persist) the stage transitions.
+      LoggingTransitionListener transitionListener = new LoggingTransitionListener();
+      transitionListener.setActiveInterviewService(this);
+      exec.addTransitionListener(transitionListener);
 
       for(StageExecutionContext sec : getStageExecutionContexts(currentParticipant)) {
         if(exec.getStage().getStageDependencyCondition() != null) {
@@ -150,7 +156,9 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
     action.setDateTime(new Date());
     action.setUser(userSessionService.getUser());
-    getPersistenceManager().save(action);
+    Action persistedAction = getPersistenceManager().save(action);
+
+    currentActionHolder.set(persistedAction);
 
     if(stage != null) {
       IStageExecution exec = getStageExecution(stage);
@@ -162,6 +170,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   public Action getCurrentAction() {
     return currentActionHolder.get();
+  }
+
+  public void updateAction(Action action) {
+    getPersistenceManager().save(action);
   }
 
   public void shutdown() {
