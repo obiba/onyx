@@ -28,6 +28,7 @@ import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageTransition;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.state.StageState;
 
 /**
  * Action is the track of who did what, when on who and why in the Onyx system.
@@ -110,6 +111,10 @@ public class Action extends AbstractEntity {
     return stage;
   }
 
+  public final void setStage(String stage) {
+    this.stage = stage;
+  }
+
   public List<StageTransition> getStageTransitions() {
     return stageTransitions != null ? stageTransitions : (stageTransitions = new ArrayList<StageTransition>());
   }
@@ -121,8 +126,46 @@ public class Action extends AbstractEntity {
     }
   }
 
-  public final void setStage(String stage) {
-    this.stage = stage;
+  /**
+   * Returns the action's "from" state.
+   * 
+   * This is a <em>derived</em> attribute. The action's "from" state is that of the associated stage transition with
+   * the same stage as the action.
+   * 
+   * @return action's "from" state
+   * @see {@link org.obiba.onyx.core.domain.stage.StageTransition StageTransition}
+   */
+  public StageState getFromState() {
+    if(getStage() != null) {
+      for(StageTransition transition : getStageTransitions()) {
+        if(transition.getStage().equals(getStage())) {
+          return transition.getFromState();
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns the action's "to" state.
+   * 
+   * This is a <em>derived</em> attribute. The action's "to" state is that of the associated stage transition with the
+   * same stage as the action.
+   * 
+   * @return action's "to" state
+   * @see {@link org.obiba.onyx.core.domain.stage.StageTransition StageTransition}
+   */
+  public StageState getToState() {
+    if(getStage() != null) {
+      for(StageTransition transition : getStageTransitions()) {
+        if(transition.getStage().equals(getStage())) {
+          return transition.getToState();
+        }
+      }
+    }
+
+    return null;
   }
 
   public String getActionDefinitionCode() {

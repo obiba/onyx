@@ -91,6 +91,10 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   public static final String ACTION_STAGE = "stage";
 
+  public static final String ACTION_FROM_STATE = "fromState";
+
+  public static final String ACTION_TO_STATE = "toState";
+
   public static final String ACTION_TYPE = "actionType";
 
   public static final String ACTION_DATE_TIME = "dateTime";
@@ -207,6 +211,10 @@ public class OnyxVariableProvider implements IVariableProvider {
           data = DataBuilder.buildText(action.getUser().getLogin());
         } else if(variable.getName().equals(ACTION_STAGE) && action.getStage() != null) {
           data = DataBuilder.buildText(action.getStage());
+        } else if(variable.getName().equals(ACTION_FROM_STATE) && action.getFromState() != null) {
+          data = DataBuilder.buildText(action.getFromState().toString());
+        } else if(variable.getName().equals(ACTION_TO_STATE) && action.getToState() != null) {
+          data = DataBuilder.buildText(action.getToState().toString());
         } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
           data = DataBuilder.buildText(action.getActionType().toString());
         } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
@@ -271,6 +279,8 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity = admin.addVariable(new Variable(OnyxVariableProvider.ACTION).setDataType(DataType.TEXT).setRepeatable(true));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_STAGE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_FROM_STATE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.ACTION_TO_STATE).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_TYPE).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_DATE_TIME).setDataType(DataType.DATE));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_COMMENT).setDataType(DataType.TEXT));
