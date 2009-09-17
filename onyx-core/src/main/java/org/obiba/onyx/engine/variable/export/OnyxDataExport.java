@@ -13,15 +13,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.VariableDataSet;
@@ -32,9 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * 
- */
 public class OnyxDataExport {
 
   @SuppressWarnings("unused")
@@ -87,7 +89,7 @@ public class OnyxDataExport {
 
   // Set this method to be Transactional in order to have a single commit at the end of the export.
   @Transactional(rollbackFor = Exception.class)
-  public void exportCompletedInterviews() throws Exception {
+  public void exportInterviews() throws Exception {
 
     // ONYX-424: Set FlushMode to COMMIT so that Hibernate only flushes the entities after the export has completed.
     // This prevents Hibernate from flushing BEFORE every time we read from the database.
@@ -97,81 +99,154 @@ public class OnyxDataExport {
 
     long exportAllStartTime = new Date().getTime();
 
+    log.info("Starting export interviews for configured destinations.");
+
+    // same export date for every participant and every destinations: kind of system snapshot.
+    Date exportDate = new Date();
+
+    // Get a list of potential exportable interviews (participant not marked as exported)
     Participant template = new Participant();
     template.setExported(false);
     List<Participant> participants = queryService.match(template);
-    for(Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
-      Participant participant = iterator.next();
-      // Export completed or closed interviews only
-      if(!participant.isExportable()) {
-        iterator.remove();
-      } else {
-        // Flag the participant as exported.
-        // Do this now since we clear the Hibernate session later on. Which results in losing all the modified
-        // participants.
-        participant.setExported(true);
+
+    // This is to keep a list of exported interviews for all destinations.
+    Set<String> exportedBarcodes = new HashSet<String>();
+
+    Map<String, List<Participant>> participantForEachDestinationMap = null;
+
+    // If exportable interviews were found
+    if(participants.size() > 0) {
+
+      // Create a list of interviews to be exported for each destination
+      participantForEachDestinationMap = getParticipantsForEachDestination(exportDate, participants);
+
+      // Export interviews for each destination
+      for(OnyxDataExportDestination destination : this.exportDestinations) {
+
+        List<Participant> participantForThisDestination = participantForEachDestinationMap.get(destination.getName());
+
+        if(participantForThisDestination != null && participantForThisDestination.size() > 0) {
+          exportDestination(participantForThisDestination, exportDate, destination, exportedBarcodes);
+        }
+
       }
+
+    }
+
+    long exportAllEndTime = new Date().getTime();
+    log.info("Exported [{}] interview(s) in [{}ms] to [{}] destination(s).", new Object[] { exportedBarcodes.size(), exportAllEndTime - exportAllStartTime, participantForEachDestinationMap == null ? 0 : participantForEachDestinationMap.size() });
+  }
+
+  /**
+   * Creates a List of Participants to be exported for each export destination. The List is added to a Map to facilitate
+   * the retrieval of the List for a specific destination (the key is the destination name).
+   * 
+   * Also marks the participant as exported and sets the export date.
+   * 
+   * @param exportDate Export date which will be set on each participant to be exported.
+   * @param participants The initial list of participant from which the destinations specific lists will be created.
+   * 
+   * @return A Map containing a list of participants for each destination.
+   */
+  private Map<String, List<Participant>> getParticipantsForEachDestination(Date exportDate, List<Participant> participants) {
+
+    Map<String, List<Participant>> participantForEachDestinationMap = new HashMap<String, List<Participant>>();
+
+    for(OnyxDataExportDestination destination : this.exportDestinations) {
+
+      List<Participant> participantsForDestination = getParticipantsToBeExportedForDestination(destination, participants);
+
+      if(participantsForDestination.size() > 0) {
+        participantForEachDestinationMap.put(destination.getName(), participantsForDestination);
+        for(Participant participant : participantsForDestination) {
+          participant.setExported(true);
+          participant.setExportDate(exportDate);
+        }
+      }
+
     }
 
     if(sessionFactory != null) {
+
       // Flushing the session will write the pending modifications (exported flag)
       sessionFactory.getCurrentSession().flush();
     }
 
-    if(participants.size() > 0) {
+    return participantForEachDestinationMap;
+  }
 
-      // same export date for every participant and every destinations: kind of system snapshot.
-      Date exportDate = new Date();
-
-      for(OnyxDataExportDestination destination : this.exportDestinations) {
-        log.info("Exporting to destination {}", destination.getName());
-        OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
-        try {
-          exportStrategy.prepare(context);
-
-          // variables file
-          OutputStream osVariables = exportStrategy.newEntry("variables.xml");
-          VariableStreamer.toXML(variableDirectory.getVariableRoot(), osVariables);
-          osVariables.flush();
-
-          // system configuration in a zip file
-          if(configDirectory != null) {
-            File configDir = configDirectory.getFile();
-            if(configDir != null && configDir.exists() && configDir.isDirectory()) {
-              OutputStream osConfigZip = exportStrategy.newEntry(configDir.getName() + ".zip");
-              zipDir(configDir, osConfigZip);
-            }
-          }
-
-          // participants files
-          for(Participant participant : participants) {
-            String entryName = participant.getBarcode() + ".xml";
-            OutputStream os = exportStrategy.newEntry(entryName);
-            VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
-            participantData.setExportDate(exportDate);
-            VariableStreamer.toXML(participantData, os);
-            os.flush();
-
-            if(sessionFactory != null) {
-              // Clearing the session will empty the cache, freeing memory.
-              // It will also delete any pending updates, which is why we already marked all participants as exported.
-              sessionFactory.getCurrentSession().clear();
-            }
-
-          }
-        } catch(RuntimeException e) {
-          context.fail();
-          log.error("Error exporting data to destination " + destination.getName() + ":" + e.getMessage(), e);
-          throw e;
-        } finally {
-          context.endExport();
-          exportStrategy.terminate(context);
-        }
+  /**
+   * Creates a list of participants to be exported for a specific destination.
+   * 
+   * @param destination The destination.
+   * @param participants The initial list of participant from which the destination specific list will be created.
+   * @return The list of participant to be exported.
+   */
+  private List<Participant> getParticipantsToBeExportedForDestination(OnyxDataExportDestination destination, List<Participant> participants) {
+    Set<InterviewStatus> exportedInterviewStatuses = destination.getExportedInterviewStatuses();
+    List<Participant> participantsToBeExported = new ArrayList<Participant>();
+    for(Participant participant : participants) {
+      if(exportedInterviewStatuses.contains(participant.getInterview().getStatus())) {
+        participantsToBeExported.add(participant);
       }
     }
+    return participantsToBeExported;
+  }
 
-    long exportAllEndTime = new Date().getTime();
-    log.info("Exported [{}] interviews in [{}ms].", participants.size(), exportAllEndTime - exportAllStartTime);
+  /**
+   * Export a list of participant to a specific destination.
+   * 
+   * @param participants The participants to export.
+   * @param exportDate The timestamp for the export.
+   * @param destination The target destination.
+   * @param exportedBarcodes A Set of participant's barcode to keep track of the exported participant.
+   * 
+   */
+  private void exportDestination(List<Participant> participants, Date exportDate, OnyxDataExportDestination destination, Set<String> exportedBarcodes) throws IOException {
+    log.info("Exporting to destination {}", destination.getName());
+    OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
+    try {
+      exportStrategy.prepare(context);
+
+      // variables file
+      OutputStream osVariables = exportStrategy.newEntry("variables.xml");
+      VariableStreamer.toXML(variableDirectory.getVariableRoot(), osVariables);
+      osVariables.flush();
+
+      // system configuration in a zip file
+      if(configDirectory != null) {
+        File configDir = configDirectory.getFile();
+        if(configDir != null && configDir.exists() && configDir.isDirectory()) {
+          OutputStream osConfigZip = exportStrategy.newEntry(configDir.getName() + ".zip");
+          zipDir(configDir, osConfigZip);
+        }
+      }
+
+      // participants files
+      for(Participant participant : participants) {
+        exportedBarcodes.add(participant.getBarcode());
+        String entryName = participant.getBarcode() + ".xml";
+        OutputStream os = exportStrategy.newEntry(entryName);
+        VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+        participantData.setExportDate(exportDate);
+        VariableStreamer.toXML(participantData, os);
+        os.flush();
+
+        if(sessionFactory != null) {
+          // Clearing the session will empty the cache, freeing memory.
+          // It will also delete any pending updates, which is why we already marked all participants as exported.
+          sessionFactory.getCurrentSession().clear();
+        }
+      }
+
+    } catch(RuntimeException e) {
+      context.fail();
+      log.error("Error exporting data to destination " + destination.getName() + ":" + e.getMessage(), e);
+      throw e;
+    } finally {
+      context.endExport();
+      exportStrategy.terminate(context);
+    }
   }
 
   /**

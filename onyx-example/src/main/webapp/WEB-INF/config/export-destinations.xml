@@ -14,8 +14,12 @@
   </destination>
 
   <!-- Export only consent related variables -->
-  <destination>
+  <destination> 
     <name>Appointment Unit</name>
+    <exportedInterviewStatuses>
+      <status>CLOSED</status>
+      <status>COMPLETED</status>
+    </exportedInterviewStatuses>      
     <includeAll>false</includeAll>
     <includedVariables>
       <string>Onyx.Consent</string>
@@ -25,4 +29,20 @@
       <string>Onyx.Consent.actions</string>
     </filteredVariables>
   </destination>
+  
+  <destination> 
+    <name>Appointment Unit - Cancelled interviews</name>  
+    <exportedInterviewStatuses>
+      <status>CANCELLED</status>
+    </exportedInterviewStatuses>  
+    <includeAll>false</includeAll>
+    <includedVariables>
+      <string>Onyx.Consent</string>
+      <string>Onyx.Admin.onyxVersion</string>
+    </includedVariables>
+    <filteredVariables>
+      <string>Onyx.Consent.actions</string>
+    </filteredVariables>
+  </destination> 
+  
 </destinations>

@@ -9,8 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.engine.variable.IVariableFilter;
 
 /**
@@ -25,6 +28,10 @@ public class OnyxDataExportDestination implements IVariableFilter {
   public Set<String> filteredVariables;
 
   public Set<String> includedVariables;
+
+  public Set<InterviewStatus> exportedInterviewStatuses;
+
+  public static final InterviewStatus[] defaultExportedInterviewStatuses = { InterviewStatus.COMPLETED, InterviewStatus.CLOSED };
 
   public String getName() {
     return this.name;
@@ -89,4 +96,17 @@ public class OnyxDataExportDestination implements IVariableFilter {
     }
     return false;
   }
+
+  public Set<InterviewStatus> getExportedInterviewStatuses() {
+    if(exportedInterviewStatuses == null) {
+      exportedInterviewStatuses = new HashSet<InterviewStatus>(Arrays.asList(defaultExportedInterviewStatuses));
+      return exportedInterviewStatuses;
+    }
+    return exportedInterviewStatuses;
+  }
+
+  public void setExportedInterviewStatuses(Set<InterviewStatus> exportedInterviewStatuses) {
+    this.exportedInterviewStatuses = exportedInterviewStatuses;
+  }
+
 }

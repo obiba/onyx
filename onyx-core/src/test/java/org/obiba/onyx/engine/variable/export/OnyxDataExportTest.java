@@ -85,7 +85,7 @@ public class OnyxDataExportTest {
     List<Interview> testInterviews = new LinkedList<Interview>();
     EasyMock.expect(mockEntityQueryService.match((Interview) EasyMock.anyObject())).andReturn(testInterviews);
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews();
+    ode.exportInterviews();
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
   }
 
@@ -114,7 +114,7 @@ public class OnyxDataExportTest {
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews();
+    ode.exportInterviews();
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
 
     byte data[] = baos.toByteArray();
@@ -161,7 +161,7 @@ public class OnyxDataExportTest {
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews();
+    ode.exportInterviews();
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
 
     byte data[] = baos.toByteArray();

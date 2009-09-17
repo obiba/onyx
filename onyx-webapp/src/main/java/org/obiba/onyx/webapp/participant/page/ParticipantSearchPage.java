@@ -504,7 +504,7 @@ public class ParticipantSearchPage extends BasePage {
 
             public void onYesButtonClicked(AjaxRequestTarget target) {
               try {
-                onyxDataExport.exportCompletedInterviews();
+                onyxDataExport.exportInterviews();
               } catch(Exception e) {
                 log.error("Error on data export.", e);
               }

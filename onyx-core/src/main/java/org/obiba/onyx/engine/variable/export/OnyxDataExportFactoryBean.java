@@ -11,9 +11,11 @@ package org.obiba.onyx.engine.variable.export;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -60,6 +62,8 @@ public class OnyxDataExportFactoryBean implements FactoryBean, InitializingBean 
     destinationXstream = new XStream();
     destinationXstream.alias("destinations", LinkedList.class);
     destinationXstream.alias("destination", OnyxDataExportDestination.class);
+    destinationXstream.alias("exportedInterviewStatuses", HashSet.class);
+    destinationXstream.alias("status", InterviewStatus.class);
   }
 
 }
