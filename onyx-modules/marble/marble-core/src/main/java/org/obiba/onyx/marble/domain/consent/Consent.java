@@ -10,6 +10,7 @@
 package org.obiba.onyx.marble.domain.consent;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.persistence.Column;
@@ -17,6 +18,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
@@ -47,6 +50,12 @@ public class Consent extends AbstractEntity {
   @Lob
   @Column(length = Integer.MAX_VALUE)
   private byte[] pdfForm;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date timeStart;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date timeEnd;
 
   public ConsentMode getMode() {
     return mode;
@@ -118,4 +127,19 @@ public class Consent extends AbstractEntity {
     this.deleted = deleted;
   }
 
+  public Date getTimeStart() {
+    return timeStart;
+  }
+
+  public void setTimeStart(Date timeStart) {
+    this.timeStart = timeStart;
+  }
+
+  public Date getTimeEnd() {
+    return timeEnd;
+  }
+
+  public void setTimeEnd(Date timeEnd) {
+    this.timeEnd = timeEnd;
+  }
 }

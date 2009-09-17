@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine.state;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.wicket.Component;
@@ -17,6 +18,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.StageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.marble.core.wicket.MarblePanel;
+import org.obiba.onyx.marble.domain.consent.Consent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,11 @@ public class MarbleInProgressState extends AbstractMarbleStageState {
   @Override
   public void complete(Action action) {
     log.debug("Marble Stage {} is completing", super.getStage().getName());
+
+    Consent consent = consentService.getConsent(activeInterviewService.getInterview());
+    consent.setTimeEnd(new Date());
+    consentService.saveConsent(consent);
+
     castEvent(TransitionEvent.COMPLETE);
   }
 
