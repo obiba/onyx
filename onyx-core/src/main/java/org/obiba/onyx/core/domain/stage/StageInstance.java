@@ -13,6 +13,7 @@ import java.util.Date;
 
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.state.StageState;
 
 /**
  * A <code>StageInstance</code> is a summary of a single "run" of a <code>Stage</code>, where a "run" is a sequence
@@ -32,6 +33,8 @@ public class StageInstance {
   private Date startTime;
 
   private Date lastTime;
+
+  private StageState lastState;
 
   private int duration;
 
@@ -81,6 +84,14 @@ public class StageInstance {
 
   public void setLastTime(Date lastTime) {
     this.lastTime = lastTime;
+  }
+
+  public StageState getLastState() {
+    return lastState;
+  }
+
+  public void setLastStageState(StageState lastState) {
+    this.lastState = lastState;
   }
 
   public int getDuration() {

@@ -19,9 +19,16 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.stage.IStageInstanceAlgorithm;
+import org.obiba.onyx.core.domain.stage.StageInstance;
+import org.obiba.onyx.core.domain.stage.StageTransition;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
+import org.obiba.onyx.core.service.InterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -33,6 +40,9 @@ import org.slf4j.LoggerFactory;
  * Onyx system variable provider: participant, user, action, interview related variables.
  */
 public class OnyxVariableProvider implements IVariableProvider {
+  //
+  // Constants
+  //
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(OnyxVariableProvider.class);
@@ -103,6 +113,28 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   public static final String ACTION_EVENT_REASON = "eventReason";
 
+  public static final String STAGE_INSTANCE = "StageInstance";
+
+  public static final String STAGE = "stage";
+
+  public static final String START_TIME = "startTime";
+
+  public static final String LAST_TIME = "lastTime";
+
+  public static final String LAST_STATE = "lastState";
+
+  public static final String DURATION = "duration";
+
+  public static final String INTERRUPTION_COUNT = "interruptionCount";
+
+  public static final String USER = "user";
+
+  public static final String LAST = "last";
+
+  //
+  // Instance Variables
+  //
+
   private ParticipantMetadata participantMetadata;
 
   private ParticipantService participantService;
@@ -112,6 +144,16 @@ public class OnyxVariableProvider implements IVariableProvider {
   private Version version;
 
   private VariableHelper variableHelper;
+
+  private ModuleRegistry moduleRegistry;
+
+  private InterviewService interviewService;
+
+  private IStageInstanceAlgorithm stageInstanceAlgorithm;
+
+  //
+  // Methods
+  //
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
@@ -131,6 +173,18 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   public void setVariableHelper(VariableHelper variableHelper) {
     this.variableHelper = variableHelper;
+  }
+
+  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    this.moduleRegistry = moduleRegistry;
+  }
+
+  public void setInterviewService(InterviewService interviewService) {
+    this.interviewService = interviewService;
+  }
+
+  public void setStageInstanceAlgorithm(IStageInstanceAlgorithm stageInstanceAlgorithm) {
+    this.stageInstanceAlgorithm = stageInstanceAlgorithm;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -232,6 +286,9 @@ public class OnyxVariableProvider implements IVariableProvider {
           childVarData.addData(data);
         }
       }
+    } else if(variable.getParent().getName().equals(STAGE_INSTANCE) || variable.getName().equals(STAGE_INSTANCE)) {
+      // TODO: Comment this out until IStageInstanceAlgorithm has been implemented.
+      // addStageInstanceVariableData(participant, variable, variablePathNamingStrategy, varData);
     }
 
     return varData;
@@ -286,6 +343,16 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_COMMENT).setDataType(DataType.TEXT));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_EVENT_REASON).setDataType(DataType.TEXT));
 
+    entity = admin.addVariable(new Variable(OnyxVariableProvider.STAGE_INSTANCE).setDataType(DataType.TEXT).setRepeatable(true));
+    entity.addVariable(new Variable(OnyxVariableProvider.STAGE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.START_TIME).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(OnyxVariableProvider.LAST_TIME).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(OnyxVariableProvider.LAST_STATE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.DURATION).setDataType(DataType.INTEGER).setUnit("s"));
+    entity.addVariable(new Variable(OnyxVariableProvider.INTERRUPTION_COUNT).setDataType(DataType.INTEGER));
+    entity.addVariable(new Variable(OnyxVariableProvider.USER).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(OnyxVariableProvider.LAST).setDataType(DataType.BOOLEAN));
+
     return variables;
   }
 
@@ -299,4 +366,44 @@ public class OnyxVariableProvider implements IVariableProvider {
     return null;
   }
 
+  private void addStageInstanceVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData) {
+    for(Module module : moduleRegistry.getModules()) {
+      for(Stage stage : module.getStages()) {
+        List<StageTransition> stageTransitions = interviewService.getStageTransitions(participant.getInterview(), stage);
+
+        List<StageInstance> stageInstances = stageInstanceAlgorithm.getStageInstances(stageTransitions);
+        for(int i = 1; i <= stageInstances.size(); i++) {
+          StageInstance stageInstance = stageInstances.get(i);
+          String stageInstanceId = String.valueOf(i);
+          Data data = null;
+
+          if(variable.getName().equals(STAGE_INSTANCE)) {
+            varData.addData(DataBuilder.buildText(stageInstanceId));
+          } else if(variable.getName().equals(STAGE) && stageInstance.getStage() != null) {
+            data = DataBuilder.buildText(stageInstance.getStage());
+          } else if(variable.getName().equals(START_TIME) && stageInstance.getStartTime() != null) {
+            data = DataBuilder.buildDate(stageInstance.getStartTime());
+          } else if(variable.getName().equals(LAST_TIME) && stageInstance.getLastTime() != null) {
+            data = DataBuilder.buildDate(stageInstance.getLastTime());
+          } else if(variable.getName().equals(LAST_STATE) && stageInstance.getLastState() != null) {
+            data = DataBuilder.buildText(stageInstance.getLastState().toString());
+          } else if(variable.getName().equals(DURATION)) {
+            data = DataBuilder.buildInteger(stageInstance.getDuration());
+          } else if(variable.getName().equals(INTERRUPTION_COUNT)) {
+            data = DataBuilder.buildInteger(stageInstance.getInterruptionCount());
+          } else if(variable.getName().equals(USER) && stageInstance.getUser() != null) {
+            data = DataBuilder.buildInteger(stageInstance.getUser().getLogin());
+          } else if(variable.getName().equals(LAST)) {
+            data = DataBuilder.buildBoolean(stageInstance.isLast());
+          }
+
+          if(data != null) {
+            VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, STAGE_INSTANCE, stageInstanceId));
+            varData.addVariableData(childVarData);
+            childVarData.addData(data);
+          }
+        }
+      }
+    }
+  }
 }

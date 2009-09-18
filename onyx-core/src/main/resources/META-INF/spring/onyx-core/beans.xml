@@ -26,6 +26,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
     
+  <bean id="interviewService" class="org.obiba.onyx.core.service.impl.DefaultInterviewServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+  
   <bean id="appointmentManagementService" class="org.obiba.onyx.core.service.impl.DefaultAppointmentManagementServiceImpl" init-method="initialize">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="inputDirectory" value="${org.obiba.onyx.appointments.inputDirectory}" />
@@ -85,8 +89,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="participantService" ref="participantService" />
     <property name="applicationConfigurationService" ref="appConfigService" />
-    <property name="version" ref="version"/>
-    <property name="variableHelper" ref="variableHelper"/>
+    <property name="version" ref="version" />
+    <property name="variableHelper" ref="variableHelper" />
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="interviewService" ref="interviewService" />
   </bean>
 
   <bean id="onyxKeyStore" class="org.obiba.onyx.crypt.OnyxKeyStore" init-method="open" destroy-method="close">

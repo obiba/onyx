@@ -86,7 +86,7 @@ public class OnyxVariableProviderTest {
     Assert.assertEquals(1, root.getVariables().size());
     Variable variable = root.getVariable(OnyxVariableProvider.ADMIN);
     Assert.assertNotNull(variable);
-    Assert.assertEquals(5, variable.getVariables().size());
+    Assert.assertEquals(6, variable.getVariables().size());
 
     Variable subVar = variable.getVariable(OnyxVariableProvider.PARTICIPANT);
     Assert.assertNotNull(subVar);
