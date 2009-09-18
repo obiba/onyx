@@ -40,7 +40,7 @@ public class InstrumentRun extends AbstractEntity {
   private static final long serialVersionUID = -2756620040202577411L;
 
   @ManyToOne
-  @JoinColumn(name = "participant_id")
+  @JoinColumn(name = "participant_id", nullable = false)
   private Participant participant;
 
   @OneToMany(cascade = { CascadeType.REMOVE }, mappedBy = "instrumentRun")
@@ -55,11 +55,11 @@ public class InstrumentRun extends AbstractEntity {
   private String instrumentType;
 
   @ManyToOne
-  @JoinColumn(name = "instrument_id")
+  @JoinColumn(name = "instrument_id", nullable = false)
   private Instrument instrument;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @Enumerated(EnumType.STRING)
