@@ -148,7 +148,7 @@ public class OnyxDataExport {
    * 
    * @return A Map containing a list of participants for each destination.
    */
-  private Map<String, List<Participant>> getParticipantsForEachDestination(Date exportDate, List<Participant> participants) {
+  protected Map<String, List<Participant>> getParticipantsForEachDestination(Date exportDate, List<Participant> participants) {
 
     Map<String, List<Participant>> participantForEachDestinationMap = new HashMap<String, List<Participant>>();
 
@@ -182,7 +182,7 @@ public class OnyxDataExport {
    * @param participants The initial list of participant from which the destination specific list will be created.
    * @return The list of participant to be exported.
    */
-  private List<Participant> getParticipantsToBeExportedForDestination(OnyxDataExportDestination destination, List<Participant> participants) {
+  protected List<Participant> getParticipantsToBeExportedForDestination(OnyxDataExportDestination destination, List<Participant> participants) {
     Set<InterviewStatus> exportedInterviewStatuses = destination.getExportedInterviewStatuses();
     List<Participant> participantsToBeExported = new ArrayList<Participant>();
     for(Participant participant : participants) {
