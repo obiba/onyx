@@ -15,6 +15,10 @@ ALTER TABLE appointment ADD UNIQUE (participant_id);
 
 ALTER TABLE interview ADD UNIQUE (participant_id);
 
+ALTER TABLE instrument_run CHANGE user_id user_id bigint(20) NOT NULL;
+ALTER TABLE instrument_run CHANGE participant_id participant_id bigint(20) NOT NULL;
+ALTER TABLE instrument_run CHANGE instrument_id instrument_id bigint(20) NOT NULL;
+
 ALTER TABLE instrument_run ADD UNIQUE (participant_id, instrument_type);
 
 ALTER TABLE question_answer ADD UNIQUE (question_name, questionnaire_participant_id);
