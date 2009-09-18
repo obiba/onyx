@@ -11,7 +11,6 @@ package org.obiba.onyx.core.service.impl;
 
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -22,9 +21,7 @@ import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
-import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
-import org.obiba.onyx.core.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,35 +105,6 @@ public class DefaultAppointmentManagementServiceImplTest extends BaseDefaultSpri
     Assert.assertEquals(2, (int) persistedUpdateStats.getUpdatedParticipants());
     Assert.assertEquals(20, (int) persistedUpdateStats.getIgnoredParticipants());
     Assert.assertEquals(3, (int) persistedUpdateStats.getUnreadableParticipants());
-  }
-
-  private void setDirectories() {
-    File targetRootDirectory = new File("target", "appointments");
-    File targetInputDirectory = new File(targetRootDirectory, "in");
-    targetInputDirectory.mkdirs();
-
-    File targetOutputDirectory = new File(targetRootDirectory, "out");
-    targetOutputDirectory.mkdirs();
-
-    File sourceDirectory = new File("src/test/resources/appointments/in");
-    try {
-      for(File file : sourceDirectory.listFiles()) {
-        if(file.getName().toLowerCase().endsWith(".xls")) FileUtil.copyFile(file, targetInputDirectory);
-      }
-    } catch(IOException ex) {
-      System.out.println(ex.getMessage());
-    }
-
-    appointmentServiceImpl.setInputDirectory("file:" + targetInputDirectory.getAbsolutePath().replace('\\', '/'));
-    appointmentServiceImpl.setOutputDirectory("file:" + targetOutputDirectory.getAbsolutePath().replace('\\', '/'));
-    appointmentServiceImpl.initialize();
-  }
-
-  private User getUser() {
-    User u = new User();
-    u.setLastName("Onyx");
-    u.setFirstName("Admin");
-    return u;
   }
 
 }

@@ -9,6 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service;
 
+import java.util.Date;
+import java.util.List;
+
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.springframework.batch.core.ExitStatus;
 
@@ -33,5 +37,11 @@ public interface AppointmentManagementService {
    * @return AppointmentUpdateStats
    */
   public AppointmentUpdateStats getLastAppointmentUpdateStats();
+
+  /**
+   * Get the AppointmentUpdate JobExecution corresponding to the specified date
+   * @return Job
+   */
+  public List<AppointmentUpdateLog> getLogListForDate(Date date);
 
 }

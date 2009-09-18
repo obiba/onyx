@@ -1,0 +1,23 @@
+<wicket:panel>
+  <table class="entityTable">
+    <thead>
+      <tr>
+        <th><wicket:message key="Date">[Date]</wicket:message></th>
+        <th><wicket:message key="Time">[Time]</wicket:message></th>
+        <th><wicket:message key="Level">[Level]</wicket:message></th>
+        <th><wicket:message key="ParticipantId">[ParticipantId]</wicket:message></th>
+        <th><wicket:message key="Message">[Message]</wicket:message></th>
+      </tr>
+    </thead>
+    <tbody>
+      <span wicket:id="table"><span wicket:id="rows"></span></span>
+    </tbody>
+  </table>
+  
+</wicket:panel>
+
+<wicket:fragment wicket:id="appointmentUpdateLogRow">
+  <tr wicket:id="logEntryRow">
+    <td wicket:id="date">[2009-05-06]</td><td wicket:id="time">[3:06:25]</td><td wicket:id="level">[INFO]</td><td wicket:id="participantId">[30121201]</td><td wicket:id="message">[message]</td>
+  </tr>
+</wicket:fragment>

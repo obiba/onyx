@@ -10,7 +10,10 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -32,9 +35,13 @@ import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
+import org.obiba.onyx.core.service.AppointmentManagementService;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 /**
@@ -49,11 +56,16 @@ public class UpdateParticipantListPanel extends Panel {
   private static final String MANUAL_UPLOAD = "Manual";
 
   @SpringBean
+  private AppointmentManagementService appointmentManagementService;
+
+  @SpringBean
   private AbstractParticipantReader participantReader;
 
   //
   // Instance variables
   //
+
+  private Dialog updateAppointmentLogWindow;
 
   private FeedbackWindow feedbackWindow;
 
@@ -75,11 +87,12 @@ public class UpdateParticipantListPanel extends Panel {
     add(feedbackWindow = new FeedbackWindow("feedback"));
     feedbackWindow.setOutputMarkupId(true);
 
+    addUpdateAppointmentLogWindow();
+
     confirmationFragment = new ConfirmationFragment("contentFragment");
     progressFragment = new ProgressFragment("contentFragment", new ResourceModel("ParticipantListUpdateInProgress"));
     resultFragment = new ResultFragment("contentFragment", new ResourceModel("ParticipantsListSuccessfullyUpdated"));
     notificationFragment = new NotificationFragment("contentFragment");
-
   }
 
   public void showConfirmation() {
@@ -114,6 +127,7 @@ public class UpdateParticipantListPanel extends Panel {
     } else {
       kvPanel.setVisible(false);
     }
+    resultFragment.setAppointmentUpdateStats(stats);
     resultFragment.addOrReplace(kvPanel);
 
     replaceOrAddFragment(resultFragment);
@@ -127,6 +141,16 @@ public class UpdateParticipantListPanel extends Panel {
     } else {
       add(fragment);
     }
+  }
+
+  private void addUpdateAppointmentLogWindow() {
+    updateAppointmentLogWindow = new Dialog("updateAppointmentLogWindow");
+    updateAppointmentLogWindow.setTitle(new StringResourceModel("Log", this, null));
+    updateAppointmentLogWindow.setOptions(Option.CLOSE_OPTION);
+    updateAppointmentLogWindow.setInitialHeight(400);
+    updateAppointmentLogWindow.setInitialWidth(700);
+    updateAppointmentLogWindow.setOutputMarkupId(true);
+    add(updateAppointmentLogWindow);
   }
 
   //
@@ -254,6 +278,8 @@ public class UpdateParticipantListPanel extends Panel {
 
     private Label resultLabel;
 
+    private AppointmentUpdateStats appointmentUpdateStats;
+
     public ResultFragment(String id, IModel messageModel) {
       super(id, "resultFragment", UpdateParticipantListPanel.this);
 
@@ -261,6 +287,15 @@ public class UpdateParticipantListPanel extends Panel {
       add(resultLabel);
 
     }
+
+    public AppointmentUpdateStats getAppointmentUpdateStats() {
+      return appointmentUpdateStats;
+    }
+
+    public void setAppointmentUpdateStats(AppointmentUpdateStats appointmentUpdateStats) {
+      this.appointmentUpdateStats = appointmentUpdateStats;
+    }
+
   }
 
   public void setParticipantReader(AbstractParticipantReader participantReader) {
@@ -275,8 +310,22 @@ public class UpdateParticipantListPanel extends Panel {
     this.feedbackWindow = feedbackWindow;
   }
 
+  public void setAppointmentManagementService(AppointmentManagementService appointmentManagementService) {
+    this.appointmentManagementService = appointmentManagementService;
+  }
+
   public void displayFeedback(AjaxRequestTarget target) {
     feedbackWindow.setContent(new FeedbackPanel("content"));
     feedbackWindow.show(target);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void displayDetails(AjaxRequestTarget target, Date date) {
+    List<AppointmentUpdateLog> apointmentUpdateLogs = appointmentManagementService.getLogListForDate(date);
+
+    AppointmentUpdateLogPanel appointmentUpdateLogPanel = new AppointmentUpdateLogPanel("content", apointmentUpdateLogs);
+    appointmentUpdateLogPanel.add(new AttributeModifier("class", true, new Model("obiba-content appointment-update-log-panel-content")));
+    updateAppointmentLogWindow.setContent(appointmentUpdateLogPanel);
+    updateAppointmentLogWindow.show(target);
   }
 }

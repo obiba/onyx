@@ -83,6 +83,7 @@ public class UpdateParticipantListWindow extends Dialog {
     content.setOutputMarkupId(true);
     setContent(content);
 
+    // Set submit button
     addSubmitOption("UpdateAppointments", OptionSide.RIGHT, updateSubmitLink = new AjaxButton("submitUpdate", this.getForm()) {
 
       private static final long serialVersionUID = 1L;
@@ -125,11 +126,13 @@ public class UpdateParticipantListWindow extends Dialog {
     });
     updateSubmitLink.setVisible(false);
 
+    // Set details button
     addOption("Details", OptionSide.RIGHT, detailsLink = new AjaxLink("details") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        // TODO Auto-generated method stub
+        UpdateParticipantListPanel.ResultFragment resultFragment = (UpdateParticipantListPanel.ResultFragment) UpdateParticipantListWindow.this.getWindowContent().get("contentFragment");
+        if(resultFragment.getAppointmentUpdateStats() != null) UpdateParticipantListWindow.this.getWindowContent().displayDetails(target, resultFragment.getAppointmentUpdateStats().getDate());
 
       }
     }, "details");
@@ -184,7 +187,7 @@ public class UpdateParticipantListWindow extends Dialog {
 
   public void showResult(boolean updateSucceeded) {
     setOptions(Option.CLOSE_OPTION);
-    detailsLink.setVisible(true);
+    detailsLink.setVisible(updateSucceeded);
     content.showResult(updateSucceeded, (updateSucceeded) ? appointmentManagementService.getLastAppointmentUpdateStats() : null);
   }
 

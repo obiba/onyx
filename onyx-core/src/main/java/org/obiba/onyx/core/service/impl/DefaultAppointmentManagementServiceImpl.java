@@ -11,19 +11,25 @@ package org.obiba.onyx.core.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
@@ -36,6 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService implements AppointmentManagementService, ResourceLoaderAware {
 
   private JobLauncher jobLauncher;
+
+  private JobExplorer jobExplorer;
 
   private Job job;
 
@@ -104,6 +112,31 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
     return (getPersistenceManager().list(AppointmentUpdateStats.class, new SortingClause("date", false))).get(0);
   }
 
+  public List<AppointmentUpdateLog> getLogListForDate(Date date) {
+    List<AppointmentUpdateLog> logList = new ArrayList<AppointmentUpdateLog>();
+    List<JobInstance> jobsList = jobExplorer.getJobInstances(job.getName(), 0, 10);
+
+    JobExecution jobExecution = null;
+
+    for(JobInstance jobInstance : jobsList) {
+      if(jobInstance.getJobParameters().getDate("date").toString().equals(date.toString())) {
+        jobExecution = jobExplorer.getJobExecutions(jobInstance).get(0);
+        break;
+      }
+    }
+
+    if(jobExecution == null) return null;
+
+    for(StepExecution stepExec : jobExecution.getStepExecutions()) {
+      StepExecution stepExecution = jobExplorer.getStepExecution(jobExecution.getId(), stepExec.getId());
+      if(stepExecution.getExecutionContext().get("logList") != null) {
+        logList.addAll((List<AppointmentUpdateLog>) (stepExecution.getExecutionContext().get("logList")));
+      }
+    }
+
+    return logList;
+  }
+
   public void setInputDirectory(String inputDirectory) {
     this.inputDirectory = inputDirectory;
   }
@@ -138,6 +171,10 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
 
   public void setJob(Job job) {
     this.job = job;
+  }
+
+  public void setJobExplorer(JobExplorer jobExplorer) {
+    this.jobExplorer = jobExplorer;
   }
 
 }

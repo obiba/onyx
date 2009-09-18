@@ -134,7 +134,7 @@ div.wicket-modal div.onyx .unlockInterview-panel-content {
 }
 
 div.wicket-modal div.onyx .updateParticipantList-panel-content {
-  	height:91px;
+  	height:96px;
   	margin-left:12px;
 }
 
@@ -216,4 +216,8 @@ div.wicket-modal div.onyx .long-confirmation-dialog-content {
 
 div.wicket-modal div.onyx .instrument-run-panel-content {
 	height:371px;
+}
+
+div.wicket-modal div.onyx .appointment-update-log-panel-content {
+	height:356px;
 }

@@ -9,7 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
+import java.util.Date;
+
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.springframework.batch.core.ExitStatus;
@@ -94,6 +97,8 @@ public class AppointmentListUpdateListener {
       appointmentUpdateStats.setFileName(stepExecution.getExecutionContext().get("fileName").toString());
       appointmentManagementService.saveAppointmentUpdateStats(appointmentUpdateStats);
     }
+
+    AppointmentUpdateLog.addLog(stepExecution.getExecutionContext(), new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "End updating appointments"));
 
     return status;
   }

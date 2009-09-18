@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ExecutionContext;
@@ -38,8 +40,6 @@ import org.springframework.core.io.Resource;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractParticipantReader implements ItemStreamReader<Participant> {
-
-  protected static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
 
   private static final Logger log = LoggerFactory.getLogger(AbstractParticipantReader.class);
 
@@ -82,19 +82,21 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
     try {
       if(getInputDirectory() == null || getInputDirectory().getFile() == null) return;
 
-      appointmentListUpdatelog.info("Start updating appointments");
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Start updating appointments"));
       File[] appointmentFiles = getInputDirectory().getFile().listFiles(this.getFilter());
-      if(appointmentFiles.length > 1) appointmentListUpdatelog.info("Found {} appointment lists. Will process the most recent one only and archive the others.");
+
+      if(appointmentFiles.length > 1) AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Found " + appointmentFiles.length + " appointment lists. Will process the most recent one only and archive the others."));
       sortFilesOnDateAsc(appointmentFiles);
 
       currentFile = appointmentFiles[appointmentFiles.length - 1];
-      appointmentListUpdatelog.info("Processing appointment list file {}", currentFile.getName());
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Processing appointment list file " + currentFile.getName()));
 
       context.put("fileName", currentFile.getName());
       fileInputStream = new FileInputStream(currentFile);
 
     } catch(IOException e) {
-      appointmentListUpdatelog.error("Abort updating appointments: Reading file error: {} - {}", (currentFile == null) ? "unknown file" : currentFile.getName(), e.getMessage());
+      String message = "Abort updating appointments: Reading file error: " + ((currentFile == null) ? "unknown file" : currentFile.getName()) + " - " + e.getMessage();
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, message));
 
       ValidationRuntimeException vex = new ValidationRuntimeException();
       vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());
@@ -113,7 +115,6 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
         // Ignored
       }
     }
-    appointmentListUpdatelog.info("End updating appointments");
   }
 
   //  

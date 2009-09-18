@@ -12,14 +12,15 @@ package org.obiba.onyx.core.etl.participant.impl;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Date;
 
 import org.obiba.core.util.FileUtil;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.core.io.Resource;
 
@@ -28,8 +29,6 @@ import org.springframework.core.io.Resource;
  * inputDirectory
  */
 public class ArchiveAppointmentFileTasklet implements Tasklet {
-
-  private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
 
   private Resource inputDirectory;
 
@@ -41,19 +40,20 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
 
     if(getInputDirectory() != null && getInputDirectory().getFile() != null) {
       for(File file : getInputDirectory().getFile().listFiles(getFilter())) {
-        archiveFile(file);
+        archiveFile(file, context.getStepContext().getStepExecution().getExecutionContext());
       }
     }
 
     return null;
   }
 
-  private void archiveFile(File file) {
+  private void archiveFile(File file, ExecutionContext context) {
     if(getOutputDirectory() != null) {
       try {
 
         File outputDir = getOutputDirectory().getFile();
-        appointmentListUpdatelog.info("Moving file {} to output directory {}.", file.getName(), outputDir.getAbsolutePath());
+        String message = "Moving file " + file.getName() + " to output directory " + outputDir.getAbsolutePath();
+        AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, message));
 
         // Re-create output directory, in case it was deleted at runtime.
         if(!outputDir.exists()) {
@@ -62,7 +62,8 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
 
         FileUtil.moveFile(file, outputDir);
       } catch(IOException e) {
-        appointmentListUpdatelog.error("Abort updating appointments: Archiving file error {} - {}", file.getName(), e.getMessage());
+        String message = "Abort updating appointments: Archiving file error " + file.getName() + " - " + e.getMessage();
+        AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, message));
 
         ValidationRuntimeException vex = new ValidationRuntimeException();
         vex.reject("ParticipantsListFileArchivingError", new String[] { e.getMessage() }, "Archiving file error: " + e.getMessage());

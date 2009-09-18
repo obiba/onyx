@@ -25,6 +25,7 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.io.support.ExcelReaderSupport;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -72,7 +73,7 @@ public class ParticipantReader extends AbstractParticipantReader {
       HSSFSheet sheet = wb.getSheetAt(sheetNumber - 1);
       evaluator = new HSSFFormulaEvaluator(wb);
 
-      initAttributeNameToColumnIndexMap(sheet.getRow(headerRowNumber - 1));
+      initAttributeNameToColumnIndexMap(context, sheet.getRow(headerRowNumber - 1));
 
       rowIter = (Iterator<HSSFRow>) sheet.rowIterator();
 
@@ -80,7 +81,7 @@ public class ParticipantReader extends AbstractParticipantReader {
       row = skipToFirstDataRow(rowIter);
 
     } catch(IOException e) {
-      appointmentListUpdatelog.error("Abort updating appointments: Reading file error: {}", e.getMessage());
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: " + e.getMessage()));
 
       ValidationRuntimeException vex = new ValidationRuntimeException();
       vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());
@@ -118,9 +119,9 @@ public class ParticipantReader extends AbstractParticipantReader {
   // Local methods
   //
   @SuppressWarnings("unchecked")
-  private void initAttributeNameToColumnIndexMap(HSSFRow headerRow) {
+  private void initAttributeNameToColumnIndexMap(ExecutionContext context, HSSFRow headerRow) {
     if(headerRow == null) {
-      appointmentListUpdatelog.error("Abort updating appointments: Reading file error: Null headerRow");
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Null headerRow"));
       throw new IllegalArgumentException("Null headerRow");
     }
 
@@ -133,7 +134,7 @@ public class ParticipantReader extends AbstractParticipantReader {
 
       if(cell != null) {
         if(cell.getCellType() != HSSFCell.CELL_TYPE_STRING) {
-          appointmentListUpdatelog.error("Abort updating appointments: Reading file error: Header row contains unexpected cell type");
+          AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Header row contains unexpected cell type"));
           throw new IllegalArgumentException("Header row contains unexpected cell type");
         }
 
@@ -146,7 +147,7 @@ public class ParticipantReader extends AbstractParticipantReader {
             if(!attributeNameToColumnIndexMap.containsKey(attributeName.toUpperCase())) {
               attributeNameToColumnIndexMap.put(attributeName.toUpperCase(), cell.getColumnIndex());
             } else {
-              appointmentListUpdatelog.error("Abort updating appointments: Reading file error: Duplicate column for field: " + attributeName);
+              AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Duplicate column for field: " + attributeName));
               throw new IllegalArgumentException("Duplicate column for field: " + attributeName);
             }
           }

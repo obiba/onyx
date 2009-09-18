@@ -9,9 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.validation.IValidator;
@@ -22,22 +24,26 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemProcessor;
 
 /**
  * ParticipantProcessor is responsible for validating a participant item. It is also responsible for transforming the
  * Participant if necessary.
  */
-public class ParticipantProcessor implements ItemProcessor<Participant, Participant> {
+public class ParticipantProcessor implements ItemProcessor<Participant, Participant>, StepExecutionListener {
 
-  protected static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
+  private static Set<String> enrollmentIds = new HashSet<String>();
+
+  private static List<AppointmentUpdateLog> log = new ArrayList<AppointmentUpdateLog>();
 
   private ApplicationConfigurationService applicationConfigurationService;
 
@@ -45,16 +51,14 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   private ParticipantMetadata participantMetadata;
 
-  private static Set<String> enrollmentIds = new HashSet<String>();
-
-  private String idStr;
+  private String participantId;
 
   public Participant process(Participant participantItem) throws Exception {
-    setIdStr("Participant " + participantItem.getEnrollmentId() + " : ");
+    setParticipantId(participantItem.getEnrollmentId());
 
     // check enrollment id is unique in submitted participants list
     if(!checkUniqueEnrollmentId(participantItem)) {
-      appointmentListUpdatelog.error("Duplicate {} {}.", AbstractParticipantReader.ENROLLMENT_ID_ATTRIBUTE_NAME, participantItem.getEnrollmentId());
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Duplicate " + AbstractParticipantReader.ENROLLMENT_ID_ATTRIBUTE_NAME + " " + participantId));
       return null;
     }
 
@@ -77,8 +81,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // Validate site code
     if(!applicationConfigurationService.getApplicationConfiguration().getSiteNo().equals(participantItem.getSiteNo())) {
-      appointmentListUpdatelog.warn("{}Ignoring participant for site {}.", idStr, participantItem.getSiteNo());
-
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Ignoring participant for site " + participantItem.getSiteNo() + "."));
     } else {
       participant = new Participant();
       participant.setEnrollmentId(participantItem.getEnrollmentId());
@@ -90,7 +93,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
         // log a warning for appointments scheduled in the past but add them to the system anyway
         if(!isNewAppointmentDateValid(participant)) {
-          appointmentListUpdatelog.warn("{}Appointment date/time is in the past => adding appointment anyway.", idStr);
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => adding appointment anyway."));
         }
 
         participant.setExported(false);
@@ -101,13 +104,13 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
         // Validate interview status
         if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview.getStatus() == InterviewStatus.CANCELLED)) {
-          appointmentListUpdatelog.warn("{}Interview {} => participant update ignored.", idStr, interview.getStatus().toString().toLowerCase());
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Interview " + interview.getStatus().toString().toLowerCase() + " => participant update ignored."));
           return null;
         } else {
 
           // Validate appointment date
           if(!isNewAppointmentDateValid(participantItem)) {
-            appointmentListUpdatelog.warn("{}Appointment date/time is in the past => participant update ignored.", idStr);
+            log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => participant update ignored."));
             return null;
           }
 
@@ -118,7 +121,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
           } else {
             // appointment in database exists
             if(participantItem.getAppointment().getDate().equals(participant.getAppointment().getDate())) {
-              appointmentListUpdatelog.warn("{}Appointment date for participant {} same in database => participant update ignored.", idStr, participantItem.getAppointment().getDate());
+              log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date for participant " + participantItem.getAppointment().getDate() + " same in database => participant update ignored."));
               return null;
             }
             participant.getAppointment().setDate(participantItem.getAppointment().getDate());
@@ -154,7 +157,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // check if the attribute is mandatory and not null
     if(!checkMandatoryCondition(attribute, data)) {
-      appointmentListUpdatelog.error("{}No value for mandatory field {}.", idStr, attribute.getName());
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId, "No value for mandatory field " + attribute.getName() + "."));
       return false;
     }
 
@@ -162,7 +165,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     // is within that list.
     if(attribute.getType().equals(DataType.TEXT) && data != null) {
       if(!checkValueAllowed(attribute, data)) {
-        appointmentListUpdatelog.error("{}Value not allowed for field {}", idStr, attribute.getName() + ": " + data.getValueAsString());
+        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId, "Value not allowed for field " + attribute.getName() + ": " + data.getValueAsString() + "."));
         return false;
       }
     }
@@ -236,19 +239,19 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     Date newAppointmentDate = participant.getAppointment().getDate();
     if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) < 0) return false;
     return true;
-
   }
 
   public static void initProcessor() {
     enrollmentIds = new HashSet<String>();
+    log = new ArrayList<AppointmentUpdateLog>();
   }
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
   }
 
-  public void setIdStr(String idStr) {
-    this.idStr = idStr;
+  public void setParticipantId(String participantId) {
+    this.participantId = participantId;
   }
 
   public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
@@ -257,6 +260,17 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
+  }
+
+  public ExitStatus afterStep(StepExecution stepExecution) {
+    for(AppointmentUpdateLog appointmentUpdateLog : log) {
+      AppointmentUpdateLog.addLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
+    }
+    return null;
+  }
+
+  public void beforeStep(StepExecution stepExecution) {
+    // TODO Auto-generated method stub
   }
 
 }

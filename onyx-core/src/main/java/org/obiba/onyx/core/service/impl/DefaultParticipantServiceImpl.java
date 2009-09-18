@@ -38,9 +38,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultParticipantServiceImpl.class);
 
-  @SuppressWarnings("unused")
-  private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
-
   private static final String START_ACTION_DEFINITION_CODE = "action.START";
 
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user) {
