@@ -94,6 +94,8 @@ public class PageStepPanel extends WizardStepPanel {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     pageLayout.onPrevious(target);
     setPreviousStep(questionnaireWizardForm.getPreviousStep());
+
+    incrementTimeOnPage();
   }
 
   @Override
@@ -101,7 +103,8 @@ public class PageStepPanel extends WizardStepPanel {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     pageLayout.onNext(target);
     setNextStep(questionnaireWizardForm.getNextStep());
-    getDuration(from);
+
+    incrementTimeOnPage();
   }
 
   @Override
@@ -111,15 +114,18 @@ public class PageStepPanel extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    from = getDuration(0);
     super.onStepInNext(form, target);
     pageLayout.onStepInNext(target);
+
+    from = System.currentTimeMillis();
   }
 
   @Override
   public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
     super.onStepInPrevious(form, target);
     pageLayout.onStepInPrevious(target);
+
+    from = System.currentTimeMillis();
   }
 
   //
@@ -130,14 +136,8 @@ public class PageStepPanel extends WizardStepPanel {
     this.previousEnabled = previousEnabled;
   }
 
-  private long getDuration(long from) {
-    long duration = System.currentTimeMillis() - from;
-
-    if(from > 0) {
-      log.debug("### duration={}ms [PageStep]", duration);
-    }
-
-    return duration;
+  private void incrementTimeOnPage() {
+    long durationMillis = System.currentTimeMillis() - from;
+    activeQuestionnaireAdministrationService.incrementTimeOnPage((int) (durationMillis / 1000l));
   }
-
 }

@@ -327,4 +327,10 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public String getComment(Question question);
 
+  /**
+   * Increments the time spent on the current page.
+   * 
+   * @param seconds increment (in seconds)
+   */
+  public void incrementTimeOnPage(int seconds);
 }

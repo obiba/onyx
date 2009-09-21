@@ -17,6 +17,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireMetric;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -361,6 +362,13 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
 
     return getPersistenceManager().matchOne(questionnaireParticipantTemplate);
+  }
+
+  public void incrementTimeOnPage(int seconds) {
+    QuestionnaireMetric questionnaireMetric = getQuestionnaireParticipant().getQuestionnaireMetric(this.getCurrentPage().getName());
+    questionnaireMetric.incrementDuration(seconds);
+
+    getPersistenceManager().save(questionnaireMetric);
   }
 
   private void updateResumePage(Page resumePage) {

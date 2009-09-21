@@ -30,11 +30,12 @@
     Need this too, for similar reasons.
   --> 
   <questionnaire_participant />
-
+  
   <question_answer />
     
   <category_answer />
   
   <open_answer/>
-  
+
+  <questionnaire_metric />  
 </dataset>
