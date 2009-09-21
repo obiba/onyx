@@ -365,10 +365,14 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void incrementTimeOnPage(int seconds) {
-    QuestionnaireMetric questionnaireMetric = getQuestionnaireParticipant().getQuestionnaireMetric(this.getCurrentPage().getName());
-    questionnaireMetric.incrementDuration(seconds);
+    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
-    getPersistenceManager().save(questionnaireMetric);
+    if(currentQuestionnaireParticipant != null && getCurrentPage() != null) {
+      QuestionnaireMetric questionnaireMetric = currentQuestionnaireParticipant.getQuestionnaireMetric(getCurrentPage().getName());
+      questionnaireMetric.incrementDuration(seconds);
+
+      getPersistenceManager().save(questionnaireMetric);
+    }
   }
 
   private void updateResumePage(Page resumePage) {
