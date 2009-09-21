@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -55,6 +56,9 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   @OneToMany(mappedBy = "questionnaireParticipant")
   private List<QuestionAnswer> questionAnswers;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionnaireParticipant")
+  private List<QuestionnaireMetric> questionnaireMetrics;
 
   public Participant getParticipant() {
     return participant;
@@ -131,4 +135,24 @@ public class QuestionnaireParticipant extends AbstractEntity {
     }
   }
 
+  public List<QuestionnaireMetric> getQuestionnaireMetrics() {
+    return questionnaireMetrics != null ? questionnaireMetrics : (questionnaireMetrics = new ArrayList<QuestionnaireMetric>());
+  }
+
+  public QuestionnaireMetric getQuestionnaireMetric(String page) {
+    // Return the metric for the specific page.
+    for(QuestionnaireMetric aQuestionnaireMetric : getQuestionnaireMetrics()) {
+      if(aQuestionnaireMetric.getPage().equals(page)) {
+        return aQuestionnaireMetric;
+      }
+    }
+
+    // If not found, create one and return it.
+    QuestionnaireMetric questionnaireMetric = new QuestionnaireMetric();
+    questionnaireMetric.setQuestionnaireParticipant(this);
+    questionnaireMetric.setPage(page);
+    getQuestionnaireMetrics().add(questionnaireMetric);
+
+    return questionnaireMetric;
+  }
 }
