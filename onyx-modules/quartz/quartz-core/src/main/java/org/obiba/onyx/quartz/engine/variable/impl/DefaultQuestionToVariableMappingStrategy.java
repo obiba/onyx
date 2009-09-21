@@ -10,8 +10,10 @@
 package org.obiba.onyx.quartz.engine.variable.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.wicket.extensions.validation.validator.RfcCompliantEmailAddressValidator;
 import org.apache.wicket.validation.IValidator;
@@ -29,6 +31,8 @@ import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireMetric;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -38,6 +42,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
@@ -75,6 +80,18 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   public static final String QUESTION_ACTIVE = "active";
 
+  public static final String QUESTIONNAIRE_METRIC = "QuestionnaireMetric";
+
+  public static final String QUESTIONNAIRE_PAGE = "page";
+
+  public static final String QUESTIONNAIRE_DURATION = "duration";
+
+  public static final String QUESTIONNAIRE_SECTION = "section";
+
+  public static final String QUESTIONNAIRE_QUESTION_COUNT = "questionCount";
+
+  public static final String QUESTIONNAIRE_MISSING_COUNT = "missingCount"; // escape count
+
   private QuestionnaireBundle questionnaireBundle;
 
   // choose the one with the most properties declared
@@ -92,6 +109,14 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_USER).setDataType(DataType.TEXT));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_TIMESTART).setDataType(DataType.DATE));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_TIMEEND).setDataType(DataType.DATE));
+
+    // add questionnaire metric variable
+    Variable questionnaireMetric = questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_METRIC).setDataType(DataType.TEXT).setRepeatable(true));
+    questionnaireMetric.addVariable(new Variable(QUESTIONNAIRE_PAGE).setDataType(DataType.TEXT));
+    questionnaireMetric.addVariable(new Variable(QUESTIONNAIRE_DURATION).setDataType(DataType.INTEGER).setUnit("s"));
+    questionnaireMetric.addVariable(new Variable(QUESTIONNAIRE_SECTION).setDataType(DataType.TEXT));
+    questionnaireMetric.addVariable(new Variable(QUESTIONNAIRE_QUESTION_COUNT).setDataType(DataType.INTEGER));
+    questionnaireMetric.addVariable(new Variable(QUESTIONNAIRE_MISSING_COUNT).setDataType(DataType.INTEGER));
 
     return questionnaireVariable;
   }
@@ -402,6 +427,32 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
             variableData.addData(DataBuilder.buildDate(questionnaireParticipant.getTimeEnd()));
           }
         }
+      } else if(variable.getParent().getName().equals(QUESTIONNAIRE_METRIC)) {
+        QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
+        QuestionnaireFinder questionnaireFinder = new QuestionnaireFinder(questionnaireBundle.getQuestionnaire());
+
+        if(questionnaireParticipant != null) {
+          Map<String, Integer> questionCountMap = new HashMap<String, Integer>();
+          Map<String, Integer> missingCountMap = new HashMap<String, Integer>();
+
+          for(QuestionnaireMetric questionnaireMetric : questionnaireParticipant.getQuestionnaireMetrics()) {
+            Page page = questionnaireFinder.findPage(questionnaireMetric.getPage());
+
+            if(variable.getName().equals(QUESTIONNAIRE_PAGE)) {
+              variableData.addData(DataBuilder.buildText(questionnaireMetric.getPage()));
+            } else if(variable.getName().equals(QUESTIONNAIRE_DURATION)) {
+              variableData.addData(DataBuilder.buildInteger(questionnaireMetric.getDuration()));
+            } else if(variable.getName().equals(QUESTIONNAIRE_SECTION)) {
+              variableData.addData(DataBuilder.buildText(page.getSection().getName()));
+            } else if(variable.getName().equals(QUESTIONNAIRE_QUESTION_COUNT)) {
+              int questionCount = getQuestionCount(questionCountMap, questionnaireParticipant, questionnaireFinder, page);
+              variableData.addData(DataBuilder.buildInteger(questionCount));
+            } else if(variable.getName().equals(QUESTIONNAIRE_MISSING_COUNT)) {
+              int missingCount = getMissingCount(missingCountMap, questionnaireParticipant, questionnaireFinder, page);
+              variableData.addData(DataBuilder.buildInteger(missingCount));
+            }
+          }
+        }
       } else if(variable.getName().equals(QUESTION_COMMENT)) {
         // question comment variable
         String comment = questionnaireParticipantService.getQuestionComment(participant, questionnaire.getName(), variable.getParent().getName());
@@ -478,4 +529,53 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     return validator.getClass().getSimpleName().replaceAll("Validator", "");
   }
 
+  private int getQuestionCount(Map<String, Integer> questionCountCache, QuestionnaireParticipant questionnaireParticipant, QuestionnaireFinder questionnaireFinder, Page page) {
+    Integer questionCount = questionCountCache.get(page.getName());
+
+    if(questionCount == null) {
+      int total = 0;
+
+      for(QuestionAnswer questionAnswer : questionnaireParticipant.getParticipantAnswers()) {
+        if(questionAnswer.isActive()) {
+          Question question = questionnaireFinder.findQuestion(questionAnswer.getQuestionName());
+          if(question.getPage().getName().equals(page.getName())) {
+            total++;
+          }
+        }
+      }
+
+      questionCount = total;
+      questionCountCache.put(page.getName(), questionCount);
+    }
+
+    return questionCount;
+  }
+
+  private int getMissingCount(Map<String, Integer> missingCountCache, QuestionnaireParticipant questionnaireParticipant, QuestionnaireFinder questionnaireFinder, Page page) {
+    Integer missingCount = missingCountCache.get(page.getName());
+
+    if(missingCount == null) {
+      int total = 0;
+
+      for(QuestionAnswer questionAnswer : questionnaireParticipant.getParticipantAnswers()) {
+        if(questionAnswer.isActive()) {
+          Question question = questionnaireFinder.findQuestion(questionAnswer.getQuestionName());
+          if(question.getPage().getName().equals(page.getName())) {
+            for(CategoryAnswer categoryAnswer : questionAnswer.getCategoryAnswers()) {
+              QuestionCategory questionCategory = questionnaireFinder.findQuestionCategory(question.getName(), categoryAnswer.getCategoryName());
+              if(questionCategory.getCategory().isEscape()) {
+                total++;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      missingCount = total;
+      missingCountCache.put(page.getName(), missingCount);
+    }
+
+    return missingCount;
+  }
 }

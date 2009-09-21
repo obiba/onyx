@@ -78,7 +78,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     log.info("\n" + VariableStreamer.toXML(questionnaireVariable));
 
     Assert.assertEquals(questionnaire.getName(), questionnaireVariable.getName());
-    Assert.assertEquals(6, questionnaireVariable.getVariables().size());
+    Assert.assertEquals(7, questionnaireVariable.getVariables().size());
     Assert.assertEquals(0, questionnaireVariable.getCategories().size());
 
     Variable questionVariable = questionnaireVariable.getVariable("Q1");
