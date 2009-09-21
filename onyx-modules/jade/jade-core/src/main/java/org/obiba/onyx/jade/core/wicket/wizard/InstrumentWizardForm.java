@@ -298,8 +298,12 @@ public class InstrumentWizardForm extends WizardForm {
         lastStep = instrumentSelectionStep;
       }
     } else {
-      // pre selected instrument
-      activeInstrumentRunService.setInstrument(queryService.matchOne(instrumentTemplate));
+      if(queryService.count(instrumentTemplate) == 1) {
+        // pre selected instrument
+        activeInstrumentRunService.setInstrument(queryService.matchOne(instrumentTemplate));
+      } else {
+        throw new IllegalStateException("No entry exists in the [instrument] table for the instrument [" + instrumentType.getName() + "]. One must exist in order to take measures with this instrument.");
+      }
     }
 
     // are there input parameters with input source that requires user provisioning ?
