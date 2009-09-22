@@ -91,7 +91,8 @@ public class DefaultInterviewManagerImplTest {
     expectObtainInterview(firstUser, firstParticipant);
 
     EasyMock.expect(mockPersistenceManager.get(User.class, new Long(1))).andReturn(firstUser);
-    EasyMock.expect(mockPersistenceManager.get(Participant.class, new Long(1))).andReturn(firstParticipant);
+    EasyMock.expect(mockPersistenceManager.get(Participant.class, new Long(1))).andReturn(firstParticipant).anyTimes();
+    EasyMock.expect(mockPersistenceManager.save((Interview) EasyMock.anyObject())).andStubReturn(new Interview());
     EasyMock.replay(mockUserSessionService, mockPersistenceManager);
 
     Interview interview = interviewManagerImpl.obtainInterview(firstParticipant);

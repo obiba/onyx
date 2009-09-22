@@ -120,6 +120,11 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     if(lock != null) {
       log.info("User {} has locked interview during {}s for participant {}.", new Object[] { lock.getOperator().getLogin(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getBarcode() });
       this.interviewLocks.remove(lock);
+
+      Interview interview = lock.getParticipant().getInterview();
+      if(interview.getStatus().equals(InterviewStatus.IN_PROGRESS)) {
+        updateInterviewDuration(interview, System.currentTimeMillis() - lock.getTimeLock());
+      }
     }
   }
 
@@ -146,6 +151,13 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
       }
     }
     return null;
+  }
+
+  private void updateInterviewDuration(Interview interview, long timeLockedMillis) {
+    int timeLockedSeconds = (int) (timeLockedMillis / 1000l);
+
+    interview.incrementDuration(timeLockedSeconds);
+    getPersistenceManager().save(interview);
   }
 
   public class InterviewLock {
