@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -59,7 +59,8 @@ public class DataBuilder {
 
   public static Data buildDate(String date) {
     try {
-      return new Data(DataType.DATE, SimpleDateFormat.getInstance().parse(date));
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      return new Data(DataType.DATE, dateFormat.parse(date));
     } catch(ParseException e) {
       throw new IllegalArgumentException("Unable to parse date string: " + date, e);
     }
