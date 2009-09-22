@@ -16,7 +16,6 @@ import junit.framework.Assert;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
@@ -38,10 +37,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.SessionScope;
 
+@Transactional
 public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired
@@ -76,7 +77,6 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
    * All the tests have been implemented in one method otherwise it is not possible to set the dataset because we use a
    * mock session and so cannot cast the service to allow data creation
    */
-  @Ignore
   @Test
   @Dataset
   public void testQuestionnaire() {
