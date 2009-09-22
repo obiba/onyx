@@ -25,6 +25,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Category;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableHelper;
@@ -96,6 +97,12 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   // choose the one with the most properties declared
   private IPropertyKeyProvider propertyKeyProvider = new SimplifiedUIPropertyKeyProviderImpl();
+
+  private IVariablePathNamingStrategy variablePathNamingStrategy;
+
+  public void setVariablePathNamingStrategy(IVariablePathNamingStrategy variablePathNamingStrategy) {
+    this.variablePathNamingStrategy = variablePathNamingStrategy;
+  }
 
   public Variable getVariable(Questionnaire questionnaire) {
     Variable questionnaireVariable = new Variable(questionnaire.getName());
@@ -427,29 +434,39 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
             variableData.addData(DataBuilder.buildDate(questionnaireParticipant.getTimeEnd()));
           }
         }
-      } else if(variable.getParent().getName().equals(QUESTIONNAIRE_METRIC)) {
+      } else if(variable.getParent().getName().equals(QUESTIONNAIRE_METRIC) || variable.getName().equals(QUESTIONNAIRE_METRIC)) {
         QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
         QuestionnaireFinder questionnaireFinder = new QuestionnaireFinder(questionnaireBundle.getQuestionnaire());
 
         if(questionnaireParticipant != null) {
+          Data data = null;
+
           Map<String, Integer> questionCountMap = new HashMap<String, Integer>();
           Map<String, Integer> missingCountMap = new HashMap<String, Integer>();
 
           for(QuestionnaireMetric questionnaireMetric : questionnaireParticipant.getQuestionnaireMetrics()) {
             Page page = questionnaireFinder.findPage(questionnaireMetric.getPage());
 
-            if(variable.getName().equals(QUESTIONNAIRE_PAGE)) {
-              variableData.addData(DataBuilder.buildText(questionnaireMetric.getPage()));
+            if(variable.getName().equals(QUESTIONNAIRE_METRIC)) {
+              variableData.addData(DataBuilder.buildText(questionnaireMetric.getId().toString()));
+            } else if(variable.getName().equals(QUESTIONNAIRE_PAGE)) {
+              data = DataBuilder.buildText(questionnaireMetric.getPage());
             } else if(variable.getName().equals(QUESTIONNAIRE_DURATION)) {
-              variableData.addData(DataBuilder.buildInteger(questionnaireMetric.getDuration()));
+              data = DataBuilder.buildInteger(questionnaireMetric.getDuration());
             } else if(variable.getName().equals(QUESTIONNAIRE_SECTION)) {
-              variableData.addData(DataBuilder.buildText(page.getSection().getName()));
+              data = DataBuilder.buildText(page.getSection().getName());
             } else if(variable.getName().equals(QUESTIONNAIRE_QUESTION_COUNT)) {
               int questionCount = getQuestionCount(questionCountMap, questionnaireParticipant, questionnaireFinder, page);
-              variableData.addData(DataBuilder.buildInteger(questionCount));
+              data = DataBuilder.buildInteger(questionCount);
             } else if(variable.getName().equals(QUESTIONNAIRE_MISSING_COUNT)) {
               int missingCount = getMissingCount(missingCountMap, questionnaireParticipant, questionnaireFinder, page);
-              variableData.addData(DataBuilder.buildInteger(missingCount));
+              data = DataBuilder.buildInteger(missingCount);
+            }
+
+            if(data != null) {
+              VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, QUESTIONNAIRE_METRIC, questionnaireMetric.getId().toString()));
+              variableData.addVariableData(childVarData);
+              childVarData.addData(data);
             }
           }
         }
@@ -563,7 +580,7 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
           if(question.getPage().getName().equals(page.getName())) {
             for(CategoryAnswer categoryAnswer : questionAnswer.getCategoryAnswers()) {
               QuestionCategory questionCategory = questionnaireFinder.findQuestionCategory(question.getName(), categoryAnswer.getCategoryName());
-              if(questionCategory.getCategory().isEscape()) {
+              if(questionCategory != null && questionCategory.getCategory() != null && questionCategory.getCategory().isEscape()) {
                 total++;
                 break;
               }

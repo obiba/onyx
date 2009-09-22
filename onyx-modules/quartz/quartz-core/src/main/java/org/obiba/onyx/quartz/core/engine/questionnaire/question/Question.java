@@ -54,7 +54,11 @@ public class Question implements Serializable, IQuestionnaireElement {
   }
 
   public Page getPage() {
-    return page;
+    if(page != null) {
+      return page;
+    }
+
+    return getPageRecursively(parentQuestion);
   }
 
   public void setPage(Page page) {
@@ -294,4 +298,19 @@ public class Question implements Serializable, IQuestionnaireElement {
     return getName();
   }
 
+  private Page getPageRecursively(Question question) {
+    if(question == null) {
+      return null;
+    }
+
+    if(question.getPage() != null) {
+      return question.getPage();
+    }
+
+    if(question.getParentQuestion() != null) {
+      return getPageRecursively(question.getParentQuestion());
+    }
+
+    return null;
+  }
 }

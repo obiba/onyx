@@ -15,7 +15,9 @@
     <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
   </bean>
 
-  <bean id="questionToVariableMappingStrategy" class="org.obiba.onyx.quartz.engine.variable.impl.DefaultQuestionToVariableMappingStrategy" />
+  <bean id="questionToVariableMappingStrategy" class="org.obiba.onyx.quartz.engine.variable.impl.DefaultQuestionToVariableMappingStrategy">
+    <property name="variablePathNamingStrategy" ref="variablePathNamingStrategy" />
+  </bean>
 
   <bean id="propertyKeyNamingStrategy" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyNamingStrategy" />
 
