@@ -34,4 +34,6 @@ public interface ExperimentalConditionService {
    */
   public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template, PagingClause paging, SortingClause... clauses);
 
+  public ExperimentalConditionLog getExperimentalConditionLogByName(String name);
+
 }

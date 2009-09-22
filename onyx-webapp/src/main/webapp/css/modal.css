@@ -150,6 +150,12 @@ div.wicket-modal div.onyx .interview-log-panel-content tbody {
   overflow-x: hidden;
 }
 
+div.wicket-modal div.onyx .experimental-condition-form {
+  height: 350px;
+  width: 570px;
+  margin-left: 10px;
+}
+
 div.wicket-modal div.onyx .manual-input-panel table {
   width: 561px;
 }

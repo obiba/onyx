@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.condition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("experimentalConditionLog")
-public class ExperimentalConditionLog {
+public class ExperimentalConditionLog implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private String name;
 

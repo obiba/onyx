@@ -16,6 +16,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,6 +36,8 @@ public class ExperimentalCondition extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
+  @ManyToOne
+  @JoinColumn(name = "user_id")
   private User user;
 
   @Column(length = 2000)
@@ -50,6 +54,11 @@ public class ExperimentalCondition extends AbstractEntity {
 
   public void setExperimentalConditionValues(List<ExperimentalConditionValue> experimentalConditionValues) {
     this.experimentalConditionValues = experimentalConditionValues;
+  }
+
+  public void addExperimentalConditionValue(ExperimentalConditionValue experimentalConditionValue) {
+    if(experimentalConditionValues == null) experimentalConditionValues = new ArrayList<ExperimentalConditionValue>();
+    experimentalConditionValues.add(experimentalConditionValue);
   }
 
   public String getName() {

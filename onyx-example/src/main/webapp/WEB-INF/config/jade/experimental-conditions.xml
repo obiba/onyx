@@ -41,5 +41,24 @@
     </attribute>
   </instrumentCalibration>
 
+  <experimentalConditionLog>
+    <name>LocationCharacteristics</name>
+    <attribute>
+      <name>MetresAboveSeaLevel</name>
+      <type>INTEGER</type>
+    </attribute>
+  </experimentalConditionLog>
+  
+  <experimentalConditionLog>
+    <name>WeatherCharacteristics</name>
+    <instructions>
+      <string>Weather.Instruction1</string>
+      <string>Weather.Instruction2</string>
+    </instructions>
+    <attribute>
+      <name>PossibilityOfPrecipitation</name>
+      <type>DECIMAL</type>
+    </attribute>
+  </experimentalConditionLog>
 
 </list>

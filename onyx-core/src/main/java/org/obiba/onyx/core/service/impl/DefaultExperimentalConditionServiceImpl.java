@@ -69,4 +69,11 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
     return getCriteria(template, paging, clauses).list();
   }
 
+  public ExperimentalConditionLog getExperimentalConditionLogByName(String name) {
+    for(ExperimentalConditionLog log : experimentalConditionLogs) {
+      if(log.getName().equals(name)) return log;
+    }
+    throw new IllegalStateException("The ExperimentalConditionLog [" + name + "] could not be found.");
+  }
+
 }
