@@ -39,6 +39,11 @@ public class Interview extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InterviewStatus status;
 
+  /**
+   * Accumulated time spent in the interview (in seconds).
+   */
+  private Integer duration;
+
   public Interview() {
   }
 
@@ -79,4 +84,15 @@ public class Interview extends AbstractEntity {
     this.status = status;
   }
 
+  public Integer getDuration() {
+    return duration;
+  }
+
+  public void incrementDuration(int seconds) {
+    if(duration != null) {
+      duration += seconds;
+    } else {
+      duration = seconds;
+    }
+  }
 }
