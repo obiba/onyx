@@ -237,6 +237,8 @@ public class OnyxVariableProvider implements IVariableProvider {
           varData.addData(DataBuilder.buildDate(interview.getEndDate()));
         } else if(variable.getName().equals(INTERVIEW_STATUS) && interview.getStatus() != null) {
           varData.addData(DataBuilder.buildText(interview.getStatus().toString()));
+        } else if(variable.getName().equals(DURATION) && interview.getDuration() != null) {
+          varData.addData(DataBuilder.buildInteger(interview.getDuration()));
         }
       }
     } else if(variable.getName().equals(ONYX_VERSION)) {
@@ -332,6 +334,7 @@ public class OnyxVariableProvider implements IVariableProvider {
     entity.addVariable(new Variable(START_DATE).setDataType(DataType.DATE));
     entity.addVariable(new Variable(END_DATE).setDataType(DataType.DATE));
     entity.addVariable(new Variable(INTERVIEW_STATUS).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(DURATION).setDataType(DataType.INTEGER).setUnit("s"));
 
     entity = admin.addVariable(new Variable(OnyxVariableProvider.ACTION).setDataType(DataType.TEXT).setRepeatable(true));
     entity.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT));
