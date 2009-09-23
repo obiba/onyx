@@ -14,7 +14,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 
 /**
- * A transition listener that
+ * A transition listener that logs (i.e., persists) transitions.
  */
 public class LoggingTransitionListener implements ITransitionListener {
   //
@@ -28,18 +28,20 @@ public class LoggingTransitionListener implements ITransitionListener {
   //
 
   public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
-    Action currentAction = activeInterviewService.getCurrentAction();
+    if(execution instanceof StageExecutionContext) {
+      Action currentAction = activeInterviewService.getCurrentAction();
 
-    if(currentAction != null) {
-      StageTransition stageTransition = new StageTransition();
-      stageTransition.setStage(currentAction.getStage());
-      stageTransition.setInterview(currentAction.getInterview());
-      stageTransition.setFromState(fromState);
-      stageTransition.setToState(StageState.valueOf(execution.getName()));
-      stageTransition.setEvent(event.getName());
+      if(currentAction != null) {
+        StageTransition stageTransition = new StageTransition();
+        stageTransition.setStage(((StageExecutionContext) execution).getStage().getName());
+        stageTransition.setInterview(currentAction.getInterview());
+        stageTransition.setFromState(fromState);
+        stageTransition.setToState(StageState.valueOf(execution.getName()));
+        stageTransition.setEvent(event.getName());
 
-      currentAction.addStageTransition(stageTransition);
-      activeInterviewService.updateAction(currentAction);
+        currentAction.addStageTransition(stageTransition);
+        activeInterviewService.updateAction(currentAction);
+      }
     }
   }
 
