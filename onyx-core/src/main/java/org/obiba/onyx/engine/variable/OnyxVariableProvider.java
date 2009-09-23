@@ -289,8 +289,7 @@ public class OnyxVariableProvider implements IVariableProvider {
         }
       }
     } else if(variable.getParent().getName().equals(STAGE_INSTANCE) || variable.getName().equals(STAGE_INSTANCE)) {
-      // TODO: Comment this out until IStageInstanceAlgorithm has been implemented.
-      // addStageInstanceVariableData(participant, variable, variablePathNamingStrategy, varData);
+      addStageInstanceVariableData(participant, variable, variablePathNamingStrategy, varData);
     }
 
     return varData;
@@ -370,14 +369,17 @@ public class OnyxVariableProvider implements IVariableProvider {
   }
 
   private void addStageInstanceVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData) {
+    int stageInstanceCount = 0;
+
     for(Module module : moduleRegistry.getModules()) {
       for(Stage stage : module.getStages()) {
         List<StageTransition> stageTransitions = interviewService.getStageTransitions(participant.getInterview(), stage);
 
         List<StageInstance> stageInstances = stageInstanceAlgorithm.getStageInstances(stageTransitions);
-        for(int i = 1; i <= stageInstances.size(); i++) {
+
+        for(int i = 0; i < stageInstances.size(); i++) {
           StageInstance stageInstance = stageInstances.get(i);
-          String stageInstanceId = String.valueOf(i);
+          String stageInstanceId = String.valueOf(stageInstanceCount + i + 1); // one-based
           Data data = null;
 
           if(variable.getName().equals(STAGE_INSTANCE)) {
@@ -395,7 +397,7 @@ public class OnyxVariableProvider implements IVariableProvider {
           } else if(variable.getName().equals(INTERRUPTION_COUNT)) {
             data = DataBuilder.buildInteger(stageInstance.getInterruptionCount());
           } else if(variable.getName().equals(USER) && stageInstance.getUser() != null) {
-            data = DataBuilder.buildInteger(stageInstance.getUser().getLogin());
+            data = DataBuilder.buildText(stageInstance.getUser().getLogin());
           } else if(variable.getName().equals(LAST)) {
             data = DataBuilder.buildBoolean(stageInstance.isLast());
           }
@@ -406,6 +408,8 @@ public class OnyxVariableProvider implements IVariableProvider {
             childVarData.addData(data);
           }
         }
+
+        stageInstanceCount += stageInstances.size();
       }
     }
   }

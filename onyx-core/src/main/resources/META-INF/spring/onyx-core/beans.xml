@@ -93,6 +93,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="variableHelper" ref="variableHelper" />
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="interviewService" ref="interviewService" />
+    <property name="stageInstanceAlgorithm" ref="stageInstanceAlgorithm" />
   </bean>
 
   <bean id="onyxKeyStore" class="org.obiba.onyx.crypt.OnyxKeyStore" init-method="open" destroy-method="close">
@@ -155,5 +156,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
 
-
+  <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
+  
 </beans>

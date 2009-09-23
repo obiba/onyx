@@ -12,7 +12,8 @@ package org.obiba.onyx.core.domain.stage;
 import java.util.List;
 
 /**
- * Algorithm that derives a list of {@link StageInstance}s from a given list of {@link StageTransition}s.
+ * Algorithm that derives a list of {@link StageInstance}s from a given list of {@link StageTransition}s for a single
+ * stage.
  */
 public interface IStageInstanceAlgorithm {
 
@@ -21,8 +22,8 @@ public interface IStageInstanceAlgorithm {
    * 
    * The list is returned in chronological order (earliest first).
    * 
-   * @param stageTransitions list of stage transitions
-   * @return list of stage instances
+   * @param stageTransitions list of stage transitions for a single stage
+   * @return list of stage instances for the stage
    */
   public List<StageInstance> getStageInstances(List<StageTransition> stageTransitions);
 }
