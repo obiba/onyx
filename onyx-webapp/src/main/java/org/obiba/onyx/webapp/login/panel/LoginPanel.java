@@ -22,6 +22,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession.AuthenticateErrorCode;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -34,6 +35,9 @@ public class LoginPanel extends SignInPanel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   private AuthenticateErrorCode errCode = null;
 
@@ -82,6 +86,7 @@ public class LoginPanel extends SignInPanel {
   public void onSignInSucceeded() {
     setSessionTimeout();
     setResponsePage(getApplication().getHomePage());
+    userSessionService.setWorkstation(((WebRequest) getRequest()).getHttpServletRequest().getRemoteHost());
   }
 
   private void setSessionTimeout() {

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -201,6 +202,14 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
   public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
     return null;
+  }
+
+  public Component getWidget(String id) {
+    return null;
+  }
+
+  public boolean isInteractive() {
+    return false;
   }
 
 }

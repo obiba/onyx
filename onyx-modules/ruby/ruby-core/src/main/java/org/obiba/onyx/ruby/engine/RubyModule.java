@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -329,8 +330,16 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
     return null;
   }
-  
+
   public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
     return null;
+  }
+
+  public Component getWidget(String id) {
+    return null;
+  }
+
+  public boolean isInteractive() {
+    return false;
   }
 }

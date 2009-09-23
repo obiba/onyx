@@ -1344,6 +1344,28 @@ div#participantPageSearchResults #newNavigator em {
 
 /******************* End ParticipantSearchPage *************************************/
 
+/******************* WorkstationPage ***********************************************/
+div#instrumentContent .label {
+  margin-bottom:15px;
+  margin-top:7px;
+}
+
+#workstationPanelContent.obiba-box-content {
+  padding: 7px 9px;
+}
+
+#workstationPanelContent > table {
+  border-spacing: 10px;
+  width: 100%;
+}
+
+#workstationPanelContent #addInstrumentAction {
+  margin-top: 5px;
+  padding-bottom:10px;
+}
+
+/******************* End WorkstationPage *******************************************/
+
 /******************* ParticipantReceptionPage **************************************/
 
 #participantReceptionPageContent #participantAndBarcodeAssignmentWrapper {
@@ -1375,6 +1397,7 @@ div#participantPageSearchResults #newNavigator em {
 /******************* Global List Styling *******************************************/
 
 #participantPageSearchResults table.entityTable tr.titleToolbar,
+#workstationPanelContent table.entityTable tr.titleToolbar,
 #interviewPageStages table.entityTable tr.titleToolbar,
 #rubyPanel table.entityTable tr.titleToolbar {
   display: none;	

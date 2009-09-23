@@ -7,20 +7,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.webapp.condition.page;
+package org.obiba.onyx.webapp.workstation.page;
 
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.condition.panel.WorkstationLogPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class WorkstationPage extends BasePage {
 
-  AjaxLink viewComments;
+  @SpringBean(name = "jadeModule")
+  private Module jadeModule;
 
   public WorkstationPage() {
     super();
-    add(new WorkstationLogPanel("workstationLogPanel"));
+    add(jadeModule.getWidget("workstationContent"));
   }
+
 }

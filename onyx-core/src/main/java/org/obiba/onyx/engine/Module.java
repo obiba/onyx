@@ -11,6 +11,7 @@ package org.obiba.onyx.engine;
 
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -63,4 +64,19 @@ public interface Module {
    * @return an unmodifiable list of {@link Stage} instances.
    */
   public List<Stage> getStages();
+
+  /**
+   * Get the {@link Component} to be displayed.
+   * @see #isInteractive()
+   * @param id
+   * @return
+   */
+  public Component getWidget(String id);
+
+  /**
+   * Say if {@link #getWidget(String)} will return a non null value. This decides if te module is part of the
+   * configurable ones.
+   * @return
+   */
+  public boolean isInteractive();
 }

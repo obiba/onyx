@@ -12,11 +12,10 @@
     <property name="instrumentService" ref="instrumentService" />
   </bean>
 
-  <bean class="org.obiba.onyx.jade.engine.JadeModule">
+  <bean id="jadeModule" class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />
-    <property name="databaseSeed" ref="jadeDatabaseSeed" />
     <property name="stages">
       <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />

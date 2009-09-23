@@ -42,4 +42,10 @@ public interface UserSessionService {
   public DateFormat getTimeFormat();
 
   public DateFormat getDateTimeFormat();
+
+  public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService);
+
+  public void setWorkstation(String remoteHost);
+
+  public String getWorkstation();
 }

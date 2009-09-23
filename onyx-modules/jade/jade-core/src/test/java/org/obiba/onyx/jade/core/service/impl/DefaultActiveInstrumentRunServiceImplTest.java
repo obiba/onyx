@@ -47,6 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpringContextTestCase {
 
+  private static String WORKSTATION = "onyx001-WK";
+
   private DefaultActiveInstrumentRunServiceImpl activeInstrumentRunService;
 
   @Autowired
@@ -615,6 +617,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
   private InstrumentRun startInstrumentRun(Participant participant, InstrumentType instrumentType) {
     // Record mock expectations.
     expect(userSessionService.getUser()).andReturn(user);
+    expect(userSessionService.getWorkstation()).andReturn(WORKSTATION);
 
     // Stop recording mock expectations.
     replay(userSessionService);

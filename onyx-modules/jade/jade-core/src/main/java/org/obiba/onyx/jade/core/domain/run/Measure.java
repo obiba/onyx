@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -53,6 +54,9 @@ public class Measure extends AbstractEntity {
 
   @Enumerated(EnumType.STRING)
   private MeasureStatus status;
+
+  @Column(length = 200)
+  private String workstation;
 
   public InstrumentRun getInstrumentRun() {
     return instrumentRun;
@@ -115,6 +119,14 @@ public class Measure extends AbstractEntity {
 
   public void setStatus(MeasureStatus status) {
     this.status = status;
+  }
+
+  public String getWorkstation() {
+    return workstation;
+  }
+
+  public void setWorkstation(String workstation) {
+    this.workstation = workstation;
   }
 
 }

@@ -30,8 +30,8 @@ import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.core.util.StringUtil;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
-import org.obiba.onyx.webapp.condition.page.WorkstationPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
+import org.obiba.onyx.webapp.workstation.page.WorkstationPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

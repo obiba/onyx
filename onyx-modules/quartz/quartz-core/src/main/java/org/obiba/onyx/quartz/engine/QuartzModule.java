@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -205,5 +206,13 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
     return null;
+  }
+
+  public Component getWidget(String id) {
+    return null;
+  }
+
+  public boolean isInteractive() {
+    return false;
   }
 }

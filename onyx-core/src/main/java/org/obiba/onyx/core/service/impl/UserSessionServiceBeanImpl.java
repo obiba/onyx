@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.UserSessionService;
 
 /**
@@ -29,6 +30,8 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   private static int SESSION_COUNTER = 0;
 
+  private ApplicationConfigurationService applicationConfigurationService;
+
   private Locale locale = Locale.ENGLISH;
 
   private String datePattern = DEFAULT_DATE_FORMAT_PATTERN;
@@ -36,6 +39,8 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
   private String timePattern = DEFAULT_TIME_FORMAT_PATTERN;
 
   private String dateTimePattern = DEFAULT_DATETIME_FORMAT_PATTERN;
+
+  private String workstation;
 
   private int sessionId = SESSION_COUNTER++;
 
@@ -83,5 +88,17 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   public DateFormat getDateTimeFormat() {
     return new SimpleDateFormat(dateTimePattern, getLocale());
+  }
+
+  public String getWorkstation() {
+    return workstation;
+  }
+
+  public void setWorkstation(String remoteHost) {
+    workstation = "onyx001-" + remoteHost;
+  }
+
+  public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
+    this.applicationConfigurationService = applicationConfigurationService;
   }
 }

@@ -79,6 +79,9 @@ public class InstrumentRun extends AbstractEntity {
   @Column(length = 2000)
   private String skipComment;
 
+  @Column(length = 200)
+  private String workstation;
+
   public InstrumentRun() {
     super();
   }
@@ -217,5 +220,13 @@ public class InstrumentRun extends AbstractEntity {
 
   public void setSkipComment(String skipComment) {
     this.skipComment = skipComment;
+  }
+
+  public String getWorkstation() {
+    return workstation;
+  }
+
+  public void setWorkstation(String workstation) {
+    this.workstation = workstation;
   }
 }

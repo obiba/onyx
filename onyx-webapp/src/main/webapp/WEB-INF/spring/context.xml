@@ -39,6 +39,7 @@
     <property name="datePattern" value="${org.obiba.onyx.dateFormat}" />
     <property name="dateTimePattern" value="${org.obiba.onyx.dateTimeFormat}" />
     <property name="userService" ref="userService" />
+    <property name="applicationConfigurationService" ref="appConfigService" />
   </bean>
 
   <!-- Defines Onyx's MessageSource bean. extraBasenames can be used to load other ResourceBundles as required. -->

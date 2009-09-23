@@ -11,6 +11,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
+  <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultApplicationConfigurationServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+  
   <bean id="activeInstrumentRunService"
     class="org.obiba.onyx.jade.core.service.impl.DefaultActiveInstrumentRunServiceImpl" scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
@@ -20,6 +24,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl">
     <property name="datePattern" value="yyyy-MM-dd" />
     <property name="dateTimePattern" value="yyyy-MM-dd HH:mm" />
+    <property name="applicationConfigurationService" ref="appConfigService" />
   </bean>
 
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState"

@@ -47,6 +47,9 @@ public class Instrument extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InstrumentStatus status;
 
+  @Column(length = 200)
+  private String workstation;
+
   public Instrument() {
   }
 
@@ -104,5 +107,13 @@ public class Instrument extends AbstractEntity {
 
   public void setStatus(InstrumentStatus status) {
     this.status = status;
+  }
+
+  public String getWorkstation() {
+    return workstation;
+  }
+
+  public void setWorkstation(String workstation) {
+    this.workstation = workstation;
   }
 }

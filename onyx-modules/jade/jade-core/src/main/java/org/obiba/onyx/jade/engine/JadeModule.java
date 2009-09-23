@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -29,8 +30,8 @@ import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
-import org.obiba.wicket.util.seed.DatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -49,7 +50,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
-  private DatabaseSeed databaseSeed;
+  // private DatabaseSeed databaseSeed;
 
   private List<Stage> stages;
 
@@ -58,10 +59,6 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   }
 
   public void initialize(WebApplication application) {
-    log.info("initialize");
-    if(databaseSeed != null) {
-      databaseSeed.seedDatabase(application);
-    }
   }
 
   public void shutdown(WebApplication application) {
@@ -144,10 +141,6 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.applicationContext = applicationContext;
   }
 
-  public void setDatabaseSeed(DatabaseSeed databaseSeed) {
-    this.databaseSeed = databaseSeed;
-  }
-
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
   }
@@ -181,5 +174,13 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
     return null;
+  }
+
+  public Component getWidget(String id) {
+    return new WorkstationPanel(id);
+  }
+
+  public boolean isInteractive() {
+    return true;
   }
 }

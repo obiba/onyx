@@ -78,6 +78,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
     currentRun.setUser(userSessionService.getUser());
+    currentRun.setWorkstation(userSessionService.getWorkstation());
     getPersistenceManager().save(currentRun);
     currentRunId = currentRun.getId();
 
@@ -332,6 +333,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     measure.setInstrumentBarcode(instrumentRun.getInstrument().getBarcode());
     measure.setInstrumentRun(instrumentRun);
     measure.setStatus(MeasureStatus.VALID);
+    measure.setWorkstation(userSessionService.getWorkstation());
 
     for(Map.Entry<String, Data> entry : repeatableData.entrySet()) {
       InstrumentParameter parameter = getAndCheckInstrumentParameter(entry.getKey());
