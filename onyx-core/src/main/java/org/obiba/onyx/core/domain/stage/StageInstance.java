@@ -102,12 +102,16 @@ public class StageInstance {
     this.duration = duration;
   }
 
+  public void incrementDuration(int seconds) {
+    duration += seconds;
+  }
+
   public int getInterruptionCount() {
     return interruptionCount;
   }
 
-  public void incrementDuration(int seconds) {
-    duration += seconds;
+  public void incrementInterruptionCount() {
+    interruptionCount++;
   }
 
   public boolean isLast() {

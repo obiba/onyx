@@ -53,6 +53,11 @@ public class DefaultStageInstanceAlgorithm implements IStageInstanceAlgorithm {
         stageInstance.incrementDuration((int) (timeInProgressMillis / 1000l));
       }
 
+      // When entering the INTERRUPTED state, increment the StageInstance's interruptedCount.
+      if(stageTransition.getToState().equals(StageState.Interrupted)) {
+        stageInstance.incrementInterruptionCount();
+      }
+
       // Record the last state reached.
       stageInstance.setLastStageState(stageTransition.getToState());
       stageInstance.setLastTime(stageTransition.getAction().getDateTime());
