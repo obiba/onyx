@@ -13,6 +13,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.workstation.panel.WorkstationLogPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class WorkstationPage extends BasePage {
@@ -22,7 +23,8 @@ public class WorkstationPage extends BasePage {
 
   public WorkstationPage() {
     super();
-    add(jadeModule.getWidget("workstationContent"));
+    // add(jadeModule.getWidget("workstationContent"));
+    add(new WorkstationLogPanel("workstationLogPanel"));
   }
 
 }

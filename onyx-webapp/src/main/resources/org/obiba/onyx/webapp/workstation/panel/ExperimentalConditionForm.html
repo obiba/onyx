@@ -1,0 +1,27 @@
+<wicket:panel>
+
+  <div id="instructions">
+    <span wicket:id="instructionList"><span wicket:id="instructionRows"></span></span>
+  </div>
+
+  <table class="entityTable">
+    <thead>
+    </thead>
+    <tbody>
+      <span wicket:id="table"><span wicket:id="inputRows"></span></span>
+    </tbody>
+  </table>
+
+  <div wicket:id="feedback"></div>
+</wicket:panel>
+
+<wicket:fragment wicket:id="instructionFragment">
+  <li wicket:id="instruction"></li>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="textFieldFragment">
+  <tr>
+    <td class="keyValueTableKey"><span wicket:id="label"/></td>
+    <td class="keyValueTableValue"><span wicket:id="value" /></td>
+  </tr>
+</wicket:fragment>
