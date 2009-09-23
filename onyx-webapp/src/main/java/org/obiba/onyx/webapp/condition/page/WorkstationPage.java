@@ -12,6 +12,7 @@ package org.obiba.onyx.webapp.condition.page;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.condition.panel.WorkstationLogPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class WorkstationPage extends BasePage {
@@ -20,6 +21,6 @@ public class WorkstationPage extends BasePage {
 
   public WorkstationPage() {
     super();
-
+    add(new WorkstationLogPanel("workstationLogPanel"));
   }
 }

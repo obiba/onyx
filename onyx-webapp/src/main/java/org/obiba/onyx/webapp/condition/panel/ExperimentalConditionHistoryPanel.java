@@ -33,6 +33,7 @@ import org.obiba.onyx.core.domain.condition.ExperimentalCondition;
 import org.obiba.onyx.core.domain.condition.ExperimentalConditionValue;
 import org.obiba.onyx.core.service.ExperimentalConditionService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -47,12 +48,13 @@ public class ExperimentalConditionHistoryPanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  public ExperimentalConditionHistoryPanel(String id, ExperimentalCondition template, String title, int pageSize) {
+  public ExperimentalConditionHistoryPanel(String id, ExperimentalCondition template, IModel<String> title, int pageSize) {
     super(id);
+    setOutputMarkupId(true);
     add(new AttributeModifier("class", true, new Model("experimental-condition-history-panel")));
 
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template, null);
-    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), new Model(title));
+    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title);
     list.setPageSize(pageSize);
     add(list);
   }
@@ -78,7 +80,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     @Override
     public int size() {
-      return experimentalConditionService.getExperimentalConditions(null, null).size();
+      return experimentalConditionService.getExperimentalConditions(template, null).size();
     }
 
   }
@@ -87,31 +89,31 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private List<IColumn> columns = new ArrayList<IColumn>();
+    private List<IColumn<ExperimentalCondition>> columns = new ArrayList<IColumn<ExperimentalCondition>>();
 
-    private List<IColumn> additional = new ArrayList<IColumn>();
+    private List<IColumn<ExperimentalCondition>> additional = new ArrayList<IColumn<ExperimentalCondition>>();
 
     public ExperimentalConditionColumnProvider(ExperimentalCondition experimentalCondition) {
       InjectorHolder.getInjector().inject(this);
 
-      columns.add(new PropertyColumn(new ResourceModel("DateTime", "DateTime"), "time", "time"));
-      columns.add(new PropertyColumn(new SpringStringResourceModel("User"), "user", "user"));
-      columns.add(new PropertyColumn(new SpringStringResourceModel("Workstation"), "workstation", "workstation"));
+      columns.add(new PropertyColumn<ExperimentalCondition>(new ResourceModel("DateTime", "DateTime"), "time", "time"));
+      columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("User"), "user", "user.fullName"));
+      columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("Workstation"), "workstation", "workstation"));
 
       if(experimentalCondition != null) {
         for(final ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
-          columns.add(new AbstractColumn(new ResourceModel(value.getAttributeName(), value.getAttributeName())) {
+          columns.add(new AbstractColumn<ExperimentalCondition>(new ResourceModel(value.getAttributeName(), value.getAttributeName())) {
             private static final long serialVersionUID = 1L;
 
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-              DetachableEntityModel ec = (DetachableEntityModel) rowModel;
-              Data data = null;
+              DetachableEntityModel<ExperimentalCondition> ec = (DetachableEntityModel<ExperimentalCondition>) rowModel;
+              Data data = new Data(DataType.TEXT, "[null]");
               for(ExperimentalConditionValue ecv : ((ExperimentalCondition) ec.getObject()).getExperimentalConditionValues()) {
                 if(ecv.getAttributeName().equals(value.getAttributeName())) {
                   data = ecv.getData();
                 }
               }
-              cellItem.add(new Label(componentId, new Model(data.getValueAsString())));
+              cellItem.add(new Label(componentId, new Model<String>(data.getValueAsString())));
             }
 
           });
@@ -120,7 +122,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     }
 
-    public List<IColumn> getAdditionalColumns() {
+    public List getAdditionalColumns() {
       return additional;
     }
 
@@ -128,11 +130,11 @@ public class ExperimentalConditionHistoryPanel extends Panel {
       return null;
     }
 
-    public List<IColumn> getDefaultColumns() {
+    public List getDefaultColumns() {
       return columns;
     }
 
-    public List<IColumn> getRequiredColumns() {
+    public List getRequiredColumns() {
       return columns;
     }
 
