@@ -12,7 +12,7 @@
   <parent>
     <artifactId>quartz</artifactId>
     <groupId>org.obiba.quartz</groupId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5.3</version>
   </parent>
 
   <dependencies>

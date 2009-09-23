@@ -12,7 +12,7 @@
   <parent>
     <artifactId>ruby</artifactId>
     <groupId>org.obiba.ruby</groupId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5.3</version>
   </parent>
 
   <dependencies>
