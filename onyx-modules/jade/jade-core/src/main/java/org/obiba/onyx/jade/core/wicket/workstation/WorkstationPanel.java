@@ -57,6 +57,7 @@ public class WorkstationPanel extends Panel {
     super(id);
 
     addInstrumentContent();
+    add(new WorkstationLogPanel("workstationLogPanel"));
 
   }
 

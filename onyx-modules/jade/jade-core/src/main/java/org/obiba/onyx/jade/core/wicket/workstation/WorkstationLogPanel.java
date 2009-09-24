@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.webapp.workstation.panel;
+package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.util.ArrayList;
 import java.util.List;
