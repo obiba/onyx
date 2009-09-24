@@ -69,10 +69,12 @@ public class ExperimentalConditionLogWriterTest {
     Attribute twentyKilo = new Attribute();
     twentyKilo.setName("20kg");
     twentyKilo.setType(DataType.INTEGER);
+    twentyKilo.setUnit("kg");
 
     Attribute fourtyKilo = new Attribute();
     fourtyKilo.setName("40kg");
     fourtyKilo.setType(DataType.INTEGER);
+    fourtyKilo.setUnit("kg");
 
     List<Attribute> attributes = new ArrayList<Attribute>(1);
     attributes.add(twentyKilo);

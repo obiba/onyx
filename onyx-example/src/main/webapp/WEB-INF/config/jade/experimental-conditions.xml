@@ -10,6 +10,7 @@
     <attribute>
       <name>RelativeHumidity</name>
       <type>INTEGER</type>
+      <unit>%</unit>
     </attribute>
   </experimentalConditionLog>
 

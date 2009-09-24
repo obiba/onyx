@@ -37,6 +37,8 @@ public class Attribute implements Serializable {
 
   private List<IValidator> validators;
 
+  private String unit;
+
   //
   // Methods
   //
@@ -116,6 +118,14 @@ public class Attribute implements Serializable {
 
   public void setValidators(List<IValidator> validators) {
     this.validators = validators;
+  }
+
+  public String getUnit() {
+    return unit;
+  }
+
+  public void setUnit(String unit) {
+    this.unit = unit;
   }
 
 }

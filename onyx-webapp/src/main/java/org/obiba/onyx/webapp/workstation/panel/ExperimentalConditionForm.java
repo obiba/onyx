@@ -125,6 +125,8 @@ public class ExperimentalConditionForm extends Panel {
       }
 
       add(new Label("label", new ResourceModel(attribute.getName(), attribute.getName())));
+      // TODO: Add the brackets... hide if no units.
+      add(new Label("unit", new Model<String>(attribute.getUnit())));
       add(formComponent);
 
     }
