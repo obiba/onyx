@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.service.impl;
+package org.obiba.onyx.jade.core.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,9 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
-import org.obiba.onyx.core.domain.condition.ExperimentalCondition;
-import org.obiba.onyx.core.domain.condition.ExperimentalConditionLog;
-import org.obiba.onyx.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional

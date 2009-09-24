@@ -7,14 +7,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.service;
+package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
-import org.obiba.onyx.core.domain.condition.ExperimentalCondition;
-import org.obiba.onyx.core.domain.condition.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 
 public interface ExperimentalConditionService {
 

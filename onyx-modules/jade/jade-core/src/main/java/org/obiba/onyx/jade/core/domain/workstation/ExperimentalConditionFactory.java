@@ -7,11 +7,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.domain.condition;
+package org.obiba.onyx.jade.core.domain.workstation;
 
 import java.io.IOException;
 
-import org.obiba.onyx.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ResourceLoaderAware;

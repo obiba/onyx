@@ -23,10 +23,10 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.core.domain.condition.ExperimentalCondition;
-import org.obiba.onyx.core.domain.condition.ExperimentalConditionLog;
-import org.obiba.onyx.core.domain.condition.InstrumentCalibration;
-import org.obiba.onyx.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
+import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 

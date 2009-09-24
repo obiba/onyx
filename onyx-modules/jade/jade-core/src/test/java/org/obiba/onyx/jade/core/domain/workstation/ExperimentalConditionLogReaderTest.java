@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.domain.condition;
+package org.obiba.onyx.jade.core.domain.workstation;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +17,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.Attribute;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLogReader;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
