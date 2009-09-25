@@ -77,7 +77,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
    */
   public void cleanUpAppointment() {
     for(Participant p : getNotReceivedParticipants()) {
-      log.debug("removing participant.enrollmentId={}", p.getEnrollmentId());
+      log.debug("removing participant.id={}", p.getId());
       getPersistenceManager().delete(p);
     }
   }

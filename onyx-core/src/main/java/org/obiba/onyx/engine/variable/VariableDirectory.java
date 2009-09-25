@@ -140,7 +140,7 @@ public class VariableDirectory implements IVariableProvider {
     long getParticipantDataStartTime = new Date().getTime();
     VariableDataSet dataSet = new VariableDataSet();
 
-    log.info("START getParticipantData participant.barcode=[{}]. keyset size=[{}]", participant.getBarcode(), providerToVariablePathsMap.keySet().size());
+    log.info("START getParticipantData participant.id=[{}]. keyset size=[{}]", participant.getId(), providerToVariablePathsMap.keySet().size());
 
     for(IVariableProvider provider : providerToVariablePathsMap.keySet()) {
       for(String path : providerToVariablePathsMap.get(provider)) {
@@ -153,7 +153,7 @@ public class VariableDirectory implements IVariableProvider {
       }
     }
     long getParticipantDataEndTime = new Date().getTime();
-    log.info("END   getParticipantData participant.barcode=[{}] completed in [{}ms].", participant.getBarcode(), (getParticipantDataEndTime - getParticipantDataStartTime));
+    log.info("END   getParticipantData participant.id=[{}] completed in [{}ms].", participant.getId(), (getParticipantDataEndTime - getParticipantDataStartTime));
 
     return dataSet;
   }

@@ -118,7 +118,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
   protected void unlockInterview(InterviewLock lock) {
     if(lock != null) {
-      log.info("User {} has locked interview during {}s for participant {}.", new Object[] { lock.getOperator().getLogin(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getBarcode() });
+      log.info("User {} has locked interview during {}s for participant id={}.", new Object[] { lock.getOperator().getLogin(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getId() });
       this.interviewLocks.remove(lock);
 
       Interview interview = lock.getParticipant().getInterview();
@@ -131,7 +131,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
   protected InterviewLock lockInterview(Participant participant) {
     InterviewLock lock = new InterviewLock(participant);
     interviewLocks.add(lock);
-    log.info("User {} has locked interview for participant {}.", userSessionService.getUser().getLogin(), participant.getBarcode());
+    log.info("User {} has locked interview for participant id={}.", userSessionService.getUser().getLogin(), participant.getId());
     return lock;
   }
 
