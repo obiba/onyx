@@ -1313,6 +1313,10 @@ span.interviewStatus.obiba-state-closed {
   background-image:url(../icons/closed.png);
 }
 
+span.interviewStatus.obiba-state-exported {
+  background-image:url(../icons/exported.png);
+}
+
 div#participantPageSearchResults #newNavigatorLabel {
   float: right; 
   position: relative;

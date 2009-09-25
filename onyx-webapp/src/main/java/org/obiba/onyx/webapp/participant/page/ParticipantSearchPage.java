@@ -527,14 +527,21 @@ public class ParticipantSearchPage extends BasePage {
 
       private static final long serialVersionUID = 1L;
 
-      public StatusModel(Object modelObject, String expression) {
+      private boolean isExported;
+
+      public StatusModel(Object modelObject, String expression, boolean isExportedParticipant) {
         super(modelObject, expression);
+        isExported = isExportedParticipant;
       }
 
       @Override
       public Object getObject() {
         if(super.getObject() != null) {
-          return "obiba-state-" + super.getObject().toString().toLowerCase().replace("_", "");
+          if(!isExported) {
+            return "obiba-state-" + super.getObject().toString().toLowerCase().replace("_", "");
+          } else {
+            return "obiba-state-exported";
+          }
         }
         return "";
       }
@@ -544,9 +551,16 @@ public class ParticipantSearchPage extends BasePage {
     public InterviewStatusFragment(String id, IModel participantModel) {
       super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
 
-      Label statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(participantModel, "interview"), ""));
+      Label statusLabel;
+      boolean isExportedParticipant = ((Participant) participantModel.getObject()).getExported();
+      if(isExportedParticipant) {
+        statusLabel = new Label("status", new StringResourceModel("ExportedInterview", ParticipantSearchPage.this, null));
+      } else {
+        statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(participantModel, "interview"), ""));
+      }
+      statusLabel.add(new AttributeAppender("class", new StatusModel(participantModel, "interview.status", isExportedParticipant), " "));
       add(statusLabel);
-      statusLabel.add(new AttributeAppender("class", new StatusModel(participantModel, "interview.status"), " "));
+
     }
   }
 
@@ -643,8 +657,8 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public boolean isVisible() {
-          // Visible when participant has been assigned a barcode
-          return getParticipant().getBarcode() != null;
+          // Visible when participant has been assigned a barcode and participant not exported.
+          return getParticipant().getBarcode() != null && !getParticipant().getExported();
         }
       };
       link.add(new Label("label", new ResourceModel("Interview")));
@@ -689,8 +703,9 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public boolean isVisible() {
-          // Visible if participant has been received and some attributes are editable.
-          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute();
+          // Visible if participant has been received and some attributes are editable. Also not visible if participant
+          // has been exported.
+          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute() && !getParticipant().getExported();
         }
       };
       link.add(new Label("label", new ResourceModel("Edit")));
