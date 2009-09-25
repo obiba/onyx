@@ -29,6 +29,8 @@
   <bean id="bloodUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
+    <property name="infoMessagesFile" value="info-messages.bloodUrine.xml" />
+    
     <property name="expectedTubeCount" value="15" />
 
     <property name="barcodeStructure">
@@ -78,6 +80,8 @@
   <bean id="urineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
+    <property name="infoMessagesFile" value="info-messages.urine.xml" />
+    
     <property name="expectedTubeCount" value="1" />
 
     <property name="barcodeStructure">

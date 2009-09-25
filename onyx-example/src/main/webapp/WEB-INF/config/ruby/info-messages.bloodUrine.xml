@@ -1,0 +1,11 @@
+<info-messages>
+  <message>
+    <code>Ruby.Info.BloodUrine.FirstInfoMessage</code>
+  </message>
+  <message>
+    <code>Ruby.Info.BloodUrine.SecondInfoMessage</code>
+  </message>
+  <message>
+    <code>Ruby.Info.BloodUrine.ThirdInfoMessage</code>
+  </message>  
+</info-messages>

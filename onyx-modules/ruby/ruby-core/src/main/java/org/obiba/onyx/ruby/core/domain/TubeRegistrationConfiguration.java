@@ -77,6 +77,8 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
 
   private List<Remark> availableRemarks;
 
+  private String infoMessagesFile;
+
   private List<ConditionalMessage> infoMessages;
 
   private ApplicationContext applicationContext;
@@ -171,7 +173,7 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
         initRemarks(remarksFile);
       }
 
-      File infoMessagesFile = new File(configDir, "info-messages.xml");
+      File infoMessagesFile = new File(configDir, this.infoMessagesFile != null ? this.infoMessagesFile : "info-messages.xml");
       if(infoMessagesFile.exists()) {
         initInfoMessages(infoMessagesFile);
       }
@@ -227,6 +229,10 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
 
   public List<Remark> getAvailableRemarks() {
     return Collections.unmodifiableList(availableRemarks);
+  }
+
+  public void setInfoMessagesFile(String infoMessagesFile) {
+    this.infoMessagesFile = infoMessagesFile;
   }
 
   public void setInfoMessages(List<ConditionalMessage> infoMessages) {
