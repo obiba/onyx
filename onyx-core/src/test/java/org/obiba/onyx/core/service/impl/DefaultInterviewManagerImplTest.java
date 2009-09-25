@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -162,6 +163,69 @@ public class DefaultInterviewManagerImplTest {
     Assert.assertEquals(firstUser, interviewer);
 
     EasyMock.verify(mockUserSessionService, mockPersistenceManager);
+  }
+
+  @Test
+  public void testIncrementDurationWhenInProgressInterviewUnlocked() {
+    DefaultInterviewManagerImpl interviewManager = new DefaultInterviewManagerImpl();
+    interviewManager.setUserSessionService(mockUserSessionService);
+    interviewManager.setPersistenceManager(mockPersistenceManager);
+
+    Interview firstInterview = new Interview();
+    firstInterview.setStatus(InterviewStatus.IN_PROGRESS);
+    firstParticipant.setInterview(firstInterview);
+
+    // Record expected behaviour.
+    EasyMock.expect(mockUserSessionService.getSessionId()).andReturn("firstSession").anyTimes();
+    EasyMock.expect(mockUserSessionService.getUser()).andReturn(firstUser).anyTimes();
+    EasyMock.expect(mockPersistenceManager.get(User.class, 1l)).andReturn(firstUser).anyTimes();
+    EasyMock.expect(mockPersistenceManager.get(Participant.class, 1l)).andReturn(firstParticipant).anyTimes();
+    EasyMock.expect(mockPersistenceManager.save(firstInterview)).andReturn(firstInterview);
+    EasyMock.replay(mockUserSessionService, mockPersistenceManager);
+
+    // Execute test.
+    DefaultInterviewManagerImpl.InterviewLock lock = interviewManager.new InterviewLock(firstParticipant) {
+      // Override this method to simulate the lock being acquired ten seconds ago.
+      @Override
+      public long getTimeLock() {
+        return System.currentTimeMillis() - 10000;
+      }
+    };
+    interviewManager.unlockInterview(lock);
+
+    // Verify behaviour.
+    EasyMock.verify(mockUserSessionService, mockPersistenceManager);
+
+    // Verify state.
+    Assert.assertTrue(firstInterview.getDuration() >= 10);
+  }
+
+  @Test
+  public void testDoNotIncrementDurationWhenInterviewThatIsNotInProgressIsUnlocked() {
+    DefaultInterviewManagerImpl interviewManager = new DefaultInterviewManagerImpl();
+    interviewManager.setUserSessionService(mockUserSessionService);
+    interviewManager.setPersistenceManager(mockPersistenceManager);
+
+    Interview firstInterview = new Interview();
+    firstInterview.setStatus(InterviewStatus.INTERRUPTED);
+    firstParticipant.setInterview(firstInterview);
+
+    // Record expected behaviour.
+    EasyMock.expect(mockUserSessionService.getSessionId()).andReturn("firstSession").anyTimes();
+    EasyMock.expect(mockUserSessionService.getUser()).andReturn(firstUser).anyTimes();
+    EasyMock.expect(mockPersistenceManager.get(User.class, 1l)).andReturn(firstUser).anyTimes();
+    EasyMock.expect(mockPersistenceManager.get(Participant.class, 1l)).andReturn(firstParticipant).anyTimes();
+    EasyMock.replay(mockUserSessionService, mockPersistenceManager);
+
+    // Execute test.
+    DefaultInterviewManagerImpl.InterviewLock lock = interviewManager.new InterviewLock(firstParticipant);
+    interviewManager.unlockInterview(lock);
+
+    // Verify behaviour.
+    EasyMock.verify(mockUserSessionService, mockPersistenceManager);
+
+    // Verify state.
+    Assert.assertNull(firstInterview.getDuration());
   }
 
   /**
