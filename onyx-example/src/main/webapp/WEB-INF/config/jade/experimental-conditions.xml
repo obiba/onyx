@@ -46,6 +46,7 @@
     <name>LocationCharacteristics</name>
     <attribute>
       <name>MetresAboveSeaLevel</name>
+      <unit>m</unit>
       <type>INTEGER</type>
     </attribute>
   </experimentalConditionLog>

@@ -13,8 +13,10 @@ import java.util.List;
 
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 
 public interface ExperimentalConditionService {
 
@@ -35,5 +37,7 @@ public interface ExperimentalConditionService {
   public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template, PagingClause paging, SortingClause... clauses);
 
   public ExperimentalConditionLog getExperimentalConditionLogByName(String name);
+
+  public Attribute getAttribute(ExperimentalConditionValue experimentalConditionValue);
 
 }

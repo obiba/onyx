@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -125,8 +126,12 @@ public class ExperimentalConditionForm extends Panel {
       }
 
       add(new Label("label", new ResourceModel(attribute.getName(), attribute.getName())));
-      // TODO: Add the brackets... hide if no units.
-      add(new Label("unit", new Model<String>(attribute.getUnit())));
+      WebMarkupContainer parenthesis = new WebMarkupContainer("parenthesis");
+      add(parenthesis);
+      parenthesis.add(new Label("unit", new Model<String>(attribute.getUnit())));
+      if(attribute.getUnit() == null || attribute.getUnit().equals("")) {
+        parenthesis.setVisible(false);
+      }
       add(formComponent);
 
     }

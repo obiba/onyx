@@ -102,7 +102,9 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
       if(experimentalCondition != null) {
         for(final ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
-          columns.add(new AbstractColumn<ExperimentalCondition>(new ResourceModel(value.getAttributeName(), value.getAttributeName())) {
+          String unit = experimentalConditionService.getAttribute(value).getUnit();
+          unit = surroundStringIfNotNull(unit, " (", ")");
+          columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new ResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit)) {
             private static final long serialVersionUID = 1L;
 
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
@@ -120,6 +122,13 @@ public class ExperimentalConditionHistoryPanel extends Panel {
         }
       }
 
+    }
+
+    private String surroundStringIfNotNull(String text, String leftText, String rightText) {
+      if(text == null || text.equals("")) return "";
+      StringBuilder sb = new StringBuilder();
+      sb.append(leftText).append(text).append(rightText);
+      return sb.toString();
     }
 
     public List getAdditionalColumns() {

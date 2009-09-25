@@ -19,8 +19,10 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
+import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +76,14 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
       if(log.getName().equals(name)) return log;
     }
     throw new IllegalStateException("The ExperimentalConditionLog [" + name + "] could not be found.");
+  }
+
+  public Attribute getAttribute(ExperimentalConditionValue experimentalConditionValue) {
+    ExperimentalConditionLog experimentalConditionLog = getExperimentalConditionLogByName(experimentalConditionValue.getExperimentalCondition().getName());
+    for(Attribute attribute : experimentalConditionLog.getAttributes()) {
+      if(attribute.getName().equals(experimentalConditionValue.getAttributeName())) return attribute;
+    }
+    throw new IllegalStateException("The Attribute [" + experimentalConditionValue.getAttributeName() + "] belonging to the ExperimentalConditionLog [" + experimentalConditionValue.getExperimentalCondition().getName() + "] could not be found.");
   }
 
 }
