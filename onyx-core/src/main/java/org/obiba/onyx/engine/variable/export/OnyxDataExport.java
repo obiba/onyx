@@ -108,6 +108,11 @@ public class OnyxDataExport {
     Participant template = new Participant();
     template.setExported(false);
     List<Participant> participants = queryService.match(template);
+    for(Participant participant : participants) {
+      if(!participant.isExportable()) {
+        participants.remove(participant);
+      }
+    }
 
     // This is to keep a list of exported interviews for all destinations.
     Set<String> exportedBarcodes = new HashSet<String>();

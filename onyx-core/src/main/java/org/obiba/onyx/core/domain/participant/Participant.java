@@ -358,8 +358,6 @@ public class Participant extends AbstractEntity {
     if(exported != null && exported == true) return false;
     if(getInterview() == null) return false;
     return true;
-    // InterviewStatus status = getInterview().getStatus();
-    // return (status == InterviewStatus.COMPLETED || status == InterviewStatus.CLOSED);
   }
 
   public Date getExportDate() {
