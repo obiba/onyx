@@ -1,0 +1,36 @@
+<wicket:panel>
+  	<span wicket:id="feedback" />
+  	
+  	<table id="instrumentTable" class="keyValueTable">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Measurement" /></td>
+  		<td class="keyValueTableValue">
+  			<select wicket:id="measurementSelect"/></td>
+  	  </tr>
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Barcode" /></td>
+    	<td class="keyValueTableValue"><input type="text" wicket:id="barcode" /></td>
+  	  </tr>
+  	</table>
+  	<span wicket:id="instrumentFragmentContent" />
+</wicket:panel>
+
+<wicket:fragment wicket:id="instrumentFragment">
+  <table id="instrumentDetailsTable" class="keyValueTable">
+	  <tr>
+	  	<td colspan="2"><span wicket:id="instructions" /></td>
+	  </tr>
+	  <tr>
+	    <td valign="top" class="keyValueTableKey"><wicket:message key="Name" /></td>
+		<td class="keyValueTableValue"><input type="text" wicket:id="name" /></td>
+	  </tr>
+	  <tr>
+	    <td valign="top" class="keyValueTableKey"><wicket:message key="Vendor" /></td>
+		<td class="keyValueTableValue"><input type="text" wicket:id="vendor" /></td>
+	  </tr>
+	  <tr>
+	    <td valign="top" class="keyValueTableKey"><wicket:message key="Model" /></td>
+		<td class="keyValueTableValue"><input type="text" wicket:id="model" /></td>
+	  </tr>
+	  </table>
+</wicket:fragment>

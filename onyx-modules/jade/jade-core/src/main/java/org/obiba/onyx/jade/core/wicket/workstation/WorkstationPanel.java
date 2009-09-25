@@ -14,18 +14,17 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
@@ -34,6 +33,7 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
@@ -50,6 +50,8 @@ public class WorkstationPanel extends Panel {
   @SpringBean
   private UserSessionService userSessionService;
 
+  private Dialog addInstrumentWindow;
+
   /**
    * @param id
    */
@@ -61,21 +63,37 @@ public class WorkstationPanel extends Panel {
 
   }
 
+  @SuppressWarnings("unchecked")
   private void addInstrumentContent() {
+
+    add(addInstrumentWindow = createAddInstrumentWindow("addInstrumentWindow"));
+
     AjaxLink addInstrumentLink = new AjaxLink("addInstrument") {
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-
+        EditInstrumentPanel component = new EditInstrumentPanel("content", new Model<Instrument>(new Instrument()), addInstrumentWindow);
+        component.add(new AttributeModifier("class", true, new Model("obiba-content instrument-panel-content")));
+        addInstrumentWindow.setContent(component);
+        addInstrumentWindow.show(target);
       }
-
     };
     add(addInstrumentLink);
 
     InstrumentEntityList instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
     instrumentList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     add(instrumentList);
+  }
+
+  private Dialog createAddInstrumentWindow(String id) {
+    Dialog addInstrumentDialog = new Dialog(id);
+    addInstrumentDialog.setTitle(new StringResourceModel("AddInstrument", this, null));
+    addInstrumentDialog.setInitialHeight(214);
+    addInstrumentDialog.setInitialWidth(400);
+    addInstrumentDialog.setType(Dialog.Type.PLAIN);
+    addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
+    return addInstrumentDialog;
   }
 
   //
@@ -144,14 +162,13 @@ public class WorkstationPanel extends Panel {
       columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "barcode", "barcode"));
       columns.add(new PropertyColumn(new StringResourceModel("Status", WorkstationPanel.this, null), "status", "status"));
 
-      columns.add(new AbstractColumn(new StringResourceModel("Actions", WorkstationPanel.this, null)) {
-
-        public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
-          // cellItem.add(new ActionListFragment(componentId, rowModel));
-          cellItem.add(new Label("test action"));
-        }
-
-      });
+      // columns.add(new AbstractColumn(new StringResourceModel("Actions", WorkstationPanel.this, null)) {
+      //
+      // public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
+      // // cellItem.add(new ActionListFragment(componentId, rowModel));
+      // }
+      //
+      // });
 
       // columns.add(new PropertyColumn(new StringResourceModel("LastCalibration", WorkstationPage.this, null),
       // "lastCalibration", "lastCalibration"));

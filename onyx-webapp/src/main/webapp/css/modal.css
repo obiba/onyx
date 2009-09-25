@@ -224,6 +224,10 @@ div.wicket-modal div.onyx .instrument-run-panel-content {
 	height:371px;
 }
 
+div.wicket-modal div.onyx .instrument-panel-content {
+	height:170px;
+}
+
 div.wicket-modal div.onyx .appointment-update-log-panel-content {
 	height:356px;
 }

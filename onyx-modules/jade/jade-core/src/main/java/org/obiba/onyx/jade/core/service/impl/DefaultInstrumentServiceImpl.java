@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,4 +70,27 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   public String getInstrumentInstallPath(InstrumentType type) {
     return instrumentsPath + "/" + type.getName();
   }
+
+  public List<String> getWorkstationInstrumentTypes(String workstation) {
+    List<String> instrumentTypes = new ArrayList<String>();
+    Instrument template = new Instrument();
+    template.setWorkstation(workstation);
+
+    for(Instrument instrument : getPersistenceManager().match(template)) {
+      instrumentTypes.add(instrument.getType());
+    }
+
+    return instrumentTypes;
+  }
+
+  public Instrument getInstrumentByBarcode(String barcode) {
+    Instrument template = new Instrument();
+    template.setBarcode(barcode);
+    return getPersistenceManager().matchOne(template);
+  }
+
+  public void updateInstrument(Instrument instrument) {
+    getPersistenceManager().save(instrument);
+  }
+
 }

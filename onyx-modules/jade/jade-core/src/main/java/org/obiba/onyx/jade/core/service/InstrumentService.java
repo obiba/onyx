@@ -59,4 +59,23 @@ public interface InstrumentService {
    */
   public String getInstrumentInstallPath(InstrumentType type);
 
+  /**
+   * Get the instruments for given workstation.
+   * @param workstation
+   * @return
+   */
+  public List<String> getWorkstationInstrumentTypes(String workstation);
+
+  /**
+   * Get the instrument for given barcode.
+   * @param barcode
+   * @return
+   */
+  public Instrument getInstrumentByBarcode(String barcode);
+
+  /**
+   * Save the instrument.
+   * @param instrument
+   */
+  public void updateInstrument(Instrument instrument);
 }
