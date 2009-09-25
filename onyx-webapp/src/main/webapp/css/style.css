@@ -1401,7 +1401,7 @@ div#instrumentContent .label {
 /******************* Global List Styling *******************************************/
 
 #participantPageSearchResults table.entityTable tr.titleToolbar,
-#workstationPanelContent table.entityTable tr.titleToolbar,
+#instrumentContent table.entityTable tr.titleToolbar,
 #interviewPageStages table.entityTable tr.titleToolbar,
 #rubyPanel table.entityTable tr.titleToolbar {
   display: none;	
