@@ -79,7 +79,6 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
       } else {
         InstrumentParameter otherParameter = activeRunService.getInstrumentType().getInstrumentParameter(parameterCode);
         otherData = otherRunValue.getData(otherParameter.getDataType());
-        log.debug("Value is : {}", otherRunValue.getData(otherParameter.getDataType()));
       }
     } else {
       log.debug("Value is : null");
