@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.workstation;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -29,7 +30,11 @@ public abstract class ExperimentalConditionDialog extends Panel {
   private final Dialog logDialog = DialogBuilder.buildDialog("experimentalConditionDialog", "Report Dialog", experimentalConditionForm = new ExperimentalConditionForm("content", null)).setOptions(Option.OK_CANCEL_OPTION, "Save").getDialog();
 
   public ExperimentalConditionDialog(String id) {
-    super(id);
+    this(id, null);
+  }
+
+  public ExperimentalConditionDialog(String id, IModel model) {
+    super(id, model);
     logDialog.setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
 

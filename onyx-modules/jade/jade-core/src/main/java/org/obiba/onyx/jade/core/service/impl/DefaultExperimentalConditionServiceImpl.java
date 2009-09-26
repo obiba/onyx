@@ -23,6 +23,7 @@ import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +85,37 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
       if(attribute.getName().equals(experimentalConditionValue.getAttributeName())) return attribute;
     }
     throw new IllegalStateException("The Attribute [" + experimentalConditionValue.getAttributeName() + "] belonging to the ExperimentalConditionLog [" + experimentalConditionValue.getExperimentalCondition().getName() + "] could not be found.");
+  }
+
+  public boolean experimentalConditionLogExists(String name) {
+    for(ExperimentalConditionLog log : experimentalConditionLogs) {
+      if(log.getName().equals(name)) return true;
+    }
+    return false;
+  }
+
+  public InstrumentCalibration getInstrumentCalibrationByType(String instrumentType) {
+    for(InstrumentCalibration calibration : getInstrumentCalibrations()) {
+      if(calibration.getInstrumentType().equalsIgnoreCase(instrumentType)) return calibration;
+    }
+    throw new IllegalStateException("The InstrumentCalibration for the instrument type [" + instrumentType + "] could not be found.");
+  }
+
+  public boolean instrumentCalibrationExists(String instrumentType) {
+    for(InstrumentCalibration calibration : getInstrumentCalibrations()) {
+      if(calibration.getInstrumentType().equalsIgnoreCase(instrumentType)) return true;
+    }
+    return false;
+  }
+
+  private List<InstrumentCalibration> getInstrumentCalibrations() {
+    List<InstrumentCalibration> instrumentCalibrations = new ArrayList<InstrumentCalibration>();
+    for(ExperimentalConditionLog log : experimentalConditionLogs) {
+      if(log instanceof InstrumentCalibration) {
+        instrumentCalibrations.add((InstrumentCalibration) log);
+      }
+    }
+    return instrumentCalibrations;
   }
 
 }

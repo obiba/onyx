@@ -17,14 +17,17 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
@@ -161,6 +164,14 @@ public class WorkstationPanel extends Panel {
       columns.add(new PropertyColumn(new StringResourceModel("Name", WorkstationPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "barcode", "barcode"));
       columns.add(new PropertyColumn(new StringResourceModel("Status", WorkstationPanel.this, null), "status", "status"));
+
+      columns.add(new AbstractColumn(new ResourceModel("Actions")) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          cellItem.add(new ActionsPanel(componentId, rowModel));
+        }
+
+      });
 
       // columns.add(new AbstractColumn(new StringResourceModel("Actions", WorkstationPanel.this, null)) {
       //

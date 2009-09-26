@@ -17,6 +17,7 @@ import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 
 public interface ExperimentalConditionService {
 
@@ -38,6 +39,12 @@ public interface ExperimentalConditionService {
 
   public ExperimentalConditionLog getExperimentalConditionLogByName(String name);
 
+  public boolean instrumentCalibrationExists(String instrumentType);
+
+  public InstrumentCalibration getInstrumentCalibrationByType(String instrumentType);
+
   public Attribute getAttribute(ExperimentalConditionValue experimentalConditionValue);
+
+  public boolean experimentalConditionLogExists(String name);
 
 }
