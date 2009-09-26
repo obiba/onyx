@@ -17,12 +17,17 @@ import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.obiba.onyx.wicket.reusable.Dialog.Option;
 
 public class ViewCalibrationLogPanel extends Panel {
   private static final long serialVersionUID = 1L;
@@ -33,12 +38,17 @@ public class ViewCalibrationLogPanel extends Panel {
   public ViewCalibrationLogPanel(String id, IModel<Instrument> model) {
     super(id, model);
 
+    ResourceModel logTitleModel = new ResourceModel("CalibrationHistory");
+    final Dialog logDialog = DialogBuilder.buildDialog("calibrationLogDialog", logTitleModel, getExperimentalConditionHistoryPanel()).setOptions(Option.CLOSE_OPTION).getDialog();
+    add(logDialog);
+
     AjaxLink<Instrument> viewCalibrationLink = new AjaxLink<Instrument>("viewCalibrationLog", model) {
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
         System.out.println("click");
+        logDialog.show(target);
 
       }
     };
@@ -60,6 +70,19 @@ public class ViewCalibrationLogPanel extends Panel {
       }
     }
     return false;
+  }
+
+  private ExperimentalConditionHistoryPanel getExperimentalConditionHistoryPanel() {
+    Instrument instrument = (Instrument) getDefaultModelObject();
+    if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
+      InstrumentCalibration calibrate = experimentalConditionService.getInstrumentCalibrationByType(instrument.getType());
+      ExperimentalCondition template = new ExperimentalCondition();
+      template.setName(calibrate.getName());
+      SpringStringResourceModel instrumentTitleModel = new SpringStringResourceModel(calibrate.getName());
+      return new ExperimentalConditionHistoryPanel("content", template, new Model<String>(instrumentTitleModel.getString()), 5);
+    }
+    ExperimentalCondition template = new ExperimentalCondition();
+    return new ExperimentalConditionHistoryPanel("content", template, new Model<String>("titleModel"), 5);
   }
 
 }
