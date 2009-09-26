@@ -191,12 +191,24 @@ public class WorkstationPanel extends Panel {
             List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
             if(calibrations.size() > 0) {
               cellItem.add(new Label(componentId, new Model(calibrations.get(0).getTime())));
+              return;
             }
           }
           cellItem.add(new Label(componentId, ""));
         }
 
       });
+
+      columns.add(new AbstractColumn(new ResourceModel("Log", "Log")) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          ViewCalibrationLogPanel viewCalibrationLogLink = new ViewCalibrationLogPanel(componentId, rowModel);
+
+          cellItem.add(viewCalibrationLogLink);
+
+        }
+      });
+
 
       // columns.add(new AbstractColumn(new StringResourceModel("Actions", WorkstationPanel.this, null)) {
       //
