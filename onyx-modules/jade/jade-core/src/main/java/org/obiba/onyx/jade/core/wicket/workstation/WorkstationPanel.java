@@ -22,6 +22,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
@@ -35,6 +36,9 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
+import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -52,6 +56,9 @@ public class WorkstationPanel extends Panel {
 
   @SpringBean
   private UserSessionService userSessionService;
+
+  @SpringBean
+  private ExperimentalConditionService experimentalConditionService;
 
   private Dialog addInstrumentWindow;
 
@@ -169,6 +176,24 @@ public class WorkstationPanel extends Panel {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           cellItem.add(new ActionsPanel(componentId, rowModel));
+        }
+
+      });
+
+      columns.add(new AbstractColumn(new ResourceModel("LastCalibration", "LastCalibration")) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Instrument instrument = (Instrument) rowModel.getObject();
+          if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
+            InstrumentCalibration calibrate = experimentalConditionService.getInstrumentCalibrationByType(instrument.getType());
+            ExperimentalCondition template = new ExperimentalCondition();
+            template.setName(calibrate.getName());
+            List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
+            if(calibrations.size() > 0) {
+              cellItem.add(new Label(componentId, new Model(calibrations.get(0).getTime())));
+            }
+          }
+          cellItem.add(new Label(componentId, ""));
         }
 
       });
