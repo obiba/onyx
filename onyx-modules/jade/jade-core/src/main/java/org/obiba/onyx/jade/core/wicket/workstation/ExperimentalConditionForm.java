@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -35,6 +37,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -97,7 +100,12 @@ public class ExperimentalConditionForm extends Panel {
       @Override
       protected void populateItem(LoopItem item) {
         item.setRenderBodyOnly(true);
-        item.add(new TextFieldFragment("inputRows", "textFieldFragment", ExperimentalConditionForm.this, attributeModels.get(item.getIteration())));
+        Attribute attribute = (Attribute) attributeModels.get(item.getIteration()).getObject();
+        if(attribute.getAllowedValues() != null && attribute.getAllowedValues().size() > 0) {
+          item.add(new DropDownFragment("inputRows", "dropDownFragment", ExperimentalConditionForm.this, attributeModels.get(item.getIteration())));
+        } else {
+          item.add(new TextFieldFragment("inputRows", "textFieldFragment", ExperimentalConditionForm.this, attributeModels.get(item.getIteration())));
+        }
       }
     };
     if(getDefaultModelObject() == null) setVisible(false);
@@ -139,6 +147,54 @@ public class ExperimentalConditionForm extends Panel {
       add(formComponent);
 
     }
+  }
+
+  private class DropDownFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    public DropDownFragment(String id, String markupId, MarkupContainer markupProvider, IModel<?> model) {
+      super(id, markupId, markupProvider, model);
+      Attribute attribute = (Attribute) getDefaultModelObject();
+
+      Set<String> allowedValuesSet = attribute.getAllowedValues();
+      List<Data> allowedDataList = new ArrayList<Data>(allowedValuesSet.size());
+      for(String allowed : allowedValuesSet) {
+        allowedDataList.add(new Data(attribute.getType(), allowed));
+      }
+
+      ExperimentalConditionValue experimentalConditionValue = new ExperimentalConditionValue();
+      experimentalConditionValue.setAttributeName(attribute.getName());
+      experimentalConditionValue.setAttributeType(attribute.getType());
+      experimentalCondition.addExperimentalConditionValue(experimentalConditionValue);
+      experimentalConditionValue.setExperimentalCondition(experimentalCondition);
+
+      IModel<ExperimentalConditionValue> experimentalConditionValueModel = new Model<ExperimentalConditionValue>(experimentalConditionValue);
+
+      DataField formComponent = new DataField("value", new PropertyModel<ExperimentalConditionValue>(experimentalConditionValueModel, "data"), attribute.getType(), allowedDataList, new ChoiceRenderer<Data>() {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Object getDisplayValue(Data object) {
+          return object.getValueAsString();
+        }
+
+        @Override
+        public String getIdValue(Data object, int index) {
+          return super.getIdValue(object, index);
+        }
+      }, "");
+      formComponent.setRequired(true);
+      add(formComponent);
+
+      add(new Label("label", new ResourceModel(attribute.getName(), attribute.getName())));
+      WebMarkupContainer parenthesis = new WebMarkupContainer("parenthesis");
+      add(parenthesis);
+      parenthesis.add(new Label("unit", new Model<String>(attribute.getUnit())));
+      if(attribute.getUnit() == null || attribute.getUnit().equals("")) {
+        parenthesis.setVisible(false);
+      }
+    }
+
   }
 
   private class InstructionFragment extends Fragment {
