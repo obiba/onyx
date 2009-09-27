@@ -120,7 +120,7 @@ public class WorkstationLogPanel extends ExperimentalConditionDialog {
     ExperimentalCondition template = new ExperimentalCondition();
     if(experimentalConditionLogs.size() > 0) template.setName(selectedExperimentalConditionLog.getName());
     IModel titleModel = new StringResourceModel(selectedExperimentalConditionLog.getName(), WorkstationLogPanel.this, null, selectedExperimentalConditionLog.getName());
-    return new ExperimentalConditionHistoryPanel("experimentalConditionHistoryPanel", template, titleModel, 3);
+    return new ExperimentalConditionHistoryPanel("experimentalConditionHistoryPanel", template, titleModel, 5);
   }
 
   private List<ExperimentalConditionLog> getExperimentalConditionLogs() {
