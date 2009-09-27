@@ -138,6 +138,12 @@ div.wicket-modal div.onyx .updateParticipantList-panel-content {
   	margin-left:12px;
 }
 
+div.wicket-modal div.onyx .experimental-condition-history-panel {
+  height: 164px;
+  width: 960px;
+  margin-left: 10px;
+}
+
 div.wicket-modal div.onyx .interview-log-panel-content {
   height: 350px;
   width: 660px;
