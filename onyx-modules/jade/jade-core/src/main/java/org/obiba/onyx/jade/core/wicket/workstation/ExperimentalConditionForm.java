@@ -74,6 +74,10 @@ public class ExperimentalConditionForm extends Panel {
     experimentalCondition.setWorkstation("fake workstation"); // TODO Add real workstation code.
 
     final List<InstructionModel> instructionModels = getInstructionModels(experimentalConditionLog);
+    Label instructionTitle = new Label("instructionTitle", new ResourceModel("InstructionTitle"));
+    instructionTitle.add(new AttributeModifier("class", true, new Model<String>("experimental-condition-instructions-title")));
+    addOrReplace(instructionTitle);
+    if(instructionModels.size() == 0) instructionTitle.setVisible(false);
     Loop instructionsLoop = new Loop("instructionList", experimentalConditionLog != null ? experimentalConditionLog.getInstructions().size() : 0) {
       private static final long serialVersionUID = 1L;
 

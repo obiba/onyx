@@ -1531,6 +1531,17 @@ div#instrumentContent .label {
   font-size: 12px;
 }
 
+.experimental-condition-instructions-title {
+  margin-left: 5px;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.experimental-condition-instructions {
+  margin-left: 17px;
+  margin-bottom: 40px;
+}
 
 ul#interviewMenuBar li {
  width:200px;
