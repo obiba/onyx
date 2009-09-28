@@ -1651,14 +1651,16 @@ div.log-comment {
 }
 
 #rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel {
-  width:230px;
   display:table-cell;
 }
 
-#rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel > span {
-  display: table-cell; 
-  background:transparent url(../icons/completed.png) no-repeat scroll 165px center; 
-  width:230px;  
+#rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel ul.feedbackPanel li span {
+  display: table-cell;  
+  width: 230px;
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel li.feedbackPanelINFO > span {
+  background: transparent url(../icons/completed.png) no-repeat scroll 165px center;   
 }
 
 #rubyPanel #wizardContent #tubeBarcodePanel li {
