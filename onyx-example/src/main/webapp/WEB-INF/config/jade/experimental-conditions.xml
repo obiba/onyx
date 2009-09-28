@@ -6,6 +6,7 @@
     <attribute>
       <name>Temperature</name>
       <type>INTEGER</type>
+      <unit>°C</unit>      
     </attribute>
     <attribute>
       <name>RelativeHumidity</name>
@@ -14,6 +15,27 @@
     </attribute>
   </experimentalConditionLog>
 
+  <experimentalConditionLog>
+    <name>LocationCharacteristics</name>
+    <attribute>
+      <name>MetresAboveSeaLevel</name>
+      <unit>m</unit>
+      <type>INTEGER</type>
+    </attribute>
+  </experimentalConditionLog>
+  
+  <experimentalConditionLog>
+    <name>WeatherCharacteristics</name>
+    <instructions>
+      <string>Weather.Instruction1</string>
+      <string>Weather.Instruction2</string>
+    </instructions>
+    <attribute>
+      <name>PossibilityOfPrecipitation</name>
+      <type>DECIMAL</type>
+    </attribute>
+  </experimentalConditionLog>
+  
   <instrumentCalibration>
     <name>TanitaCalibration</name>
     <instructions>
@@ -41,26 +63,169 @@
       </allowedValues>
     </attribute>
   </instrumentCalibration>
-
-  <experimentalConditionLog>
-    <name>LocationCharacteristics</name>
+<!--    
+  <instrumentCalibration>
+    <name>WeightCalibrationTanitaBC418</name>
+    <instructions>
+      <string>WeightCalibrationTanitaBC418.Instruction1</string>
+      <string>WeightCalibrationTanitaBC418.Instruction2</string>
+      <string>WeightCalibrationTanitaBC418.Instruction3</string>
+      <string>WeightCalibrationTanitaBC418.Instruction4</string>
+    </instructions>
+    <instrumentType>Impedance418</instrumentType>
     <attribute>
-      <name>MetresAboveSeaLevel</name>
-      <unit>m</unit>
+      <name>20kg</name>
       <type>INTEGER</type>
     </attribute>
-  </experimentalConditionLog>
-  
-  <experimentalConditionLog>
-    <name>WeatherCharacteristics</name>
-    <instructions>
-      <string>Weather.Instruction1</string>
-      <string>Weather.Instruction2</string>
-    </instructions>
     <attribute>
-      <name>PossibilityOfPrecipitation</name>
-      <type>DECIMAL</type>
+      <name>40kg</name>
+      <type>INTEGER</type>
     </attribute>
-  </experimentalConditionLog>
+    <attribute>
+      <name>60kg</name>
+      <type>INTEGER</type>
+    </attribute>
+    <attribute>
+      <name>80kg</name>
+      <type>INTEGER</type>
+    </attribute>
+    <attribute>
+      <name>100kg</name>
+      <type>INTEGER</type>
+    </attribute>
+  </instrumentCalibration>  
+  
+  <instrumentCalibration>
+    <name>StadiometerFullVerticalCalibrationLog</name>
+    <instructions>
+      <string>StadiometerFullVerticalCalibrationLog.Instruction1</string>
+    </instructions>
+    <instrumentType>Stadiometer</instrumentType>
+    <attribute>
+      <name>Vertical0to60cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>
+    <attribute>
+      <name>Vertical60to110cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>
+    <attribute>
+      <name>Vertical110to160cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>
+    <attribute>
+      <name>Vertical160to210cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>    
+  </instrumentCalibration>  
 
+  <instrumentCalibration>
+    <name>WeightCalibrationSECA803Scale</name>
+    <instructions>
+      <string>WeightCalibrationSECA803Scale.Instruction1</string>
+      <string>WeightCalibrationSECA803Scale.Instruction2</string>
+      <string>WeightCalibrationSECA803Scale.Instruction3</string>
+      <string>WeightCalibrationSECA803Scale.Instruction4</string>
+    </instructions>
+    <instrumentType>Weight803?</instrumentType>
+    <attribute>
+      <name>20kg</name>
+      <type>INTEGER</type>
+    </attribute>
+    <attribute>
+      <name>40kg</name>
+      <type>INTEGER</type>
+    </attribute>
+    <attribute>
+      <name>60kg</name>
+      <type>INTEGER</type>
+    </attribute>
+    <attribute>
+      <name>80kg</name>
+      <type>INTEGER</type>
+    </attribute>
+    <attribute>
+      <name>100kg</name>
+      <type>INTEGER</type>
+    </attribute>
+  </instrumentCalibration>
+
+  <instrumentCalibration>
+    <name>SpirometryCalibrationLog</name>
+    <instrumentType>Spirometry?</instrumentType>
+    <attribute>
+      <name>Temperature</name>
+      <type>INTEGER</type>
+      <unit>°C</unit>
+    </attribute>
+    <attribute>
+      <name>RelativeHumidity</name>
+      <type>INTEGER</type>
+      <unit>%</unit>
+    </attribute>
+    <attribute>
+      <name>FVC</name>
+      <type>INTEGER</type>
+      <unit>L?</unit>      
+    </attribute>
+    <attribute>
+      <name>Comments?</name>
+      <type>TEXT</type>
+    </attribute>
+  </instrumentCalibration>
+
+  <instrumentCalibration>
+    <name>StadiometerFullAlignmentCalibrationLog</name>
+    <instructions>
+      <string>StadiometerFullAlignmentCalibrationLog.Instruction1</string>
+      <string>StadiometerFullAlignmentCalibrationLog.Instruction2</string>
+    </instructions>
+    <instrumentType>Stadiometer</instrumentType>
+    <attribute>
+      <name>Alignment50to70cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>
+    <attribute>
+      <name>Alignment100to120cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>
+    <attribute>
+      <name>Alignment150to170cm</name>
+      <type>TEXT</type>
+      <allowedValues>
+        <string>Yes</string>
+        <string>No</string>
+      </allowedValues>
+    </attribute>
+    <attribute>
+      <name>HeightOfMetreStick</name>
+      <type>INTEGER</type>
+      <unit>cm?</unit>
+    </attribute>
+  </instrumentCalibration>
+-->  
 </list>
