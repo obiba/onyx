@@ -1,7 +1,7 @@
 <dataset>
 
-  <instrument id="1" type="StandingHeight" name="Tape 1" vendor="Seca" model="Model 214" status="ACTIVE" />
-  <instrument id="2" type="StandingHeight" name="Tape 2" vendor="Seca" model="Model 214" status="ACTIVE" />
-  <instrument id="3" type="Impedance310" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE" />
+  <instrument id="1" barcode="1" type="StandingHeight" name="Tape 1" vendor="Seca" model="Model 214" status="ACTIVE" />
+  <instrument id="2" barcode="2" type="StandingHeight" name="Tape 2" vendor="Seca" model="Model 214" status="ACTIVE" />
+  <instrument id="3" barcode="3" type="Impedance310" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE" />
 
 </dataset>

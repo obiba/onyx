@@ -41,7 +41,7 @@ public class Instrument extends AbstractEntity {
   @Column(length = 200)
   private String serialNumber;
 
-  @Column(length = 200)
+  @Column(length = 200, nullable = false)
   private String barcode;
 
   @Enumerated(EnumType.STRING)

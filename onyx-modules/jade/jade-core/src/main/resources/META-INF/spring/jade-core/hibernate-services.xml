@@ -12,5 +12,13 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="instrumentTypes" ref="instrumentTypeFactory" />
   </bean>
+  
+  <bean id="instrumentService"
+    class="org.obiba.onyx.jade.core.service.impl.hibernate.InstrumentServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />   
+    <property name="instrumentsPath" value="${org.obiba.onyx.jade.instruments.codebase.path}"/>
+    <property name="instrumentTypes" ref="instrumentTypeFactory" />
+  </bean>
 
 </beans>

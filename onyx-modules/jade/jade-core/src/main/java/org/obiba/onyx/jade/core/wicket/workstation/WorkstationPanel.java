@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -25,7 +26,6 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -39,6 +39,7 @@ import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -52,6 +53,9 @@ public class WorkstationPanel extends Panel {
   private static final long serialVersionUID = 1L;
 
   @SpringBean
+  private InstrumentService instrumentService;
+
+  @SpringBean
   private EntityQueryService queryService;
 
   @SpringBean
@@ -61,6 +65,8 @@ public class WorkstationPanel extends Panel {
   private ExperimentalConditionService experimentalConditionService;
 
   private Dialog addInstrumentWindow;
+
+  private InstrumentEntityList instrumentList;
 
   /**
    * @param id
@@ -89,10 +95,10 @@ public class WorkstationPanel extends Panel {
         addInstrumentWindow.show(target);
       }
     };
+
     add(addInstrumentLink);
 
-    InstrumentEntityList instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
-    instrumentList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+    instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
     add(instrumentList);
   }
 
@@ -114,26 +120,18 @@ public class WorkstationPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    // public InstrumentEntityList(String id, Class<Instrument> type, IColumnProvider columns, IModel title) {
-    // super(id, type, columns, title);
-    // }
-    //
-    // public InstrumentEntityList(String id, Instrument template, IColumnProvider columns, IModel title) {
-    // super(id, template, columns, title);
-    // }
-
     public InstrumentEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
       super(id, dataProvider, columns, title);
     }
 
-    // @Override
-    // protected void onPageChanged() {
-    // IRequestTarget target = getRequestCycle().getRequestTarget();
-    // if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
-    // ((AjaxRequestTarget) target).appendJavascript("styleParticipantSearchNavigationBar();");
-    // }
-    // super.onPageChanged();
-    // }
+    @Override
+    protected void onPageChanged() {
+      IRequestTarget target = getRequestCycle().getRequestTarget();
+      if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
+        ((AjaxRequestTarget) target).appendJavascript("styleParticipantSearchNavigationBar();");
+      }
+      super.onPageChanged();
+    }
   }
 
   @SuppressWarnings("serial")
@@ -146,12 +144,12 @@ public class WorkstationPanel extends Panel {
 
     @Override
     protected List<Instrument> getList(PagingClause paging, SortingClause... clauses) {
-      return queryService.list(Instrument.class, paging, clauses);
+      return instrumentService.getWorkstationInstruments(userSessionService.getWorkstation(), paging, clauses);
     }
 
     @Override
     public int size() {
-      return queryService.count(Instrument.class);
+      return instrumentService.countWorkstationInstruments(userSessionService.getWorkstation());
     }
 
   }
@@ -208,20 +206,6 @@ public class WorkstationPanel extends Panel {
 
         }
       });
-
-
-      // columns.add(new AbstractColumn(new StringResourceModel("Actions", WorkstationPanel.this, null)) {
-      //
-      // public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
-      // // cellItem.add(new ActionListFragment(componentId, rowModel));
-      // }
-      //
-      // });
-
-      // columns.add(new PropertyColumn(new StringResourceModel("LastCalibration", WorkstationPage.this, null),
-      // "lastCalibration", "lastCalibration"));
-      // columns.add(new PropertyColumn(new StringResourceModel("Log", WorkstationPage.this, null), "log", "log"));
-
     }
 
     public List<IColumn> getAdditionalColumns() {
@@ -243,5 +227,9 @@ public class WorkstationPanel extends Panel {
     public DateFormat getDateTimeFormat() {
       return userSessionService.getDateTimeFormat();
     }
+  }
+
+  public InstrumentEntityList getInstrumentList() {
+    return instrumentList;
   }
 }

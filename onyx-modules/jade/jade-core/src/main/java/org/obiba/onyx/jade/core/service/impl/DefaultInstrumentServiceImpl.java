@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService {
+public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService {
 
   @SuppressWarnings("unused")
   private final Logger log = LoggerFactory.getLogger(getClass());
@@ -90,7 +90,15 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   }
 
   public void updateInstrument(Instrument instrument) {
-    getPersistenceManager().save(instrument);
-  }
+    Instrument persitedIntrument = (instrument.getId() != null) ? getPersistenceManager().get(Instrument.class, instrument.getId()) : instrument;
 
+    if(instrument.getId() != null) {
+      persitedIntrument.setName(instrument.getName());
+      persitedIntrument.setVendor(instrument.getVendor());
+      persitedIntrument.setModel(instrument.getModel());
+      persitedIntrument.setWorkstation(instrument.getWorkstation());
+    }
+
+    getPersistenceManager().save(persitedIntrument);
+  }
 }

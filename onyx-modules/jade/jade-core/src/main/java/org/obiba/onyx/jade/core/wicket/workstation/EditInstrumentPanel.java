@@ -10,11 +10,13 @@
 package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
@@ -54,6 +56,10 @@ public class EditInstrumentPanel extends Panel {
 
   private final InstrumentFragment instrumentFragment;
 
+  private DropDownChoice measurementDropDown;
+
+  private boolean currentWorkstation = false;
+
   /**
    * @param id
    * @param model
@@ -70,7 +76,7 @@ public class EditInstrumentPanel extends Panel {
     instrumentFragment.setOutputMarkupId(true);
 
     // measurement field
-    DropDownChoice measurementDropDown = new DropDownChoice("measurementSelect", new PropertyModel(instrumentModel, "type"), getAvailableInstrumentTypesList(), new IChoiceRenderer() {
+    measurementDropDown = new DropDownChoice("measurementSelect", new PropertyModel(instrumentModel, "type"), getAvailableInstrumentTypesList(), new IChoiceRenderer() {
       private static final long serialVersionUID = 1L;
 
       public Object getDisplayValue(Object object) {
@@ -83,6 +89,7 @@ public class EditInstrumentPanel extends Panel {
     });
     measurementDropDown.setLabel(new ResourceModel("Measurement"));
     measurementDropDown.setRequired(true);
+    measurementDropDown.setOutputMarkupId(true);
     add(measurementDropDown);
 
     // barcode field
@@ -92,26 +99,33 @@ public class EditInstrumentPanel extends Panel {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        String barcode = ((Instrument) getDefaultModelObject()).getBarcode();
-        if(barcode != null) {
-          Instrument instrument = instrumentService.getInstrumentByBarcode(barcode);
+        String barcodeInput = ((Instrument) getDefaultModelObject()).getBarcode();
+
+        if(barcodeInput != null) {
+          Instrument instrument = instrumentService.getInstrumentByBarcode(barcodeInput);
           if(instrument != null) {
-            EditInstrumentPanel.this.setDefaultModelObject(instrument);
-            instrumentFragment.getInstructions().setVisible(false);
+            displayInstrument(instrument);
+            target.addComponent(measurementDropDown);
           } else {
             instrumentFragment.getInstructions().setVisible(true);
+            clearForm(target);
           }
-          target.addComponent(instrumentFragment);
+        } else {
+          clearForm(target);
         }
+        target.addComponent(instrumentFragment);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, RuntimeException e) {
-        super.onError(target, e);
+        clearForm(target);
+        target.addComponent(instrumentFragment);
       }
+
     });
 
     barcode.setRequired(true);
+    barcode.setOutputMarkupId(true);
     add(barcode);
 
     // actions to perform on submit
@@ -121,9 +135,7 @@ public class EditInstrumentPanel extends Panel {
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
 
         if(status != null && status.equals(Dialog.Status.ERROR)) {
-          FeedbackWindow feedback = EditInstrumentPanel.this.getFeedback();
-          feedback.setContent(new FeedbackPanel("content"));
-          feedback.show(target);
+          displayFeedback(target);
           return false;
         }
 
@@ -139,10 +151,52 @@ public class EditInstrumentPanel extends Panel {
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
           Instrument instrument = (Instrument) getDefaultModelObject();
           instrument.setStatus(InstrumentStatus.ACTIVE);
+          if(EditInstrumentPanel.this.currentWorkstation) {
+            instrument.setWorkstation(userSessionService.getWorkstation());
+          } else {
+            instrument.setWorkstation(null);
+          }
           instrumentService.updateInstrument(instrument);
         }
+        target.addComponent(EditInstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
       }
     });
+  }
+
+  private void displayInstrument(Instrument instrument) {
+    EditInstrumentPanel.this.setDefaultModelObject(instrument);
+    measurementDropDown.setChoices(Arrays.asList(new String[] { instrument.getType() }));
+    measurementDropDown.setEnabled(false);
+    if(instrument.getWorkstation() != null) {
+      currentWorkstation = (instrument.getWorkstation().equals(userSessionService.getWorkstation()));
+      if(!currentWorkstation) {
+        instrumentFragment.getWorkstation().setEnabled(false);
+        instrument.setWorkstation(null);
+      }
+    } else {
+      currentWorkstation = false;
+    }
+    instrumentFragment.getInstructions().setVisible(false);
+  }
+
+  private void clearForm(AjaxRequestTarget target) {
+    currentWorkstation = false;
+    if(measurementDropDown.isEnabled() == false) {
+      measurementDropDown.setEnabled(true);
+      measurementDropDown.setChoices(getAvailableInstrumentTypesList());
+      target.addComponent(measurementDropDown);
+      EditInstrumentPanel.this.setDefaultModelObject(new Instrument());
+    }
+    instrumentFragment.getName().setDefaultModelObject(null);
+    instrumentFragment.getVendor().setDefaultModelObject(null);
+    instrumentFragment.getModel().setDefaultModelObject(null);
+    instrumentFragment.getWorkstation().setEnabled(true);
+  }
+
+  private void displayFeedback(AjaxRequestTarget target) {
+    FeedbackWindow feedback = EditInstrumentPanel.this.getFeedback();
+    feedback.setContent(new FeedbackPanel("content"));
+    feedback.show(target);
   }
 
   private List<String> getAvailableInstrumentTypesList() {
@@ -165,6 +219,14 @@ public class EditInstrumentPanel extends Panel {
 
     private Label instructions;
 
+    private CheckBox workstation;
+
+    private TextField name;
+
+    private TextField vendor;
+
+    private TextField model;
+
     public InstrumentFragment(String id, IModel<Instrument> instrumentModel) {
       super(id, "instrumentFragment", EditInstrumentPanel.this);
 
@@ -175,25 +237,42 @@ public class EditInstrumentPanel extends Panel {
       add(instructions);
 
       // name field
-      TextField name = new TextField("name", new PropertyModel(instrumentModel, "name"));
+      name = new TextField("name", new PropertyModel(instrumentModel, "name"));
       name.setRequired(true);
       add(name);
 
       // vendor field
-      TextField vendor = new TextField("vendor", new PropertyModel(instrumentModel, "vendor"));
+      vendor = new TextField("vendor", new PropertyModel(instrumentModel, "vendor"));
       vendor.setRequired(true);
       add(vendor);
 
       // model field
-      TextField model = new TextField("model", new PropertyModel(instrumentModel, "model"));
+      model = new TextField("model", new PropertyModel(instrumentModel, "model"));
       model.setRequired(true);
       add(model);
 
-      // CheckBox workstation = new CheckBox("workstation", new PropertyModel(instrumentModel, "workstation"));
+      add(workstation = new CheckBox("workstation", new PropertyModel(EditInstrumentPanel.this, "currentWorkstation")));
+
     }
 
     public Label getInstructions() {
       return instructions;
+    }
+
+    public CheckBox getWorkstation() {
+      return workstation;
+    }
+
+    public TextField getName() {
+      return name;
+    }
+
+    public TextField getVendor() {
+      return vendor;
+    }
+
+    public TextField getModel() {
+      return model;
     }
   }
 

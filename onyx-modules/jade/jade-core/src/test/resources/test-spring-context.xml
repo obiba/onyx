@@ -35,12 +35,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
   
-  <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">
-    <property name="persistenceManager" ref="persistenceManager" />    
-    <property name="instrumentsPath" value="${org.obiba.onyx.jade.instruments.codebase.path}"/>
-    <property name="instrumentTypes" ref="instrumentTypeFactory" /> 
-  </bean>
-  
   <bean id="instrumentTypeFactory" class="org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean" scope="singleton">
     <property name="resourcePatterns">
       <list>
