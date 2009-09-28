@@ -51,7 +51,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
   public ExperimentalConditionHistoryPanel(String id, ExperimentalCondition template, IModel<String> title, int pageSize) {
     super(id);
     setOutputMarkupId(true);
-    add(new AttributeModifier("class", true, new Model("experimental-condition-history-panel")));
+    add(new AttributeModifier("class", true, new Model<String>("experimental-condition-history-panel")));
 
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template, null);
     OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title);
@@ -104,7 +104,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
         for(final ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
           String unit = experimentalConditionService.getAttribute(value).getUnit();
           unit = surroundStringIfNotNull(unit, " (", ")");
-          columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new ResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit)) {
+          columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit)) {
             private static final long serialVersionUID = 1L;
 
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {

@@ -27,6 +27,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 
@@ -52,7 +53,7 @@ public class WorkstationLogPanel extends ExperimentalConditionDialog {
 
       @Override
       public Object getDisplayValue(ExperimentalConditionLog object) {
-        return new StringResourceModel(object.getName(), WorkstationLogPanel.this, null, object.getName()).getString();
+        return new SpringStringResourceModel(object.getName(), object.getName()).getString();
       }
 
       @Override
@@ -99,8 +100,8 @@ public class WorkstationLogPanel extends ExperimentalConditionDialog {
           }
 
         });
-        StringResourceModel experimentalConditionNameResource = new StringResourceModel(selectedExperimentalConditionLog.getName(), WorkstationLogPanel.this, null);
-        String experimentalConditionName = experimentalConditionNameResource.getObject();
+        SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(selectedExperimentalConditionLog.getName(), selectedExperimentalConditionLog.getName());
+        String experimentalConditionName = experimentalConditionNameResource.getString();
         getExperimentalConditionDialog().setTitle(new StringResourceModel("ExperimentalConditionDialogTitle", WorkstationLogPanel.this, new Model<ValueMap>(new ValueMap("experimentalConditionName=" + experimentalConditionName))));
         getExperimentalConditionDialog().show(target);
       }
@@ -119,7 +120,7 @@ public class WorkstationLogPanel extends ExperimentalConditionDialog {
     List<ExperimentalConditionLog> experimentalConditionLogs = getExperimentalConditionLogs();
     ExperimentalCondition template = new ExperimentalCondition();
     if(experimentalConditionLogs.size() > 0) template.setName(selectedExperimentalConditionLog.getName());
-    IModel titleModel = new StringResourceModel(selectedExperimentalConditionLog.getName(), WorkstationLogPanel.this, null, selectedExperimentalConditionLog.getName());
+    IModel titleModel = new SpringStringResourceModel(selectedExperimentalConditionLog.getName(), selectedExperimentalConditionLog.getName());
     return new ExperimentalConditionHistoryPanel("experimentalConditionHistoryPanel", template, titleModel, 5);
   }
 

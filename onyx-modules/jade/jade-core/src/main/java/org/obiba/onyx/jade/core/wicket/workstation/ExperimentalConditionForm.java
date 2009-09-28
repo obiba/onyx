@@ -40,6 +40,7 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 public class ExperimentalConditionForm extends Panel {
@@ -56,9 +57,9 @@ public class ExperimentalConditionForm extends Panel {
 
   private ExperimentalCondition experimentalCondition;
 
-  public ExperimentalConditionForm(String id, IModel model) {
+  public ExperimentalConditionForm(String id, IModel<ExperimentalConditionLog> model) {
     super(id, model);
-    add(new AttributeModifier("class", true, new Model("experimental-condition-form")));
+    add(new AttributeModifier("class", true, new Model<String>("experimental-condition-form")));
 
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
@@ -74,7 +75,7 @@ public class ExperimentalConditionForm extends Panel {
     experimentalCondition = new ExperimentalCondition();
     experimentalCondition.setName(experimentalConditionLog != null ? experimentalConditionLog.getName() : "");
     experimentalCondition.setUser(userSessionService.getUser());
-    experimentalCondition.setWorkstation("fake workstation"); // TODO Add real workstation code.
+    experimentalCondition.setWorkstation(userSessionService.getWorkstation());
 
     final List<InstructionModel> instructionModels = getInstructionModels(experimentalConditionLog);
     Label instructionTitle = new Label("instructionTitle", new ResourceModel("InstructionTitle"));
@@ -115,7 +116,7 @@ public class ExperimentalConditionForm extends Panel {
   private class TextFieldFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public TextFieldFragment(String id, String markupId, MarkupContainer markupContainer, IModel model) {
+    public TextFieldFragment(String id, String markupId, MarkupContainer markupContainer, IModel<?> model) {
       super(id, markupId, markupContainer, model);
       Attribute attribute = (Attribute) getDefaultModelObject();
 
@@ -125,11 +126,11 @@ public class ExperimentalConditionForm extends Panel {
       experimentalCondition.addExperimentalConditionValue(experimentalConditionValue);
       experimentalConditionValue.setExperimentalCondition(experimentalCondition);
 
-      IModel experimentalConditionValueModel = new Model(experimentalConditionValue);
+      IModel<ExperimentalConditionValue> experimentalConditionValueModel = new Model<ExperimentalConditionValue>(experimentalConditionValue);
 
-      DataField formComponent = new DataField("value", new PropertyModel(experimentalConditionValueModel, "data"), attribute.getType());
+      DataField formComponent = new DataField("value", new PropertyModel<ExperimentalConditionValue>(experimentalConditionValueModel, "data"), attribute.getType());
       formComponent.setRequired(true);
-      formComponent.setLabel(new Model(attribute.getName()));
+      formComponent.setLabel(new Model<String>(attribute.getName()));
       if(attribute.getType().equals(DataType.TEXT)) {
         formComponent.add(new StringValidator.MaximumLengthValidator(250));
       }
@@ -137,7 +138,7 @@ public class ExperimentalConditionForm extends Panel {
         formComponent.add(validator);
       }
 
-      add(new Label("label", new ResourceModel(attribute.getName(), attribute.getName())));
+      add(new Label("label", new SpringStringResourceModel(attribute.getName(), attribute.getName())));
       WebMarkupContainer parenthesis = new WebMarkupContainer("parenthesis");
       add(parenthesis);
       parenthesis.add(new Label("unit", new Model<String>(attribute.getUnit())));
@@ -175,7 +176,7 @@ public class ExperimentalConditionForm extends Panel {
 
         @Override
         public Object getDisplayValue(Data object) {
-          return object.getValueAsString();
+          return new SpringStringResourceModel(object.getValueAsString(), object.getValueAsString()).getString();
         }
 
         @Override
@@ -186,7 +187,7 @@ public class ExperimentalConditionForm extends Panel {
       formComponent.setRequired(true);
       add(formComponent);
 
-      add(new Label("label", new ResourceModel(attribute.getName(), attribute.getName())));
+      add(new Label("label", new SpringStringResourceModel(attribute.getName(), attribute.getName())));
       WebMarkupContainer parenthesis = new WebMarkupContainer("parenthesis");
       add(parenthesis);
       parenthesis.add(new Label("unit", new Model<String>(attribute.getUnit())));
@@ -200,14 +201,13 @@ public class ExperimentalConditionForm extends Panel {
   private class InstructionFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public InstructionFragment(String id, String markupId, MarkupContainer markupContainer, IModel model) {
+    public InstructionFragment(String id, String markupId, MarkupContainer markupContainer, IModel<InstructionModel> model) {
       super(id, markupId, markupContainer, model);
       setRenderBodyOnly(false);
       String instruction = (String) getDefaultModelObject();
-      Label instructionLabel = new Label("instruction", new ResourceModel(instruction, instruction));
+      Label instructionLabel = new Label("instruction", new SpringStringResourceModel(instruction, instruction));
       add(instructionLabel);
     }
-
   }
 
   private List<InstructionModel> getInstructionModels(ExperimentalConditionLog experimentalConditionLog) {
