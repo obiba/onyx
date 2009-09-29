@@ -12,7 +12,9 @@ package org.obiba.onyx.jade.core.wicket.workstation;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -32,6 +34,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
@@ -56,10 +59,15 @@ public class ExperimentalConditionHistoryPanel extends Panel {
   @SpringBean
   private UserSessionService userSessionService;
 
+  /** Map of experimental condition log attributes present in the xml configuration file. */
+  private Map<String, Attribute> experimentalConditionLogAttributeMap;
+
   public ExperimentalConditionHistoryPanel(String id, ExperimentalCondition template, IModel<String> title, int pageSize) {
     super(id);
     setOutputMarkupId(true);
     add(new AttributeModifier("class", true, new Model<String>("experimental-condition-history-panel")));
+
+    experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(template.getName());
 
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template, null);
     OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title);
@@ -117,23 +125,27 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
       if(experimentalCondition != null) {
         for(final ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
-          String unit = experimentalConditionService.getAttribute(value).getUnit();
-          unit = surroundStringIfNotNull(unit, " (", ")");
-          columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit)) {
-            private static final long serialVersionUID = 1L;
 
-            public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-              DetachableEntityModel<ExperimentalCondition> ec = (DetachableEntityModel<ExperimentalCondition>) rowModel;
-              Data data = new Data(DataType.TEXT, "[null]");
-              for(ExperimentalConditionValue ecv : ((ExperimentalCondition) ec.getObject()).getExperimentalConditionValues()) {
-                if(ecv.getAttributeName().equals(value.getAttributeName())) {
-                  data = ecv.getData();
+          // Only display the value if the attribute is present in the Condition Log XML configuration.
+          if(experimentalConditionLogAttributeMap.containsKey(value.getAttributeName())) {
+            String unit = experimentalConditionService.getAttribute(value).getUnit();
+            unit = surroundStringIfNotNull(unit, " (", ")");
+            columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit)) {
+              private static final long serialVersionUID = 1L;
+
+              public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+                DetachableEntityModel<ExperimentalCondition> ec = (DetachableEntityModel<ExperimentalCondition>) rowModel;
+                Data data = new Data(DataType.TEXT, "");
+                for(ExperimentalConditionValue ecv : ((ExperimentalCondition) ec.getObject()).getExperimentalConditionValues()) {
+                  if(ecv.getAttributeName().equals(value.getAttributeName())) {
+                    data = ecv.getData();
+                  }
                 }
+                cellItem.add(new Label(componentId, new Model<String>(data.getValueAsString())));
               }
-              cellItem.add(new Label(componentId, new Model<String>(data.getValueAsString())));
-            }
 
-          });
+            });
+          }
         }
       }
 
@@ -166,6 +178,16 @@ public class ExperimentalConditionHistoryPanel extends Panel {
       return userSessionService.getDateTimeFormat();
     }
 
+  }
+
+  private Map<String, Attribute> getExperimentalConditionLogAttributeMap(String experimentalConditionLogName) {
+    Map<String, Attribute> experimentalConditionLogAttributeMap = new HashMap<String, Attribute>();
+    if(experimentalConditionLogName != null) {
+      for(Attribute attribute : experimentalConditionService.getExperimentalConditionLogByName(experimentalConditionLogName).getAttributes()) {
+        experimentalConditionLogAttributeMap.put(attribute.getName(), attribute);
+      }
+    }
+    return experimentalConditionLogAttributeMap;
   }
 
 }

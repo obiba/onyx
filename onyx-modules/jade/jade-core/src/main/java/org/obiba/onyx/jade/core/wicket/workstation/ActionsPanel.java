@@ -26,6 +26,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
@@ -45,7 +46,7 @@ public class ActionsPanel extends ExperimentalConditionDialog {
   private UserSessionService userSessionService;
 
   public ActionsPanel(String id, IModel<Instrument> model) {
-    super(id, model);
+    super(id, model, model);
     setOutputMarkupId(true);
 
     RepeatingView repeating = new RepeatingView("link");
@@ -131,8 +132,8 @@ public class ActionsPanel extends ExperimentalConditionDialog {
         }
 
       });
-      StringResourceModel experimentalConditionNameResource = new StringResourceModel(instrument.getType(), ActionsPanel.this, null);
-      String experimentalConditionName = experimentalConditionNameResource.getObject();
+      SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(instrument.getType(), instrument.getType());
+      String experimentalConditionName = experimentalConditionNameResource.getString();
       getExperimentalConditionDialog().setTitle(new StringResourceModel("ExperimentalConditionDialogTitle", ActionsPanel.this, new Model<ValueMap>(new ValueMap("experimentalConditionName=" + experimentalConditionName))));
       getExperimentalConditionDialog().show(target);
     }

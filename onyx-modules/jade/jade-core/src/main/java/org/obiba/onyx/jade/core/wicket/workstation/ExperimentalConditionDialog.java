@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
@@ -30,10 +31,10 @@ public abstract class ExperimentalConditionDialog extends Panel {
   private final Dialog logDialog = DialogBuilder.buildDialog("experimentalConditionDialog", "Report Dialog", experimentalConditionForm = new ExperimentalConditionForm("content", null)).setOptions(Option.OK_CANCEL_OPTION, "Save").getDialog();
 
   public ExperimentalConditionDialog(String id) {
-    this(id, null);
+    this(id, null, null);
   }
 
-  public ExperimentalConditionDialog(String id, IModel model) {
+  public ExperimentalConditionDialog(String id, IModel model, final IModel<Instrument> instrumentModel) {
     super(id, model);
     logDialog.setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
@@ -42,6 +43,9 @@ public abstract class ExperimentalConditionDialog extends Panel {
         if(status == null || status != null && status.equals(Status.WINDOW_CLOSED)) {
           return true;
         } else if(status.equals(Status.SUCCESS)) {
+          if(instrumentModel != null && instrumentModel.getObject() != null) {
+            experimentalConditionForm.addBarcode(instrumentModel.getObject().getBarcode());
+          }
           experimentalConditionForm.save();
           logDialog.close(target);
           return true;
@@ -63,7 +67,7 @@ public abstract class ExperimentalConditionDialog extends Panel {
   }
 
   protected void setExperimentalConditionLog(ExperimentalConditionLog experimentalConditionLog) {
-    experimentalConditionForm.setDefaultModel(new Model(experimentalConditionLog));
+    experimentalConditionForm.setDefaultModel(new Model<ExperimentalConditionLog>(experimentalConditionLog));
     experimentalConditionForm.addComponents();
   }
 }

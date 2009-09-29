@@ -47,6 +47,8 @@ public class ExperimentalConditionForm extends Panel {
 
   private static final long serialVersionUID = 1L;
 
+  private final String BARCODE = "Barcode";
+
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
 
@@ -276,6 +278,15 @@ public class ExperimentalConditionForm extends Panel {
   public void save() {
     experimentalCondition.setTime(new Date());
     experimentalConditionService.save(experimentalCondition);
+  }
+
+  public void addBarcode(String barcode) {
+    ExperimentalConditionValue experimentalConditionValue = new ExperimentalConditionValue();
+    experimentalConditionValue.setAttributeName(BARCODE);
+    experimentalConditionValue.setAttributeType(DataType.TEXT);
+    experimentalCondition.addExperimentalConditionValue(experimentalConditionValue);
+    experimentalConditionValue.setExperimentalCondition(experimentalCondition);
+    experimentalConditionValue.setData(new Data(DataType.TEXT, barcode));
   }
 
 }
