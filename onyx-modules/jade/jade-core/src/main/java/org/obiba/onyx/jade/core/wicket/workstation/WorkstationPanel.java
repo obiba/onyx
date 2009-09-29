@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -42,6 +43,7 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
@@ -188,7 +190,7 @@ public class WorkstationPanel extends Panel {
             template.setName(calibrate.getName());
             List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
             if(calibrations.size() > 0) {
-              cellItem.add(new Label(componentId, new Model(calibrations.get(0).getTime())));
+              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<InstrumentListColumnProvider>(InstrumentListColumnProvider.this, "dateTimeFormat"), new Model(calibrations.get(0).getTime()))));
               return;
             }
           }

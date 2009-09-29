@@ -49,9 +49,7 @@ public class ViewCalibrationLogPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        System.out.println("click");
         logDialog.show(target);
-
       }
     };
     ContextImage commentIcon = new ContextImage("viewCalibrationLogImage", new Model<String>("icons/loupe_button.png"));
