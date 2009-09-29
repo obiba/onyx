@@ -101,4 +101,16 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
 
     getPersistenceManager().save(persitedIntrument);
   }
+
+  public void updateStatus(Instrument instrument, InstrumentStatus status) {
+    Instrument persistedInstrument = getPersistenceManager().get(Instrument.class, instrument.getId());
+    persistedInstrument.setStatus(status);
+    getPersistenceManager().save(persistedInstrument);
+  }
+
+  public void updateWorkstation(Instrument instrument, String workstation) {
+    Instrument persistedInstrument = getPersistenceManager().get(Instrument.class, instrument.getId());
+    persistedInstrument.setWorkstation(workstation);
+    getPersistenceManager().save(persistedInstrument);
+  }
 }

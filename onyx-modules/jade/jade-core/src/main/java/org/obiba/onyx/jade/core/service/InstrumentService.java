@@ -15,6 +15,7 @@ import java.util.Map;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 public interface InstrumentService {
@@ -94,4 +95,16 @@ public interface InstrumentService {
    * @param instrument
    */
   public void updateInstrument(Instrument instrument);
+
+  /**
+   * Update the instrument's status.
+   * @param instrument, status
+   */
+  public void updateStatus(Instrument instrument, InstrumentStatus status);
+
+  /**
+   * Update the instrument's workstation.
+   * @param instrument, workstation
+   */
+  public void updateWorkstation(Instrument instrument, String workstation);
 }

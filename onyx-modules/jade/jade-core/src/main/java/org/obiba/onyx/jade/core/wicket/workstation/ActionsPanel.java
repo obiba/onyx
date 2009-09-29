@@ -22,9 +22,11 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
@@ -35,6 +37,12 @@ public class ActionsPanel extends ExperimentalConditionDialog {
 
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
+
+  @SpringBean
+  private InstrumentService instrumentService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   public ActionsPanel(String id, IModel<Instrument> model) {
     super(id, model);
@@ -65,6 +73,7 @@ public class ActionsPanel extends ExperimentalConditionDialog {
   private List<LinkInfo> getListOfLinkInfo(Instrument instrument) {
     List<LinkInfo> linkInfoList = new ArrayList<LinkInfo>();
     linkInfoList.add(new CalibrateLinkInfo("Calibrate", instrument));
+    linkInfoList.add(new AssignLinkInfo("Assign", instrument));
     linkInfoList.add(new ReleaseLinkInfo("Release", instrument));
     linkInfoList.add(new InactivateLinkInfo("Inactivate", instrument));
     linkInfoList.add(new ActivateLinkInfo("Activate", instrument));
@@ -129,6 +138,25 @@ public class ActionsPanel extends ExperimentalConditionDialog {
     }
   }
 
+  private class AssignLinkInfo extends LinkInfo {
+    private static final long serialVersionUID = 1L;
+
+    public AssignLinkInfo(String name, Instrument instrument) {
+      super(name, instrument);
+    }
+
+    @Override
+    public boolean isVisible() {
+      return instrument.getWorkstation() == null;
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      instrumentService.updateWorkstation(instrument, userSessionService.getWorkstation());
+      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+    }
+  }
+
   private class ReleaseLinkInfo extends LinkInfo {
     private static final long serialVersionUID = 1L;
 
@@ -138,13 +166,13 @@ public class ActionsPanel extends ExperimentalConditionDialog {
 
     @Override
     public boolean isVisible() {
-      return instrument.getStatus().equals(InstrumentStatus.ACTIVE);
+      return (instrument.getWorkstation() != null);
     }
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      // TODO Auto-generated method stub
-
+      instrumentService.updateWorkstation(instrument, null);
+      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
     }
   }
 
@@ -162,8 +190,8 @@ public class ActionsPanel extends ExperimentalConditionDialog {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      // TODO Auto-generated method stub
-
+      instrumentService.updateStatus(instrument, InstrumentStatus.INACTIVE);
+      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
     }
   }
 
@@ -181,8 +209,8 @@ public class ActionsPanel extends ExperimentalConditionDialog {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      // TODO Auto-generated method stub
-
+      instrumentService.updateStatus(instrument, InstrumentStatus.ACTIVE);
+      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
     }
   }
 }
