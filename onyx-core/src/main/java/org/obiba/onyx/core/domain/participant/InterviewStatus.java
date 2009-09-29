@@ -10,5 +10,12 @@
 package org.obiba.onyx.core.domain.participant;
 
 public enum InterviewStatus {
-  NOT_STARTED, IN_PROGRESS, COMPLETED, INTERRUPTED, CANCELLED, CLOSED
+  /** Interview has begun, but is not yet complete. */
+  IN_PROGRESS,
+  /** Participant left before completing interview. */
+  CLOSED,
+  /** The participant has withdrawn from the study. */
+  CANCELLED,
+  /** Interview complete. Conclusion executed. */
+  COMPLETED
 }

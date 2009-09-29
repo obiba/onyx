@@ -180,7 +180,7 @@ public class ParticipantSearchPageTest {
 
     Interview i = new Interview();
     i.setId(1);
-    i.setStatus(InterviewStatus.NOT_STARTED);
+    i.setStatus(InterviewStatus.IN_PROGRESS);
     p.setInterview(i);
     participants.add(p);
 
@@ -201,7 +201,7 @@ public class ParticipantSearchPageTest {
 
     Interview i2 = new Interview();
     i2.setId(2);
-    i2.setStatus(InterviewStatus.NOT_STARTED);
+    i2.setStatus(InterviewStatus.IN_PROGRESS);
     p2.setInterview(i2);
     participants.add(p2);
 

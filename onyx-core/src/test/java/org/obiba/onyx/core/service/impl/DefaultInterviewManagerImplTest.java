@@ -207,7 +207,7 @@ public class DefaultInterviewManagerImplTest {
     interviewManager.setPersistenceManager(mockPersistenceManager);
 
     Interview firstInterview = new Interview();
-    firstInterview.setStatus(InterviewStatus.INTERRUPTED);
+    firstInterview.setStatus(InterviewStatus.CLOSED);
     firstParticipant.setInterview(firstInterview);
 
     // Record expected behaviour.

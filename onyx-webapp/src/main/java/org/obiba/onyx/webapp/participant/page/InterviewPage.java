@@ -253,7 +253,7 @@ public class InterviewPage extends BasePage {
         @Override
         public boolean isVisible() {
           InterviewStatus status = activeInterviewService.getInterview().getStatus();
-          return (status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED);
+          return !(status == InterviewStatus.CANCELLED);
         }
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
@@ -301,7 +301,7 @@ public class InterviewPage extends BasePage {
         @Override
         public boolean isVisible() {
           InterviewStatus status = activeInterviewService.getInterview().getStatus();
-          return (status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED);
+          return (status == InterviewStatus.IN_PROGRESS);
         }
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
