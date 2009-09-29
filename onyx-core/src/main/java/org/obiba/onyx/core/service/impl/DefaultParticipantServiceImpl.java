@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -17,10 +18,13 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
+import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +41,8 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultParticipantServiceImpl.class);
+
+  private ModuleRegistry moduleRegistry;
 
   private static final String START_ACTION_DEFINITION_CODE = "action.START";
 
@@ -116,4 +122,37 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return getPersistenceManager().matchOne(participant);
   }
 
+  public void deleteParticipant(Participant participant) {
+
+    Action template = new Action();
+    template.setInterview(participant.getInterview());
+    List<Action> actions = getPersistenceManager().match(template);
+    for(Action action : actions) {
+      getPersistenceManager().delete(action);
+    }
+
+    StageExecutionMemento template2 = new StageExecutionMemento();
+    template2.setInterview(participant.getInterview());
+    List<StageExecutionMemento> mementos = getPersistenceManager().match(template2);
+    for(StageExecutionMemento memento : mementos) {
+      getPersistenceManager().delete(memento);
+    }
+
+    getPersistenceManager().delete(participant);
+
+    // Delete the participant data for each Onyx module.
+    Collection<Module> modules = moduleRegistry.getModules();
+    for(Module module : modules) {
+      module.delete(participant);
+    }
+
+  }
+
+  public ModuleRegistry getModuleRegistry() {
+    return moduleRegistry;
+  }
+
+  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    this.moduleRegistry = moduleRegistry;
+  }
 }

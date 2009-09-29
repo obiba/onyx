@@ -75,7 +75,7 @@ public class Participant extends AbstractEntity {
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
   private Appointment appointment;
 
-  @OneToOne(mappedBy = "participant")
+  @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
   private Interview interview;
 
   private Boolean exported;

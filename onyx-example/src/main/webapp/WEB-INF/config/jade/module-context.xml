@@ -13,6 +13,7 @@
   </bean>
 
   <bean id="jadeModule" class="org.obiba.onyx.jade.engine.JadeModule">
+    <property name="instrumentRunService" ref="instrumentRunService" />  
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />

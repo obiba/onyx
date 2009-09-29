@@ -29,6 +29,7 @@ import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
@@ -47,6 +48,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   private ActiveInterviewService activeInterviewService;
 
   private InstrumentService instrumentService;
+
+  private InstrumentRunService instrumentRunService;
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
@@ -149,6 +152,14 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.instrumentService = instrumentService;
   }
 
+  public InstrumentRunService getInstrumentRunService() {
+    return instrumentRunService;
+  }
+
+  public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
+    this.instrumentRunService = instrumentRunService;
+  }
+
   public void setInstrumentTypeToVariableMappingStrategy(IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy) {
     this.instrumentTypeToVariableMappingStrategy = instrumentTypeToVariableMappingStrategy;
   }
@@ -183,4 +194,9 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   public boolean isInteractive() {
     return true;
   }
+
+  public void delete(Participant participant) {
+    instrumentRunService.deleteAllInstrumentRuns(participant);
+  }
+
 }

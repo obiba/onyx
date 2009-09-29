@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CollectionOfElements;
 import org.obiba.core.domain.AbstractEntity;
 
@@ -40,6 +42,7 @@ public class RegisteredParticipantTube extends AbstractEntity {
   private Date registrationTime;
 
   @CollectionOfElements
+  @Cascade(CascadeType.ALL)
   private Set<String> remarks;
 
   @Column(length = 2000)
@@ -64,12 +67,6 @@ public class RegisteredParticipantTube extends AbstractEntity {
   public Date getRegistrationTime() {
     return registrationTime;
   }
-
-  /*
-   * public void setRemarkCode(String remarkCode) { this.remarkCode = remarkCode; }
-   * 
-   * public String getRemarkCode() { return remarkCode; }
-   */
 
   public void setComment(String comment) {
     this.comment = comment;

@@ -23,6 +23,8 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.impl.hibernate.InstrumentRunServiceHibernateImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,4 +116,36 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
     }
   }
 
+  @Test
+  @Dataset
+  public void testDeleteInstrumentRun() {
+    defaultInstrumentRunService.deleteInstrumentRun(persistenceManager.get(Participant.class, 1l), "StandingHeight");
+
+    Assert.assertNull(persistenceManager.get(InstrumentRun.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(InstrumentRun.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(InstrumentRun.class, 3l));
+
+    Assert.assertNull(persistenceManager.get(Measure.class, 1l));
+    Assert.assertNull(persistenceManager.get(Measure.class, 2l));
+
+    Assert.assertNull(persistenceManager.get(InstrumentRunValue.class, 1l));
+    Assert.assertNull(persistenceManager.get(InstrumentRunValue.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(InstrumentRunValue.class, 3l));
+
+  }
+
+  @Test
+  @Dataset
+  public void testDeleteAllInstrumentRuns() {
+    defaultInstrumentRunService.deleteAllInstrumentRuns(persistenceManager.get(Participant.class, 2l));
+
+    Assert.assertNotNull(persistenceManager.get(InstrumentRun.class, 1l));
+    Assert.assertNull(persistenceManager.get(InstrumentRun.class, 2l));
+    Assert.assertNull(persistenceManager.get(InstrumentRun.class, 3l));
+
+    Assert.assertNotNull(persistenceManager.get(InstrumentRunValue.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(InstrumentRunValue.class, 2l));
+    Assert.assertNull(persistenceManager.get(InstrumentRunValue.class, 3l));
+
+  }
 }

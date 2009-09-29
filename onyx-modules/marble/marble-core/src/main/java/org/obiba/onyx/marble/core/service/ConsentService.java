@@ -42,4 +42,12 @@ public interface ConsentService {
    */
   public EnumSet<ConsentMode> getSupportedConsentModes();
 
+  /**
+   * Remove all Consents (marked as deleted or not) related to the specified Interview. This is meant to be used by the
+   * purge operation of Onyx.
+   * 
+   * @param interview Interview for which all Consents will be deleted.
+   */
+  public void purgeConsent(Interview interview);
+
 }

@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.domain.answer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -39,7 +40,7 @@ public class QuestionAnswer extends AbstractEntity {
   @JoinColumn(name = "questionnaire_participant_id")
   private QuestionnaireParticipant questionnaireParticipant;
 
-  @OneToMany(mappedBy = "questionAnswer")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionAnswer")
   private List<CategoryAnswer> categoryAnswers;
 
   public String getQuestionName() {

@@ -84,4 +84,10 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
       throw ex;
     }
   }
+
+  public void purgeConsent(Interview interview) {
+    Consent template = new Consent();
+    template.setInterview(interview);
+    getPersistenceManager().delete(template);
+  }
 }

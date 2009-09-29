@@ -33,6 +33,13 @@ public interface QuestionnaireParticipantService {
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
   /**
+   * Deletes all the QuestionnaireParticipant associated to a Participant.
+   * 
+   * @param participant
+   */
+  public void deleteAllQuestionnairesParticipant(Participant participant);
+
+  /**
    * Set the answers of given questionnaire participant as being inactive.
    * @param questionnaireParticipant
    */

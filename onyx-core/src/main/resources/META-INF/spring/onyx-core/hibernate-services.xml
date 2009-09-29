@@ -8,6 +8,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <bean id="participantService"
     class="org.obiba.onyx.core.service.impl.hibernate.ParticipantServiceHibernateImpl" scope="singleton">
+    <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>

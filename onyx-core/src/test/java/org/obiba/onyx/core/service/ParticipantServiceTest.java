@@ -19,8 +19,14 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
+import org.obiba.core.test.spring.DatasetOperationType;
+import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
+import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
+import org.obiba.onyx.core.domain.stage.StageTransition;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -200,5 +206,71 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     participantService.cleanUpAppointment();
     // Participant with ids 1, 2 and 4 are kept
     Assert.assertEquals(3, persistenceManager.count(Participant.class));
+  }
+
+  @Test
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
+  public void testDeleteParticipant() {
+
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 3l));
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 4l));
+
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 3l));
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 4l));
+
+    Assert.assertNotNull(persistenceManager.get(Interview.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Interview.class, 2l));
+    Assert.assertNull(persistenceManager.get(Interview.class, 3l));
+    Assert.assertNull(persistenceManager.get(Interview.class, 4l));
+
+    Assert.assertNotNull(persistenceManager.get(ParticipantAttributeValue.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(ParticipantAttributeValue.class, 2l));
+
+    Assert.assertNotNull(persistenceManager.get(Action.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Action.class, 2l));
+
+    Assert.assertNotNull(persistenceManager.get(StageTransition.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(StageTransition.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(StageTransition.class, 3l));
+    Assert.assertNotNull(persistenceManager.get(StageTransition.class, 4l));
+
+    Assert.assertNotNull(persistenceManager.get(StageExecutionMemento.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(StageExecutionMemento.class, 2l));
+
+    participantService.deleteParticipant(persistenceManager.get(Participant.class, 1l));
+
+    Assert.assertNull(persistenceManager.get(Participant.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 3l));
+    Assert.assertNotNull(persistenceManager.get(Participant.class, 4l));
+
+    Assert.assertNull(persistenceManager.get(Appointment.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 3l));
+    Assert.assertNotNull(persistenceManager.get(Appointment.class, 4l));
+
+    Assert.assertNull(persistenceManager.get(Interview.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(Interview.class, 2l));
+    Assert.assertNull(persistenceManager.get(Interview.class, 3l));
+    Assert.assertNull(persistenceManager.get(Interview.class, 4l));
+
+    Assert.assertNull(persistenceManager.get(ParticipantAttributeValue.class, 1l));
+    Assert.assertNull(persistenceManager.get(ParticipantAttributeValue.class, 2l));
+
+    Assert.assertNull(persistenceManager.get(Action.class, 1l));
+    Assert.assertNull(persistenceManager.get(Action.class, 2l));
+
+    Assert.assertNull(persistenceManager.get(StageTransition.class, 1l));
+    Assert.assertNull(persistenceManager.get(StageTransition.class, 2l));
+    Assert.assertNull(persistenceManager.get(StageTransition.class, 3l));
+    Assert.assertNull(persistenceManager.get(StageTransition.class, 4l));
+
+    Assert.assertNull(persistenceManager.get(StageExecutionMemento.class, 1l));
+    Assert.assertNull(persistenceManager.get(StageExecutionMemento.class, 2l));
+
   }
 }

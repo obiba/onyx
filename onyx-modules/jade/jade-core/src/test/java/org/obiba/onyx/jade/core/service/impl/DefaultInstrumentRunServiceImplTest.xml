@@ -13,6 +13,12 @@
     
   <instrument_run id="1" instrument_type="StandingHeight" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="13" participant_id="1" user_id="1" />
   <instrument_run id="2" instrument_type="StandingHeight" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="13" participant_id="2" user_id="1" />  
-  
-  <instrument_run_value />
+  <instrument_run id="3" instrument_type="ArtStiffness" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="1" participant_id="2" user_id="1" />
+   
+  <measure id="1" instrument_barcode="1" status="VALID" time="2009-03-23 02:00:00" instrument_run_id="1" user_id="1"/>
+  <measure id="2" instrument_barcode="1" status="VALID" time="2009-03-23 02:00:00" instrument_run_id="1" user_id="1"/>  
+    
+  <instrument_run_value id="1" text_value="test" instrument_run_id="1" measure_id="1" instrument_parameter="test1" capture_method="MANUAL"/>
+  <instrument_run_value id="2" text_value="test" instrument_run_id="1" measure_id="2" instrument_parameter="test2" capture_method="MANUAL"/>  
+  <instrument_run_value id="3" text_value="test" instrument_run_id="2" instrument_parameter="test3" capture_method="MANUAL"/>  
 </dataset>

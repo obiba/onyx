@@ -29,6 +29,7 @@ import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,8 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   private ApplicationContext applicationContext;
 
   private ActiveInterviewService activeInterviewService;
+
+  private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   private ITubeToVariableMappingStrategy tubeToVariableMappingStrategy;
 
@@ -341,5 +344,9 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
   public boolean isInteractive() {
     return false;
+  }
+
+  public void delete(Participant participant) {
+    activeTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
   }
 }

@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.domain.answer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -43,7 +44,7 @@ public class CategoryAnswer extends AbstractEntity {
   @OneToMany(mappedBy = "parentCategoryAnswer")
   private List<CategoryAnswer> childrenCategoryAnswers;
 
-  @OneToMany(mappedBy = "categoryAnswer")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryAnswer")
   private List<OpenAnswer> openAnswers;
 
   public QuestionAnswer getQuestionAnswer() {

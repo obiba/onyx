@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.state.IStageExecution;
 
 /**
@@ -74,9 +75,15 @@ public interface Module {
   public Component getWidget(String id);
 
   /**
-   * Say if {@link #getWidget(String)} will return a non null value. This decides if te module is part of the
+   * Say if {@link #getWidget(String)} will return a non null value. This decides if the module is part of the
    * configurable ones.
    * @return
    */
   public boolean isInteractive();
+
+  /**
+   * Delete all participant's data in the scope of the current module.
+   */
+  public void delete(Participant participant);
+
 }

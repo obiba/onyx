@@ -32,6 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.service.SortingClause;
+import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
@@ -41,12 +43,13 @@ import org.obiba.onyx.ruby.core.domain.Remark;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
  * Unit tests for <code>ActiveTubeRegistrationServiceImpl</code>
  */
-public class ActiveTubeRegistrationServiceImplTest {
+public class ActiveTubeRegistrationServiceImplTest extends BaseDefaultSpringContextTestCase {
 
   /**
    * Name of first tube registration configuration.
@@ -61,6 +64,9 @@ public class ActiveTubeRegistrationServiceImplTest {
   private ActiveTubeRegistrationServiceImpl service;
 
   private PersistenceManager persistenceManagerMock;
+
+  @Autowired
+  private PersistenceManager persistenceManager;
 
   private TubeRegistrationConfiguration firstTubeRegistrationConfig;
 
@@ -442,4 +448,35 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     return tubeRegistrationConfiguration;
   }
+
+  @Test
+  @Dataset
+  public void testDeleteAllParticipantTubeRegistrations() {
+    service.setPersistenceManager(persistenceManager);
+
+    Assert.assertNotNull(persistenceManager.get(ParticipantTubeRegistration.class, 77l));
+    Assert.assertNotNull(persistenceManager.get(ParticipantTubeRegistration.class, 78l));
+    Assert.assertNotNull(persistenceManager.get(ParticipantTubeRegistration.class, 79l));
+
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 1l));
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 2l));
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 3l));
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 4l));
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 5l));
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 6l));
+
+    service.deleteAllParticipantTubeRegistrations(persistenceManager.get(Participant.class, 77l));
+
+    Assert.assertNull(persistenceManager.get(ParticipantTubeRegistration.class, 77l));
+    Assert.assertNull(persistenceManager.get(ParticipantTubeRegistration.class, 78l));
+    Assert.assertNotNull(persistenceManager.get(ParticipantTubeRegistration.class, 79l));
+
+    Assert.assertNull(persistenceManager.get(RegisteredParticipantTube.class, 1l));
+    Assert.assertNull(persistenceManager.get(RegisteredParticipantTube.class, 2l));
+    Assert.assertNull(persistenceManager.get(RegisteredParticipantTube.class, 3l));
+    Assert.assertNull(persistenceManager.get(RegisteredParticipantTube.class, 4l));
+    Assert.assertNull(persistenceManager.get(RegisteredParticipantTube.class, 5l));
+    Assert.assertNotNull(persistenceManager.get(RegisteredParticipantTube.class, 6l));
+  }
+
 }

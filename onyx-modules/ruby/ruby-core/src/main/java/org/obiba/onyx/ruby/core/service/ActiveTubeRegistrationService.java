@@ -138,4 +138,11 @@ public interface ActiveTubeRegistrationService {
    * @param stageName the associated Ruby stage
    */
   public void deleteParticipantTubeRegistration(String stageName);
+
+  /**
+   * Deletes the {@link ParticipantTubeRegistration}s and associated objects of a specific {@link Participant}.
+   * 
+   * @param participant The participant.
+   */
+  public void deleteAllParticipantTubeRegistrations(Participant participant);
 }

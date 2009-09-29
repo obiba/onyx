@@ -19,7 +19,21 @@
   <interview id="1"
    status="IN_PROGRESS" 
    participant_id="1" />
-
+   
+  <action id="1" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
+  <action id="2" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
+  
+  <stage_transition id="1" event="test" from_state="Ready" to_state="InProgress" stage="stage" action_id="1" interview_id="1" />
+  <stage_transition id="2" event="test" from_state="Ready" to_state="InProgress" stage="stage" action_id="1" interview_id="1" />
+  <stage_transition id="3" event="test" from_state="Ready" to_state="InProgress" stage="stage" action_id="2" interview_id="1" />
+  <stage_transition id="4" event="test" from_state="Ready" to_state="InProgress" stage="stage" action_id="2" interview_id="1" /> 
+   
+  <participant_attribute_value id="1" attribute_name="attribute1" attribute_type="TEXT" text_value="test" participant_id="1"/>   
+  <participant_attribute_value id="2" attribute_name="attribute2" attribute_type="TEXT" text_value="test" participant_id="1"/>   
+  
+  <stage_execution_memento id="1" stage="stage1" state="InProgress" action_id="1" interview_id="1"/>
+  <stage_execution_memento id="2" stage="stage1" state="InProgress" action_id="1" interview_id="1"/>  
+  
   <participant id="2" 
     barcode="2"
     enrollment_id="100002"

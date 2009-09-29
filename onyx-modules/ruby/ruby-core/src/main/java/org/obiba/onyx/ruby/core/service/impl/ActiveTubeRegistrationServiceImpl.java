@@ -405,4 +405,13 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       throw new IllegalArgumentException("No tube with barcode '" + barcode + "' has been registered");
     }
   }
+
+  public void deleteAllParticipantTubeRegistrations(Participant participant) {
+    ParticipantTubeRegistration template = new ParticipantTubeRegistration();
+    template.setInterview(participant.getInterview());
+    List<ParticipantTubeRegistration> tubeRegistrations = getPersistenceManager().match(template);
+    for(ParticipantTubeRegistration tubeRegistration : tubeRegistrations) {
+      getPersistenceManager().delete(tubeRegistration);
+    }
+  }
 }

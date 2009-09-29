@@ -50,6 +50,12 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
     }
   }
 
+  public void deleteAllInstrumentRuns(Participant participant) {
+    for(InstrumentType type : instrumentTypes.values()) {
+      deleteInstrumentRun(participant, type.getName());
+    }
+  }
+
   public void updateMeasureStatus(Measure measure, MeasureStatus status) {
     measure.setStatus(status);
     getPersistenceManager().save(measure);

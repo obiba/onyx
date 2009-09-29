@@ -215,4 +215,9 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
   public boolean isInteractive() {
     return false;
   }
+
+  public void delete(Participant participant) {
+    questionnaireParticipantService.deleteAllQuestionnairesParticipant(participant);
+  }
+
 }

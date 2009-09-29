@@ -54,7 +54,7 @@ public class QuestionnaireParticipant extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeEnd;
 
-  @OneToMany(mappedBy = "questionnaireParticipant")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionnaireParticipant")
   private List<QuestionAnswer> questionAnswers;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionnaireParticipant")

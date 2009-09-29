@@ -44,6 +44,13 @@ public interface InstrumentRunService {
   public void deleteInstrumentRun(Participant participant, String instrumentTypeName);
 
   /**
+   * Deletes the InstrumentRuns of a specific Participant.
+   * 
+   * @param participant The participant
+   */
+  public void deleteAllInstrumentRuns(Participant participant);
+
+  /**
    * Updates the status of the selected measure.
    * 
    * @param measure The measure to update.

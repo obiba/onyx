@@ -18,6 +18,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 
 public interface ParticipantService {
@@ -121,4 +122,11 @@ public interface ParticipantService {
    * Delete all appointments that have not been received
    */
   public void cleanUpAppointment();
+
+  /**
+   * Deletes the participant and his data (including the data stored by each {@link Module} of Onyx)
+   * 
+   * @param participant Participant to delete.
+   */
+  public void deleteParticipant(Participant participant);
 }

@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
+import org.obiba.core.test.spring.DatasetOperationType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -61,7 +62,7 @@ public class InstrumentRunServiceHibernateImplTest extends BaseDefaultSpringCont
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void getInstrumentRunValueInstrumentNameTypeIsNullTest() {
     newInstrumentRunServiceHibernateImpl.getInstrumentRunValue(participantLauraDupont, null, "parameterCode", 0);
   }
@@ -76,6 +77,7 @@ public class InstrumentRunServiceHibernateImplTest extends BaseDefaultSpringCont
   }
 
   @Test(expected = IllegalArgumentException.class)
+  @Dataset
   public void getInstrumentRunValueParticipantIsNullTest() {
     newInstrumentRunServiceHibernateImpl.getInstrumentRunValue(null, "StandingHeight", "parameterCode", 0);
   }

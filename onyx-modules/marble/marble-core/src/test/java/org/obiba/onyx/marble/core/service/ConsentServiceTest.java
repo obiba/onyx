@@ -77,4 +77,20 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   }
 
+  @Test
+  public void testPurgeConsent() {
+    Interview interview = createInterview();
+    createConsent(interview);
+    createConsent(interview);
+    createConsent(interview);
+    persistenceManager.save(interview);
+
+    consentService.purgeConsent(interview);
+
+    Consent template = new Consent();
+    template.setInterview(interview);
+
+    Assert.assertEquals(persistenceManager.match(template).size(), 0);
+  }
+
 }

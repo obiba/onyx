@@ -15,7 +15,6 @@ import java.util.List;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
@@ -30,29 +29,16 @@ public abstract class DefaultQuestionnaireParticipantServiceImpl extends Persist
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant) {
     if(questionnaireParticipant == null) return;
     if(questionnaireParticipant.getId() == null) return;
-
-    QuestionAnswer questionAnswerTemplate = new QuestionAnswer();
-    questionAnswerTemplate.setQuestionnaireParticipant(questionnaireParticipant);
-
-    for(QuestionAnswer questionAnswer : getPersistenceManager().match(questionAnswerTemplate)) {
-      CategoryAnswer template = new CategoryAnswer();
-      template.setQuestionAnswer(questionAnswer);
-      List<CategoryAnswer> categoryAnswerList = getPersistenceManager().match(template);
-
-      for(CategoryAnswer categoryAnswer : categoryAnswerList) {
-
-        OpenAnswer openAnswerTemplate = new OpenAnswer();
-        openAnswerTemplate.setCategoryAnswer(categoryAnswer);
-
-        for(OpenAnswer openAnswer : getPersistenceManager().match(openAnswerTemplate)) {
-          getPersistenceManager().delete(openAnswer);
-        }
-        getPersistenceManager().delete(categoryAnswer);
-      }
-      getPersistenceManager().delete(questionAnswer);
-    }
-
     getPersistenceManager().delete(questionnaireParticipant);
+  }
+
+  public void deleteAllQuestionnairesParticipant(Participant participant) {
+    QuestionnaireParticipant template = new QuestionnaireParticipant();
+    template.setParticipant(participant);
+    List<QuestionnaireParticipant> questionnaires = getPersistenceManager().match(template);
+    for(QuestionnaireParticipant questionnaireParticipant : questionnaires) {
+      deleteQuestionnaireParticipant(questionnaireParticipant);
+    }
   }
 
   public void inactivateQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant) {

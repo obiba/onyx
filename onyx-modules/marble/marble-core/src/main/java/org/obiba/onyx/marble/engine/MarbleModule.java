@@ -212,4 +212,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     return false;
   }
 
+  public void delete(Participant participant) {
+    consentService.purgeConsent(participant.getInterview());
+  }
+
 }
