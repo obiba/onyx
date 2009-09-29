@@ -162,6 +162,26 @@ function resizeNumericPad() {
 }
 
 //////////////////////////////////////////////////////////////////////
+// NavigationUtil class
+//////////////////////////////////////////////////////////////////////
+
+NavigationUtil = {}
+
+NavigationUtil.previous = function() {
+  var previousButton = $('input.obiba-nav-prev');
+  if (previousButton) {
+    previousButton.click();
+  }
+}
+	    
+NavigationUtil.next = function() {
+  var nextButton = $('input.obiba-nav-next');
+  if (nextButton) {
+    nextButton.click();
+  }
+}
+
+//////////////////////////////////////////////////////////////////////
 // Participant search navigation bar styling
 //////////////////////////////////////////////////////////////////////
 function styleParticipantSearchNavigationBar() {	

@@ -42,6 +42,7 @@ public class AbstractBasePage extends WebPage implements IHeaderContributor {
   public void renderHead(IHeaderResponse response) {
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.layout.js"));
+    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.hotkeys.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "ui.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }

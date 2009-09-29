@@ -11,8 +11,8 @@
 				<input type="button" class="obiba-button obiba-quartz-nav-admin" wicket:id="adminLink"/>
 			</span>
 			<span class="obiba-nav-right">
-				<input type="button" class="obiba-button obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
-				<input type="button" class="obiba-button obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
+				<input id="previousButton" type="button" class="obiba-button obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
+				<input id="nextButton" type="button" class="obiba-button obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
 			</span>
 			<span style="display: none;">
 				<input type="submit" class="obiba-button obiba-nav-finish" wicket:id="finish" style="display:none;"/>
@@ -23,9 +23,17 @@
 		</div>
 		<div wicket:id="adminWindow" ></div>
 	</form>	
-	<script language="JavaScript">
+	<script language="JavaScript">	    
+        /* Navigation hotkeys */
+		$(document).bind('keydown', 'Ctrl+left', function(evt) {
+          NavigationUtil.previous();
+        });
+		$(document).bind('keydown', 'Ctrl+right', function(evt) { 
+          NavigationUtil.next();
+        });
+		
 		WindowUtil.attachEvent("load", Resizer.resizeWizard);
-		WindowUtil.attachEvent("resize", Resizer.resizeWizard);			
+		WindowUtil.attachEvent("resize", Resizer.resizeWizard);
 	</script>	
 </wicket:panel>
 
