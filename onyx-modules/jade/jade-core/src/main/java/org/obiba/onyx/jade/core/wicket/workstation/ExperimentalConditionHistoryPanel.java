@@ -10,10 +10,12 @@
 package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -24,11 +26,13 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
@@ -36,6 +40,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
@@ -47,6 +52,9 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   public ExperimentalConditionHistoryPanel(String id, ExperimentalCondition template, IModel<String> title, int pageSize) {
     super(id);
@@ -96,7 +104,14 @@ public class ExperimentalConditionHistoryPanel extends Panel {
     public ExperimentalConditionColumnProvider(ExperimentalCondition experimentalCondition) {
       InjectorHolder.getInjector().inject(this);
 
-      columns.add(new PropertyColumn<ExperimentalCondition>(new ResourceModel("DateTime", "DateTime"), "time", "time"));
+      columns.add(new AbstractColumn<ExperimentalCondition>(new ResourceModel("DateTime", "DateTime"), "time") {
+        private static final long serialVersionUID = 1L;
+
+        public void populateItem(Item<ICellPopulator<ExperimentalCondition>> cellItem, String componentId, IModel<ExperimentalCondition> rowModel) {
+          cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<ExperimentalConditionColumnProvider>(ExperimentalConditionColumnProvider.this, "dateTimeFormat"), new PropertyModel<ExperimentalCondition>(rowModel, "time"))));
+        }
+
+      });
       columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("User"), "user", "user.fullName"));
       columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("Workstation"), "workstation", "workstation"));
 
@@ -145,6 +160,10 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     public List getRequiredColumns() {
       return columns;
+    }
+
+    public DateFormat getDateTimeFormat() {
+      return userSessionService.getDateTimeFormat();
     }
 
   }
