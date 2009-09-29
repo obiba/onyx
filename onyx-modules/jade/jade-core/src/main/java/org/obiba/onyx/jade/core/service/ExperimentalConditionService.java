@@ -45,6 +45,4 @@ public interface ExperimentalConditionService {
 
   public Attribute getAttribute(ExperimentalConditionValue experimentalConditionValue);
 
-  public boolean experimentalConditionLogExists(String name);
-
 }

@@ -87,13 +87,6 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
     throw new IllegalStateException("The Attribute [" + experimentalConditionValue.getAttributeName() + "] belonging to the ExperimentalConditionLog [" + experimentalConditionValue.getExperimentalCondition().getName() + "] could not be found.");
   }
 
-  public boolean experimentalConditionLogExists(String name) {
-    for(ExperimentalConditionLog log : experimentalConditionLogs) {
-      if(log.getName().equals(name)) return true;
-    }
-    return false;
-  }
-
   public InstrumentCalibration getInstrumentCalibrationByType(String instrumentType) {
     for(InstrumentCalibration calibration : getInstrumentCalibrations()) {
       if(calibration.getInstrumentType().equalsIgnoreCase(instrumentType)) return calibration;
