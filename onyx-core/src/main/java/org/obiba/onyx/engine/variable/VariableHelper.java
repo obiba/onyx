@@ -28,6 +28,10 @@ public class VariableHelper implements ApplicationContextAware {
 
   public static final String CONDITION = "condition";
 
+  public static final String CAPTUREMETHOD = "captureMethod";
+
+  public static final String ISMANUALCAPTUREALLOWED = "isManualCaptureAllowed";
+
   public static final String SOURCE = "source";
 
   public static final String OCCURRENCECOUNT = "occurrenceCount";
@@ -126,6 +130,14 @@ public class VariableHelper implements ApplicationContextAware {
    */
   public void addLocalizedAttributes(Variable variable) {
     addLocalizedAttributes(variable, variable.getName());
+  }
+
+  public static void addIsManualCaptureAllowedAttribute(Variable variable, Object source) {
+    addAttribute(variable, ISMANUALCAPTUREALLOWED, source);
+  }
+
+  public static void addDefaultCaptureMethodAttribute(Variable variable, Object source) {
+    addAttribute(variable, CAPTUREMETHOD, source);
   }
 
   public static void addConditionAttribute(Variable variable, Object source) {

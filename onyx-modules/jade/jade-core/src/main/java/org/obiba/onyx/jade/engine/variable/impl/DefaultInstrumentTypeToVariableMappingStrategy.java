@@ -36,9 +36,6 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- */
 public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrumentTypeToVariableMappingStrategy {
 
   @SuppressWarnings("unused")
@@ -65,6 +62,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   public static final String MEASURE = "Measure";
 
   public static final String TIME = "time";
+
+  public static final String CAPTUREMETHOD = "captureMethod";
 
   private InstrumentRunService instrumentRunService;
 
@@ -121,8 +120,9 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           measureVariable.addVariable(paramVariable);
         } else {
           typeVariable.addVariable(paramVariable);
-
         }
+
+        paramVariable.addVariable(new Variable(CAPTUREMETHOD).setDataType(DataType.TEXT));
 
         // categorical variables
         if(parameter instanceof InterpretativeParameter) {
@@ -150,6 +150,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
         if(parameter.getCondition() != null) {
           VariableHelper.addConditionAttribute(paramVariable, parameter.getCondition().toString());
         }
+
+        if(parameter.getCaptureMethod() != null) {
+          VariableHelper.addDefaultCaptureMethodAttribute(paramVariable, parameter.getCaptureMethod().toString());
+          if(parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+            VariableHelper.addIsManualCaptureAllowedAttribute(paramVariable, parameter.isManualCaptureAllowed());
+          }
+        }
+
       }
     }
     return typeVariable;
@@ -161,7 +169,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       return varData;
     }
 
-    if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE) || (variable instanceof Category && variable.getParent().getParent().getName().equals(MEASURE))) {
+    if(variable.getParent().getName().equals(MEASURE) || variable.getName().equals(MEASURE) || (variable instanceof Category && variable.getParent().getParent().getName().equals(MEASURE)) || (variable.getName().equals(CAPTUREMETHOD) && variable.getParent().getParent().getName().equals(MEASURE))) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
@@ -186,6 +194,17 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
             data = DataBuilder.buildDate(measure.getTime());
           } else if(variable.getName().equals(BARCODE) && measure.getInstrumentBarcode() != null) {
             data = DataBuilder.buildText(measure.getInstrumentBarcode());
+          } else if(variable.getName().equals(CAPTUREMETHOD)) {
+            Variable parent = variable.getParent();
+            String parentParameterCode = parent.getName();
+            InstrumentRunValue runValue = instrumentRunService.getInstrumentRunValue(participant, type.getName(), parentParameterCode, measurePosition);
+            if(runValue != null && runValue.getInstrumentRun().isCompletedOrContraindicated()) {
+              data = DataBuilder.buildText(runValue.getCaptureMethod().toString());
+              if(data != null && data.getValue() == null) {
+                data = null;
+              }
+            }
+
           } else {
             // parameter name is the variable name
             String parameterCode = variable.getName();
@@ -214,6 +233,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       Data data = getInstrumentRunValue(participant, variable, parameterCode);
       if(data != null && variable.getName().equals(data.getValueAsString())) {
         varData.addData(DataBuilder.buildBoolean(true));
+      }
+    } else if(variable.getName().equals(CAPTUREMETHOD)) {
+      InstrumentType type = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
+      Variable parent = variable.getParent();
+      String parentParameterCode = parent.getName();
+      InstrumentRunValue runValue = instrumentRunService.getInstrumentRunValue(participant, type.getName(), parentParameterCode, null);
+      if(runValue != null && runValue.getInstrumentRun().isCompletedOrContraindicated()) {
+        varData.addData(DataBuilder.buildText(runValue.getCaptureMethod().toString()));
       }
     } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
