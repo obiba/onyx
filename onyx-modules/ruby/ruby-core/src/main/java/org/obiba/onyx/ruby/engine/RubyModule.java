@@ -78,6 +78,10 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   // Module Methods
   //
 
+  public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
+    this.activeTubeRegistrationService = activeTubeRegistrationService;
+  }
+
   public String getName() {
     return "ruby";
   }
@@ -349,4 +353,5 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   public void delete(Participant participant) {
     activeTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
   }
+
 }
