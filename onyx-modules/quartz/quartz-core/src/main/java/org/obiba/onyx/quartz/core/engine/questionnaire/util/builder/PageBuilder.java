@@ -181,7 +181,8 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
 
   /**
    * Add Timestamp question to page.
-   * @return
+   * @return the PageBuilder, for chaining
+   * @deprecated replaced with ONYX-817
    */
   public PageBuilder addTimestamp() {
     // String timestampName = "TIMESTAMP_" + element.getName();
@@ -192,8 +193,9 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
 
   /**
    * Add Timestamp question to page.
-   * @param name
-   * @return
+   * @param name timestamp name
+   * @return the PageBuilder, for chaining
+   * @deprecated replaced with ONYX-817
    */
   public PageBuilder addTimestamp(String name) {
     String timestampName = "TIMESTAMP_" + name;
