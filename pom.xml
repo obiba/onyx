@@ -678,13 +678,13 @@
     <repository>
       <id>obiba.org</id>
       <name>Obiba Maven 2.x Repository</name>
-      <url>http://www.obiba.org/maven2</url>
+      <url>http://maven.obiba.org/maven2</url>
     </repository>
 
     <repository>
       <id>snapshot.obiba.org</id>
       <name>Obiba Snaphot Maven 2.x Repository</name>
-      <url>http://www.obiba.org/maven2-snapshots</url>
+      <url>http://maven.obiba.org/maven2-snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -708,7 +708,7 @@
     <pluginRepository>
       <id>obiba.org</id>
       <name>Obiba Maven 2.x Plugin Repository</name>
-      <url>http://www.obiba.org/maven2</url>
+      <url>http://maven.obiba.org/maven2</url>
     </pluginRepository>
 
     <pluginRepository>
