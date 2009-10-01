@@ -97,6 +97,7 @@ public class DefaultAppointmentManagementServiceImplTest extends BaseDefaultSpri
   public void testSaveAppointmentUpdateStats() {
     Date currentDate = new Date();
     AppointmentUpdateStats appointmentUpdateStats = new AppointmentUpdateStats(currentDate, 43, 2, 20, 3);
+    appointmentUpdateStats.setFileName("testAppointmentFile");
     appointmentServiceImpl.saveAppointmentUpdateStats(appointmentUpdateStats);
 
     AppointmentUpdateStats persistedUpdateStats = persistenceManager.get(AppointmentUpdateStats.class, 1l);
