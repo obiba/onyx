@@ -1,0 +1,15 @@
+<wicket:panel>
+    <div wicket:id="userDetailsModalWindow" />
+    
+    <div class="obiba-content-region">
+	    <h1><wicket:message key="UserManagement" /></h1>
+		<br/>
+		<a class="obiba-button" wicket:id="addUser"><wicket:message key="AddUser" /></a>
+		<br/><br/>	  
+		<span wicket:id="user-list" />
+	</div>
+    <wicket:fragment wicket:id="linkFragment">
+	  <a wicket:id="editLink"><wicket:message key="Edit" /></a>
+	</wicket:fragment>
+</wicket:panel>
+

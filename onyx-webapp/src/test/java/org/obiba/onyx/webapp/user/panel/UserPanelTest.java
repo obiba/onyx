@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -38,6 +37,7 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.wicket.test.MockSpringApplication;
 
 public class UserPanelTest {
@@ -74,7 +74,7 @@ public class UserPanelTest {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
-        return (new UserPanel(panelId, new Model(u), new ModalWindow("windowMock")));
+        return (new UserPanel(panelId, new Model(u), new Dialog("windowMock")));
       }
     });
 
@@ -105,7 +105,7 @@ public class UserPanelTest {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
-        return (new UserPanel(panelId, new Model(u), new ModalWindow("windowMock")));
+        return (new UserPanel(panelId, new Model(u), new Dialog("windowMock")));
       }
     });
 
@@ -141,7 +141,7 @@ public class UserPanelTest {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
-        return (userPanel = new UserPanel(panelId, new Model(u), new ModalWindow("windowMock")));
+        return (userPanel = new UserPanel(panelId, new Model(u), new Dialog("windowMock")));
       }
     });
 
@@ -174,7 +174,7 @@ public class UserPanelTest {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
-        return (userPanel = new UserPanel(panelId, new Model(u), new ModalWindow("windowMock")));
+        return (userPanel = new UserPanel(panelId, new Model(u), new Dialog("windowMock")));
       }
     });
 
@@ -211,9 +211,11 @@ public class UserPanelTest {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
-        return (userPanel = new UserPanel(panelId, new Model(u), new ModalWindow("windowMock")));
+        return (userPanel = new UserPanel(panelId, new Model(u), new Dialog("windowMock")));
       }
     });
+
+    tester.dumpPage();
 
     FormTester formTester = tester.newFormTester("panel:userPanelForm");
     formTester.setValue("lastName", "Tremblay");

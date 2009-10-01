@@ -18,9 +18,9 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.webapp.administration.page.AdministrationPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.user.page.ProfilePage;
-import org.obiba.onyx.webapp.user.page.UserSearchPage;
 
 public class HeaderPanel extends Panel {
 
@@ -52,7 +52,7 @@ public class HeaderPanel extends Panel {
       @Override
       public void onClick() {
         OnyxAuthenticatedSession.get().getUser();
-        setResponsePage(UserSearchPage.class);
+        setResponsePage(AdministrationPage.class);
       }
     });
 

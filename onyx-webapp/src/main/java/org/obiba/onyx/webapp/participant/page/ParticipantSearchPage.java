@@ -62,28 +62,21 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.DisplayTooltipBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
-import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
-
-  private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
 
   @SpringBean
   private EntityQueryService queryService;
@@ -99,9 +92,6 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private ParticipantMetadata participantMetadata;
-
-  @SpringBean
-  private OnyxDataExport onyxDataExport;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -119,8 +109,6 @@ public class ParticipantSearchPage extends BasePage {
 
   private static final int DEFAULT_INITIAL_WIDTH = 400;
 
-  private ConfirmationDialog confirmationDialog;
-
   private UpdateParticipantListWindow updateParticipantListWindow;
 
   @SuppressWarnings("serial")
@@ -131,11 +119,6 @@ public class ParticipantSearchPage extends BasePage {
     add(editParticipantDetailsModalWindow = createParticipantDialog("editParticipantDetailsModalWindow"));
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
     editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION, "Save");
-
-    confirmationDialog = new ConfirmationDialog("confirmExportModalWindow");
-    confirmationDialog.setTitle(new ResourceModel("ConfirmExport"));
-    confirmationDialog.setInitialHeight(130);
-    add(confirmationDialog);
 
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
@@ -489,33 +472,6 @@ public class ParticipantSearchPage extends BasePage {
       };
       updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
       add(updateParticipantsLink);
-
-      AjaxLink exportLink = new AjaxLink("export") {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          Label label = new Label("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
-          label.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
-          confirmationDialog.setContent(label);
-
-          confirmationDialog.setYesButtonCallback(new OnYesCallback() {
-            private static final long serialVersionUID = 1L;
-
-            public void onYesButtonClicked(AjaxRequestTarget target) {
-              try {
-                onyxDataExport.exportInterviews();
-              } catch(Exception e) {
-                log.error("Error on data export.", e);
-              }
-            }
-          });
-          confirmationDialog.show(target);
-        }
-
-      };
-
-      add(exportLink);
     }
   }
 
