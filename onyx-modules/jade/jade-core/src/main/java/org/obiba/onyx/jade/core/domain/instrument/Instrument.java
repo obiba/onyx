@@ -25,7 +25,7 @@ public class Instrument extends AbstractEntity {
 
   private static final long serialVersionUID = 14533453L;
 
-  @Column(length = 200)
+  @Column(length = 200, nullable = false)
   private String type;
 
   @Column(length = 200)
@@ -44,6 +44,7 @@ public class Instrument extends AbstractEntity {
   @Column(length = 200, nullable = false)
   private String barcode;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private InstrumentStatus status;
 

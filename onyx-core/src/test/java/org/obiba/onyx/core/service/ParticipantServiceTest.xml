@@ -17,7 +17,8 @@
     participant_id="1" />
 
   <interview id="1"
-   status="IN_PROGRESS" 
+   status="IN_PROGRESS"
+   start_date="2008-09-01 09:00:00"  
    participant_id="1" />
    
   <action id="1" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
@@ -48,7 +49,8 @@
     participant_id="2" />
 
   <interview id="2"
-   status="COMPLETED" 
+   status="COMPLETED"
+   start_date="2008-09-01 09:00:00"
    participant_id="2" />
    
    <participant id="3" 

@@ -11,6 +11,7 @@ package org.obiba.onyx.core.domain.participant;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,16 +27,18 @@ public class Interview extends AbstractEntity {
 
   private static final long serialVersionUID = -8786498940712113896L;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date startDate;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date endDate;
 
-  @OneToOne
+  @OneToOne(optional = false)
   @JoinColumn(name = "participant_id", unique = true)
   private Participant participant;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private InterviewStatus status;
 

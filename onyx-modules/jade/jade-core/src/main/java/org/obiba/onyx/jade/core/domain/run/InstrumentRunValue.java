@@ -36,7 +36,7 @@ public class InstrumentRunValue extends AbstractEntity {
 
   private static final long serialVersionUID = 267079755213810737L;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "instrument_run_id")
   private InstrumentRun instrumentRun;
 
@@ -47,6 +47,7 @@ public class InstrumentRunValue extends AbstractEntity {
   /**
    * Instrument parameter code.
    */
+  @Column(nullable = false)
   private String instrumentParameter;
 
   private Boolean booleanValue;
@@ -65,6 +66,7 @@ public class InstrumentRunValue extends AbstractEntity {
   @Column(length = Integer.MAX_VALUE)
   private byte[] dataValue;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private InstrumentParameterCaptureMethod captureMethod;
 

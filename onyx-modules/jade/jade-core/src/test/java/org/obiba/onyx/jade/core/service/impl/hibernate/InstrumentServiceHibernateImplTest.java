@@ -117,6 +117,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   @Dataset
   public void createInstrumentTest() {
     Instrument instrument = new Instrument();
+    instrument.setType("testType");
     instrument.setBarcode("99999");
     instrument.setModel("908908");
     instrument.setVendor("mySelf");

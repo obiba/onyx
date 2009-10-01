@@ -62,9 +62,11 @@ public class InstrumentRun extends AbstractEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private InstrumentRunStatus status;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeStart;
 

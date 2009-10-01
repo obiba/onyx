@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.engine.state;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -18,6 +19,8 @@ import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl;
@@ -57,6 +60,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   ActiveInterviewService activeInterviewService;
 
+  private Participant participant;
+
   @Before
   public void setUp() {
 
@@ -83,7 +88,14 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Stage stage1 = new Stage();
     stage1.setName("dummy1");
 
-    Interview interview = persistenceManager.save(new Interview());
+    participant = new Participant();
+    participant = persistenceManager.save(participant);
+
+    Interview interview = new Interview();
+    interview.setParticipant(participant);
+    interview.setStartDate(new Date());
+    interview.setStatus(InterviewStatus.IN_PROGRESS);
+    interview = persistenceManager.save(interview);
     context1.setStage(stage1);
     context1.setInterview(interview);
     ReadyState ready = new ReadyState();

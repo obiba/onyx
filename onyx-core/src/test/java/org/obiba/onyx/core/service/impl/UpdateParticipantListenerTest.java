@@ -93,6 +93,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
     p = persistenceManager.matchOne(p);
     Interview interview = new Interview();
     interview.setStatus(InterviewStatus.COMPLETED);
+    interview.setStartDate(new Date());
     interview.setParticipant(p);
     persistenceManager.save(interview);
     p.setInterview(interview);
