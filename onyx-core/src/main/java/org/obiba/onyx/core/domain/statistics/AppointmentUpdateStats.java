@@ -11,6 +11,7 @@ package org.obiba.onyx.core.domain.statistics;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,17 +26,23 @@ public class AppointmentUpdateStats extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date date;
 
+  @Column(nullable = false)
   private Integer addedParticipants;
 
+  @Column(nullable = false)
   private Integer updatedParticipants;
 
+  @Column(nullable = false)
   private Integer ignoredParticipants;
 
+  @Column(nullable = false)
   private Integer unreadableParticipants;
 
+  @Column(nullable = false)
   private String fileName;
 
   public AppointmentUpdateStats() {

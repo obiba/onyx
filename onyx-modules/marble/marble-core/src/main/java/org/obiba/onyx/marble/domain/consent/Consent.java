@@ -17,7 +17,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -35,22 +35,26 @@ public class Consent extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;
 
-  @OneToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "interview_id")
   private Interview interview;
 
+  @Column(nullable = false)
   private ConsentMode mode;
 
+  @Column(nullable = false)
   private Locale locale;
 
   private Boolean accepted;
 
+  @Column(nullable = false)
   private Boolean deleted;
 
   @Lob
   @Column(length = Integer.MAX_VALUE)
   private byte[] pdfForm;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeStart;
 

@@ -42,11 +42,11 @@ public class Action extends AbstractEntity {
 
   private static final long serialVersionUID = -943609521870150739L;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "user_id")
   private User user;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "interview_id")
   private Interview interview;
 
@@ -59,6 +59,7 @@ public class Action extends AbstractEntity {
   @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "action")
   private List<StageTransition> stageTransitions;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateTime;
 

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.application;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.obiba.core.domain.AbstractEntity;
@@ -18,15 +19,19 @@ public class ApplicationConfiguration extends AbstractEntity {
 
   private static final long serialVersionUID = -943397281652866650L;
 
+  @Column(nullable = false)
   private String studyName;
 
+  @Column(nullable = false)
   private String siteName;
 
+  @Column(nullable = false)
   private String siteNo;
 
   /**
    * Session timeout (in minutes).
    */
+  @Column(nullable = false)
   private Integer sessionTimeout;
 
   public String getStudyName() {

@@ -30,6 +30,7 @@
     <siteName>CHUM</siteName>
     <siteNo>onyx001</siteNo>
     <studyName>Onyx</studyName>
+    <sessionTimeout>60</sessionTimeout>
   </config>
 
 </linked-list>

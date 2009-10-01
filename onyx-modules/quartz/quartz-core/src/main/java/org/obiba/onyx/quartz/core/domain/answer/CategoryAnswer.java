@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,13 +28,15 @@ public class CategoryAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8308345423791582240L;
 
+  @Column(nullable = false)
   private String categoryName;
 
   private Integer occurence;
 
+  @Column(nullable = false)
   private Boolean active;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "question_answer_id")
   private QuestionAnswer questionAnswer;
 

@@ -11,6 +11,7 @@ package org.obiba.onyx.core.domain.participant;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -24,12 +25,14 @@ public class Appointment extends AbstractEntity {
 
   private static final long serialVersionUID = 6009569414177913575L;
 
+  @Column(nullable = false)
   private String appointmentCode;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   public Date date;
 
-  @OneToOne
+  @OneToOne(optional = false)
   @JoinColumn(name = "participant_id", unique = true)
   public Participant participant;
 

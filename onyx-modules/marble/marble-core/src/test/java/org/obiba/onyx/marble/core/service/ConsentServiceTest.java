@@ -1,16 +1,23 @@
 package org.obiba.onyx.marble.core.service;
 
+import java.util.Date;
+import java.util.Locale;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.marble.core.service.impl.ConsentServiceImpl;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired(required = true)
@@ -30,12 +37,22 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
     return interview;
   }
 
-  private Consent createConsent(Interview interview) {
+  private Consent createConsent(Interview interview, boolean deleted) {
     Consent consent = new Consent();
-    consent.setDeleted(false);
+    consent.setDeleted(deleted);
     consent.setInterview(interview);
+
+    consent.setMode(ConsentMode.ELECTRONIC);
+    consent.setLocale(Locale.getDefault());
+    consent.setTimeStart(new Date());
+
     persistenceManager.save(consent);
+
     return consent;
+  }
+
+  private Consent createConsent(Interview interview) {
+    return createConsent(interview, false);
   }
 
   @Test
@@ -53,7 +70,8 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testSaveConsent() {
-    Consent consent = createConsent(null);
+    Interview interview = createInterview();
+    Consent consent = createConsent(interview);
 
     Consent retrievedConsent = (Consent) persistenceManager.matchOne(consent);
     Assert.assertEquals(retrievedConsent.getId(), consent.getId());
@@ -77,20 +95,21 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   }
 
+  @Ignore
   @Test
   public void testPurgeConsent() {
     Interview interview = createInterview();
-    createConsent(interview);
-    createConsent(interview);
-    createConsent(interview);
-    persistenceManager.save(interview);
+
+    createConsent(interview, true);
+    createConsent(interview, true);
+    createConsent(interview, false);
 
     consentService.purgeConsent(interview);
 
     Consent template = new Consent();
     template.setInterview(interview);
 
-    Assert.assertEquals(persistenceManager.match(template).size(), 0);
+    Assert.assertEquals(0, persistenceManager.match(template).size());
   }
 
 }
