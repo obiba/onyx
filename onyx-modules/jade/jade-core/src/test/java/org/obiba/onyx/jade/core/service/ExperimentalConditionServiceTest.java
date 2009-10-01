@@ -13,16 +13,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
-import org.obiba.core.test.spring.Dataset;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
-import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +39,21 @@ public class ExperimentalConditionServiceTest extends BaseDefaultSpringContextTe
 
   ExperimentalCondition experimentalCondition;
 
+  User user;
+
   @Before
   public void setUp() throws Exception {
+    user = new User();
+    persistenceManager.save(user);
+
     experimentalCondition = new ExperimentalCondition();
+    experimentalCondition.setName("testCondition");
+    experimentalCondition.setTime(new Date());
+    experimentalCondition.setUser(user);
+    experimentalCondition.setWorkstation("testWorkstation");
   }
 
   @Test
-  @Dataset
   public void testSaveExperimentalConditionWithZeroValues() {
 
     experimentalConditionService.save(experimentalCondition);

@@ -30,20 +30,21 @@ public class ExperimentalCondition extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;
 
-  @Column(length = 2000)
+  @Column(length = 2000, nullable = false)
   private String name;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "user_id")
   private User user;
 
-  @Column(length = 2000)
+  @Column(length = 2000, nullable = false)
   private String workstation;
 
-  private Boolean exported;
+  private boolean exported;
 
   @OneToMany(mappedBy = "experimentalCondition", cascade = CascadeType.ALL)
   private List<ExperimentalConditionValue> experimentalConditionValues;

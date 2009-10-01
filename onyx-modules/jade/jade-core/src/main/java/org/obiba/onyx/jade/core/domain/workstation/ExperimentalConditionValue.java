@@ -34,12 +34,14 @@ public class ExperimentalConditionValue extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "experimental_condition_id")
   private ExperimentalCondition experimentalCondition;
 
+  @Column(nullable = false)
   private String attributeName;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private DataType attributeType;
 
