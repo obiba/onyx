@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.marble.core.service.impl.ConsentServiceImpl;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
@@ -25,14 +27,22 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   private ConsentServiceImpl consentService;
 
+  private Participant participant;
+
   @Before
   public void setup() {
     consentService = new ConsentServiceImpl();
     consentService.setPersistenceManager(persistenceManager);
+
+    participant = new Participant();
+    persistenceManager.save(participant);
   }
 
   private Interview createInterview() {
     Interview interview = new Interview();
+    interview.setStartDate(new Date());
+    interview.setStatus(InterviewStatus.IN_PROGRESS);
+    participant.setInterview(interview);
     persistenceManager.save(interview);
     return interview;
   }
@@ -58,6 +68,7 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
   @Test
   public void testGetConsent() {
     Interview interview = createInterview();
+
     Consent consent = createConsent(interview);
 
     Consent retrievedConsent = consentService.getConsent(interview);

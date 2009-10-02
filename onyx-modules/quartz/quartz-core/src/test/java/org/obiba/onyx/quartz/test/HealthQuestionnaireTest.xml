@@ -17,6 +17,7 @@
     participant_id="1" />
 
   <interview id="1"
+   start_date="2008-09-01 09:00:00"
    status="IN_PROGRESS" 
    participant_id="1"/>
 

@@ -19,6 +19,7 @@ import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -176,6 +177,7 @@ public class ParticipantTubeRegistrationTest {
     participant = new Participant();
     interview = new Interview();
     interview.setStartDate(new Date());
+    interview.setStatus(InterviewStatus.IN_PROGRESS);
     participant.setBarcode(participantBarcode);
     participant.setInterview(interview);
     interview.setParticipant(participant);
