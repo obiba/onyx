@@ -36,8 +36,10 @@ public class RegisteredParticipantTube extends AbstractEntity {
 
   private static final long serialVersionUID = -9113927705255991817L;
 
+  @Column(nullable = false)
   private String barcode;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date registrationTime;
 
@@ -48,7 +50,7 @@ public class RegisteredParticipantTube extends AbstractEntity {
   @Column(length = 2000)
   private String comment;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "participant_tube_registration_id")
   private ParticipantTubeRegistration participantTubeRegistration;
 

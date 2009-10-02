@@ -11,6 +11,7 @@ package org.obiba.onyx.core.domain.user;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.obiba.core.domain.AbstractEntity;
@@ -26,6 +27,7 @@ public class Role extends AbstractEntity implements Serializable, Comparable<Rol
 
   public static final Role DATA_COLLECTION_OPERATOR = new Role("DATA_COLLECTION_OPERATOR");
 
+  @Column(nullable = false)
   private String name = null;
 
   public Role() {

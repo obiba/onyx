@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
@@ -44,6 +45,9 @@ public class ExperimentalConditionServiceTest extends BaseDefaultSpringContextTe
   @Before
   public void setUp() throws Exception {
     user = new User();
+    user.setStatus(Status.ACTIVE);
+    user.setDeleted(false);
+    user.setLogin("test");
     persistenceManager.save(user);
 
     experimentalCondition = new ExperimentalCondition();

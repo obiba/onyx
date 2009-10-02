@@ -122,6 +122,7 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
     newUser.setPassword("titi");
     newUser.setLanguage(Locale.ENGLISH);
     newUser.setStatus(Status.ACTIVE);
+    newUser.setDeleted(false);
     Set<Role> roles = new HashSet<Role>();
     roles.add(persistenceManager.get(Role.class, Long.valueOf("2")));
     newUser.setRoles(roles);

@@ -37,7 +37,7 @@ public class User extends AbstractEntity {
   @Column(length = 250)
   private String firstName;
 
-  @Column(length = 250)
+  @Column(length = 250, nullable = false)
   private String login;
 
   @Column(length = 250)
@@ -48,8 +48,10 @@ public class User extends AbstractEntity {
 
   private Locale language;
 
+  @Column(nullable = false)
   private Boolean deleted;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private Status status;
 

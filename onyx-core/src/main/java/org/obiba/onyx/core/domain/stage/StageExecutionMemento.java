@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.stage;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,16 +23,18 @@ public class StageExecutionMemento extends AbstractEntity {
 
   private static final long serialVersionUID = 8309472904104798783L;
 
+  @Column(nullable = false)
   private String stage;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "interview_id")
   private Interview interview;
-  
+
   @ManyToOne
   @JoinColumn(name = "action_id")
   private Action action;
 
+  @Column(nullable = false)
   private String state;
 
   public StageExecutionMemento() {
