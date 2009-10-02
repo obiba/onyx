@@ -87,6 +87,7 @@
     participant_id="4" />
 
    <participant id="5" 
+    site_no="onyx001" 
     enrollment_id="100005"
     first_name="X"
     last_name="X"
@@ -103,7 +104,8 @@
    participant_id="5"
    start_date="2009-09-30 13:59:59" />    
     
-   <participant id="6" 
+   <participant id="6"
+    site_no="onyx001"  
     enrollment_id="100006"
     first_name="Y"
     last_name="Y"
@@ -120,7 +122,8 @@
    participant_id="6"
    start_date="2009-09-30 13:59:59" />    
     
-   <participant id="7" 
+   <participant id="7"
+    site_no="onyx001"  
     enrollment_id="100007"
     first_name="Z"
     last_name="Z"
@@ -137,14 +140,16 @@
    participant_id="7"
    start_date="2009-09-30 14:58:01"/>    
    
-   <participant id="8" 
+   <participant id="8"
+    site_no="onyx001"  
     enrollment_id="100008"
     first_name="T"
     last_name="T"
     gender="MALE"
     birth_date="1984-10-01 00:00:00" />     
     
-   <participant id="9" 
+   <participant id="9"
+    site_no="onyx001"  
     enrollment_id="100009"
     first_name="P"
     last_name="P"
