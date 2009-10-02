@@ -25,7 +25,6 @@ public class Appointment extends AbstractEntity {
 
   private static final long serialVersionUID = 6009569414177913575L;
 
-  @Column(nullable = false)
   private String appointmentCode;
 
   @Column(nullable = false)

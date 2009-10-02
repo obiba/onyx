@@ -4,7 +4,8 @@
   <user_roles user_id="1" role_id="1"/>
       
   <participant id="1" 
-    barcode="1" 
+    barcode="1"
+    site_no="onyx001" 
     enrollment_id="100001"
     first_name="Suzan"
     last_name="Tremblay"
@@ -23,6 +24,7 @@
 
   <participant id="2" 
     barcode="2"
+    site_no="onyx001"
     enrollment_id="100002"
     first_name="John"
     last_name="Hudson"
@@ -41,6 +43,7 @@
    
    <participant id="3" 
     barcode="3"
+    site_no="onyx001"
     enrollment_id="100003"
     first_name="Rohn"
     last_name="Hudson"
@@ -52,18 +55,6 @@
     date="2008-10-01 10:00:00"
     participant_id="3" />
     
-  <!-- <participant id="4" 
-    enrollment_id="100004"
-    first_name="Dennis"
-    last_name="Spathis"
-    gender="MALE"
-    birth_date="1972-10-01 00:00:00" />
-  
-  <appointment id="4"
-    appointment_code="100004"
-    date="2008-07-01 09:00:00"
-    participant_id="4" /> -->
-
   <!--
     Need this, otherwise DbUnit will delete interviews prior to actions, causing
     an Integrity constraint violation.

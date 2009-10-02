@@ -1,6 +1,6 @@
 <dataset>  
-  <participant id="77" barcode="0000001" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
-  <participant id="78" barcode="0000002" last_name="Hillenius" first_name="Eelco" gender="MALE" birth_date="1979-09-04 00:00:00"/>
+  <participant id="77" site_no="onyx001" enrollment_id="1" barcode="0000001" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
+  <participant id="78" site_no="onyx001" enrollment_id="2" barcode="0000002" last_name="Hillenius" first_name="Eelco" gender="MALE" birth_date="1979-09-04 00:00:00"/>
   
   <interview id="88" duration="1000" start_date="2009-09-04 00:00:00" end_date="2009-09-04 02:00:00" status="IN_PROGRESS" participant_id="77"/>
   <interview id="89" duration="1000" start_date="2009-09-04 00:00:00" end_date="2009-09-04 02:00:00" status="IN_PROGRESS" participant_id="78"/>

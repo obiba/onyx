@@ -44,10 +44,10 @@ public class Participant extends AbstractEntity {
   // Instance Variables
   //
 
-  @Column(length = 250)
+  @Column(length = 250, nullable = false)
   private String firstName;
 
-  @Column(length = 250)
+  @Column(length = 250, nullable = false)
   private String lastName;
 
   @Enumerated(EnumType.STRING)
@@ -59,8 +59,10 @@ public class Participant extends AbstractEntity {
   @Column(length = 250)
   private String barcode;
 
+  @Column(nullable = false)
   private String enrollmentId;
 
+  @Column(nullable = false)
   private String siteNo;
 
   @Enumerated(EnumType.STRING)

@@ -36,26 +36,29 @@ public class Measure extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "instrument_run_id")
   private InstrumentRun instrumentRun;
 
   @OneToMany(mappedBy = "measure", cascade = CascadeType.ALL)
   private List<InstrumentRunValue> instrumentRunValues;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "user_id")
   private User user;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
+  @Column(nullable = false)
   private String instrumentBarcode;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private MeasureStatus status;
 
-  @Column(length = 200)
+  @Column(length = 200, nullable = false)
   private String workstation;
 
   public InstrumentRun getInstrumentRun() {

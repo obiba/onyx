@@ -175,6 +175,11 @@ public class ParticipantTubeRegistrationTest {
 
   private void createParticipantAndInterview(String participantBarcode) {
     participant = new Participant();
+    participant.setSiteNo("siteNo");
+    participant.setEnrollmentId("1");
+    participant.setFirstName("first");
+    participant.setLastName("last");
+
     interview = new Interview();
     interview.setStartDate(new Date());
     interview.setStatus(InterviewStatus.IN_PROGRESS);

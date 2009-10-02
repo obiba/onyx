@@ -5,6 +5,7 @@
       
   <participant id="1" 
     barcode="1" 
+    site_no="onyx001"
     enrollment_id="100001"
     first_name="Suzan"
     last_name="Tremblay"

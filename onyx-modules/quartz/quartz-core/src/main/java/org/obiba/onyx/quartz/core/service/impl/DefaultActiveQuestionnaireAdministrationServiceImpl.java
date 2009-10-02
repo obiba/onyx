@@ -267,18 +267,20 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       }
     }
 
+    categoryAnswer.setActive(true);
+    categoryAnswer = getPersistenceManager().save(categoryAnswer);
+
     if(value != null) {
       if(openAnswer == null) openAnswer = openAnswerTemplate;
       openAnswer.setDataType(value.getType());
       openAnswer.setData(value);
-      getPersistenceManager().save(openAnswer);
       categoryAnswer.addOpenAnswer(openAnswer);
+      getPersistenceManager().save(openAnswer);
     } else if(openAnswer != null) {
       getPersistenceManager().delete(openAnswer);
     }
 
-    categoryAnswer.setActive(true);
-    return getPersistenceManager().save(categoryAnswer);
+    return categoryAnswer;
   }
 
   public void deleteAnswer(QuestionCategory questionCategory) {

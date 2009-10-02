@@ -89,6 +89,10 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     stage1.setName("dummy1");
 
     participant = new Participant();
+    participant.setSiteNo("site");
+    participant.setEnrollmentId("onyx001");
+    participant.setFirstName("first");
+    participant.setLastName("last");
     participant = persistenceManager.save(participant);
 
     Interview interview = new Interview();

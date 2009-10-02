@@ -1,7 +1,11 @@
 <dataset>
-
+  <role id="1" name="SYSTEM_ADMINISTRATOR"/>
+  <user id="1" last_name="Administrator" first_name="ONYX" login="administrator" password="password" email="test@obiba.org" status="ACTIVE" deleted="false"/>
+  <user_roles user_id="1" role_id="1"/>
+  
   <participant id="1" 
-    barcode="1" 
+    barcode="1"
+    site_no="onyx001" 
     enrollment_id="100001"
     first_name="Suzan"
     last_name="Tremblay"
@@ -10,16 +14,17 @@
     
   <participant id="2" 
     barcode="2" 
+    site_no="onyx001"
     enrollment_id="100002"
     first_name="Marc"
     last_name="Tremblay"
     gender="MALE"
     birth_date="1948-10-01 00:00:00" />    
   
-  <questionnaire_participant id="1" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="1"/>
-  <questionnaire_participant id="2" questionnaire_name="QUE1" questionnaire_version="1.0.1" participant_id="1"/>
-  <questionnaire_participant id="3" questionnaire_name="QUE2" questionnaire_version="1.0.0" participant_id="1"/>
-  <questionnaire_participant id="4" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="2"/>  
+  <questionnaire_participant id="1" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="1" locale="fr" user_id="1" time_start="2009-10-01 10:00:00" />
+  <questionnaire_participant id="2" questionnaire_name="QUE3" questionnaire_version="1.0.1" participant_id="1" locale="fr" user_id="1" time_start="2009-10-02 10:00:00" />
+  <questionnaire_participant id="3" questionnaire_name="QUE2" questionnaire_version="1.0.0" participant_id="1" locale="fr" user_id="1" time_start="2009-10-03 10:00:00" />
+  <questionnaire_participant id="4" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="2" locale="fr" user_id="1" time_start="2009-10-04 10:00:00" />  
   
   <question_answer id="1" questionnaire_participant_id="2" question_name="question number 1" comment="comment on question 1"/>
   <question_answer id="2" questionnaire_participant_id="2" question_name="question number 2" comment="comment on question 2"/>

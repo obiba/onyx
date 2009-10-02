@@ -15,39 +15,46 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "participant_id", "questionnaireName" }) })
 public class QuestionnaireParticipant extends AbstractEntity {
 
   private static final long serialVersionUID = -4091599688342582439L;
 
-  @OneToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "participant_id")
   private Participant participant;
 
+  @Column(nullable = false)
   private String questionnaireName;
 
+  @Column(nullable = false)
   private String questionnaireVersion;
 
+  @Column(nullable = false)
   private Locale locale;
 
   private String resumePage;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "user_id")
   private User user;
 
+  @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeStart;
 

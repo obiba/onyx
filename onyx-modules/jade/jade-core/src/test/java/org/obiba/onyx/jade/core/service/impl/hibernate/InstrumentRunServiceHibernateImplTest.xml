@@ -5,8 +5,8 @@
   
   <user_roles user_id="1" role_id="1"/>
   
-  <participant id="1" barcode="0000001" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
-  <participant id="2" barcode="0000002" last_name="Hillenius" first_name="Eelco" gender="MALE" birth_date="1979-09-04 00:00:00"/>
+  <participant id="1" site_no="onyx001" enrollment_id="1" barcode="0000001" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
+  <participant id="2" site_no="onyx001" enrollment_id="2" barcode="0000002" last_name="Hillenius" first_name="Eelco" gender="MALE" birth_date="1979-09-04 00:00:00"/>
     
   <instrument id="1" barcode="sphygmoCor1" model="SphygmoCor" name="SphygmoCor 1" serial_number="01400" status="ACTIVE" type="ArtStiffness" vendor="AtCor Medical" />   
   <instrument id="12" barcode="CAG0189" model="MiniSpir" name="Spirometer 1" serial_number="1234567890" status="ACTIVE" type="Spirometry" vendor="MIR" />   
@@ -16,7 +16,7 @@
   <instrument_run id="2" instrument_type="StandingHeight" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="13" participant_id="2" user_id="1" />
   <instrument_run id="4" instrument_type="ArtStiffness" status="COMPLETED" time_end="2009-03-24 04:00:00" time_start="2009-03-24 03:00:00" instrument_id="1" participant_id="1" user_id="1" />
   
-  <measure id="1" instrument_barcode="sphygmoCor1" time="2009-03-24 01:00:00" instrument_run_id="4" user_id="1" />
+  <measure id="1" instrument_barcode="sphygmoCor1" time="2009-03-24 01:00:00" instrument_run_id="4" user_id="1" workstation="testWorkstation" status="VALID" />
   
   <instrument_run_value id="1" capture_method="MANUAL" decimal_value="2.3" instrument_parameter="RES_CEN_MEAN_PRESSURE" instrument_run_id="4" measure_id="1"/>
 </dataset>

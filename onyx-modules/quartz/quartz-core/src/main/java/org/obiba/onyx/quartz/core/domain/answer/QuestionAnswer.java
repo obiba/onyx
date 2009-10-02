@@ -29,6 +29,7 @@ public class QuestionAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8513736303565362142L;
 
+  @Column(nullable = false)
   private String questionName;
 
   @Column(length = 2000)
@@ -36,7 +37,7 @@ public class QuestionAnswer extends AbstractEntity {
 
   private Boolean active;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "questionnaire_participant_id")
   private QuestionnaireParticipant questionnaireParticipant;
 

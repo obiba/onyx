@@ -46,9 +46,10 @@ public class OpenAnswer extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateValue;
 
+  @Column(nullable = false)
   private String openAnswerDefinitionName;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "category_answer_id")
   private CategoryAnswer categoryAnswer;
 

@@ -44,12 +44,14 @@ public class ParticipantAttributeValue extends AbstractEntity {
   // Instance Variables
   //
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "participant_id")
   private Participant participant;
 
+  @Column(nullable = false)
   private String attributeName;
 
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private DataType attributeType;
 

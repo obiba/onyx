@@ -34,6 +34,10 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
     consentService.setPersistenceManager(persistenceManager);
 
     participant = new Participant();
+    participant.setSiteNo("siteNo");
+    participant.setEnrollmentId("1");
+    participant.setFirstName("first");
+    participant.setLastName("last");
     persistenceManager.save(participant);
   }
 
