@@ -1100,6 +1100,26 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 	padding: 18px 20px;
 }
 
+.obiba-box-tab {
+	margin-left: 20px;
+}
+
+.obiba-box-tab > .obiba-button {
+	-moz-border-radius-bottomleft:0 !important;
+	-moz-border-radius-bottomright:0 !important;
+	background-color:#C0C0C0 !important;
+	border-width:1px 1px 0 !important;
+	color:#888888 !important;
+	font-weight:bold;
+	margin-right:7px;
+	padding:2px 10px 1px !important;
+}
+
+.obiba-box-tab > .obiba-button.selected {
+	background-color:white !important;
+	color:#C65F02 !important;
+}
+
 /******************* End Boxing ****************************************************/
 
 /******************* Login *********************************************************/
@@ -1227,6 +1247,14 @@ img.obiba-button {
 .obiba-button.ui-corner-all {
   -moz-border-radius: 6px; 
   -webkit-border-radius: 6px;
+}
+
+div .button-vertical-list{
+	margin-bottom: 15px;
+}
+
+.button-vertical-list > a {
+	margin-right: 10px;
 }
 
 /******************* End Buttons ***************************************************/
