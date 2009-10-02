@@ -107,10 +107,11 @@ public class OnyxDataExport {
     // Get a list of potential exportable interviews (participant not marked as exported)
     Participant template = new Participant();
     template.setExported(false);
-    List<Participant> participants = queryService.match(template);
-    for(Participant participant : participants) {
-      if(!participant.isExportable()) {
-        participants.remove(participant);
+    List<Participant> participantsToCheck = queryService.match(template);
+    List<Participant> participants = new ArrayList<Participant>();
+    for(Participant participant : participantsToCheck) {
+      if(participant.isExportable()) {
+        participants.add(participant);
       }
     }
 

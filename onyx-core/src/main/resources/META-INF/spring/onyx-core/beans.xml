@@ -30,13 +30,17 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
+  <bean id="jobExecutionService" class="org.obiba.onyx.core.service.impl.DefaultJobExecutionServiceImpl">
+    <property name="jobLauncher" ref="jobLauncher" />
+  </bean>  
+  
   <bean id="appointmentManagementService" class="org.obiba.onyx.core.service.impl.DefaultAppointmentManagementServiceImpl" init-method="initialize">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="inputDirectory" value="${org.obiba.onyx.appointments.inputDirectory}" />
     <property name="outputDirectory" value="${org.obiba.onyx.appointments.outputDirectory}" />
-    <property name="jobLauncher" ref="jobLauncher" />
     <property name="jobExplorer" ref="jobExplorer"/>
     <property name="job" ref="appointmentListUpdateJob" />
+    <property name="jobExecutionService" ref="jobExecutionService" />
   </bean>
   
   <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">

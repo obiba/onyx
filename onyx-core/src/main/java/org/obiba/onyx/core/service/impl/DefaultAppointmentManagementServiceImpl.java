@@ -22,18 +22,14 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
 import org.obiba.onyx.core.service.AppointmentManagementService;
+import org.obiba.onyx.core.service.JobExecutionService;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,11 +37,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService implements AppointmentManagementService, ResourceLoaderAware {
 
-  private JobLauncher jobLauncher;
-
   private JobExplorer jobExplorer;
 
   private Job job;
+
+  private JobExecutionService jobExecutionService;
 
   private String inputDirectory;
 
@@ -87,21 +83,9 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
 
     Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
     jobParameterMap.put("date", new JobParameter(new Date()));
-    JobParameters parameters = new JobParameters(jobParameterMap);
 
-    try {
-      JobExecution jobExecution = jobLauncher.run(job, parameters);
-      return jobExecution.getExitStatus();
-    } catch(JobExecutionAlreadyRunningException e) {
-      // logger.error("This job is already running", e);
-      throw new RuntimeException("This job is already running" + e);
-    } catch(JobInstanceAlreadyCompleteException e) {
-      // logger.info("This job is already complete. " + "Maybe you need to change the input parameters?", e);
-      throw new RuntimeException("This job is already complete. " + "Maybe you need to change the input parameters?" + e);
-    } catch(JobRestartException e) {
-      // logger.error("Unspecified restart exception", e);
-      throw new RuntimeException("Unspecified restart exception" + e);
-    }
+    return jobExecutionService.launchJob(job, jobParameterMap);
+
   }
 
   public void saveAppointmentUpdateStats(AppointmentUpdateStats appointmentUpdateStats) {
@@ -165,16 +149,16 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
     return outputDir;
   }
 
-  public void setJobLauncher(JobLauncher jobLauncher) {
-    this.jobLauncher = jobLauncher;
-  }
-
   public void setJob(Job job) {
     this.job = job;
   }
 
   public void setJobExplorer(JobExplorer jobExplorer) {
     this.jobExplorer = jobExplorer;
+  }
+
+  public void setJobExecutionService(JobExecutionService jobExecutionService) {
+    this.jobExecutionService = jobExecutionService;
   }
 
 }

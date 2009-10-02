@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -29,11 +31,17 @@ import org.springframework.batch.repeat.RepeatStatus;
  */
 public class PurgeParticipantDataTasklet implements Tasklet {
 
+  private static final Logger log = LoggerFactory.getLogger(PurgeParticipantDataTasklet.class);
+
   private ParticipantService participantService;
 
   private String purgeDataOlderThanInDays;
 
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) {
+
+    log.info("**** STARTING PARTICIPANT DATA PURGE ****");
+    log.info("Current purge configuration is [{}] days", purgeDataOlderThanInDays);
+    long start = System.currentTimeMillis();
 
     Calendar calendar = Calendar.getInstance();
     try {
@@ -43,22 +51,30 @@ public class PurgeParticipantDataTasklet implements Tasklet {
       }
       calendar.add(Calendar.DATE, -1 * purgeDataOlderThanInDaysValue);
     } catch(Exception e) {
-      throw new RuntimeException("The purge task has not been configured properly.  Please make sure that the value specified for the org.obiba.onyx.participant.purge property is valid.");
+      throw new RuntimeException("The purge task has not been configured properly.  Please make sure that the value specified for the org.obiba.onyx.participant.purge property is valid.", e);
     }
 
     // Delete exported participants
     List<Participant> exportedParticipantsToBePurged = participantService.getExportedParticipants(calendar.getTime());
     for(Participant participant : exportedParticipantsToBePurged) {
+      log.info("Deleting Participant id = [{}] (exported participant) and related data  :  ", participant.getId());
       participantService.deleteParticipant(participant);
     }
 
     // Delete participants which are not exportable based on current configured export destinations
-    List<Participant> nonExportableParticipantsToBePurged = participantService.getExportedParticipants(calendar.getTime());
+    List<Participant> nonExportableParticipantsToBePurged = participantService.getNonExportableParticipants(calendar.getTime());
     for(Participant participant : nonExportableParticipantsToBePurged) {
       participantService.deleteParticipant(participant);
+      log.info("Deleting Participant id = [{}] (non-exportable participant) and related data :  ", participant.getId());
     }
 
-    return null;
+    long end = System.currentTimeMillis();
+
+    log.info("A total of [{}] Participants were deleted in [{}] ms.", exportedParticipantsToBePurged.size() + nonExportableParticipantsToBePurged.size(), end - start);
+
+    log.info("**** PARTICIPANT DATA PURGE COMPLETED ****");
+
+    return RepeatStatus.FINISHED;
   }
 
   public void setPurgeDataOlderThanInDays(String purgeDataOlderThanInDays) {
