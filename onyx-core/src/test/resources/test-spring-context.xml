@@ -2,6 +2,9 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
 
+  <import resource="test-hibernate-config.xml" />
+  <import resource="test-db-config.xml" />
+
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="properties">
       <value>
@@ -22,8 +25,13 @@
         org.obiba.onyx.password.validation.preventUserAttributeUsage=true
         org.obiba.onyx.password.validation.minimumSize=8
         org.obiba.onyx.password.validation.maximumSize=14
-      org.obiba.onyx.appointments.inputDirectory=file:./src/test/resources/appointments/in
-      org.obiba.onyx.appointments.outputDirectory=
+        
+        org.obiba.onyx.appointments.inputDirectory=file:./src/test/resources/appointments/in
+        org.obiba.onyx.appointments.outputDirectory=
+        
+        org.obiba.onyx.config.path=
+        
+        org.obiba.onyx.participant.purge=15
       ]]>
       </value>
     </property>
@@ -60,15 +68,39 @@
   </bean>
   
   <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl"/>
-
-  <import resource="test-hibernate-config.xml" />
-  <import resource="test-db-config.xml" />
-  <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
-  
+    
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
     <property name="participantIdPattern" value=".*" />
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
   </bean>
   
+  <bean id="onyxDataExportDestinations" class="org.obiba.onyx.engine.variable.export.OnyxDataExportFactoryBean">
+    <property name="destinationsResource" value="${org.obiba.onyx.config.path}/export-destinations.xml" />
+  </bean>
+  
+  <bean id="participantService"
+    class="org.obiba.onyx.core.service.impl.hibernate.ParticipantServiceHibernateImpl" scope="singleton">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="exportDestinations" ref="onyxDataExportDestinations" />    
+  </bean>  
+  
+  <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry">
+    <property name="stageOrderingStrategy" ref="stageOrderingStrategy" />
+  </bean>  
+  
+  <bean id="userService"
+    class="org.obiba.onyx.core.service.impl.hibernate.UserServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>  
+  
+  <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="userSessionService" ref="userSessionService" />
+  </bean>  
+    
 </beans>

@@ -6,7 +6,6 @@ import java.util.Locale;
 import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
@@ -106,7 +105,6 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   }
 
-  @Ignore
   @Test
   public void testPurgeConsent() {
     Interview interview = createInterview();

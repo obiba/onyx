@@ -129,4 +129,36 @@ public interface ParticipantService {
    * @param participant Participant to delete.
    */
   public void deleteParticipant(Participant participant);
+
+  /**
+   * Gets all the participants marked as exported.
+   * 
+   * @return List of exported participants.
+   */
+  public List<Participant> getExportedParticipants();
+
+  /**
+   * Gets all the participants marked as exported before a specific date (exportDate < exportedBefore).
+   * 
+   * @param exportedBefore
+   * @return List of exported participants.
+   */
+  public List<Participant> getExportedParticipants(Date exportedBefore);
+
+  /**
+   * Gets all the participants that will never get exported (based on current configuration of exported interview
+   * statuses per destination). Participants without interviews are not included.
+   * 
+   * @return List of non exportable participants.
+   */
+  public List<Participant> getNonExportableParticipants();
+
+  /**
+   * Gets all the participants that will never get exported (based on current configuration of exported interview
+   * statuses per destination) for which the interview start date is older than the specified date (olderThan).
+   * 
+   * @param olderThan
+   * @return List of non exportable participants.
+   */
+  public List<Participant> getNonExportableParticipants(Date olderThan);
 }

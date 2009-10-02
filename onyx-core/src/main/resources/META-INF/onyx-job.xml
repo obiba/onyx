@@ -49,4 +49,14 @@
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   
+  <batch:job id="purgeParticipantDataJob">
+    <batch:step id="purgeParticipantDataStep">
+      <batch:tasklet ref="purgeParticipantDataTasklet" />
+    </batch:step>
+  </batch:job>
+  
+  <bean id="purgeParticipantDataTasklet" class="org.obiba.onyx.core.purge.PurgeParticipantDataTasklet">
+    <property name="purgeDataOlderThanInDays" value="$(org.obiba.onyx.participant.purge)" />   
+  </bean>   
+  
 </beans>

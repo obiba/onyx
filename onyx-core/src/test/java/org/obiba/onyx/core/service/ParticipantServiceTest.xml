@@ -18,8 +18,8 @@
 
   <interview id="1"
    status="IN_PROGRESS"
-   start_date="2008-09-01 09:00:00"  
-   participant_id="1" />
+   participant_id="1" 
+   start_date="2009-09-30 13:59:59"/>
    
   <action id="1" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
   <action id="2" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
@@ -41,7 +41,9 @@
     first_name="John"
     last_name="Hudson"
     gender="MALE"
-    birth_date="1964-10-01 00:00:00" />
+    birth_date="1964-10-01 00:00:00"
+    exported="true"
+    export_date="2009-09-30 13:59:59"/>
 
   <appointment id="2"
     appointment_code="100002"
@@ -50,8 +52,8 @@
 
   <interview id="2"
    status="COMPLETED"
-   start_date="2008-09-01 09:00:00"
-   participant_id="2" />
+   participant_id="2"
+   start_date="2009-09-30 13:59:59"/>   
    
    <participant id="3" 
     barcode="100002"
@@ -71,12 +73,89 @@
     first_name="Dennis"
     last_name="Spathis"
     gender="MALE"
-    birth_date="1972-10-01 00:00:00" />
+    birth_date="1972-10-01 00:00:00"
+    exported="true"
+    export_date="2009-09-30 14:00:01"/>
   
   <appointment id="4"
     appointment_code="100004"
     date="2008-07-01 09:00:00"
     participant_id="4" />
+
+   <participant id="5" 
+    enrollment_id="100005"
+    first_name="X"
+    last_name="X"
+    gender="MALE"
+    birth_date="1984-10-01 00:00:00" />
+    
+  <appointment id="5"
+    appointment_code="100004"
+    date="2008-10-01 10:00:00"
+    participant_id="5" />    
+    
+  <interview id="5"
+   status="IN_PROGRESS" 
+   participant_id="5"
+   start_date="2009-09-30 13:59:59" />    
+    
+   <participant id="6" 
+    enrollment_id="100006"
+    first_name="Y"
+    last_name="Y"
+    gender="MALE"
+    birth_date="1984-10-01 00:00:00" />  
+    
+  <appointment id="6"
+    appointment_code="100006"
+    date="2008-10-01 10:00:00"
+    participant_id="6" />     
+    
+  <interview id="6"
+   status="IN_PROGRESS" 
+   participant_id="6"
+   start_date="2009-09-30 13:59:59" />    
+    
+   <participant id="7" 
+    enrollment_id="100007"
+    first_name="Z"
+    last_name="Z"
+    gender="MALE"
+    birth_date="1984-10-01 00:00:00" />  
+    
+  <appointment id="7"
+    appointment_code="100007"
+    date="2008-10-01 10:00:00"
+    participant_id="7" />     
+    
+  <interview id="7"
+   status="IN_PROGRESS" 
+   participant_id="7"
+   start_date="2009-09-30 14:58:01"/>    
+   
+   <participant id="8" 
+    enrollment_id="100008"
+    first_name="T"
+    last_name="T"
+    gender="MALE"
+    birth_date="1984-10-01 00:00:00" />     
+    
+   <participant id="9" 
+    enrollment_id="100009"
+    first_name="P"
+    last_name="P"
+    gender="MALE"
+    birth_date="1981-10-01 00:00:00" /> 
+    
+  <appointment id="9"
+    appointment_code="100009"
+    date="2008-10-01 10:00:00"
+    participant_id="9" />     
+    
+  <interview id="9"
+   status="CANCELLED" 
+   participant_id="9"
+   start_date="2009-09-28 14:58:01"/>   
 
   <!--
     Need this, otherwise DbUnit will delete interviews prior to actions, causing

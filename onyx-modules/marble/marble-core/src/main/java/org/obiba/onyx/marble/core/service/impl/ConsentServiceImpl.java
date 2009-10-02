@@ -88,6 +88,9 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
   public void purgeConsent(Interview interview) {
     Consent template = new Consent();
     template.setInterview(interview);
-    getPersistenceManager().delete(template);
+    List<Consent> consents = getPersistenceManager().match(template);
+    for(Consent consent : consents) {
+      getPersistenceManager().delete(consent);
+    }
   }
 }
