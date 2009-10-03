@@ -9,10 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.administration.panel;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -23,14 +19,11 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.core.service.JobExecutionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameter;
 
 public class DataManagementPanel extends Panel {
 
@@ -41,18 +34,15 @@ public class DataManagementPanel extends Panel {
   @SpringBean
   private OnyxDataExport onyxDataExport;
 
-  @SpringBean(name = "purgeParticipantDataJob")
-  private Job purgeParticipantDataJob;
-
-  @SpringBean
-  private JobExecutionService jobExecutionService;
-
   private ConfirmationDialog confirmationDialog;
+
+  private PurgeDialog purgeDialog;
 
   public DataManagementPanel(String id) {
     super(id);
 
     createExportDialog();
+    add(purgeDialog = new PurgeDialog("purgeDialog"));
 
     AjaxLink exportLink = new AjaxLink("export") {
       private static final long serialVersionUID = 1L;
@@ -86,16 +76,14 @@ public class DataManagementPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
-        jobParameterMap.put("date", new JobParameter(new Date()));
-
-        jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
+        purgeDialog.showConfirmation();
+        purgeDialog.show(target);
+        target.addComponent(purgeDialog.get("content"));
       }
 
     };
 
     add(purgeLink);
-
   }
 
   private void createExportDialog() {
