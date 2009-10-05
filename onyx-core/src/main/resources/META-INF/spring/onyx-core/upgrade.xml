@@ -47,8 +47,9 @@
           <ref bean="onyx-postDataUpgrade-1.5.2"/>
           <ref bean="batchSchema-1.6.0" />
           <bean id="onyx-schemaUpgrade-1.6.0" parent="updateOnyxSchema">
-            <property name="appliesTo" value="1.6.1" />  
+            <property name="appliesTo" value="1.6.0" />  
           </bean>
+          <ref bean="onyx-constraints-1.6.0" />  
           <ref bean="onyx-dataUpgrade-1.6.0" />
         </list>
      </property>
@@ -153,6 +154,12 @@
   </bean>
   
   <bean id="defaultDialectMapper" class="org.obiba.runtime.upgrade.support.DefaultDialectMapper" />
+  
+  <bean id="onyx-constraints-1.6.0" class="org.obiba.onyx.runtime.upgrade.Constraints_1_6_0">
+    <property name="description" value="Onyx Constraints Upgrade 1.6.0"/>
+    <property name="appliesTo" value="1.6.0" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
   
   <bean id="onyx-dataUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource"/>

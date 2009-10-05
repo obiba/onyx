@@ -31,7 +31,6 @@ public class ApplicationConfiguration extends AbstractEntity {
   /**
    * Session timeout (in minutes).
    */
-  @Column(nullable = false)
   private Integer sessionTimeout;
 
   public String getStudyName() {
