@@ -14,7 +14,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.easymock.EasyMock;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.PersistenceManager;
@@ -28,7 +30,9 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.stage.StageTransition;
+import org.obiba.onyx.core.domain.statistics.InterviewDeletionLog;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -47,7 +51,15 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
   PersistenceManager persistenceManager;
 
   @Autowired(required = true)
-  ParticipantService participantService;
+  DefaultParticipantServiceImpl participantService;
+
+  UserSessionService mockUserSessionService;
+
+  @Before
+  public void setUp() {
+    mockUserSessionService = EasyMock.createMock(UserSessionService.class);
+    participantService.setUserSessionService(mockUserSessionService);
+  }
 
   @Test
   @Dataset
@@ -243,8 +255,20 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNotNull(persistenceManager.get(StageExecutionMemento.class, 1l));
     Assert.assertNotNull(persistenceManager.get(StageExecutionMemento.class, 2l));
 
+    Assert.assertNull(persistenceManager.get(InterviewDeletionLog.class, 1l));
+
+    User user = new User();
+    user.setFirstName("firstName");
+    user.setLastName("lastName");
+    user.setLogin("login");
+
+    EasyMock.expect(mockUserSessionService.getUser()).andReturn(user).times(2);
+    EasyMock.replay(mockUserSessionService);
+
     // Delete the participant and his data
     participantService.deleteParticipant(persistenceManager.get(Participant.class, 1l));
+
+    EasyMock.verify(mockUserSessionService);
 
     // Check data after delete
     Assert.assertNull(persistenceManager.get(Participant.class, 1l));
@@ -275,6 +299,8 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
     Assert.assertNull(persistenceManager.get(StageExecutionMemento.class, 1l));
     Assert.assertNull(persistenceManager.get(StageExecutionMemento.class, 2l));
+
+    Assert.assertNotNull(persistenceManager.get(InterviewDeletionLog.class, 1l));
 
   }
 

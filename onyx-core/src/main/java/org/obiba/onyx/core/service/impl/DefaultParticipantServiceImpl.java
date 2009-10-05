@@ -19,8 +19,10 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
+import org.obiba.onyx.core.domain.statistics.InterviewDeletionLog;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
@@ -43,6 +45,8 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   private static final Logger log = LoggerFactory.getLogger(DefaultParticipantServiceImpl.class);
 
   private ModuleRegistry moduleRegistry;
+
+  private UserSessionService userSessionService;
 
   private static final String START_ACTION_DEFINITION_CODE = "action.START";
 
@@ -146,6 +150,15 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
       module.delete(participant);
     }
 
+    // Write the deleted participant information to InterviewDeletionLog
+    InterviewDeletionLog deletionLog = new InterviewDeletionLog();
+    deletionLog.setDate(new Date());
+    deletionLog.setExportDate(participant.getExportDate());
+    deletionLog.setParticipantBarcode(participant.getBarcode());
+    deletionLog.setStatus(participant.getInterview().getStatus().toString());
+    deletionLog.setUser(userSessionService.getUser().getLogin() + " - " + userSessionService.getUser().getFullName());
+    getPersistenceManager().save(deletionLog);
+
   }
 
   public ModuleRegistry getModuleRegistry() {
@@ -154,5 +167,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
     this.moduleRegistry = moduleRegistry;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 }
