@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 
 public class PurgeDialogPanel extends Panel {
 
@@ -118,13 +119,13 @@ public class PurgeDialogPanel extends Panel {
     public ResultFragment(String id) {
       super(id, "resultFragment", PurgeDialogPanel.this);
 
-      successLabel = new Label("successLabel", new ResourceModel("successPurgeResult"));
+      successLabel = new Label("successLabel", new StringResourceModel("SuccessPurgeResult", PurgeDialogPanel.this, null, new Object[] { "XX" }));
       add(successLabel);
 
       successImage = new Image("successImage");
       add(successImage);
 
-      failedLabel = new Label("failedLabel", new ResourceModel("failedPurgeResult"));
+      failedLabel = new Label("failedLabel", new StringResourceModel("FailedPurgeResult", PurgeDialogPanel.this, null, new Object[] { "YY" }));
       add(failedLabel);
 
       failedImage = new Image("failedImage");

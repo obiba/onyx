@@ -9,11 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.administration.panel;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.Model;
@@ -21,6 +23,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.JobExecutionService;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 
@@ -58,6 +61,12 @@ public class PurgeDialog extends Dialog {
       public void onClick(AjaxRequestTarget target) {
         // Show the progress fragment.
         showProgress();
+
+        // Register update callback.
+        PurgeBehavior updateCallback = new PurgeBehavior();
+        PurgeDialog.this.add(updateCallback);
+        target.appendJavascript(updateCallback.getJavascript());
+
         target.addComponent(PurgeDialog.this.get("content"));
       }
     });
@@ -77,6 +86,7 @@ public class PurgeDialog extends Dialog {
 
   public void showConfirmation() {
     setOptions(Option.CANCEL_OPTION);
+    purgeSubmitLink.setVisible(true);
 
     setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
@@ -91,13 +101,6 @@ public class PurgeDialog extends Dialog {
 
       public void onClose(AjaxRequestTarget target, Status status) {
         if(status != null && status.equals(Dialog.Status.CANCELLED)) PurgeDialog.this.close(target);
-
-        if(status != null && status.equals(Dialog.Status.SUCCESS)) {
-          Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
-          jobParameterMap.put("date", new JobParameter(new Date()));
-          jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
-        }
-
       }
     });
 
@@ -113,5 +116,33 @@ public class PurgeDialog extends Dialog {
   public void showResult(boolean purgeSucceeded) {
     setOptions(Option.CLOSE_OPTION);
     content.showResult(purgeSucceeded);
+  }
+
+  private class PurgeBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    public void respond(AjaxRequestTarget target) {
+
+      boolean purgeSucceeded = executePurge();
+
+      // Show the result fragment.
+      PurgeDialog.this.showResult(purgeSucceeded);
+
+      target.addComponent(PurgeDialog.this.get("content"));
+    }
+
+    public String getJavascript() {
+      return this.getCallbackScript().toString();
+    }
+
+    private boolean executePurge() {
+      ExitStatus exitStatus = ExitStatus.UNKNOWN;
+
+      Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
+      jobParameterMap.put("date", new JobParameter(new Date()));
+      exitStatus = jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
+
+      return (exitStatus.getExitCode().equals("COMPLETED"));
+    }
   }
 }

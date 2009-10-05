@@ -463,6 +463,7 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 
 .dialogIcon {
   float: left;
+  margin-right:5px;
 }
 
 .dialogMessage {
