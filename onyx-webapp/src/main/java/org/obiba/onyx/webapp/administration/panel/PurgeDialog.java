@@ -23,8 +23,8 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.JobExecutionService;
 import org.obiba.onyx.wicket.reusable.Dialog;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 
 public class PurgeDialog extends Dialog {
@@ -136,13 +136,16 @@ public class PurgeDialog extends Dialog {
     }
 
     private boolean executePurge() {
-      ExitStatus exitStatus = ExitStatus.UNKNOWN;
-
       Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
       jobParameterMap.put("date", new JobParameter(new Date()));
-      exitStatus = jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
+      JobExecution jobExecution = jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
+      boolean jobCompleted = jobExecution.getExitStatus().getExitCode().equals("COMPLETED");
 
-      return (exitStatus.getExitCode().equals("COMPLETED"));
+      if(jobCompleted) {
+        System.out.println("***************** TOTAL DELETED!!!" + jobExecution.getExecutionContext().getInt("totalDeleted"));
+      }
+
+      return jobCompleted;
     }
   }
 }

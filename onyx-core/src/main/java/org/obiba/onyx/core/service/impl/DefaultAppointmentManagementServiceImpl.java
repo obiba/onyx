@@ -83,8 +83,9 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
 
     Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
     jobParameterMap.put("date", new JobParameter(new Date()));
+    JobExecution jobExecution = jobExecutionService.launchJob(job, jobParameterMap);
 
-    return jobExecutionService.launchJob(job, jobParameterMap);
+    return jobExecution.getExitStatus();
 
   }
 

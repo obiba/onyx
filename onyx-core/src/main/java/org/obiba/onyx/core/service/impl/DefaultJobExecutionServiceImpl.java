@@ -12,7 +12,6 @@ package org.obiba.onyx.core.service.impl;
 import java.util.Map;
 
 import org.obiba.onyx.core.service.JobExecutionService;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -26,11 +25,11 @@ public class DefaultJobExecutionServiceImpl implements JobExecutionService {
 
   private JobLauncher jobLauncher;
 
-  public ExitStatus launchJob(Job job, Map<String, JobParameter> parameters) {
+  public JobExecution launchJob(Job job, Map<String, JobParameter> parameters) {
 
     try {
       JobExecution jobExecution = jobLauncher.run(job, new JobParameters(parameters));
-      return jobExecution.getExitStatus();
+      return jobExecution;
     } catch(JobExecutionAlreadyRunningException e) {
       throw new RuntimeException("This job is currently running", e);
     } catch(JobInstanceAlreadyCompleteException e) {

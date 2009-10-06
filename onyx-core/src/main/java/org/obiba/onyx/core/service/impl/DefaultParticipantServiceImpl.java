@@ -142,13 +142,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
       getPersistenceManager().delete(memento);
     }
 
-    getPersistenceManager().delete(participant);
-
     // Delete the participant data for each Onyx module.
     Collection<Module> modules = moduleRegistry.getModules();
     for(Module module : modules) {
       module.delete(participant);
     }
+
+    getPersistenceManager().delete(participant);
 
     // Write the deleted participant information to InterviewDeletionLog
     InterviewDeletionLog deletionLog = new InterviewDeletionLog();

@@ -11,12 +11,12 @@ package org.obiba.onyx.core.service;
 
 import java.util.Map;
 
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 
 public interface JobExecutionService {
 
-  public ExitStatus launchJob(Job job, Map<String, JobParameter> parameters);
+  public JobExecution launchJob(Job job, Map<String, JobParameter> parameters);
 
 }

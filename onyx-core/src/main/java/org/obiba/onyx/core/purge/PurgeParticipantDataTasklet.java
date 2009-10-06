@@ -68,9 +68,12 @@ public class PurgeParticipantDataTasklet implements Tasklet {
       log.info("Deleting Participant id = [{}] (non-exportable participant) and related data :  ", participant.getId());
     }
 
+    int totalDeleted = exportedParticipantsToBePurged.size() + nonExportableParticipantsToBePurged.size();
+    context.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("totalDeleted", totalDeleted);
+
     long end = System.currentTimeMillis();
 
-    log.info("A total of [{}] Participants were deleted in [{}] ms.", exportedParticipantsToBePurged.size() + nonExportableParticipantsToBePurged.size(), end - start);
+    log.info("A total of [{}] Participants were deleted in [{}] ms.", totalDeleted, end - start);
 
     log.info("**** PARTICIPANT DATA PURGE COMPLETED ****");
 
