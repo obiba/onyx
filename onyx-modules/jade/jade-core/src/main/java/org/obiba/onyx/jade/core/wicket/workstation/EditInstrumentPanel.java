@@ -158,7 +158,9 @@ public class EditInstrumentPanel extends Panel {
           }
           instrumentService.updateInstrument(instrument);
         }
+        target.addComponent(EditInstrumentPanel.this.findParent(WorkstationPanel.class).getMissingInstrumentInfoPanel());
         target.addComponent(EditInstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+
       }
     });
   }

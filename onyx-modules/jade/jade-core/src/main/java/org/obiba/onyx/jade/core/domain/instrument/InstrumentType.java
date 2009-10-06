@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.DataType;
 
-public class InstrumentType {
+public class InstrumentType implements Serializable {
 
   private static final long serialVersionUID = 23414234L;
 
@@ -118,8 +119,8 @@ public class InstrumentType {
   }
 
   /**
-   * Returns a list of {@link InstrumentOutputParameter}s that permit manual capture. Normally these parameters would
-   * be captured automatically, but if required they may also be captured manually.
+   * Returns a list of {@link InstrumentOutputParameter}s that permit manual capture. Normally these parameters would be
+   * captured automatically, but if required they may also be captured manually.
    * @return A list of output parameters that permit manual capture.
    */
   public List<InstrumentOutputParameter> getManualCaptureAllowedOutputParameters() {
@@ -175,8 +176,8 @@ public class InstrumentType {
   }
 
   /**
-   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a
-   * data source.
+   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a data
+   * source.
    * 
    * @param parameterType type of parameter to return (i.e., the class)
    * @param hasDataSource indicates whether the parameters returned should include those with or without a data source
