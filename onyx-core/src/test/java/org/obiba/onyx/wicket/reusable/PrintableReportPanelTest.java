@@ -77,7 +77,7 @@ public class PrintableReportPanelTest {
 
     EasyMock.verify(mockPrintableReportsRegistery);
 
-    tester.assertLabel("panel:group:table:0:rows:reportRow:name", "Signed Consent Report");
+    tester.assertLabel("panel:group:table:0:rows:reportRow:checkboxLabel:name", "Signed Consent Report");
     // tester.assertLabel("panel:group:table:0:rows:reportRow:status", "Ready");
   }
 }
