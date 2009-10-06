@@ -53,6 +53,15 @@ public class PurgeDialogPanel extends Panel {
   }
 
   public void showResult(boolean purgeSucceeded) {
+    IModel messageModel = purgeSucceeded ? new StringResourceModel("SuccessPurgeResult", PurgeDialogPanel.this, null, new Object[] { "XX" }) : new StringResourceModel("FailedPurgeResult", PurgeDialogPanel.this, null);
+    if(purgeSucceeded) {
+      resultFragment.successImage.setVisible(true);
+    } else {
+      resultFragment.failedImage.setVisible(true);
+    }
+
+    resultFragment.resultLabel.setDefaultModel(messageModel);
+
     replaceOrAddFragment(resultFragment);
   }
 
@@ -108,9 +117,7 @@ public class PurgeDialogPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private Label successLabel;
-
-    private Label failedLabel;
+    private Label resultLabel;
 
     private Image successImage;
 
@@ -119,16 +126,15 @@ public class PurgeDialogPanel extends Panel {
     public ResultFragment(String id) {
       super(id, "resultFragment", PurgeDialogPanel.this);
 
-      successLabel = new Label("successLabel", new StringResourceModel("SuccessPurgeResult", PurgeDialogPanel.this, null, new Object[] { "XX" }));
-      add(successLabel);
+      resultLabel = new Label("resultLabel");
+      add(resultLabel);
 
       successImage = new Image("successImage");
+      successImage.setVisible(false);
       add(successImage);
 
-      failedLabel = new Label("failedLabel", new StringResourceModel("FailedPurgeResult", PurgeDialogPanel.this, null, new Object[] { "YY" }));
-      add(failedLabel);
-
       failedImage = new Image("failedImage");
+      failedImage.setVisible(false);
       add(failedImage);
     }
   }
