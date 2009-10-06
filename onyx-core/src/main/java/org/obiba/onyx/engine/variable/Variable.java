@@ -59,6 +59,9 @@ public class Variable implements Serializable {
   @XStreamAsAttribute
   private String mimeType;
 
+  @XStreamAsAttribute
+  private String entity;
+
   /**
    * 
    * @param name
@@ -66,6 +69,7 @@ public class Variable implements Serializable {
   public Variable(String name) {
     super();
     this.name = name;
+    this.entity = "Participant";
   }
 
   /**
@@ -76,6 +80,7 @@ public class Variable implements Serializable {
     super();
     this.name = name;
     this.parent = parent;
+    this.entity = "Participant";
   }
 
   /**
@@ -279,6 +284,22 @@ public class Variable implements Serializable {
   }
 
   /**
+   * Get the entity type name associated to this variables.
+   * @return
+   */
+  public String getEntity() {
+    return entity;
+  }
+
+  /**
+   * Set the entity type name associated to this variables.
+   * @param entity
+   */
+  public void setEntity(String entity) {
+    this.entity = entity;
+  }
+
+  /**
    * Get the regular variables (not categories).
    * @return
    */
@@ -415,6 +436,6 @@ public class Variable implements Serializable {
 
   @Override
   public String toString() {
-    return parent != null ? parent + "." + name : name;
+    return entity + ":" + (parent != null ? parent + "." + name : name);
   }
 }
