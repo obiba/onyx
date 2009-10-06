@@ -49,7 +49,6 @@ public abstract class WizardForm extends Form {
     super(id, model);
 
     setOutputMarkupId(true);
-    setMultiPart(true);
 
     IBehavior buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
     IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
