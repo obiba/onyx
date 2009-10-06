@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -125,8 +126,12 @@ public class PrintableReportPanel extends Panel {
 
       MessageSourceResolvableStringModel nameStringModel = new MessageSourceResolvableStringModel(printableReport.getLabel());
       Label nameLabel = new Label("name", nameStringModel);
+      nameLabel.setRenderBodyOnly(true);
       if(!isPrintable(printableReport)) nameLabel.add(new AttributeAppender("style", true, new Model("color : #999999"), " "));
-      webMarkupContainer.add(nameLabel);
+
+      FormComponentLabel checkboxLabel = new FormComponentLabel("checkboxLabel", box);
+      checkboxLabel.add(nameLabel);
+      webMarkupContainer.add(checkboxLabel);
 
       Label statusLabel = new Label("status", getStatusResourceModel(printableReport));
       if(!isPrintable(printableReport)) statusLabel.add(new AttributeAppender("style", true, new Model("color : #A9A9A9"), " "));
