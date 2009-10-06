@@ -20,6 +20,8 @@ import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.util.time.Duration;
@@ -55,6 +57,16 @@ public abstract class AbstractAjaxTimerBehavior extends AbstractDefaultAjaxBehav
       throw new IllegalArgumentException("Invalid update interval");
     }
     this.updateInterval = updateInterval;
+  }
+
+  @Override
+  protected IAjaxCallDecorator getAjaxCallDecorator() {
+    return new AjaxCallDecorator() {
+      @Override
+      public CharSequence decorateScript(CharSequence script) {
+        return "var timeout;";
+      }
+    };
   }
 
   /**
@@ -111,7 +123,7 @@ public abstract class AbstractAjaxTimerBehavior extends AbstractDefaultAjaxBehav
    */
   protected final String getJsTimeoutCall(final Duration updateInterval) {
     // this might look strange, but it is necessary for IE not to leak :(
-    return "setTimeout(\"" + getCallbackScript() + "\", " + updateInterval.getMilliseconds() + ");";
+    return "timeout = setTimeout(\"" + getCallbackScript() + "\", " + updateInterval.getMilliseconds() + ");";
   }
 
   protected CharSequence getCallbackScript() {

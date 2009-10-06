@@ -13,6 +13,8 @@ import java.io.Serializable;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.IBehavior;
@@ -269,6 +271,18 @@ public abstract class InstrumentLaunchPanel extends Panel {
           setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton"), false, target);
         }
 
+        @Override
+        protected IAjaxCallDecorator getAjaxCallDecorator() {
+          return new AjaxCallDecorator() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public CharSequence decorateScript(CharSequence script) {
+              return "window.clearTimeout(timeout);" + script;
+            }
+
+          };
+        }
       });
       box.setEnabled(((InstrumentRun) modelObject).getValidMeasureCount() > 0);
       add(box);
