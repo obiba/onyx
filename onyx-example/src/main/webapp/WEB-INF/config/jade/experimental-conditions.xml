@@ -63,7 +63,7 @@
       </allowedValues>
     </attribute>
   </instrumentCalibration>
-<!--    
+  
   <instrumentCalibration>
     <name>WeightCalibrationTanitaBC418</name>
     <instructions>
@@ -94,6 +94,7 @@
       <type>INTEGER</type>
     </attribute>
   </instrumentCalibration>  
+ 
   
   <instrumentCalibration>
     <name>StadiometerFullVerticalCalibrationLog</name>
@@ -143,7 +144,7 @@
       <string>WeightCalibrationSECA803Scale.Instruction3</string>
       <string>WeightCalibrationSECA803Scale.Instruction4</string>
     </instructions>
-    <instrumentType>Weight803?</instrumentType>
+    <instrumentType>Weight803</instrumentType>
     <attribute>
       <name>20kg</name>
       <type>INTEGER</type>
@@ -164,11 +165,11 @@
       <name>100kg</name>
       <type>INTEGER</type>
     </attribute>
-  </instrumentCalibration>
+  </instrumentCalibration>  
 
   <instrumentCalibration>
     <name>SpirometryCalibrationLog</name>
-    <instrumentType>Spirometry?</instrumentType>
+    <instrumentType>Spirometry</instrumentType>
     <attribute>
       <name>Temperature</name>
       <type>INTEGER</type>
@@ -185,7 +186,7 @@
       <unit>L?</unit>      
     </attribute>
     <attribute>
-      <name>Comments?</name>
+      <name>Comments</name>
       <type>TEXT</type>
     </attribute>
   </instrumentCalibration>
@@ -196,7 +197,7 @@
       <string>StadiometerFullAlignmentCalibrationLog.Instruction1</string>
       <string>StadiometerFullAlignmentCalibrationLog.Instruction2</string>
     </instructions>
-    <instrumentType>Stadiometer</instrumentType>
+    <instrumentType>BoneDensity</instrumentType>
     <attribute>
       <name>Alignment50to70cm</name>
       <type>TEXT</type>
@@ -221,11 +222,13 @@
         <string>No</string>
       </allowedValues>
     </attribute>
+
     <attribute>
       <name>HeightOfMetreStick</name>
       <type>INTEGER</type>
       <unit>cm?</unit>
     </attribute>
+
   </instrumentCalibration>
--->  
+ 
 </list>

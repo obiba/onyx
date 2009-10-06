@@ -111,4 +111,13 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
     return instrumentCalibrations;
   }
 
+  public List<InstrumentCalibration> getInstrumentCalibrationsByType(String instrumentType) {
+    List<InstrumentCalibration> instrumentCalibrations = new ArrayList<InstrumentCalibration>();
+    for(InstrumentCalibration calibration : getInstrumentCalibrations()) {
+      if(calibration.getInstrumentType().equals(instrumentType)) {
+        instrumentCalibrations.add(calibration);
+      }
+    }
+    return instrumentCalibrations;
+  }
 }

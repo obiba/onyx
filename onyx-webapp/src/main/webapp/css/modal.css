@@ -143,9 +143,10 @@ div.wicket-modal div.onyx .purge-panel-content {
 }
 
 div.wicket-modal div.onyx .experimental-condition-history-panel {
-  height: 164px;
+  height: 203px;
   width: 960px;
   margin-left: 10px;
+  margin-top: 11px;
 }
 
 div.wicket-modal div.onyx .interview-log-panel-content {
@@ -164,6 +165,20 @@ div.wicket-modal div.onyx .experimental-condition-form {
   height: 350px;
   width: 570px;
   margin-left: 10px;
+  margin-top: 11px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+div.wicket-modal div.onyx .experimental-condition-form p, .experimental-condition-history-panel p {
+  margin-top: 0px;
+  margin-left: 5px;
+}
+
+div.wicket-modal div.onyx .experimental-condition-form p select, .experimental-condition-history-panel  p select {
+  font-size: 13px;
+  font-family: arial,sans-serif;
+  font-weight: bold;
 }
 
 div.wicket-modal div.onyx .manual-input-panel table {

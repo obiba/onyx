@@ -86,7 +86,7 @@ public class WorkstationLogPanel extends ExperimentalConditionDialog {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        setExperimentalConditionLog(selectedExperimentalConditionLog);
+        setExperimentalConditionLog(selectedExperimentalConditionLog, null);
 
         getExperimentalConditionDialog().setWindowClosedCallback(new WindowClosedCallback() {
           private static final long serialVersionUID = 1L;

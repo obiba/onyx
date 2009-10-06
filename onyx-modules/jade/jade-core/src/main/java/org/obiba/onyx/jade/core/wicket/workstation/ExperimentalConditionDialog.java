@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.workstation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -28,7 +31,7 @@ public abstract class ExperimentalConditionDialog extends Panel {
 
   private ExperimentalConditionForm experimentalConditionForm;
 
-  private final Dialog logDialog = DialogBuilder.buildDialog("experimentalConditionDialog", "Report Dialog", experimentalConditionForm = new ExperimentalConditionForm("content", null)).setOptions(Option.OK_CANCEL_OPTION, "Save").getDialog();
+  private final Dialog logDialog = DialogBuilder.buildDialog("experimentalConditionDialog", "Report Dialog", experimentalConditionForm = new ExperimentalConditionForm("content", null, null)).setOptions(Option.OK_CANCEL_OPTION, "Save").getDialog();
 
   public ExperimentalConditionDialog(String id) {
     this(id, null, null);
@@ -47,7 +50,6 @@ public abstract class ExperimentalConditionDialog extends Panel {
             experimentalConditionForm.addBarcode(instrumentModel.getObject().getBarcode());
           }
           experimentalConditionForm.save();
-          logDialog.close(target);
           return true;
         } else if(status.equals(Status.ERROR)) {
           experimentalConditionForm.getFeedbackWindow().setContent(new FeedbackPanel("content"));
@@ -66,8 +68,14 @@ public abstract class ExperimentalConditionDialog extends Panel {
     return logDialog;
   }
 
-  protected void setExperimentalConditionLog(ExperimentalConditionLog experimentalConditionLog) {
+  protected void setExperimentalConditionLog(ExperimentalConditionLog experimentalConditionLog, List<ExperimentalConditionLog> experimentalConditionLogs) {
+    if(experimentalConditionLogs == null) {
+      experimentalConditionLogs = new ArrayList<ExperimentalConditionLog>();
+      experimentalConditionLogs.add(experimentalConditionLog);
+    }
+    experimentalConditionForm.setExperimentalConditionLogs(experimentalConditionLogs);
     experimentalConditionForm.setDefaultModel(new Model<ExperimentalConditionLog>(experimentalConditionLog));
+    experimentalConditionForm.addDropDown();
     experimentalConditionForm.addComponents();
   }
 }

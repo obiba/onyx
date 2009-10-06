@@ -16,10 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -40,6 +44,7 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
@@ -59,32 +64,85 @@ public class ExperimentalConditionForm extends Panel {
 
   private ExperimentalCondition experimentalCondition;
 
-  public ExperimentalConditionForm(String id, IModel<ExperimentalConditionLog> model) {
+  private ExperimentalConditionLog selectedExperimentalConditionLog;
+
+  private Component formParent;
+
+  private Component oldFormParent;
+
+  private List<ExperimentalConditionLog> experimentalConditionLogs;
+
+  public ExperimentalConditionForm(String id, IModel<ExperimentalConditionLog> model, List<ExperimentalConditionLog> experimentalConditionLogs) {
     super(id, model);
     add(new AttributeModifier("class", true, new Model<String>("experimental-condition-form")));
+
+    this.experimentalConditionLogs = experimentalConditionLogs;
 
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
+    addDropDown();
     addComponents();
+  }
+
+  public void setExperimentalConditionLogs(List<ExperimentalConditionLog> experimentalConditionLogs) {
+    this.experimentalConditionLogs = experimentalConditionLogs;
+  }
+
+  public void addDropDown() {
+    if(experimentalConditionLogs == null) experimentalConditionLogs = new ArrayList<ExperimentalConditionLog>();
+    if(experimentalConditionLogs.size() >= 1) selectedExperimentalConditionLog = experimentalConditionLogs.get(0);
+
+    WebMarkupContainer selectCalibrationId = new WebMarkupContainer("selectCalibrationId");
+
+    final DropDownChoice<ExperimentalConditionLog> experimentalConditionLogChoice = new DropDownChoice<ExperimentalConditionLog>("experimentalConditionLogChoice", new PropertyModel<ExperimentalConditionLog>(this, "selectedExperimentalConditionLog"), experimentalConditionLogs, new ChoiceRenderer<ExperimentalConditionLog>() {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public Object getDisplayValue(ExperimentalConditionLog object) {
+        return new SpringStringResourceModel(object.getName(), object.getName()).getString();
+      }
+
+      @Override
+      public String getIdValue(ExperimentalConditionLog object, int index) {
+        return object.getName();
+      }
+    });
+    experimentalConditionLogChoice.add(new OnChangeAjaxBehavior() {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        addComponents();
+        formParent.replaceWith(oldFormParent);
+        formParent = oldFormParent;
+        target.addComponent(formParent);
+      }
+
+    });
+    selectCalibrationId.addOrReplace(experimentalConditionLogChoice);
+    addOrReplace(selectCalibrationId);
+    if(experimentalConditionLogs.size() <= 1) selectCalibrationId.setVisible(false);
   }
 
   public void addComponents() {
 
-    ExperimentalConditionLog experimentalConditionLog = (ExperimentalConditionLog) getDefaultModelObject();
+    WebMarkupContainer experimentalConditionFormParent = new WebMarkupContainer("experimentalConditionFormParent");
+    experimentalConditionFormParent.setOutputMarkupId(true);
 
     experimentalCondition = new ExperimentalCondition();
-    experimentalCondition.setName(experimentalConditionLog != null ? experimentalConditionLog.getName() : "");
+    experimentalCondition.setName(selectedExperimentalConditionLog != null ? selectedExperimentalConditionLog.getName() : "");
     experimentalCondition.setUser(userSessionService.getUser());
     experimentalCondition.setWorkstation(userSessionService.getWorkstation());
 
-    final List<InstructionModel> instructionModels = getInstructionModels(experimentalConditionLog);
+    final List<InstructionModel> instructionModels = getInstructionModels(selectedExperimentalConditionLog);
     Label instructionTitle = new Label("instructionTitle", new ResourceModel("InstructionTitle"));
     instructionTitle.add(new AttributeModifier("class", true, new Model<String>("experimental-condition-instructions-title")));
-    addOrReplace(instructionTitle);
+    experimentalConditionFormParent.addOrReplace(instructionTitle);
     if(instructionModels.size() == 0) instructionTitle.setVisible(false);
-    Loop instructionsLoop = new Loop("instructionList", experimentalConditionLog != null ? experimentalConditionLog.getInstructions().size() : 0) {
+    Loop instructionsLoop = new Loop("instructionList", selectedExperimentalConditionLog != null ? selectedExperimentalConditionLog.getInstructions().size() : 0) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -93,10 +151,10 @@ public class ExperimentalConditionForm extends Panel {
         item.add(new InstructionFragment("instructionRows", "instructionFragment", ExperimentalConditionForm.this, instructionModels.get(item.getIteration())));
       }
     };
-    addOrReplace(instructionsLoop);
+    experimentalConditionFormParent.addOrReplace(instructionsLoop);
 
-    final List<AttributeModel> attributeModels = getAttributeModels(experimentalConditionLog);
-    Loop attributeLoop = new Loop("table", experimentalConditionLog != null ? experimentalConditionLog.getAttributes().size() : 0) {
+    final List<AttributeModel> attributeModels = getAttributeModels(selectedExperimentalConditionLog);
+    Loop attributeLoop = new Loop("table", selectedExperimentalConditionLog != null ? selectedExperimentalConditionLog.getAttributes().size() : 0) {
 
       private static final long serialVersionUID = 1L;
 
@@ -111,8 +169,18 @@ public class ExperimentalConditionForm extends Panel {
         }
       }
     };
-    if(getDefaultModelObject() == null) setVisible(false);
-    addOrReplace(attributeLoop);
+    if(getDefaultModelObject() == null) {
+      setVisible(false);
+    }
+    experimentalConditionFormParent.addOrReplace(attributeLoop);
+    if(formParent == null) {
+      formParent = experimentalConditionFormParent;
+      addOrReplace(formParent);
+    } else {
+      oldFormParent = experimentalConditionFormParent;
+      formParent.replaceWith(experimentalConditionFormParent);
+      formParent = experimentalConditionFormParent;
+    }
   }
 
   private class TextFieldFragment extends Fragment {
@@ -134,7 +202,7 @@ public class ExperimentalConditionForm extends Panel {
       formComponent.setRequired(true);
       formComponent.setLabel(new Model<String>(attribute.getName()));
       if(attribute.getType().equals(DataType.TEXT)) {
-        formComponent.add(new StringValidator.MaximumLengthValidator(250));
+        formComponent.add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
       }
       for(IValidator validator : attribute.getValidators()) {
         formComponent.add(validator);

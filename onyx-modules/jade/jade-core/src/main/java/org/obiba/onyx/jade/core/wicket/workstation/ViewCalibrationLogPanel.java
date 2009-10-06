@@ -40,7 +40,7 @@ public class ViewCalibrationLogPanel extends Panel {
 
     ResourceModel logTitleModel = new ResourceModel("CalibrationHistory");
     final Dialog logDialog = DialogBuilder.buildDialog("calibrationLogDialog", logTitleModel, getExperimentalConditionHistoryPanel()).setOptions(Option.CLOSE_OPTION).getDialog();
-    logDialog.setInitialHeight(203);
+    logDialog.setInitialHeight(252);
     logDialog.setInitialWidth(1000);
     add(logDialog);
 
@@ -75,11 +75,8 @@ public class ViewCalibrationLogPanel extends Panel {
   private ExperimentalConditionHistoryPanel getExperimentalConditionHistoryPanel() {
     Instrument instrument = (Instrument) getDefaultModelObject();
     if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
-      InstrumentCalibration calibrate = experimentalConditionService.getInstrumentCalibrationByType(instrument.getType());
-      ExperimentalCondition template = new ExperimentalCondition();
-      template.setName(calibrate.getName());
-      SpringStringResourceModel instrumentTitleModel = new SpringStringResourceModel(calibrate.getName());
-      return new ExperimentalConditionHistoryPanel("content", template, new Model<String>(instrumentTitleModel.getString()), 5);
+      List<InstrumentCalibration> calibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+      return new ExperimentalConditionHistoryPanel("content", calibrations, 5);
     }
     ExperimentalCondition template = new ExperimentalCondition();
     return new ExperimentalConditionHistoryPanel("content", template, new Model<String>("titleModel"), 5);

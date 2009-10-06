@@ -17,13 +17,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -38,6 +43,7 @@ import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -59,13 +65,83 @@ public class ExperimentalConditionHistoryPanel extends Panel {
   @SpringBean
   private UserSessionService userSessionService;
 
+  private InstrumentCalibration selectedInstrumentCalibration;
+
+  private OnyxEntityList<ExperimentalCondition> list;
+
   /** Map of experimental condition log attributes present in the xml configuration file. */
   private Map<String, Attribute> experimentalConditionLogAttributeMap;
+
+  public ExperimentalConditionHistoryPanel(String id, List<InstrumentCalibration> instrumentCalibrations, final int pageSize) {
+    super(id);
+    setOutputMarkupId(true);
+    add(new AttributeModifier("class", true, new Model<String>("experimental-condition-history-panel")));
+
+    WebMarkupContainer selectCalibrationId = new WebMarkupContainer("selectCalibrationId");
+
+    if(instrumentCalibrations.size() >= 1) selectedInstrumentCalibration = instrumentCalibrations.get(0);
+
+    final DropDownChoice<InstrumentCalibration> instrumentCalibrationChoice = new DropDownChoice<InstrumentCalibration>("instrumentCalibrationChoice", new PropertyModel<InstrumentCalibration>(this, "selectedInstrumentCalibration"), instrumentCalibrations, new ChoiceRenderer<InstrumentCalibration>() {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public Object getDisplayValue(InstrumentCalibration object) {
+        return new SpringStringResourceModel(object.getName(), object.getName()).getString();
+      }
+
+      @Override
+      public String getIdValue(InstrumentCalibration object, int index) {
+        return object.getName();
+      }
+    });
+    instrumentCalibrationChoice.add(new OnChangeAjaxBehavior() {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        OnyxEntityList<ExperimentalCondition> newTable = getTable(pageSize);
+        list.replaceWith(newTable);
+        list = newTable;
+        target.addComponent(list);
+      }
+
+    });
+    selectCalibrationId.add(instrumentCalibrationChoice);
+    add(selectCalibrationId);
+    if(instrumentCalibrations.size() <= 1) {
+      selectCalibrationId.setVisible(false);
+      list = getTable(pageSize + 2);
+    } else {
+      list = getTable(pageSize);
+    }
+
+    add(list);
+  }
+
+  private OnyxEntityList<ExperimentalCondition> getTable(int pageSize) {
+    experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(selectedInstrumentCalibration.getName());
+
+    ExperimentalCondition ec = new ExperimentalCondition();
+    ec.setName(selectedInstrumentCalibration.getName());
+
+    List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(ec, null);
+    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(ec), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), new Model(selectedInstrumentCalibration.getName()));
+    list.setPageSize(pageSize);
+    return list;
+
+  }
 
   public ExperimentalConditionHistoryPanel(String id, ExperimentalCondition template, IModel<String> title, int pageSize) {
     super(id);
     setOutputMarkupId(true);
     add(new AttributeModifier("class", true, new Model<String>("experimental-condition-history-panel")));
+
+    WebMarkupContainer selectCalibrationId = new WebMarkupContainer("selectCalibrationId");
+    Label instrumentCalibrationChoice = new Label("instrumentCalibrationChoice", "instrumentCalibrationChoice");
+    selectCalibrationId.add(instrumentCalibrationChoice);
+    add(selectCalibrationId);
+    selectCalibrationId.setVisible(false);
 
     experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(template.getName());
 

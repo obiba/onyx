@@ -25,9 +25,11 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
-import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
@@ -122,7 +124,11 @@ public class ActionsPanel extends ExperimentalConditionDialog {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      setExperimentalConditionLog(experimentalConditionService.getInstrumentCalibrationByType(instrument.getType()));
+      List<ExperimentalConditionLog> log = new ArrayList<ExperimentalConditionLog>();
+      for(InstrumentCalibration cal : experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType())) {
+        log.add((ExperimentalConditionLog) cal);
+      }
+      setExperimentalConditionLog(experimentalConditionService.getInstrumentCalibrationByType(instrument.getType()), log);
 
       getExperimentalConditionDialog().setWindowClosedCallback(new WindowClosedCallback() {
         private static final long serialVersionUID = 1L;

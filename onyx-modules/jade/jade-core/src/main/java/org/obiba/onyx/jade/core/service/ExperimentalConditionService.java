@@ -43,6 +43,8 @@ public interface ExperimentalConditionService {
 
   public InstrumentCalibration getInstrumentCalibrationByType(String instrumentType);
 
+  public List<InstrumentCalibration> getInstrumentCalibrationsByType(String instrumentType);
+
   public Attribute getAttribute(ExperimentalConditionValue experimentalConditionValue);
 
 }

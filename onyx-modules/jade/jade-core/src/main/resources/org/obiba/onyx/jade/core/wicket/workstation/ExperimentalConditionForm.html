@@ -1,19 +1,25 @@
 <wicket:panel>
-
-  <div wicket:id="instructionTitle">[Instructions]</div>
-  <div class="experimental-condition-instructions">
-    <span wicket:id="instructionList"><span wicket:id="instructionRows"></span></span>
+  <div wicket:id="feedback"></div>
+  
+  <p wicket:id="selectCalibrationId">
+    <wicket:message key="SelectACalibration" /> <select wicket:id="experimentalConditionLogChoice"></select>
+  </p>
+  
+  <div wicket:id="experimentalConditionFormParent">
+    <div wicket:id="instructionTitle">[Instructions]</div>
+    <div class="experimental-condition-instructions">
+      <span wicket:id="instructionList"><span wicket:id="instructionRows"></span></span>
+    </div>
+  
+    <table class="entityTable">
+      <thead>
+      </thead>
+      <tbody>
+        <span wicket:id="table"><span wicket:id="inputRows"></span></span>
+      </tbody>
+    </table>
   </div>
 
-  <table class="entityTable">
-    <thead>
-    </thead>
-    <tbody>
-      <span wicket:id="table"><span wicket:id="inputRows"></span></span>
-    </tbody>
-  </table>
-
-  <div wicket:id="feedback"></div>
 </wicket:panel>
 
 <wicket:fragment wicket:id="instructionFragment">
