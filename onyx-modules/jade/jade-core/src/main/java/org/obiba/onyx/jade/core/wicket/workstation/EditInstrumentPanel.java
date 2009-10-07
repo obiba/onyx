@@ -56,7 +56,7 @@ public class EditInstrumentPanel extends Panel {
 
   private final InstrumentFragment instrumentFragment;
 
-  private DropDownChoice measurementDropDown;
+  private DropDownChoice<String> measurementDropDown;
 
   private boolean currentWorkstation = false;
 

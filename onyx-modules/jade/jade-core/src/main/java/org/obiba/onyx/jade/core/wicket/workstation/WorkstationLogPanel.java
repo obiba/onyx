@@ -48,7 +48,7 @@ public class WorkstationLogPanel extends ExperimentalConditionDialog {
     final List<ExperimentalConditionLog> experimentalConditionLogs = getExperimentalConditionLogs();
     if(experimentalConditionLogs.size() >= 1) selectedExperimentalConditionLog = experimentalConditionLogs.get(0);
 
-    final DropDownChoice workstationLogChoice = new DropDownChoice<ExperimentalConditionLog>("workstationLogChoice", new PropertyModel(this, "selectedExperimentalConditionLog"), getExperimentalConditionLogs(), new ChoiceRenderer<ExperimentalConditionLog>() {
+    final DropDownChoice<ExperimentalConditionLog> workstationLogChoice = new DropDownChoice<ExperimentalConditionLog>("workstationLogChoice", new PropertyModel<ExperimentalConditionLog>(this, "selectedExperimentalConditionLog"), getExperimentalConditionLogs(), new ChoiceRenderer<ExperimentalConditionLog>() {
       private static final long serialVersionUID = 1L;
 
       @Override

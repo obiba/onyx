@@ -12,17 +12,27 @@ package org.obiba.onyx.webapp.workstation.page;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.home.page.HomePage;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class WorkstationPage extends BasePage {
 
-  @SpringBean(name = "jadeModule")
-  private Module jadeModule;
+  @SpringBean
+  private ModuleRegistry moduleRegistry;
+
+  private final String JADE_MODULE_NAME = "jade";
 
   public WorkstationPage() {
     super();
-    add(jadeModule.getWidget("workstationContent"));
+
+    Module jadeModule = moduleRegistry.getModule(JADE_MODULE_NAME);
+    if(jadeModule != null) {
+      add(jadeModule.getWidget("workstationContent"));
+    } else {
+      setResponsePage(HomePage.class);
+    }
   }
 
 }
