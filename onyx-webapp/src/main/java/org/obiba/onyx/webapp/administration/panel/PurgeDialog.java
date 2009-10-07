@@ -45,6 +45,8 @@ public class PurgeDialog extends Dialog {
 
   private AjaxLink purgeSubmitLink;
 
+  private int participantsDeleted;
+
   public PurgeDialog(String id) {
     super(id);
     setTitle((new ResourceModel("PurgeParticipants")));
@@ -115,7 +117,7 @@ public class PurgeDialog extends Dialog {
 
   public void showResult(boolean purgeSucceeded) {
     setOptions(Option.CLOSE_OPTION);
-    content.showResult(purgeSucceeded);
+    content.showResult(purgeSucceeded, participantsDeleted);
   }
 
   private class PurgeBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
@@ -141,10 +143,7 @@ public class PurgeDialog extends Dialog {
       JobExecution jobExecution = jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
       boolean jobCompleted = jobExecution.getExitStatus().getExitCode().equals("COMPLETED");
 
-      if(jobCompleted) {
-        System.out.println("***************** TOTAL DELETED!!!" + jobExecution.getExecutionContext().getInt("totalDeleted"));
-      }
-
+      participantsDeleted = (jobCompleted) ? jobExecution.getExecutionContext().getInt("totalDeleted") : 0;
       return jobCompleted;
     }
   }

@@ -52,12 +52,14 @@ public class PurgeDialogPanel extends Panel {
     replaceOrAddFragment(progressFragment);
   }
 
-  public void showResult(boolean purgeSucceeded) {
-    IModel messageModel = purgeSucceeded ? new StringResourceModel("SuccessPurgeResult", PurgeDialogPanel.this, null, new Object[] { "XX" }) : new StringResourceModel("FailedPurgeResult", PurgeDialogPanel.this, null);
+  public void showResult(boolean purgeSucceeded, int participantsDeleted) {
+    IModel messageModel;
     if(purgeSucceeded) {
       resultFragment.successImage.setVisible(true);
+      messageModel = (participantsDeleted > 0) ? new StringResourceModel("SuccessPurgeResult", PurgeDialogPanel.this, null, new Object[] { participantsDeleted }) : new StringResourceModel("SuccessPurgeResultNoParticipant", PurgeDialogPanel.this, null);
     } else {
       resultFragment.failedImage.setVisible(true);
+      messageModel = new StringResourceModel("FailedPurgeResult", PurgeDialogPanel.this, null);
     }
 
     resultFragment.resultLabel.setDefaultModel(messageModel);
