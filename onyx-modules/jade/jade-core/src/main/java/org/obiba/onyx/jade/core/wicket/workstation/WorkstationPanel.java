@@ -70,8 +70,6 @@ public class WorkstationPanel extends Panel {
 
   private InstrumentEntityList instrumentList;
 
-  private MissingInstrumentInfoPanel missingInstrumentInfoPanel;
-
   /**
    * @param id
    */
@@ -101,8 +99,6 @@ public class WorkstationPanel extends Panel {
     };
 
     add(addInstrumentLink);
-
-    add(getMissingInstrumentInfoPanel());
 
     instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
     add(instrumentList);
@@ -238,15 +234,4 @@ public class WorkstationPanel extends Panel {
   public InstrumentEntityList getInstrumentList() {
     return instrumentList;
   }
-
-  public MissingInstrumentInfoPanel getMissingInstrumentInfoPanel() {
-    if(missingInstrumentInfoPanel == null) {
-      missingInstrumentInfoPanel = new MissingInstrumentInfoPanel("missingInstrumentInfoMessages");
-    } else {
-      // Update messages before returning the panel;
-      missingInstrumentInfoPanel.updateMessages();
-    }
-    return missingInstrumentInfoPanel;
-  }
-
 }
