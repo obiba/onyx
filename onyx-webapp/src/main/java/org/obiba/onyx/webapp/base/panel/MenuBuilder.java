@@ -29,6 +29,8 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.core.util.StringUtil;
+import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.workstation.page.WorkstationPage;
@@ -42,6 +44,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class MenuBuilder {
+
+  private static ModuleRegistry moduleRegistry;
 
   /**
    * Build the default menu (with logout menu item).
@@ -62,7 +66,7 @@ public class MenuBuilder {
     if(OnyxAuthenticatedSession.get().isSignedIn()) {
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
       menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
-      menuItems.add(new MenuItem(WorkstationPage.class, "Workstation"));
+      if(hasWorkstationContent()) menuItems.add(new MenuItem(WorkstationPage.class, "Workstation"));
     }
 
     // Creating the DataView containing the whole menu
@@ -149,5 +153,16 @@ public class MenuBuilder {
         }
       }
     }
+  }
+
+  private static boolean hasWorkstationContent() {
+    for(Module module : moduleRegistry.getModules()) {
+      if(module.getWidget("workstationContent") != null) return true;
+    }
+    return false;
+  }
+
+  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    MenuBuilder.moduleRegistry = moduleRegistry;
   }
 }

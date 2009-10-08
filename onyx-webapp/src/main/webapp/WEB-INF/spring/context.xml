@@ -65,5 +65,9 @@
       </list>
     </property>
   </bean>
+  
+  <bean id="menuBuilder" class="org.obiba.onyx.webapp.base.panel.MenuBuilder">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+  </bean>
 
 </beans>
