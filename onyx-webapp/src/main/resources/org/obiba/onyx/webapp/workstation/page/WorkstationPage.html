@@ -1,7 +1,11 @@
 <html>
   <body>
     <wicket:extend>
-    	<span wicket:id="workstationContent"/>
-    </wicket:extend>
+    	<span wicket:id="workstationPageContent"/>
+    	
+		<wicket:fragment wicket:id="workstationFragment">
+		  <span wicket:id="workstationContent"/>
+		</wicket:fragment>
+    </wicket:extend>    
   </body>
 </html>

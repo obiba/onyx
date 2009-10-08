@@ -10,11 +10,12 @@
 package org.obiba.onyx.webapp.workstation.page;
 
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.home.page.HomePage;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class WorkstationPage extends BasePage {
@@ -22,16 +23,23 @@ public class WorkstationPage extends BasePage {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
-  private final String JADE_MODULE_NAME = "jade";
-
   public WorkstationPage() {
     super();
+    addOrReplace(new WorkstationFragment("workstationPageContent"));
+  }
 
-    Module jadeModule = moduleRegistry.getModule(JADE_MODULE_NAME);
-    if(jadeModule != null) {
-      add(jadeModule.getWidget("workstationContent"));
-    } else {
-      setResponsePage(HomePage.class);
+  private class WorkstationFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    public WorkstationFragment(String id) {
+      super(id, "workstationFragment", WorkstationPage.this);
+      RepeatingView repeater = new RepeatingView("workstationContent");
+
+      for(Module module : moduleRegistry.getModules()) {
+        if(module.getWidget("workstationContent") != null) repeater.add(module.getWidget("workstationContent"));
+      }
+
+      add(repeater);
     }
   }
 
