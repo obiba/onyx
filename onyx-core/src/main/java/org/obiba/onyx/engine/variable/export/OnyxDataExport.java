@@ -235,6 +235,7 @@ public class OnyxDataExport {
         OutputStream os = exportStrategy.newEntry(entryName);
         VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
         participantData.setExportDate(exportDate);
+        participantData.setCaptureDate(participant.getInterview().getEndDate());
         VariableStreamer.toXML(participantData, os);
         os.flush();
 

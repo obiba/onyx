@@ -31,6 +31,9 @@ public class VariableDataSet implements Serializable {
   @XStreamAsAttribute
   private Date exportDate;
 
+  @XStreamAsAttribute
+  private Date captureDate;
+
   @XStreamImplicit
   private List<VariableData> variableDatas;
 
@@ -51,6 +54,14 @@ public class VariableDataSet implements Serializable {
 
   public void setExportDate(Date exportDate) {
     this.exportDate = exportDate;
+  }
+
+  public Date getCaptureDate() {
+    return captureDate;
+  }
+
+  public void setCaptureDate(Date captureDate) {
+    this.captureDate = captureDate;
   }
 
 }

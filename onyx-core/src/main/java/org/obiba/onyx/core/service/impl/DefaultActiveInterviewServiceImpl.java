@@ -184,7 +184,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     Interview interview = getInterview();
     if(interview != null) {
       interview.setStatus(status);
-      if(status.equals(InterviewStatus.CANCELLED) || status.equals(InterviewStatus.COMPLETED)) {
+      if(status.equals(InterviewStatus.CANCELLED) || status.equals(InterviewStatus.COMPLETED) || status.equals(InterviewStatus.CLOSED)) {
         interview.setEndDate(new Date());
       }
       getPersistenceManager().save(interview);
