@@ -1,3 +1,11 @@
+div.wicket-modal div.onyx .feedbackLine {
+  margin-left:30px;  
+  font-weight:bold;  
+  font-size:14px;
+  color:black;
+  overflow: auto;
+}
+
 div.wicket-modal div.onyx .feedback {
   margin-left:-30px;  
   font-weight:bold;  

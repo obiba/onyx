@@ -1,8 +1,13 @@
 <wicket:panel>
-	<span wicket:id="feedback" />
 	<span wicket:id="updateAppointmentLogWindow" />	
+	<div class="feedbackLine" wicket:id="feedbackFragment" />	
 	<div wicket:id="contentFragment" />
 </wicket:panel>
+
+<wicket:fragment wicket:id="feedbackFragment">
+  <img src="error.png" wicket:id="errorImage" class="dialogIcon" />
+  <span wicket:id="message"/>
+</wicket:fragment>
 
 <wicket:fragment wicket:id="confirmationFragment">
     <div class="dialogContent smallTopMargin">

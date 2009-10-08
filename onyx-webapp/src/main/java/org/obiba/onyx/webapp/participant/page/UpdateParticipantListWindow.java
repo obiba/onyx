@@ -45,7 +45,7 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private static final Logger log = LoggerFactory.getLogger(UpdateParticipantListWindow.class);
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 140;
+  private static final int DEFAULT_INITIAL_HEIGHT = 150;
 
   private static final int DEFAULT_INITIAL_WIDTH = 450;
 
@@ -122,6 +122,7 @@ public class UpdateParticipantListWindow extends Dialog {
       protected void onError(AjaxRequestTarget target, Form form) {
         UpdateParticipantListWindow.this.setStatus(Status.ERROR);
         UpdateParticipantListWindow.this.getWindowContent().displayFeedback(target);
+        // target.addComponent(UpdateParticipantListWindow.this.get("content"));
       }
     });
     updateSubmitLink.setVisible(false);

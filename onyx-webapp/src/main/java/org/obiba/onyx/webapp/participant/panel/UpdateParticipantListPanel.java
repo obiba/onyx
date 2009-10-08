@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -25,6 +26,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -77,6 +79,8 @@ public class UpdateParticipantListPanel extends Panel {
 
   private NotificationFragment notificationFragment;
 
+  private FeedbackFragment feedbackFragment;
+
   //
   // Constructors
   //
@@ -84,10 +88,11 @@ public class UpdateParticipantListPanel extends Panel {
   public UpdateParticipantListPanel(String id) {
     super(id);
 
-    add(feedbackWindow = new FeedbackWindow("feedback"));
-    feedbackWindow.setOutputMarkupId(true);
-
     addUpdateAppointmentLogWindow();
+
+    feedbackFragment = new FeedbackFragment("feedbackFragment");
+    feedbackFragment.setOutputMarkupId(true);
+    add(feedbackFragment);
 
     confirmationFragment = new ConfirmationFragment("contentFragment");
     progressFragment = new ProgressFragment("contentFragment", new ResourceModel("ParticipantListUpdateInProgress"));
@@ -100,6 +105,7 @@ public class UpdateParticipantListPanel extends Panel {
   }
 
   public void showProgress() {
+    feedbackFragment.refreshFeedback();
     replaceOrAddFragment(progressFragment);
   }
 
@@ -134,7 +140,7 @@ public class UpdateParticipantListPanel extends Panel {
   }
 
   private void replaceOrAddFragment(Fragment fragment) {
-    Fragment currentFragment = (Fragment) get("contentFragment");
+    Fragment currentFragment = (Fragment) get(fragment.getId());
 
     if(currentFragment != null) {
       replace(fragment);
@@ -198,6 +204,8 @@ public class UpdateParticipantListPanel extends Panel {
 
         @Override
         protected void onEvent(AjaxRequestTarget target) {
+          feedbackFragment.refreshFeedback();
+          target.addComponent(feedbackFragment);
           fileUpload.setEnabled(false);
           target.addComponent(fileUpload);
         }
@@ -215,6 +223,8 @@ public class UpdateParticipantListPanel extends Panel {
 
         @Override
         protected void onEvent(AjaxRequestTarget target) {
+          feedbackFragment.refreshFeedback();
+          target.addComponent(feedbackFragment);
           fileUpload.setEnabled(true);
           target.addComponent(fileUpload);
         }
@@ -315,8 +325,9 @@ public class UpdateParticipantListPanel extends Panel {
   }
 
   public void displayFeedback(AjaxRequestTarget target) {
-    feedbackWindow.setContent(new FeedbackPanel("content"));
-    feedbackWindow.show(target);
+    feedbackFragment.refreshFeedback();
+    replaceOrAddFragment(feedbackFragment);
+    target.addComponent(feedbackFragment);
   }
 
   @SuppressWarnings("unchecked")
@@ -328,4 +339,40 @@ public class UpdateParticipantListPanel extends Panel {
     updateAppointmentLogWindow.setContent(appointmentUpdateLogPanel);
     updateAppointmentLogWindow.show(target);
   }
+
+  private class FeedbackFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    private RepeatingView repeater;
+
+    private Image errorImage;
+
+    public FeedbackFragment(String id) {
+      super(id, "feedbackFragment", UpdateParticipantListPanel.this);
+
+      errorImage = new Image("errorImage");
+      add(errorImage);
+
+      repeater = new RepeatingView("message");
+      refreshFeedback();
+    }
+
+    public void refreshFeedback() {
+      repeater.removeAll();
+      FeedbackPanel feedbackPanel = new FeedbackPanel("content");
+      List<FeedbackMessage> messages = feedbackPanel.getFeedbackMessagesModel().getObject();
+
+      if(messages.size() == 0) {
+        errorImage.setVisible(false);
+      } else {
+        errorImage.setVisible(true);
+      }
+
+      for(FeedbackMessage message : messages) {
+        repeater.add(new Label(repeater.newChildId(), new Model(message.getMessage().toString() + "\n")));
+      }
+      addOrReplace(repeater);
+    }
+  }
+
 }
