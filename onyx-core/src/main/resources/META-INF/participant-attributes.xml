@@ -44,9 +44,11 @@
     <editableAfterReception>true</editableAfterReception>
     <type>DATE</type>
     <validators>
-      <rangeValidator type="DATE">
-        <minimum>1900-01-01</minimum>       
-      </rangeValidator>
+      <dataValidator dataType="DATE">
+        <rangeValidator>
+          <minimum>1900-01-01</minimum>       
+        </rangeValidator>
+      </dataValidator>
     </validators>       
   </attribute>
   <attribute>

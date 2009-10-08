@@ -472,9 +472,9 @@
                           </uIArguments>
                           <validators id="218">
                             <dataValidator id="219" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="220">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="220">
+                                <minimum class="int">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="221"/>
@@ -493,9 +493,9 @@
                           </uIArguments>
                           <validators id="227">
                             <dataValidator id="228" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="229">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="229">
+                                <minimum class="int">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="230"/>
@@ -530,9 +530,9 @@
                               </uIArguments>
                               <validators id="243">
                                 <dataValidator id="244" dataType="INTEGER">
-                                  <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="245">
-                                    <minimum>0</minimum>
-                                  </validator>
+                                  <rangeValidator id="245">
+                                    <minimum class="int">0</minimum>
+                                  </rangeValidator>
                                 </dataValidator>
                               </validators>
                               <parentOpenAnswerDefinition reference="238"/>
@@ -547,9 +547,9 @@
                               </uIArguments>
                               <validators id="250">
                                 <dataValidator id="251" dataType="INTEGER">
-                                  <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="252">
-                                    <minimum>0</minimum>
-                                  </validator>
+                                  <rangeValidator id="252">
+                                    <minimum class="int">0</minimum>
+                                  </rangeValidator>
                                 </dataValidator>
                               </validators>
                               <parentOpenAnswerDefinition reference="238"/>
@@ -802,10 +802,10 @@
                           </uIArguments>
                           <validators id="367">
                             <dataValidator id="368" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="369">
-                                <minimum>0</minimum>
-                                <maximum>7</maximum>
-                              </validator>
+                              <rangeValidator id="369">
+                                <minimum class="int">0</minimum>
+                                <maximum class="int">7</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="370"/>
@@ -849,12 +849,13 @@
                           </uIArguments>
                           <validators id="386">
                             <dataValidator id="387" dataType="TEXT">
-                              <validator class="org.apache.wicket.validation.validator.PatternValidator" id="388">
+                              <patternValidator id="388">
                                 <pattern id="389">
                                   <pattern>[a-zA-Z]\d[a-zA-Z]</pattern>
                                   <flags>0</flags>
                                 </pattern>
-                              </validator>
+                                <reverse>false</reverse>
+                              </patternValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="390"/>
@@ -898,10 +899,10 @@
                           </uIArguments>
                           <validators id="406">
                             <dataValidator id="407" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="408">
-                                <minimum>40</minimum>
-                                <maximum>70</maximum>
-                              </validator>
+                              <rangeValidator id="408">
+                                <minimum class="int">40</minimum>
+                                <maximum class="int">70</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="409"/>
@@ -934,9 +935,9 @@
                           </uIArguments>
                           <validators id="420">
                             <dataValidator id="421" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="422">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="422">
+                                <minimum class="int">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <validationDataSources id="423">
@@ -1023,10 +1024,10 @@
                           </uIArguments>
                           <validators id="457">
                             <dataValidator id="458" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="459">
-                                <minimum>0</minimum>
-                                <maximum>40</maximum>
-                              </validator>
+                              <rangeValidator id="459">
+                                <minimum class="int">0</minimum>
+                                <maximum class="int">40</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="460"/>
@@ -1549,10 +1550,10 @@
                           </uIArguments>
                           <validators id="687">
                             <dataValidator id="688" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="689">
-                                <minimum>0</minimum>
-                                <maximum>4</maximum>
-                              </validator>
+                              <rangeValidator id="689">
+                                <minimum class="int">0</minimum>
+                                <maximum class="int">4</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="690"/>
@@ -1876,9 +1877,9 @@
                           </uIArguments>
                           <validators id="817">
                             <dataValidator id="818" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="819">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="819">
+                                <minimum class="int">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <validationDataSources id="820">

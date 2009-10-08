@@ -36,12 +36,15 @@ public class DataValidatorConverterTest {
   @Before
   public void setup() throws ClassNotFoundException {
     xstream = new XStream();
+
+    xstream.alias("dataValidator", DataValidator.class);
+    xstream.useAttributeFor(DataValidator.class, "dataType");
     xstream.registerConverter(new DataValidatorConverter().createAliases(xstream));
   }
 
   @Test
   public void testUnmarshalIntegerRangeValidator() {
-    String testData = "<rangeValidator type=\"integer\"><minimum>10</minimum><maximum>100</maximum></rangeValidator>";
+    String testData = "<dataValidator dataType=\"integer\"><rangeValidator><minimum>10</minimum><maximum>100</maximum></rangeValidator></dataValidator>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(DataValidator.class, o.getClass());
     DataValidator validator = (DataValidator) o;
@@ -54,7 +57,7 @@ public class DataValidatorConverterTest {
 
   @Test
   public void testUnmarshalIntegerMinimumValidator() {
-    String testData = "<rangeValidator type=\"integer\"><minimum>10</minimum></rangeValidator>";
+    String testData = "<dataValidator dataType=\"integer\"><rangeValidator><minimum>10</minimum></rangeValidator></dataValidator>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(DataValidator.class, o.getClass());
     DataValidator validator = (DataValidator) o;
@@ -66,7 +69,7 @@ public class DataValidatorConverterTest {
 
   @Test
   public void testUnmarshalIntegerMaximumValidator() {
-    String testData = "<rangeValidator type=\"integer\"><maximum>100</maximum></rangeValidator>";
+    String testData = "<dataValidator dataType=\"integer\"><rangeValidator><maximum>100</maximum></rangeValidator></dataValidator>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(DataValidator.class, o.getClass());
     DataValidator validator = (DataValidator) o;
@@ -78,7 +81,7 @@ public class DataValidatorConverterTest {
 
   @Test
   public void testUnmarshalDecimalRangeValidator() {
-    String testData = "<rangeValidator type=\"DeCiMaL\"><minimum>10</minimum><maximum>100</maximum></rangeValidator>";
+    String testData = "<dataValidator dataType=\"DeCiMaL\"><rangeValidator><minimum>10</minimum><maximum>100</maximum></rangeValidator></dataValidator>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(DataValidator.class, o.getClass());
     DataValidator validator = (DataValidator) o;
@@ -91,7 +94,7 @@ public class DataValidatorConverterTest {
 
   @Test
   public void testUnmarshalDateRangeValidator() {
-    String testData = "<rangeValidator type=\"date\"><minimum>1900-01-01</minimum><maximum>1999-12-31</maximum></rangeValidator>";
+    String testData = "<dataValidator dataType=\"date\"><rangeValidator><minimum>1900-01-01</minimum><maximum>1999-12-31</maximum></rangeValidator></dataValidator>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(DataValidator.class, o.getClass());
     DataValidator validator = (DataValidator) o;
@@ -103,7 +106,7 @@ public class DataValidatorConverterTest {
 
   @Test
   public void testUnmarshalPatternValidator() {
-    String testData = "<patternValidator>\\d+</patternValidator>";
+    String testData = "<dataValidator dataType=\"text\"><patternValidator><pattern><pattern>\\d+</pattern></pattern></patternValidator></dataValidator>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(DataValidator.class, o.getClass());
     DataValidator validator = (DataValidator) o;
@@ -113,9 +116,21 @@ public class DataValidatorConverterTest {
   }
 
   @Test
+  public void testUnmarshalPatternValidatorWithFlags() {
+    String testData = "<dataValidator dataType=\"text\"><patternValidator><pattern><pattern>\\d+</pattern><flags>1</flags></pattern></patternValidator></dataValidator>";
+    Object o = xstream.fromXML(testData);
+    Assert.assertEquals(DataValidator.class, o.getClass());
+    DataValidator validator = (DataValidator) o;
+    Assert.assertEquals(DataType.TEXT, validator.getDataType());
+    PatternValidator patternValidator = (PatternValidator) validator.getValidator();
+    Assert.assertEquals("\\d+", patternValidator.getPattern().toString());
+    Assert.assertEquals(1, patternValidator.getPattern().flags());
+  }
+
+  @Test
   public void testIDataValidatorAsAttributeOfBean() {
     xstream.alias("myBean", MyBean.class);
-    String testData = "<myBean><dataValidator class=\"rangeValidator\" type=\"integer\"><minimum>10</minimum><maximum>100</maximum></dataValidator></myBean>";
+    String testData = "<myBean><dataValidator dataType=\"integer\"><rangeValidator><minimum>10</minimum><maximum>100</maximum></rangeValidator></dataValidator></myBean>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(MyBean.class, o.getClass());
     MyBean bean = (MyBean) o;
@@ -131,7 +146,7 @@ public class DataValidatorConverterTest {
   @Test
   public void testIDataValidatorListAsAttributeOfBean() {
     xstream.alias("myBean", MyBean.class);
-    String testData = "<myBean><dataValidators><rangeValidator type=\"integer\"><minimum>10</minimum><maximum>100</maximum></rangeValidator><patternValidator>\\d+</patternValidator></dataValidators></myBean>";
+    String testData = "<myBean><dataValidators><dataValidator dataType=\"integer\"><rangeValidator><minimum>10</minimum><maximum>100</maximum></rangeValidator></dataValidator><dataValidator dataType=\"text\"><patternValidator><pattern><pattern>\\d+</pattern><flags>0</flags></pattern></patternValidator></dataValidator></dataValidators></myBean>";
     Object o = xstream.fromXML(testData);
     Assert.assertEquals(MyBean.class, o.getClass());
     MyBean bean = (MyBean) o;

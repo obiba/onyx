@@ -20,4 +20,10 @@ public interface IDataValidator extends IValidator {
 
   public DataType getDataType();
 
+  /**
+   * Returns the decorated validator.
+   * 
+   * @return decorated validator
+   */
+  public IValidator getValidator();
 }

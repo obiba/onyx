@@ -1052,10 +1052,10 @@
                             <openAnswerDefinition id="531" name="DAYS_WEEK" dataType="INTEGER" required="true">
                               <validators id="532">
                                 <dataValidator id="533" dataType="INTEGER">
-                                  <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="534">
-                                    <minimum>0</minimum>
-                                    <maximum>7</maximum>
-                                  </validator>
+                                  <rangeValidator id="534">
+                                    <minimum class="int">0</minimum>
+                                    <maximum class="int">7</maximum>
+                                  </rangeValidator>
                                 </dataValidator>
                               </validators>
                               <openAnswerDefinitions id="535"/>
@@ -1090,10 +1090,10 @@
                                 <open id="548" name="ACTIVITY_HOURS_DAY" dataType="INTEGER" required="false">
                                   <validators id="549">
                                     <dataValidator id="550" dataType="INTEGER">
-                                      <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="551">
-                                        <minimum>0</minimum>
-                                        <maximum>16</maximum>
-                                      </validator>
+                                      <rangeValidator id="551">
+                                        <minimum class="int">0</minimum>
+                                        <maximum class="int">16</maximum>
+                                      </rangeValidator>
                                     </dataValidator>
                                   </validators>
                                   <parentOpenAnswerDefinition reference="546"/>
@@ -1102,10 +1102,10 @@
                                 <open id="553" name="ACTIVITY_MIN_DAY" dataType="INTEGER" required="false">
                                   <validators id="554">
                                     <dataValidator id="555" dataType="INTEGER">
-                                      <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="556">
-                                        <minimum>0</minimum>
-                                        <maximum>960</maximum>
-                                      </validator>
+                                      <rangeValidator id="556">
+                                        <minimum class="int">0</minimum>
+                                        <maximum class="int">960</maximum>
+                                      </rangeValidator>
                                     </dataValidator>
                                   </validators>
                                   <parentOpenAnswerDefinition reference="546"/>
@@ -1147,10 +1147,10 @@
                                 <open id="572" name="ACTIVITY_HOURS_WEEK" dataType="INTEGER" required="false">
                                   <validators id="573">
                                     <dataValidator id="574" dataType="INTEGER">
-                                      <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="575">
-                                        <minimum>0</minimum>
-                                        <maximum>112</maximum>
-                                      </validator>
+                                      <rangeValidator id="575">
+                                        <minimum class="int">0</minimum>
+                                        <maximum class="int">112</maximum>
+                                      </rangeValidator>
                                     </dataValidator>
                                   </validators>
                                   <parentOpenAnswerDefinition reference="570"/>
@@ -1159,10 +1159,10 @@
                                 <open id="577" name="ACTIVITY_MIN_WEEK" dataType="INTEGER" required="false">
                                   <validators id="578">
                                     <dataValidator id="579" dataType="INTEGER">
-                                      <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="580">
-                                        <minimum>0</minimum>
-                                        <maximum>6720</maximum>
-                                      </validator>
+                                      <rangeValidator id="580">
+                                        <minimum class="int">0</minimum>
+                                        <maximum class="int">6720</maximum>
+                                      </rangeValidator>
                                     </dataValidator>
                                   </validators>
                                   <parentOpenAnswerDefinition reference="570"/>
@@ -1543,10 +1543,10 @@
                         <openAnswerDefinition id="772" name="MED_NUMBER" dataType="INTEGER" required="true">
                           <validators id="773">
                             <dataValidator id="774" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="775">
-                                <minimum>0</minimum>
-                                <maximum>3</maximum>
-                              </validator>
+                              <rangeValidator id="775">
+                                <minimum class="int">0</minimum>
+                                <maximum class="int">3</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="776"/>
@@ -1790,9 +1790,9 @@
                         <openAnswerDefinition id="878" name="OPEN_N_0" dataType="INTEGER" required="true">
                           <validators id="879">
                             <dataValidator id="880" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="881">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="881">
+                                <minimum class="long">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="882"/>
@@ -1994,10 +1994,10 @@
                         <openAnswerDefinition id="960" name="OPEN_N" dataType="INTEGER" required="true">
                           <validators id="961">
                             <dataValidator id="962" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="963">
-                                <minimum>0</minimum>
-                                <maximum>2</maximum>
-                              </validator>
+                              <rangeValidator id="963">
+                                <minimum class="int">0</minimum>
+                                <maximum class="int">2</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="964"/>
@@ -2174,9 +2174,9 @@
                         <openAnswerDefinition id="1047" name="OTHER_AGE" dataType="INTEGER" required="true">
                           <validators id="1048">
                             <dataValidator id="1049" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="1050">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="1050">
+                                <minimum class="int">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="1051"/>
@@ -2505,9 +2505,9 @@
                         <openAnswerDefinition id="1158" name="BIRTH_RANK" dataType="INTEGER" required="true">
                           <validators id="1159">
                             <dataValidator id="1160" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="1161">
-                                <minimum>0</minimum>
-                              </validator>
+                              <rangeValidator id="1161">
+                                <minimum class="int">0</minimum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="1162"/>

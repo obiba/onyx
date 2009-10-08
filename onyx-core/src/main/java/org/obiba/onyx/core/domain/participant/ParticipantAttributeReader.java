@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.springframework.core.io.Resource;
 
@@ -48,6 +49,8 @@ public class ParticipantAttributeReader {
     xstream.addImplicitCollection(Group.class, "participantAttributes");
 
     // Use DataValidatorConverter to allow easier aliases for validator nodes
+    xstream.alias("dataValidator", DataValidator.class);
+    xstream.useAttributeFor(DataValidator.class, "dataType");
     xstream.registerConverter(new DataValidatorConverter().createAliases(xstream));
   }
 

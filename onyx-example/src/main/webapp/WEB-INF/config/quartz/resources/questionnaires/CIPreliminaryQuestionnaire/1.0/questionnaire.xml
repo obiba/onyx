@@ -98,10 +98,10 @@
                           </uIArguments>
                           <validators id="52">
                             <dataValidator id="53" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="54">
-                                <minimum>0</minimum>
-                                <maximum>40</maximum>
-                              </validator>
+                              <rangeValidator id="54">
+                                <minimum class="int">0</minimum>
+                                <maximum class="int">40</maximum>
+                              </rangeValidator>
                             </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="55"/>
@@ -546,10 +546,10 @@
                               </uIArguments>
                               <validators id="239">
                                 <dataValidator id="240" dataType="INTEGER">
-                                  <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="241">
-                                    <minimum>0</minimum>
-                                    <maximum>12</maximum>
-                                  </validator>
+                                  <rangeValidator id="241">
+                                    <minimum class="int">0</minimum>
+                                    <maximum class="int">12</maximum>
+                                  </rangeValidator>
                                 </dataValidator>
                               </validators>
                               <parentOpenAnswerDefinition reference="227"/>

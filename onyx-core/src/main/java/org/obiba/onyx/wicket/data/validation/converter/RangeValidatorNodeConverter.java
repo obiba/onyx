@@ -17,10 +17,10 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.wicket.data.DataValidator;
 
 import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -64,23 +64,19 @@ public class RangeValidatorNodeConverter extends AbstractValidatorNodeConverter 
     return "rangeValidator";
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public boolean canConvert(Class type) {
+    return type != null && RangeValidator.class.isAssignableFrom(type) || MinimumValidator.class.isAssignableFrom(type) || MaximumValidator.class.isAssignableFrom(type) || DateValidator.class.isAssignableFrom(type) || (StringValidator.class.isAssignableFrom(type) && !PatternValidator.class.isAssignableFrom(type));
+  }
+
   public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
     // TODO
     throw new UnsupportedOperationException("Method marshal() is not supported.");
   }
 
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-    String typeName = reader.getAttribute("type");
-    if(typeName == null || typeName.length() == 0) {
-      throw new ConversionException("Empty or missing type attribute for rangeValidator node. Make sure you specify a 'type' attribute on your 'rangeValidator' node.");
-    }
-
-    DataType type = null;
-    try {
-      type = DataType.valueOf(typeName.toUpperCase());
-    } catch(IllegalArgumentException e) {
-      throw new ConversionException("Invalid type attribute for rangeValidator node.", e);
-    }
+    DataType type = (DataType) context.get("validatorDataType");
 
     String minimumStr = null;
     String maximumStr = null;
@@ -146,12 +142,12 @@ public class RangeValidatorNodeConverter extends AbstractValidatorNodeConverter 
       break;
     }
     default:
-      throw new ConversionException("Invalid type for rangeValidator node: '" + typeName + "'");
+      throw new ConversionException("Invalid type for rangeValidator node: '" + type + "'");
     }
     if(validator == null) {
       throw new ConversionException("Invalid rangeValidator node");
     }
-    return new DataValidator(validator, type);
+    return validator;
   }
 
   protected Date parseDate(String dateString) {

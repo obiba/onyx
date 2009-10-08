@@ -10,10 +10,7 @@
 package org.obiba.onyx.wicket.data.validation.converter;
 
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.wicket.data.DataValidator;
 
-import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -31,14 +28,52 @@ public class PatternValidatorNodeConverter extends AbstractValidatorNodeConverte
     return "patternValidator";
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public boolean canConvert(Class type) {
+    return type != null && PatternValidator.class.isAssignableFrom(type);
+  }
+
   public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
   }
 
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-    String pattern = reader.getValue();
-    if(pattern == null || pattern.isEmpty()) {
-      throw new ConversionException("Missing pattern in patternValidator node.");
+    String pattern = null;
+    int flags = 0;
+    Boolean reverse = null;
+
+    while(reader.hasMoreChildren()) {
+      reader.moveDown();
+
+      if(reader.getNodeName().equals("pattern")) {
+        while(reader.hasMoreChildren()) {
+          reader.moveDown();
+
+          if(reader.getNodeName().equals("pattern")) {
+            pattern = reader.getValue();
+          } else if(reader.getNodeName().equals("flags")) {
+            flags = Integer.parseInt(reader.getValue());
+          }
+
+          reader.moveUp();
+        }
+      } else if(reader.getNodeName().equals("reverse")) {
+        reverse = Boolean.valueOf(reader.getValue());
+      }
+
+      reader.moveUp();
     }
-    return new DataValidator(new PatternValidator(pattern), DataType.TEXT);
+
+    PatternValidator validator = new PatternValidator(pattern, flags);
+    if(reverse != null) {
+      validator.setReverse(reverse);
+    }
+
+    return validator;
+    // String pattern = reader.getValue();
+    // if(pattern == null || pattern.isEmpty()) {
+    // throw new ConversionException("Missing pattern in patternValidator node.");
+    // }
+    // return new DataValidator(new PatternValidator(pattern), DataType.TEXT);
   }
 }

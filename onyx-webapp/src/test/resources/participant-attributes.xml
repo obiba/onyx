@@ -50,5 +50,13 @@
     <editableAtReception>true</editableAtReception>
     <editableAfterReception>false</editableAfterReception>
     <type>TEXT</type>
+    <validators>
+      <dataValidator dataType="TEXT">
+        <rangeValidator>
+          <minimum>1</minimum>      
+          <maximum>50</maximum>
+        </rangeValidator>
+      </dataValidator>
+    </validators>
   </attribute>
 </participantAttributes>

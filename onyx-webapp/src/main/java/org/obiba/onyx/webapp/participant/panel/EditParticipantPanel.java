@@ -61,6 +61,7 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel.AssignCodeToParticipantForm;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -565,7 +566,7 @@ public class EditParticipantPanel extends Panel {
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
 
             // Add any validator defined by the current ParticipantAttribute.
-            List<IValidator> validators = attribute.getValidators();
+            List<IDataValidator> validators = attribute.getValidators();
             for(IValidator validator : validators) {
               field.add(validator);
             }

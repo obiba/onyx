@@ -12,6 +12,9 @@ package org.obiba.onyx.wicket.data.validation.converter;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.wicket.validation.IValidator;
+import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
 
 import com.thoughtworks.xstream.XStream;
@@ -24,8 +27,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
  * An implementation of XStream's {@code Converter} interface that handles {@code DataValidator} instances. This class
- * offloads the work of un/marshaling {@code IValidator} instances to implementations of {@code IValidatorNodeConverter}
- * . These instances are responsible for handling specific {@code IValidator} instances wrapped in a {@code
+ * offloads the work of un/marshaling {@code IValidator} instances to implementations of {@code IValidatorNodeConverter} .
+ * These instances are responsible for handling specific {@code IValidator} instances wrapped in a {@code
  * IDataValidator}
  * <p>
  * Using this class requires that some aliases are set on the XStream instance. Specifically, each implementation of
@@ -83,6 +86,7 @@ public class DataValidatorConverter implements Converter {
    * XStream x = new XStream();
    * x.registerConverter(new DataValidatorConverter().createAliases(x));
    * </pre>
+   * 
    * @param xstream the XStream instance in which to create the aliases
    * @return this for method chaining
    */
@@ -94,30 +98,54 @@ public class DataValidatorConverter implements Converter {
   }
 
   public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-    // TODO
-    throw new UnsupportedOperationException("Method marshal() is not supported.");
+    DataValidator dataValidator = (DataValidator) source;
+    IValidator validator = dataValidator.getValidator();
+
+    for(IValidatorNodeConverter converter : converters) {
+      if(converter.canConvert(validator.getClass())) {
+        writer.addAttribute("dataType", dataValidator.getDataType().toString());
+
+        writer.startNode(converter.getNodeName());
+        context.convertAnother(validator);
+        writer.endNode();
+
+        return;
+      }
+    }
+
+    throw new UnsupportedOperationException("Unknown IValidator type: " + validator.getClass().getSimpleName());
   }
 
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
     // The name of the validator is either directly the node's name or the node's class attribute
     // <rangeValidator>...</rangeValidator> or <someNode class="rangeValidator">...</someNode>
 
-    String validatorName = reader.getNodeName();
-    String className = reader.getAttribute("class");
-    if(className != null) {
-      validatorName = className;
+    String dataTypeAttr = reader.getAttribute("dataType");
+    if(dataTypeAttr != null) {
+      dataTypeAttr = dataTypeAttr.toUpperCase();
+    } else {
+      throw new ConversionException("dataValidator node missing dataType attribute");
     }
+
+    DataType dataType = DataType.valueOf(dataTypeAttr);
+    context.put("validatorDataType", dataType);
+
+    reader.moveDown();
+    String validatorName = reader.getNodeName();
+
     for(IValidatorNodeConverter converter : converters) {
       if(converter.getNodeName().equals(validatorName)) {
-        return converter.unmarshal(reader, context);
+        IValidator validator = (IValidator) converter.unmarshal(reader, context);
+        reader.moveUp();
+        return new DataValidator(validator, dataType);
       }
     }
-    throw new ConversionException("Unknown IValidator node '" + validatorName + "'");
+    throw new ConversionException("Unknown IValidator node: " + validatorName);
   }
 
   @SuppressWarnings("unchecked")
   public boolean canConvert(Class type) {
-    return type != null && type.equals(IDataValidator.class);
+    return type != null && IDataValidator.class.isAssignableFrom(type);
   }
 
 }

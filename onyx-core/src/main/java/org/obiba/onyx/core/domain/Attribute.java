@@ -16,8 +16,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.IDataValidator;
 
 /**
  * Attribute.
@@ -35,7 +35,7 @@ public class Attribute implements Serializable {
 
   private Set<String> allowedValues;
 
-  private List<IValidator> validators;
+  private List<IDataValidator> validators;
 
   private String unit;
 
@@ -43,11 +43,11 @@ public class Attribute implements Serializable {
   // Methods
   //
 
-  public List<IValidator> getValidators() {
-    return (validators != null) ? validators : (validators = new ArrayList<IValidator>());
+  public List<IDataValidator> getValidators() {
+    return (validators != null) ? validators : (validators = new ArrayList<IDataValidator>());
   }
 
-  public void addValidators(IValidator validator) {
+  public void addValidators(IDataValidator validator) {
     getValidators().add(validator);
   }
 
@@ -116,7 +116,7 @@ public class Attribute implements Serializable {
     return Collections.unmodifiableSet(allowedValues);
   }
 
-  public void setValidators(List<IValidator> validators) {
+  public void setValidators(List<IDataValidator> validators) {
     this.validators = validators;
   }
 

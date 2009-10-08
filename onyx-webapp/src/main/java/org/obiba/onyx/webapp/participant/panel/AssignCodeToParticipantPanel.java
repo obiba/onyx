@@ -34,6 +34,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.data.IDataValidator;
 
 public class AssignCodeToParticipantPanel extends Panel {
 
@@ -97,11 +98,11 @@ public class AssignCodeToParticipantPanel extends Panel {
 
       });
 
-	  // Adding validation to Participant Id.
+      // Adding validation to Participant Id.
       ParticipantAttribute participantAttributeId = participantMetadata.getEssentialAttribute("Participant ID");
-      List<IValidator> validators = participantAttributeId.getValidators();
-      for(IValidator validator : validators) {
-        participantCode.add(validator);
+      List<IDataValidator> validators = participantAttributeId.getValidators();
+      for(IDataValidator dataValidator : validators) {
+        participantCode.add(dataValidator.getValidator());
       }
 
       add(participantCode);

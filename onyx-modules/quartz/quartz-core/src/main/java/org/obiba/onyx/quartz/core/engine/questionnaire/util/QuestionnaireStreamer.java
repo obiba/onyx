@@ -35,6 +35,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputS
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.springframework.context.ApplicationContext;
 
@@ -96,6 +97,7 @@ public class QuestionnaireStreamer {
 
     xstream.alias("dataValidator", DataValidator.class);
     xstream.useAttributeFor(DataValidator.class, "dataType");
+    xstream.registerConverter(new DataValidatorConverter().createAliases(xstream));
 
     xstream.alias("comparingDataSource", ComparingDataSource.class);
     xstream.useAttributeFor(ComparingDataSource.class, "comparisonOperator");
