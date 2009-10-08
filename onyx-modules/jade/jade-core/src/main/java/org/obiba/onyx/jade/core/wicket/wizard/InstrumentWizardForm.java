@@ -28,6 +28,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
@@ -36,7 +37,6 @@ import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -44,6 +44,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
@@ -77,6 +78,12 @@ public class InstrumentWizardForm extends WizardForm {
 
   @SpringBean
   private InstrumentRunService instrumentRunService;
+
+  @SpringBean
+  private InstrumentService instrumentService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   private WizardStepPanel instrumentSelectionStep;
 
@@ -280,13 +287,11 @@ public class InstrumentWizardForm extends WizardForm {
       log.debug("No contraindications of type ASKED. Skipping step.");
     }
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
-    // do we need to select the instrument ?
-    Instrument instrumentTemplate = new Instrument();
-    instrumentTemplate.setType(instrumentType.getName());
-    instrumentTemplate.setStatus(InstrumentStatus.ACTIVE);
-    log.debug("instruments.count={}", queryService.count(instrumentTemplate));
-    if(queryService.count(instrumentTemplate) > 1) {
+    List<Instrument> activeInstrumentsForCurrentWorkstation = getActiveInstrumentsForCurrentWorkstation();
+    log.debug("instruments.count={}", activeInstrumentsForCurrentWorkstation.size());
+    if(activeInstrumentsForCurrentWorkstation.size() == 0 || activeInstrumentsForCurrentWorkstation.size() > 1) {
+      // Either found no instruments or too many instruments of the correct type.
+      // In both cases we will prompt the user to enter the instrument they will be using for this measure.
       if(startStep == null || startStep.equals(instrumentSelectionStep)) {
         startStep = instrumentSelectionStep;
         lastStep = startStep;
@@ -298,16 +303,13 @@ public class InstrumentWizardForm extends WizardForm {
         lastStep = instrumentSelectionStep;
       }
     } else {
-      if(queryService.count(instrumentTemplate) == 1) {
-        // pre selected instrument
-        activeInstrumentRunService.setInstrument(queryService.matchOne(instrumentTemplate));
-      } else {
-        throw new IllegalStateException("No entry exists in the [instrument] table for the instrument [" + instrumentType.getName() + "]. One must exist in order to take measures with this instrument.");
-      }
+      // A single instrument of the correct type is associated with this workstation.
+      activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
     }
 
     // are there input parameters with input source that requires user provisioning ?
     // or interpretative questions
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     log.debug("instrumentInterpretativeParameters.count={}", instrumentType.getInterpretativeParameters().size());
     log.debug("instrumentInputParameters.count={}", instrumentType.getInputParameters(false));
     if(instrumentType.hasInterpretativeParameter() || instrumentType.hasInputParameter(false)) {
@@ -367,6 +369,18 @@ public class InstrumentWizardForm extends WizardForm {
     }
 
     return startStep;
+  }
+
+  private List<Instrument> getActiveInstrumentsForCurrentWorkstation() {
+    List<Instrument> activeInstrumentsForCurrentWorkstation = new ArrayList<Instrument>();
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    List<Instrument> activeInstruments = instrumentService.getActiveInstruments(instrumentType);
+    for(Instrument instrument : activeInstruments) {
+      if(instrument.getWorkstation() != null && instrument.getWorkstation().equals(userSessionService.getWorkstation())) {
+        activeInstrumentsForCurrentWorkstation.add(instrument);
+      }
+    }
+    return activeInstrumentsForCurrentWorkstation;
   }
 
   /**
