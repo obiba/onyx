@@ -44,7 +44,7 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
       }
     }
 
-    return null;
+    return RepeatStatus.FINISHED;
   }
 
   private void archiveFile(File file, ExecutionContext context) {

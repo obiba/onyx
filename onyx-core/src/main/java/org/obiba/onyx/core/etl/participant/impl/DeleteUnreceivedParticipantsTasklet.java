@@ -24,7 +24,7 @@ public class DeleteUnreceivedParticipantsTasklet implements Tasklet {
 
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) throws Exception {
     participantService.cleanUpAppointment();
-    return null;
+    return RepeatStatus.FINISHED;
   }
 
   public void setParticipantService(ParticipantService participantService) {

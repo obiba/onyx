@@ -68,28 +68,6 @@ public class ParticipantReaderTest {
   // Test Methods
   //
 
-  // @Test
-  // public void testIsUpdateAvailableFalse() {
-  // ParticipantReader reader = createParticipantReader(1, 2, 3, false, APPOINTMENTS_RESOURCES_DIR + "/inNoData");
-  //
-  // try {
-  // Assert.assertEquals(false, reader.isUpdateAvailable());
-  // } catch(IOException e) {
-  // throw new RuntimeException(e);
-  // }
-  // }
-
-  // @Test
-  // public void testIsUpdateAvailableTrue() {
-  // ParticipantReader reader = createParticipantReader(1, 2, 3, false, APPOINTMENTS_RESOURCES_DIR + "/in");
-  //
-  // try {
-  // Assert.assertEquals(true, reader.isUpdateAvailable());
-  // } catch(IOException e) {
-  // throw new RuntimeException(e);
-  // }
-  // }
-
   @Test
   public void testSortFilesOnDateAsc() {
     ParticipantReader reader = createParticipantReader(1, 2, 3, false, APPOINTMENTS_RESOURCES_DIR + "/in");
