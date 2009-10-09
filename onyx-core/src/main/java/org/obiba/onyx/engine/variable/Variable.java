@@ -282,10 +282,14 @@ public class Variable implements Serializable {
   }
 
   /**
-   * Get the entity type name associated to this variables.
-   * @return
+   * Get the entity type name associated to this variables. If null, get it from its parent.
+   * @return null if the entity type is not defined in the variable hierarchy
    */
   public String getEntity() {
+    String rval = entity;
+    if(rval == null && getParent() != null) {
+      rval = getParent().getEntity();
+    }
     return entity;
   }
 
