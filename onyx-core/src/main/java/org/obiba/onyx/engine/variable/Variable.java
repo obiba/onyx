@@ -69,7 +69,6 @@ public class Variable implements Serializable {
   public Variable(String name) {
     super();
     this.name = name;
-    this.entity = "Participant";
   }
 
   /**
@@ -80,7 +79,6 @@ public class Variable implements Serializable {
     super();
     this.name = name;
     this.parent = parent;
-    this.entity = "Participant";
   }
 
   /**
