@@ -29,12 +29,12 @@ import org.obiba.onyx.util.data.Data;
 public interface ActiveInstrumentRunService extends IContraindicatable {
 
   /**
-   * Create the current {@link InstrumentRun} without persisting it.
+   * Create the current {@link InstrumentRun}
    * @param participant
-   * @param instrumentType
+   * @param instrument
    * @return
    */
-  public InstrumentRun start(Participant participant, InstrumentType type);
+  public InstrumentRun start(Participant participant, Instrument instrument);
 
   /**
    * Set the end date to the current {@link InstrumentRun} with its current status.

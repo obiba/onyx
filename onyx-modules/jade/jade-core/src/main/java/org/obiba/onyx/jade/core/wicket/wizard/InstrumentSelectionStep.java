@@ -15,6 +15,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentSelector;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -31,6 +33,11 @@ public class InstrumentSelectionStep extends WizardStepPanel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
+
+  private Instrument instrument;
+
   @SuppressWarnings("serial")
   public InstrumentSelectionStep(String id, IModel instrumentTypeModel) {
     super(id);
@@ -38,7 +45,8 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
     add(new Label(getTitleId(), new StringResourceModel("InstrumentSelection", this, null)));
 
-    add(new InstrumentSelector(getContentId(), instrumentTypeModel, new PropertyModel(activeInstrumentRunService, "instrumentRun.instrument")));
+    add(new InstrumentSelector(getContentId(), instrumentTypeModel, new PropertyModel(this, "instrument")));
+
   }
 
   @Override
@@ -50,6 +58,18 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     if(target != null) {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());
+    }
+  }
+
+  @Override
+  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutNext(form, target);
+    if(activeInstrumentRunService.getInstrumentRun() == null) {
+      // Starting a new measure.
+      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
+    } else {
+      // Resuming an measure.
+      activeInstrumentRunService.setInstrument(instrument);
     }
   }
 

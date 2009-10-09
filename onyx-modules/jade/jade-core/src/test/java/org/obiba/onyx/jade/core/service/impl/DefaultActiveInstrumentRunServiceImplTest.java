@@ -29,10 +29,12 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -49,6 +51,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
   private static String WORKSTATION = "onyx001-WK";
 
+  private static String BARCODE = "444444";
+
   private DefaultActiveInstrumentRunServiceImpl activeInstrumentRunService;
 
   @Autowired
@@ -61,6 +65,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
   private UserSessionService userSessionService;
 
+  private InstrumentService instrumentServiceMock;
+
+  @Autowired
   private InstrumentService instrumentService;
 
   private User user;
@@ -76,13 +83,13 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
   public void setUp() throws Exception {
     // Initialize mocks.
     userSessionService = createMock(UserSessionService.class);
-    instrumentService = createMock(InstrumentService.class);
+    instrumentServiceMock = createMock(InstrumentService.class);
 
     // Initialize activeInstrumentRunService (class being tested).
     activeInstrumentRunService = new DefaultActiveInstrumentRunServiceImpl();
     activeInstrumentRunService.setPersistenceManager(persistenceManager);
     activeInstrumentRunService.setUserSessionService(userSessionService);
-    activeInstrumentRunService.setInstrumentService(instrumentService);
+    activeInstrumentRunService.setInstrumentService(instrumentServiceMock);
 
     // Initialize instrumentTypes.
     instrumentTypes = (Map<String, InstrumentType>) instrumentTypeFactoryBean.getObject();
@@ -167,7 +174,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     parameter = new InstrumentOutputParameter();
     parameter.setCode(parameterCode3);
 
-    replay(instrumentService);
+    replay(instrumentServiceMock);
 
     // Look up a parameter by its code.
     parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode1);
@@ -559,14 +566,14 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
   private void resetMocks() {
     reset(userSessionService);
-    reset(instrumentService);
+    reset(instrumentServiceMock);
   }
 
   private void initInstrumentServiceMock(InstrumentType instrumentType, boolean replay) {
-    expect(instrumentService.getInstrumentType(instrumentType.getName())).andReturn(instrumentType).anyTimes();
+    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType).anyTimes();
 
     if(replay) {
-      replay(instrumentService);
+      replay(instrumentServiceMock);
     }
   }
 
@@ -626,8 +633,24 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     Assert.assertNull(instrumentRun);
 
+    // Ensure instrument is persisted to the db before starting the instrumentRun.
+    // This is done to satisfy db constraints.
+    Instrument instrument = instrumentService.getInstrumentByBarcode(BARCODE);
+    if(instrument == null) {
+      instrument = new Instrument();
+      instrument.setType(instrumentType.getName());
+      instrument.setStatus(InstrumentStatus.ACTIVE);
+      instrument.setBarcode(BARCODE);
+      instrumentService.updateInstrument(instrument);
+      instrument = instrumentService.getInstrumentByBarcode(BARCODE);
+    } else {
+      instrument.setType(instrumentType.getName());
+      instrumentService.updateInstrument(instrument);
+      instrument = instrumentService.getInstrumentByBarcode(BARCODE);
+    }
+
     // Start a new InstrumentRun.
-    instrumentRun = activeInstrumentRunService.start(participant, instrumentType);
+    instrumentRun = activeInstrumentRunService.start(participant, instrument);
 
     // Verify mock expectations.
     verify(userSessionService);

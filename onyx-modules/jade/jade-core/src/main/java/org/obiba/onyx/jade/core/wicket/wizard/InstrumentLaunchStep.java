@@ -163,7 +163,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
             }
 
             if(failedChecks.isEmpty()) {
-              ((InstrumentWizardForm) form).setUpWizardFlow();
+              ((InstrumentWizardForm) form).setUpWizardFlow(null);
             } else {
               setNextStep(null);
             }

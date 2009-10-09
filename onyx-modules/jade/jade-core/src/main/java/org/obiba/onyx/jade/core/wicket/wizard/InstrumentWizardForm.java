@@ -109,8 +109,6 @@ public class InstrumentWizardForm extends WizardForm {
 
   protected WizardAdministrationWindow adminWindow;
 
-  private boolean resuming;
-
   private boolean adminWindowClosed = false;
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
@@ -247,45 +245,26 @@ public class InstrumentWizardForm extends WizardForm {
     }
   }
 
-  public WizardStepPanel setUpWizardFlow() {
-    WizardStepPanel startStep = null;
+  private List<Contraindication> getContraindications(Contraindication.Type type) {
+    List<Contraindication> contraindications = new ArrayList<Contraindication>();
+
+    for(Contraindication contraindication : ((InstrumentType) getModelObject()).getContraindications()) {
+      if(contraindication.getType().equals(type)) {
+        contraindications.add(contraindication);
+      }
+    }
+
+    return contraindications;
+  }
+
+  private boolean hasContraindications(Contraindication.Type type) {
+    return !getContraindications(type).isEmpty();
+  }
+
+  public WizardStepPanel setUpWizardFlow(WizardStepPanel startStepWhenResuming) {
+    boolean resuming = startStepWhenResuming != null;
+    WizardStepPanel startStep = startStepWhenResuming;
     WizardStepPanel lastStep = null;
-
-    if(resuming) {
-      startStep = getStepWhenResuming();
-    }
-
-    // are there observed contra-indications to display ?
-    if(activeInstrumentRunService.hasContraindications(Contraindication.Type.OBSERVED)) {
-      if(startStep == null || startStep.equals(observedContraIndicationStep)) {
-        startStep = observedContraIndicationStep;
-        lastStep = startStep;
-      } else {
-        if(lastStep != null) {
-          lastStep.setNextStep(observedContraIndicationStep);
-        }
-        observedContraIndicationStep.setPreviousStep(lastStep);
-        lastStep = observedContraIndicationStep;
-      }
-    } else {
-      log.debug("No contraindications of type OBSERVED. Skipping step.");
-    }
-
-    // are there asked contra-indications to display ?
-    if(activeInstrumentRunService.hasContraindications(Contraindication.Type.ASKED)) {
-      if(startStep == null || startStep.equals(askedContraIndicationStep)) {
-        startStep = askedContraIndicationStep;
-        lastStep = startStep;
-      } else {
-        if(lastStep != null) {
-          lastStep.setNextStep(askedContraIndicationStep);
-        }
-        askedContraIndicationStep.setPreviousStep(lastStep);
-        lastStep = askedContraIndicationStep;
-      }
-    } else {
-      log.debug("No contraindications of type ASKED. Skipping step.");
-    }
 
     List<Instrument> activeInstrumentsForCurrentWorkstation = getActiveInstrumentsForCurrentWorkstation();
     log.debug("instruments.count={}", activeInstrumentsForCurrentWorkstation.size());
@@ -304,12 +283,48 @@ public class InstrumentWizardForm extends WizardForm {
       }
     } else {
       // A single instrument of the correct type is associated with this workstation.
-      activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
+      if(resuming) {
+        activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
+      } else {
+        activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0));
+      }
+    }
+
+    // are there observed contra-indications to display ?
+    if(hasContraindications(Contraindication.Type.OBSERVED)) {
+      if(startStep == null || startStep.equals(observedContraIndicationStep)) {
+        startStep = observedContraIndicationStep;
+        lastStep = startStep;
+      } else {
+        if(lastStep != null) {
+          lastStep.setNextStep(observedContraIndicationStep);
+        }
+        observedContraIndicationStep.setPreviousStep(lastStep);
+        lastStep = observedContraIndicationStep;
+      }
+    } else {
+      log.debug("No contraindications of type OBSERVED. Skipping step.");
+    }
+
+    // are there asked contra-indications to display ?
+    if(hasContraindications(Contraindication.Type.ASKED)) {
+      if(startStep == null || startStep.equals(askedContraIndicationStep)) {
+        startStep = askedContraIndicationStep;
+        lastStep = startStep;
+      } else {
+        if(lastStep != null) {
+          lastStep.setNextStep(askedContraIndicationStep);
+        }
+        askedContraIndicationStep.setPreviousStep(lastStep);
+        lastStep = askedContraIndicationStep;
+      }
+    } else {
+      log.debug("No contraindications of type ASKED. Skipping step.");
     }
 
     // are there input parameters with input source that requires user provisioning ?
     // or interpretative questions
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = (InstrumentType) getModelObject();
     log.debug("instrumentInterpretativeParameters.count={}", instrumentType.getInterpretativeParameters().size());
     log.debug("instrumentInputParameters.count={}", instrumentType.getInputParameters(false));
     if(instrumentType.hasInterpretativeParameter() || instrumentType.hasInputParameter(false)) {
@@ -373,7 +388,7 @@ public class InstrumentWizardForm extends WizardForm {
 
   private List<Instrument> getActiveInstrumentsForCurrentWorkstation() {
     List<Instrument> activeInstrumentsForCurrentWorkstation = new ArrayList<Instrument>();
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = (InstrumentType) getModelObject();
     List<Instrument> activeInstruments = instrumentService.getActiveInstruments(instrumentType);
     for(Instrument instrument : activeInstruments) {
       if(instrument.getWorkstation() != null && instrument.getWorkstation().equals(userSessionService.getWorkstation())) {
@@ -388,8 +403,15 @@ public class InstrumentWizardForm extends WizardForm {
    * @return The step to resume to.
    */
   private WizardStepPanel getStepWhenResuming() {
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     WizardStepPanel resumingStartStep = null;
+
+    List<Instrument> activeInstrumentsForCurrentWorkstation = getActiveInstrumentsForCurrentWorkstation();
+    if(activeInstrumentsForCurrentWorkstation.size() == 0 || activeInstrumentsForCurrentWorkstation.size() > 1) {
+      // The user must select an instrument for the measure.
+      return null;
+    }
+
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     if(hasSomeOrAllOutputParameterValues()) {
       log.info("Has all output values.");
       if(getOutputParametersOriginallyMarkedForManualCapture().size() > 0) {
@@ -512,18 +534,15 @@ public class InstrumentWizardForm extends WizardForm {
   }
 
   public void initStartStep(boolean resuming) {
-    this.resuming = resuming;
+    WizardStepPanel startStepWhenResuming = null;
 
-    if(resuming) {
+    InstrumentRun previousInstrumentRun = instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName());
+    if(resuming && previousInstrumentRun != null) {
       activeInstrumentRunService.setInstrumentRun(instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName()));
-    } else {
-      // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
-      // instance of the service may not have had its start method called, in which case it will have
-      // a null InstrumentRun.
-      activeInstrumentRunService.start(activeInterviewService.getParticipant(), (InstrumentType) getModelObject());
+      startStepWhenResuming = getStepWhenResuming();
     }
 
-    WizardStepPanel startStep = setUpWizardFlow();
+    WizardStepPanel startStep = setUpWizardFlow(startStepWhenResuming);
 
     add(startStep);
     startStep.onStepInNext(this, null);
@@ -596,7 +615,7 @@ public class InstrumentWizardForm extends WizardForm {
 
   private List<InstrumentOutputParameter> getOutputParametersOriginallyMarkedForManualCapture() {
     List<InstrumentOutputParameter> result = new ArrayList<InstrumentOutputParameter>();
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = (InstrumentType) getModelObject();
     List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL);
 
     for(InstrumentOutputParameter param : outputParams) {

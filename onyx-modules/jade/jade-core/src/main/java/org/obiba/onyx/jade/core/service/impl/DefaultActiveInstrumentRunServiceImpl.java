@@ -66,15 +66,15 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   // ActiveInstrumentRunService Methods
   //
 
-  public InstrumentRun start(Participant participant, InstrumentType instrumentType) {
+  public InstrumentRun start(Participant participant, Instrument instrument) {
     if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
-    if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
+    if(instrument == null) throw new IllegalArgumentException("Instrument cannot be null.");
 
     InstrumentRun currentRun = new InstrumentRun();
     // Instrument must not be null when InstrumentRun is persisted.
-    currentRun.setInstrument(getDefaultInstrument(instrumentType));
+    currentRun.setInstrument(instrument);
     currentRun.setParticipant(participant);
-    currentRun.setInstrumentType(instrumentType.getName());
+    currentRun.setInstrumentType(instrument.getType());
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
     currentRun.setUser(userSessionService.getUser());
@@ -83,19 +83,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRunId = currentRun.getId();
 
     return currentRun;
-  }
-
-  private Instrument getDefaultInstrument(InstrumentType instrumentType) {
-    Instrument template = new Instrument();
-    Instrument templateWithInstrumentType = new Instrument();
-    templateWithInstrumentType.setType(instrumentType.getName());
-    if(getPersistenceManager().count(templateWithInstrumentType) > 0) {
-      return getPersistenceManager().match(templateWithInstrumentType).get(0);
-    } else if(getPersistenceManager().count(template) > 0) {
-      return getPersistenceManager().match(template).get(0);
-    } else {
-      throw new IllegalStateException("No default Instrument available.");
-    }
   }
 
   // Visible for testing.
