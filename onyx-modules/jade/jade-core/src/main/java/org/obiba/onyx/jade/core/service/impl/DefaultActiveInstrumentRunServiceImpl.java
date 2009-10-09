@@ -340,7 +340,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       InstrumentRunValue runValue = new InstrumentRunValue();
 
       runValue.setMeasure(measure);
-      runValue.setCaptureMethod(parameter.getCaptureMethod());
       runValue.setInstrumentParameter(parameter.getCode());
       runValue.setData(entry.getValue());
       runValue.setInstrumentRun(instrumentRun);
