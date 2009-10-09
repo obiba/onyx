@@ -47,7 +47,7 @@ public abstract class ExperimentalConditionDialog extends Panel {
           return true;
         } else if(status.equals(Status.SUCCESS)) {
           if(instrumentModel != null && instrumentModel.getObject() != null) {
-            experimentalConditionForm.addBarcode(instrumentModel.getObject().getBarcode());
+            experimentalConditionForm.addInstrument(instrumentModel.getObject().getBarcode());
           }
           experimentalConditionForm.save();
           return true;
