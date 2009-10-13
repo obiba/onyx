@@ -19,13 +19,18 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 
-public abstract class ExperimentalConditionDialog extends Panel {
+/**
+ * Panel containing a reusable {@link Dialog} used to display {@link ExperimentalConditionLog} and
+ * {@link InstrumentCalibration} forms.
+ */
+public abstract class ExperimentalConditionDialogHelperPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
@@ -33,11 +38,11 @@ public abstract class ExperimentalConditionDialog extends Panel {
 
   private final Dialog logDialog = DialogBuilder.buildDialog("experimentalConditionDialog", "Report Dialog", experimentalConditionForm = new ExperimentalConditionForm("content", null, null)).setOptions(Option.OK_CANCEL_OPTION, "Save").getDialog();
 
-  public ExperimentalConditionDialog(String id) {
+  public ExperimentalConditionDialogHelperPanel(String id) {
     this(id, null, null);
   }
 
-  public ExperimentalConditionDialog(String id, IModel model, final IModel<Instrument> instrumentModel) {
+  public ExperimentalConditionDialogHelperPanel(String id, IModel model, final IModel<Instrument> instrumentModel) {
     super(id, model);
     logDialog.setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;

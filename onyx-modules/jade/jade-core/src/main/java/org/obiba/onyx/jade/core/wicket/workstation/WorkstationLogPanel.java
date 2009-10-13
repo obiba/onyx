@@ -31,7 +31,7 @@ import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 
-public class WorkstationLogPanel extends ExperimentalConditionDialog {
+public class WorkstationLogPanel extends ExperimentalConditionDialogHelperPanel {
 
   private static final long serialVersionUID = 1L;
 

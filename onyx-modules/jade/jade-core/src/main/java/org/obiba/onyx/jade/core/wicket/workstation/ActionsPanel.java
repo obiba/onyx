@@ -34,7 +34,7 @@ import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
 
-public class ActionsPanel extends ExperimentalConditionDialog {
+public class ActionsPanel extends ExperimentalConditionDialogHelperPanel {
 
   private static final long serialVersionUID = 5855667390712874428L;
 
