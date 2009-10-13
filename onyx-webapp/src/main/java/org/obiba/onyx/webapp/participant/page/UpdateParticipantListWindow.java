@@ -57,7 +57,7 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private AjaxButton updateSubmitLink;
 
-  private AjaxLink detailsLink;
+  private AjaxLink<Object> detailsLink;
 
   @SpringBean
   private AppointmentManagementService appointmentManagementService;
@@ -79,7 +79,7 @@ public class UpdateParticipantListWindow extends Dialog {
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
 
     content = new UpdateParticipantListPanel(getContentId());
-    content.add(new AttributeModifier("class", true, new Model("obiba-content updateParticipantList-panel-content")));
+    content.add(new AttributeModifier("class", true, new Model<String>("obiba-content updateParticipantList-panel-content")));
     content.setOutputMarkupId(true);
     setContent(content);
 
@@ -122,13 +122,14 @@ public class UpdateParticipantListWindow extends Dialog {
       protected void onError(AjaxRequestTarget target, Form form) {
         UpdateParticipantListWindow.this.setStatus(Status.ERROR);
         UpdateParticipantListWindow.this.getWindowContent().displayFeedback(target);
-        // target.addComponent(UpdateParticipantListWindow.this.get("content"));
       }
     });
     updateSubmitLink.setVisible(false);
 
     // Set details button
-    addOption("Details", OptionSide.RIGHT, detailsLink = new AjaxLink("details") {
+    addOption("Details", OptionSide.RIGHT, detailsLink = new AjaxLink<Object>("details") {
+
+      private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {

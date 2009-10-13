@@ -31,7 +31,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
@@ -116,17 +115,17 @@ public class UpdateParticipantListPanel extends Panel {
 
   public void showResult(boolean updateSucceeded, AppointmentUpdateStats stats) {
     String messageKey = updateSucceeded ? "ParticipantsListSuccessfullyUpdated" : "ParticipantListUpdateFailed";
-    IModel messageModel = new ResourceModel(messageKey, messageKey);
+    IModel<String> messageModel = new ResourceModel(messageKey, messageKey);
     resultFragment.resultLabel.setDefaultModel(messageModel);
 
     Model<AppointmentUpdateStats> statsModel = new Model<AppointmentUpdateStats>(stats);
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("stats");
-    kvPanel.addRow(new StringResourceModel("File", this, null), new PropertyModel(statsModel, "fileName"));
-    kvPanel.addRow(new StringResourceModel("TotalParticipants", this, null), new PropertyModel(statsModel, "totalParticipants"));
-    kvPanel.addRow(new StringResourceModel("UpdatedParticipants", this, null), new PropertyModel(statsModel, "updatedParticipants"));
-    kvPanel.addRow(new StringResourceModel("CreatedParticipants", this, null), new PropertyModel(statsModel, "addedParticipants"));
-    kvPanel.addRow(new StringResourceModel("IgnoredParticipants", this, null), new PropertyModel(statsModel, "ignoredParticipants"));
-    kvPanel.addRow(new StringResourceModel("UnreadableParticipants", this, null), new PropertyModel(statsModel, "unreadableParticipants"));
+    kvPanel.addRow(new ResourceModel("File"), new PropertyModel<AppointmentUpdateStats>(statsModel, "fileName"));
+    kvPanel.addRow(new ResourceModel("TotalParticipants"), new PropertyModel<AppointmentUpdateStats>(statsModel, "totalParticipants"));
+    kvPanel.addRow(new ResourceModel("UpdatedParticipants"), new PropertyModel<AppointmentUpdateStats>(statsModel, "updatedParticipants"));
+    kvPanel.addRow(new ResourceModel("CreatedParticipants"), new PropertyModel<AppointmentUpdateStats>(statsModel, "addedParticipants"));
+    kvPanel.addRow(new ResourceModel("IgnoredParticipants"), new PropertyModel<AppointmentUpdateStats>(statsModel, "ignoredParticipants"));
+    kvPanel.addRow(new ResourceModel("UnreadableParticipants"), new PropertyModel<AppointmentUpdateStats>(statsModel, "unreadableParticipants"));
 
     if(updateSucceeded) {
       kvPanel.setVisible(true);
@@ -151,7 +150,7 @@ public class UpdateParticipantListPanel extends Panel {
 
   private void addUpdateAppointmentLogWindow() {
     updateAppointmentLogWindow = new Dialog("updateAppointmentLogWindow");
-    updateAppointmentLogWindow.setTitle(new StringResourceModel("Log", this, null));
+    updateAppointmentLogWindow.setTitle(new ResourceModel("Log"));
     updateAppointmentLogWindow.setOptions(Option.CLOSE_OPTION);
     updateAppointmentLogWindow.setInitialHeight(400);
     updateAppointmentLogWindow.setInitialWidth(700);
@@ -172,7 +171,7 @@ public class UpdateParticipantListPanel extends Panel {
     public ConfirmationFragment(String id) {
       super(id, "confirmationFragment", UpdateParticipantListPanel.this);
 
-      RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
+      RadioGroup<Serializable> radioGroup = new RadioGroup<Serializable>("radioGroup", new Model<Serializable>());
       add(radioGroup);
       setRadioOptions(radioGroup);
 
@@ -180,7 +179,7 @@ public class UpdateParticipantListPanel extends Panel {
       fileUpload.add(new IValidator<FileUpload>() {
         private static final long serialVersionUID = 1L;
 
-        public void validate(IValidatable validatable) {
+        public void validate(IValidatable<FileUpload> validatable) {
           FileUpload input = (FileUpload) validatable.getValue();
           if(!input.getClientFileName().endsWith(participantReader.getFilePattern())) {
             validatable.error(new FileTypeError());
@@ -194,10 +193,10 @@ public class UpdateParticipantListPanel extends Panel {
       add(fileUpload);
     }
 
-    private void setRadioOptions(final RadioGroup radioGroup) {
+    private void setRadioOptions(final RadioGroup<Serializable> radioGroup) {
 
-      Radio radio = new Radio("automaticUpload", new Model(AUTOMATIC_UPLOAD));
-      radio.setLabel(new StringResourceModel("UpdateParticipantList." + AUTOMATIC_UPLOAD, UpdateParticipantListPanel.this, null));
+      Radio<Serializable> radio = new Radio<Serializable>("automaticUpload", new Model<Serializable>(AUTOMATIC_UPLOAD));
+      radio.setLabel(new ResourceModel("UpdateParticipantList." + AUTOMATIC_UPLOAD));
 
       radio.add(new AjaxEventBehavior("onchange") {
         private static final long serialVersionUID = 1L;
@@ -215,8 +214,8 @@ public class UpdateParticipantListPanel extends Panel {
       radioGroup.add(radio);
       radioGroup.add(new Label("alabel", radio.getLabel()).setRenderBodyOnly(true));
 
-      radio = new Radio("manualUpload", new Model(MANUAL_UPLOAD));
-      radio.setLabel(new StringResourceModel("UpdateParticipantList." + MANUAL_UPLOAD, UpdateParticipantListPanel.this, null));
+      radio = new Radio<Serializable>("manualUpload", new Model<Serializable>(MANUAL_UPLOAD));
+      radio.setLabel(new ResourceModel("UpdateParticipantList." + MANUAL_UPLOAD));
 
       radio.add(new AjaxEventBehavior("onchange") {
         private static final long serialVersionUID = 1L;
@@ -242,7 +241,7 @@ public class UpdateParticipantListPanel extends Panel {
     private class FileTypeError implements IValidationError, Serializable {
 
       public String getErrorMessage(IErrorMessageSource messageSource) {
-        return new StringResourceModel("FileWrongType", UpdateParticipantListPanel.this, null).getString();
+        return new ResourceModel("FileWrongType").toString();
       }
     }
   }
@@ -255,7 +254,7 @@ public class UpdateParticipantListPanel extends Panel {
 
     private Image progressImage;
 
-    public ProgressFragment(String id, IModel messageModel) {
+    public ProgressFragment(String id, IModel<String> messageModel) {
       super(id, "progressFragment", UpdateParticipantListPanel.this);
 
       progressLabel = new Label("progressLabel", messageModel);
@@ -290,7 +289,7 @@ public class UpdateParticipantListPanel extends Panel {
 
     private AppointmentUpdateStats appointmentUpdateStats;
 
-    public ResultFragment(String id, IModel messageModel) {
+    public ResultFragment(String id, IModel<String> messageModel) {
       super(id, "resultFragment", UpdateParticipantListPanel.this);
 
       resultLabel = new Label("resultLabel", messageModel);
