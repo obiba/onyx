@@ -9,31 +9,20 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.participant;
 
-import java.util.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.core.domain.AttributeValue;
 
 /**
  * Participant attribute value.
  */
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "participant_id", "attributeName" }) })
-public class ParticipantAttributeValue extends AbstractEntity {
+public class ParticipantAttributeValue extends AttributeValue {
   //
   // Constants
   //
@@ -48,23 +37,6 @@ public class ParticipantAttributeValue extends AbstractEntity {
   @JoinColumn(name = "participant_id")
   private Participant participant;
 
-  @Column(nullable = false)
-  private String attributeName;
-
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private DataType attributeType;
-
-  private Double decimalValue;
-
-  private Long integerValue;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date dateValue;
-
-  @Column(length = 2000)
-  private String textValue;
-
   //
   // Methods
   //
@@ -77,82 +49,4 @@ public class ParticipantAttributeValue extends AbstractEntity {
     return participant;
   }
 
-  public void setAttributeName(String attributeName) {
-    this.attributeName = attributeName;
-  }
-
-  public String getAttributeName() {
-    return attributeName;
-  }
-
-  public void setAttributeType(DataType attributeType) {
-    this.attributeType = attributeType;
-  }
-
-  public DataType getAttributeType() {
-    return attributeType;
-  }
-
-  public void setData(Data data) {
-    if(data != null) {
-      if(data.getType() == getAttributeType()) {
-        switch(getAttributeType()) {
-        case DECIMAL:
-          decimalValue = data.getValue();
-          break;
-
-        case INTEGER:
-          integerValue = data.getValue();
-          break;
-
-        case DATE:
-          dateValue = data.getValue();
-          break;
-
-        case TEXT:
-          textValue = data.getValue();
-          break;
-        }
-      } else {
-        throw new IllegalArgumentException("DataType " + getAttributeType() + " expected, " + data.getType() + " received.");
-      }
-    } else {
-      decimalValue = null;
-      integerValue = null;
-      dateValue = null;
-      textValue = null;
-    }
-  }
-
-  public Data getData() {
-    Data data = null;
-
-    if(getAttributeType() == null) return null;
-
-    switch(getAttributeType()) {
-    case DECIMAL:
-      data = DataBuilder.buildDecimal(decimalValue);
-      break;
-
-    case INTEGER:
-      data = DataBuilder.buildInteger(integerValue);
-      break;
-
-    case DATE:
-      data = DataBuilder.buildDate(dateValue);
-      break;
-
-    case TEXT:
-      data = DataBuilder.buildText(textValue);
-      break;
-    }
-
-    return data;
-  }
-
-  @Transient
-  @SuppressWarnings("unchecked")
-  public <T> T getValue() {
-    return (T) getData().getValue();
-  }
 }
