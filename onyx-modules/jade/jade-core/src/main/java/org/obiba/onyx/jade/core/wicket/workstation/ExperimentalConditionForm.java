@@ -139,7 +139,6 @@ public class ExperimentalConditionForm extends Panel {
 
     final List<InstructionModel> instructionModels = getInstructionModels(selectedExperimentalConditionLog);
     Label instructionTitle = new Label("instructionTitle", new ResourceModel("InstructionTitle"));
-    instructionTitle.add(new AttributeModifier("class", true, new Model<String>("experimental-condition-instructions-title")));
     experimentalConditionFormParent.addOrReplace(instructionTitle);
     if(instructionModels.size() == 0) instructionTitle.setVisible(false);
     Loop instructionsLoop = new Loop("instructionList", selectedExperimentalConditionLog != null ? selectedExperimentalConditionLog.getInstructions().size() : 0) {
