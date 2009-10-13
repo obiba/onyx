@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -34,7 +35,7 @@ import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
 
-public class ActionsPanel extends ExperimentalConditionDialogHelperPanel {
+public class ActionsPanel extends Panel {
 
   private static final long serialVersionUID = 5855667390712874428L;
 
@@ -47,9 +48,14 @@ public class ActionsPanel extends ExperimentalConditionDialogHelperPanel {
   @SpringBean
   private UserSessionService userSessionService;
 
+  private ExperimentalConditionDialogHelperPanel experimentalConditionDialogHelperPanel;
+
   public ActionsPanel(String id, IModel<Instrument> model) {
-    super(id, model, model);
+    super(id, model);
     setOutputMarkupId(true);
+
+    experimentalConditionDialogHelperPanel = new ExperimentalConditionDialogHelperPanel("experimentalConditionDialogHelperPanel", model, model);
+    add(experimentalConditionDialogHelperPanel);
 
     RepeatingView repeating = new RepeatingView("link");
     add(repeating);
@@ -128,9 +134,9 @@ public class ActionsPanel extends ExperimentalConditionDialogHelperPanel {
       for(InstrumentCalibration cal : experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType())) {
         log.add((ExperimentalConditionLog) cal);
       }
-      setExperimentalConditionLog(experimentalConditionService.getInstrumentCalibrationByType(instrument.getType()), log);
+      experimentalConditionDialogHelperPanel.setExperimentalConditionLog(experimentalConditionService.getInstrumentCalibrationByType(instrument.getType()), log);
 
-      getExperimentalConditionDialog().setWindowClosedCallback(new WindowClosedCallback() {
+      experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().setWindowClosedCallback(new WindowClosedCallback() {
         private static final long serialVersionUID = 1L;
 
         public void onClose(AjaxRequestTarget target, Status status) {
@@ -140,8 +146,8 @@ public class ActionsPanel extends ExperimentalConditionDialogHelperPanel {
       });
       SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(instrument.getType(), instrument.getType());
       String experimentalConditionName = experimentalConditionNameResource.getString();
-      getExperimentalConditionDialog().setTitle(new StringResourceModel("ExperimentalConditionDialogTitle", ActionsPanel.this, new Model<ValueMap>(new ValueMap("experimentalConditionName=" + experimentalConditionName))));
-      getExperimentalConditionDialog().show(target);
+      experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().setTitle(new StringResourceModel("ExperimentalConditionDialogTitle", ActionsPanel.this, new Model<ValueMap>(new ValueMap("experimentalConditionName=" + experimentalConditionName))));
+      experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().show(target);
     }
   }
 

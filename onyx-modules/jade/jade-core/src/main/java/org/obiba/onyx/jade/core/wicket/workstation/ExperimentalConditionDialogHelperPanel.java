@@ -30,7 +30,7 @@ import org.obiba.onyx.wicket.reusable.Dialog.Status;
  * Panel containing a reusable {@link Dialog} used to display {@link ExperimentalConditionLog} and
  * {@link InstrumentCalibration} forms.
  */
-public abstract class ExperimentalConditionDialogHelperPanel extends Panel {
+public class ExperimentalConditionDialogHelperPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
