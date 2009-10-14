@@ -286,7 +286,10 @@ public class InstrumentWizardForm extends WizardForm {
       if(resuming) {
         activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
       } else {
-        activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0));
+        if(activeInstrumentRunService.getInstrumentRun() == null) {
+          // Starting a new measure.
+          activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0));
+        }
       }
     }
 
