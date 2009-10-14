@@ -1,8 +1,8 @@
 /*
-* OnKeyPress "Enter" submit form with right action
+* Click on component when specific key is pressed on keyboard.
 */
 
-function submitForm(event, elementId){
+function clickOnComponentWhenKeyPressed(event, elementId, keyPressed){
   var code;
   if(!event){
     event = window.event;
@@ -13,8 +13,9 @@ function submitForm(event, elementId){
     code = event.which;
   }
   
-  if (code == 13){
+  if (code == keyPressed){
     $('#' + elementId).click();
+    event.preventDefault();
     return false;
   } else {
     return true;

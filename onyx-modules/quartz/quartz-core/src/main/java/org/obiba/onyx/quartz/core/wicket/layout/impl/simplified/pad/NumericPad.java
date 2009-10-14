@@ -33,8 +33,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.behavior.FocusBehavior;
+import org.obiba.onyx.wicket.behavior.KeyPressed;
+import org.obiba.onyx.wicket.behavior.OnKeyPressBehaviour;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.obiba.onyx.wicket.link.AjaxImageSubmitLink;
@@ -54,6 +55,8 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  AjaxImageLink clearButton;
 
   /**
    * @param id
@@ -75,9 +78,9 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     final FeedbackPanel padFeedbackPanel = new FeedbackPanel("feedback");
 
     // Create the dialog action buttons.
+    AjaxImageLink clearButton = createClearButton();
     AjaxImageSubmitLink submitButton = createSubmitButton(type, padFeedbackPanel);
     AjaxImageLink cancelButton = createCancelButton();
-    AjaxImageLink clearButton = createClearButton();
 
     // Add the numeric buttons to the numeric pad.
     addNumericButtons();
@@ -112,6 +115,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
     };
     link.getLink().add(new NoDragBehavior());
+    valuePressed.add(new OnKeyPressBehaviour(link.getLink(), KeyPressed.Backspace));
     return link;
   }
 
@@ -208,7 +212,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     };
     link.setOutputMarkupId(true);
     link.getLink().setOutputMarkupId(true);
-    valuePressed.add(new EnterOnKeyPressBehaviour(link.getLink()));
+    valuePressed.add(new OnKeyPressBehaviour(link.getLink(), KeyPressed.Enter));
 
     link.getLink().add(new NoDragBehavior());
     return link;
