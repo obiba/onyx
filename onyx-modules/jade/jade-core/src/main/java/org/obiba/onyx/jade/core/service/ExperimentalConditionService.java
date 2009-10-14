@@ -25,6 +25,9 @@ import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
  */
 public interface ExperimentalConditionService {
 
+  /** Instrument barcode attribute name. */
+  public final static String INSTRUMENT_BARCODE = "INSTRUMENT_BARCODE";
+
   /**
    * Persists an {@link ExperimentalCondition} and all its associated {@link ExperimentalConditionValues}.
    * @param experimentalCondition ExperimentalCondition to persist.

@@ -12,6 +12,8 @@ package org.obiba.onyx.jade.core.wicket.workstation;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -38,6 +40,7 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -185,12 +188,9 @@ public class WorkstationPanel extends Panel {
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Instrument instrument = (Instrument) rowModel.getObject();
           if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
-            InstrumentCalibration calibrate = experimentalConditionService.getInstrumentCalibrationByType(instrument.getType());
-            ExperimentalCondition template = new ExperimentalCondition();
-            template.setName(calibrate.getName());
-            List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
-            if(calibrations.size() > 0) {
-              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<InstrumentListColumnProvider>(InstrumentListColumnProvider.this, "dateTimeFormat"), new Model(calibrations.get(0).getTime()))));
+            ExperimentalCondition calibration = getLatestInstrumentCalibration(instrument);
+            if(calibration != null) {
+              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<InstrumentListColumnProvider>(InstrumentListColumnProvider.this, "dateTimeFormat"), new Model(calibration.getTime()))));
               return;
             }
           }
@@ -233,5 +233,39 @@ public class WorkstationPanel extends Panel {
 
   public InstrumentEntityList getInstrumentList() {
     return instrumentList;
+  }
+
+  private ExperimentalCondition getLatestInstrumentCalibration(Instrument instrument) {
+    List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+    List<ExperimentalCondition> allCalibrations = new ArrayList<ExperimentalCondition>();
+    for(InstrumentCalibration instrumentCalibration : instrumentCalibrations) {
+      allCalibrations.addAll(getExperimentalConditions(instrumentCalibration.getName(), instrument.getBarcode()));
+    }
+    Collections.sort(allCalibrations, new Comparator<ExperimentalCondition>() {
+
+      public int compare(ExperimentalCondition arg0, ExperimentalCondition arg1) {
+        return arg1.getTime().compareTo(arg0.getTime());
+      }
+
+    });
+    if(allCalibrations.isEmpty()) return null;
+    return allCalibrations.get(0);
+  }
+
+  private List<ExperimentalCondition> getExperimentalConditions(String instrumentCalibrationName, String barcode) {
+    List<ExperimentalCondition> result = new ArrayList<ExperimentalCondition>();
+    ExperimentalCondition template = new ExperimentalCondition();
+    template.setName(instrumentCalibrationName);
+    List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
+    for(ExperimentalCondition experimentalCondition : experimentalConditions) {
+      for(ExperimentalConditionValue ecv : experimentalCondition.getExperimentalConditionValues()) {
+        if(ecv.getAttributeName().equals(ExperimentalConditionService.INSTRUMENT_BARCODE)) {
+          if(ecv.getValue().equals(barcode)) {
+            result.add(experimentalCondition);
+          }
+        }
+      }
+    }
+    return result;
   }
 }

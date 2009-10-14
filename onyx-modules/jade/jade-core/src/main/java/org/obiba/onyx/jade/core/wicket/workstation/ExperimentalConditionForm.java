@@ -52,8 +52,6 @@ public class ExperimentalConditionForm extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  private final String INSTRUMENT_ATTRIBUTE = "instrument";
-
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
 
@@ -349,7 +347,7 @@ public class ExperimentalConditionForm extends Panel {
 
   public void addInstrument(String barcode) {
     ExperimentalConditionValue experimentalConditionValue = new ExperimentalConditionValue();
-    experimentalConditionValue.setAttributeName(INSTRUMENT_ATTRIBUTE);
+    experimentalConditionValue.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
     experimentalConditionValue.setAttributeType(DataType.TEXT);
     experimentalCondition.addExperimentalConditionValue(experimentalConditionValue);
     experimentalConditionValue.setExperimentalCondition(experimentalCondition);
