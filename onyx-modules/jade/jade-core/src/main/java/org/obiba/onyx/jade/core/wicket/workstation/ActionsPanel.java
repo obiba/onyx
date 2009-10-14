@@ -140,7 +140,7 @@ public class ActionsPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         public void onClose(AjaxRequestTarget target, Status status) {
-          // Refresh the instrument table.
+          target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
         }
 
       });
