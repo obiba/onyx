@@ -24,6 +24,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
@@ -38,6 +39,9 @@ public class WorkstationLogPanel extends Panel {
 
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   private ExperimentalConditionLog selectedExperimentalConditionLog;
 
@@ -125,7 +129,10 @@ public class WorkstationLogPanel extends Panel {
   private ExperimentalConditionHistoryPanel getExperimentalConditionHistoryPanel() {
     List<ExperimentalConditionLog> experimentalConditionLogs = getExperimentalConditionLogs();
     ExperimentalCondition template = new ExperimentalCondition();
-    if(experimentalConditionLogs.size() > 0) template.setName(selectedExperimentalConditionLog.getName());
+    if(experimentalConditionLogs.size() > 0) {
+      template.setName(selectedExperimentalConditionLog.getName());
+      template.setWorkstation(userSessionService.getWorkstation());
+    }
     IModel titleModel = new SpringStringResourceModel(selectedExperimentalConditionLog.getName(), selectedExperimentalConditionLog.getName());
     return new ExperimentalConditionHistoryPanel("experimentalConditionHistoryPanel", template, titleModel, 5);
   }
