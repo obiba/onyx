@@ -21,6 +21,8 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentSelector;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instrument selection Step.
@@ -30,6 +32,8 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 4489598868219932761L;
 
+  private static final Logger log = LoggerFactory.getLogger(InstrumentSelectionStep.class);
+
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
@@ -38,7 +42,6 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
   private Instrument instrument;
 
-  @SuppressWarnings("serial")
   public InstrumentSelectionStep(String id, IModel instrumentTypeModel) {
     super(id);
     setOutputMarkupId(true);
@@ -64,13 +67,9 @@ public class InstrumentSelectionStep extends WizardStepPanel {
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutNext(form, target);
-    if(activeInstrumentRunService.getInstrumentRun() == null) {
-      // Starting a new measure.
-      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
-    } else {
-      // Resuming an measure.
-      activeInstrumentRunService.setInstrument(instrument);
-    }
+    activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
+    log.debug("Starting a new InstrumentRun with the instrument type [" + instrument.getType() + "] and user selected barcode [" + instrument.getBarcode() + "].");
+
   }
 
 }

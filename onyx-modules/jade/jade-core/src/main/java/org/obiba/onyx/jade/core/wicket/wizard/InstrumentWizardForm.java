@@ -111,6 +111,8 @@ public class InstrumentWizardForm extends WizardForm {
 
   private boolean adminWindowClosed = false;
 
+  private boolean instrumentSelected = false;
+
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id, instrumentTypeModel);
 
@@ -281,14 +283,17 @@ public class InstrumentWizardForm extends WizardForm {
         instrumentSelectionStep.setPreviousStep(lastStep);
         lastStep = instrumentSelectionStep;
       }
+      instrumentSelected = true;
     } else {
       // A single instrument of the correct type is associated with this workstation.
       if(resuming) {
         activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
+        log.debug("Resuming an InstrumentRun with the instrument type [" + activeInstrumentsForCurrentWorkstation.get(0).getType() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
       } else {
-        if(activeInstrumentRunService.getInstrumentRun() == null) {
-          // Starting a new measure.
+        if(!instrumentSelected) {
           activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0));
+          log.debug("Starting a new InstrumentRun with the instrument type [" + activeInstrumentsForCurrentWorkstation.get(0).getType() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
+          instrumentSelected = true;
         }
       }
     }
@@ -543,6 +548,7 @@ public class InstrumentWizardForm extends WizardForm {
     if(resuming && previousInstrumentRun != null) {
       activeInstrumentRunService.setInstrumentRun(instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName()));
       startStepWhenResuming = getStepWhenResuming();
+      instrumentSelected = true;
     }
 
     WizardStepPanel startStep = setUpWizardFlow(startStepWhenResuming);
