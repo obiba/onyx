@@ -42,6 +42,8 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
   private Instrument instrument;
 
+  private boolean instrumentSelected = false;
+
   public InstrumentSelectionStep(String id, IModel instrumentTypeModel) {
     super(id);
     setOutputMarkupId(true);
@@ -67,9 +69,14 @@ public class InstrumentSelectionStep extends WizardStepPanel {
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutNext(form, target);
-    activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
-    log.debug("Starting a new InstrumentRun with the instrument type [" + instrument.getType() + "] and user selected barcode [" + instrument.getBarcode() + "].");
-
+    if(instrumentSelected) {
+      activeInstrumentRunService.setInstrument(instrument);
+      log.debug("Updated instrument with the instrument type [" + instrument.getType() + "] and user selected barcode [" + instrument.getBarcode() + "].");
+    } else {
+      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
+      instrumentSelected = true;
+      log.debug("Starting a new InstrumentRun with the instrument type [" + instrument.getType() + "] and user selected barcode [" + instrument.getBarcode() + "].");
+    }
   }
 
 }
