@@ -125,8 +125,9 @@ public class ExperimentalConditionHistoryPanel extends Panel {
     ExperimentalCondition ec = new ExperimentalCondition();
     ec.setName(selectedInstrumentCalibration.getName());
 
+    SpringStringResourceModel titleModel = new SpringStringResourceModel(selectedInstrumentCalibration.getName(), selectedInstrumentCalibration.getName());
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(ec, null);
-    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(ec), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), new Model(selectedInstrumentCalibration.getName()));
+    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(ec), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), titleModel);
     list.setPageSize(pageSize);
     return list;
 
