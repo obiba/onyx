@@ -197,7 +197,7 @@
       <string>StadiometerFullAlignmentCalibrationLog.Instruction1</string>
       <string>StadiometerFullAlignmentCalibrationLog.Instruction2</string>
     </instructions>
-    <instrumentType>BoneDensity</instrumentType>
+    <instrumentType>StandingHeight</instrumentType>
     <attribute>
       <name>Alignment50to70cm</name>
       <type>TEXT</type>
