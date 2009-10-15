@@ -60,7 +60,7 @@ public class Variable implements Serializable {
   private String mimeType;
 
   @XStreamAsAttribute
-  private String entity;
+  private String entityType;
 
   /**
    * 
@@ -285,20 +285,20 @@ public class Variable implements Serializable {
    * Get the entity type name associated to this variables. If null, get it from its parent.
    * @return null if the entity type is not defined in the variable hierarchy
    */
-  public String getEntity() {
-    String rval = entity;
+  public String getEntityType() {
+    String rval = entityType;
     if(rval == null && getParent() != null) {
-      rval = getParent().getEntity();
+      rval = getParent().getEntityType();
     }
-    return entity;
+    return entityType;
   }
 
   /**
    * Set the entity type name associated to this variables.
    * @param entity
    */
-  public void setEntity(String entity) {
-    this.entity = entity;
+  public void setEntityType(String entityType) {
+    this.entityType = entityType;
   }
 
   /**
@@ -438,6 +438,6 @@ public class Variable implements Serializable {
 
   @Override
   public String toString() {
-    return entity + ":" + (parent != null ? parent + "." + name : name);
+    return entityType + ":" + (parent != null ? parent + "." + name : name);
   }
 }
