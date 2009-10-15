@@ -8,6 +8,7 @@
   <stage>
     <name>Test</name>
     <module>quartz</module>
+    <interviewConclusion>true</interviewConclusion>
   </stage>
 
 </stages>
