@@ -17,6 +17,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -39,8 +40,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
   private static final String BOILERPLATE_CLASS = "obiba-quartz-boilerplate";
 
-  @SuppressWarnings("serial")
-  public BaseQuestionPanel(String id, IModel questionModel) {
+  public BaseQuestionPanel(String id, IModel<Question> questionModel) {
     super(id, questionModel);
 
     setOutputMarkupId(true);
@@ -186,10 +186,27 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
   }
 
-  /**
-   * Method to implement for the definition of question content component.
-   * @param string
-   */
-  protected abstract void setContent(String string);
+  protected void setContent(String id) {
+    Question question = (Question) getDefaultModelObject();
+    Panel content;
+    if(!question.hasSubQuestions()) {
+      content = createCategoriesPanel(id, getModel());
+    } else if(!question.hasCategories()) {
+      content = createQuetionListPanel(id, getModel());
+    } else if(question.isArrayOfSharedCategories()) {
+      content = createSharedCategoriesPanel(id, getModel());
+    } else {
+      content = createJoinedCategoriesPanel(id, getModel());
+    }
+    add(content);
+  }
+
+  protected abstract Panel createCategoriesPanel(String id, IModel<Question> questionModel);
+
+  protected abstract Panel createQuetionListPanel(String id, IModel<Question> questionModel);
+
+  protected abstract Panel createSharedCategoriesPanel(String id, IModel<Question> questionModel);
+
+  protected abstract Panel createJoinedCategoriesPanel(String id, IModel<Question> questionModel);
 
 }

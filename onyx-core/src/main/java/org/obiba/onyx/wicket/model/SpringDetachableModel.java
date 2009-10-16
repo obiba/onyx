@@ -17,14 +17,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
  * Base class for making {@link LoadableDetachableModel} that supports Spring injection using {@link SpringBean}
  * annotation.
  */
-public abstract class SpringDetachableModel extends LoadableDetachableModel {
+public abstract class SpringDetachableModel<T> extends LoadableDetachableModel<T> {
 
   public SpringDetachableModel() {
     super();
     InjectorHolder.getInjector().inject(this);
   }
 
-  public SpringDetachableModel(Object object) {
+  public SpringDetachableModel(T object) {
     super(object);
     InjectorHolder.getInjector().inject(this);
   }

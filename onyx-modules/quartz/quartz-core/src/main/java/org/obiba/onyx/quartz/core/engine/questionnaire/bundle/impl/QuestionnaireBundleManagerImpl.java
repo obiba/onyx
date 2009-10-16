@@ -161,7 +161,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     // Iterate over all bundle directories.
     rootDir.listFiles(new FileFilter() {
       public boolean accept(File file) {
-        if(file.isDirectory()) {
+        if(file.isDirectory() && file.getName().charAt(0) != '.') {
           bundles.add(getBundle(file.getName()));
           return true;
         }
@@ -181,8 +181,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
    * Indicates whether the specified root directory is valid.
    * 
    * @param directory root directory
-   * @return <code>true</code> if the directory is not <code>null</code>, is indeed a directory (i.e., not a file),
-   * and is readable
+   * @return <code>true</code> if the directory is not <code>null</code>, is indeed a directory (i.e., not a file), and
+   * is readable
    */
   private boolean isValidRootDirectory(File directory) {
     return (directory != null && directory.isDirectory() && directory.canRead());
@@ -323,7 +323,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     private String latestVersionFilename;
 
     public boolean accept(File file) {
-      if(file.isDirectory()) {
+      if(file.isDirectory() && file.getName().charAt(0) != '.') {
         Version version = new Version(file.getName());
 
         if(latestVersion == null || (version.compareTo(latestVersion) > 0)) {

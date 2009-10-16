@@ -8,9 +8,11 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.provider.AnswerableChildQuesionProvider;
 
 /**
  * Support for question multiple or not, but without child questions.
@@ -19,24 +21,28 @@ public class SimplifiedQuestionPanel extends BaseQuestionPanel {
 
   private static final long serialVersionUID = 2951128797454847260L;
 
-  public SimplifiedQuestionPanel(String id, IModel questionModel) {
+  public SimplifiedQuestionPanel(String id, IModel<Question> questionModel) {
     super(id, questionModel);
-    setOutputMarkupId(true);
     setCommentVisible(false);
   }
 
   @Override
-  protected void setContent(String id) {
-    Question question = (Question) getDefaultModelObject();
+  protected Panel createCategoriesPanel(String id, IModel<Question> questionModel) {
+    return new SimplifiedQuestionCategoriesPanel(id, questionModel);
+  }
 
-    if(!question.hasSubQuestions()) {
-      add(new SimplifiedQuestionCategoriesPanel(id, getDefaultModel()));
-    } else if(!question.hasCategories()) {
-      throw new UnsupportedOperationException("Sub questions are not supported in the simplified question UI.");
-    } else if(question.isArrayOfSharedCategories()) {
-      add(new SimplifiedQuestionSharedCategoriesPanel(id, getDefaultModel()));
-    } else {
-      throw new UnsupportedOperationException("Joined or shared categories array questions are not supported in the simplified question UI.");
-    }
+  @Override
+  protected Panel createQuetionListPanel(String id, IModel<Question> questionModel) {
+    throw new UnsupportedOperationException("Sub questions are not supported in the simplified question UI.");
+  }
+
+  @Override
+  protected Panel createSharedCategoriesPanel(String id, IModel<Question> questionModel) {
+    return new SimplifiedQuestionSharedCategoriesPanel(id, questionModel, new AnswerableChildQuesionProvider(questionModel));
+  }
+
+  @Override
+  protected Panel createJoinedCategoriesPanel(String id, IModel<Question> questionModel) {
+    throw new UnsupportedOperationException("Joined categories array questions not supported yet");
   }
 }

@@ -32,9 +32,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateH
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionCategoryColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RowView;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.slf4j.Logger;
@@ -60,29 +58,12 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
    * @param questionModel
    */
   @SuppressWarnings("serial")
-  public SimplifiedQuestionSharedCategoriesPanel(String id, IModel questionModel) {
+  public SimplifiedQuestionSharedCategoriesPanel(String id, IModel questionModel, IDataProvider<Question> questionsProvider) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
     // seams like ugly but we need a form component to run the answer count validator
     add(new AnswerValidatorField("hidden", getQuestionModel()));
-
-    // provider of question's children
-    IDataProvider questionsProvider = new AbstractDataListProvider<Question>() {
-      @Override
-      public List<Question> getDataList() {
-        List<Question> questionToAnswer = new ArrayList<Question>();
-        for(Question question : getQuestion().getQuestions()) {
-          if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
-        }
-        return questionToAnswer;
-      }
-
-      @Override
-      public IModel model(Object object) {
-        return new QuestionnaireModel((Question) object);
-      }
-    };
 
     List<IColumn> columns = new ArrayList<IColumn>();
 

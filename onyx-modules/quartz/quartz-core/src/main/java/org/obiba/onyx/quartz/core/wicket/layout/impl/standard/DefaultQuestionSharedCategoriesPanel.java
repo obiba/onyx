@@ -27,18 +27,14 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.CheckGroupView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryCheckBoxColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryRadioColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RadioGroupView;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,36 +55,15 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
 
   private AbstractQuestionArray array;
 
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
   /**
    * Constructor, given the question array (holding the categories, and the children question).
    * @param id
    * @param questionModel
    */
   @SuppressWarnings("serial")
-  public DefaultQuestionSharedCategoriesPanel(String id, IModel questionModel) {
+  public DefaultQuestionSharedCategoriesPanel(String id, IModel<Question> questionModel, IDataProvider<Question> questionsProvider) {
     super(id, questionModel);
     setOutputMarkupId(true);
-
-    // provider of question's children
-    IDataProvider questionsProvider = new AbstractDataListProvider<Question>() {
-      @Override
-      public List<Question> getDataList() {
-        List<Question> questionToAnswer = new ArrayList<Question>();
-        for(Question question : ((Question) DefaultQuestionSharedCategoriesPanel.this.getDefaultModelObject()).getQuestions()) {
-          if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
-        }
-        return questionToAnswer;
-      }
-
-      @Override
-      public IModel model(Object object) {
-        return new QuestionnaireModel((Question) object);
-      }
-    };
-
     List<IColumn> columns = new ArrayList<IColumn>();
 
     // first column: labels of question's children

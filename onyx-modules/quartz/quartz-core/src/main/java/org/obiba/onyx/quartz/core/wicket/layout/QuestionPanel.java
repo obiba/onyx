@@ -33,11 +33,15 @@ public class QuestionPanel extends Panel {
   @SpringBean
   protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  public QuestionPanel(String id, IModel questionModel) {
+  public QuestionPanel(String id, IModel<Question> questionModel) {
     super(id, questionModel);
 
     // add a css class that represents this page instance
     add(new QuestionnaireStyleBehavior());
+  }
+
+  public IModel<Question> getModel() {
+    return (IModel<Question>) getDefaultModel();
   }
 
   /**
