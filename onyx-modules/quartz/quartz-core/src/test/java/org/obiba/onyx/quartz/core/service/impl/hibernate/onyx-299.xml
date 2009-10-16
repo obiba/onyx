@@ -35,8 +35,8 @@
   <questionnaire_participant id="2" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="2" locale="fr" time_start="2009-10-02 10:00:00" user_id="1" />
   <!-- Participant id 3 has no questionnaire_participant entry -->
 
-  <question_answer id="1" questionnaire_participant_id="1" question_name="q1" />
-  <question_answer id="2" questionnaire_participant_id="2" question_name="q1" />
+  <question_answer id="1" questionnaire_participant_id="1" question_name="q1" active="true" />
+  <question_answer id="2" questionnaire_participant_id="2" question_name="q1" active="true" />
 
   <category_answer id="1" category_name="c1" active="true" question_answer_id="1" />
 

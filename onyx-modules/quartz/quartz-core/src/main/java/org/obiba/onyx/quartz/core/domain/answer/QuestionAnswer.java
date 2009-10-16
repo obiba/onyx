@@ -35,6 +35,7 @@ public class QuestionAnswer extends AbstractEntity {
   @Column(length = 2000)
   private String comment;
 
+  @Column(nullable = false)
   private Boolean active;
 
   @ManyToOne(optional = false)

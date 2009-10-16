@@ -245,15 +245,20 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     CategoryAnswer categoryAnswer;
 
     OpenAnswer openAnswerTemplate = new OpenAnswer();
-    if(openAnswerDefinition != null) openAnswerTemplate.setOpenAnswerDefinitionName(openAnswerDefinition.getName());
+    if(openAnswerDefinition != null) {
+      openAnswerTemplate.setOpenAnswerDefinitionName(openAnswerDefinition.getName());
+    }
+
     OpenAnswer openAnswer = null;
 
     if(questionAnswer == null) {
-      QuestionAnswer template = new QuestionAnswer();
-      template.setQuestionnaireParticipant(getQuestionnaireParticipant());
-      template.setQuestionName(question.getName());
+      // Create a new QuestionAnswer and make it active
+      questionAnswer = new QuestionAnswer();
+      questionAnswer.setQuestionnaireParticipant(getQuestionnaireParticipant());
+      questionAnswer.setQuestionName(question.getName());
+      questionAnswer.setActive(true);
 
-      questionAnswer = getPersistenceManager().save(template);
+      questionAnswer = getPersistenceManager().save(questionAnswer);
       categoryAnswer = categoryTemplate;
       categoryAnswer.setQuestionAnswer(questionAnswer);
     } else {
@@ -265,13 +270,19 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
         openAnswerTemplate.setCategoryAnswer(categoryAnswer);
         openAnswer = getPersistenceManager().matchOne(openAnswerTemplate);
       }
+
+      // Make sure the QuestionAnswer is active
+      questionAnswer.setActive(true);
+      questionAnswer = getPersistenceManager().save(questionAnswer);
     }
 
     categoryAnswer.setActive(true);
     categoryAnswer = getPersistenceManager().save(categoryAnswer);
 
     if(value != null) {
-      if(openAnswer == null) openAnswer = openAnswerTemplate;
+      if(openAnswer == null) {
+        openAnswer = openAnswerTemplate;
+      }
       openAnswer.setDataType(value.getType());
       openAnswer.setData(value);
       categoryAnswer.addOpenAnswer(openAnswer);
