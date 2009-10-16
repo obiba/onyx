@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
@@ -25,6 +27,11 @@ public class ExperimentalConditionLogReader {
   public ExperimentalConditionLogReader() {
     xstream.processAnnotations(ExperimentalConditionLog.class);
     xstream.processAnnotations(InstrumentCalibration.class);
+
+    // Use DataValidatorConverter to allow easier aliases for validator nodes
+    xstream.alias("dataValidator", DataValidator.class);
+    xstream.useAttributeFor(DataValidator.class, "dataType");
+    xstream.registerConverter(new DataValidatorConverter().createAliases(xstream));
   }
 
   public void setResources(Resource[] resources) {

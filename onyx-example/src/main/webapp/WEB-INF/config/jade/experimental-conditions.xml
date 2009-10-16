@@ -7,11 +7,27 @@
       <name>Temperature</name>
       <type>INTEGER</type>
       <unit>°C</unit>      
+      <validators>
+        <dataValidator dataType="INTEGER">
+          <rangeValidator>
+            <minimum>-40</minimum>      
+            <maximum>35</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>
     </attribute>
     <attribute>
       <name>RelativeHumidity</name>
       <type>INTEGER</type>
       <unit>%</unit>
+      <validators>
+        <dataValidator dataType="INTEGER">
+          <rangeValidator>
+            <minimum>0</minimum>      
+            <maximum>100</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators> 
     </attribute>
   </experimentalConditionLog>
 
@@ -19,8 +35,16 @@
     <name>LocationCharacteristics</name>
     <attribute>
       <name>MetresAboveSeaLevel</name>
-      <unit>m</unit>
       <type>INTEGER</type>
+      <unit>m</unit>
+      <validators>
+        <dataValidator dataType="INTEGER">
+          <rangeValidator>
+            <minimum>-240</minimum>      
+            <maximum>5100</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
   </experimentalConditionLog>
   
@@ -33,36 +57,16 @@
     <attribute>
       <name>PossibilityOfPrecipitation</name>
       <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>0</minimum>      
+            <maximum>100</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators> 
     </attribute>
-  </experimentalConditionLog>
-  
-  <instrumentCalibration>
-    <name>TanitaCalibration</name>
-    <instructions>
-      <string>TanitaCalibration.Instruction1</string>
-      <string>TanitaCalibration.Instruction2</string>
-      <string>TanitaCalibration.Instruction3</string>
-      <string>TanitaCalibration.Instruction4</string>
-    </instructions>
-    <instrumentType>Impedance418</instrumentType>
-    <attribute>
-      <name>20kg</name>
-      <type>INTEGER</type>
-    </attribute>
-    <attribute>
-      <name>40kg</name>
-      <type>INTEGER</type>
-    </attribute>
-    <attribute>
-      <name>ChoiceExample</name>
-      <type>TEXT</type>
-      <allowedValues>
-        <string>Choice1</string>
-        <string>Choice2</string>
-        <string>Choice3</string>
-      </allowedValues>
-    </attribute>
-  </instrumentCalibration>
+  </experimentalConditionLog>  
   
   <instrumentCalibration>
     <name>WeightCalibrationTanitaBC418</name>
@@ -101,7 +105,7 @@
     <instructions>
       <string>StadiometerFullVerticalCalibrationLog.Instruction1</string>
     </instructions>
-    <instrumentType>Stadiometer</instrumentType>
+    <instrumentType>StandingHeight</instrumentType>
     <attribute>
       <name>Vertical0to60cm</name>
       <type>TEXT</type>
@@ -183,7 +187,7 @@
     <attribute>
       <name>FVC</name>
       <type>INTEGER</type>
-      <unit>L?</unit>      
+      <unit>L</unit>      
     </attribute>
     <attribute>
       <name>Comments</name>
@@ -222,13 +226,19 @@
         <string>No</string>
       </allowedValues>
     </attribute>
-
     <attribute>
       <name>HeightOfMetreStick</name>
       <type>INTEGER</type>
-      <unit>cm?</unit>
+      <unit>mm</unit>
+      <validators>
+        <dataValidator dataType="INTEGER">
+          <rangeValidator>
+            <minimum>900</minimum>      
+            <maximum>1100</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
-
   </instrumentCalibration>
  
 </list>
