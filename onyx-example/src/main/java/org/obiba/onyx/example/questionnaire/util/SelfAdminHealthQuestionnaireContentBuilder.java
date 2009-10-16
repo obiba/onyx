@@ -95,7 +95,6 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.setSimplifiedUI();
 
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
-    builder.inPage("1").addTimestamp("TS_START");
 
     builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE", "1");
     builder.inQuestion("SEX").withCategory("FEMALE", "2");
@@ -254,7 +253,6 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("PIPES_CURRENT").setCondition("PIPES_EVER", Y);
     builder.inQuestion("CURRENTLY_USE").withQuestion("OTHER_NICOTIN_PRODUCT_CURRENT", "1.8");
     builder.inQuestion("OTHER_NICOTIN_PRODUCT_CURRENT").setCondition("OTHER_NICOTIN_PRODUCT_EVER", Y);
-    builder.inPage("33").addTimestamp("TS_TU");
 
     builder.inSection("C_LIFE_HABITS").withSection("ALCOHOL_INTAKE").withPage("34").withQuestion("AI0");
     builder.inSection("ALCOHOL_INTAKE").withPage("35").withQuestion("EVER_DRUNK_ALCOHOL", "33").withSharedCategory(N, "0");
@@ -338,7 +336,6 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").withSharedCategory(PNA, "88");
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").withSharedCategory(DNK, "99");
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").setCondition("$1 && ($2 || $3)", builder.newDataSource("SEX", "FEMALE"), builder.newDataSource("ALCOHOL_FREQUENCY", MONTHLY), builder.newDataSource("ALCOHOL_FREQUENCY", LESS_MONTHLY));
-    builder.inPage("45").addTimestamp("TS_AI");
 
     builder.inSection("C_LIFE_HABITS").withSection("FEELINGS").withPage("46").withQuestion("FEELINGS_BOILERPLATE");
     builder.inSection("FEELINGS").withPage("47").withQuestion("FEELINGS");

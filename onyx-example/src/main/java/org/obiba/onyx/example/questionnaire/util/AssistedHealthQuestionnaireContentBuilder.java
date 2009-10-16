@@ -176,7 +176,6 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("MED3_TYPE_INFO_SOURCE").withSharedCategory(PARTICIPANT, "2");
     builder.inQuestion("MED3_TYPE_INFO_SOURCE").withSharedCategory(DNK, "9");
     builder.inQuestion("MED3_TYPE_INFO_SOURCE").setCondition("$1 > 2", builder.newDataSource("RX_MEDICATION", "MED_NUMBER", "MED_NUMBER"));
-    builder.inPage("9d").addTimestamp("TS_VMH");
 
     builder.withSection("I_WOMEN_AND_MEN_HEALTH").withSection("MENSTRUATION").withPage("10").withQuestion("ME0");
     builder.inSection("I_WOMEN_AND_MEN_HEALTH").withSection("REPRODUCTION_BREASTFEEDING").withPage("11").withQuestion("NUMBER_PREGNANCIES_ALL", "18").withSharedCategory(OPEN_N_0).withOpenAnswerDefinition(OPEN_N_0, DataType.INTEGER).addValidator(new MinimumValidator(0l));
