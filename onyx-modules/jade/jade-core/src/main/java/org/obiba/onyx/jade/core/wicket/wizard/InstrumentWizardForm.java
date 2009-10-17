@@ -549,6 +549,7 @@ public class InstrumentWizardForm extends WizardForm {
       activeInstrumentRunService.setInstrumentRun(instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName()));
       startStepWhenResuming = getStepWhenResuming();
       instrumentSelected = true;
+      ((InstrumentSelectionStep) instrumentSelectionStep).setInstrumentSelected(true);
     }
 
     WizardStepPanel startStep = setUpWizardFlow(startStepWhenResuming);

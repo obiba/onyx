@@ -79,4 +79,8 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     }
   }
 
+  public void setInstrumentSelected(boolean instrumentSelected) {
+    this.instrumentSelected = instrumentSelected;
+  }
+
 }
