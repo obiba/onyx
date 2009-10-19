@@ -186,6 +186,9 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
         entityNames.add(str);
       }
     }
+    if(entityNames.size() > 0 && !entityNames.get(0).equals(getRootName())) {
+      entityNames.add(0, getRootName());
+    }
 
     return entityNames;
   }

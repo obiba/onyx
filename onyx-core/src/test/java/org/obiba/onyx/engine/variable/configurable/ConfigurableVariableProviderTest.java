@@ -45,7 +45,7 @@ public class ConfigurableVariableProviderTest {
     configurableVariableProvider = new ConfigurableVariableProvider(Arrays.asList(new DataSourceVariable[] { dataSourceVariable }));
 
     root = new Variable("Onyx");
-    root.addVariable("Admin.Participant", variablePathNamingStrategy);
+    root.addVariable("Admin").addVariable("Participant");
   }
 
   @Test

@@ -197,7 +197,7 @@ public class Variable implements Serializable {
   /**
    * Add a variable as a child of the current variable.
    * @param child
-   * @return child for chaining
+   * @return child variable for chaining
    */
   public Variable addVariable(Variable child) {
     if(child != null) {
@@ -225,22 +225,12 @@ public class Variable implements Serializable {
   }
 
   /**
-   * Add recursively simple variables, splitting the path with the given separator to retrieve the names.
-   * @param path
-   * @param separator
-   * @return last created variable
+   * Add a child variable with the given name.
+   * @param name
+   * @return child variable for chaining
    */
-  public Variable addVariable(String path, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    Variable current = this;
-    for(String name : variablePathNamingStrategy.getNormalizedNames(path)) {
-      Variable found = getVariable(name);
-      if(found == null) {
-        current = current.addVariable(new Variable(name));
-      } else {
-        current = found;
-      }
-    }
-    return current;
+  public Variable addVariable(String name) {
+    return addVariable(new Variable(name));
   }
 
   /**

@@ -52,14 +52,14 @@ public class VariableStreamerTest {
 
     // users
 
-    parent = root.addVariable("Admin.User", variablePathNamingStrategy);
+    parent = root.addVariable("Admin").addVariable("User");
     parent.setDataType(DataType.TEXT).setRepeatable(true);
     parent.addVariable(new Variable("login").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
 
     // participants
 
-    parent = root.addVariable("Admin.Participant", variablePathNamingStrategy);
+    parent = root.getVariable("Admin").addVariable("Participant");
 
     variable = new Variable("barcode").setDataType(DataType.TEXT);
     parent.addVariable(variable);
@@ -69,7 +69,7 @@ public class VariableStreamerTest {
 
     // questionnaire
 
-    parent = root.addVariable("HealthQuestionnaire", variablePathNamingStrategy);
+    parent = root.addVariable("HealthQuestionnaire");
 
     variable = new Variable("Participant_AGE").addCategories("Participant_AGE", "PNA", "DK");
     parent.addVariable(variable);
@@ -77,7 +77,7 @@ public class VariableStreamerTest {
     subvariable = new Variable("OPEN_AGE").setDataType(DataType.INTEGER).setUnit("year");
     variable.addVariable(subvariable);
 
-    parent = root.addVariable("HealthQuestionnaire.DATE_OF_BIRTH", variablePathNamingStrategy);
+    parent = root.getVariable("HealthQuestionnaire").addVariable("DATE_OF_BIRTH");
     parent.addAttributes(new Attribute("label", Locale.ENGLISH, "What is your date of birth ?"), new Attribute("label", Locale.FRENCH, "Quelle est votre date de naissance ?"));
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
@@ -100,7 +100,7 @@ public class VariableStreamerTest {
 
     // instruments
 
-    parent = root.addVariable("StandingHeight", variablePathNamingStrategy);
+    parent = root.addVariable("StandingHeight");
 
     parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT));
     parent.addVariable(new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL));

@@ -41,7 +41,8 @@ public class DefaultVariablePathNamingStrategyTest {
     strategy.setPathSeparator("/");
     strategy.setStartWithPathSeparator(true);
 
-    Variable variable = (new Variable(strategy.getRootName())).addVariable("Test/Toto", strategy);
+    Variable variable = (new Variable(strategy.getRootName())).addVariable(new Variable("Test")).addVariable(new Variable("Toto"));// Toto",
+    // strategy);
 
     String path;
     log.info(path = strategy.getPath(variable));
@@ -77,7 +78,7 @@ public class DefaultVariablePathNamingStrategyTest {
     strategy.setPathSeparator(".");
     strategy.setStartWithPathSeparator(false);
 
-    Variable variable = (new Variable(strategy.getRootName())).addVariable("Test.Toto", strategy);
+    Variable variable = (new Variable(strategy.getRootName())).addVariable("Test").addVariable("Toto");
 
     String path;
     log.info(path = strategy.getPath(variable));
@@ -90,6 +91,13 @@ public class DefaultVariablePathNamingStrategyTest {
     Assert.assertEquals("Root.Test.Toto?id=1&name=Vincent+Ferreti&path=tutu.tata", path);
 
     List<String> names = strategy.getNormalizedNames(path);
+    log.info("names={}", names);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("Root", names.get(0));
+    Assert.assertEquals("Test", names.get(1));
+    Assert.assertEquals("Toto", names.get(2));
+
+    names = strategy.getNormalizedNames("Test.Toto");
     log.info("names={}", names);
     Assert.assertEquals(3, names.size());
     Assert.assertEquals("Root", names.get(0));
