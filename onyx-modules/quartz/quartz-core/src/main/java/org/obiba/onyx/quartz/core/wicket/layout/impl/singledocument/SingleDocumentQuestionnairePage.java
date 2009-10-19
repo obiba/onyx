@@ -9,9 +9,11 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.wicket.provider.AllSectionsProvider;
@@ -25,6 +27,8 @@ public class SingleDocumentQuestionnairePage extends WebPage {
   @SuppressWarnings("serial")
   public SingleDocumentQuestionnairePage(IModel<Questionnaire> model) {
     super(model);
+
+    add(new Label("title", new PropertyModel<String>(model, "name")));
 
     add(new DataView<Section>("sections", new AllSectionsProvider(model)) {
       @Override
