@@ -1,0 +1,43 @@
+<wicket:panel>
+	<span wicket:id="conditionFragmentContent" />
+  	<span wicket:id="categoryFragmentContent" />
+</wicket:panel>
+
+<wicket:fragment wicket:id="conditionFragment">
+	<wicket:message key="Condition">[- Condition:]</wicket:message>
+	&nbsp<span wicket:id="condition"></span>
+	<br/>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="categoryFragment">
+  <wicket:message key="Categories">[- Categories:]</wicket:message>
+  <table class="entityTable">
+    <thead>
+      <tr>
+        <th><wicket:message key="Code">[Code]</wicket:message></th>
+        <th><wicket:message key="Name">[Name]</wicket:message></th>
+        <th><wicket:message key="Missing">[Missing]</wicket:message></th>
+      </tr>
+    </thead>
+    <tbody>
+		<tr wicket:id="categories">
+			<td class="category"><span wicket:id="code"></span></td>
+			<td class="category"><span wicket:id="name"></span></td>
+			<td class="category"><span wicket:id="escape"></span></td>
+		</tr>
+    </tbody>
+  </table>
+  
+  <wicket:container wicket:id="questionCategories">
+	  <div wicket:id="validations">
+		<span wicket:id="label"></span><br/>
+	  	<span wicket:id="validation"></span>
+ 	  </div>
+  </wicket:container>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="questionFragment">
+	<wicket:container wicket:id="subQuestions">
+		<span wicket:id="subQuestion"></span>
+	</wicket:container>
+</wicket:fragment>

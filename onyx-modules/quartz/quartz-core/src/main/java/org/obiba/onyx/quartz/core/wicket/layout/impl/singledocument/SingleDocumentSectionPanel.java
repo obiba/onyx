@@ -68,8 +68,7 @@ public class SingleDocumentSectionPanel extends Panel {
         @Override
         protected void populateItem(Item<Question> item) {
           item.add(new SingleDocumentQuestionPanel("questionPanel", item.getModel()));
-          // TODO: Add the question details panel here
-          // item.add(new SingleDocumentQuestionDetailsPanel("questionDetails", item.getModel()));
+          item.add(new SingleDocumentQuestionDetailsPanel("questionDetails", item.getModel()));
         }
       });
     }
