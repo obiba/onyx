@@ -59,7 +59,6 @@ public class Participant extends AbstractEntity {
   @Column(length = 250)
   private String barcode;
 
-  @Column(nullable = false)
   private String enrollmentId;
 
   @Column(nullable = false)
