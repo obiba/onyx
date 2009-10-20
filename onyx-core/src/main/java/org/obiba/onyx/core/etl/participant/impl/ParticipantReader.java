@@ -286,7 +286,7 @@ public class ParticipantReader extends AbstractParticipantReader {
    */
   private Data getAttributeValue(ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
 
-    if(cell == null) return null;
+    if(cell == null || cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) return null;
     Data data = null;
 
     try {
