@@ -75,23 +75,40 @@ public class QuestionnaireRenderer {
     mockCtx.putBean(mgr);
   }
 
-  public void render(final String name, Locale... locales) {
-    QuestionnaireBundle bundle = bundleManager.getBundle(name);
-    if(bundle == null) {
-      StringBuilder sb = new StringBuilder();
-      for(QuestionnaireBundle b : bundleManager.bundles()) {
-        if(sb.length() > 0) {
-          sb.append(", ");
-        }
-        sb.append(b.getName());
+  private void renderAllBundles() {
+    for(QuestionnaireBundle bundle : bundleManager.bundles()) {
+      if(bundle != null) {
+        renderBundle(bundle);
       }
-      throw new IllegalArgumentException("Bundle '" + name + "' does not exist. Available bundles are: " + sb.toString());
     }
+  }
+
+  public void renderBundle(final String name, Locale... locales) {
+    QuestionnaireBundle bundle = bundleManager.getBundle(name);
+    if(bundle != null) {
+      renderBundle(bundle, locales);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for(QuestionnaireBundle b : bundleManager.bundles()) {
+      if(sb.length() > 0) {
+        sb.append(", ");
+      }
+      sb.append(b.getName());
+    }
+    throw new IllegalArgumentException("Bundle '" + name + "' does not exist. Available bundles are: " + sb.toString());
+
+  }
+
+  public void renderBundle(QuestionnaireBundle bundle, Locale... locales) {
     Questionnaire questionnaire = bundle.getQuestionnaire();
+
+    File questionnaireDir = new File(outputDir, questionnaire.getName());
+    questionnaireDir.mkdirs();
 
     QuestionnaireParticipant qp = new QuestionnaireParticipant();
     qp.setParticipant(new Participant());
-    qp.setQuestionnaireName(name);
+    qp.setQuestionnaireName(bundle.getName());
 
     if(locales == null || locales.length == 0) {
       locales = bundle.getAvailableLanguages().toArray(new Locale[] {});
@@ -126,7 +143,8 @@ public class QuestionnaireRenderer {
       FileOutputStream fos = null;
       try {
         InputStream is = new ByteArrayInputStream(tester.getServletResponse().getDocument().getBytes());
-        File output = new File(outputDir, name + '_' + locale.toString() + ".html");
+        File output = new File(questionnaireDir, "questionnaire_" + locale.toString() + ".html");
+        System.out.println("Writing questionnaire " + output.getAbsolutePath());
         fos = new FileOutputStream(output);
         StreamUtil.copy(is, fos);
       } catch(FileNotFoundException e) {
@@ -140,6 +158,11 @@ public class QuestionnaireRenderer {
 
   public static void main(String[] args) {
     QuestionnaireRenderer renderer = new QuestionnaireRenderer(new File(args[0]), new File(args[1]));
-    renderer.render(args[2]);
+    if(args.length > 2) {
+      renderer.renderBundle(args[2]);
+    } else {
+      renderer.renderAllBundles();
+    }
   }
+
 }
