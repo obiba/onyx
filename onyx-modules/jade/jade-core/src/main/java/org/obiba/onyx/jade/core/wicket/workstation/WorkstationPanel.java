@@ -173,7 +173,15 @@ public class WorkstationPanel extends Panel {
       columns.add(new PropertyColumn(new StringResourceModel("Measurement", WorkstationPanel.this, null), "type", "type"));
       columns.add(new PropertyColumn(new StringResourceModel("Name", WorkstationPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "barcode", "barcode"));
-      columns.add(new PropertyColumn(new StringResourceModel("Status", WorkstationPanel.this, null), "status", "status"));
+
+      columns.add(new AbstractColumn(new ResourceModel("Status")) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Instrument instrument = (Instrument) rowModel.getObject();
+          cellItem.add(new Label(componentId, new ResourceModel("InstrumentStatus." + instrument.getStatus())));
+        }
+
+      });
 
       columns.add(new AbstractColumn(new ResourceModel("Actions")) {
 
