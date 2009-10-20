@@ -18,6 +18,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -252,7 +253,7 @@ public class EditInstrumentPanel extends Panel {
       add(model);
 
       add(workstation = new CheckBox("workstation", new PropertyModel(EditInstrumentPanel.this, "currentWorkstation")));
-
+      add(new FormComponentLabel("workstationLabel", workstation));
     }
 
     public Label getInstructions() {
