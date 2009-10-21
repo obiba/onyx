@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -32,6 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -57,7 +57,7 @@ public class EditInstrumentPanel extends Panel {
 
   private final InstrumentFragment instrumentFragment;
 
-  private DropDownChoice<String> measurementDropDown;
+  private DropDownChoice<InstrumentType> measurementDropDown;
 
   private boolean currentWorkstation = false;
 
@@ -65,7 +65,6 @@ public class EditInstrumentPanel extends Panel {
    * @param id
    * @param model
    */
-  @SuppressWarnings("unchecked")
   public EditInstrumentPanel(String id, IModel<Instrument> instrumentModel, Dialog addInstrumentWindow) {
     super(id, instrumentModel);
     setDefaultModel(instrumentModel);
@@ -77,17 +76,18 @@ public class EditInstrumentPanel extends Panel {
     instrumentFragment.setOutputMarkupId(true);
 
     // measurement field
-    measurementDropDown = new DropDownChoice("measurementSelect", new PropertyModel(instrumentModel, "type"), getAvailableInstrumentTypesList(), new IChoiceRenderer() {
+    measurementDropDown = new DropDownChoice<InstrumentType>("measurementSelect", new PropertyModel<InstrumentType>(instrumentModel, "type"), new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()), new IChoiceRenderer<InstrumentType>() {
       private static final long serialVersionUID = 1L;
 
-      public Object getDisplayValue(Object object) {
-        return new SpringStringResourceModel(object.toString()).getString();
+      public Object getDisplayValue(InstrumentType object) {
+        return new SpringStringResourceModel(object.getName() + ".description", object.getName()).getString();
       }
 
-      public String getIdValue(Object object, int index) {
-        return object.toString();
+      public String getIdValue(InstrumentType object, int index) {
+        return object.getName();
       }
     });
+
     measurementDropDown.setLabel(new ResourceModel("Measurement"));
     measurementDropDown.setRequired(true);
     measurementDropDown.setOutputMarkupId(true);
@@ -166,7 +166,6 @@ public class EditInstrumentPanel extends Panel {
 
   private void displayInstrument(Instrument instrument) {
     EditInstrumentPanel.this.setDefaultModelObject(instrument);
-    measurementDropDown.setChoices(Arrays.asList(new String[] { instrument.getType() }));
     measurementDropDown.setEnabled(false);
     if(instrument.getWorkstation() != null) {
       currentWorkstation = (instrument.getWorkstation().equals(userSessionService.getWorkstation()));
@@ -184,7 +183,6 @@ public class EditInstrumentPanel extends Panel {
     currentWorkstation = false;
     if(measurementDropDown.isEnabled() == false) {
       measurementDropDown.setEnabled(true);
-      measurementDropDown.setChoices(getAvailableInstrumentTypesList());
       target.addComponent(measurementDropDown);
       EditInstrumentPanel.this.setDefaultModelObject(new Instrument());
     }

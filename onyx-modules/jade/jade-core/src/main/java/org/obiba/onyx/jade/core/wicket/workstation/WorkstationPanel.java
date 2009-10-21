@@ -44,6 +44,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -170,7 +171,14 @@ public class WorkstationPanel extends Panel {
 
     @SuppressWarnings("serial")
     public InstrumentListColumnProvider() {
-      columns.add(new PropertyColumn(new StringResourceModel("Measurement", WorkstationPanel.this, null), "type", "type"));
+      columns.add(new AbstractColumn(new ResourceModel("Measurement", "Measurement"), "type") {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Instrument instrument = (Instrument) rowModel.getObject();
+          cellItem.add(new Label(componentId, new SpringStringResourceModel(instrument.getType() + ".description", instrument.getType())));
+        }
+      });
+
       columns.add(new PropertyColumn(new StringResourceModel("Name", WorkstationPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "barcode", "barcode"));
 
