@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -20,6 +21,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -31,6 +33,7 @@ import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
@@ -38,6 +41,8 @@ import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
 public class ActionsPanel extends Panel {
 
   private static final long serialVersionUID = 5855667390712874428L;
+
+  private Dialog editInstrumentWindow;
 
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
@@ -56,6 +61,9 @@ public class ActionsPanel extends Panel {
 
     experimentalConditionDialogHelperPanel = new ExperimentalConditionDialogHelperPanel("experimentalConditionDialogHelperPanel", model, model);
     add(experimentalConditionDialogHelperPanel);
+
+    editInstrumentWindow = createEditInstrumentWindow("editInstrumentWindow");
+    add(editInstrumentWindow);
 
     RepeatingView repeating = new RepeatingView("link");
     add(repeating);
@@ -86,6 +94,7 @@ public class ActionsPanel extends Panel {
     linkInfoList.add(new ReleaseLinkInfo("Release", instrument));
     linkInfoList.add(new InactivateLinkInfo("Inactivate", instrument));
     linkInfoList.add(new ActivateLinkInfo("Activate", instrument));
+    linkInfoList.add(new EditLinkInfo("Edit", instrument));
     return linkInfoList;
   }
 
@@ -225,5 +234,32 @@ public class ActionsPanel extends Panel {
       instrumentService.updateStatus(instrument, InstrumentStatus.ACTIVE);
       target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
     }
+  }
+
+  private class EditLinkInfo extends LinkInfo {
+    private static final long serialVersionUID = 1L;
+
+    public EditLinkInfo(String name, Instrument instrument) {
+      super(name, instrument);
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      EditInstrumentPanel component = new EditInstrumentPanel("content", new Model<Instrument>(instrument), editInstrumentWindow);
+      component.add(new AttributeModifier("class", true, new Model<String>("obiba-content instrument-panel-content")));
+      editInstrumentWindow.setContent(component);
+      editInstrumentWindow.show(target);
+    }
+
+  }
+
+  private Dialog createEditInstrumentWindow(String id) {
+    Dialog addInstrumentDialog = new Dialog(id);
+    addInstrumentDialog.setTitle(new ResourceModel("EditInstrument"));
+    addInstrumentDialog.setInitialHeight(214);
+    addInstrumentDialog.setInitialWidth(400);
+    addInstrumentDialog.setType(Dialog.Type.PLAIN);
+    addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
+    return addInstrumentDialog;
   }
 }

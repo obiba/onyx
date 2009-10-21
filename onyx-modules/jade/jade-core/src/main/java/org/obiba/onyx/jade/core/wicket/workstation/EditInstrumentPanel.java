@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.workstation;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
@@ -234,6 +235,8 @@ public class EditInstrumentPanel extends Panel {
 
     private CheckBox workstation;
 
+    private Component workstationLabel;
+
     private TextField name;
 
     private TextField vendor;
@@ -262,7 +265,13 @@ public class EditInstrumentPanel extends Panel {
       add(model);
 
       add(workstation = new CheckBox("workstation", new PropertyModel(EditInstrumentPanel.this, "currentWorkstation")));
-      add(new FormComponentLabel("workstationLabel", workstation));
+      add(workstationLabel = new FormComponentLabel("workstationLabel", workstation));
+
+      // When editing an existing instrument, don't show the "assign to current workstation" check box.
+      if(instrumentModel.getObject().getBarcode() != null) {
+        workstation.setVisible(false);
+        workstationLabel.setVisible(false);
+      }
     }
 
     public Label getInstructions() {
