@@ -46,7 +46,7 @@ public class HashedDataSource implements IDataSource {
     }
 
     if(hashedStringMaxLength != null && hashedStringMaxLength < hashedString.length()) {
-      hashedString = hashedString.substring(0, hashedStringMaxLength - 1);
+      hashedString = hashedString.substring(0, hashedStringMaxLength);
       log.debug("Reduced length hashed string = {}", hashedString);
     }
 
