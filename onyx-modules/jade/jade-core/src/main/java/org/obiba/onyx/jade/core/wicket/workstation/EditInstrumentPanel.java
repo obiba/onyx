@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -74,8 +75,19 @@ public class EditInstrumentPanel extends Panel {
     add(instrumentFragment = new InstrumentFragment("instrumentFragmentContent", instrumentModel));
     instrumentFragment.setOutputMarkupId(true);
 
+    // Model saves an instrument type name (as a String) and returns the associated InstrumentType.
+    PropertyModel<InstrumentType> instrumentTypeModel = new PropertyModel<InstrumentType>(instrumentModel, "type") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public InstrumentType getObject() {
+        return instrumentService.getInstrumentType(((Instrument) getDefaultModelObject()).getType());
+      }
+
+    };
+
     // measurement field
-    measurementDropDown = new DropDownChoice<InstrumentType>("measurementSelect", new PropertyModel<InstrumentType>(instrumentModel, "type"), new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()), new IChoiceRenderer<InstrumentType>() {
+    measurementDropDown = new DropDownChoice<InstrumentType>("measurementSelect", instrumentTypeModel, new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()), new IChoiceRenderer<InstrumentType>() {
       private static final long serialVersionUID = 1L;
 
       public Object getDisplayValue(InstrumentType object) {
@@ -165,6 +177,8 @@ public class EditInstrumentPanel extends Panel {
 
   private void displayInstrument(Instrument instrument) {
     EditInstrumentPanel.this.setDefaultModelObject(instrument);
+    measurementDropDown.setChoices(Arrays.asList(new InstrumentType[] { instrumentService.getInstrumentType(instrument.getType()) }));
+
     measurementDropDown.setEnabled(false);
     if(instrument.getWorkstation() != null) {
       currentWorkstation = (instrument.getWorkstation().equals(userSessionService.getWorkstation()));
@@ -182,6 +196,7 @@ public class EditInstrumentPanel extends Panel {
     currentWorkstation = false;
     if(measurementDropDown.isEnabled() == false) {
       measurementDropDown.setEnabled(true);
+      measurementDropDown.setChoices(new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()));
       target.addComponent(measurementDropDown);
       EditInstrumentPanel.this.setDefaultModelObject(new Instrument());
     }
