@@ -44,6 +44,9 @@ public class DefaultStageInstanceAlgorithm implements IStageInstanceAlgorithm {
           stageInstance = createStageInstance(stageTransition);
           stageInstances.add(stageInstance);
         }
+
+        // Update the stage instance's user to the user who started the stage.
+        stageInstance.setUser(stageTransition.getAction().getUser());
       }
 
       // When leaving the IN_PROGRESS state, increment the StageInstance's duration by

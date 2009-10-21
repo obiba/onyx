@@ -49,12 +49,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private ModuleRegistry moduleRegistry;
 
-  private ThreadLocal<Action> currentActionHolder;
-
-  public DefaultActiveInterviewServiceImpl() {
-    currentActionHolder = new ThreadLocal<Action>();
-  }
-
   public void setInterviewManager(InterviewManager interviewManager) {
     this.interviewManager = interviewManager;
   }
@@ -147,8 +141,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(action.getActionDefinitionCode() == null) {
       action.setActionDefinitionCode("action." + action.getActionType());
     }
-    
-    currentActionHolder.set(action);
 
     action.setInterview(getParticipant().getInterview());
     if(stage != null) {
@@ -156,20 +148,20 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
     action.setDateTime(new Date());
     action.setUser(userSessionService.getUser());
-    Action persistedAction = getPersistenceManager().save(action);
-
-    currentActionHolder.set(persistedAction);
+    getPersistenceManager().save(action);
 
     if(stage != null) {
       IStageExecution exec = getStageExecution(stage);
       action.getActionType().act(exec, action);
     }
-
-    currentActionHolder.set(null);
   }
 
   public Action getCurrentAction() {
-    return currentActionHolder.get();
+    Action template = new Action();
+    template.setInterview(getInterview());
+    List<Action> matches = persistenceManager.match(template, new SortingClause("dateTime", false));
+
+    return !matches.isEmpty() ? matches.get(0) : null;
   }
 
   public void updateAction(Action action) {
