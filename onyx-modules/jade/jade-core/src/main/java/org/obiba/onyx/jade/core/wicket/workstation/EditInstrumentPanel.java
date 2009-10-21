@@ -239,17 +239,14 @@ public class EditInstrumentPanel extends Panel {
 
       // name field
       name = new TextField("name", new PropertyModel(instrumentModel, "name"));
-      name.setRequired(true);
       add(name);
 
       // vendor field
       vendor = new TextField("vendor", new PropertyModel(instrumentModel, "vendor"));
-      vendor.setRequired(true);
       add(vendor);
 
       // model field
       model = new TextField("model", new PropertyModel(instrumentModel, "model"));
-      model.setRequired(true);
       add(model);
 
       add(workstation = new CheckBox("workstation", new PropertyModel(EditInstrumentPanel.this, "currentWorkstation")));
