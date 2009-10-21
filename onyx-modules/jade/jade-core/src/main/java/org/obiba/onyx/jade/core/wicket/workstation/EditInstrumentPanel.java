@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -196,19 +195,6 @@ public class EditInstrumentPanel extends Panel {
     FeedbackWindow feedback = EditInstrumentPanel.this.getFeedback();
     feedback.setContent(new FeedbackPanel("content"));
     feedback.show(target);
-  }
-
-  private List<String> getAvailableInstrumentTypesList() {
-    List<String> instrumentTypes = new ArrayList<String>();
-
-    List<String> workstationInstrumentTypes = instrumentService.getWorkstationInstrumentTypes(userSessionService.getWorkstation());
-    for(String instrumentType : instrumentService.getInstrumentTypes().keySet()) {
-      if(!workstationInstrumentTypes.contains(instrumentType) && !instrumentTypes.contains(instrumentType)) {
-        instrumentTypes.add(instrumentType);
-      }
-    }
-
-    return instrumentTypes;
   }
 
   @SuppressWarnings("unchecked")
