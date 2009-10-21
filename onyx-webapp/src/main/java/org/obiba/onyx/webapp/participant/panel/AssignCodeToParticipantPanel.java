@@ -38,7 +38,7 @@ import org.obiba.onyx.wicket.data.IDataValidator;
 
 public class AssignCodeToParticipantPanel extends Panel {
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   @SpringBean

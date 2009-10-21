@@ -42,7 +42,7 @@ public class IntegrityCheckValidator extends AbstractValidator<Data> {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   @SpringBean

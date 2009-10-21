@@ -82,7 +82,7 @@ public class InstrumentWizardForm extends WizardForm {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private WizardStepPanel instrumentSelectionStep;

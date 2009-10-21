@@ -81,7 +81,7 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   @SpringBean

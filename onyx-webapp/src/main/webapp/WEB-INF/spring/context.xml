@@ -1,5 +1,10 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
   <import resource="property-configurer.xml" />
 
@@ -33,8 +38,7 @@
 
   <!-- Implementation of UserService. Should not need to be overriden. -->
   <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl" init-method="initialize" scope="session">
-    <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
-    <!-- <aop:scoped-proxy /> -->
+    <aop:scoped-proxy />
 
     <property name="datePattern" value="${org.obiba.onyx.dateFormat}" />
     <property name="dateTimePattern" value="${org.obiba.onyx.dateTimeFormat}" />

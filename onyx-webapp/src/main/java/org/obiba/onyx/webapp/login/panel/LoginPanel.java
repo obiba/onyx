@@ -36,7 +36,7 @@ public class LoginPanel extends SignInPanel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private AuthenticateErrorCode errCode = null;

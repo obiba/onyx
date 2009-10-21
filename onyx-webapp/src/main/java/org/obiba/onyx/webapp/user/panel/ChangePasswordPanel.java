@@ -38,7 +38,7 @@ public abstract class ChangePasswordPanel extends Panel {
   @SpringBean
   private UserService userService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   public ChangePasswordPanel(String id, int previousPageId) {

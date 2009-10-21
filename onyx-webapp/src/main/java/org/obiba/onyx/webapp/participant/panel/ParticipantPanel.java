@@ -37,7 +37,7 @@ import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public class ParticipantPanel extends Panel {
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   UserSessionService userSessionService;
 
   @SpringBean

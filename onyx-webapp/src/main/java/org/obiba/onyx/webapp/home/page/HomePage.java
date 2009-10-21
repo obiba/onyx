@@ -42,7 +42,7 @@ public class HomePage extends BasePage {
   @SpringBean
   private InterviewManager interviewManager;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private Dialog unlockInterviewWindow;

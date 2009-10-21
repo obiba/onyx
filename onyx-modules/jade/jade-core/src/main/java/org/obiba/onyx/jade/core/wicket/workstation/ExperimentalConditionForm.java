@@ -55,7 +55,7 @@ public class ExperimentalConditionForm extends Panel {
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private FeedbackWindow feedbackWindow;

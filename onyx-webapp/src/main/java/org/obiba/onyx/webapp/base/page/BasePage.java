@@ -40,7 +40,7 @@ import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware, ReusableDialogProvider {
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   UserSessionService userSessionService;
 
   private final ConfirmationDialog reusableConfirmationDialog = new ConfirmationDialog("reusable-confirmation-dialog");

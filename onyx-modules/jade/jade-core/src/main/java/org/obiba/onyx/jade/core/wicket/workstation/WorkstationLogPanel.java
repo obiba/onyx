@@ -40,7 +40,7 @@ public class WorkstationLogPanel extends Panel {
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private ExperimentalConditionLog selectedExperimentalConditionLog;

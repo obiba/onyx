@@ -62,7 +62,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private InstrumentCalibration selectedInstrumentCalibration;

@@ -100,7 +100,7 @@ public class EditParticipantPanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private FeedbackWindow feedbackWindow;

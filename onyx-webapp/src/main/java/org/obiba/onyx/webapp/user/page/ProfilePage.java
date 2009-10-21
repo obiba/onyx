@@ -29,7 +29,7 @@ public class ProfilePage extends BasePage {
   @SpringBean
   private UserService userService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   public ProfilePage(int previousPageId) {

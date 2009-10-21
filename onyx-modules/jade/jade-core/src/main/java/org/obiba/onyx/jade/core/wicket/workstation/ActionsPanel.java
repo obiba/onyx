@@ -45,7 +45,7 @@ public class ActionsPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private ExperimentalConditionDialogHelperPanel experimentalConditionDialogHelperPanel;

@@ -75,7 +75,7 @@ public abstract class MeasuresListPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
   private ConfirmationDialog confirmationDialog;
