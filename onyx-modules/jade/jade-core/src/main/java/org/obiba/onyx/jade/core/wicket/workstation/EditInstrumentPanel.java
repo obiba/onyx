@@ -116,9 +116,22 @@ public class EditInstrumentPanel extends Panel {
         if(barcodeInput != null) {
           Instrument instrument = instrumentService.getInstrumentByBarcode(barcodeInput);
           if(instrument != null) {
+            // Disable form when displaying existing instrument.
+            instrumentFragment.getName().setEnabled(false);
+            instrumentFragment.getVendor().setEnabled(false);
+            instrumentFragment.getModel().setEnabled(false);
+            instrumentFragment.getWorkstation().setEnabled(false);
             displayInstrument(instrument);
             target.addComponent(measurementDropDown);
+            target.appendJavascript("$('.obiba-button-ok').attr('disabled','true');$('.obiba-button-ok').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-ok').css('border-color','rgba(0, 0, 0, 0.2)');");
+
           } else {
+            // Enable form in order to add a new instrument.
+            instrumentFragment.getName().setEnabled(true);
+            instrumentFragment.getVendor().setEnabled(true);
+            instrumentFragment.getModel().setEnabled(true);
+            instrumentFragment.getWorkstation().setEnabled(true);
+            target.appendJavascript("$('.obiba-button-ok').attr('disabled','');$('.obiba-button-ok').css('color','');$('.obiba-button-ok').css('border-color','');");
             instrumentFragment.getInstructions().setVisible(true);
             clearForm(target);
           }
