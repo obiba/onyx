@@ -19,6 +19,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
@@ -37,6 +38,9 @@ public class DataManagementPanel extends Panel {
   private ConfirmationDialog confirmationDialog;
 
   private PurgeDialog purgeDialog;
+
+  @SpringBean
+  private PurgeParticipantDataService purgeParticipantDataService;
 
   public DataManagementPanel(String id) {
     super(id);
@@ -84,6 +88,7 @@ public class DataManagementPanel extends Panel {
     };
 
     add(purgeLink);
+    add(new Label("purgeInstruction", new StringResourceModel("PurgeInstruction", null, new Object[] { purgeParticipantDataService.getPurgeDataOlderThanInDays() })));
   }
 
   private void createExportDialog() {

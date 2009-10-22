@@ -9,11 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.core.purge;
 
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -35,34 +36,25 @@ public class PurgeParticipantDataTasklet implements Tasklet {
 
   private ParticipantService participantService;
 
-  private String purgeDataOlderThanInDays;
+  private PurgeParticipantDataService purgeParticipantDataService;
 
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) {
 
     log.info("**** STARTING PARTICIPANT DATA PURGE ****");
-    log.info("Current purge configuration is [{}] days", purgeDataOlderThanInDays);
+    log.info("Current purge configuration is [{}] days", purgeParticipantDataService.getPurgeDataOlderThanInDays());
     long start = System.currentTimeMillis();
 
-    Calendar calendar = Calendar.getInstance();
-    try {
-      int purgeDataOlderThanInDaysValue = Integer.parseInt(purgeDataOlderThanInDays);
-      if(purgeDataOlderThanInDaysValue < 0) {
-        throw new RuntimeException("Value for purgeDataOlderThanInDays cannot be negative.");
-      }
-      calendar.add(Calendar.DATE, -1 * purgeDataOlderThanInDaysValue);
-    } catch(Exception e) {
-      throw new RuntimeException("The purge task has not been configured properly.  Please make sure that the value specified for the org.obiba.onyx.participant.purge property is valid.", e);
-    }
+    Date maxDateForDeletion = purgeParticipantDataService.getMaxDateForDeletion();
 
     // Delete exported participants
-    List<Participant> exportedParticipantsToBePurged = participantService.getExportedParticipants(calendar.getTime());
+    List<Participant> exportedParticipantsToBePurged = participantService.getExportedParticipants(maxDateForDeletion);
     for(Participant participant : exportedParticipantsToBePurged) {
       log.info("Deleting Participant id = [{}] (exported participant) and related data  :  ", participant.getId());
       participantService.deleteParticipant(participant);
     }
 
     // Delete participants which are not exportable based on current configured export destinations
-    List<Participant> nonExportableParticipantsToBePurged = participantService.getNonExportableParticipants(calendar.getTime());
+    List<Participant> nonExportableParticipantsToBePurged = participantService.getNonExportableParticipants(maxDateForDeletion);
     for(Participant participant : nonExportableParticipantsToBePurged) {
       participantService.deleteParticipant(participant);
       log.info("Deleting Participant id = [{}] (non-exportable participant) and related data :  ", participant.getId());
@@ -80,12 +72,12 @@ public class PurgeParticipantDataTasklet implements Tasklet {
     return RepeatStatus.FINISHED;
   }
 
-  public void setPurgeDataOlderThanInDays(String purgeDataOlderThanInDays) {
-    this.purgeDataOlderThanInDays = purgeDataOlderThanInDays;
-  }
-
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
+  }
+
+  public void setPurgeParticipantDataService(PurgeParticipantDataService purgeParticipantDataService) {
+    this.purgeParticipantDataService = purgeParticipantDataService;
   }
 
 }

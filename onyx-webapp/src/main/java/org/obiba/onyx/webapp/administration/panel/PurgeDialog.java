@@ -31,9 +31,9 @@ public class PurgeDialog extends Dialog {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 120;
+  private static final int DEFAULT_INITIAL_HEIGHT = 150;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 350;
+  private static final int DEFAULT_INITIAL_WIDTH = 370;
 
   @SpringBean(name = "purgeParticipantDataJob")
   private Job purgeParticipantDataJob;

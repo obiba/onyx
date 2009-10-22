@@ -57,7 +57,7 @@
   
   <bean id="purgeParticipantDataTasklet" class="org.obiba.onyx.core.purge.PurgeParticipantDataTasklet">
     <property name="participantService" ref="participantService" /> 
-    <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />   
+    <property name="purgeParticipantDataService" ref="purgeParticipantDataService" />    
   </bean>   
   
 </beans>

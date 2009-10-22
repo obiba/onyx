@@ -9,14 +9,22 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.administration.panel;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.PurgeParticipantDataService;
 
 public class PurgeDialogPanel extends Panel {
 
@@ -28,6 +36,12 @@ public class PurgeDialogPanel extends Panel {
 
   private ResultFragment resultFragment;
 
+  @SpringBean
+  private PurgeParticipantDataService purgeParticipantDataService;
+
+  @SpringBean
+  private ParticipantService participantService;
+
   //
   // Constructors
   //
@@ -35,7 +49,7 @@ public class PurgeDialogPanel extends Panel {
   public PurgeDialogPanel(String id) {
     super(id);
 
-    confirmationFragment = new ConfirmationFragment("contentFragment", new ResourceModel("ConfirmPurge"));
+    confirmationFragment = new ConfirmationFragment("contentFragment");
     progressFragment = new ProgressFragment("contentFragment", new ResourceModel("PurgeInProgress"));
     resultFragment = new ResultFragment("contentFragment");
   }
@@ -85,13 +99,32 @@ public class PurgeDialogPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private MultiLineLabel messageLabel;
+    private class PurgeInformation implements Serializable {
 
-    public ConfirmationFragment(String id, IModel messageModel) {
+      private static final long serialVersionUID = 1L;
+
+      public String getPurgeDataOlderThanInDays() {
+        return purgeParticipantDataService.getPurgeDataOlderThanInDays();
+      }
+
+      public int getExportedDeleteCount() {
+        Date maxDeletionDate = purgeParticipantDataService.getMaxDateForDeletion();
+        return participantService.getExportedParticipants(maxDeletionDate).size();
+      }
+
+      public int getNonExportableDeleteCount() {
+        Date maxDeletionDate = purgeParticipantDataService.getMaxDateForDeletion();
+        return participantService.getNonExportableParticipants(maxDeletionDate).size();
+      }
+
+    }
+
+    public ConfirmationFragment(String id) {
       super(id, "confirmationFragment", PurgeDialogPanel.this);
 
-      messageLabel = new MultiLineLabel("confirmMessage", messageModel);
-      add(messageLabel);
+      PurgeInformation purgeInfo = new PurgeInformation();
+      IModel<PurgeInformation> purgeInfoModel = new Model<PurgeInformation>(purgeInfo);
+      add(new MultiLineLabel("confirmMessage", new StringResourceModel("ConfirmPurge", this, purgeInfoModel, new Object[] { new PropertyModel<Object>(purgeInfoModel, "purgeDataOlderThanInDays"), new PropertyModel<Object>(purgeInfoModel, "exportedDeleteCount"), new PropertyModel<Object>(purgeInfoModel, "nonExportableDeleteCount") })));
 
     }
   }
