@@ -195,9 +195,11 @@ public class ExperimentalConditionForm extends Panel {
 
       IModel<ExperimentalConditionValue> experimentalConditionValueModel = new Model<ExperimentalConditionValue>(experimentalConditionValue);
 
+      SpringStringResourceModel fieldNameModel = new SpringStringResourceModel(attribute.getName(), attribute.getName());
+
       DataField formComponent = new DataField("value", new PropertyModel<ExperimentalConditionValue>(experimentalConditionValueModel, "data"), attribute.getType());
       formComponent.setRequired(true);
-      formComponent.setLabel(new Model<String>(attribute.getName()));
+      formComponent.setLabel(fieldNameModel);
       if(attribute.getType().equals(DataType.TEXT)) {
         formComponent.add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
       }
@@ -205,7 +207,7 @@ public class ExperimentalConditionForm extends Panel {
         formComponent.add(validator);
       }
 
-      add(new Label("label", new SpringStringResourceModel(attribute.getName(), attribute.getName())));
+      add(new Label("label", fieldNameModel));
       WebMarkupContainer parenthesis = new WebMarkupContainer("parenthesis");
       add(parenthesis);
       parenthesis.add(new Label("unit", new Model<String>(attribute.getUnit())));
@@ -238,6 +240,8 @@ public class ExperimentalConditionForm extends Panel {
 
       IModel<ExperimentalConditionValue> experimentalConditionValueModel = new Model<ExperimentalConditionValue>(experimentalConditionValue);
 
+      SpringStringResourceModel fieldNameModel = new SpringStringResourceModel(attribute.getName(), attribute.getName());
+
       DataField formComponent = new DataField("value", new PropertyModel<ExperimentalConditionValue>(experimentalConditionValueModel, "data"), attribute.getType(), allowedDataList, new ChoiceRenderer<Data>() {
         private static final long serialVersionUID = 1L;
 
@@ -252,9 +256,11 @@ public class ExperimentalConditionForm extends Panel {
         }
       }, "");
       formComponent.setRequired(true);
+      formComponent.setLabel(fieldNameModel);
+
       add(formComponent);
 
-      add(new Label("label", new SpringStringResourceModel(attribute.getName(), attribute.getName())));
+      add(new Label("label", fieldNameModel));
       WebMarkupContainer parenthesis = new WebMarkupContainer("parenthesis");
       add(parenthesis);
       parenthesis.add(new Label("unit", new Model<String>(attribute.getUnit())));
