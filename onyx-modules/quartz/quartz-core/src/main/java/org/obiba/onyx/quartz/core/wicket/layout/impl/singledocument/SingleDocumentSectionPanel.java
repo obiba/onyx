@@ -68,7 +68,15 @@ public class SingleDocumentSectionPanel extends Panel {
         @Override
         protected void populateItem(Item<Question> item) {
           item.add(new SingleDocumentQuestionPanel("questionPanel", item.getModel()));
-          item.add(new SingleDocumentQuestionDetailsPanel("questionDetails", item.getModel()));
+
+          SingleDocumentQuestionDetailsPanel detailsPanel;
+          detailsPanel = new SingleDocumentQuestionDetailsPanel("questionDetails", item.getModel());
+          if(!item.getModelObject().isBoilerPlate() || item.getModelObject().isBoilerPlate() && item.getModelObject().getCondition() != null) {
+            detailsPanel.setVisible(true);
+          } else {
+            detailsPanel.setVisible(false);
+          }
+          item.add(detailsPanel);
         }
       });
     }

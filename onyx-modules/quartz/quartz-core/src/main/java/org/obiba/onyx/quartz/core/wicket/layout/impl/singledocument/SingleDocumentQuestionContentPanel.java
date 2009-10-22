@@ -8,9 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -78,16 +76,14 @@ public class SingleDocumentQuestionContentPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private Map<String, String> validations = new HashMap<String, String>();
-
     public CategoryFragment(String id, IModel<Question> questionModel) {
       super(id, "categoryFragment", SingleDocumentQuestionContentPanel.this);
 
       IDataProvider<QuestionCategory> questionCategoryProvider;
-      if(questionModel.getObject().hasCategories()) {
-        questionCategoryProvider = new AllQuestionCategoriesProvider(questionModel);
-      } else {
+      if(!questionModel.getObject().hasCategories() && questionModel.getObject().getParentQuestion() != null) {
         questionCategoryProvider = new AllQuestionCategoriesProvider(new Model<Question>(questionModel.getObject().getParentQuestion()));
+      } else {
+        questionCategoryProvider = new AllQuestionCategoriesProvider(questionModel);
       }
 
       DataView<QuestionCategory> repeater = new DataView<QuestionCategory>("categories", questionCategoryProvider) {
@@ -143,6 +139,12 @@ public class SingleDocumentQuestionContentPanel extends Panel {
         }
       };
       add(questionCategories);
+
+      if(questionCategoryProvider.size() > 0) {
+        this.setVisible(true);
+      } else {
+        this.setVisible(false);
+      }
     }
   }
 

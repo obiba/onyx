@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -32,12 +31,6 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
       questionLabel.setVisible(false);
     }
 
-    // change the css rendering in case of a boiler plate
-    if(question.isBoilerPlate() && (question.getParentQuestion() == null || question.getParentQuestion() != null && !question.getParentQuestion().isArrayOfSharedCategories())) {
-      // add(new AttributeModifier("class", new Model(BOILERPLATE_CLASS)));
-      add(new EmptyPanel("content").setVisible(false));
-    } else {
-      add(new SingleDocumentQuestionContentPanel("content", questionModel));
-    }
+    add(new SingleDocumentQuestionContentPanel("content", questionModel));
   }
 }
