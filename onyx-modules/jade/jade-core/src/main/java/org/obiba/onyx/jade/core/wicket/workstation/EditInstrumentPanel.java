@@ -41,9 +41,6 @@ import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 
-/**
- * 
- */
 public class EditInstrumentPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
@@ -62,10 +59,6 @@ public class EditInstrumentPanel extends Panel {
 
   private boolean currentWorkstation = false;
 
-  /**
-   * @param id
-   * @param model
-   */
   public EditInstrumentPanel(String id, IModel<Instrument> instrumentModel, Dialog addInstrumentWindow) {
     super(id, instrumentModel);
     setDefaultModel(instrumentModel);
@@ -121,6 +114,7 @@ public class EditInstrumentPanel extends Panel {
             instrumentFragment.getName().setEnabled(false);
             instrumentFragment.getVendor().setEnabled(false);
             instrumentFragment.getModel().setEnabled(false);
+            instrumentFragment.getSerialNumber().setEnabled(false);
             instrumentFragment.getWorkstation().setEnabled(false);
             displayInstrument(instrument);
             target.addComponent(measurementDropDown);
@@ -131,6 +125,7 @@ public class EditInstrumentPanel extends Panel {
             instrumentFragment.getName().setEnabled(true);
             instrumentFragment.getVendor().setEnabled(true);
             instrumentFragment.getModel().setEnabled(true);
+            instrumentFragment.getSerialNumber().setEnabled(true);
             instrumentFragment.getWorkstation().setEnabled(true);
             target.appendJavascript("$('.obiba-button-ok').attr('disabled','');$('.obiba-button-ok').css('color','');$('.obiba-button-ok').css('border-color','');");
             instrumentFragment.getInstructions().setVisible(true);
@@ -217,6 +212,7 @@ public class EditInstrumentPanel extends Panel {
     instrumentFragment.getName().setDefaultModelObject(null);
     instrumentFragment.getVendor().setDefaultModelObject(null);
     instrumentFragment.getModel().setDefaultModelObject(null);
+    instrumentFragment.getSerialNumber().setDefaultModelObject(null);
     instrumentFragment.getWorkstation().setEnabled(true);
   }
 
@@ -243,6 +239,8 @@ public class EditInstrumentPanel extends Panel {
 
     private TextField model;
 
+    private TextField serialNumber;
+
     public InstrumentFragment(String id, IModel<Instrument> instrumentModel) {
       super(id, "instrumentFragment", EditInstrumentPanel.this);
 
@@ -263,6 +261,10 @@ public class EditInstrumentPanel extends Panel {
       // model field
       model = new TextField("model", new PropertyModel(instrumentModel, "model"));
       add(model);
+
+      // model field
+      serialNumber = new TextField("serialNumber", new PropertyModel(instrumentModel, "serialNumber"));
+      add(serialNumber);
 
       add(workstation = new CheckBox("workstation", new PropertyModel(EditInstrumentPanel.this, "currentWorkstation")));
       add(workstationLabel = new FormComponentLabel("workstationLabel", workstation));
@@ -292,6 +294,10 @@ public class EditInstrumentPanel extends Panel {
 
     public TextField getModel() {
       return model;
+    }
+
+    public TextField getSerialNumber() {
+      return serialNumber;
     }
   }
 

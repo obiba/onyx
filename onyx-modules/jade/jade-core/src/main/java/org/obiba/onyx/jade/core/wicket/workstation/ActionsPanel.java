@@ -256,7 +256,7 @@ public class ActionsPanel extends Panel {
   private Dialog createEditInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
     addInstrumentDialog.setTitle(new ResourceModel("EditInstrument"));
-    addInstrumentDialog.setInitialHeight(214);
+    addInstrumentDialog.setInitialHeight(224);
     addInstrumentDialog.setInitialWidth(400);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");

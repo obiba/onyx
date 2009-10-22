@@ -96,6 +96,7 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
       persitedIntrument.setName(instrument.getName());
       persitedIntrument.setVendor(instrument.getVendor());
       persitedIntrument.setModel(instrument.getModel());
+      persitedIntrument.setSerialNumber(instrument.getSerialNumber());
       persitedIntrument.setWorkstation(instrument.getWorkstation());
     }
 
