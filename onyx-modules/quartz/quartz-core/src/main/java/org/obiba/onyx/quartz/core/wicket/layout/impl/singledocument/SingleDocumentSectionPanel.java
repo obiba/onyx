@@ -67,7 +67,13 @@ public class SingleDocumentSectionPanel extends Panel {
 
         @Override
         protected void populateItem(Item<Question> item) {
-          item.add(new SingleDocumentQuestionPanel("questionPanel", item.getModel()));
+          SingleDocumentQuestionPanel questionPanel = new SingleDocumentQuestionPanel("questionPanel", item.getModel());
+          if(item.getModelObject().getName().indexOf("TIMESTAMP") >= 0) {
+            questionPanel.setVisible(false);
+          } else {
+            questionPanel.setVisible(true);
+          }
+          item.add(questionPanel);
 
           SingleDocumentQuestionDetailsPanel detailsPanel;
           detailsPanel = new SingleDocumentQuestionDetailsPanel("questionDetails", item.getModel());
