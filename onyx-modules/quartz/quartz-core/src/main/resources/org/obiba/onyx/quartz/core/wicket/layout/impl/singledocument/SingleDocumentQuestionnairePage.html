@@ -20,22 +20,35 @@
   			margin-left: 5px;
   		}
   		
+  		div.section > div.label:before {
+	    	content: "Section: ";
+	    }
+	    
   		div.subsection {
   			margin-left: 10px;
   		}
   		
   		div.subsection > div.label {
-  			font-weight: bold;  		
+  			font-weight: bold;	
   		}
   		
+  		div.subsection > div.label:before {
+	    	content: "Section: ";
+	    }
+	    
   		div.page {
   			margin-left: 20px;
   		}
+  		
   		div.page > div.label {
   			font-weight: bold;
   			padding-bottom: 3px; 
   			border-bottom: solid 2px;		
   		}
+  		
+  		div.page > div.label:before {
+	    	content: "Page: ";
+	    }
   		
   		div.question > div.question-details {
   			border: solid 2px;
