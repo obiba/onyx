@@ -26,6 +26,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringModifierModel;
 import org.obiba.onyx.quartz.core.wicket.provider.AllChildQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.provider.AllQuestionCategoriesProvider;
 import org.obiba.onyx.quartz.core.wicket.provider.AllValidationOpenAnswerDefinitionsProvider;
@@ -154,7 +155,7 @@ public class SingleDocumentQuestionContentPanel extends Panel {
 
     public ConditionFragment(String id, IModel<Question> questionModel) {
       super(id, "conditionFragment", SingleDocumentQuestionContentPanel.this);
-      add(new Label("condition", new PropertyModel<String>(questionModel, "condition")));
+      add(new Label("condition", new QuestionnaireStringModifierModel(new PropertyModel<String>(questionModel, "condition"))));
     }
   }
 
