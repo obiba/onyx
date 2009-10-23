@@ -79,15 +79,14 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
   }
 
   public ActionDefinition getActionDefinition(String code) {
-    ActionDefinition actionDefinition;
+    String[] codeElements = code.split("\\.");
 
-    while(code.lastIndexOf(".") > code.indexOf(".")) {
-      actionDefinition = this.actionDefinitionCache.get(code.toLowerCase());
-      if(actionDefinition != null) return actionDefinition;
-      code = code.substring(0, code.lastIndexOf("."));
-    }
+    ActionType type = (codeElements.length >= 2) ? ActionType.valueOf(codeElements[1]) : null;
+    String stateName = (codeElements.length >= 3) ? codeElements[2] : null;
+    String module = (codeElements.length >= 4) ? codeElements[3] : null;
+    String stage = (codeElements.length >= 5) ? codeElements[4] : null;
 
-    return null;
+    return getActionDefinition(type, stateName, module, stage);
   }
 
   public void afterPropertiesSet() throws Exception {
