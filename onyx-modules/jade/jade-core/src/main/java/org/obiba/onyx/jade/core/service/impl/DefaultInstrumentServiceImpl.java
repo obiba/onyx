@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -32,8 +33,14 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
 
   private Map<String, InstrumentType> instrumentTypes;
 
+  private UserSessionService userSessionService;
+
   public void setInstrumentTypes(Map<String, InstrumentType> instrumentTypes) {
     this.instrumentTypes = instrumentTypes;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
   public void setInstrumentsPath(String instrumentsPath) {
@@ -113,5 +120,37 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     Instrument persistedInstrument = getPersistenceManager().get(Instrument.class, instrument.getId());
     persistedInstrument.setWorkstation(workstation);
     getPersistenceManager().save(persistedInstrument);
+  }
+
+  public List<Instrument> getActiveInstrumentsAssignedToCurrentWorkstation(InstrumentType instrumentType) {
+    List<Instrument> activeInstrumentsAssignedToCurrentWorkstation = new ArrayList<Instrument>();
+    List<Instrument> activeInstruments = getActiveInstruments(instrumentType);
+    for(Instrument instrument : activeInstruments) {
+      if(instrument.getWorkstation() != null && instrument.getWorkstation().equals(userSessionService.getWorkstation())) {
+        activeInstrumentsAssignedToCurrentWorkstation.add(instrument);
+      }
+    }
+    return activeInstrumentsAssignedToCurrentWorkstation;
+  }
+
+  public List<Instrument> getActiveInstrumentsForCurrentWorkstation(InstrumentType instrumentType) {
+    List<Instrument> activeInstrumentsForCurrentWorkstation = new ArrayList<Instrument>();
+    List<Instrument> activeInstruments = getActiveInstruments(instrumentType);
+    for(Instrument instrument : activeInstruments) {
+      if(instrument.getWorkstation() == null || instrument.getWorkstation().equals(userSessionService.getWorkstation())) {
+        activeInstrumentsForCurrentWorkstation.add(instrument);
+      }
+    }
+    return activeInstrumentsForCurrentWorkstation;
+  }
+
+  public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument) {
+    List<Instrument> activeInstruments = getActiveInstrumentsForCurrentWorkstation(getInstrumentType(instrument.getType()));
+    for(Instrument activeInstrument : activeInstruments) {
+      if(activeInstrument.getBarcode() == instrument.getBarcode()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

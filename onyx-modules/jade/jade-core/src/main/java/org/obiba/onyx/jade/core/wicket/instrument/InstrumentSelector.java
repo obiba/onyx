@@ -24,6 +24,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public class InstrumentSelector extends Panel {
@@ -32,6 +33,9 @@ public class InstrumentSelector extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  InstrumentService instrumentService;
 
   private IModel instrumentModel;
 
@@ -78,7 +82,7 @@ public class InstrumentSelector extends Panel {
         @SuppressWarnings("unchecked")
         @Override
         public IConverter getConverter(Class type) {
-          return new InstrumentBarcodeConverter(queryService, (InstrumentType) InstrumentSelector.this.getDefaultModelObject());
+          return new InstrumentBarcodeConverter(queryService, instrumentService, (InstrumentType) InstrumentSelector.this.getDefaultModelObject());
         }
       };
       tf.setLabel(new StringResourceModel("InstrumentBarcode", InstrumentSelector.this, null));

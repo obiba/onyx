@@ -77,6 +77,27 @@ public interface InstrumentService {
   public List<Instrument> getWorkstationInstruments(String workstation, PagingClause paging, SortingClause... clauses);
 
   /**
+   * Gets the list of instruments of specific type assigned to the current workstation.
+   * @param instrumentType The instrument type
+   * @return A list of instrument
+   */
+  public List<Instrument> getActiveInstrumentsAssignedToCurrentWorkstation(InstrumentType instrumentType);
+
+  /**
+   * Gets the list of instruments available to the current workstation (both assigned and nomadic instruments).
+   * @param instrumentType The instrument type
+   * @return A list of instrument
+   */
+  public List<Instrument> getActiveInstrumentsForCurrentWorkstation(InstrumentType instrumentType);
+
+  /**
+   * Checks if a specific instrument is available to be used from current workstation.
+   * @param instrument The instrument to check
+   * @return True if available, false if available
+   */
+  public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument);
+
+  /**
    * Get the number of instruments for given workstation.
    * @param workstation
    * @return

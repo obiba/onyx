@@ -24,11 +24,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
@@ -67,9 +65,6 @@ public class InstrumentWizardForm extends WizardForm {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentWizardForm.class);
 
-  @SpringBean
-  private EntityQueryService queryService;
-
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
@@ -81,9 +76,6 @@ public class InstrumentWizardForm extends WizardForm {
 
   @SpringBean
   private InstrumentService instrumentService;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   private WizardStepPanel instrumentSelectionStep;
 
@@ -268,7 +260,7 @@ public class InstrumentWizardForm extends WizardForm {
     WizardStepPanel startStep = startStepWhenResuming;
     WizardStepPanel lastStep = null;
 
-    List<Instrument> activeInstrumentsForCurrentWorkstation = getActiveInstrumentsForCurrentWorkstation();
+    List<Instrument> activeInstrumentsForCurrentWorkstation = instrumentService.getActiveInstrumentsAssignedToCurrentWorkstation((InstrumentType) getModelObject());
     log.debug("instruments.count={}", activeInstrumentsForCurrentWorkstation.size());
     if(activeInstrumentsForCurrentWorkstation.size() == 0 || activeInstrumentsForCurrentWorkstation.size() > 1) {
       // Either found no instruments or too many instruments of the correct type.
@@ -394,18 +386,6 @@ public class InstrumentWizardForm extends WizardForm {
     return startStep;
   }
 
-  private List<Instrument> getActiveInstrumentsForCurrentWorkstation() {
-    List<Instrument> activeInstrumentsForCurrentWorkstation = new ArrayList<Instrument>();
-    InstrumentType instrumentType = (InstrumentType) getModelObject();
-    List<Instrument> activeInstruments = instrumentService.getActiveInstruments(instrumentType);
-    for(Instrument instrument : activeInstruments) {
-      if(instrument.getWorkstation() != null && instrument.getWorkstation().equals(userSessionService.getWorkstation())) {
-        activeInstrumentsForCurrentWorkstation.add(instrument);
-      }
-    }
-    return activeInstrumentsForCurrentWorkstation;
-  }
-
   /**
    * Determines the step to be displayed when resuming the stage.
    * @return The step to resume to.
@@ -413,7 +393,7 @@ public class InstrumentWizardForm extends WizardForm {
   private WizardStepPanel getStepWhenResuming() {
     WizardStepPanel resumingStartStep = null;
 
-    List<Instrument> activeInstrumentsForCurrentWorkstation = getActiveInstrumentsForCurrentWorkstation();
+    List<Instrument> activeInstrumentsForCurrentWorkstation = instrumentService.getActiveInstrumentsAssignedToCurrentWorkstation((InstrumentType) getModelObject());
     if(activeInstrumentsForCurrentWorkstation.size() == 0 || activeInstrumentsForCurrentWorkstation.size() > 1) {
       // The user must select an instrument for the measure.
       return null;

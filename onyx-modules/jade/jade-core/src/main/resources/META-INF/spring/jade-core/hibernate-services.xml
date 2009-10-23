@@ -19,6 +19,11 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="persistenceManager" ref="persistenceManager" />   
     <property name="instrumentsPath" value="${org.obiba.onyx.jade.instruments.codebase.path}"/>
     <property name="instrumentTypes" ref="instrumentTypeFactory" />
+    <property name="userSessionService">
+      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
+        <property name="targetBeanName" value="userSessionService" />
+      </bean>
+    </property>    
   </bean>
 
 </beans>

@@ -17,6 +17,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 
 /**
  * Converts the instrument barcode, supposed to be unique, to the corresponding instrument.
@@ -32,14 +33,17 @@ public class InstrumentBarcodeConverter implements IConverter {
 
   private InstrumentType instrumentType;
 
-  public InstrumentBarcodeConverter(EntityQueryService queryService, InstrumentType instrumentType) {
-    this(queryService, true);
+  InstrumentService instrumentService;
+
+  public InstrumentBarcodeConverter(EntityQueryService queryService, InstrumentService instrumentService, InstrumentType instrumentType) {
+    this(queryService, instrumentService, true);
     this.instrumentType = instrumentType;
   }
 
-  public InstrumentBarcodeConverter(EntityQueryService queryService, boolean activeOnly) {
+  public InstrumentBarcodeConverter(EntityQueryService queryService, InstrumentService instrumentService, boolean activeOnly) {
     this.queryService = queryService;
     this.activeOnly = activeOnly;
+    this.instrumentService = instrumentService;
   }
 
   public Object convertToObject(String value, Locale locale) {
@@ -47,6 +51,7 @@ public class InstrumentBarcodeConverter implements IConverter {
     Instrument template = new Instrument();
     template.setBarcode(value);
     template.setType(instrumentType.getName());
+
     Instrument instrument = queryService.matchOne(template);
 
     if(instrument == null) {
@@ -56,6 +61,10 @@ public class InstrumentBarcodeConverter implements IConverter {
     } else if(activeOnly && !instrument.getStatus().equals(InstrumentStatus.ACTIVE)) {
       ConversionException cex = new ConversionException("Not an active instrument: '" + value + "'");
       cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrument");
+      throw cex;
+    } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument, instrumentType)) {
+      ConversionException cex = new ConversionException("Not an active instrument for current workstation: '" + value + "'");
+      cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrumentForCurrentWorkstation");
       throw cex;
     }
 
