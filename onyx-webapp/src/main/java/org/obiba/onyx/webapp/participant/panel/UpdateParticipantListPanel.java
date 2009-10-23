@@ -241,7 +241,7 @@ public class UpdateParticipantListPanel extends Panel {
     private class FileTypeError implements IValidationError, Serializable {
 
       public String getErrorMessage(IErrorMessageSource messageSource) {
-        return new ResourceModel("FileWrongType").toString();
+        return new ResourceModel("FileWrongType").getObject();
       }
     }
   }
