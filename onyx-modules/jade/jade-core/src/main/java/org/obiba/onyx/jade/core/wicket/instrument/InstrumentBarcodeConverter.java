@@ -62,7 +62,7 @@ public class InstrumentBarcodeConverter implements IConverter {
       ConversionException cex = new ConversionException("Not an active instrument: '" + value + "'");
       cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrument");
       throw cex;
-    } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument, instrumentType)) {
+    } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument)) {
       ConversionException cex = new ConversionException("Not an active instrument for current workstation: '" + value + "'");
       cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrumentForCurrentWorkstation");
       throw cex;
