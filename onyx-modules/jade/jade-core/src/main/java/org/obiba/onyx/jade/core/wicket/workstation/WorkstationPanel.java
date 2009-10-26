@@ -44,6 +44,8 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -269,19 +271,16 @@ public class WorkstationPanel extends Panel {
   }
 
   private List<ExperimentalCondition> getExperimentalConditions(String instrumentCalibrationName, String barcode) {
-    List<ExperimentalCondition> result = new ArrayList<ExperimentalCondition>();
     ExperimentalCondition template = new ExperimentalCondition();
     template.setName(instrumentCalibrationName);
-    List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
-    for(ExperimentalCondition experimentalCondition : experimentalConditions) {
-      for(ExperimentalConditionValue ecv : experimentalCondition.getExperimentalConditionValues()) {
-        if(ecv.getAttributeName().equals(ExperimentalConditionService.INSTRUMENT_BARCODE)) {
-          if(ecv.getValue().equals(barcode)) {
-            result.add(experimentalCondition);
-          }
-        }
-      }
-    }
-    return result;
+
+    ExperimentalConditionValue ecv = new ExperimentalConditionValue();
+    ecv.setAttributeType(DataType.TEXT);
+    ecv.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+    ecv.setData(new Data(DataType.TEXT, barcode));
+    ecv.setExperimentalCondition(template);
+    template.addExperimentalConditionValue(ecv);
+
+    return experimentalConditionService.getExperimentalConditions(template);
   }
 }

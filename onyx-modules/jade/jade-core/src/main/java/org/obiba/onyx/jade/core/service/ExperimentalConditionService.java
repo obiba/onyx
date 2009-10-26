@@ -11,8 +11,6 @@ package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
-import org.obiba.core.service.PagingClause;
-import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
@@ -47,14 +45,13 @@ public interface ExperimentalConditionService {
   public void register(ExperimentalConditionLog log);
 
   /**
-   * Returns a list of {@link ExperimentalCondition}s. If all parameters are null, then all ExperimentalConditions will
-   * be returned.
-   * @param template Supply a template with a "name" and "workstation" to match on those values.
-   * @param paging
-   * @param clauses
-   * @return
+   * Returns a list of {@link ExperimentalCondition}s. If a null template is provided, then all ExperimentalConditions
+   * will be returned.
+   * @param template The template will be matched on the following attributes: "id", "name", "workstation" as well as an
+   * {@link ExperimentalConditionValue} with an attributeName equal to "INSTRUMENT_BARCODE".
+   * @return A list of ExperimentalConditions matching the supplied template.
    */
-  public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template, PagingClause paging, SortingClause... clauses);
+  public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template);
 
   /**
    * Returns the {@link ExperimentalConditionLog} with the provided name.

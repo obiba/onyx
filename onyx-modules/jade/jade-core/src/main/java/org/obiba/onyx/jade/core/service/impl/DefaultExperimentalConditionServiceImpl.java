@@ -12,13 +12,11 @@ package org.obiba.onyx.jade.core.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.obiba.core.service.PagingClause;
-import org.obiba.core.service.SortingClause;
+import org.hibernate.criterion.Restrictions;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.core.service.impl.hibernate.AssociationCriteria;
-import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
@@ -54,22 +52,27 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
     return experimentalConditionLogs;
   }
 
-  private AssociationCriteria getCriteria(ExperimentalCondition template, PagingClause paging, SortingClause... clauses) {
-    AssociationCriteria criteria = AssociationCriteria.create(ExperimentalCondition.class, getSession());
+  private Criteria getCriteria(ExperimentalCondition template) {
+    Criteria criteria = getSession().createCriteria(ExperimentalCondition.class);
 
     if(template != null) {
-      if(template.getId() != null) criteria.add("id", Operation.eq, template.getId());
-      if(template.getName() != null) criteria.add("name", Operation.like, template.getName());
-      if(template.getWorkstation() != null) criteria.add("workstation", Operation.like, template.getWorkstation());
+      if(template.getId() != null) criteria.add(Restrictions.eq("id", template.getId()));
+      if(template.getName() != null) criteria.add(Restrictions.like("name", template.getName()));
+      if(template.getWorkstation() != null) criteria.add(Restrictions.like("workstation", template.getWorkstation()));
+      if(!template.getExperimentalConditionValues().isEmpty()) {
+        for(ExperimentalConditionValue ecv : template.getExperimentalConditionValues()) {
+          if(ecv.getAttributeName().equals(ExperimentalConditionService.INSTRUMENT_BARCODE)) {
+            criteria.createCriteria("experimentalConditionValues").add(Restrictions.eq("attributeName", ExperimentalConditionService.INSTRUMENT_BARCODE)).add(Restrictions.eq("textValue", ecv.getValue()));
+          }
+        }
+      }
     }
-    if(paging != null) criteria.addPagingClause(paging);
-    if(clauses != null) criteria.addSortingClauses(clauses);
-
     return criteria;
   }
 
-  public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template, PagingClause paging, SortingClause... clauses) {
-    return getCriteria(template, paging, clauses).list();
+  @SuppressWarnings("unchecked")
+  public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template) {
+    return getCriteria(template).list();
   }
 
   public ExperimentalConditionLog getExperimentalConditionLogByName(String name) {

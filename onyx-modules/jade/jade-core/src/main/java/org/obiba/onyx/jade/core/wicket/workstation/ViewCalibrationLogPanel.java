@@ -19,12 +19,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
-import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
@@ -64,7 +65,15 @@ public class ViewCalibrationLogPanel extends Panel {
       InstrumentCalibration calibrate = experimentalConditionService.getInstrumentCalibrationByType(instrument.getType());
       ExperimentalCondition template = new ExperimentalCondition();
       template.setName(calibrate.getName());
-      List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template, null, new SortingClause("time", false));
+
+      ExperimentalConditionValue ecv = new ExperimentalConditionValue();
+      ecv.setAttributeType(DataType.TEXT);
+      ecv.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+      ecv.setData(new Data(DataType.TEXT, instrument.getBarcode()));
+      ecv.setExperimentalCondition(template);
+      template.addExperimentalConditionValue(ecv);
+
+      List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template);
       if(calibrations.size() > 0) {
         return true;
       }
@@ -76,7 +85,7 @@ public class ViewCalibrationLogPanel extends Panel {
     Instrument instrument = (Instrument) getDefaultModelObject();
     if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
       List<InstrumentCalibration> calibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
-      return new ExperimentalConditionHistoryPanel("content", calibrations, 5);
+      return new ExperimentalConditionHistoryPanel("content", calibrations, 5, instrument);
     }
     ExperimentalCondition template = new ExperimentalCondition();
     return new ExperimentalConditionHistoryPanel("content", template, new Model<String>("titleModel"), 5);

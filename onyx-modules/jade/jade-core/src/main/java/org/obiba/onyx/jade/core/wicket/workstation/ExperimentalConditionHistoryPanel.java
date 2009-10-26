@@ -41,6 +41,7 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
@@ -69,13 +70,17 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
   private OnyxEntityList<ExperimentalCondition> list;
 
+  private Instrument instrument;
+
   /** Map of experimental condition log attributes present in the xml configuration file. */
   private Map<String, Attribute> experimentalConditionLogAttributeMap;
 
-  public ExperimentalConditionHistoryPanel(String id, List<InstrumentCalibration> instrumentCalibrations, final int pageSize) {
+  public ExperimentalConditionHistoryPanel(String id, List<InstrumentCalibration> instrumentCalibrations, final int pageSize, Instrument instrument) {
     super(id);
     setOutputMarkupId(true);
     add(new AttributeModifier("class", true, new Model<String>("experimental-condition-history-panel")));
+
+    this.instrument = instrument;
 
     WebMarkupContainer selectCalibrationId = new WebMarkupContainer("selectCalibrationId");
 
@@ -125,8 +130,15 @@ public class ExperimentalConditionHistoryPanel extends Panel {
     ExperimentalCondition ec = new ExperimentalCondition();
     ec.setName(selectedInstrumentCalibration.getName());
 
+    ExperimentalConditionValue ecv = new ExperimentalConditionValue();
+    ecv.setAttributeType(DataType.TEXT);
+    ecv.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+    ecv.setData(new Data(DataType.TEXT, instrument.getBarcode()));
+    ecv.setExperimentalCondition(ec);
+    ec.addExperimentalConditionValue(ecv);
+
     SpringStringResourceModel titleModel = new SpringStringResourceModel(selectedInstrumentCalibration.getName(), selectedInstrumentCalibration.getName());
-    List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(ec, null);
+    List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(ec);
     OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(ec), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), titleModel);
     list.setPageSize(pageSize);
     return list;
@@ -146,7 +158,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(template.getName());
 
-    List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template, null);
+    List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template);
     OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title);
     list.setPageSize(pageSize);
     add(list);
@@ -168,12 +180,15 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     @Override
     protected List<ExperimentalCondition> getList(PagingClause paging, SortingClause... clauses) {
-      return experimentalConditionService.getExperimentalConditions(template, paging, clauses);
+      List<ExperimentalCondition> result = experimentalConditionService.getExperimentalConditions(template);
+      ExperimentalConditionSorter ecs = new ExperimentalConditionSorter(result);
+      result = ecs.getSortedList(paging, clauses);
+      return result;
     }
 
     @Override
     public int size() {
-      return experimentalConditionService.getExperimentalConditions(template, null).size();
+      return experimentalConditionService.getExperimentalConditions(template).size();
     }
 
   }
@@ -207,7 +222,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
           if(experimentalConditionLogAttributeMap.containsKey(value.getAttributeName())) {
             String unit = experimentalConditionService.getAttribute(value).getUnit();
             unit = surroundStringIfNotNull(unit, " (", ")");
-            columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit)) {
+            columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit), value.getAttributeName()) {
               private static final long serialVersionUID = 1L;
 
               public void populateItem(Item cellItem, String componentId, IModel rowModel) {
