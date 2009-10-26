@@ -2,8 +2,10 @@
 	<wicket:panel>
 		<div class="banner">
 			<a href="#" wicket:id="profile"><wicket:message key="profile" /></a>
-			&nbsp;|&nbsp;
-			<a href="#" wicket:id="admin"><wicket:message key="Administration" /></a>
+			<wicket:enclosure child="admin">
+				&nbsp;|&nbsp;
+				<a href="#" wicket:id="admin"><wicket:message key="Administration" /></a>
+			</wicket:enclosure>
 			&nbsp;|&nbsp;
 			<a href="#" wicket:id="help"><wicket:message key="Help" /></a>
 			&nbsp;|&nbsp;

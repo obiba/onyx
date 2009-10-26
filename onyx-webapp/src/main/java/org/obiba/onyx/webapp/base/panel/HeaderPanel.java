@@ -11,6 +11,7 @@ package org.obiba.onyx.webapp.base.panel;
 
 import java.io.Serializable;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -31,6 +32,7 @@ public class HeaderPanel extends Panel {
 
   HeaderPanelModel model = new HeaderPanelModel();
 
+  @SuppressWarnings("serial")
   public HeaderPanel(String id) {
     super(id);
 
@@ -45,15 +47,8 @@ public class HeaderPanel extends Panel {
       }
     });
 
-    add(new Link("admin") {
+    add(new AdminLink("admin") {
 
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onClick() {
-        OnyxAuthenticatedSession.get().getUser();
-        setResponsePage(AdministrationPage.class);
-      }
     });
 
     Link helpLink = new Link("help") {
@@ -96,6 +91,23 @@ public class HeaderPanel extends Panel {
       }
       return null;
       // return ( queryService.matchOne( template ) );
+    }
+
+  }
+
+  @AuthorizeAction(action = "RENDER", roles = { "SYSTEM_ADMINISTRATOR" })
+  private abstract class AdminLink extends Link<Object> {
+
+    private static final long serialVersionUID = 1L;
+
+    public AdminLink(String id) {
+      super(id);
+    }
+
+    @Override
+    public void onClick() {
+      OnyxAuthenticatedSession.get().getUser();
+      setResponsePage(AdministrationPage.class);
     }
 
   }
