@@ -123,7 +123,7 @@ public abstract class StageSelectionPanel extends Panel {
 
   abstract public void onViewComments(AjaxRequestTarget target, String stage);
 
-  abstract public void onViewLogs(AjaxRequestTarget target, String stage);
+  abstract public void onViewLogs(AjaxRequestTarget target, String stage, boolean commentsOnly);
 
   abstract public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
@@ -234,12 +234,12 @@ public abstract class StageSelectionPanel extends Panel {
 
               @Override
               public void onViewComments(AjaxRequestTarget target) {
-                StageSelectionPanel.this.onViewLogs(target, stageName);
+                StageSelectionPanel.this.onViewLogs(target, stageName, true);
               }
 
               @Override
               public void onViewLogs(AjaxRequestTarget target) {
-                StageSelectionPanel.this.onViewLogs(target, stageName);
+                StageSelectionPanel.this.onViewLogs(target, stageName, false);
               }
 
               @Override

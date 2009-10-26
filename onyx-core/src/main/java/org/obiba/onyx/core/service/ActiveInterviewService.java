@@ -93,6 +93,14 @@ public interface ActiveInterviewService {
   public List<Action> getInterviewComments();
 
   /**
+   * Return a list of comments associated with the current interview that belong to the given {@code stage}. Comments
+   * are returned in descending order based on the time stamp of the comment.
+   * @param stageName Only return comment that belong to this stage.
+   * @return list of comments for the specified stage of the current interview
+   */
+  public List<Action> getInterviewComments(String stageName);
+
+  /**
    * Return a complete list of actions associated with the current interview. Actions are returned in descending order
    * based on the time stamp of the action.
    * @return A list of all actions.

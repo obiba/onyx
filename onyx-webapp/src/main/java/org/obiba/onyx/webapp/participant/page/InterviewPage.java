@@ -170,6 +170,8 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
+          interviewLogPanel.setCommentsOnly(true);
+
           // Disable Show All Button
           target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
           super.onClick(target);
@@ -182,6 +184,8 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
+          interviewLogPanel.setCommentsOnly(false);
+
           // Disable Show All Button
           target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
           super.onClick(target);
@@ -348,8 +352,11 @@ public class InterviewPage extends BasePage {
         }
 
         @Override
-        public void onViewLogs(AjaxRequestTarget target, String stage) {
+        public void onViewLogs(AjaxRequestTarget target, String stage, boolean commentsOnly) {
           interviewLogPanel.setStageName(stage);
+          interviewLogPanel.setCommentsOnly(commentsOnly);
+          interviewLogPanel.addInterviewLogComponent();
+
           interviewLogsDialog.show(target);
         }
 
@@ -431,6 +438,8 @@ public class InterviewPage extends BasePage {
     @Override
     public void onClick(AjaxRequestTarget target) {
       interviewLogPanel.setStageName(null);
+      interviewLogPanel.addInterviewLogComponent();
+
       interviewLogsDialog.show(target);
     }
 

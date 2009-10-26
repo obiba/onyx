@@ -38,13 +38,23 @@ public class LoadableInterviewLogModel extends SpringDetachableModel implements 
 
   private String stageName;
 
+  private boolean commentsOnly;
+
   @Override
   protected Object load() {
     List<Action> interviewLogList;
     if(stageName != null) {
-      interviewLogList = activeInterviewService.getInterviewActions(stageName);
+      if(commentsOnly()) {
+        interviewLogList = activeInterviewService.getInterviewComments(stageName); // Get stage comments.
+      } else {
+        interviewLogList = activeInterviewService.getInterviewActions(stageName); // Get stage actions.
+      }
     } else {
-      interviewLogList = activeInterviewService.getInterviewActions(); // Get everything.
+      if(commentsOnly()) {
+        interviewLogList = activeInterviewService.getInterviewComments(); // Get all comments.
+      } else {
+        interviewLogList = activeInterviewService.getInterviewActions(); // Get all actions.
+      }
     }
 
     Collections.sort(interviewLogList, new ActionAscendingComparator());
@@ -55,7 +65,7 @@ public class LoadableInterviewLogModel extends SpringDetachableModel implements 
    * Sets the stage name. The interview log returned will include log entries only for the specified stage name.
    * @param stageName return interview log entries only for this stage name.
    */
-  public void showLogEntriesForStage(String stageName) {
+  public void setStage(String stageName) {
     this.stageName = stageName;
   }
 
@@ -66,4 +76,11 @@ public class LoadableInterviewLogModel extends SpringDetachableModel implements 
     this.stageName = null;
   }
 
+  public void setCommentsOnly(boolean commentsOnly) {
+    this.commentsOnly = commentsOnly;
+  }
+
+  public boolean commentsOnly() {
+    return this.commentsOnly;
+  }
 }

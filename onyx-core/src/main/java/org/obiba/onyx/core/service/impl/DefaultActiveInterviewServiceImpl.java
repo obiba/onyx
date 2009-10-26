@@ -183,14 +183,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
   }
 
-  public List<Action> getInterviewActions() {
-    Action template = new Action();
-    template.setInterview(getInterview());
-    List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false));
-
-    return actions;
-  }
-
   public List<Action> getInterviewComments() {
     List<Action> comments = new ArrayList<Action>();
 
@@ -201,6 +193,33 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
 
     return comments;
+  }
+
+  public List<Action> getInterviewComments(String stageName) {
+    if(stageName == null) throw new IllegalArgumentException("The argument stageName cannot be null.");
+
+    List<Action> stageComments = new ArrayList<Action>();
+
+    Action template = new Action();
+    template.setInterview(getInterview());
+    template.setStage(stageName);
+
+    List<Action> matches = getPersistenceManager().match(template, new SortingClause("dateTime", false));
+    for(Action action : matches) {
+      if(action.getComment() != null) {
+        stageComments.add(action);
+      }
+    }
+
+    return stageComments;
+  }
+
+  public List<Action> getInterviewActions() {
+    Action template = new Action();
+    template.setInterview(getInterview());
+    List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false));
+
+    return actions;
   }
 
   public List<Action> getInterviewActions(String stageName) {

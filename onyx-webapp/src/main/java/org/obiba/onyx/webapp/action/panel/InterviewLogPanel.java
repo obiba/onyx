@@ -111,8 +111,11 @@ public class InterviewLogPanel extends Panel {
   }
 
   public void setStageName(String stageName) {
-    ((LoadableInterviewLogModel) getDefaultModel()).showLogEntriesForStage(stageName);
-    addInterviewLogComponent();
+    ((LoadableInterviewLogModel) getDefaultModel()).setStage(stageName);
+  }
+
+  public void setCommentsOnly(boolean commentsOnly) {
+    ((LoadableInterviewLogModel) getDefaultModel()).setCommentsOnly(commentsOnly);
   }
 
   public class CommentFragment extends Fragment {
