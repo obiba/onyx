@@ -169,7 +169,7 @@ public class ActionsPanel extends Panel {
 
     @Override
     public boolean isVisible() {
-      return instrument.getWorkstation() == null;
+      return instrument.getStatus().equals(InstrumentStatus.ACTIVE) && instrument.getWorkstation() == null;
     }
 
     @Override

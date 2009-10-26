@@ -113,10 +113,23 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
   public void updateStatus(Instrument instrument, InstrumentStatus status) {
     Instrument persistedInstrument = getPersistenceManager().get(Instrument.class, instrument.getId());
     persistedInstrument.setStatus(status);
+
+    // ONYX-913: Automatically release instrument when de-activated.
+    if(status.equals(InstrumentStatus.INACTIVE)) {
+      persistedInstrument.setWorkstation(null);
+    }
+
     getPersistenceManager().save(persistedInstrument);
   }
 
   public void updateWorkstation(Instrument instrument, String workstation) {
+    // ONYX-913: Throw an exception if an attempt is made to assign an inactive instrument
+    // to a workstation. Note: The UI should not allow this, but we want to enforce this at
+    // the service layer as well.
+    if(instrument.getStatus().equals(InstrumentStatus.INACTIVE) && workstation != null) {
+      throw new RuntimeException("Inactive instrument cannot be assigned to a workstation (instrument: " + instrument + ", workstation: " + workstation + ")");
+    }
+
     Instrument persistedInstrument = getPersistenceManager().get(Instrument.class, instrument.getId());
     persistedInstrument.setWorkstation(workstation);
     getPersistenceManager().save(persistedInstrument);

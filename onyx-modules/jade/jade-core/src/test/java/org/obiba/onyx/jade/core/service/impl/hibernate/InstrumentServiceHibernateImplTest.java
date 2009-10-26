@@ -105,12 +105,13 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   @Test
   @Dataset
   public void updateWorkstationTest() {
-    Instrument instrument = new Instrument();
-    instrument.setId(2l);
-    Assert.assertNull((persistenceManager.get(Instrument.class, 2l)).getWorkstation());
+    Instrument instrument = persistenceManager.get(Instrument.class, 2l);
+    Assert.assertNull(instrument.getWorkstation());
+
     instrumentServiceHibernateImpl.updateWorkstation(instrument, "onyx001-127.0.32.5");
 
-    Assert.assertEquals("onyx001-127.0.32.5", (persistenceManager.get(Instrument.class, 2l)).getWorkstation());
+    instrument = persistenceManager.get(Instrument.class, 2l);
+    Assert.assertEquals("onyx001-127.0.32.5", instrument.getWorkstation());
   }
 
   @Test
