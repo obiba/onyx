@@ -110,7 +110,6 @@ public class UserPanel extends Panel {
       add(password);
 
       TextField email = new TextField("email", new PropertyModel(getModel(), "email"));
-      email.add(new RequiredFormFieldBehavior());
       email.add(new StringValidator.MaximumLengthValidator(250));
       email.add(EmailAddressValidator.getInstance());
       add(email);
