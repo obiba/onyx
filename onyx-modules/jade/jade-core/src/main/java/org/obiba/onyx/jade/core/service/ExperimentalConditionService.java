@@ -69,13 +69,6 @@ public interface ExperimentalConditionService {
   public boolean instrumentCalibrationExists(String instrumentType);
 
   /**
-   * Returns the {@link InstrumentCalibration} for the provided instrumentType.
-   * @param instrumentType
-   * @return
-   */
-  public InstrumentCalibration getInstrumentCalibrationByType(String instrumentType);
-
-  /**
    * Returns a list of {@link InstrumentCalibration}s for the given instrumentType.
    * @param instrumentType
    * @return A list of InstrumentCalibrations.

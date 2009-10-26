@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.workstation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -62,23 +63,33 @@ public class ViewCalibrationLogPanel extends Panel {
   public boolean isVisible() {
     Instrument instrument = (Instrument) getDefaultModelObject();
     if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
-      InstrumentCalibration calibrate = experimentalConditionService.getInstrumentCalibrationByType(instrument.getType());
-      ExperimentalCondition template = new ExperimentalCondition();
-      template.setName(calibrate.getName());
 
-      ExperimentalConditionValue ecv = new ExperimentalConditionValue();
-      ecv.setAttributeType(DataType.TEXT);
-      ecv.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
-      ecv.setData(new Data(DataType.TEXT, instrument.getBarcode()));
-      ecv.setExperimentalCondition(template);
-      template.addExperimentalConditionValue(ecv);
+      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+      List<ExperimentalCondition> calibrations = new ArrayList<ExperimentalCondition>();
+      for(InstrumentCalibration instrumentCalibration : instrumentCalibrations) {
+        calibrations.addAll(getExperimentalConditionsForInstrumentCalibration(instrumentCalibration));
+      }
 
-      List<ExperimentalCondition> calibrations = experimentalConditionService.getExperimentalConditions(template);
       if(calibrations.size() > 0) {
         return true;
       }
     }
     return false;
+  }
+
+  private List<ExperimentalCondition> getExperimentalConditionsForInstrumentCalibration(InstrumentCalibration instrumentCalibration) {
+    Instrument instrument = (Instrument) getDefaultModelObject();
+    ExperimentalCondition template = new ExperimentalCondition();
+    template.setName(instrumentCalibration.getName());
+
+    ExperimentalConditionValue ecv = new ExperimentalConditionValue();
+    ecv.setAttributeType(DataType.TEXT);
+    ecv.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+    ecv.setData(new Data(DataType.TEXT, instrument.getBarcode()));
+    ecv.setExperimentalCondition(template);
+    template.addExperimentalConditionValue(ecv);
+
+    return experimentalConditionService.getExperimentalConditions(template);
   }
 
   private ExperimentalConditionHistoryPanel getExperimentalConditionHistoryPanel() {

@@ -143,7 +143,12 @@ public class ActionsPanel extends Panel {
       for(InstrumentCalibration cal : experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType())) {
         log.add((ExperimentalConditionLog) cal);
       }
-      experimentalConditionDialogHelperPanel.setExperimentalConditionLog(experimentalConditionService.getInstrumentCalibrationByType(instrument.getType()), log);
+      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+      InstrumentCalibration instrumentCalibration = null;
+      if(!instrumentCalibrations.isEmpty()) {
+        instrumentCalibration = instrumentCalibrations.get(0);
+      }
+      experimentalConditionDialogHelperPanel.setExperimentalConditionLog(instrumentCalibration, log);
 
       experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().setWindowClosedCallback(new WindowClosedCallback() {
         private static final long serialVersionUID = 1L;
