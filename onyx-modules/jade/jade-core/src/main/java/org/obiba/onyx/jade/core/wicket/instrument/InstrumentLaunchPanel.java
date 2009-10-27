@@ -97,6 +97,19 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase);
 
+    // measure list panel initiated before buttons
+    add(measuresList = new MeasuresListPanel("measuresList") {
+
+      @Override
+      public void onRefresh(AjaxRequestTarget target) {
+        WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
+        WizardStepPanel step = (WizardStepPanel) form.get("step");
+        step.handleWizardState(form, target);
+      }
+
+    });
+    measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
+
     IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
     Link startLink = new Link("start") {
@@ -108,10 +121,11 @@ public abstract class InstrumentLaunchPanel extends Panel {
       }
 
     };
-    add(startLink);
     startLink.add(buttonDisableBehavior);
     startLink.setOutputMarkupId(true);
     setComponentEnabledOnSkip(startLink, false, null);
+    startLink.setEnabled(!isMeasureComplete(currentRun));
+    add(startLink);
 
     final InstrumentManualOutputParameterPanel instrumentManualOutputParameterPanel = new InstrumentManualOutputParameterPanel("content", 340);
     final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), instrumentManualOutputParameterPanel).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
@@ -154,12 +168,12 @@ public abstract class InstrumentLaunchPanel extends Panel {
       }
 
     };
-
-    manualButtonBlock.add(manualButtonLink);
     manualButtonBlock.setVisible(instrumentType.isManualCaptureAllowed());
     manualButtonLink.setOutputMarkupId(true);
     manualButtonLink.add(buttonDisableBehavior);
     setComponentEnabledOnSkip(manualButtonLink, false, null);
+    manualButtonLink.setEnabled(!isMeasureComplete(currentRun));
+    manualButtonBlock.add(manualButtonLink);
 
     String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
     if(errMessage != null) error(errMessage);
@@ -206,18 +220,6 @@ public abstract class InstrumentLaunchPanel extends Panel {
     Label instructions = new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null));
     instructions.setVisible(manualCaptureRequired);
     add(instructions);
-
-    add(measuresList = new MeasuresListPanel("measuresList") {
-
-      @Override
-      public void onRefresh(AjaxRequestTarget target) {
-        WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
-        WizardStepPanel step = (WizardStepPanel) form.get("step");
-        step.handleWizardState(form, target);
-      }
-
-    });
-    measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
 
     skipMeasure = new SkipMeasureFragment("skipMeasure");
     skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable() && activeInstrumentRunService.getInstrumentType().isAllowPartial());
@@ -284,7 +286,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
           };
         }
       });
-      box.setEnabled(((InstrumentRun) modelObject).getValidMeasureCount() > 0);
+      box.setEnabled(((InstrumentRun) modelObject).getValidMeasureCount() > 0 && !isMeasureComplete((InstrumentRun) modelObject));
       add(box);
 
       final TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));
@@ -347,6 +349,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   public SkipMeasureFragment getSkipMeasure() {
     return skipMeasure;
+  }
+
+  private boolean isMeasureComplete(InstrumentRun modelObject) {
+    if(measuresList != null) {
+      return (modelObject.getValidMeasureCount() == measuresList.getExpectedMeasureCount());
+    }
+    return false;
   }
 
   /**
