@@ -158,7 +158,7 @@ public class ActionsPanel extends Panel {
         }
 
       });
-      SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(instrument.getType(), instrument.getType());
+      SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(instrument.getType() + ".description", instrument.getType());
       String experimentalConditionName = experimentalConditionNameResource.getString();
       experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().setTitle(new StringResourceModel("ExperimentalConditionDialogTitle", ActionsPanel.this, new Model<ValueMap>(new ValueMap("experimentalConditionName=" + experimentalConditionName))));
       experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().show(target);
