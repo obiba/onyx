@@ -153,18 +153,18 @@ public class InterviewPage extends BasePage {
         }
       });
 
-      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink", interviewLogsDialog, interviewLogPanel);
+      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink", interviewLogsDialog, interviewLogPanel, true);
       add(viewCommentsIconLink);
       ContextImage commentIcon = createContextImage("commentIcon", "icons/note.png");
       viewCommentsIconLink.add(commentIcon);
 
-      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink", interviewLogsDialog, interviewLogPanel);
+      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink", interviewLogsDialog, interviewLogPanel, false);
       add(viewLogIconLink);
       ContextImage logIcon = createContextImage("logIcon", "icons/loupe_button.png");
       viewLogIconLink.add(logIcon);
 
       // Add view interview comments action
-      add(viewComments = new ViewInterviewLogsLink("viewComments", interviewLogsDialog, interviewLogPanel) {
+      add(viewComments = new ViewInterviewLogsLink("viewComments", interviewLogsDialog, interviewLogPanel, true) {
 
         private static final long serialVersionUID = -5561038138085317724L;
 
@@ -178,7 +178,7 @@ public class InterviewPage extends BasePage {
         }
 
       });
-      add(new ViewInterviewLogsLink("viewLog", interviewLogsDialog, interviewLogPanel) {
+      add(new ViewInterviewLogsLink("viewLog", interviewLogsDialog, interviewLogPanel, false) {
 
         private static final long serialVersionUID = -5561038138085317724L;
 
@@ -355,6 +355,7 @@ public class InterviewPage extends BasePage {
         public void onViewLogs(AjaxRequestTarget target, String stage, boolean commentsOnly) {
           interviewLogPanel.setStageName(stage);
           interviewLogPanel.setCommentsOnly(commentsOnly);
+          interviewLogPanel.setReadOnly(true);
           interviewLogPanel.addInterviewLogComponent();
 
           interviewLogsDialog.show(target);
@@ -429,15 +430,20 @@ public class InterviewPage extends BasePage {
 
     private InterviewLogPanel interviewLogPanel;
 
-    public ViewInterviewLogsLink(String id, Dialog interviewLogsDialog, InterviewLogPanel interviewLogPanel) {
+    private boolean commentsOnly;
+
+    public ViewInterviewLogsLink(String id, Dialog interviewLogsDialog, InterviewLogPanel interviewLogPanel, boolean commentsOnly) {
       super(id);
       this.interviewLogsDialog = interviewLogsDialog;
       this.interviewLogPanel = interviewLogPanel;
+      this.commentsOnly = commentsOnly;
     }
 
     @Override
     public void onClick(AjaxRequestTarget target) {
       interviewLogPanel.setStageName(null);
+      interviewLogPanel.setCommentsOnly(commentsOnly);
+      interviewLogPanel.setReadOnly(false);
       interviewLogPanel.addInterviewLogComponent();
 
       interviewLogsDialog.show(target);
@@ -476,8 +482,8 @@ public class InterviewPage extends BasePage {
     }
   }
 
-  private ViewInterviewLogsLink createIconLink(String id, Dialog dialog, InterviewLogPanel interviewLogPanel) {
-    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel) {
+  private ViewInterviewLogsLink createIconLink(String id, Dialog dialog, InterviewLogPanel interviewLogPanel, boolean commentsOnly) {
+    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel, commentsOnly) {
 
       private static final long serialVersionUID = 1L;
 

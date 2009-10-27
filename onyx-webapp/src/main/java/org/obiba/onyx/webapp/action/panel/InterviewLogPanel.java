@@ -73,6 +73,12 @@ public class InterviewLogPanel extends Panel {
   @SpringBean
   private ActionDefinitionConfiguration actionDefinitionConfiguration;
 
+  /**
+   * Indicates whether the <code>InterviewLogPanel</code> is in "read-only" mode -- i.e., whether or not the "Add"
+   * button is shown.
+   */
+  private boolean readOnly;
+
   public InterviewLogPanel(String id, final int tableBodyHeight, IModel model) {
     super(id, model);
     add(new ScrollableTableBodyBehaviour(tableBodyHeight));
@@ -116,6 +122,10 @@ public class InterviewLogPanel extends Panel {
 
   public void setCommentsOnly(boolean commentsOnly) {
     ((LoadableInterviewLogModel) getDefaultModel()).setCommentsOnly(commentsOnly);
+  }
+
+  public void setReadOnly(boolean readOnly) {
+    this.readOnly = readOnly;
   }
 
   public class CommentFragment extends Fragment {
@@ -226,6 +236,10 @@ public class InterviewLogPanel extends Panel {
         addCommentDialog.show(target);
       }
 
+      @Override
+      public boolean isVisible() {
+        return !InterviewLogPanel.this.readOnly;
+      }
     });
   }
 
