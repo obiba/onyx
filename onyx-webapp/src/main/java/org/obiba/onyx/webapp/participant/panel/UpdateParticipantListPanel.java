@@ -171,7 +171,7 @@ public class UpdateParticipantListPanel extends Panel {
     public ConfirmationFragment(String id) {
       super(id, "confirmationFragment", UpdateParticipantListPanel.this);
 
-      RadioGroup<Serializable> radioGroup = new RadioGroup<Serializable>("radioGroup", new Model<Serializable>());
+      RadioGroup<Serializable> radioGroup = new RadioGroup<Serializable>("appointmentListUploadRadioGroup", new Model<Serializable>());
       add(radioGroup);
       setRadioOptions(radioGroup);
 
