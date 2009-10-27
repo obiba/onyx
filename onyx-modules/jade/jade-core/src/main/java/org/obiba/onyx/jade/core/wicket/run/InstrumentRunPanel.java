@@ -18,9 +18,11 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -76,6 +78,7 @@ public class InstrumentRunPanel extends Panel {
     if(run == null) {
       throw new IllegalStateException("No instrument run in session.");
     }
+    modal.setTitle(getTitle(run));
 
     setDefaultModel(new DetachableEntityModel(queryService, run));
 
@@ -95,11 +98,17 @@ public class InstrumentRunPanel extends Panel {
     if(run == null) {
       throw new IllegalStateException("No instrument run in session.");
     }
+    modal.setTitle(getTitle(run));
 
     setDefaultModel(new DetachableEntityModel(queryService, run));
     if(measure != null) setMeasure(measure);
 
     build();
+  }
+
+  private IModel<String> getTitle(InstrumentRun run) {
+    String instrumentName = new SpringStringResourceModel(run.getInstrumentType() + ".description", run.getInstrumentType()).getString();
+    return new StringResourceModel("CollectedDataTitle", this, new Model<ValueMap>(new ValueMap("instrument=" + instrumentName)));
   }
 
   /**
