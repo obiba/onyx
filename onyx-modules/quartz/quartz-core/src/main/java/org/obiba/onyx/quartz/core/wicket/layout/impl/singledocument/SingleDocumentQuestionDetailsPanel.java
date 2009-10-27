@@ -27,7 +27,7 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
     Label questionLabel;
     add(questionLabel = new Label("label", new Model<String>(questionName)));
 
-    if(question.hasSubQuestions()) {
+    if(question.hasSubQuestions() && !question.isArrayOfSharedCategories()) {
       questionLabel.setVisible(false);
     }
 
