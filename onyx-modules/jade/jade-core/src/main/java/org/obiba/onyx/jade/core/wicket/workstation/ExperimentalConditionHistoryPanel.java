@@ -213,7 +213,6 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
       });
       columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("User"), "user", "user.fullName"));
-      columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("Workstation"), "workstation", "workstation"));
 
       if(experimentalCondition != null) {
         for(final ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {

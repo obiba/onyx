@@ -79,23 +79,63 @@
     <instrumentType>Impedance418</instrumentType>
     <attribute>
       <name>20kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>19</minimum>      
+            <maximum>21</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>40kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>39</minimum>      
+            <maximum>41</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>60kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>59</minimum>      
+            <maximum>61</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>80kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>79</minimum>      
+            <maximum>81</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>100kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>99</minimum>      
+            <maximum>101</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
   </instrumentCalibration>  
  
@@ -151,23 +191,63 @@
     <instrumentType>Weight803</instrumentType>
     <attribute>
       <name>20kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>19</minimum>      
+            <maximum>21</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>40kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>39</minimum>      
+            <maximum>41</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>60kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>59</minimum>      
+            <maximum>61</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>80kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>79</minimum>      
+            <maximum>81</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>100kg</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
+      <validators>
+        <dataValidator dataType="DECIMAL">
+          <rangeValidator>
+            <minimum>99</minimum>      
+            <maximum>101</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
   </instrumentCalibration>  
 
@@ -178,15 +258,31 @@
       <name>Temperature</name>
       <type>INTEGER</type>
       <unit>°C</unit>
+      <validators>
+        <dataValidator dataType="INTEGER">
+          <rangeValidator>
+            <minimum>-40</minimum>      
+            <maximum>35</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>      
     </attribute>
     <attribute>
       <name>RelativeHumidity</name>
       <type>INTEGER</type>
       <unit>%</unit>
+      <validators>
+        <dataValidator dataType="INTEGER">
+          <rangeValidator>
+            <minimum>0</minimum>      
+            <maximum>100</maximum>
+          </rangeValidator>
+        </dataValidator>
+      </validators>       
     </attribute>
     <attribute>
       <name>FVC</name>
-      <type>INTEGER</type>
+      <type>DECIMAL</type>
       <unit>L</unit>      
     </attribute>
     <attribute>
