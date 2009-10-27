@@ -113,7 +113,7 @@ public class WorkstationPanel extends Panel {
   private Dialog createAddInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
     addInstrumentDialog.setTitle(new StringResourceModel("AddInstrument", this, null));
-    addInstrumentDialog.setInitialHeight(224);
+    addInstrumentDialog.setInitialHeight(234);
     addInstrumentDialog.setInitialWidth(400);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");

@@ -251,7 +251,7 @@ public class ActionsPanel extends Panel {
     @Override
     public void onClick(AjaxRequestTarget target) {
       EditInstrumentPanel component = new EditInstrumentPanel("content", new Model<Instrument>(instrument), editInstrumentWindow);
-      component.add(new AttributeModifier("class", true, new Model<String>("obiba-content instrument-panel-content")));
+      component.add(new AttributeModifier("class", true, new Model<String>("obiba-content instrument-panel-content-edit")));
       editInstrumentWindow.setContent(component);
       editInstrumentWindow.show(target);
     }
@@ -261,7 +261,7 @@ public class ActionsPanel extends Panel {
   private Dialog createEditInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
     addInstrumentDialog.setTitle(new ResourceModel("EditInstrument"));
-    addInstrumentDialog.setInitialHeight(224);
+    addInstrumentDialog.setInitialHeight(204);
     addInstrumentDialog.setInitialWidth(400);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
