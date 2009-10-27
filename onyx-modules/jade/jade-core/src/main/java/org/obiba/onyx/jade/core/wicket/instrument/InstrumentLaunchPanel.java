@@ -351,7 +351,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     return skipMeasure;
   }
 
-  private boolean isMeasureComplete(InstrumentRun modelObject) {
+  public boolean isMeasureComplete(InstrumentRun modelObject) {
     if(measuresList != null) {
       return (modelObject.getValidMeasureCount() == measuresList.getExpectedMeasureCount());
     }

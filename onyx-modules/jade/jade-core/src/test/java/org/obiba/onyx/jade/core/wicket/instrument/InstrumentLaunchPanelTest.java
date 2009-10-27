@@ -164,6 +164,12 @@ public class InstrumentLaunchPanelTest {
       public void onInstrumentLaunch() {
         // do nothing
       }
+
+      @Override
+      public boolean isMeasureComplete(InstrumentRun modelObject) {
+        return false;
+      }
+
     };
 
     return instrumentLaunchPanel;
