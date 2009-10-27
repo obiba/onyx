@@ -28,6 +28,7 @@ import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
@@ -67,6 +68,8 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
   private InstrumentService instrumentServiceMock;
 
+  private ActiveInterviewService activeInterviewServiceMock;
+
   @Autowired
   private InstrumentService instrumentService;
 
@@ -84,12 +87,14 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     // Initialize mocks.
     userSessionService = createMock(UserSessionService.class);
     instrumentServiceMock = createMock(InstrumentService.class);
+    activeInterviewServiceMock = createMock(ActiveInterviewService.class);
 
     // Initialize activeInstrumentRunService (class being tested).
     activeInstrumentRunService = new DefaultActiveInstrumentRunServiceImpl();
     activeInstrumentRunService.setPersistenceManager(persistenceManager);
     activeInstrumentRunService.setUserSessionService(userSessionService);
     activeInstrumentRunService.setInstrumentService(instrumentServiceMock);
+    activeInstrumentRunService.setActiveInterviewService(activeInterviewServiceMock);
 
     // Initialize instrumentTypes.
     instrumentTypes = (Map<String, InstrumentType>) instrumentTypeFactoryBean.getObject();
@@ -567,6 +572,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
   private void resetMocks() {
     reset(userSessionService);
     reset(instrumentServiceMock);
+    reset(activeInterviewServiceMock);
   }
 
   private void initInstrumentServiceMock(InstrumentType instrumentType, boolean replay) {
@@ -625,9 +631,10 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     // Record mock expectations.
     expect(userSessionService.getUser()).andReturn(user);
     expect(userSessionService.getWorkstation()).andReturn(WORKSTATION);
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
 
     // Stop recording mock expectations.
-    replay(userSessionService);
+    replay(userSessionService, activeInterviewServiceMock);
 
     // Verify that there is no current InstrumentRun.
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();

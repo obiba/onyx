@@ -45,6 +45,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />
     <property name="instrumentService" ref="instrumentService" />
+    <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
   
   <bean id="instrumentTypeFactory" class="org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean" scope="singleton">

@@ -21,6 +21,7 @@ import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.data.InstrumentParameterDataSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -55,6 +56,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   //
   // Instance Variables
   //
+
+  private ActiveInterviewService activeInterviewService;
 
   private InstrumentService instrumentService;
 
@@ -169,6 +172,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRun getInstrumentRun() {
+    // ONYX-961: Calling this method will throw a NoSuchInterviewException
+    // if the current session does not have a lock on an interview.
+    activeInterviewService.getParticipant();
+
     log.debug("currentRunId={}", currentRunId);
     if(currentRunId == null) return null;
 
@@ -421,6 +428,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   //
   // Methods
   //
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
 
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
