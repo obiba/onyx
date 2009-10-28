@@ -543,6 +543,10 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
   margin-bottom:0px;
 }
 
+.wizard-content em {
+ font-weight:bold;
+}
+
 .wizard-body {
   	border-top:1px solid #C65F02;
 	margin-top:5px;

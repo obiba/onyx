@@ -45,23 +45,14 @@ public class InstrumentBarcodeConverter implements IConverter {
     template.setBarcode(value);
 
     Instrument instrument = queryService.matchOne(template);
-    ConversionException cex;
     if(instrument == null) {
-      cex = new ConversionException("No instrument for barcode: '" + value + "'");
-      cex.setResourceKey("InstrumentBarcodeConverter.NoInstrumentForBarcode");
-      throw cex;
+      displayConversionErrorMsg(value, "InstrumentBarcodeConverter.NoInstrumentForBarcode");
     } else if(!instrumentType.getName().equals(instrument.getType())) {
-      cex = new ConversionException("Instrument is of the wrong type: '" + value + "'");
-      cex.setResourceKey("InstrumentBarcodeConverter.WrongInstrumentType");
-      throw cex;
+      displayConversionErrorMsg(value, "InstrumentBarcodeConverter.WrongInstrumentType");
     } else if(!instrument.getStatus().equals(InstrumentStatus.ACTIVE)) {
-      cex = new ConversionException("Not an active instrument: '" + value + "'");
-      cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrument");
-      throw cex;
+      displayConversionErrorMsg(value, "InstrumentBarcodeConverter.NotAnActiveInstrument");
     } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument)) {
-      cex = new ConversionException("Not an instrument for current workstation: '" + value + "'");
-      cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrumentForCurrentWorkstation");
-      throw cex;
+      displayConversionErrorMsg(value, "InstrumentBarcodeConverter.NotAnActiveInstrumentForCurrentWorkstation");
     }
 
     return instrument;
@@ -73,4 +64,9 @@ public class InstrumentBarcodeConverter implements IConverter {
       return ((Instrument) value).getBarcode();
   }
 
+  private void displayConversionErrorMsg(String value, String msgKey) {
+    ConversionException cex = new ConversionException("No instrument for barcode: '" + value + "'");
+    cex.setResourceKey(msgKey);
+    throw cex;
+  }
 }

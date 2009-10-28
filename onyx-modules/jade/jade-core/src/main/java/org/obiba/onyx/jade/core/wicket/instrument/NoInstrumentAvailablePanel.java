@@ -19,6 +19,8 @@ public class NoInstrumentAvailablePanel extends Panel {
 
   public NoInstrumentAvailablePanel(String id) {
     super(id);
-    add(new MultiLineLabel("noInstrumentAvailableMessage", new ResourceModel("NoInstrumentAvailable")));
+    MultiLineLabel message;
+    add(message = new MultiLineLabel("noInstrumentAvailableMessage", new ResourceModel("NoInstrumentAvailable")));
+    message.setEscapeModelStrings(false);
   }
 }
