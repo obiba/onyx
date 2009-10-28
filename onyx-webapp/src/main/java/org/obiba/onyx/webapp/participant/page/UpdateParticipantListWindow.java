@@ -153,22 +153,6 @@ public class UpdateParticipantListWindow extends Dialog {
     updateSubmitLink.setVisible(true);
     detailsLink.setVisible(false);
 
-    setCloseButtonCallback(new CloseButtonCallback() {
-      private static final long serialVersionUID = 1L;
-
-      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        return true;
-      }
-    });
-
-    setWindowClosedCallback(new WindowClosedCallback() {
-      private static final long serialVersionUID = 1L;
-
-      public void onClose(AjaxRequestTarget target, Status status) {
-        if(status != null && status.equals(Dialog.Status.CANCELLED)) UpdateParticipantListWindow.this.close(target);
-      }
-    });
-
     getForm().setMaxSize(Bytes.megabytes(2));
     getForm().setMultiPart(true);
 

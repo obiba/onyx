@@ -171,7 +171,10 @@ public class Dialog extends ModalWindow {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        Dialog.this.setStatus(Status.CLOSED);
+        // Don't overwrite SUCCESS or ERROR status when closing the dialog.
+        if(!Status.SUCCESS.equals(Dialog.this.getStatus()) && !Status.ERROR.equals(Dialog.this.getStatus())) {
+          Dialog.this.setStatus(Status.CLOSED);
+        }
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
           ModalWindow.closeCurrent(target);
         }

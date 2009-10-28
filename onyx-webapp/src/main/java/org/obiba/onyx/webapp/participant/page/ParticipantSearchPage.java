@@ -27,7 +27,6 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeActi
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -69,8 +68,10 @@ import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.DisplayTooltipBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
@@ -225,10 +226,20 @@ public class ParticipantSearchPage extends BasePage {
     add(participantList);
 
     updateParticipantListWindow = new UpdateParticipantListWindow("updateParticipantListWindow");
-    updateParticipantListWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-      public void onClose(AjaxRequestTarget target) {
-        target.addComponent(participantList);
-        target.appendJavascript("styleParticipantSearchNavigationBar();");
+    updateParticipantListWindow.setWindowClosedCallback(new WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Dialog.Status status) {
+        if(Dialog.Status.SUCCESS.equals(status)) {
+          ParticipantEntityList replacement = getAllParticipantsList();
+          replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+          replaceParticipantList(target, replacement);
+        } else {
+          updateParticipantListWindow.close(target);
+        }
+      }
+    });
+    updateParticipantListWindow.setCloseButtonCallback(new CloseButtonCallback() {
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+        return true;
       }
     });
     add(updateParticipantListWindow);
