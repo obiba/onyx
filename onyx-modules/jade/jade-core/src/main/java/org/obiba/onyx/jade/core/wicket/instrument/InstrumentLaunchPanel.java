@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import java.io.Serializable;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
@@ -32,6 +33,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
@@ -109,6 +111,14 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
     measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
+
+    add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
+
+      protected void onTimer(AjaxRequestTarget target) {
+        target.addComponent(measuresList);
+
+      }
+    });
 
     IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
