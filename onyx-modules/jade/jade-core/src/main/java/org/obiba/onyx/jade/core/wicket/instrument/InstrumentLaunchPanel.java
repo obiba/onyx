@@ -115,9 +115,11 @@ public abstract class InstrumentLaunchPanel extends Panel {
     add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
 
       protected void onTimer(AjaxRequestTarget target) {
-        target.addComponent(measuresList);
-
+        if(!skipMeasurement) {
+          measuresList.refresh(target);
+        }
       }
+
     });
 
     IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
