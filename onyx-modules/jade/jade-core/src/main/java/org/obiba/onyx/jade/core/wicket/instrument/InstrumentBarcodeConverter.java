@@ -29,20 +29,13 @@ public class InstrumentBarcodeConverter implements IConverter {
 
   private EntityQueryService queryService;
 
-  private boolean activeOnly;
-
   private InstrumentType instrumentType;
 
   InstrumentService instrumentService;
 
   public InstrumentBarcodeConverter(EntityQueryService queryService, InstrumentService instrumentService, InstrumentType instrumentType) {
-    this(queryService, instrumentService, true);
     this.instrumentType = instrumentType;
-  }
-
-  public InstrumentBarcodeConverter(EntityQueryService queryService, InstrumentService instrumentService, boolean activeOnly) {
     this.queryService = queryService;
-    this.activeOnly = activeOnly;
     this.instrumentService = instrumentService;
   }
 
@@ -50,20 +43,23 @@ public class InstrumentBarcodeConverter implements IConverter {
     if(value == null) return null;
     Instrument template = new Instrument();
     template.setBarcode(value);
-    template.setType(instrumentType.getName());
 
     Instrument instrument = queryService.matchOne(template);
-
+    ConversionException cex;
     if(instrument == null) {
-      ConversionException cex = new ConversionException("No instrument for barcode: '" + value + "'");
+      cex = new ConversionException("No instrument for barcode: '" + value + "'");
       cex.setResourceKey("InstrumentBarcodeConverter.NoInstrumentForBarcode");
       throw cex;
-    } else if(activeOnly && !instrument.getStatus().equals(InstrumentStatus.ACTIVE)) {
-      ConversionException cex = new ConversionException("Not an active instrument: '" + value + "'");
+    } else if(!instrumentType.getName().equals(instrument.getType())) {
+      cex = new ConversionException("Instrument is of the wrong type: '" + value + "'");
+      cex.setResourceKey("InstrumentBarcodeConverter.WrongInstrumentType");
+      throw cex;
+    } else if(!instrument.getStatus().equals(InstrumentStatus.ACTIVE)) {
+      cex = new ConversionException("Not an active instrument: '" + value + "'");
       cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrument");
       throw cex;
     } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument)) {
-      ConversionException cex = new ConversionException("Not an active instrument for current workstation: '" + value + "'");
+      cex = new ConversionException("Not an instrument for current workstation: '" + value + "'");
       cex.setResourceKey("InstrumentBarcodeConverter.NotAnActiveInstrumentForCurrentWorkstation");
       throw cex;
     }

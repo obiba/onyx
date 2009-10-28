@@ -93,6 +93,8 @@ public class InstrumentWizardForm extends WizardForm {
 
   private WizardStepPanel warningStep;
 
+  private WizardStepPanel noInstrumentAvailableStep;
+
   private ActionWindow actionWindow;
 
   private StageModel stageModel;
@@ -117,6 +119,7 @@ public class InstrumentWizardForm extends WizardForm {
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
     instrumentSelectionStep = new InstrumentSelectionStep(getStepId(), instrumentTypeModel);
+    noInstrumentAvailableStep = new NoInstrumentAvailableStep(getStepId());
     inputParametersStep = new InputParametersStep(getStepId());
     instrumentLaunchStep = new InstrumentLaunchStep(getStepId());
     conclusionStep = new ConclusionStep(getStepId());
@@ -260,11 +263,14 @@ public class InstrumentWizardForm extends WizardForm {
     WizardStepPanel startStep = startStepWhenResuming;
     WizardStepPanel lastStep = null;
 
-    List<Instrument> activeInstrumentsForCurrentWorkstation = instrumentService.getActiveInstrumentsAssignedToCurrentWorkstation((InstrumentType) getModelObject());
+    List<Instrument> activeInstrumentsForCurrentWorkstation = instrumentService.getActiveInstrumentsForCurrentWorkstation((InstrumentType) getModelObject());
     log.debug("instruments.count={}", activeInstrumentsForCurrentWorkstation.size());
-    if(activeInstrumentsForCurrentWorkstation.size() == 0 || activeInstrumentsForCurrentWorkstation.size() > 1) {
-      // Either found no instruments or too many instruments of the correct type.
-      // In both cases we will prompt the user to enter the instrument they will be using for this measure.
+    if(activeInstrumentsForCurrentWorkstation.size() == 0) {
+      startStep = noInstrumentAvailableStep;
+      lastStep = startStep;
+    } else if(activeInstrumentsForCurrentWorkstation.size() > 1) {
+      // Found too many instruments of the correct type.
+      // Prompt the user to enter the instrument they will be using for this measure.
       if(startStep == null || startStep.equals(instrumentSelectionStep)) {
         startStep = instrumentSelectionStep;
         lastStep = startStep;
