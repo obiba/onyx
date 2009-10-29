@@ -166,4 +166,10 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     }
     return false;
   }
+
+  public void deleteInstrument(Instrument instrument) {
+    if(instrument == null) throw new IllegalArgumentException("The instrument must not be null.");
+    getPersistenceManager().delete(instrument);
+  }
+
 }

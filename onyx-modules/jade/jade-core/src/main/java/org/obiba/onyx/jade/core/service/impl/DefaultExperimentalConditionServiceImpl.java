@@ -116,4 +116,9 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
     }
     return instrumentCalibrations;
   }
+
+  public void deleteExperimentalCondition(ExperimentalCondition experimentalCondition) {
+    if(experimentalCondition == null) throw new IllegalArgumentException("The experimentalCondition must not be null.");
+    getPersistenceManager().delete(experimentalCondition);
+  }
 }

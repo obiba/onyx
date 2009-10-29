@@ -128,4 +128,11 @@ public interface InstrumentService {
    * @param instrument, workstation
    */
   public void updateWorkstation(Instrument instrument, String workstation);
+
+  /**
+   * Deletes the supplied {@link Instrument}.
+   * @param instrument Instrument to delete.
+   * @throws IllegalArgumentException if instrument is null.
+   */
+  public void deleteInstrument(Instrument instrument);
 }

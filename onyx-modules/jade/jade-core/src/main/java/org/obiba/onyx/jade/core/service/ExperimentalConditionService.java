@@ -83,4 +83,11 @@ public interface ExperimentalConditionService {
    */
   public Attribute getAttribute(ExperimentalConditionValue experimentalConditionValue);
 
+  /**
+   * Deletes the supplied {@link ExperimentalCondition} and all it's children.
+   * @param experimentalCondition ExperimentalCondition to delete.
+   * @throws IllegalArgumentException if experimentalCondition is null;
+   */
+  public void deleteExperimentalCondition(ExperimentalCondition experimentalCondition);
+
 }

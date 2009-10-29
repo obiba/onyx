@@ -28,12 +28,19 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
@@ -44,8 +51,13 @@ public class ActionsPanel extends Panel {
 
   private Dialog editInstrumentWindow;
 
+  private Dialog deleteInstrumentConfirmationWindow;
+
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
+
+  @SpringBean
+  private InstrumentRunService instrumentRunService;
 
   @SpringBean
   private InstrumentService instrumentService;
@@ -64,6 +76,9 @@ public class ActionsPanel extends Panel {
 
     editInstrumentWindow = createEditInstrumentWindow("editInstrumentWindow");
     add(editInstrumentWindow);
+
+    deleteInstrumentConfirmationWindow = createDeleteInstrumentConfirmationDialogWindow("deleteConfirmationDialog");
+    add(deleteInstrumentConfirmationWindow);
 
     RepeatingView repeating = new RepeatingView("link");
     add(repeating);
@@ -95,6 +110,7 @@ public class ActionsPanel extends Panel {
     linkInfoList.add(new InactivateLinkInfo("Inactivate", instrument));
     linkInfoList.add(new ActivateLinkInfo("Activate", instrument));
     linkInfoList.add(new EditLinkInfo("Edit", instrument));
+    linkInfoList.add(new DeleteLinkInfo("Delete", instrument));
     return linkInfoList;
   }
 
@@ -266,5 +282,85 @@ public class ActionsPanel extends Panel {
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
     return addInstrumentDialog;
+  }
+
+  private class DeleteLinkInfo extends LinkInfo {
+    private static final long serialVersionUID = 1L;
+
+    public DeleteLinkInfo(String name, Instrument instrument) {
+      super(name, instrument);
+    }
+
+    @Override
+    public boolean isVisible() {
+      InstrumentRun template = new InstrumentRun();
+      template.setInstrument(instrument);
+      return instrumentRunService.getInstrumentRuns(template).isEmpty();
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      String instrumentType = new SpringStringResourceModel(instrument.getType() + ".description", instrument.getType()).getString();
+      StringResourceModel questionModel = new StringResourceModel("DeleteInstrumentConfirmationQuestion", ActionsPanel.this, new Model<ValueMap>(new ValueMap("instrumentType=" + instrumentType + ",barcode=" + instrument.getBarcode())));
+      Label question = new Label("content", questionModel);
+      question.add(new AttributeModifier("class", true, new Model<String>("obiba-content delete-instrument-dialog")));
+      deleteInstrumentConfirmationWindow.setContent(question);
+
+      deleteInstrumentConfirmationWindow.setCloseButtonCallback(new CloseButtonCallback() {
+        private static final long serialVersionUID = 1L;
+
+        public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+          if(status.equals(Status.YES)) {
+            deleteInstrumentCalibrations(instrument.getBarcode());
+            instrumentService.deleteInstrument(instrument);
+          }
+          return true;
+        }
+
+      });
+
+      deleteInstrumentConfirmationWindow.setWindowClosedCallback(new WindowClosedCallback() {
+        private static final long serialVersionUID = 1L;
+
+        public void onClose(AjaxRequestTarget target, Status status) {
+          if(status.equals(Status.YES)) {
+            // Refresh instrument list.
+            target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+          }
+        }
+
+      });
+
+      deleteInstrumentConfirmationWindow.show(target);
+    }
+
+    private void deleteInstrumentCalibrations(String barcode) {
+      List<ExperimentalCondition> experimentalConditions = getExperimentalConditions(barcode);
+      for(ExperimentalCondition ec : experimentalConditions) {
+        experimentalConditionService.deleteExperimentalCondition(ec);
+      }
+    }
+
+    private List<ExperimentalCondition> getExperimentalConditions(String barcode) {
+      ExperimentalCondition template = new ExperimentalCondition();
+      ExperimentalConditionValue ecv = new ExperimentalConditionValue();
+      ecv.setAttributeType(DataType.TEXT);
+      ecv.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+      ecv.setData(new Data(DataType.TEXT, barcode));
+      ecv.setExperimentalCondition(template);
+      template.addExperimentalConditionValue(ecv);
+
+      return experimentalConditionService.getExperimentalConditions(template);
+    }
+  }
+
+  private Dialog createDeleteInstrumentConfirmationDialogWindow(String id) {
+    Dialog deleteInstrumentConfirmationDialog = new Dialog(id);
+    deleteInstrumentConfirmationDialog.setTitle(new ResourceModel("DeleteInstrumentConfirmationTitle"));
+    deleteInstrumentConfirmationDialog.setInitialHeight(95);
+    deleteInstrumentConfirmationDialog.setInitialWidth(400);
+    deleteInstrumentConfirmationDialog.setType(Dialog.Type.PLAIN);
+    deleteInstrumentConfirmationDialog.setOptions(Dialog.Option.YES_NO_OPTION);
+    return deleteInstrumentConfirmationDialog;
   }
 }

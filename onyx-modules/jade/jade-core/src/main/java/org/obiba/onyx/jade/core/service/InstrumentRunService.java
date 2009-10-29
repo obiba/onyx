@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service;
 
+import java.util.List;
+
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -24,6 +26,13 @@ public interface InstrumentRunService {
    * @return
    */
   public InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName);
+
+  /**
+   * Get the List of {@list InstrumentRun}s that match the provided InstrumentRun template.
+   * @param instrumentRun The InstrumentRun template to match. Providing null will return all InstrumentRuns.
+   * @return A list of matching InstrumentRun values.
+   */
+  public List<InstrumentRun> getInstrumentRuns(InstrumentRun instrumentRun);
 
   /**
    * Find the value from the run of the instrument of the given type for given participant.

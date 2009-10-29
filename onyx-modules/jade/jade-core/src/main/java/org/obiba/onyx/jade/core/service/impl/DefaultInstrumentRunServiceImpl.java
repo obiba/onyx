@@ -43,6 +43,11 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
     return null;
   }
 
+  public List<InstrumentRun> getInstrumentRuns(InstrumentRun instrumentRun) {
+    if(instrumentRun == null) instrumentRun = new InstrumentRun();
+    return getPersistenceManager().match(instrumentRun, SortingClause.create("id", false));
+  }
+
   public void deleteInstrumentRun(Participant participant, String instrumentTypeName) {
     InstrumentRun instrumentRun = getInstrumentRun(participant, instrumentTypeName);
     if(instrumentRun != null) {
