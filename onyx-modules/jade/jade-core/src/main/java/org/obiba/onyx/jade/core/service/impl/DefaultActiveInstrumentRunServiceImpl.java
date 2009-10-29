@@ -277,6 +277,16 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return runValue;
   }
 
+  public InstrumentRunValue getInstrumentRunValue(String parameterCode, Measure measure) {
+    InstrumentRunValue valueTemplate = new InstrumentRunValue();
+    valueTemplate.setInstrumentParameter(parameterCode);
+    valueTemplate.setMeasure(measure);
+
+    InstrumentRunValue runValue = getPersistenceManager().matchOne(valueTemplate);
+
+    return runValue;
+  }
+
   public List<InstrumentRunValue> getInstrumentRunValues(String parameterCode) {
     InstrumentParameter parameter = getAndCheckInstrumentParameter(parameterCode);
     InstrumentRun instrumentRun = getInstrumentRun();
@@ -296,11 +306,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       }
     } else {
       for(Measure measure : instrumentRun.getMeasures()) {
-        InstrumentRunValue valueTemplate = new InstrumentRunValue();
-        valueTemplate.setInstrumentParameter(parameter.getCode());
-        valueTemplate.setMeasure(measure);
 
-        InstrumentRunValue runValue = getPersistenceManager().matchOne(valueTemplate);
+        InstrumentRunValue runValue = getInstrumentRunValue(parameter.getCode(), measure);
 
         if(runValue != null) {
           runValues.add(runValue);
@@ -580,6 +587,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
+    return checkIntegrity(outputParams, null);
+  }
+
+  public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams, Measure measure) {
     HashMap<IntegrityCheck, InstrumentOutputParameter> failedChecks = new HashMap<IntegrityCheck, InstrumentOutputParameter>();
 
     for(InstrumentOutputParameter param : outputParams) {
@@ -593,7 +604,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
         }
 
         boolean checkFailed = false;
-        for(InstrumentRunValue runValue : getInstrumentRunValues(param.getCode())) {
+        List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
+        if(measure == null) {
+          runValues.addAll(getInstrumentRunValues(param.getCode()));
+        } else {
+          runValues.add(getInstrumentRunValue(param.getCode(), measure));
+        }
+
+        for(InstrumentRunValue runValue : runValues) {
 
           Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
 

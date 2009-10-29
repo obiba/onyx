@@ -101,6 +101,14 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public InstrumentRunValue getInstrumentRunValue(String code);
 
   /**
+   * Get the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current InstrumentRun, Measure.
+   * @param code The parameter code.
+   * @param measure The measure.
+   * @return InstrumentRunValue for the specified measure & parameter code.
+   */
+  public InstrumentRunValue getInstrumentRunValue(String parameterCode, Measure measure);
+
+  /**
    * Get the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current {@code InstrumentRun}.
    * @param code
    * @return empty list if none
@@ -193,5 +201,14 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @return list of integrity checks (description) that failed (empty list if none)
    */
   public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams);
+
+  /**
+   * For each output parameter of a measure, performs all integrity checks of type <code>ERROR</code>.
+   * 
+   * @param outputParams Output parameters
+   * @param measure Specific measure on which the integrity check will be run.
+   * @return List of integrity checks (description) that failed (empty list if none)
+   */
+  public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams, Measure measure);
 
 }
