@@ -110,6 +110,14 @@ public class Instrument extends AbstractEntity {
     this.status = status;
   }
 
+  public InstrumentUsage getUsage() {
+    if(getStatus().equals(InstrumentStatus.ACTIVE)) {
+      return (getWorkstation() != null ? InstrumentUsage.RESERVED : InstrumentUsage.SHARED);
+    } else {
+      return InstrumentUsage.OUT_OF_SERVICE;
+    }
+  }
+
   public String getWorkstation() {
     return workstation;
   }

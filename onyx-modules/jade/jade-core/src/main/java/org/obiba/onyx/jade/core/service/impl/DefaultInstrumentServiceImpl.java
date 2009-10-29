@@ -97,17 +97,18 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
   }
 
   public void updateInstrument(Instrument instrument) {
-    Instrument persitedIntrument = (instrument.getId() != null) ? getPersistenceManager().get(Instrument.class, instrument.getId()) : instrument;
+    Instrument persistedIntrument = (instrument.getId() != null) ? getPersistenceManager().get(Instrument.class, instrument.getId()) : instrument;
 
     if(instrument.getId() != null) {
-      persitedIntrument.setName(instrument.getName());
-      persitedIntrument.setVendor(instrument.getVendor());
-      persitedIntrument.setModel(instrument.getModel());
-      persitedIntrument.setSerialNumber(instrument.getSerialNumber());
-      persitedIntrument.setWorkstation(instrument.getWorkstation());
+      persistedIntrument.setName(instrument.getName());
+      persistedIntrument.setVendor(instrument.getVendor());
+      persistedIntrument.setModel(instrument.getModel());
+      persistedIntrument.setSerialNumber(instrument.getSerialNumber());
+      persistedIntrument.setWorkstation(instrument.getWorkstation());
+      persistedIntrument.setStatus(instrument.getStatus());
     }
 
-    getPersistenceManager().save(persitedIntrument);
+    getPersistenceManager().save(persistedIntrument);
   }
 
   public void updateStatus(Instrument instrument, InstrumentStatus status) {

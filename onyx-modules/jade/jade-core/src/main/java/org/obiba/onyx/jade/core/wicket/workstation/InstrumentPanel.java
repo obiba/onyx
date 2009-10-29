@@ -16,15 +16,17 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -33,6 +35,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentUsage;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -40,10 +43,21 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class EditInstrumentPanel extends Panel {
+public class InstrumentPanel extends Panel {
+  //
+  // Constants
+  //
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(InstrumentPanel.class);
+
+  //
+  // Instance Variables
+  //
 
   @SpringBean
   private InstrumentService instrumentService;
@@ -57,11 +71,24 @@ public class EditInstrumentPanel extends Panel {
 
   private DropDownChoice<InstrumentType> measurementDropDown;
 
-  private boolean currentWorkstation = false;
+  /**
+   * Indicates whether the <code>InstrumentPanel</code> should be created in "edit" mode (as opposed to "add" mode).
+   */
+  private boolean editMode;
 
-  public EditInstrumentPanel(String id, IModel<Instrument> instrumentModel, Dialog addInstrumentWindow) {
+  //
+  // Constructors
+  //
+
+  public InstrumentPanel(String id, IModel<Instrument> instrumentModel, Dialog instrumentWindow, boolean editMode) {
     super(id, instrumentModel);
     setDefaultModel(instrumentModel);
+
+    this.editMode = editMode;
+    if(!editMode) {
+      instrumentModel.getObject().setStatus(InstrumentStatus.ACTIVE);
+      instrumentModel.getObject().setWorkstation(userSessionService.getWorkstation());
+    }
 
     add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
@@ -69,8 +96,39 @@ public class EditInstrumentPanel extends Panel {
     add(instrumentFragment = new InstrumentFragment("instrumentFragmentContent", instrumentModel));
     instrumentFragment.setOutputMarkupId(true);
 
+    addMeasurementField();
+    addBarcodeField();
+    registerWindowCallbacks(instrumentWindow);
+  }
+
+  //
+  // Methods
+  //
+
+  public void setInstrumentUsage(InstrumentUsage usage) {
+    if(usage.equals(InstrumentUsage.RESERVED)) {
+      ((Instrument) getDefaultModelObject()).setStatus(InstrumentStatus.ACTIVE);
+      ((Instrument) getDefaultModelObject()).setWorkstation(userSessionService.getWorkstation());
+    } else if(usage.equals(InstrumentUsage.SHARED)) {
+      ((Instrument) getDefaultModelObject()).setStatus(InstrumentStatus.ACTIVE);
+      ((Instrument) getDefaultModelObject()).setWorkstation(null);
+    } else {
+      ((Instrument) getDefaultModelObject()).setStatus(InstrumentStatus.INACTIVE);
+      ((Instrument) getDefaultModelObject()).setWorkstation(null);
+    }
+  }
+
+  public InstrumentUsage getInstrumentUsage() {
+    return ((Instrument) getDefaultModelObject()).getUsage();
+  }
+
+  /**
+   * @param editMode
+   * @param instrumentTypeModel
+   */
+  private void addMeasurementField() {
     // Model saves an instrument type name (as a String) and returns the associated InstrumentType.
-    PropertyModel<InstrumentType> instrumentTypeModel = new PropertyModel<InstrumentType>(instrumentModel, "type") {
+    PropertyModel<InstrumentType> instrumentTypeModel = new PropertyModel<InstrumentType>(getDefaultModel(), "type") {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -80,7 +138,6 @@ public class EditInstrumentPanel extends Panel {
 
     };
 
-    // measurement field
     measurementDropDown = new DropDownChoice<InstrumentType>("measurementSelect", instrumentTypeModel, new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()), new IChoiceRenderer<InstrumentType>() {
       private static final long serialVersionUID = 1L;
 
@@ -93,13 +150,21 @@ public class EditInstrumentPanel extends Panel {
       }
     });
 
+    measurementDropDown.setEnabled(!editMode);
     measurementDropDown.setLabel(new ResourceModel("Measurement"));
     measurementDropDown.setRequired(true);
     measurementDropDown.setOutputMarkupId(true);
     add(measurementDropDown);
+  }
 
-    // barcode field
-    TextField barcode = new TextField("barcode", new PropertyModel(instrumentModel, "barcode"));
+  /**
+   * @param instrumentModel
+   * @param editMode
+   */
+  private void addBarcodeField() {
+    TextField<String> barcode = new TextField<String>("barcode", new PropertyModel<String>(getDefaultModel(), "barcode"));
+    barcode.setEnabled(!editMode);
+
     barcode.add(new AjaxFormComponentUpdatingBehavior("onchange") {
       private static final long serialVersionUID = 1L;
 
@@ -115,19 +180,23 @@ public class EditInstrumentPanel extends Panel {
             instrumentFragment.getVendor().setEnabled(false);
             instrumentFragment.getModel().setEnabled(false);
             instrumentFragment.getSerialNumber().setEnabled(false);
-            instrumentFragment.getWorkstation().setEnabled(false);
+
+            // Set usage to RESERVED, so that clicking Register re-assigns instrument to current workstation.
+            setDefaultModelObject(instrument);
+            setInstrumentUsage(InstrumentUsage.RESERVED);
+
             displayInstrument(instrument);
             target.addComponent(measurementDropDown);
-            target.appendJavascript("$('.obiba-button-ok').attr('disabled','true');$('.obiba-button-ok').css('color','rgba(0, 0, 0, 0.2)');$('.obiba-button-ok').css('border-color','rgba(0, 0, 0, 0.2)');");
 
           } else {
+            // In case of back and forth, between existing and non-existing instruments.
+            setDefaultModelObject(new Instrument());
+
             // Enable form in order to add a new instrument.
             instrumentFragment.getName().setEnabled(true);
             instrumentFragment.getVendor().setEnabled(true);
             instrumentFragment.getModel().setEnabled(true);
             instrumentFragment.getSerialNumber().setEnabled(true);
-            instrumentFragment.getWorkstation().setEnabled(true);
-            target.appendJavascript("$('.obiba-button-ok').attr('disabled','');$('.obiba-button-ok').css('color','');$('.obiba-button-ok').css('border-color','');");
             instrumentFragment.getInstructions().setVisible(true);
             clearForm(target);
           }
@@ -148,9 +217,14 @@ public class EditInstrumentPanel extends Panel {
     barcode.setRequired(true);
     barcode.setOutputMarkupId(true);
     add(barcode);
+  }
 
+  /**
+   * @param instrumentWindow
+   */
+  private void registerWindowCallbacks(Dialog instrumentWindow) {
     // actions to perform on submit
-    addInstrumentWindow.setCloseButtonCallback(new CloseButtonCallback() {
+    instrumentWindow.setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
@@ -164,74 +238,68 @@ public class EditInstrumentPanel extends Panel {
       }
     });
 
-    addInstrumentWindow.setWindowClosedCallback(new WindowClosedCallback() {
+    instrumentWindow.setWindowClosedCallback(new WindowClosedCallback() {
       private static final long serialVersionUID = 1L;
 
       public void onClose(AjaxRequestTarget target, Status status) {
 
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
           Instrument instrument = (Instrument) getDefaultModelObject();
-          instrument.setStatus(InstrumentStatus.ACTIVE);
-          if(EditInstrumentPanel.this.currentWorkstation) {
-            instrument.setWorkstation(userSessionService.getWorkstation());
-          } else {
-            instrument.setWorkstation(null);
-          }
           instrumentService.updateInstrument(instrument);
         }
-        target.addComponent(EditInstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+        target.addComponent(InstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
       }
     });
   }
 
   private void displayInstrument(Instrument instrument) {
-    EditInstrumentPanel.this.setDefaultModelObject(instrument);
+    InstrumentPanel.this.setDefaultModelObject(instrument);
     measurementDropDown.setChoices(Arrays.asList(new InstrumentType[] { instrumentService.getInstrumentType(instrument.getType()) }));
 
     measurementDropDown.setEnabled(false);
-    if(instrument.getWorkstation() != null) {
-      currentWorkstation = (instrument.getWorkstation().equals(userSessionService.getWorkstation()));
-      if(!currentWorkstation) {
-        instrumentFragment.getWorkstation().setEnabled(false);
-        instrument.setWorkstation(null);
-      }
-    } else {
-      currentWorkstation = false;
-    }
+
     instrumentFragment.getInstructions().setVisible(false);
   }
 
   private void clearForm(AjaxRequestTarget target) {
-    currentWorkstation = false;
+    ((Instrument) getDefaultModelObject()).setStatus(InstrumentStatus.ACTIVE);
+    ((Instrument) getDefaultModelObject()).setWorkstation(userSessionService.getWorkstation());
+
     if(measurementDropDown.isEnabled() == false) {
       measurementDropDown.setEnabled(true);
       measurementDropDown.setChoices(new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()));
       target.addComponent(measurementDropDown);
-      EditInstrumentPanel.this.setDefaultModelObject(new Instrument());
+      InstrumentPanel.this.setDefaultModelObject(new Instrument());
     }
     instrumentFragment.getName().setDefaultModelObject(null);
     instrumentFragment.getVendor().setDefaultModelObject(null);
     instrumentFragment.getModel().setDefaultModelObject(null);
     instrumentFragment.getSerialNumber().setDefaultModelObject(null);
-    instrumentFragment.getWorkstation().setEnabled(true);
   }
 
   private void displayFeedback(AjaxRequestTarget target) {
-    FeedbackWindow feedback = EditInstrumentPanel.this.getFeedback();
+    FeedbackWindow feedback = InstrumentPanel.this.getFeedback();
     feedback.setContent(new FeedbackPanel("content"));
     feedback.show(target);
   }
 
-  @SuppressWarnings("unchecked")
-  public class InstrumentFragment extends Fragment {
+  public FeedbackWindow getFeedback() {
+    return feedback;
+  }
+
+  public void setFeedback(FeedbackWindow feedback) {
+    this.feedback = feedback;
+  }
+
+  //
+  // Inner Classes
+  //
+
+  class InstrumentFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
 
     private Label instructions;
-
-    private CheckBox workstation;
-
-    private Component workstationLabel;
 
     private TextField name;
 
@@ -241,8 +309,22 @@ public class EditInstrumentPanel extends Panel {
 
     private TextField serialNumber;
 
+    private RadioGroup instrumentRadioGroup;
+
+    private Radio reserveInstrument;
+
+    private Component reserveInstrumentLabel;
+
+    private Radio shareInstrument;
+
+    private Component shareInstrumentLabel;
+
+    private Radio deactivateInstrument;
+
+    private Component deactivateInstrumentLabel;
+
     public InstrumentFragment(String id, IModel<Instrument> instrumentModel) {
-      super(id, "instrumentFragment", EditInstrumentPanel.this);
+      super(id, "instrumentFragment", InstrumentPanel.this);
 
       // instructions
       instructions = new Label("instructions", new StringResourceModel("AddInstrumentInstructions", this, null));
@@ -266,22 +348,25 @@ public class EditInstrumentPanel extends Panel {
       serialNumber = new TextField("serialNumber", new PropertyModel(instrumentModel, "serialNumber"));
       add(serialNumber);
 
-      add(workstation = new CheckBox("workstation", new PropertyModel(EditInstrumentPanel.this, "currentWorkstation")));
-      add(workstationLabel = new FormComponentLabel("workstationLabel", workstation));
+      instrumentRadioGroup = new RadioGroup<InstrumentUsage>("instrumentRadioGroup", new PropertyModel<InstrumentUsage>(InstrumentPanel.this, "instrumentUsage")) {
+        private static final long serialVersionUID = 1L;
 
-      // When editing an existing instrument, don't show the "assign to current workstation" check box.
-      if(instrumentModel.getObject().getBarcode() != null) {
-        workstation.setVisible(false);
-        workstationLabel.setVisible(false);
-      }
+        public boolean isVisible() {
+          return InstrumentPanel.this.editMode;
+        }
+      };
+      add(instrumentRadioGroup);
+
+      instrumentRadioGroup.add(reserveInstrument = new Radio<InstrumentUsage>("reserveInstrument", new Model<InstrumentUsage>(InstrumentUsage.RESERVED)));
+      instrumentRadioGroup.add(reserveInstrumentLabel = new FormComponentLabel("reserveInstrumentLabel", reserveInstrument));
+      instrumentRadioGroup.add(shareInstrument = new Radio<InstrumentUsage>("shareInstrument", new Model<InstrumentUsage>(InstrumentUsage.SHARED)));
+      instrumentRadioGroup.add(shareInstrumentLabel = new FormComponentLabel("shareInstrumentLabel", shareInstrument));
+      instrumentRadioGroup.add(deactivateInstrument = new Radio<InstrumentUsage>("deactivateInstrument", new Model<InstrumentUsage>(InstrumentUsage.OUT_OF_SERVICE)));
+      instrumentRadioGroup.add(deactivateInstrumentLabel = new FormComponentLabel("deactivateInstrumentLabel", deactivateInstrument));
     }
 
     public Label getInstructions() {
       return instructions;
-    }
-
-    public CheckBox getWorkstation() {
-      return workstation;
     }
 
     public TextField getName() {
@@ -299,13 +384,5 @@ public class EditInstrumentPanel extends Panel {
     public TextField getSerialNumber() {
       return serialNumber;
     }
-  }
-
-  public FeedbackWindow getFeedback() {
-    return feedback;
-  }
-
-  public void setFeedback(FeedbackWindow feedback) {
-    this.feedback = feedback;
   }
 }

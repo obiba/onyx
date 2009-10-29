@@ -105,10 +105,6 @@ public class ActionsPanel extends Panel {
   private List<LinkInfo> getListOfLinkInfo(Instrument instrument) {
     List<LinkInfo> linkInfoList = new ArrayList<LinkInfo>();
     linkInfoList.add(new CalibrateLinkInfo("Calibrate", instrument));
-    linkInfoList.add(new AssignLinkInfo("Assign", instrument));
-    linkInfoList.add(new ReleaseLinkInfo("Release", instrument));
-    linkInfoList.add(new InactivateLinkInfo("Inactivate", instrument));
-    linkInfoList.add(new ActivateLinkInfo("Activate", instrument));
     linkInfoList.add(new EditLinkInfo("Edit", instrument));
     linkInfoList.add(new DeleteLinkInfo("Delete", instrument));
     return linkInfoList;
@@ -181,82 +177,6 @@ public class ActionsPanel extends Panel {
     }
   }
 
-  private class AssignLinkInfo extends LinkInfo {
-    private static final long serialVersionUID = 1L;
-
-    public AssignLinkInfo(String name, Instrument instrument) {
-      super(name, instrument);
-    }
-
-    @Override
-    public boolean isVisible() {
-      return instrument.getStatus().equals(InstrumentStatus.ACTIVE) && instrument.getWorkstation() == null;
-    }
-
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      instrumentService.updateWorkstation(instrument, userSessionService.getWorkstation());
-      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
-    }
-  }
-
-  private class ReleaseLinkInfo extends LinkInfo {
-    private static final long serialVersionUID = 1L;
-
-    public ReleaseLinkInfo(String name, Instrument instrument) {
-      super(name, instrument);
-    }
-
-    @Override
-    public boolean isVisible() {
-      return (instrument.getWorkstation() != null);
-    }
-
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      instrumentService.updateWorkstation(instrument, null);
-      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
-    }
-  }
-
-  private class InactivateLinkInfo extends LinkInfo {
-    private static final long serialVersionUID = 1L;
-
-    public InactivateLinkInfo(String name, Instrument instrument) {
-      super(name, instrument);
-    }
-
-    @Override
-    public boolean isVisible() {
-      return instrument.getStatus().equals(InstrumentStatus.ACTIVE);
-    }
-
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      instrumentService.updateStatus(instrument, InstrumentStatus.INACTIVE);
-      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
-    }
-  }
-
-  private class ActivateLinkInfo extends LinkInfo {
-    private static final long serialVersionUID = 1L;
-
-    public ActivateLinkInfo(String name, Instrument instrument) {
-      super(name, instrument);
-    }
-
-    @Override
-    public boolean isVisible() {
-      return !instrument.getStatus().equals(InstrumentStatus.ACTIVE);
-    }
-
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      instrumentService.updateStatus(instrument, InstrumentStatus.ACTIVE);
-      target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
-    }
-  }
-
   private class EditLinkInfo extends LinkInfo {
     private static final long serialVersionUID = 1L;
 
@@ -266,7 +186,7 @@ public class ActionsPanel extends Panel {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      EditInstrumentPanel component = new EditInstrumentPanel("content", new Model<Instrument>(instrument), editInstrumentWindow);
+      InstrumentPanel component = new InstrumentPanel("content", new Model<Instrument>(instrument), editInstrumentWindow, true);
       component.add(new AttributeModifier("class", true, new Model<String>("obiba-content instrument-panel-content-edit")));
       editInstrumentWindow.setContent(component);
       editInstrumentWindow.show(target);
@@ -277,7 +197,7 @@ public class ActionsPanel extends Panel {
   private Dialog createEditInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
     addInstrumentDialog.setTitle(new ResourceModel("EditInstrument"));
-    addInstrumentDialog.setInitialHeight(204);
+    addInstrumentDialog.setInitialHeight(234);
     addInstrumentDialog.setInitialWidth(400);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");

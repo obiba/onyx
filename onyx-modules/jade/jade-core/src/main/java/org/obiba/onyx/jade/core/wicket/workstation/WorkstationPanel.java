@@ -97,7 +97,7 @@ public class WorkstationPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        EditInstrumentPanel component = new EditInstrumentPanel("content", new Model<Instrument>(new Instrument()), addInstrumentWindow);
+        InstrumentPanel component = new InstrumentPanel("content", new Model<Instrument>(new Instrument()), addInstrumentWindow, false);
         component.add(new AttributeModifier("class", true, new Model("obiba-content instrument-panel-content")));
         addInstrumentWindow.setContent(component);
         addInstrumentWindow.show(target);
@@ -112,11 +112,11 @@ public class WorkstationPanel extends Panel {
 
   private Dialog createAddInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
-    addInstrumentDialog.setTitle(new StringResourceModel("AddInstrument", this, null));
+    addInstrumentDialog.setTitle(new ResourceModel("RegisterInstrument"));
     addInstrumentDialog.setInitialHeight(234);
     addInstrumentDialog.setInitialWidth(400);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
-    addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
+    addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Register");
     return addInstrumentDialog;
   }
 
@@ -188,7 +188,7 @@ public class WorkstationPanel extends Panel {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Instrument instrument = (Instrument) rowModel.getObject();
-          cellItem.add(new Label(componentId, new ResourceModel("InstrumentStatus." + instrument.getStatus())));
+          cellItem.add(new Label(componentId, new ResourceModel("InstrumentUsage." + instrument.getUsage())));
         }
 
       });
