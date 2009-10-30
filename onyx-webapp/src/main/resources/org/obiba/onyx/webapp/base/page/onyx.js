@@ -193,6 +193,23 @@ function styleParticipantSearchNavigationBar() {
 	$('.entityTable tr.navigation div.navigatorLabel > span').insertBefore('div#participantPageSearchResults h1.results-list');
 	$('.entityTable tr.navigation').empty();
 }
+
+//////////////////////////////////////////////////////////////////////
+// Experimental Condition and Instrument Calibration Table navigation bar styling. Moves the paging navigation from the
+// line below the table title to the far right of the table title.
+// parentId = id of parent container element. A div for example.
+//////////////////////////////////////////////////////////////////////
+function styleOnyxEntityListNavigationBar(parentId) {    
+    $('#newNavigatorLabel' + parentId).remove();
+    $('#newNavigator' + parentId).remove();
+    $('#' + parentId + ' .entityTable tr.navigation div.navigatorLabel > span').attr( 'id', 'newNavigatorLabel' + parentId );
+    $('#' + parentId + ' .entityTable tr.navigation div.navigatorLabel > span').addClass( 'newNavigatorLabel' );
+    $('#' + parentId + ' .entityTable tr.navigation div.navigator > span').attr( 'id', 'newNavigator' + parentId );
+    $('#' + parentId + ' .entityTable tr.navigation div.navigator > span').addClass( 'newNavigator' );
+    $('#' + parentId + ' .entityTable tr.navigation div.navigatorLabel > span').appendTo('#' + parentId + ' div .command');
+    $('#' + parentId + ' .entityTable tr.navigation div.navigator > span').appendTo('#' + parentId + ' div .command');
+    $('#' + parentId + ' .entityTable tr.navigation').empty();
+}
         
 //////////////////////////////////////////////////////////////////////
 // JQuery Layout

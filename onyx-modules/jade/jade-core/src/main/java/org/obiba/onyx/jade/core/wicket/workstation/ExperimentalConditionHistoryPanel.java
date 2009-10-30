@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -108,6 +109,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
         OnyxEntityList<ExperimentalCondition> newTable = getTable(pageSize);
         list.replaceWith(newTable);
         list = newTable;
+        target.appendJavascript("styleOnyxEntityListNavigationBar('" + getMarkupId() + "');");
         target.addComponent(list);
       }
 
@@ -139,7 +141,16 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
     SpringStringResourceModel titleModel = new SpringStringResourceModel(selectedInstrumentCalibration.getName(), selectedInstrumentCalibration.getName());
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(ec);
-    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(ec), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), titleModel);
+    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(ec), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), titleModel) {
+      @Override
+      protected void onPageChanged() {
+        IRequestTarget target = getRequestCycle().getRequestTarget();
+        if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
+          ((AjaxRequestTarget) target).appendJavascript("styleOnyxEntityListNavigationBar('" + ExperimentalConditionHistoryPanel.this.getMarkupId() + "');");
+        }
+        super.onPageChanged();
+      }
+    };
     list.setPageSize(pageSize);
     return list;
 
@@ -159,7 +170,16 @@ public class ExperimentalConditionHistoryPanel extends Panel {
     experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(template.getName());
 
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template);
-    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title);
+    OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title) {
+      @Override
+      protected void onPageChanged() {
+        IRequestTarget target = getRequestCycle().getRequestTarget();
+        if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
+          ((AjaxRequestTarget) target).appendJavascript("styleOnyxEntityListNavigationBar('" + ExperimentalConditionHistoryPanel.this.getMarkupId() + "');");
+        }
+        super.onPageChanged();
+      }
+    };
     list.setPageSize(pageSize);
     add(list);
   }
@@ -279,6 +299,15 @@ public class ExperimentalConditionHistoryPanel extends Panel {
       }
     }
     return experimentalConditionLogAttributeMap;
+  }
+
+  @Override
+  protected void onAfterRender() {
+    super.onAfterRender();
+    IRequestTarget target = getRequestCycle().getRequestTarget();
+    if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
+      ((AjaxRequestTarget) target).appendJavascript("styleOnyxEntityListNavigationBar('" + getMarkupId() + "');");
+    }
   }
 
 }
