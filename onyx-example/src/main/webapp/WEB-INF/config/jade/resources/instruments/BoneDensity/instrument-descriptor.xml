@@ -36,34 +36,6 @@
   </expectedMeasureCount>
 
   <instrumentParameters>
-    <!-- <interpretative>(remove)
-      <code>IV_FRACTURE_LEFT_FOOT</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>ASKED</type>
-    </interpretative>
-
-    <interpretative>(remove)
-      <code>IV_FRACTURE_RIGHT_FOOT</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>ASKED</type>
-    </interpretative>
-
-    <interpretative>(remove)
-      <code>IV_METAL_WORK_LEFT_HEEL</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>ASKED</type>
-    </interpretative>
-
-    <interpretative>(remove)
-      <code>IV_METAL_WORK_RIGHT_HEEL</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>ASKED</type>
-    </interpretative>    -->
-
     <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>

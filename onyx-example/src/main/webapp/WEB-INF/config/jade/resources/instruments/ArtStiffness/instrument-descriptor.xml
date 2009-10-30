@@ -3,14 +3,6 @@
 
   <name>ArtStiffness</name>
 
-  <!-- <contraindications>(remove)
-    <contraIndication>
-      <code>Other_CI</code>
-      <requiresDescription>true</requiresDescription>
-      <type>OBSERVED</type>
-    </contraIndication>
-  </contraindications> -->
-
   <instrumentParameters>
   
     <input>
@@ -23,29 +15,40 @@
     </input>  
   
     <input>
+      <code>INPUT_PARTICIPANT_BARCODE</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="hashedDataSource">
+        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>      
+        <hashedStringMaxLength>10</hashedStringMaxLength>      
+      	<dataSource class="participantPropertyDataSource">
+          <property>barcode</property>
+      	</dataSource>
+      </dataSource> 
+    </input>    
+  
+    <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="hashedDataSource">  
-        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>        
-        <hashedStringMaxLength>10</hashedStringMaxLength>        
-        <dataSource class="participantPropertyDataSource">
+      <dataSource class="hashedDataSource">
+        <hashedStringMaxLength>25</hashedStringMaxLength>      
+      	<dataSource class="participantPropertyDataSource">
           <property>lastName</property>
-        </dataSource>
-      </dataSource>
+      	</dataSource>
+      </dataSource>  
     </input>
 
     <input>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="hashedDataSource">  
-        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>         
-        <hashedStringMaxLength>10</hashedStringMaxLength>        
-        <dataSource class="participantPropertyDataSource">
+      <dataSource class="hashedDataSource">
+        <hashedStringMaxLength>25</hashedStringMaxLength>      
+      	<dataSource class="participantPropertyDataSource">
           <property>firstName</property>
-        </dataSource>
-      </dataSource>
+      	</dataSource>
+      </dataSource>    	
     </input>
 
     <input>

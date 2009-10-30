@@ -39,11 +39,11 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(SphygmoCorInstrumentRunner.class);
 
-  private static final Integer participantId = 123;
-
   //
   // Instance variables
   //
+
+  private Integer participantId = 123;
 
   private ExternalAppLauncherHelper externalAppHelper;
 
@@ -80,7 +80,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
     participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
-
+    participantId = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_BARCODE").getValue();
     systolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE").getValue();
     diastolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE").getValue();
 

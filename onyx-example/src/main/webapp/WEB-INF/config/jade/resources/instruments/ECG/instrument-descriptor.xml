@@ -3,21 +3,13 @@
 
   <name>ECG</name>
 
-  <!-- <contraindications>(removed)
-   <contraIndication>
-      <code>Other_CI</code>
-      <requiresDescription>true</requiresDescription>
-      <type>OBSERVED</type>
-    </contraIndication>
-  </contraindications> -->
-
   <instrumentParameters>
     <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="hashedDataSource">  
-        <hashedStringMaxLength>10</hashedStringMaxLength>  
+        <hashedStringMaxLength>30</hashedStringMaxLength>  
         <dataSource class="participantPropertyDataSource">
           <property>barcode</property>
         </dataSource>
@@ -29,7 +21,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="hashedDataSource">  
-        <hashedStringMaxLength>10</hashedStringMaxLength>  
+        <hashedStringMaxLength>30</hashedStringMaxLength>  
         <dataSource class="participantPropertyDataSource">
           <property>lastName</property>
         </dataSource>    
@@ -41,7 +33,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="hashedDataSource">  
-        <hashedStringMaxLength>10</hashedStringMaxLength>     
+        <hashedStringMaxLength>30</hashedStringMaxLength>     
         <dataSource class="participantPropertyDataSource">
           <property>firstName</property>
         </dataSource>

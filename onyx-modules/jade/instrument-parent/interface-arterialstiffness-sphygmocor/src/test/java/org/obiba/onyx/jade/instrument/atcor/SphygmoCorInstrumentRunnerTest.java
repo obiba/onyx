@@ -83,6 +83,7 @@ public class SphygmoCorInstrumentRunnerTest {
     String participantFirstName = "Chantal";
     java.util.Date participantBirthDate = getBirthDate();
     String participantGender = "FEMALE";
+    int participantBarcode = 123;
     long systolicPressure = 123;
     long diastolicPressure = 65;
 
@@ -90,7 +91,7 @@ public class SphygmoCorInstrumentRunnerTest {
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME")).andReturn(DataBuilder.buildText(participantFirstName));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(DataBuilder.buildDate(participantBirthDate));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_GENDER")).andReturn(DataBuilder.buildText(participantGender));
-
+    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_BARCODE")).andReturn(DataBuilder.buildInteger(participantBarcode));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(systolicPressure));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(diastolicPressure));
     expect(instrumentExecutionServiceMock.getInputParameterValue("SPHYGMOCOR_SYSTEM_ID")).andReturn(DataBuilder.buildText("01400"));
