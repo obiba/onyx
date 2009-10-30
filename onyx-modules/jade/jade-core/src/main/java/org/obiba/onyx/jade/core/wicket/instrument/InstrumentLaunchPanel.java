@@ -112,15 +112,17 @@ public abstract class InstrumentLaunchPanel extends Panel {
     });
     measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
 
-    add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
+    if(activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+      add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
 
-      protected void onTimer(AjaxRequestTarget target) {
-        if(!skipMeasurement) {
-          measuresList.refresh(target);
+        protected void onTimer(AjaxRequestTarget target) {
+          if(!skipMeasurement) {
+            measuresList.refresh(target);
+          }
         }
-      }
 
-    });
+      });
+    }
 
     IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
