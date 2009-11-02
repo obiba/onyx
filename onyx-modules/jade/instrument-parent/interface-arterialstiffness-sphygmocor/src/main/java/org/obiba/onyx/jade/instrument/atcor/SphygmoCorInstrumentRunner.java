@@ -80,7 +80,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
     participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
-    participantId = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_BARCODE").getValue();
+    participantId = new Integer(instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_BARCODE").getValueAsString());
     systolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE").getValue();
     diastolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE").getValue();
 

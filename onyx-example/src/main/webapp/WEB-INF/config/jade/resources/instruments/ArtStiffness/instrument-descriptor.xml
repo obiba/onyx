@@ -16,11 +16,11 @@
   
     <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
-      <dataType>INTEGER</dataType>
+      <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="hashedDataSource">
-        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>      
-        <hashedStringMaxLength>10</hashedStringMaxLength>      
+        <hashedStringFilter>[a-zA-Z]</hashedStringFilter>      
+        <hashedStringMaxLength>9</hashedStringMaxLength>      
       	<dataSource class="participantPropertyDataSource">
           <property>barcode</property>
       	</dataSource>
@@ -32,6 +32,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="hashedDataSource">
+        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>         
         <hashedStringMaxLength>25</hashedStringMaxLength>      
       	<dataSource class="participantPropertyDataSource">
           <property>lastName</property>
@@ -44,6 +45,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="hashedDataSource">
+        <hashedStringFilter>[^a-zA-Z]</hashedStringFilter>        
         <hashedStringMaxLength>25</hashedStringMaxLength>      
       	<dataSource class="participantPropertyDataSource">
           <property>firstName</property>
