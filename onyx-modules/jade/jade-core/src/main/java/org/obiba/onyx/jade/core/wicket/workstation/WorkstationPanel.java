@@ -25,6 +25,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -83,7 +84,19 @@ public class WorkstationPanel extends Panel {
     super(id);
 
     addInstrumentContent();
-    add(new WorkstationLogPanel("workstationLogPanel"));
+
+    final WorkstationLogPanel workstationLogPanel = new WorkstationLogPanel("workstationLogPanel");
+    WebMarkupContainer workstationLogBorder = new WebMarkupContainer("workstationLogBorder") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public boolean isVisible() {
+        return workstationLogPanel.isVisible();
+      }
+
+    };
+    add(workstationLogBorder);
+    workstationLogBorder.add(workstationLogPanel);
 
   }
 

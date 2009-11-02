@@ -133,7 +133,10 @@ public class WorkstationLogPanel extends Panel {
       template.setName(selectedExperimentalConditionLog.getName());
       template.setWorkstation(userSessionService.getWorkstation());
     }
-    IModel titleModel = new SpringStringResourceModel(selectedExperimentalConditionLog.getName(), selectedExperimentalConditionLog.getName());
+    IModel<String> titleModel = new Model<String>();
+    if(selectedExperimentalConditionLog != null) {
+      titleModel = new SpringStringResourceModel(selectedExperimentalConditionLog.getName(), selectedExperimentalConditionLog.getName());
+    }
     return new ExperimentalConditionHistoryPanel("experimentalConditionHistoryPanel", template, titleModel, 5);
   }
 
@@ -144,6 +147,11 @@ public class WorkstationLogPanel extends Panel {
       result.add(log);
     }
     return result;
+  }
+
+  @Override
+  public boolean isVisible() {
+    return !getExperimentalConditionLogs().isEmpty();
   }
 
 }
