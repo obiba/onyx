@@ -12,7 +12,7 @@ package org.obiba.onyx.jade.core.wicket.workstation;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +73,6 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
   private Instrument instrument;
 
-  /** Map of experimental condition log attributes present in the xml configuration file. */
-  private Map<String, Attribute> experimentalConditionLogAttributeMap;
-
   public ExperimentalConditionHistoryPanel(String id, List<InstrumentCalibration> instrumentCalibrations, final int pageSize, Instrument instrument) {
     super(id);
     setOutputMarkupId(true);
@@ -127,7 +124,6 @@ public class ExperimentalConditionHistoryPanel extends Panel {
   }
 
   private OnyxEntityList<ExperimentalCondition> getTable(int pageSize) {
-    experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(selectedInstrumentCalibration.getName());
 
     ExperimentalCondition ec = new ExperimentalCondition();
     ec.setName(selectedInstrumentCalibration.getName());
@@ -166,8 +162,6 @@ public class ExperimentalConditionHistoryPanel extends Panel {
     selectCalibrationId.add(instrumentCalibrationChoice);
     add(selectCalibrationId);
     selectCalibrationId.setVisible(false);
-
-    experimentalConditionLogAttributeMap = getExperimentalConditionLogAttributeMap(template.getName());
 
     List<ExperimentalCondition> conditions = experimentalConditionService.getExperimentalConditions(template);
     OnyxEntityList<ExperimentalCondition> list = new OnyxEntityList<ExperimentalCondition>("experimentalConditionHistoryList", new ExperimentalConditionProvider(template), new ExperimentalConditionColumnProvider(conditions.size() > 0 ? conditions.get(0) : null), title) {
@@ -235,28 +229,25 @@ public class ExperimentalConditionHistoryPanel extends Panel {
       columns.add(new PropertyColumn<ExperimentalCondition>(new SpringStringResourceModel("User"), "user", "user.fullName"));
 
       if(experimentalCondition != null) {
-        for(final ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
+        for(final ExperimentalConditionValue value : getExperimentalConditionValuesSortedInXmlConfigurationFileOrder(experimentalCondition.getExperimentalConditionValues())) {
 
-          // Only display the value if the attribute is present in the Condition Log XML configuration.
-          if(experimentalConditionLogAttributeMap.containsKey(value.getAttributeName())) {
-            String unit = experimentalConditionService.getAttribute(value).getUnit();
-            unit = surroundStringIfNotNull(unit, " (", ")");
-            columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit), value.getAttributeName()) {
-              private static final long serialVersionUID = 1L;
+          String unit = experimentalConditionService.getAttribute(value).getUnit();
+          unit = surroundStringIfNotNull(unit, " (", ")");
+          columns.add(new AbstractColumn<ExperimentalCondition>(new Model(new SpringStringResourceModel(value.getAttributeName(), value.getAttributeName()).getObject() + unit), value.getAttributeName()) {
+            private static final long serialVersionUID = 1L;
 
-              public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-                DetachableEntityModel<ExperimentalCondition> ec = (DetachableEntityModel<ExperimentalCondition>) rowModel;
-                Data data = new Data(DataType.TEXT, "");
-                for(ExperimentalConditionValue ecv : ((ExperimentalCondition) ec.getObject()).getExperimentalConditionValues()) {
-                  if(ecv.getAttributeName().equals(value.getAttributeName())) {
-                    data = ecv.getData();
-                  }
+            public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+              DetachableEntityModel<ExperimentalCondition> ec = (DetachableEntityModel<ExperimentalCondition>) rowModel;
+              Data data = new Data(DataType.TEXT, "");
+              for(ExperimentalConditionValue ecv : ((ExperimentalCondition) ec.getObject()).getExperimentalConditionValues()) {
+                if(ecv.getAttributeName().equals(value.getAttributeName())) {
+                  data = ecv.getData();
                 }
-                cellItem.add(new Label(componentId, new Model<String>(data.getValueAsString())));
               }
+              cellItem.add(new Label(componentId, new Model<String>(data.getValueAsString())));
+            }
 
-            });
-          }
+          });
         }
       }
 
@@ -291,14 +282,32 @@ public class ExperimentalConditionHistoryPanel extends Panel {
 
   }
 
-  private Map<String, Attribute> getExperimentalConditionLogAttributeMap(String experimentalConditionLogName) {
-    Map<String, Attribute> experimentalConditionLogAttributeMap = new HashMap<String, Attribute>();
-    if(experimentalConditionLogName != null) {
-      for(Attribute attribute : experimentalConditionService.getExperimentalConditionLogByName(experimentalConditionLogName).getAttributes()) {
-        experimentalConditionLogAttributeMap.put(attribute.getName(), attribute);
+  /**
+   * The Calibration form displays the attributes in the order they are found in the xml configuration file. We would
+   * like to display the attributes in the same order in the table. Here we explicitly sort them in that order.
+   * @param unsorted A list of attributes belonging to one {@link ExperimentalCondition}.
+   * @return a List of {@link ExperimentalConditionValue}s sort in the same order as the xml configuration file.
+   */
+  private List<ExperimentalConditionValue> getExperimentalConditionValuesSortedInXmlConfigurationFileOrder(List<ExperimentalConditionValue> unsorted) {
+    List<ExperimentalConditionValue> sorted = new ArrayList<ExperimentalConditionValue>(unsorted.size());
+    if(unsorted.isEmpty()) return sorted;
+
+    String experimentalConditionLogName = unsorted.get(0).getExperimentalCondition().getName();
+    Map<String, ExperimentalConditionValue> experimentalConditionLogAttributeMap = new LinkedHashMap<String, ExperimentalConditionValue>();
+    for(Attribute attribute : experimentalConditionService.getExperimentalConditionLogByName(experimentalConditionLogName).getAttributes()) {
+      experimentalConditionLogAttributeMap.put(attribute.getName(), null);
+    }
+
+    for(ExperimentalConditionValue ecv : unsorted) {
+      if(experimentalConditionLogAttributeMap.containsKey(ecv.getAttributeName())) {
+        experimentalConditionLogAttributeMap.put(ecv.getAttributeName(), ecv);
       }
     }
-    return experimentalConditionLogAttributeMap;
+
+    for(ExperimentalConditionValue ecv : experimentalConditionLogAttributeMap.values()) {
+      if(ecv != null) sorted.add(ecv);
+    }
+    return sorted;
   }
 
   @Override
