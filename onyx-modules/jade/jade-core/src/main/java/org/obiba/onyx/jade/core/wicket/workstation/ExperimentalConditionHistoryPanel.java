@@ -44,6 +44,7 @@ import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
@@ -293,6 +294,8 @@ public class ExperimentalConditionHistoryPanel extends Panel {
     if(unsorted.isEmpty()) return sorted;
 
     String experimentalConditionLogName = unsorted.get(0).getExperimentalCondition().getName();
+    if(!experimentalConditionLogExists(experimentalConditionLogName)) return sorted;
+
     Map<String, ExperimentalConditionValue> experimentalConditionLogAttributeMap = new LinkedHashMap<String, ExperimentalConditionValue>();
     for(Attribute attribute : experimentalConditionService.getExperimentalConditionLogByName(experimentalConditionLogName).getAttributes()) {
       experimentalConditionLogAttributeMap.put(attribute.getName(), null);
@@ -308,6 +311,13 @@ public class ExperimentalConditionHistoryPanel extends Panel {
       if(ecv != null) sorted.add(ecv);
     }
     return sorted;
+  }
+
+  private boolean experimentalConditionLogExists(String experimentalConditionLogName) {
+    for(ExperimentalConditionLog ecl : experimentalConditionService.getExperimentalConditionLog()) {
+      if(ecl.getName().equals(experimentalConditionLogName)) return true;
+    }
+    return false;
   }
 
   @Override
