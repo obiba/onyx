@@ -12,6 +12,10 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import java.util.Calendar;
 
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
@@ -119,12 +123,18 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   public OpenAnswerDefinitionBuilder addValidator(IValidator validator) {
     if(validator instanceof IDataValidator) {
       element.addDataValidator((IDataValidator) validator);
-      return this;
     } else if(validator instanceof StringValidator) {
-      return addValidator(validator, DataType.TEXT);
+      addValidator(validator, DataType.TEXT);
+    } else if(validator instanceof NumberValidator) { // for backward compatibility
+      IValidator convertedValidator = convertNumberValidator((NumberValidator) validator);
+      if(convertedValidator != null) {
+        addValidator(convertedValidator, element.getDataType());
+      }
     } else {
-      return addValidator(validator, element.getDataType());
+      addValidator(validator, element.getDataType());
     }
+
+    return this;
   }
 
   /**
@@ -342,5 +352,29 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public static OpenAnswerDefinitionBuilder inOpenAnswerDefinition(QuestionnaireBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
     return new OpenAnswerDefinitionBuilder(parent, openAnswerDefinition);
+  }
+
+  private IValidator convertNumberValidator(NumberValidator validator) {
+    if(validator instanceof NumberValidator.RangeValidator) {
+      NumberValidator.RangeValidator numberValidator = (NumberValidator.RangeValidator) validator;
+      return new RangeValidator(numberValidator.getMinimum(), numberValidator.getMaximum());
+    } else if(validator instanceof NumberValidator.MinimumValidator) {
+      NumberValidator.MinimumValidator numberValidator = (NumberValidator.MinimumValidator) validator;
+      return new MinimumValidator(numberValidator.getMinimum());
+    } else if(validator instanceof NumberValidator.MaximumValidator) {
+      NumberValidator.MaximumValidator numberValidator = (NumberValidator.MaximumValidator) validator;
+      return new MaximumValidator(numberValidator.getMaximum());
+    } else if(validator instanceof NumberValidator.DoubleRangeValidator) {
+      NumberValidator.DoubleRangeValidator numberValidator = (NumberValidator.DoubleRangeValidator) validator;
+      return new RangeValidator(numberValidator.getMinimum(), numberValidator.getMaximum());
+    } else if(validator instanceof NumberValidator.DoubleMinimumValidator) {
+      NumberValidator.DoubleMinimumValidator numberValidator = (NumberValidator.DoubleMinimumValidator) validator;
+      return new MinimumValidator(numberValidator.getMinimum());
+    } else if(validator instanceof NumberValidator.DoubleMaximumValidator) {
+      NumberValidator.DoubleMaximumValidator numberValidator = (NumberValidator.DoubleMaximumValidator) validator;
+      return new MaximumValidator(numberValidator.getMaximum());
+    }
+
+    return null;
   }
 }
