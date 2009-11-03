@@ -106,7 +106,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
     if(launched || instrumentRunContainsValues()) {
 
       if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRun().getStatus())) {
-        error(getString("InstrumentApplicationError"));
+        form.error(getString("InstrumentApplicationError"));
         setNextStep(null);
       } else {
 
@@ -124,7 +124,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
                 InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
                 if(param.isRequired(activeInstrumentRunService.getParticipant()) && runValue == null) {
                   log.warn("Missing value for the following manually captured and required output parameter: {}", param.getVendorName());
-                  error(getString("NoInstrumentDataSaveThem"));
+                  form.error(getString("NoInstrumentDataSaveThem"));
                   completed = false;
                   setNextStep(null);
                   break;
@@ -146,7 +146,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
               }
               if(!completed) {
                 log.warn("Missing value for the following output parameter: {}", param.getVendorName());
-                error(getString("NoInstrumentDataSaveThem"));
+                form.error(getString("NoInstrumentDataSaveThem"));
                 setNextStep(null);
                 break;
               }
@@ -159,7 +159,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
             for(Map.Entry<IntegrityCheck, InstrumentOutputParameter> entry : failedChecks.entrySet()) {
               MessageSourceResolvable resolvable = entry.getKey().getDescription(entry.getValue(), activeInstrumentRunService);
-              error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
+              form.error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
             }
 
             if(failedChecks.isEmpty()) {
@@ -177,7 +177,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
             int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
             if(currentCount < expectedCount) {
               completed = false;
-              error(getString("MissingMeasure", new Model(new ValueMap("count=" + (expectedCount - currentCount)))));
+              form.error(getString("MissingMeasure", new Model(new ValueMap("count=" + (expectedCount - currentCount)))));
               setNextStep(null);
             }
           }
@@ -186,9 +186,10 @@ public class InstrumentLaunchStep extends WizardStepPanel {
       }
 
     } else {
-      error(getString("InstrumentApplicationMustBeStarted"));
+      form.error(getString("InstrumentApplicationMustBeStarted"));
       setNextStep(null);
     }
+
   }
 
   private boolean isOutputParamCapturedManually() {
