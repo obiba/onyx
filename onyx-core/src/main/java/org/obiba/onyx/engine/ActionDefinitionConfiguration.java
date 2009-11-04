@@ -78,8 +78,8 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
     return null;
   }
 
-  public ActionDefinition getActionDefinition(String code) {
-    ActionDefinitionCode codeObj = new ActionDefinitionCode(code);
+  public ActionDefinition getActionDefinition(ActionType actionType, String code) {
+    ActionDefinitionCode codeObj = new ActionDefinitionCode(actionType, code);
     return getActionDefinition(codeObj.getType(), codeObj.getState(), codeObj.getModule(), codeObj.getStage());
   }
 
@@ -154,7 +154,7 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
    * @return an array of codes extracted from the definition.
    */
   static public String[] calculateCodes(ActionDefinition definition, String suffix) {
-    ActionDefinitionCode code = new ActionDefinitionCode(definition.getCode());
+    ActionDefinitionCode code = new ActionDefinitionCode(definition.getType(), definition.getCode());
 
     String[] codes = ActionDefinitionConfiguration.calculateCodes(code.getType(), code.getState(), code.getModule(), code.getStage());
     if(suffix != null) {
@@ -234,13 +234,18 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
 
     private String stage;
 
-    public ActionDefinitionCode(String code) {
+    public ActionDefinitionCode(ActionType actionType, String code) {
       String[] codeElements = code.split("\\.");
 
       type = (codeElements.length >= 2) ? ActionType.valueOf(codeElements[1]) : null;
       state = (codeElements.length >= 3) ? codeElements[2] : null;
       module = (codeElements.length >= 4) ? codeElements[3] : null;
       stage = (codeElements.length >= 5) ? codeElements[4] : null;
+
+      // If no type was present in the code, use the specified ActionType.
+      if(type == null) {
+        type = actionType;
+      }
     }
 
     public ActionType getType() {
