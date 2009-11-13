@@ -10,6 +10,8 @@
 package org.obiba.onyx.marble.core.wicket.wizard;
 
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -107,9 +109,10 @@ public class ConsentWizardForm extends WizardForm {
   private WizardStepPanel setupWizardFlow() {
     // get the consent mode variable value
     EnumSet<ConsentMode> supportedConsentMode = consentService.getSupportedConsentModes();
+    List<Locale> supportedConsentLocale = consentService.getSupportedConsentLocales();
     WizardStepPanel startStep;
 
-    if(supportedConsentMode.containsAll(EnumSet.allOf(ConsentMode.class))) {
+    if(supportedConsentMode.containsAll(EnumSet.allOf(ConsentMode.class)) || supportedConsentMode.contains(ConsentMode.MANUAL) && supportedConsentLocale.size() > 1) {
       startStep = consentModeSelectionStep;
       startStep.setPreviousStep(startStep);
       electronicConsentStep.setPreviousStep(startStep);

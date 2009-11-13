@@ -10,6 +10,8 @@
 package org.obiba.onyx.marble.core.service;
 
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
 
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.marble.domain.consent.Consent;
@@ -41,6 +43,12 @@ public interface ConsentService {
    * @return
    */
   public EnumSet<ConsentMode> getSupportedConsentModes();
+
+  /**
+   * Returns the value for the consent locale variable
+   * @return
+   */
+  public List<Locale> getSupportedConsentLocales();
 
   /**
    * Remove all Consents (marked as deleted or not) related to the specified Interview. This is meant to be used by the

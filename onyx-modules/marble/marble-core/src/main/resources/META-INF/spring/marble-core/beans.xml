@@ -27,6 +27,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean id="consentService" class="org.obiba.onyx.marble.core.service.impl.ConsentServiceImpl" init-method="validateInstance">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="supportedConsentModesString" value="${org.obiba.onyx.marble.consent.consentMode}" />
+    <property name="supportedConsentLocalesString" value="${org.obiba.onyx.marble.consent.availableLocale}" />
   </bean>
 
   <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl"

@@ -18,6 +18,9 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.marble.core.service.ConsentService;
+import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
 public class ManualConsentPanel extends Panel {
 
@@ -26,11 +29,23 @@ public class ManualConsentPanel extends Panel {
   @SpringBean
   private ActiveConsentService activeConsentService;
 
+  @SpringBean
+  private ConsentService consentService;
+
   public ManualConsentPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
     add(createConsentConfirmationRadio());
+
+    Consent activeConsent = activeConsentService.getConsent();
+    if(activeConsent.getLocale() == null) {
+      activeConsent.setLocale(consentService.getSupportedConsentLocales().get(0));
+    }
+
+    if(activeConsent.getMode() == null) {
+      activeConsent.setMode(ConsentMode.MANUAL);
+    }
   }
 
   @SuppressWarnings("serial")

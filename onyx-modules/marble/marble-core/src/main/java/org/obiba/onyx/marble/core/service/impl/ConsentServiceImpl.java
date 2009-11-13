@@ -12,6 +12,7 @@ package org.obiba.onyx.marble.core.service.impl;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -26,6 +27,8 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
   private static final Logger log = LoggerFactory.getLogger(ConsentServiceImpl.class);
 
   private EnumSet<ConsentMode> supportedConsentModes;
+
+  private List<Locale> supportedConsentLocales;
 
   public Consent getConsent(Interview interview) {
     Consent template = new Consent();
@@ -74,6 +77,32 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
       }
 
       this.setSupportedConsentModes(EnumSet.copyOf(consentModesList));
+    }
+  }
+
+  public List<Locale> getSupportedConsentLocales() {
+    return supportedConsentLocales;
+  }
+
+  public void setSupportedConsentLocales(List<Locale> supportedConsentLocales) {
+    this.supportedConsentLocales = supportedConsentLocales;
+  }
+
+  /**
+   * Set the supported consent locales using a comma separated set of consent locale.
+   * @param supportedConsentLocales.
+   */
+  public void setSupportedConsentLocalesString(String supportedConsentLocales) {
+    if(supportedConsentLocales != null && supportedConsentLocales.length() > 0) {
+
+      List<Locale> consentLocaleList = new ArrayList<Locale>();
+
+      String supportedConsentLocaleArray[] = supportedConsentLocales.split(",");
+      for(String locale : supportedConsentLocaleArray) {
+        consentLocaleList.add(new Locale(locale));
+      }
+
+      this.setSupportedConsentLocales(consentLocaleList);
     }
   }
 

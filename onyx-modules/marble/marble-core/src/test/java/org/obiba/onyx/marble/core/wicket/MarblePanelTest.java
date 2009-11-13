@@ -92,6 +92,8 @@ public class MarblePanelTest {
     Consent consent;
     expect(activeConsentService.getConsent(true)).andReturn(consent = new Consent());
     expect(activeConsentService.getConsent()).andReturn(consent).anyTimes();
+    expect(consentService.getSupportedConsentLocales()).andReturn(new ArrayList<Locale>());
+    expect(consentService.getSupportedConsentModes()).andReturn(EnumSet.of(ConsentMode.ELECTRONIC, ConsentMode.MANUAL));
 
     EasyMock.replay(consentService);
     EasyMock.replay(activeConsentService);
@@ -136,6 +138,8 @@ public class MarblePanelTest {
     };
     expect(activeConsentService.getConsent(true)).andReturn(consent);
     expect(activeConsentService.getConsent()).andReturn(consent).anyTimes();
+    expect(consentService.getSupportedConsentLocales()).andReturn(new ArrayList<Locale>());
+    expect(consentService.getSupportedConsentModes()).andReturn(EnumSet.of(ConsentMode.ELECTRONIC, ConsentMode.MANUAL));
 
     expect(activeConsentService.validateElectronicConsent()).andReturn(true);
     expect(activeConsentService.isConsentFormSubmitted()).andReturn(true);
