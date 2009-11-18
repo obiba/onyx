@@ -183,12 +183,11 @@
     <!-- Magma dependencies -->
     <dependency>
       <groupId>org.obiba.magma</groupId>
-      <artifactId>magma-api</artifactId>
+      <artifactId>magma-beans</artifactId>
     </dependency>
-    
     <dependency>
       <groupId>org.obiba.magma</groupId>
-      <artifactId>magma-beans</artifactId>
+      <artifactId>magma-js</artifactId>
     </dependency>
   </dependencies>
 

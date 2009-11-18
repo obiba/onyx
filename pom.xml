@@ -467,6 +467,11 @@
         <artifactId>magma-beans</artifactId>
         <version>${magma.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.obiba.magma</groupId>
+        <artifactId>magma-js</artifactId>
+        <version>${magma.version}</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>
