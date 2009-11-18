@@ -179,6 +179,17 @@
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
     </dependency>
+    
+    <!-- Magma dependencies -->
+    <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-api</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-beans</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
