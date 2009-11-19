@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.magma;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +26,8 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Factory for creating VariableValueSources for all Consent variables.
@@ -63,7 +64,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
   public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
     Set<VariableValueSource> sources = null;
 
-    setProperties(toSet("mode", "locale", "accepted", "pdfForm", "timeStart", "timeEnd"));
+    setProperties(ImmutableSet.of("mode", "locale", "accepted", "pdfForm", "timeStart", "timeEnd"));
 
     for(Stage stage : stages) {
       setPrefix(stage.getName());
@@ -110,10 +111,5 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     }
 
     return sources;
-  }
-
-  // TODO: This is duplicated elsewhere. Remove all instances and use Google Collections code instead.
-  private Set<String> toSet(String... items) {
-    return new HashSet<String>(Arrays.asList(items));
   }
 }
