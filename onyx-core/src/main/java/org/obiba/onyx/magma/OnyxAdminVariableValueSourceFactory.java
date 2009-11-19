@@ -42,7 +42,7 @@ public class OnyxAdminVariableValueSourceFactory {
 
   public static final String ONYX_COLLECTION_NAME = "onyx";
 
-  public static final String ONYX_ADMIN_PREFIX = "Onyx.Admin";
+  public static final String ONYX_ADMIN_PREFIX = "Admin";
 
   public static final String ONYX_VERSION = "onyxVersion";
 
