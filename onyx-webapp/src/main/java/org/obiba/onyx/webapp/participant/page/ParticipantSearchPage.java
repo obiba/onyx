@@ -692,11 +692,11 @@ public class ParticipantSearchPage extends BasePage {
     private static final long serialVersionUID = 1L;
 
     public ParticipantEntityList(String id, Class<Participant> type, IColumnProvider columns, IModel title) {
-      super(id, type, columns, title);
+      super(id, queryService, type, columns, title);
     }
 
     public ParticipantEntityList(String id, Participant template, IColumnProvider columns, IModel title) {
-      super(id, template, columns, title);
+      super(id, queryService, template, columns, title);
     }
 
     public ParticipantEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
