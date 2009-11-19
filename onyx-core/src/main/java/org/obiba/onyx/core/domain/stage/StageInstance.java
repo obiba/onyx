@@ -19,7 +19,7 @@ import org.obiba.onyx.engine.state.StageState;
  * A <code>StageInstance</code> is a summary of a single "run" of a <code>Stage</code>, where a "run" is a sequence
  * of transition events beginning from the READY state.
  */
-public class StageInstance {
+public class StageInstance implements Comparable<StageInstance> {
   //
   // Instance Variables
   //
@@ -41,6 +41,14 @@ public class StageInstance {
   private int interruptionCount;
 
   private boolean last;
+
+  //
+  // Comparable Methods
+  //
+
+  public int compareTo(StageInstance o) {
+    return startTime.compareTo(o.getStartTime());
+  }
 
   //
   // Methods

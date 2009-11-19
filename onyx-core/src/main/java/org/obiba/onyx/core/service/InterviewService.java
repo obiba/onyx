@@ -12,6 +12,7 @@ package org.obiba.onyx.core.service;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.stage.StageInstance;
 import org.obiba.onyx.core.domain.stage.StageTransition;
 import org.obiba.onyx.engine.Stage;
 
@@ -28,4 +29,12 @@ public interface InterviewService {
    * @return the list of stage transitions, ordered by time of occurrence (earliest first)
    */
   public List<StageTransition> getStageTransitions(Interview interview, Stage stage);
+
+  /**
+   * Returns a list of all stage instances (all stages) for a given interview.
+   * 
+   * @param interview the interview
+   * @return the list of stage instances, ordered by time of occurrence (earliest first)
+   */
+  public List<StageInstance> getStageInstances(Interview interview);
 }
