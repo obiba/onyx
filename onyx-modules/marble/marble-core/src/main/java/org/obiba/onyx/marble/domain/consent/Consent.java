@@ -10,8 +10,13 @@
 package org.obiba.onyx.marble.domain.consent;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,12 +25,14 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 
+import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
@@ -53,6 +60,9 @@ public class Consent extends AbstractEntity {
   @Lob
   @Column(length = Integer.MAX_VALUE)
   private byte[] pdfForm;
+
+  @Transient
+  private PdfReader cachedPdfReader;
 
   @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
@@ -123,6 +133,26 @@ public class Consent extends AbstractEntity {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  public Set<String> pdfFormFieldNames() {
+    return getPdfReader().getAcroFields().getFields().keySet();
+  }
+
+  @SuppressWarnings("unchecked")
+  public Map<String, String> getPdfFormFields() {
+    Map<String, String> pdfFormFields = new HashMap<String, String>();
+
+    PdfReader reader = getPdfReader();
+    Iterator<Map.Entry<String, AcroFields.Item>> acroFields = reader.getAcroFields().getFields().entrySet().iterator();
+
+    while(acroFields.hasNext()) {
+      Map.Entry<String, AcroFields.Item> entry = acroFields.next();
+      pdfFormFields.put(entry.getKey(), (entry.getValue() != null ? entry.getValue().toString() : null));
+    }
+
+    return pdfFormFields;
+  }
+
   public Boolean isDeleted() {
     return deleted;
   }
@@ -145,5 +175,20 @@ public class Consent extends AbstractEntity {
 
   public void setTimeEnd(Date timeEnd) {
     this.timeEnd = timeEnd;
+  }
+
+  private PdfReader getPdfReader() {
+    if(cachedPdfReader == null) {
+      byte[] pdfForm = getPdfForm();
+
+      // Access PDF content with IText library.
+      try {
+        cachedPdfReader = new PdfReader(pdfForm);
+      } catch(IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+
+    return cachedPdfReader;
   }
 }
