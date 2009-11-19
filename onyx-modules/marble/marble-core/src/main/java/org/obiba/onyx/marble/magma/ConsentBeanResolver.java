@@ -26,7 +26,7 @@ public class ConsentBeanResolver extends AbstractOnyxBeanResolver {
   // Instance Variables
   //
 
-  @Autowired
+  @Autowired(required = true)
   private ConsentService consentService;
 
   //
