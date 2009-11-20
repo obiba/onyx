@@ -185,10 +185,16 @@
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-beans</artifactId>
     </dependency>
+    
     <dependency>
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-js</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-filter</artifactId>
+    </dependency>    
   </dependencies>
 
   <build>
