@@ -1,0 +1,46 @@
+<destinations>
+  <destination>
+    <name>DCC</name>
+    <strategies>
+      <strategy>encrypt</strategy>
+      <strategy>zip</strategy>
+      <strategy>file</strategy>
+    </strategies>
+    <valueset entityTypeName="Participant">
+      <entities>
+        <excludeAll/>
+        <excludeAll/>
+        <script type="exclude"/>
+      </entities>
+      <variables>
+        <variableName type="include" prefix="d"/>
+        <variableAttribute type="exclude">
+          <attribute>name</attribute>
+          <value>value</value>
+        </variableAttribute>
+      </variables>
+    </valueset>
+  </destination>
+  <destination>
+    <name>Appointment Unit</name>
+    <strategies>
+      <strategy>encrypt</strategy>
+      <strategy>zip</strategy>
+      <strategy>file</strategy>
+    </strategies>
+    <valueset entityTypeName="Participant">
+      <entities>
+        <excludeAll/>
+        <excludeAll/>
+        <script type="exclude"/>
+      </entities>
+      <variables>
+        <variableName type="include" prefix="d"/>
+        <variableAttribute type="exclude">
+          <attribute>name</attribute>
+          <value>value</value>
+        </variableAttribute>
+      </variables>
+    </valueset>
+  </destination>  
+</destinations>
