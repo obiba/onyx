@@ -9,17 +9,22 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.magma;
 
+import java.util.List;
+
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
 import org.obiba.magma.beans.NoSuchBeanException;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
+import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -49,22 +54,20 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   //
 
   public boolean resolves(Class<?> type) {
-    return InstrumentRun.class.equals(type) || Contraindication.class.equals(type) || Measure.class.equals(type);
+    return InstrumentRun.class.equals(type) || Measure.class.equals(type) || Data.class.equals(type) || Contraindication.class.equals(type) || Measure.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
     if(type.equals(InstrumentRun.class)) {
-      String instrumentTypeName = extractInstrumentTypeName(variable.getName());
-      if(instrumentTypeName != null) {
-        return getInstrumentRun(valueSet, instrumentTypeName);
-      }
-    } else if(type.equals(Contraindication.class)) {
-      String instrumentTypeName = extractInstrumentTypeName(variable.getName());
-      if(instrumentTypeName != null) {
-        return getContraindication(valueSet, instrumentTypeName);
-      }
+      return resolveInstrumentRun(valueSet, variable);
     } else if(type.equals(Measure.class)) {
-      // TODO: Implement this later, when "occurrence" related code stabilizes.
+      return resolveMeasure(valueSet, variable);
+    } else if(type.equals(Data.class)) {
+      return resolveData(valueSet, variable);
+    } else if(type.equals(Contraindication.class)) {
+      return resolveContraindication(valueSet, variable);
+    } else if(type.equals(Measure.class)) {
+      return resolveMeasure(valueSet, variable);
     }
 
     return null;
@@ -82,17 +85,6 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     return instrumentService;
   }
 
-  protected Contraindication getContraindication(ValueSet valueSet, String instrumentTypeName) {
-    InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
-    if(instrumentType != null) {
-      InstrumentRun instrumentRun = getInstrumentRun(valueSet, instrumentTypeName);
-      if(instrumentRun != null) {
-        return instrumentType.getContraindication(instrumentRun.getContraindication());
-      }
-    }
-    return null;
-  }
-
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
   }
@@ -101,15 +93,82 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     return instrumentRunService;
   }
 
-  protected InstrumentRun getInstrumentRun(ValueSet valueSet, String instrumentTypeName) {
+  protected InstrumentRun resolveInstrumentRun(ValueSet valueSet, Variable variable) {
+    String instrumentTypeName = extractInstrumentTypeName(variable.getName());
+    if(instrumentTypeName != null) {
+      Participant participant = getParticipant(valueSet);
+      if(participant != null) {
+        return instrumentRunService.getInstrumentRun(participant, instrumentTypeName);
+      }
+    }
+    return null;
+  }
+
+  protected List<Measure> resolveMeasure(ValueSet valueSet, Variable variable) {
+    InstrumentRun instrumentRun = (InstrumentRun) resolveInstrumentRun(valueSet, variable);
+    if(instrumentRun != null) {
+      return instrumentRun.getMeasures();
+    }
+    return null;
+  }
+
+  protected InstrumentRunValue getInstrumentRunValue(ValueSet valueSet, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
     Participant participant = getParticipant(valueSet);
-    return instrumentRunService.getInstrumentRun(participant, instrumentTypeName);
+    if(participant != null) {
+      return instrumentRunService.getInstrumentRunValue(participant, instrumentType.getName(), instrumentParameter.getCode(), null);
+    }
+    return null;
+  }
+
+  protected Data resolveData(ValueSet valueSet, Variable variable) {
+    String instrumentTypeName = extractInstrumentTypeName(variable.getName());
+    if(instrumentTypeName != null) {
+      InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
+      if(instrumentType != null) {
+        String instrumentParameterCode = extractInstrumentParameterCode(variable.getName(), instrumentTypeName);
+        if(instrumentParameterCode != null) {
+          InstrumentParameter instrumentParameter = instrumentType.getInstrumentParameter(instrumentParameterCode);
+          if(instrumentParameter != null) {
+            InstrumentRunValue instrumentRunValue = getInstrumentRunValue(valueSet, instrumentType, instrumentParameter);
+            if(instrumentRunValue != null) {
+              return instrumentRunValue.getData(instrumentParameter.getDataType());
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  protected Object resolveContraindication(ValueSet valueSet, Variable variable) {
+    String instrumentTypeName = extractInstrumentTypeName(variable.getName());
+    if(instrumentTypeName != null) {
+      InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
+      if(instrumentType != null) {
+        InstrumentRun instrumentRun = resolveInstrumentRun(valueSet, variable);
+        if(instrumentRun != null) {
+          return instrumentType.getContraindication(instrumentRun.getContraindication());
+        }
+      }
+    }
+    return null;
   }
 
   private String extractInstrumentTypeName(String variableName) {
     String[] elements = variableName.split("\\.");
     for(int i = 0; i < elements.length - 1; i++) {
       if(elements[i].equals(INSTRUMENT_RUN)) {
+        return elements[i + 1];
+      }
+    }
+
+    return null;
+  }
+
+  private String extractInstrumentParameterCode(String variableName, String instrumentTypeName) {
+    String[] elements = variableName.split("\\.");
+    for(int i = 0; i < elements.length - 1; i++) {
+      if(elements[i].equals(instrumentTypeName)) {
         return elements[i + 1];
       }
     }
