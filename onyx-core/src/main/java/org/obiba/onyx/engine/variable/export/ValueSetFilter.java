@@ -33,7 +33,7 @@ class ValueSetFilter {
   }
 
   CollectionFilterChain<ValueSet> getEntityFilterChain() {
-    if(entityFilterChain == null) entityFilterChain = new CollectionFilterChain<ValueSet>();
+    if(entityFilterChain == null) entityFilterChain = new CollectionFilterChain<ValueSet>(entityTypeName);
     return entityFilterChain;
   }
 
@@ -42,7 +42,7 @@ class ValueSetFilter {
   }
 
   CollectionFilterChain<VariableValueSource> getVariableFilterChain() {
-    if(variableFilterChain == null) variableFilterChain = new CollectionFilterChain<VariableValueSource>();
+    if(variableFilterChain == null) variableFilterChain = new CollectionFilterChain<VariableValueSource>(entityTypeName);
     return variableFilterChain;
   }
 
