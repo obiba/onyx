@@ -23,6 +23,7 @@ import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
 
     for(Stage stage : stages) {
       setPrefix(stage.getName());
+      setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(stage.getName())));
 
       // Call superclass method to create the non-PDF form sources.
       sources = super.createSources(collection, resolver);
