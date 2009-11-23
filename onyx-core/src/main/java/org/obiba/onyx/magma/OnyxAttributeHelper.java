@@ -11,7 +11,7 @@ package org.obiba.onyx.magma;
 
 import java.util.Locale;
 
-import org.obiba.magma.Variable.Builder;
+import org.obiba.magma.AttributeAwareBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -21,7 +21,7 @@ import org.springframework.context.NoSuchMessageException;
 /**
  * Helper class for provisioning a variable with localized attributes.
  */
-public class OnyxVariableHelper implements ApplicationContextAware {
+public class OnyxAttributeHelper implements ApplicationContextAware {
 
   public static final String LABEL = "label";
 
@@ -47,11 +47,11 @@ public class OnyxVariableHelper implements ApplicationContextAware {
 
   private ApplicationContext applicationContext;
 
-  public OnyxVariableHelper() {
+  public OnyxAttributeHelper() {
     super();
   }
 
-  public OnyxVariableHelper(ApplicationContext applicationContext) {
+  public OnyxAttributeHelper(ApplicationContext applicationContext) {
     super();
     this.applicationContext = applicationContext;
   }
@@ -61,8 +61,8 @@ public class OnyxVariableHelper implements ApplicationContextAware {
    * @param variable
    * @param property
    */
-  public void addLocalizedAttributes(Builder variableBuilder, String property) {
-    addLocalizedAttributes(variableBuilder, LABEL, property);
+  public void addLocalizedAttributes(AttributeAwareBuilder<?> builder, String property) {
+    addLocalizedAttributes(builder, LABEL, property);
   }
 
   /**
@@ -71,13 +71,13 @@ public class OnyxVariableHelper implements ApplicationContextAware {
    * @param key
    * @param property
    */
-  public void addLocalizedAttributes(Builder variableBuilder, String key, String property) {
+  public void addLocalizedAttributes(AttributeAwareBuilder<?> builder, String key, String property) {
     if(property != null) {
       for(Locale locale : getLocales()) {
         try {
           String message = applicationContext.getMessage(property, null, locale);
           if(message.trim().length() > 0) {
-            addAttribute(variableBuilder, locale, key, message);
+            addAttribute(builder, locale, key, message);
           }
         } catch(NoSuchMessageException ex) {
           // ignore
@@ -91,8 +91,8 @@ public class OnyxVariableHelper implements ApplicationContextAware {
    * @param variable
    * @param resolvable
    */
-  public void addLocalizedAttributes(Builder variableBuilder, MessageSourceResolvable resolvable) {
-    addLocalizedAttributes(variableBuilder, LABEL, resolvable);
+  public void addLocalizedAttributes(AttributeAwareBuilder<?> builder, MessageSourceResolvable resolvable) {
+    addLocalizedAttributes(builder, LABEL, resolvable);
   }
 
   /**
@@ -101,13 +101,13 @@ public class OnyxVariableHelper implements ApplicationContextAware {
    * @param key
    * @param resolvable
    */
-  public void addLocalizedAttributes(Builder variableBuilder, String key, MessageSourceResolvable resolvable) {
+  public void addLocalizedAttributes(AttributeAwareBuilder<?> builder, String key, MessageSourceResolvable resolvable) {
     if(resolvable != null) {
       for(Locale locale : getLocales()) {
         try {
           String message = applicationContext.getMessage(resolvable, locale);
           if(message.trim().length() > 0) {
-            addAttribute(variableBuilder, locale, key, message);
+            addAttribute(builder, locale, key, message);
           }
         } catch(NoSuchMessageException ex) {
           // ignore
@@ -132,55 +132,55 @@ public class OnyxVariableHelper implements ApplicationContextAware {
   // public void addLocalizedAttributes(Variable variable) {
   // addLocalizedAttributes(variable, variable.getName());
   // }
-  public static void addIsManualCaptureAllowedAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, ISMANUALCAPTUREALLOWED, source);
+  public static void addIsManualCaptureAllowedAttribute(AttributeAwareBuilder<?> builder, Object source) {
+    addAttribute(builder, ISMANUALCAPTUREALLOWED, source);
   }
 
-  public static void addDefaultCaptureMethodAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, CAPTUREMETHOD, source);
+  public static void addDefaultCaptureMethodAttribute(AttributeAwareBuilder<?> builder, Object source) {
+    addAttribute(builder, CAPTUREMETHOD, source);
   }
 
-  public static void addConditionAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, CONDITION, source);
+  public static void addConditionAttribute(AttributeAwareBuilder<?> builder, Object source) {
+    addAttribute(builder, CONDITION, source);
   }
 
-  public static void addValidationAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, VALIDATION, source);
+  public static <T extends AttributeAwareBuilder> void addValidationAttribute(T builder, Object source) {
+    addAttribute(builder, VALIDATION, source);
   }
 
-  public static void addSourceAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, SOURCE, source);
+  public static <T extends AttributeAwareBuilder> void addSourceAttribute(T builder, Object source) {
+    addAttribute(builder, SOURCE, source);
   }
 
-  public static void addRequiredAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, REQUIRED, source);
+  public static <T extends AttributeAwareBuilder> void addRequiredAttribute(T builder, Object source) {
+    addAttribute(builder, REQUIRED, source);
   }
 
-  public static void addMinCountAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, MINCOUNT, source);
+  public static <T extends AttributeAwareBuilder> void addMinCountAttribute(T builder, Object source) {
+    addAttribute(builder, MINCOUNT, source);
   }
 
-  public static void addMaxCountAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, MAXCOUNT, source);
+  public static <T extends AttributeAwareBuilder> void addMaxCountAttribute(T builder, Object source) {
+    addAttribute(builder, MAXCOUNT, source);
   }
 
-  public static void addOccurrenceCountAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, OCCURRENCECOUNT, source);
+  public static <T extends AttributeAwareBuilder> void addOccurrenceCountAttribute(T builder, Object source) {
+    addAttribute(builder, OCCURRENCECOUNT, source);
   }
 
-  public static void addGroupAttribute(Builder variableBuilder, Object source) {
-    addAttribute(variableBuilder, GROUP, source);
+  public static <T extends AttributeAwareBuilder> void addGroupAttribute(T builder, Object source) {
+    addAttribute(builder, GROUP, source);
   }
 
-  public static void addAttribute(Builder variableBuilder, String key, Object source) {
+  public static <T extends AttributeAwareBuilder> void addAttribute(T builder, String key, Object source) {
     if(source != null) {
-      variableBuilder.addAttribute(key, source.toString());
+      builder.addAttribute(key, source.toString());
     }
   }
 
-  public static void addAttribute(Builder variableBuilder, Locale locale, String key, Object source) {
+  public static <T extends AttributeAwareBuilder> void addAttribute(T builder, Locale locale, String key, Object source) {
     if(source != null) {
-      variableBuilder.addAttribute(key, source.toString(), locale);
+      builder.addAttribute(key, source.toString(), locale);
     }
   }
 

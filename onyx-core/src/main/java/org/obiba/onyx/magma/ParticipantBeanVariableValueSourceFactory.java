@@ -31,6 +31,9 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   // Instance Variables
   //
 
+  @Autowired
+  private OnyxAttributeHelper variableHelper;
+
   @Autowired(required = true)
   private ParticipantMetadata participantMetadata;
 
@@ -56,7 +59,14 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
 
       sources.add(new BeanPropertyVariableValueSource(variable, Participant.class, resolver, "attributes[" + attribute.getName() + "]"));
 
-      // TODO: Need to modify VariableHelper (make it Magma-based) and use it here to add localized attributes.
+//TODO: This code depends on a variableBuilder being present. How to make this present is under investigation.
+//      if(variableHelper != null) {
+//        variableHelper.addLocalizedAttributes(variableBuilder, variable.getName());
+//      }
+//
+//      if(attribute.getGroup() != null) {
+//        OnyxVariableHelper.addGroupAttribute(variableBuilder, attribute.getGroup().getName());
+//      }  factory.accept(attributeBuilderVisitor)
     }
 
     return sources;
@@ -65,6 +75,10 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   //
   // Methods
   //
+
+  public void setVariableHelper(OnyxAttributeHelper variableHelper) {
+    this.variableHelper = variableHelper;
+  }
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;

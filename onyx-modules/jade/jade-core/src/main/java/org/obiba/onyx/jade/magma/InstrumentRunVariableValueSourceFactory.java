@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.obiba.magma.Category;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.Variable.Builder;
+import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -22,10 +25,13 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
@@ -51,6 +57,9 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
 
   @Autowired(required = true)
   private InstrumentService instrumentService;
+
+  @Autowired(required = true)
+  private OnyxAttributeHelper attributeHelper;
 
   //
   // Constructors
@@ -117,7 +126,8 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     if(instrumentParameters.size() > 0) {
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
         BeanVariableValueSourceFactory<InstrumentRunValue> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRunValue>("Participant", InstrumentRunValue.class);
-        delegateFactory.setProperties(ImmutableSet.of("data.value"));
+        delegateFactory.setProperties(ImmutableSet.of("captureMethod", "data.value"));
+        delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new InstrumentParameterAttributeVisitor(attributeHelper, instrumentType, instrumentParameter)));
 
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
           // Add sources for the measure variables (user, time, instrumentBarcode).
@@ -146,5 +156,87 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     delegateFactory.setProperties(ImmutableSet.of("user", "time", "instrumentBarcode"));
 
     return delegateFactory.createSources(collection, resolver);
+  }
+
+  //
+  // Inner Classes
+  //
+
+  static class InstrumentParameterAttributeVisitor implements BuilderVisitor {
+    private OnyxAttributeHelper attributeHelper;
+
+    private InstrumentType instrumentType;
+
+    private InstrumentParameter instrumentParameter;
+
+    public InstrumentParameterAttributeVisitor(OnyxAttributeHelper attributeHelper, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
+      this.attributeHelper = attributeHelper;
+      this.instrumentParameter = instrumentParameter;
+    }
+
+    public void visit(Builder builder) {
+      // Add variable's localized attributes.
+      attributeHelper.addLocalizedAttributes(builder, instrumentParameter.getCode());
+
+      // Add YES and NO categories for interpretative parameters.
+      if(instrumentParameter instanceof InterpretativeParameter) {
+        builder.addCategory(InterpretativeParameter.YES, "1");
+        builder.addCategory(InterpretativeParameter.NO, "0");
+      }
+
+      // For parameters with declared allowed values, add categories for those values.
+      // Use a visitor to add each category's localized attributes.
+      if(instrumentParameter.getAllowedValues().size() > 0) {
+        int pos = 1;
+        for(Data allowedValue : instrumentParameter.getAllowedValues()) {
+          String code = allowedValue.getValueAsString();
+          Category.BuilderVisitor localizedAttributeVisitor = new CategoryLocalizedAttributeVisitor(attributeHelper, code);
+          builder.addCategory(code, Integer.toString(pos++), ImmutableSet.of(localizedAttributeVisitor));
+        }
+      }
+
+      // Add validation attributes for parameters with integrity checks.
+      if(instrumentParameter.getIntegrityChecks().size() > 0) {
+        OnyxAttributeHelper.addValidationAttribute(builder, instrumentParameter.getIntegrityChecks().toString());
+      }
+
+      // For parameters with a data source, add source attribute.
+      if(instrumentParameter.getDataSource() != null) {
+        OnyxAttributeHelper.addSourceAttribute(builder, instrumentParameter.getDataSource().toString());
+      }
+
+      // For parameters with a condition, add condition attribute.
+      if(instrumentParameter.getCondition() != null) {
+        OnyxAttributeHelper.addConditionAttribute(builder, instrumentParameter.getCondition().toString());
+      }
+
+      // For parameters with a capture method, add a default capture method attribute.
+      if(instrumentParameter.getCaptureMethod() != null) {
+        OnyxAttributeHelper.addDefaultCaptureMethodAttribute(builder, instrumentParameter.getCaptureMethod().toString());
+        if(instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+          OnyxAttributeHelper.addIsManualCaptureAllowedAttribute(builder, instrumentParameter.isManualCaptureAllowed());
+        }
+      }
+
+      // For parameters that are part of a repeatable measure, add occurrence count attribute.
+      if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+        OnyxAttributeHelper.addOccurrenceCountAttribute(builder, instrumentType.getExpectedMeasureCount().toString());
+      }
+    }
+  }
+
+  static class CategoryLocalizedAttributeVisitor implements Category.BuilderVisitor {
+    private OnyxAttributeHelper attributeHelper;
+
+    private String code;
+
+    public CategoryLocalizedAttributeVisitor(OnyxAttributeHelper variableHelper, String code) {
+      this.attributeHelper = variableHelper;
+      this.code = code;
+    }
+
+    public void visit(Category.Builder builder) {
+      attributeHelper.addLocalizedAttributes(builder, code);
+    }
   }
 }
