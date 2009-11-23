@@ -13,7 +13,7 @@ import org.obiba.magma.NoSuchAttributeException;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
-import org.obiba.onyx.meta.AbstractOnyxBeanResolver;
+import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;

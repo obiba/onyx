@@ -28,6 +28,7 @@ import org.obiba.magma.type.TextType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
@@ -238,12 +239,16 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     return variableName(questionCategory) + '.' + oad.getName();
   }
 
-  private class BaseQuartzBuilderVisitor implements Variable.BuilderVisitor {
+  private class BaseQuartzBuilderVisitor extends StageAttributeVisitor {
+
+    BaseQuartzBuilderVisitor() {
+      super(stage.getName());
+    }
+
     public void visit(Builder builder) {
+      super.visit(builder);
       // Questionnaire name
-      builder.addAttribute("questionnaire", questionnaire.getName())
-      // Stage name
-      .addAttribute("stage", stage.getName());
+      builder.addAttribute("questionnaire", questionnaire.getName());
     }
   }
 
