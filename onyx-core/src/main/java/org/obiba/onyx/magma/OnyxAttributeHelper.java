@@ -23,6 +23,10 @@ import org.springframework.context.NoSuchMessageException;
  */
 public class OnyxAttributeHelper implements ApplicationContextAware {
 
+  public static final String PII_ATTRIBUTE = "pii";
+
+  public static final String IDENTIFIER_ATTRIBUTE = "identifier";
+
   public static final String LABEL = "label";
 
   public static final String VALIDATION = "validation";
@@ -144,44 +148,52 @@ public class OnyxAttributeHelper implements ApplicationContextAware {
     addAttribute(builder, CONDITION, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addValidationAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addValidationAttribute(T builder, Object source) {
     addAttribute(builder, VALIDATION, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addSourceAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addSourceAttribute(T builder, Object source) {
     addAttribute(builder, SOURCE, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addRequiredAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addRequiredAttribute(T builder, Object source) {
     addAttribute(builder, REQUIRED, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addMinCountAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addMinCountAttribute(T builder, Object source) {
     addAttribute(builder, MINCOUNT, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addMaxCountAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addMaxCountAttribute(T builder, Object source) {
     addAttribute(builder, MAXCOUNT, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addOccurrenceCountAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addOccurrenceCountAttribute(T builder, Object source) {
     addAttribute(builder, OCCURRENCECOUNT, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addGroupAttribute(T builder, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addGroupAttribute(T builder, Object source) {
     addAttribute(builder, GROUP, source);
   }
 
-  public static <T extends AttributeAwareBuilder> void addAttribute(T builder, String key, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addAttribute(T builder, String key, Object source) {
     if(source != null) {
       builder.addAttribute(key, source.toString());
     }
   }
 
-  public static <T extends AttributeAwareBuilder> void addAttribute(T builder, Locale locale, String key, Object source) {
+  public static <T extends AttributeAwareBuilder<?>> void addAttribute(T builder, Locale locale, String key, Object source) {
     if(source != null) {
       builder.addAttribute(key, source.toString(), locale);
     }
+  }
+
+  public static <T extends AttributeAwareBuilder<?>> void addPiiAttribute(T builder) {
+    builder.addAttribute(PII_ATTRIBUTE, "true");
+  }
+
+  public static <T extends AttributeAwareBuilder<?>> void addIdentifierAttribute(T builder) {
+    builder.addAttribute(IDENTIFIER_ATTRIBUTE, "true");
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

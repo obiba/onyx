@@ -9,10 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.obiba.magma.Value;
@@ -21,6 +18,7 @@ import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
+import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
@@ -32,6 +30,9 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageInstance;
 import org.obiba.onyx.engine.Action;
 import org.obiba.runtime.Version;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Factory for creating VariableValueSources for all the Onyx "admin" variables.
@@ -121,7 +122,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   private Set<VariableValueSource> createParticipantSources(String collection) {
     BeanVariableValueSourceFactory<Participant> delegateFactory = new BeanVariableValueSourceFactory<Participant>(PARTICIPANT, Participant.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT);
-    delegateFactory.setProperties(toSet("barcode", "enrollmentId", "appointmentDate", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
+    delegateFactory.setProperties(ImmutableSet.of("barcode", "enrollmentId", "appointmentDate", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
 
     // Get the bean property sources.
     Set<VariableValueSource> sources = delegateFactory.createSources(collection, beanResolver);
@@ -141,7 +143,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   private Set<VariableValueSource> createInterviewSources(String collection) {
     BeanVariableValueSourceFactory<Interview> delegateFactory = new BeanVariableValueSourceFactory<Interview>(PARTICIPANT, Interview.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW);
-    delegateFactory.setProperties(toSet("startDate", "endDate", "status", "duration"));
+    delegateFactory.setProperties(ImmutableSet.of("startDate", "endDate", "status", "duration"));
 
     return delegateFactory.createSources(collection, beanResolver);
   }
@@ -149,7 +151,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   private Set<VariableValueSource> createAppConfigSources(String collection) {
     BeanVariableValueSourceFactory<ApplicationConfiguration> delegateFactory = new BeanVariableValueSourceFactory<ApplicationConfiguration>(PARTICIPANT, ApplicationConfiguration.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + APPLICATION_CONFIGURATION);
-    delegateFactory.setProperties(toSet("siteCode", "siteName", "studyPrefix"));
+    delegateFactory.setProperties(ImmutableSet.of("siteCode", "siteName", "studyPrefix"));
 
     return delegateFactory.createSources(collection, beanResolver);
   }
@@ -158,8 +160,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     BeanVariableValueSourceFactory<Action> delegateFactory = new BeanVariableValueSourceFactory<Action>(PARTICIPANT, Action.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + ACTION);
     delegateFactory.setOccurrenceGroup(ACTION);
-    delegateFactory.setProperties(toSet("user", "stage", "fromState", "toState", "type", "dateTime", "comment", "eventReason"));
-    delegateFactory.setPropertyNameToVariableName(toMap("type", "actionType"));
+    delegateFactory.setProperties(ImmutableSet.of("user", "stage", "fromState", "toState", "type", "dateTime", "comment", "eventReason"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("type", "actionType").build());
 
     return delegateFactory.createSources(collection, beanResolver);
   }
@@ -168,22 +170,30 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     BeanVariableValueSourceFactory<StageInstance> delegateFactory = new BeanVariableValueSourceFactory<StageInstance>(PARTICIPANT, StageInstance.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + STAGE_INSTANCE);
     delegateFactory.setOccurrenceGroup(STAGE_INSTANCE);
-    delegateFactory.setProperties(toSet("stage", "startTime", "lastTime", "lastState", "duration", "interruptionCount", "user", "last"));
+    delegateFactory.setProperties(ImmutableSet.of("stage", "startTime", "lastTime", "lastState", "duration", "interruptionCount", "user", "last"));
 
     return delegateFactory.createSources(collection, beanResolver);
   }
 
-  private Set<String> toSet(String... items) {
-    return new HashSet<String>(Arrays.asList(items));
-  }
+  //
+  // Inner Classes
+  //
 
-  private Map<String, String> toMap(String... entries) {
-    Map<String, String> map = new HashMap<String, String>();
+  private static class AdminVariableAttributeVisitor implements Variable.BuilderVisitor {
 
-    for(int i = 0; i < entries.length - 1; i++) {
-      map.put(entries[i], entries[i + 1]);
+    public void visit(Builder builder) {
+      // For variables containing personally identifiable information, add "pii"
+      // attribute with value "true".
+      if(builder.isName("barcode", "firstName", "lastName", "fullName", "birthDate")) {
+        OnyxAttributeHelper.addPiiAttribute(builder);
+      }
+
+      // For variables that are participant identifiers, add "identifier" attribute
+      // with value "true".
+      if(builder.isName("barcode")) {
+        OnyxAttributeHelper.addIdentifierAttribute(builder);
+      }
     }
 
-    return map;
   }
 }

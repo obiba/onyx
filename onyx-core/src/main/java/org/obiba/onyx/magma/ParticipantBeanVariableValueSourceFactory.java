@@ -23,6 +23,8 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * VariableValueSourceFactory for configured participant attributes.
  */
@@ -31,8 +33,8 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   // Instance Variables
   //
 
-  @Autowired
-  private OnyxAttributeHelper variableHelper;
+  @Autowired(required = true)
+  private OnyxAttributeHelper attributeHelper;
 
   @Autowired(required = true)
   private ParticipantMetadata participantMetadata;
@@ -54,19 +56,13 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
+      String variableName = lookupVariableName(attribute.getName());
+      setVariableBuilderVisitors(ImmutableSet.of(new ParticipantVariableBuilderVisitor(attribute)));
+
       ValueType valueType = ValueType.Factory.forName(attribute.getType().toString().toLowerCase());
-      Variable variable = this.doBuildVariable(collection, valueType.getJavaClass(), lookupVariableName(attribute.getName()));
+      Variable variable = this.doBuildVariable(collection, valueType.getJavaClass(), variableName);
 
       sources.add(new BeanPropertyVariableValueSource(variable, Participant.class, resolver, "attributes[" + attribute.getName() + "]"));
-
-//TODO: This code depends on a variableBuilder being present. How to make this present is under investigation.
-//      if(variableHelper != null) {
-//        variableHelper.addLocalizedAttributes(variableBuilder, variable.getName());
-//      }
-//
-//      if(attribute.getGroup() != null) {
-//        OnyxVariableHelper.addGroupAttribute(variableBuilder, attribute.getGroup().getName());
-//      }  factory.accept(attributeBuilderVisitor)
     }
 
     return sources;
@@ -76,11 +72,36 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   // Methods
   //
 
-  public void setVariableHelper(OnyxAttributeHelper variableHelper) {
-    this.variableHelper = variableHelper;
+  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
+    this.attributeHelper = attributeHelper;
   }
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
+  }
+
+  //
+  // Inner Classes
+  //
+
+  private class ParticipantVariableBuilderVisitor implements Variable.BuilderVisitor {
+    private ParticipantAttribute attribute;
+
+    public ParticipantVariableBuilderVisitor(ParticipantAttribute attribute) {
+      this.attribute = attribute;
+    }
+
+    public void visit(Variable.Builder builder) {
+      // Add localized attributes.
+      attributeHelper.addLocalizedAttributes(builder, lookupVariableName(attribute.getName()));
+
+      // If the participant attribute is part of a group, add a group attribute.
+      if(attribute.getGroup() != null) {
+        OnyxAttributeHelper.addGroupAttribute(builder, attribute.getGroup().getName());
+      }
+
+      // Add "pii" attribute (stands for "personally identifiable information").
+      OnyxAttributeHelper.addAttribute(builder, "pii", "true");
+    }
   }
 }
