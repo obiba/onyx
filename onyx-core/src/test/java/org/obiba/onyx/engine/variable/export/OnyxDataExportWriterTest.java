@@ -60,22 +60,19 @@ public class OnyxDataExportWriterTest {
     valueSetFilters.add(participantValueSetFilter);
     destinationDcc.setValueSetFilters(valueSetFilters);
 
-    Filter<ValueSet> excludeAll = new ExcludeAllFilter<ValueSet>();
-    Filter<ValueSet> excludeAll2 = new ExcludeAllFilter<ValueSet>();
+    Filter<ValueSet> excludeAll = ExcludeAllFilter.Builder.newFilter().buildForValueSet();
+    Filter<ValueSet> excludeAll2 = ExcludeAllFilter.Builder.newFilter().buildForValueSet();
 
     participantValueSetFilter.getEntityFilterChain().addFilter(excludeAll);
     participantValueSetFilter.getEntityFilterChain().addFilter(excludeAll2);
 
-    Filter<VariableValueSource> varOne = new VariableNameFilter("Admin.Participant", null);
-    ((VariableNameFilter) varOne).setType("include");
+    Filter<VariableValueSource> varOne = VariableNameFilter.Builder.newFilter().prefix("Admin.Participant").include().build();
     participantValueSetFilter.getVariableFilterChain().addFilter(varOne);
 
-    Filter<VariableValueSource> varTwo = new VariableAttributeFilter("name", "value");
-    ((VariableAttributeFilter) varTwo).setType("exclude");
+    Filter<VariableValueSource> varTwo = VariableAttributeFilter.Builder.newFilter().attributeName("name").attributeValue("value").exclude().build();
     participantValueSetFilter.getVariableFilterChain().addFilter(varTwo);
 
-    Filter<ValueSet> varThree = new JavaScriptFilter();
-    ((JavaScriptFilter) varThree).setType("exclude");
+    Filter<ValueSet> varThree = JavaScriptFilter.Builder.newFilter().javascript("$('Participant.Interview.status').any('CLOSED','COMPLETED')").exclude().build();
     participantValueSetFilter.getEntityFilterChain().addFilter(varThree);
 
     destinations = new ArrayList<OnyxDestination>();
