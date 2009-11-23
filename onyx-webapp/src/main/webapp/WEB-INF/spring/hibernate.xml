@@ -46,7 +46,8 @@
     <!-- Use Apache Ant Pattern -->
     <property name="searchPatterns">
       <set>
-        <value>classpath*:org/obiba/**/*.class</value>
+        <value>classpath*:org/obiba/**/domain/**/*.class</value>
+        <value>classpath*:org/obiba/**/engine/**/*.class</value>
         <!-- If you contributed a module that has its own persisted classes, add them here -->
       </set>
     </property>
