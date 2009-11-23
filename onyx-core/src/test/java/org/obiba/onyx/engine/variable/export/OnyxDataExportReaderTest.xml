@@ -9,8 +9,9 @@
     <valueset entityTypeName="Participant">
       <entities>
         <excludeAll/>
-        <excludeAll/>
-        <script type="exclude"/>
+        <script type="exclude">
+          <javascript><![CDATA[$('Participant.Interview.status').not('CANCELED');]]></javascript>
+        </script>        
       </entities>
       <variables>
         <variableName type="include" prefix="d"/>
@@ -24,15 +25,15 @@
   <destination>
     <name>Appointment Unit</name>
     <strategies>
-      <strategy>encrypt</strategy>
       <strategy>zip</strategy>
       <strategy>file</strategy>
     </strategies>
     <valueset entityTypeName="Participant">
       <entities>
         <excludeAll/>
-        <excludeAll/>
-        <script type="exclude"/>
+        <script type="exclude">
+            <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE');]]></javascript>
+        </script>        
       </entities>
       <variables>
         <variableName type="include" prefix="d"/>
