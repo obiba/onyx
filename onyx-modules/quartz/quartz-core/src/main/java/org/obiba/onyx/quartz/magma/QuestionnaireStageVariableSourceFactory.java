@@ -27,7 +27,7 @@ import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.magma.DataTypes;
-import org.obiba.onyx.magma.OnyxVariableHelper;
+import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
@@ -277,7 +277,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
             String stringResource = QuestionnaireStringResourceModelHelper.getMessage(bundle, element, property, null, locale);
             if(stringResource.trim().length() > 0) {
               String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
-              OnyxVariableHelper.addAttribute(builder, locale, property, noHTMLString);
+              OnyxAttributeHelper.addAttribute(builder, locale, property, noHTMLString);
             }
           } catch(NoSuchMessageException ex) {
             // ignored
