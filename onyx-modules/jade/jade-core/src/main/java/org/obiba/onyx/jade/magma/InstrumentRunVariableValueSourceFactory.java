@@ -225,7 +225,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     }
   }
 
-  static class CategoryLocalizedAttributeVisitor implements Category.BuilderVisitor {
+  private static class CategoryLocalizedAttributeVisitor implements Category.BuilderVisitor {
     private OnyxAttributeHelper attributeHelper;
 
     private String code;
