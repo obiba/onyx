@@ -81,12 +81,18 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
       InstrumentType instrumentType = entry.getValue();
       setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+      String instrumentTypePrefix = instrumentType.getName();
 
       // Call superclass method to create the sources for InstrumentRun variables.
-      String instrumentTypePrefix = instrumentType.getName();
-      setPrefix(instrumentTypePrefix + '.' + INSTRUMENT_RUN);
+      String instrumentRunPrefix = instrumentTypePrefix + '.' + INSTRUMENT_RUN;
+      setPrefix(instrumentRunPrefix);
       setProperties(ImmutableSet.of("user", "timeStart", "timeEnd", "otherContraindication"));
       sources = super.createSources(collection, resolver);
+
+      // For non-repeatable instrument types, add source for instrument barcode variable.
+      if(!instrumentType.isRepeatable()) {
+        sources.add(createBarcodeSource(collection, instrumentRunPrefix, instrumentType, resolver));
+      }
 
       // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
       String ciVariablePrefix = instrumentType.getName() + '.' + INSTRUMENT_RUN + '.' + CONTRAINDICATION;
@@ -96,7 +102,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       sources.addAll(super.createSources(collection, resolver));
 
       // Add source for InstrumentRun.Contraindication.type variable.
-      sources.addAll(createContraindicationTypeSource(collection, ciVariablePrefix, instrumentType, resolver));
+      sources.add(createContraindicationTypeSource(collection, ciVariablePrefix, instrumentType, resolver));
 
       // Add sources for instrument parameter variables.
       sources.addAll(createInstrumentParameterSources(collection, instrumentTypePrefix, resolver, instrumentType));
@@ -113,13 +119,23 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     this.instrumentService = instrumentService;
   }
 
-  private Set<VariableValueSource> createContraindicationTypeSource(String collection, String prefix, InstrumentType instrumentType, ValueSetBeanResolver resolver) {
+  private VariableValueSource createBarcodeSource(String collection, String prefix, InstrumentType instrumentType, ValueSetBeanResolver resolver) {
+    BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
+    delegateFactory.setPrefix(prefix);
+    delegateFactory.setProperties(ImmutableSet.of("instrument.barcode"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("instrument.barcode", "instrumentBarcode").build());
+    setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+
+    return delegateFactory.createSources(collection, resolver).iterator().next();
+  }
+
+  private VariableValueSource createContraindicationTypeSource(String collection, String prefix, InstrumentType instrumentType, ValueSetBeanResolver resolver) {
     BeanVariableValueSourceFactory<Contraindication> delegateFactory = new BeanVariableValueSourceFactory<Contraindication>("Participant", Contraindication.class);
     delegateFactory.setPrefix(prefix);
     delegateFactory.setProperties(ImmutableSet.of("type"));
     setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
-    return delegateFactory.createSources(collection, resolver);
+    return delegateFactory.createSources(collection, resolver).iterator().next();
   }
 
   private Set<VariableValueSource> createInstrumentParameterSources(String collection, String instrumentTypePrefix, ValueSetBeanResolver resolver, InstrumentType instrumentType) {
