@@ -21,7 +21,6 @@ import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -33,10 +32,8 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   // Instance Variables
   //
 
-  @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
 
-  @Autowired(required = true)
   private ParticipantMetadata participantMetadata;
 
   //

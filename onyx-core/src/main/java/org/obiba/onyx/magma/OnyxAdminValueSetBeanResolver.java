@@ -21,12 +21,14 @@ import org.obiba.onyx.engine.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 
+ * ValueSetBeanResolver for resolving Onyx "admin" beans.
  */
 public class OnyxAdminValueSetBeanResolver extends AbstractOnyxBeanResolver {
 
+  @Autowired(required = true)
   private ApplicationConfigurationService applicationConfigService;
 
+  @Autowired(required = true)
   private InterviewService interviewService;
 
   @Autowired
