@@ -1,13 +1,17 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+  <context:annotation-config />
+
   <import resource="version.xml" />
-  <import resource="batch.xml"/>
+  <import resource="batch.xml" />
+  <import resource="magma.xml" />
 
   <bean name="version" class="org.obiba.runtime.Version" primary="true">
     <constructor-arg value="${project.version}-b${buildNumber}" />
@@ -25,24 +29,25 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </bean>
     </property>
   </bean>
-    
+
   <bean id="interviewService" class="org.obiba.onyx.core.service.impl.DefaultInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
-  
+
   <bean id="jobExecutionService" class="org.obiba.onyx.core.service.impl.DefaultJobExecutionServiceImpl">
     <property name="jobLauncher" ref="jobLauncher" />
-  </bean>  
-  
-  <bean id="appointmentManagementService" class="org.obiba.onyx.core.service.impl.DefaultAppointmentManagementServiceImpl" init-method="initialize">
+  </bean>
+
+  <bean id="appointmentManagementService" class="org.obiba.onyx.core.service.impl.DefaultAppointmentManagementServiceImpl"
+    init-method="initialize">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="inputDirectory" value="${org.obiba.onyx.appointments.inputDirectory}" />
     <property name="outputDirectory" value="${org.obiba.onyx.appointments.outputDirectory}" />
-    <property name="jobExplorer" ref="jobExplorer"/>
+    <property name="jobExplorer" ref="jobExplorer" />
     <property name="job" ref="appointmentListUpdateJob" />
     <property name="jobExecutionService" ref="jobExecutionService" />
   </bean>
-  
+
   <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
@@ -57,7 +62,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="stageOrderingStrategy" ref="stageOrderingStrategy" />
   </bean>
 
-  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl" scope="session" destroy-method="shutdown">
+  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
+    scope="session" destroy-method="shutdown">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="interviewManager" ref="interviewManager" />
     <property name="userSessionService" ref="userSessionService" />
@@ -111,46 +117,50 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
   </bean>
-  
-  <bean id="hashingService" class="org.obiba.onyx.core.service.impl.MessageDigestPasswordHashingStrategyImpl" init-method="validateAlgorithm">
+
+  <bean id="hashingService" class="org.obiba.onyx.core.service.impl.MessageDigestPasswordHashingStrategyImpl"
+    init-method="validateAlgorithm">
     <property name="algorithm" value="${org.obiba.onyx.password.hash.algorithm}" />
   </bean>
-  
-  <bean id="passwordLengthValidationStrategy" class="org.obiba.onyx.core.service.impl.AbstractPasswordLengthValidationStrategy" abstract="true">
+
+  <bean id="passwordLengthValidationStrategy" class="org.obiba.onyx.core.service.impl.AbstractPasswordLengthValidationStrategy"
+    abstract="true">
     <property name="minimumSize" ref="${org.obiba.onyx.password.validation.minimumSize}" />
     <property name="maximumSize" ref="${org.obiba.onyx.password.validation.maximumSize}" />
   </bean>
-  
-  <bean id="validationStrategy" class="org.obiba.onyx.core.service.impl.ConfigurablePasswordValidationStrategyImpl"  init-method="validateCharacterGroups">
+
+  <bean id="validationStrategy" class="org.obiba.onyx.core.service.impl.ConfigurablePasswordValidationStrategyImpl"
+    init-method="validateCharacterGroups">
     <property name="allowedCharacterGroups" value="${org.obiba.onyx.password.validation.allowedCharacterGroups}" />
     <property name="minimumCharacterGroupsUsage" value="${org.obiba.onyx.password.validation.minimumCharacterGroupsUsage}" />
     <property name="preventUserAttributeUsage" value="${org.obiba.onyx.password.validation.preventUserAttributeUsage}" />
   </bean>
-    
+
   <bean id="pdfTemplateEngine" class="org.obiba.onyx.print.impl.DefaultPdfTemplateEngine" scope="session">
     <property name="dateFormat" value="${org.obiba.onyx.dateFormat}" />
-    <property name="variableDirectory" ref="variableDirectory" />    
-  </bean>    
-  
+    <property name="variableDirectory" ref="variableDirectory" />
+  </bean>
+
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
-  </bean> 
+  </bean>
 
   <bean id="variableHelper" class="org.obiba.onyx.engine.variable.VariableHelper">
-  </bean> 
-  
-  <bean id="configurableVariableProviderFactory" class="org.obiba.onyx.engine.variable.configurable.ConfigurableVariableFactoryBean" scope="singleton">
+  </bean>
+
+  <bean id="configurableVariableProviderFactory" class="org.obiba.onyx.engine.variable.configurable.ConfigurableVariableFactoryBean"
+    scope="singleton">
     <property name="resourcePatterns">
       <list>
         <value>${org.obiba.onyx.config.path}/configurable-variables.xml</value>
       </list>
     </property>
-  </bean>    
+  </bean>
 
   <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
-  
+
   <bean id="purgeParticipantDataService" class="org.obiba.onyx.core.service.impl.PurgeParticipantDataServiceImpl">
     <property name="participantService" ref="participantService" />
-    <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />       
+    <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />
   </bean>
-  
+
 </beans>

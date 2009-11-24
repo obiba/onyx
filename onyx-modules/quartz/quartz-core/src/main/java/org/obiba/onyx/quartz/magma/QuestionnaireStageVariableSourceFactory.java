@@ -181,7 +181,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // Build variable(s) from the open answer(s) of this category
       if(questionCategory.hasOpenAnswerDefinition()) {
         OpenAnswerDefinition parent = questionCategory.getOpenAnswerDefinition();
-        // Make an iterable on its children. If no child present, make an with a single value.
+        // Make an iterable on its children. If no child present, make an iterable with a single value.
         Iterable<OpenAnswerDefinition> oads = parent.hasChildOpenAnswerDefinitions() ? parent.getOpenAnswerDefinitions() : ImmutableSet.of(parent);
         for(OpenAnswerDefinition oad : oads) {
           buildOpenAnswerVariable(collection, questionCategory, oad);

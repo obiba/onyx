@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -53,12 +54,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <scope>compile</scope>            
-    </dependency>    
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
@@ -75,12 +76,11 @@
       <groupId>org.springframework.batch</groupId>
       <artifactId>spring-batch-core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework.batch</groupId>
       <artifactId>spring-batch-test</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
@@ -100,18 +100,21 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>net.sf.opencsv</groupId>
       <artifactId>opencsv</artifactId>
     </dependency>
 
-    <!-- Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate references javax.transaction.TransactionManager -->
+    <!--
+      Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate
+      references javax.transaction.TransactionManager
+    -->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jasypt</groupId>
       <artifactId>jasypt</artifactId>
@@ -123,7 +126,7 @@
       <version>${jsr250-api.version}</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -158,13 +161,13 @@
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
     </dependency>
-    
+
     <dependency>
-        <groupId>org.matheclipse</groupId>
-        <artifactId>meparser</artifactId>
-        <version>${meparser.version}</version>
-      </dependency>
-      
+      <groupId>org.matheclipse</groupId>
+      <artifactId>meparser</artifactId>
+      <version>${meparser.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
@@ -174,27 +177,32 @@
       <groupId>com.lowagie</groupId>
       <artifactId>itext</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
     </dependency>
-    
+
     <!-- Magma dependencies -->
     <dependency>
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-beans</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-js</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-filter</artifactId>
-    </dependency>    
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-spring</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
