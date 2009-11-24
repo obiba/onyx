@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.magma;
 import java.util.Locale;
 import java.util.Set;
 
+import org.obiba.magma.AttributeAwareBuilder;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
@@ -165,6 +166,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
     questionVariable.accept(new QuestionElementBuilderVisitor(question)).accept(new QuestionnaireElementBuilderVisitor(question));
 
+    if(question.hasCategories()) {
+      for(QuestionCategory c : question.getQuestionCategories()) {
+        org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
+        cb.accept(new QuestionnaireElementBuilderVisitor(c)).withCode(c.getExportName()).missing(c.isEscape());
+        questionVariable.addCategory(cb.build());
+      }
+    }
+
     // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
     // List<CategoryAnswer> when the variable is repeatable.
     builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, beanResolver, "categoryName"));
@@ -252,7 +261,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
   }
 
-  private class QuestionnaireElementBuilderVisitor implements Variable.BuilderVisitor {
+  private class QuestionnaireElementBuilderVisitor implements Variable.BuilderVisitor, org.obiba.magma.Category.BuilderVisitor {
 
     IQuestionnaireElement element;
 
@@ -261,6 +270,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     public void visit(Builder builder) {
+      visitAttributes(builder);
+    }
+
+    public void visit(org.obiba.magma.Category.Builder builder) {
+      visitAttributes(builder);
+    }
+
+    private void visitAttributes(AttributeAwareBuilder<?> builder) {
       boolean open = element instanceof OpenAnswerDefinition;
       for(Locale locale : bundle.getAvailableLanguages()) {
         for(String property : propertyKeyProvider.getProperties(element)) {
@@ -309,11 +326,6 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // TODO bubble-up section hierarchy
       .addAttribute("section", question.getPage().getSection().getName());
 
-      if(question.hasCategories()) {
-        for(QuestionCategory c : question.getQuestionCategories()) {
-          builder.addCategory(c.getCategory().getName(), c.getExportName(), c.isEscape());
-        }
-      }
     }
 
   }

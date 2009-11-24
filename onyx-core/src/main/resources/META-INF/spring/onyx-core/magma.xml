@@ -25,5 +25,7 @@
     <constructor-arg index="1" value="participant.barcode" />
     <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
   </bean>
+  
+  <bean class="org.obiba.onyx.magma.MagmaDumpListener"/>
 
 </beans>
