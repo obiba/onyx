@@ -1,98 +1,48 @@
 <destinations>
+  <!-- Export all variables except Participant related variables (other than its barcode) and the PDF consent form -->
   <destination>
     <name>DCC</name>
-    <strategies>
-      <strategy>encrypt</strategy>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
-    
-    <valueset entityType="Participant">
-      <entities>
-        <script type="include">
-          <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
-          $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
-        </script>
-        <script type="exclude">
-          <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE')]]></javascript>
-        </script>
-      </entities>
-      <variables>
-        <variableName type="exclude" prefix="Consent.pdfForm" />
-        <variableName type="exclude" prefix="Admin.Participant" />
-        <variableName type="include" prefix="Admin.Participant.barcode" />
-        <variableName type="include" prefix="Admin.Participant.PostalCodePrefix" />
-      </variables>
-    </valueset>
-      
-    <valueset entityType="Workstation">
-      <entities>
-        <script type="exclude">
-          <javascript><![CDATA[$('Workstation.exported').any('TRUE')]]></javascript>
-        </script>
-      </entities>
-    </valueset>
-
-    <valueset entityType="Instrument">
-      <entities>
-        <script type="exclude">
-          <javascript><![CDATA[$('Instrument.exported').any('TRUE')]]></javascript>
-        </script>
-      </entities>
-    </valueset>
+    <includeAll>true</includeAll>
+    <filteredVariables>
+      <string>Onyx.Consent.pdfForm</string>
+      <string>Onyx.Admin.Participant</string>
+    </filteredVariables>
+    <includedVariables>
+      <string>Onyx.Admin.Participant.barcode</string>
+      <string>Onyx.Admin.Participant.PostalCodePrefix</string>
+    </includedVariables>
   </destination>
-      
-    
-    
-  <destination>
+
+  <!-- Export only consent related variables -->
+  <destination> 
     <name>Appointment Unit</name>
-    <strategies>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
-    
-    <valueset entityType="Participant">
-      <entities>
-        <script type="include">
-          <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
-          $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
-        </script>
-        <script type="exclude">
-          <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE')]]></javascript>
-        </script>
-      </entities>
-      <variables>
-        <excludeAll />        
-        <variableName type="include" prefix="Consent" />
-        <variableName type="include" prefix="Admin.onyxVersion" />
-        <variableName type="exclude" prefix="Consent.actions" />
-      </variables>
-    </valueset>       
+    <exportedInterviewStatuses>
+      <status>CLOSED</status>
+      <status>COMPLETED</status>
+    </exportedInterviewStatuses>      
+    <includeAll>false</includeAll>
+    <includedVariables>
+      <string>Onyx.Consent</string>
+      <string>Onyx.Admin.onyxVersion</string>
+    </includedVariables>
+    <filteredVariables>
+      <string>Onyx.Consent.actions</string>
+    </filteredVariables>
   </destination>
   
-  <destination>
-    <name>Appointment Unit - Cancelled interviews</name>
-    <strategies>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
-    
-    <valueset entityType="Participant">
-      <entities>
-        <script type="include">
-          <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
-          $('Participant.Interview.status').any('CANCELLED')]]></javascript>
-        </script>
-        <script type="exclude">
-          <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE')]]></javascript>
-        </script>
-      </entities>
-      <variables>
-        <excludeAll />        
-        <variableName type="include" prefix="Consent" />
-        <variableName type="include" prefix="Admin.onyxVersion" />
-        <variableName type="exclude" prefix="Consent.actions" />
-      </variables>
-    </valueset>       
-  </destination>
+  <destination> 
+    <name>Appointment Unit - Cancelled interviews</name>  
+    <exportedInterviewStatuses>
+      <status>CANCELLED</status>
+    </exportedInterviewStatuses>  
+    <includeAll>false</includeAll>
+    <includedVariables>
+      <string>Onyx.Consent</string>
+      <string>Onyx.Admin.onyxVersion</string>
+    </includedVariables>
+    <filteredVariables>
+      <string>Onyx.Consent.actions</string>
+    </filteredVariables>
+  </destination> 
+  
 </destinations>
