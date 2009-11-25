@@ -57,6 +57,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="questionPanelFactoryRegistry" ref="questionPanelFactoryRegistry" />
   </bean>
 
-  <bean id="questionnaireBeanResolver" class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver"/>
+  <bean class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver" />
 
 </beans>

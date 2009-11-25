@@ -5,7 +5,7 @@
   <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
       <set>
-        <bean class="org.obiba.magma.js.MagmaJsExtension"/>
+        <bean class="org.obiba.magma.js.MagmaJsExtension" />
       </set>
     </property>
   </bean>
@@ -25,7 +25,7 @@
     <constructor-arg index="1" value="participant.barcode" />
     <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
   </bean>
-  
-  <bean class="org.obiba.onyx.magma.MagmaDumpListener"/>
+
+  <bean class="org.obiba.onyx.magma.MagmaDumpListener" />
 
 </beans>

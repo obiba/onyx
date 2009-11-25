@@ -9,9 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.magma;
 
+import java.util.NoSuchElementException;
+
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireMetric;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -26,7 +29,6 @@ public class QuestionnaireBeanResolver extends AbstractQuartzBeanResolver {
 
   public boolean resolves(Class<?> type) {
     return QuestionnaireParticipant.class.equals(type) || QuestionAnswer.class.equals(type) || CategoryAnswer.class.equals(type) || QuestionnairePageMetricAlgorithm.class.equals(type);
-
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, final Variable variable) {
@@ -35,31 +37,42 @@ public class QuestionnaireBeanResolver extends AbstractQuartzBeanResolver {
       // This happens when the participant did not answer a particular questionnaire
       return null;
     }
-    if(type.equals(QuestionnaireParticipant.class)) {
-      return qp;
-    }
-    if(type.equals(QuestionAnswer.class)) {
-      return lookupQuestionAnswer(valueSet, variable);
-    }
-    if(type.equals(CategoryAnswer.class)) {
-      QuestionAnswer qa = lookupQuestionAnswer(valueSet, variable);
-      if(qa != null) {
-        if(variable.isRepeatable()) {
-          return qa.getCategoryAnswers();
-        }
-        // Return the only category present in the list. If there are more than one, this will throw and
-        // IllegalArgumentException. If there is no such element, then this will return null
-        return Iterables.getOnlyElement(qa.getCategoryAnswers(), null);
+    try {
+      if(type.equals(QuestionnaireParticipant.class)) {
+        return qp;
       }
+      if(type.equals(QuestionAnswer.class)) {
+        return lookupQuestionAnswer(valueSet, variable);
+      }
+      if(type.equals(CategoryAnswer.class)) {
+        QuestionAnswer qa = lookupQuestionAnswer(valueSet, variable);
+        if(qa != null) {
+          if(variable.isRepeatable()) {
+            return qa.getCategoryAnswers();
+          }
+          // Return the only category present in the list. If there are more than one, this will throw and
+          // IllegalArgumentException. If there is no such element, then this will return null
+          return Iterables.getOnlyElement(qa.getCategoryAnswers(), null);
+        }
+      }
+      if(type.equals(OpenAnswer.class)) {
+        QuestionAnswer qa = lookupQuestionAnswer(valueSet, variable);
+        if(qa != null) {
+          return findOpenAnswer(findCategoryAnswer(qa, variable.getAttributeStringValue("categoryName")), variable.getAttributeStringValue("openAnswerName"));
+        }
+      }
+      if(type.equals(QuestionnairePageMetricAlgorithm.class)) {
+        return Iterables.transform(qp.getQuestionnaireMetrics(), new Function<QuestionnaireMetric, QuestionnairePageMetricAlgorithm>() {
+          public QuestionnairePageMetricAlgorithm apply(QuestionnaireMetric from) {
+            return new QuestionnairePageMetricAlgorithm(getQuestionnaire(variable), from);
+          };
+        });
+      }
+    } catch(NoSuchElementException e) {
+      // Ignore: it only means that the participant did not answer a particular question or category or open answer
+      return null;
     }
-    if(type.equals(QuestionnairePageMetricAlgorithm.class)) {
-      return Iterables.transform(qp.getQuestionnaireMetrics(), new Function<QuestionnaireMetric, QuestionnairePageMetricAlgorithm>() {
-        public QuestionnairePageMetricAlgorithm apply(QuestionnaireMetric from) {
-          return new QuestionnairePageMetricAlgorithm(getQuestionnaire(variable), from);
-        };
-      });
-    }
-
     return null;
+
   }
 }

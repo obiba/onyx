@@ -7,8 +7,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-  <context:annotation-config />
-
   <import resource="version.xml" />
   <import resource="batch.xml" />
   <import resource="magma.xml" />
