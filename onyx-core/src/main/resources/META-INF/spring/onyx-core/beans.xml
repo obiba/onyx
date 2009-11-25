@@ -163,4 +163,13 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />
   </bean>
 
+  <bean id="onyxAttributeHelper" class="org.obiba.onyx.magma.OnyxAttributeHelper">
+  </bean>
+    
+  <bean id="onyxAdminValueSetBeanResolver" class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver">  
+  </bean>
+  
+  <bean id="onyxAdminVariableValueSourceFactory" class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory">
+  </bean>
+  
 </beans>

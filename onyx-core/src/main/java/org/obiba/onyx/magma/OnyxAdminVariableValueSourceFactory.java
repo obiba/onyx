@@ -118,7 +118,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       private ValueType type = TextType.get();
 
       public Variable getVariable() {
-        if(variable != null) {
+        if(variable == null) {
           // Building version variable with entityType "Participant". This is a little odd, since version
           // is in fact not related to *any* entityType.
           Variable.Builder builder = Variable.Builder.newVariable(collection, ONYX_ADMIN_PREFIX + '.' + ONYX_VERSION, getValueType(), PARTICIPANT);
