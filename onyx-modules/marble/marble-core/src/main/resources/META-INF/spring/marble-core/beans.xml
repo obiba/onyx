@@ -49,5 +49,9 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="resourcePath" value="${org.obiba.onyx.marble.resources.path}" />
     <property name="resourceName" value="${org.obiba.onyx.marble.consent.basename}" />    
     <property name="resourceExtension" value=".pdf" />      
-  </bean>  
+  </bean>
+  
+  <bean id="consentBeanResolver" class="org.obiba.onyx.marble.magma.ConsentBeanResolver">  
+  </bean>
+    
 </beans>
