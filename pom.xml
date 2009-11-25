@@ -788,8 +788,7 @@
   </scm>
 
   <properties>
-    <!-- <wicket.version>1.3.5</wicket.version> -->
-    <wicket.version>1.4.1</wicket.version>
+    <wicket.version>1.4.3</wicket.version>
     <spring.version>2.5.6</spring.version>
     <spring-batch.version>2.0.3.RELEASE</spring-batch.version>
     <slf4j.version>1.4.3</slf4j.version>
