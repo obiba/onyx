@@ -148,7 +148,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     Set<VariableValueSource> sources = delegateFactory.createSources(collection, beanResolver);
 
     // Add Javascript sources for birthYear and age.
-    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, "birthYear", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("$('birthDate').year()").build()));
+    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, "birthYear", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("$('" + ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + "birthDate').year()").build()));
     sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, "age", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("now().year() - $('birthDate').year() - (now().dayOfYear() < $('birthDate').dayOfYear() ? 1 : 0)").build()));
 
     // Add sources for any configured attributes.
