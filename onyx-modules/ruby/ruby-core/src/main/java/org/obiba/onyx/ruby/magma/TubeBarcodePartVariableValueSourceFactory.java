@@ -68,4 +68,34 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
 
     return sources;
   }
+
+  //
+  // Methods
+  //
+
+  /**
+   * Returns the names of barcode part variables that are keys/identifiers.
+   * 
+   * @return names of barcode part variables that are keys/identifiers
+   */
+  public Set<String> getKeyVariableNames() {
+    Set<String> keyVariableNames = new HashSet<String>();
+
+    for(String stageName : tubeRegistrationConfigurationMap.keySet()) {
+      TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stageName);
+      BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
+
+      for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
+        String barcodePartVariableName = partParser.getVariableName();
+        if(barcodePartVariableName != null) {
+          if(partParser.isKey()) {
+            keyVariableNames.add(barcodePartVariableName);
+          }
+        }
+      }
+    }
+
+    return keyVariableNames;
+  }
+
 }
