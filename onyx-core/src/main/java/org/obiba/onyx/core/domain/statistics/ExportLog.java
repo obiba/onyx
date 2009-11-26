@@ -90,7 +90,7 @@ public class ExportLog extends AbstractEntity {
 
     private User user;
 
-    public static Builder newFilter() {
+    public static Builder newLog() {
       return new Builder();
     }
 
@@ -109,12 +109,12 @@ public class ExportLog extends AbstractEntity {
       return this;
     }
 
-    public Builder captureStartDate(Date captureStartDate) {
+    public Builder start(Date captureStartDate) {
       this.captureStartDate = captureStartDate;
       return this;
     }
 
-    public Builder captureEndDate(Date captureEndDate) {
+    public Builder end(Date captureEndDate) {
       this.captureEndDate = captureEndDate;
       return this;
     }

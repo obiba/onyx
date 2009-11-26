@@ -21,27 +21,27 @@ public class ExportLogTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNullIdentifierFails() throws Exception {
-    ExportLog.Builder.newFilter().type("Participant").destination("DCC").captureStartDate(sevenAm).captureEndDate(eightAm).exportDate(nineAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").destination("DCC").start(sevenAm).end(eightAm).exportDate(nineAm).user(new User()).build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testEmptyIdentifierFails() throws Exception {
-    ExportLog.Builder.newFilter().type("Participant").identifier("").destination("DCC").captureStartDate(sevenAm).captureEndDate(eightAm).exportDate(nineAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("").destination("DCC").start(sevenAm).end(eightAm).exportDate(nineAm).user(new User()).build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNullCaptureStartDateFails() throws Exception {
-    ExportLog.Builder.newFilter().type("Participant").identifier("1234567").destination("DCC").captureEndDate(eightAm).exportDate(nineAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").end(eightAm).exportDate(nineAm).user(new User()).build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testCaptureEndDateBeforeCaptureStartDateFails() throws Exception {
-    ExportLog.Builder.newFilter().type("Participant").identifier("1234567").destination("DCC").captureStartDate(eightAm).captureEndDate(sevenAm).exportDate(nineAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").start(eightAm).end(sevenAm).exportDate(nineAm).user(new User()).build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testExportDateBeforeCaptureEndDateFails() throws Exception {
-    ExportLog.Builder.newFilter().type("Participant").identifier("1234567").destination("DCC").captureStartDate(sevenAm).captureEndDate(nineAm).exportDate(eightAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").start(sevenAm).end(nineAm).exportDate(eightAm).user(new User()).build();
   }
 
   private static Date constructDate(int hour) {
