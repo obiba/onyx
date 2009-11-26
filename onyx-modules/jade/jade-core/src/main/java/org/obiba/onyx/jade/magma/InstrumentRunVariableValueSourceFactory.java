@@ -148,24 +148,26 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     if(instrumentParameters.size() > 0) {
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
         BeanVariableValueSourceFactory<InstrumentRunValue> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRunValue>("Participant", InstrumentRunValue.class);
-        delegateFactory.setProperties(ImmutableSet.of("captureMethod", "data.value"));
+        delegateFactory.setProperties(ImmutableSet.of("data.value"));
+        delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("data.value", instrumentParameter.getCode()).build());
         delegateFactory.setPropertyNameToPropertyType(getInstrumentParameterMappedPropertyType(instrumentParameter));
         delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterAttributeVisitor(attributeHelper, instrumentType, instrumentParameter)));
 
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
-          // Add sources for the measure variables (user, time, instrumentBarcode).
+          // Add sources for the measure's user, time and instrumentBarcode variables.
           String measurePrefix = instrumentTypePrefix + '.' + MEASURE;
           sources.addAll(createMeasureSources(collection, measurePrefix, instrumentType, resolver));
 
-          // Add source for the measure's instrument parameter variable.
-          delegateFactory.setPrefix(instrumentTypePrefix + '.' + MEASURE + '.' + instrumentParameter.getCode());
+          // Configure factory for an instrument parameter that is part of a measure.
+          delegateFactory.setPrefix(measurePrefix);
           delegateFactory.setOccurrenceGroup(MEASURE);
-          sources.addAll(delegateFactory.createSources(collection, resolver));
         } else {
-          // Add source for the instrument parameter.
-          delegateFactory.setPrefix(instrumentTypePrefix + '.' + instrumentParameter.getCode());
-          sources.addAll(delegateFactory.createSources(collection, resolver));
+          // Configure factory for an instrument parameter that is not part of a measure.
+          delegateFactory.setPrefix(instrumentTypePrefix);
         }
+
+        // Add source for the instrument parameter variable.
+        sources.addAll(delegateFactory.createSources(collection, resolver));
       }
     }
 
