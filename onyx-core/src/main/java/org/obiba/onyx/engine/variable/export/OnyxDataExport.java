@@ -10,28 +10,32 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.obiba.magma.Collection;
-import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueSet;
+import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.engine.output.Strategies;
+import org.obiba.magma.filter.CollectionFilterChain;
 import org.obiba.magma.filter.FilteredCollection;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 public class OnyxDataExport {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(OnyxDataExport.class);
-
-  private Datasource onyxDataSource;
 
   private ExportLogService exportLogService;
 
@@ -49,31 +53,100 @@ public class OnyxDataExport {
     this.userSessionService = userSessionService;
   }
 
-  // Set this method to be Transactional in order to have a single commit at the end of the export.
-  @Transactional(rollbackFor = Exception.class)
-  public void exportInterviews() throws Exception {
-    for(Collection collection : onyxDataSource.getCollections()) {
+  public void setExportLogService(ExportLogService exportLogService) {
+    this.exportLogService = exportLogService;
+  }
 
+  public void setOutputRootDirectory(File outputRootDirectory) {
+    this.outputRootDirectory = outputRootDirectory;
+  }
+
+  public void exportInterviews() throws Exception {
+
+    long exportStartTime = new Date().getTime();
+
+    log.info("Starting export to configured destinations.");
+
+    ArrayList<Collection> collections = new ArrayList<Collection>();
+    collections.add(MagmaEngine.get().lookupCollection("onyx-baseline"));
+    // Collection collections = MagmaEngine.get().getDataSource("onyxDatasource");
+
+    for(Collection collection : collections) {
+
+      // Export interviews for each destination
       for(OnyxDataExportDestination destination : exportDestinations) {
 
-        // Wrap collection in filtered collection
-        Collection filteredCollection = new FilteredCollection(collection, destination.getVariableFilterChainMap(), destination.getEntityFilterChainMap());
+        // Build a unique variableFilterChainList and an entityFilterChainList from all ValueSetFilters.
+        List<CollectionFilterChain<ValueSet>> entityFilterChainList = new ArrayList<CollectionFilterChain<ValueSet>>();
+        List<CollectionFilterChain<VariableValueSource>> variableFilterChainList = new ArrayList<CollectionFilterChain<VariableValueSource>>();
+        for(ValueSetFilter valueSetFilter : destination.getValueSetFilters()) {
+          entityFilterChainList.add(valueSetFilter.getEntityFilterChain());
+          variableFilterChainList.add(valueSetFilter.getVariableFilterChain());
+        }
 
-        // Datasource xmlDataSource = new XmlDataSource(destination.getStrategies(), rootDirectory);
+        // Apply all filters to Collection for current OnyxDestination.
+        Collection filteredCollection = new FilteredCollection(collection, variableFilterChainList, entityFilterChainList);
 
-        // This may change. May not need to register when copying.
-        // MagmaEngine.get().addDatasource(xmlDataSource);
+        // Save FilteredCollection to disk.
+        saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
 
-        // MagmaUtil.copy(filteredCollection, xmlDataSource.getWritableCollection());
-
-        // Instead of marking everything as exported in a sequential manner (as is done here), it may be
-        // better to use the observer pattern and subscribe to changes as published by the XmlDataSource.
-        // When the XmlDataSource publishes that it has written an entity, we can respond by marking that
-        // entity as exported.
+        // Mark the data of the FilteredCollection as exported for current destination (log entry).
         markAsExported(filteredCollection, destination);
+
       }
+
     }
 
+    long exportEndTime = new Date().getTime();
+
+    log.info("Exported [{}] interview(s) in [{}ms] to [{}] destination(s).", new Object[] { 0, exportEndTime - exportStartTime, 0 });
+  }
+
+  private void saveToDisk(Collection collection, String destinationName, File outputDirectory, Strategies outputStrategies) {
+    // Datasource exportDatasource = new FilesystemDatasource(destinationName, outputRootDirectory,
+    // destination.getStrategies());
+    // exportDatasource.createCollection(destinationName);
+    // MagmaUtil.copy(collection, exportDatasource);
+
+    displayCollectionDebugInformation(collection, destinationName, outputDirectory, outputStrategies);
+  }
+
+  private void displayCollectionDebugInformation(Collection collection, String destinationName, File outputDirectory, Strategies outputStrategies) {
+    log.info("Exporting the following destination: {}", destinationName);
+    log.info("Export output directory : {}", outputDirectory);
+    log.info("Export strategies are :");
+
+    for(String strategy : outputStrategies.getStrategies()) {
+      log.info(strategy);
+    }
+
+    log.info("Exported variables are :");
+    Set<Variable> variables = collection.getVariables();
+    for(Variable variable : variables) {
+      log.info(variable.getName());
+    }
+
+    log.info("Exported variables are :");
+    ValueSet valueSet;
+    for(String entityType : collection.getEntityTypes()) {
+      for(VariableEntity variableEntity : collection.getEntities(entityType)) {
+        valueSet = collection.loadValueSet(variableEntity);
+
+        for(VariableValueSource source : collection.getVariableValueSources(entityType)) {
+          Value value = source.getValue(valueSet);
+
+          if(value.isSequence()) {
+            ValueSequence seq = value.asSequence();
+            int order = 0;
+            for(Value item : seq.getValues()) {
+              log.info("{}[{}]@{}:{}", new Object[] { source.getVariable().getName(), source.getValueType().getName(), order++, item });
+            }
+          } else {
+            log.info("{}[{}]:{}", new Object[] { source.getVariable().getName(), source.getValueType().getName(), source.getValue(valueSet) });
+          }
+        }
+      }
+    }
   }
 
   private void markAsExported(Collection collection, OnyxDataExportDestination destination) {
@@ -93,18 +166,6 @@ public class OnyxDataExport {
         exportLogService.save(log);
       }
     }
-  }
-
-  public File getOutputRootDirectory() {
-    return outputRootDirectory;
-  }
-
-  public void setOutputRootDirectory(File outputRootDirectory) {
-    this.outputRootDirectory = outputRootDirectory;
-  }
-
-  public void setOnyxDataSource(Datasource onyxDataSource) {
-    this.onyxDataSource = onyxDataSource;
   }
 
 }
