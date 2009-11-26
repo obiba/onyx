@@ -32,7 +32,7 @@ public class OnyxDataExportReader {
   public OnyxDataExportReader() {
     xstream = new XStream();
     xstream.alias("destinations", List.class);
-    xstream.alias("destination", OnyxDestination.class);
+    xstream.alias("destination", OnyxDataExportDestination.class);
     xstream.alias("excludeAll", ExcludeAllFilter.class);
     xstream.alias("script", JavaScriptFilter.class);
     xstream.alias("variableName", VariableNameFilter.class);
@@ -45,13 +45,13 @@ public class OnyxDataExportReader {
   }
 
   @SuppressWarnings("unchecked")
-  public List<OnyxDestination> read() throws IOException {
-    List<OnyxDestination> onyxDestinations = new ArrayList<OnyxDestination>();
+  public List<OnyxDataExportDestination> read() throws IOException {
+    List<OnyxDataExportDestination> onyxDestinations = new ArrayList<OnyxDataExportDestination>();
     for(int i = 0; i < this.resources.length; i++) {
       Resource resource = this.resources[i];
 
       if(resource.exists()) {
-        onyxDestinations.addAll((List<OnyxDestination>) xstream.fromXML(resource.getInputStream()));
+        onyxDestinations.addAll((List<OnyxDataExportDestination>) xstream.fromXML(resource.getInputStream()));
       }
     }
 

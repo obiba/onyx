@@ -28,7 +28,7 @@ import org.springframework.core.io.Resource;
 public class OnyxDataExportReaderTest {
   private final String testFileName;
 
-  private List<OnyxDestination> onyxDestinations;
+  private List<OnyxDataExportDestination> onyxDestinations;
 
   public OnyxDataExportReaderTest() {
     String fullClassName = this.getClass().getCanonicalName();
@@ -63,7 +63,7 @@ public class OnyxDataExportReaderTest {
     assertThat(firstValueSetFilter.getEntityTypeName(), is("Participant"));
   }
 
-  private List<OnyxDestination> getDestinations() throws IOException {
+  private List<OnyxDataExportDestination> getDestinations() throws IOException {
     OnyxDataExportReader onyxDataExportReader = new OnyxDataExportReader();
     System.out.println("Reading in [" + testFileName + "].");
     onyxDataExportReader.setResources(new Resource[] { new ClassPathResource(testFileName) });

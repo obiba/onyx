@@ -9,104 +9,43 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import org.obiba.onyx.core.domain.participant.InterviewStatus;
-import org.obiba.onyx.engine.variable.IVariableFilter;
+import org.obiba.magma.engine.output.Strategies;
 
-/**
- * 
- */
-public class OnyxDataExportDestination implements IVariableFilter {
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
-  public String name;
+public class OnyxDataExportDestination {
 
-  public boolean includeAll;
+  private String name;
 
-  public Set<String> filteredVariables;
+  private Strategies strategies;
 
-  public Set<String> includedVariables;
-
-  public Set<InterviewStatus> exportedInterviewStatuses;
-
-  public static final InterviewStatus[] defaultExportedInterviewStatuses = { InterviewStatus.COMPLETED, InterviewStatus.CLOSED };
+  @XStreamImplicit
+  private List<ValueSetFilter> valueSetFilters;
 
   public String getName() {
-    return this.name;
+    return name;
   }
 
   public void setName(String name) {
     this.name = name;
   }
 
-  public void setIncludedVariables(Set<String> includedVariables) {
-    this.includedVariables = includedVariables;
+  public Strategies getStrategies() {
+    return strategies;
   }
 
-  public void setFilteredVariables(Set<String> filteredVariables) {
-    this.filteredVariables = filteredVariables;
+  void setStrategies(Strategies strategies) {
+    this.strategies = strategies;
   }
 
-  public void setIncludeAll(boolean includeAll) {
-    this.includeAll = includeAll;
+  public List<ValueSetFilter> getValueSetFilters() {
+    return valueSetFilters;
   }
 
-  public boolean accept(String path) {
-    boolean include;
-
-    if(includeAll) {
-      // start by including it
-      include = true;
-
-      // eventually filter it
-      if(filteredVariables != null) {
-        include = !containsPath(filteredVariables, path);
-      }
-
-      // eventually re-include it after it was filtered
-      if(include == false && includedVariables != null) {
-        include = containsPath(includedVariables, path);
-      }
-    } else {
-      // start by not including it
-      include = false;
-
-      // eventually include it
-      if(includedVariables != null) {
-        include = containsPath(includedVariables, path);
-      }
-
-      // eventually filter it after it was included
-      if(include && filteredVariables != null) {
-        include = !containsPath(filteredVariables, path);
-      }
-    }
-
-    return include;
-  }
-
-  protected boolean containsPath(Set<String> set, String path) {
-    for(String entry : set) {
-      // Is this entry the prefix of the path
-      if(path.startsWith(entry)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public Set<InterviewStatus> getExportedInterviewStatuses() {
-    if(exportedInterviewStatuses == null) {
-      exportedInterviewStatuses = new HashSet<InterviewStatus>(Arrays.asList(defaultExportedInterviewStatuses));
-      return exportedInterviewStatuses;
-    }
-    return exportedInterviewStatuses;
-  }
-
-  public void setExportedInterviewStatuses(Set<InterviewStatus> exportedInterviewStatuses) {
-    this.exportedInterviewStatuses = exportedInterviewStatuses;
+  public void setValueSetFilters(List<ValueSetFilter> valueSetFilters) {
+    this.valueSetFilters = valueSetFilters;
   }
 
 }

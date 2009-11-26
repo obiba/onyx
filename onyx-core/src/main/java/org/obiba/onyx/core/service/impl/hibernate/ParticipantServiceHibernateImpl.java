@@ -164,9 +164,10 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   public List<Participant> getNonExportableParticipants(Date olderThan) {
 
     Set<InterviewStatus> exportedInterviewStatuses = new HashSet<InterviewStatus>();
-    for(OnyxDataExportDestination destination : exportDestinations) {
-      exportedInterviewStatuses.addAll(destination.getExportedInterviewStatuses());
-    }
+    // TODO: changes to OnyxExportDestination/Magma integration make this fail. Need new way to purge.
+    // for(OnyxDataExportDestination destination : exportDestinations) {
+    // exportedInterviewStatuses.addAll(destination.getExportedInterviewStatuses());
+    // }
 
     Criteria criteria = getSession().createCriteria(Participant.class);
     criteria.createAlias("interview", "interview");

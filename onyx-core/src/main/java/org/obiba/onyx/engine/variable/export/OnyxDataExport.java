@@ -29,7 +29,6 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.slf4j.Logger;
@@ -189,7 +188,9 @@ public class OnyxDataExport {
    * @return The list of participant to be exported.
    */
   protected List<Participant> getParticipantsToBeExportedForDestination(OnyxDataExportDestination destination, List<Participant> participants) {
-    Set<InterviewStatus> exportedInterviewStatuses = destination.getExportedInterviewStatuses();
+    // TODO: changes to OnyxExportDestination/Magma integration make this fail.
+    // Set<InterviewStatus> exportedInterviewStatuses = destination.getExportedInterviewStatuses();
+    Set<InterviewStatus> exportedInterviewStatuses = new HashSet<InterviewStatus>();
     List<Participant> participantsToBeExported = new ArrayList<Participant>();
     for(Participant participant : participants) {
       if(exportedInterviewStatuses.contains(participant.getInterview().getStatus())) {
@@ -229,22 +230,22 @@ public class OnyxDataExport {
       }
 
       // participants files
-      for(Participant participant : participants) {
-        exportedBarcodes.add(participant.getBarcode());
-        String entryName = participant.getBarcode() + ".xml";
-        OutputStream os = exportStrategy.newEntry(entryName);
-        VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
-        participantData.setExportDate(exportDate);
-        participantData.setCaptureDate(participant.getInterview().getEndDate());
-        VariableStreamer.toXML(participantData, os);
-        os.flush();
-
-        if(sessionFactory != null) {
-          // Clearing the session will empty the cache, freeing memory.
-          // It will also delete any pending updates, which is why we already marked all participants as exported.
-          sessionFactory.getCurrentSession().clear();
-        }
-      }
+      // for(Participant participant : participants) {
+      // exportedBarcodes.add(participant.getBarcode());
+      // String entryName = participant.getBarcode() + ".xml";
+      // OutputStream os = exportStrategy.newEntry(entryName);
+      // VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+      // participantData.setExportDate(exportDate);
+      // participantData.setCaptureDate(participant.getInterview().getEndDate());
+      // VariableStreamer.toXML(participantData, os);
+      // os.flush();
+      //
+      // if(sessionFactory != null) {
+      // // Clearing the session will empty the cache, freeing memory.
+      // // It will also delete any pending updates, which is why we already marked all participants as exported.
+      // sessionFactory.getCurrentSession().clear();
+      // }
+      // }
 
     } catch(RuntimeException e) {
       context.fail();
