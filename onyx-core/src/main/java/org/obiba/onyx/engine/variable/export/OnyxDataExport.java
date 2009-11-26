@@ -10,22 +10,22 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import org.obiba.core.util.StreamUtil;
 import org.obiba.magma.Collection;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.Value;
-import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueSet;
-import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.engine.output.Strategies;
 import org.obiba.magma.filter.CollectionFilterChain;
 import org.obiba.magma.filter.FilteredCollection;
+import org.obiba.magma.xstream.Io;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -120,33 +120,20 @@ public class OnyxDataExport {
       log.info(strategy);
     }
 
-    log.info("Exported variables are :");
-    Set<Variable> variables = collection.getVariables();
-    for(Variable variable : variables) {
-      log.info(variable.getName());
+    Io io = new Io();
+    FileOutputStream os = null;
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      File temp = new File(System.getProperty("java.io.tmpdir"), "onyx-export.xml_" + dateFormat.format(new Date(System.currentTimeMillis())));
+      log.info("Exporting to {}", temp.getPath());
+      os = new FileOutputStream(temp);
+      io.writeEntities(collection, os);
+    } catch(Exception e) {
+      e.printStackTrace();
+    } finally {
+      StreamUtil.silentSafeClose(os);
     }
 
-    log.info("Exported variables are :");
-    ValueSet valueSet;
-    for(String entityType : collection.getEntityTypes()) {
-      for(VariableEntity variableEntity : collection.getEntities(entityType)) {
-        valueSet = collection.loadValueSet(variableEntity);
-
-        for(VariableValueSource source : collection.getVariableValueSources(entityType)) {
-          Value value = source.getValue(valueSet);
-
-          if(value.isSequence()) {
-            ValueSequence seq = value.asSequence();
-            int order = 0;
-            for(Value item : seq.getValues()) {
-              log.info("{}[{}]@{}:{}", new Object[] { source.getVariable().getName(), source.getValueType().getName(), order++, item });
-            }
-          } else {
-            log.info("{}[{}]:{}", new Object[] { source.getVariable().getName(), source.getValueType().getName(), source.getValue(valueSet) });
-          }
-        }
-      }
-    }
   }
 
   private void markAsExported(Collection collection, OnyxDataExportDestination destination) {
