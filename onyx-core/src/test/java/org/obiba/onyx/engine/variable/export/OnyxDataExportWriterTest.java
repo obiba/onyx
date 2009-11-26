@@ -33,19 +33,19 @@ public class OnyxDataExportWriterTest {
 
   private XStream xstream;
 
-  private List<OnyxDestination> destinations;
+  private List<OnyxDataExportDestination> destinations;
 
-  private OnyxDestination destinationDcc;
+  private OnyxDataExportDestination destinationDcc;
 
   @Before
   public void setUp() throws Exception {
     xstream = new XStream();
     xstream.alias("destinations", List.class);
-    xstream.alias("destination", OnyxDestination.class);
+    xstream.alias("destination", OnyxDataExportDestination.class);
     xstream.alias("exportedInterviewStatuses", HashSet.class);
     xstream.autodetectAnnotations(true);
 
-    destinationDcc = new OnyxDestination();
+    destinationDcc = new OnyxDataExportDestination();
     destinationDcc.setName("DCC");
 
     List<String> strategiesList = new ArrayList<String>();
@@ -75,7 +75,7 @@ public class OnyxDataExportWriterTest {
     Filter<ValueSet> varThree = JavaScriptFilter.Builder.newFilter().javascript("$('Participant.Interview.status').any('CLOSED','COMPLETED')").exclude().build();
     participantValueSetFilter.getEntityFilterChain().addFilter(varThree);
 
-    destinations = new ArrayList<OnyxDestination>();
+    destinations = new ArrayList<OnyxDataExportDestination>();
 
     destinations.add(destinationDcc);
 
