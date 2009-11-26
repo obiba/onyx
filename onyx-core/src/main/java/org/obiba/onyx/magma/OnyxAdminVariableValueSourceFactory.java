@@ -138,8 +138,10 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   }
 
   private Set<VariableValueSource> createParticipantSources(String collection) {
+    String participantPrefix = ONYX_ADMIN_PREFIX + '.' + PARTICIPANT;
+
     BeanVariableValueSourceFactory<Participant> delegateFactory = new BeanVariableValueSourceFactory<Participant>(PARTICIPANT, Participant.class);
-    delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT);
+    delegateFactory.setPrefix(participantPrefix);
     delegateFactory.setProperties(ImmutableSet.of("barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("appointment.date", "appointmentDate").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
@@ -148,14 +150,15 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     Set<VariableValueSource> sources = delegateFactory.createSources(collection, beanResolver);
 
     // Add Javascript sources for birthYear and age.
-    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, "birthYear", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("$('" + ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + "birthDate').year()").build()));
-    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, "age", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("now().year() - $('birthDate').year() - (now().dayOfYear() < $('birthDate').dayOfYear() ? 1 : 0)").build()));
+    String birthDateVariableName = participantPrefix + '.' + "birthDate";
+    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, participantPrefix + '.' + "birthYear", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("$('" + birthDateVariableName + "').year()").build()));
+    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, participantPrefix + '.' + "age", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("now().year() - $('" + birthDateVariableName + "').year() - (now().dayOfYear() < $('" + birthDateVariableName + "').dayOfYear() ? 1 : 0)").build()));
 
     // Add sources for any configured attributes.
     ParticipantBeanVariableValueSourceFactory participantAttributeSourceFactory = new ParticipantBeanVariableValueSourceFactory();
     participantAttributeSourceFactory.setAttributeHelper(attributeHelper);
     participantAttributeSourceFactory.setParticipantMetadata(participantMetadata);
-    participantAttributeSourceFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT);
+    participantAttributeSourceFactory.setPrefix(participantPrefix);
     sources.addAll(participantAttributeSourceFactory.createSources(collection, beanResolver));
 
     return sources;
