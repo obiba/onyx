@@ -30,10 +30,10 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.util.data.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -56,10 +56,8 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
   // Instance Variables
   //
 
-  @Autowired(required = true)
   private InstrumentService instrumentService;
 
-  @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
 
   //
@@ -86,7 +84,8 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       // Call superclass method to create the sources for InstrumentRun variables.
       String instrumentRunPrefix = instrumentTypePrefix + '.' + INSTRUMENT_RUN;
       setPrefix(instrumentRunPrefix);
-      setProperties(ImmutableSet.of("user", "timeStart", "timeEnd", "otherContraindication"));
+      setProperties(ImmutableSet.of("user.login", "timeStart", "timeEnd", "otherContraindication"));
+      setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
       sources = super.createSources(collection, resolver);
 
       // For non-repeatable instrument types, add source for instrument barcode variable.
@@ -119,12 +118,16 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     this.instrumentService = instrumentService;
   }
 
+  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
+    this.attributeHelper = attributeHelper;
+  }
+
   private VariableValueSource createBarcodeSource(String collection, String prefix, InstrumentType instrumentType, ValueSetBeanResolver resolver) {
     BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
     delegateFactory.setPrefix(prefix);
     delegateFactory.setProperties(ImmutableSet.of("instrument.barcode"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("instrument.barcode", "instrumentBarcode").build());
-    setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources(collection, resolver).iterator().next();
   }
@@ -133,7 +136,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     BeanVariableValueSourceFactory<Contraindication> delegateFactory = new BeanVariableValueSourceFactory<Contraindication>("Participant", Contraindication.class);
     delegateFactory.setPrefix(prefix);
     delegateFactory.setProperties(ImmutableSet.of("type"));
-    setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources(collection, resolver).iterator().next();
   }
@@ -146,6 +149,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
         BeanVariableValueSourceFactory<InstrumentRunValue> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRunValue>("Participant", InstrumentRunValue.class);
         delegateFactory.setProperties(ImmutableSet.of("captureMethod", "data.value"));
+        delegateFactory.setPropertyNameToPropertyType(getInstrumentParameterMappedPropertyType(instrumentParameter));
         delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterAttributeVisitor(attributeHelper, instrumentType, instrumentParameter)));
 
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
@@ -172,10 +176,16 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     BeanVariableValueSourceFactory<Measure> delegateFactory = new BeanVariableValueSourceFactory<Measure>("Participant", Measure.class);
     delegateFactory.setPrefix(measurePrefix);
     delegateFactory.setOccurrenceGroup(MEASURE);
-    delegateFactory.setProperties(ImmutableSet.of("user", "time", "instrumentBarcode"));
-    setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+    delegateFactory.setProperties(ImmutableSet.of("user.login", "time", "instrumentBarcode"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources(collection, resolver);
+  }
+
+  private Map<String, Class<?>> getInstrumentParameterMappedPropertyType(InstrumentParameter instrumentParameter) {
+    Map<String, Class<?>> propertyType = new ImmutableMap.Builder<String, Class<?>>().put("data.value", DataTypes.valueTypeFor(instrumentParameter.getDataType()).getJavaClass()).build();
+    return propertyType;
   }
 
   //
@@ -191,6 +201,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
 
     public InstrumentParameterAttributeVisitor(OnyxAttributeHelper attributeHelper, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
       this.attributeHelper = attributeHelper;
+      this.instrumentType = instrumentType;
       this.instrumentParameter = instrumentParameter;
     }
 

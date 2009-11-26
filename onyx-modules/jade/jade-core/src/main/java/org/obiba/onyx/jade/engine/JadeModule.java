@@ -11,9 +11,12 @@ package org.obiba.onyx.jade.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -33,13 +36,19 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
+import org.obiba.onyx.jade.magma.InstrumentRunBeanResolver;
+import org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory;
+import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module, IVariableProvider, ApplicationContextAware {
+import com.google.common.collect.ImmutableSet;
+
+public class JadeModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
@@ -56,6 +65,12 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   // private DatabaseSeed databaseSeed;
 
   private List<Stage> stages;
+
+  @Autowired(required = true)
+  private InstrumentRunBeanResolver resolver;
+
+  @Autowired(required = true)
+  private OnyxAttributeHelper attributeHelper;
 
   public String getName() {
     return "jade";
@@ -199,4 +214,26 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     instrumentRunService.deleteAllInstrumentRuns(participant);
   }
 
+  public void setResolver(InstrumentRunBeanResolver resolver) {
+    this.resolver = resolver;
+  }
+
+  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
+    this.attributeHelper = attributeHelper;
+  }
+
+  //
+  // VariableValueSourceFactory Methods
+  //
+
+  public Set<VariableValueSource> createSources(String collection) {
+    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
+
+    InstrumentRunVariableValueSourceFactory factory = new InstrumentRunVariableValueSourceFactory();
+    factory.setInstrumentService(instrumentService);
+    factory.setAttributeHelper(attributeHelper);
+    sources.addAll(factory.createSources(collection, resolver));
+
+    return sources.build();
+  }
 }
