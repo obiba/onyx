@@ -19,6 +19,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("valueset")
 class ValueSetFilter {
 
+  @XStreamAlias("entityType")
   @XStreamAsAttribute
   private final String entityTypeName;
 
@@ -52,6 +53,12 @@ class ValueSetFilter {
 
   public String getEntityTypeName() {
     return entityTypeName;
+  }
+
+  private Object readResolve() {
+    if(entityFilterChain != null) entityFilterChain.setEntityType(entityTypeName);
+    if(variableFilterChain != null) variableFilterChain.setEntityType(entityTypeName);
+    return this;
   }
 
 }
