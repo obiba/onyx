@@ -12,7 +12,6 @@ package org.obiba.onyx.engine.variable.export;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -120,8 +119,7 @@ public class OnyxDataExport {
     Io io = new Io();
     FileOutputStream os = null;
     try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-      File temp = new File(System.getProperty("java.io.tmpdir"), "onyx-export.xml_" + dateFormat.format(new Date(System.currentTimeMillis())));
+      File temp = new File(System.getProperty("java.io.tmpdir"), "onyx-export_" + System.currentTimeMillis() + ".xml");
       log.info("Exporting to {}", temp.getPath());
       os = new FileOutputStream(temp);
       io.writeEntities(collection, os);
