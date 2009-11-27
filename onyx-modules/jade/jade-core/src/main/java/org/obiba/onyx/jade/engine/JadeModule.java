@@ -36,8 +36,10 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
+import org.obiba.onyx.jade.magma.InstrumentBeanResolver;
 import org.obiba.onyx.jade.magma.InstrumentRunBeanResolver;
 import org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory;
+import org.obiba.onyx.jade.magma.InstrumentVariableValueSourceFactory;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +69,10 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
   private List<Stage> stages;
 
   @Autowired(required = true)
-  private InstrumentRunBeanResolver resolver;
+  private InstrumentBeanResolver instrumentBeanResolver;
+
+  @Autowired(required = true)
+  private InstrumentRunBeanResolver instrumentRunBeanResolver;
 
   @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
@@ -214,8 +219,12 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     instrumentRunService.deleteAllInstrumentRuns(participant);
   }
 
-  public void setResolver(InstrumentRunBeanResolver resolver) {
-    this.resolver = resolver;
+  public void setResolver(InstrumentBeanResolver instrumentBeanResolver) {
+    this.instrumentBeanResolver = instrumentBeanResolver;
+  }
+
+  public void setInstrumentRunBeanResolver(InstrumentRunBeanResolver instrumentRunBeanResolver) {
+    this.instrumentRunBeanResolver = instrumentRunBeanResolver;
   }
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
@@ -229,10 +238,15 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
   public Set<VariableValueSource> createSources(String collection) {
     ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
 
-    InstrumentRunVariableValueSourceFactory factory = new InstrumentRunVariableValueSourceFactory();
-    factory.setInstrumentService(instrumentService);
-    factory.setAttributeHelper(attributeHelper);
-    sources.addAll(factory.createSources(collection, resolver));
+    // Create Instrument sources.
+    InstrumentVariableValueSourceFactory instrumentSourceFactory = new InstrumentVariableValueSourceFactory();
+    sources.addAll(instrumentSourceFactory.createSources(collection, instrumentBeanResolver));
+
+    // Create InstrumentRun sources.
+    InstrumentRunVariableValueSourceFactory instrumentRunSourceFactory = new InstrumentRunVariableValueSourceFactory();
+    instrumentRunSourceFactory.setInstrumentService(instrumentService);
+    instrumentRunSourceFactory.setAttributeHelper(attributeHelper);
+    sources.addAll(instrumentRunSourceFactory.createSources(collection, instrumentRunBeanResolver));
 
     return sources.build();
   }
