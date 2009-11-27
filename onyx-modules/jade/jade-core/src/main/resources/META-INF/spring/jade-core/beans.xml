@@ -56,12 +56,13 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
   
-  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl">
+  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl" init-method="init">
+    <property name="experimentalConditionFactory" ref="experimentalConditionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
-  <bean id="experimentalConditionFactory" class="org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionFactory" init-method="registerExperimentalConditions">
+  <bean id="experimentalConditionFactory" class="org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionFactory">
     <property name="experimentalConditionService" ref="experimentalConditionService" />
     <property name="resourcePatterns">
       <list>

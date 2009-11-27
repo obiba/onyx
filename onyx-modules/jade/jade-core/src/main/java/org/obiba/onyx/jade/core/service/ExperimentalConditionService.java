@@ -27,6 +27,11 @@ public interface ExperimentalConditionService {
   public final static String INSTRUMENT_BARCODE = "INSTRUMENT_BARCODE";
 
   /**
+   * Initializes the service. In particular, it registers the configured experimental conditions.
+   */
+  public void init();
+
+  /**
    * Persists an {@link ExperimentalCondition} and all its associated {@link ExperimentalConditionValues}.
    * @param experimentalCondition ExperimentalCondition to persist.
    */

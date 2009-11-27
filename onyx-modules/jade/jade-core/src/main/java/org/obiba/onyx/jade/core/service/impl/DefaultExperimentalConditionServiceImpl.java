@@ -19,6 +19,7 @@ import org.hibernate.criterion.Restrictions;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionFactory;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
@@ -28,9 +29,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerAwareService implements ExperimentalConditionService {
 
+  private ExperimentalConditionFactory experimentalConditionFactory;
+
   private List<ExperimentalConditionLog> experimentalConditionLogs = new ArrayList<ExperimentalConditionLog>();
 
   private SessionFactory factory;
+
+  public void init() {
+    experimentalConditionFactory.registerExperimentalConditions();
+  }
+
+  public void setExperimentalConditionFactory(ExperimentalConditionFactory experimentalConditionFactory) {
+    this.experimentalConditionFactory = experimentalConditionFactory;
+  }
 
   public void setSessionFactory(SessionFactory factory) {
     this.factory = factory;

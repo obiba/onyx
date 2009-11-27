@@ -32,6 +32,7 @@ import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
@@ -61,6 +62,8 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
   private InstrumentService instrumentService;
 
   private InstrumentRunService instrumentRunService;
+
+  private ExperimentalConditionService experimentalConditionService;
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
@@ -172,6 +175,10 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     this.instrumentService = instrumentService;
   }
 
+  public void setExperimentalConditionService(ExperimentalConditionService experimentalConditionService) {
+    this.experimentalConditionService = experimentalConditionService;
+  }
+
   public InstrumentRunService getInstrumentRunService() {
     return instrumentRunService;
   }
@@ -240,6 +247,8 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
 
     // Create Instrument sources.
     InstrumentVariableValueSourceFactory instrumentSourceFactory = new InstrumentVariableValueSourceFactory();
+    instrumentSourceFactory.setInstrumentService(instrumentService);
+    instrumentSourceFactory.setExperimentalConditionService(experimentalConditionService);
     sources.addAll(instrumentSourceFactory.createSources(collection, instrumentBeanResolver));
 
     // Create InstrumentRun sources.

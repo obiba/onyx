@@ -16,6 +16,7 @@
     <property name="instrumentRunService" ref="instrumentRunService" />  
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="instrumentService" ref="instrumentService" />
+    <property name="experimentalConditionService" ref="experimentalConditionService" />  
     <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />
     <property name="stages">
       <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
