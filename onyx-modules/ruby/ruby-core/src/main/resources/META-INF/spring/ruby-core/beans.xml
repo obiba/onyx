@@ -37,4 +37,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="rubyNotApplicableState" parent="baseRubyStageState"
     class="org.obiba.onyx.ruby.engine.state.RubyNotApplicableState" scope="prototype" />
 
+  <bean id="tubeValueSetBeanResolver" class="org.obiba.onyx.ruby.magma.TubeValueSetBeanResolver">
+  </bean>
+  
 </beans>

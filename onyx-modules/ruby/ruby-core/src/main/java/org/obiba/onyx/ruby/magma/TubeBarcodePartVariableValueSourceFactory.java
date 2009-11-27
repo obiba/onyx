@@ -10,7 +10,6 @@
 package org.obiba.onyx.ruby.magma;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.obiba.magma.Variable;
@@ -23,7 +22,6 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Factory for creating VariableValueSources for tube barcode part variables.
@@ -33,15 +31,15 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
   // Instance Variables
   //
 
-  @Autowired(required = true)
-  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
+  private TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
   //
   // Constructors
   //
 
-  public TubeBarcodePartVariableValueSourceFactory() {
+  public TubeBarcodePartVariableValueSourceFactory(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
     super("Participant", BarcodePart.class);
+    this.tubeRegistrationConfiguration = tubeRegistrationConfiguration;
   }
 
   //
@@ -52,17 +50,14 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
   public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    for(String stageName : tubeRegistrationConfigurationMap.keySet()) {
-      TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stageName);
-      BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
+    BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
 
-      for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
-        String barcodePartVariableName = partParser.getVariableName();
-        if(barcodePartVariableName != null) {
-          String variableName = lookupVariableName(barcodePartVariableName);
-          Variable variable = this.doBuildVariable(collection, TextType.get().getJavaClass(), variableName);
-          sources.add(new BeanPropertyVariableValueSource(variable, BarcodePart.class, resolver, "partValue"));
-        }
+    for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
+      String barcodePartVariableName = partParser.getVariableName();
+      if(barcodePartVariableName != null) {
+        String variableName = lookupVariableName(barcodePartVariableName);
+        Variable variable = this.doBuildVariable(collection, TextType.get().getJavaClass(), variableName);
+        sources.add(new BeanPropertyVariableValueSource(variable, BarcodePart.class, resolver, "partValue"));
       }
     }
 
@@ -81,16 +76,13 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
   public Set<String> getKeyVariableNames() {
     Set<String> keyVariableNames = new HashSet<String>();
 
-    for(String stageName : tubeRegistrationConfigurationMap.keySet()) {
-      TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stageName);
-      BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
+    BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
 
-      for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
-        String barcodePartVariableName = partParser.getVariableName();
-        if(barcodePartVariableName != null) {
-          if(partParser.isKey()) {
-            keyVariableNames.add(barcodePartVariableName);
-          }
+    for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
+      String barcodePartVariableName = partParser.getVariableName();
+      if(barcodePartVariableName != null) {
+        if(partParser.isKey()) {
+          keyVariableNames.add(barcodePartVariableName);
         }
       }
     }

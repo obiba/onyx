@@ -12,8 +12,10 @@
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/ruby/stages.xml" />
       </bean>
     </property>
+    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
     <property name="tubeToVariableMappingStrategy" ref="tubeToVariableMappingStrategy" />
     <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
+    <property name="variableRoot" value="SamplesCollection" /> 
   </bean>
   
   <bean id="tubeToVariableMappingStrategy" class="org.obiba.onyx.ruby.engine.variable.impl.DefaultTubeToVariableMappingStrategy">
