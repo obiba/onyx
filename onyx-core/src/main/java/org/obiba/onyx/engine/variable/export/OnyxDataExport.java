@@ -85,7 +85,7 @@ public class OnyxDataExport {
         saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
 
         // Mark the data of the FilteredCollection as exported for current destination (log entry).
-        markAsExported(filteredCollection, destination);
+        // markAsExported(filteredCollection, destination);
 
       }
 
