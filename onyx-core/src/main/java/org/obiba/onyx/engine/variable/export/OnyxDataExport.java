@@ -61,6 +61,10 @@ public class OnyxDataExport {
     this.outputRootDirectory = outputRootDirectory;
   }
 
+  public File getOutputRootDirectory() {
+    return outputRootDirectory;
+  }
+
   public void exportInterviews() throws Exception {
 
     long exportStartTime = new Date().getTime();
