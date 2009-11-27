@@ -92,6 +92,14 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       InstrumentType instrumentType = entry.getValue();
 
       for(InstrumentCalibration instrumentCalibration : experimentalConditionService.getInstrumentCalibrationsByType(instrumentType.getName())) {
+        BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
+        factory.setPrefix(instrumentCalibration.getName());
+        factory.setProperties(ImmutableSet.of("time", "workstation", "user.login"));
+        factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+        factory.setOccurrenceGroup(instrumentCalibration.getName());
+
+        sources.addAll(factory.createSources(collection, resolver));
+
         for(int i = 0; i < instrumentCalibration.getAttributes().size(); i++) {
           Attribute calibrationAttribute = instrumentCalibration.getAttributes().get(i);
           String propertyName = "attributes[" + i + "]";
@@ -104,14 +112,14 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
           nameMapBuilder.put(propertyName, instrumentCalibration.getAttributes().get(i).getName());
           mappedPropertyTypeBuilder.put("attributes", DataTypes.valueTypeFor(calibrationAttribute.getType()).getJavaClass());
 
-          BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
-          factory.setPrefix(instrumentCalibration.getName());
-          factory.setProperties(propertySetBuilder.build());
-          factory.setPropertyNameToVariableName(nameMapBuilder.build());
-          factory.setMappedPropertyType(mappedPropertyTypeBuilder.build());
-          factory.setOccurrenceGroup(instrumentCalibration.getName());
+          BeanVariableValueSourceFactory<ExperimentalCondition> attributeSourceFactory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
+          attributeSourceFactory.setPrefix(instrumentCalibration.getName());
+          attributeSourceFactory.setProperties(propertySetBuilder.build());
+          attributeSourceFactory.setPropertyNameToVariableName(nameMapBuilder.build());
+          attributeSourceFactory.setMappedPropertyType(mappedPropertyTypeBuilder.build());
+          attributeSourceFactory.setOccurrenceGroup(instrumentCalibration.getName());
 
-          sources.addAll(factory.createSources(collection, resolver));
+          sources.addAll(attributeSourceFactory.createSources(collection, resolver));
         }
       }
     }
