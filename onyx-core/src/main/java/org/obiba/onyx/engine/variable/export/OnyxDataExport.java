@@ -11,6 +11,7 @@ package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,7 +86,7 @@ public class OnyxDataExport {
         saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
 
         // Mark the data of the FilteredCollection as exported for current destination (log entry).
-        // markAsExported(filteredCollection, destination);
+        markAsExported(filteredCollection, destination);
 
       }
 
@@ -108,16 +109,18 @@ public class OnyxDataExport {
   private void displayCollectionDebugInformation(Collection collection, String destinationName, File outputDirectory, Strategies outputStrategies) {
     log.info("Exporting the following destination: {}", destinationName);
     log.info("Export output directory : {}", outputDirectory);
-    log.info("Export strategies are :");
 
+    StringWriter strategies = new StringWriter();
     for(String strategy : outputStrategies.getStrategies()) {
-      log.info(strategy);
+      strategies.append(strategy + ", ");
     }
+
+    log.info("Export strategies are : {}", strategies);
 
     Io io = new Io();
     FileOutputStream os = null;
     try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
       File temp = new File(System.getProperty("java.io.tmpdir"), "onyx-export.xml_" + dateFormat.format(new Date(System.currentTimeMillis())));
       log.info("Exporting to {}", temp.getPath());
       os = new FileOutputStream(temp);
