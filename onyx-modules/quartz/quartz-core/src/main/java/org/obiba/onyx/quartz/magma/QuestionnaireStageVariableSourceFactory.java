@@ -9,10 +9,19 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.magma;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.wicket.extensions.validation.validator.RfcCompliantEmailAddressValidator;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.magma.AttributeAwareBuilder;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
@@ -29,6 +38,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.StageAttributeVisitor;
+import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
@@ -48,6 +58,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.IDataValidator;
 import org.springframework.context.NoSuchMessageException;
 
 import com.google.common.base.Predicate;
@@ -123,7 +135,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
             new QuestionVariableBuilder(subQuestion).withCategories().build(collection);
           }
         } else {
-          new QuestionVariableBuilder(question).withCategories().build(collection);
+          QuestionVariableBuilder builder = new QuestionVariableBuilder(question).withCategories();
+          if(question.hasDataSource()) {
+            builder.withoutComment();
+          }
+          builder.build(collection);
         }
       }
 
@@ -149,7 +165,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     factory.setPrefix(questionnaire.getName() + ".QuestionnaireRun");
     factory.setProperties(ImmutableSet.of("questionnaireVersion", "locale", "timeStart", "timeEnd", "user.login"));
     factory.setPropertyNameToVariableName(ImmutableMap.of("questionnaireVersion", "version", "user.login", "user"));
-    factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor()));
+    factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new LocalizableBuilderVisitor(questionnaire)));
     builder.addAll(factory.createSources(collection, beanResolver));
   }
 
@@ -234,14 +250,15 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         BeanVariableValueSourceFactory<QuestionAnswer> factory = new BeanVariableValueSourceFactory<QuestionAnswer>("Participant", QuestionAnswer.class);
         factory.setProperties(properties);
         factory.setPrefix(variableName(question));
-        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionElementBuilderVisitor(question)));
+        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionNameBuilderVisitor(question)));
         builder.addAll(factory.createSources(collection, beanResolver));
       }
+
     }
 
     private void buildParentPlaceholderVariable(String collection) {
       Variable.Builder questionVariable = Variable.Builder.newVariable(collection, variableName(question), BooleanType.get(), "Participant");
-      questionVariable.accept(new QuestionElementBuilderVisitor(question)).accept(new QuestionnaireElementBuilderVisitor(question));
+      questionVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
       builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, beanResolver, "active"));
     }
 
@@ -252,11 +269,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         questionVariable.repeatable();
       }
 
-      questionVariable.accept(new QuestionElementBuilderVisitor(question)).accept(new QuestionnaireElementBuilderVisitor(question));
+      questionVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
 
       for(QuestionCategory c : categories) {
         org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
-        cb.accept(new QuestionnaireElementBuilderVisitor(c)).withCode(c.getExportName()).missing(c.isEscape());
+        cb.accept(new LocalizableBuilderVisitor(c)).withCode(c.getExportName()).missing(c.isEscape());
         questionVariable.addCategory(cb.build());
       }
 
@@ -273,7 +290,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // Build a derived variable from the Question variable using javascript
       // The script test whether the Question variable has this category amongst its answers
       Variable.Builder categoryVariable = Variable.Builder.newVariable(collection, variableName(question, questionCategory), BooleanType.get(), "Participant").extend(JavascriptVariableBuilder.class).setScript("$('" + variableName(question) + "').any('" + questionCategory.getCategory().getName() + "')");
-      categoryVariable.accept(new QuestionElementBuilderVisitor(question));
+      categoryVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
       builder.add(new JavascriptVariableValueSource(categoryVariable.build()));
 
       // Build variable(s) from the open answer(s) of this category
@@ -289,7 +306,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     protected void buildOpenAnswerVariable(String collection, final QuestionCategory questionCategory, final OpenAnswerDefinition oad) {
       Variable.Builder openAnswerVariable = Variable.Builder.newVariable(collection, variableName(question, questionCategory, oad), DataTypes.valueTypeFor(oad.getDataType()), "Participant");
-      openAnswerVariable.accept(new QuestionElementBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
+      openAnswerVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
       BeanPropertyVariableValueSource valueSource = new BeanPropertyVariableValueSource(openAnswerVariable.build(), OpenAnswer.class, beanResolver, "data.value");
       builder.add(valueSource);
     }
@@ -308,11 +325,30 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
   }
 
-  private class QuestionnaireElementBuilderVisitor implements Variable.BuilderVisitor, org.obiba.magma.Category.BuilderVisitor {
+  /**
+   * Visitor for setting the question name
+   */
+  private class QuestionNameBuilderVisitor extends BaseQuartzBuilderVisitor {
+
+    private Question question;
+
+    public QuestionNameBuilderVisitor(Question question) {
+      this.question = question;
+    }
+
+    public void visit(Builder builder) {
+      super.visit(builder);
+      // Question name for resolving the bean
+      builder.addAttribute("questionName", question.getName());
+    }
+
+  }
+
+  private class LocalizableBuilderVisitor implements Variable.BuilderVisitor, org.obiba.magma.Category.BuilderVisitor {
 
     IQuestionnaireElement element;
 
-    QuestionnaireElementBuilderVisitor(IQuestionnaireElement element) {
+    LocalizableBuilderVisitor(IQuestionnaireElement element) {
       this.element = element;
     }
 
@@ -346,21 +382,20 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   }
 
-  private class QuestionElementBuilderVisitor extends BaseQuartzBuilderVisitor {
+  private class QuestionBuilderVisitor extends LocalizableBuilderVisitor {
+    Question question;
 
-    private Question question;
-
-    public QuestionElementBuilderVisitor(Question question) {
+    public QuestionBuilderVisitor(Question question) {
+      super(question);
       this.question = question;
     }
 
-    public void visit(Builder builder) {
-      super.visit(builder);
-      // Question name for resolving the bean
-      builder.addAttribute("questionName", question.getName())
-      // Page name
-      .addAttribute("page", question.getPage().getName());
+    @Override
+    protected void visitAttributes(AttributeAwareBuilder<?> builder) {
+      super.visitAttributes(builder);
 
+      // Page name
+      builder.addAttribute("page", question.getPage().getName());
       if(question.getNumber() != null) {
         // Question number
         builder.addAttribute("questionNumber", question.getNumber());
@@ -377,11 +412,51 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         }
       }
       builder.addAttribute("section", sectionAttribute.toString());
-    }
 
+      OnyxAttributeHelper.addConditionAttribute(builder, question.getCondition());
+
+      // get the min/max settings : for questions having a parent question, if no settings is found parent settings is
+      // used.
+      Integer minCount = question.getMinCount();
+      if(minCount == null && question.getParentQuestion() != null) {
+        minCount = question.getParentQuestion().getMinCount();
+      }
+      Integer maxCount = question.getMaxCount();
+      if(maxCount == null && question.getParentQuestion() != null) {
+        maxCount = question.getParentQuestion().getMaxCount();
+      }
+
+      OnyxAttributeHelper.addRequiredAttribute(builder, question.isRequired());
+
+      if(minCount != null && minCount > 1) {
+        OnyxAttributeHelper.addMinCountAttribute(builder, minCount);
+      }
+
+      if(maxCount != null) {
+        OnyxAttributeHelper.addMaxCountAttribute(builder, maxCount);
+      }
+    }
   }
 
-  private class OpenAnswerVisitor extends QuestionnaireElementBuilderVisitor {
+  private class QuestionCategoryBuilderVisitor extends LocalizableBuilderVisitor {
+    QuestionCategory questionCategory;
+
+    public QuestionCategoryBuilderVisitor(QuestionCategory questionCategory) {
+      super(questionCategory);
+      this.questionCategory = questionCategory;
+    }
+
+    protected void visitAttributes(AttributeAwareBuilder<?> builder) {
+      super.visitAttributes(builder);
+      // Provide the category name to the resolver
+      builder.addAttribute("categoryName", questionCategory.getCategory().getName());
+
+      // an open answer is implicitly always conditioned by the selection of its parent category.
+      OnyxAttributeHelper.addConditionAttribute(builder, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
+    }
+  }
+
+  private class OpenAnswerVisitor extends LocalizableBuilderVisitor {
 
     private OpenAnswerDefinition oad;
 
@@ -428,6 +503,34 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       .addAttribute("categoryName", questionCategory.getCategory().getName())
       // Provide the openAnswer name to the resolver
       .addAttribute("openAnswerName", oad.getName());
+
+      if(oad.getDataSource() != null) {
+        OnyxAttributeHelper.addSourceAttribute(builder, oad.getDataSource());
+      }
+
+      List<String> validations = new ArrayList<String>();
+      if(oad.getDataValidators().size() > 0) {
+
+        for(IDataValidator v : oad.getDataValidators()) {
+          if(v instanceof DataValidator) {
+            String validator = validatorToString(((DataValidator) v).getValidator());
+            if(validator != null) {
+              validations.add(validator);
+            }
+          }
+        }
+      }
+
+      if(oad.getValidationDataSources().size() > 0) {
+        validations.add(oad.getValidationDataSources().toString());
+      }
+      if(validations.size() > 0) {
+        OnyxAttributeHelper.addValidationAttribute(builder, validations.toString());
+      }
+
+      // an open answer is implicitly always conditioned by the selection of its parent category.
+      OnyxAttributeHelper.addConditionAttribute(builder, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(), questionCategory.getCategory().getName()).toString());
+
     }
 
   }
@@ -456,4 +559,44 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       }
     }
   }
+
+  /**
+   * Turns a IValidator into a String.
+   * @param validator
+   * @return null if validator not identified.
+   */
+  private String validatorToString(IValidator validator) {
+    if(validator == null) {
+      return null;
+    }
+
+    if(validator instanceof MaximumValidator) {
+      return "Number.Maximum[" + ((MaximumValidator) validator).getMaximum() + "]";
+    } else if(validator instanceof MinimumValidator) {
+      return "Number.Minimum[" + ((MinimumValidator) validator).getMinimum() + "]";
+    } else if(validator instanceof RangeValidator) {
+      return "Number.Range[" + ((RangeValidator) validator).getMinimum() + ", " + ((RangeValidator) validator).getMaximum() + "]";
+    } else if(validator instanceof StringValidator) {
+      if(validator instanceof StringValidator.ExactLengthValidator) {
+        return "String.ExactLength[" + ((StringValidator.ExactLengthValidator) validator).getLength() + "]";
+      } else if(validator instanceof StringValidator.LengthBetweenValidator) {
+        return "String.LengthBetween[" + ((StringValidator.LengthBetweenValidator) validator).getMinimum() + ", " + ((StringValidator.LengthBetweenValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof StringValidator.MaximumLengthValidator) {
+        return "String.MaximumLength[" + ((StringValidator.MaximumLengthValidator) validator).getMaximum() + "]";
+      } else if(validator instanceof StringValidator.MinimumLengthValidator) {
+        return "String.MinimumLength[" + ((StringValidator.MinimumLengthValidator) validator).getMinimum() + "]";
+      } else if(validator instanceof PatternValidator) {
+        if(validator instanceof EmailAddressValidator) {
+          return "String.EmailAddress";
+        } else if(validator instanceof RfcCompliantEmailAddressValidator) {
+          return "String.RfcCompliantEmailAddress";
+        } else {
+          return "String.Pattern[" + ((PatternValidator) validator).getPattern() + "]";
+        }
+      }
+    }
+
+    return validator.getClass().getSimpleName().replaceAll("Validator", "");
+  }
+
 }

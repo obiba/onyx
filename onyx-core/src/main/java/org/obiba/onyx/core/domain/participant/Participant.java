@@ -29,10 +29,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Participant extends AbstractEntity {
   //
   // Constants
@@ -71,6 +74,7 @@ public class Participant extends AbstractEntity {
    * List of values of configured participant attributes.
    */
   @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+  @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
   private List<ParticipantAttributeValue> configuredAttributeValues;
 
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
