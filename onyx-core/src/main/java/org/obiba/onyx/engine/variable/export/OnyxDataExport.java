@@ -23,7 +23,6 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.engine.output.Strategies;
-import org.obiba.magma.filter.CollectionFilterChain;
 import org.obiba.magma.filter.FilteredCollection;
 import org.obiba.magma.xstream.Io;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
@@ -73,23 +72,14 @@ public class OnyxDataExport {
 
     ArrayList<Collection> collections = new ArrayList<Collection>();
     collections.add(MagmaEngine.get().lookupCollection("onyx-baseline"));
-    // Collection collections = MagmaEngine.get().getDataSource("onyxDatasource");
 
     for(Collection collection : collections) {
 
       // Export interviews for each destination
       for(OnyxDataExportDestination destination : exportDestinations) {
 
-        // Build a unique variableFilterChainList and an entityFilterChainList from all ValueSetFilters.
-        List<CollectionFilterChain<ValueSet>> entityFilterChainList = new ArrayList<CollectionFilterChain<ValueSet>>();
-        List<CollectionFilterChain<VariableValueSource>> variableFilterChainList = new ArrayList<CollectionFilterChain<VariableValueSource>>();
-        for(ValueSetFilter valueSetFilter : destination.getValueSetFilters()) {
-          entityFilterChainList.add(valueSetFilter.getEntityFilterChain());
-          variableFilterChainList.add(valueSetFilter.getVariableFilterChain());
-        }
-
         // Apply all filters to Collection for current OnyxDestination.
-        Collection filteredCollection = new FilteredCollection(collection, variableFilterChainList, entityFilterChainList);
+        Collection filteredCollection = new FilteredCollection(collection, destination.getVariableFilterChainMap(), destination.getEntityFilterChainMap());
 
         // Save FilteredCollection to disk.
         saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
