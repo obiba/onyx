@@ -57,7 +57,7 @@ public class DevelopersPanel extends Panel {
 
     };
     add(devTab);
-    add(new HibernateStatisticsPanel("hibernateStats", new PropertyModel<Statistics>(factory, "statistics")));
+    add(new HibernateStatisticsPanel("hibernateStats", new PropertyModel<Statistics>(factory, "statistics")).setOutputMarkupId(true));
   }
 
   @Override
