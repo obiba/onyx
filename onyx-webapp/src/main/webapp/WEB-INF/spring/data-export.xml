@@ -10,6 +10,7 @@
         <property name="targetBeanName" value="userSessionService" />
       </bean>
     </property>
+    <property name="exportLogService" ref="exportLogService" />
     <!-- 
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />

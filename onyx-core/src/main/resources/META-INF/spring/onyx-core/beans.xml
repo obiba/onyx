@@ -170,4 +170,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="onyxAdminVariableValueSourceFactory" class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory">
   </bean>
   
+  <bean id="exportLogService" class="org.obiba.onyx.core.service.impl.DefaultExportLogServiceImpl">
+  </bean>
+  
 </beans>
