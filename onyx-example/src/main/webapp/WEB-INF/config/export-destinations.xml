@@ -14,7 +14,7 @@
           $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="exclude">
-          <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -58,7 +58,7 @@
           $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="exclude">
-          <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -84,7 +84,7 @@
           $('Participant.Interview.status').any('CANCELLED')]]></javascript>
         </script>
         <script type="exclude">
-          <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
       <variables>
