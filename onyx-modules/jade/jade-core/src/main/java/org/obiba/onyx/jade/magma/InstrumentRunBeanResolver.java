@@ -156,12 +156,9 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
 
   private String extractInstrumentTypeName(String variableName) {
     String[] elements = variableName.split("\\.");
-    for(int i = 0; i < elements.length - 1; i++) {
-      if(elements[i].equals(INSTRUMENT_RUN)) {
-        return elements[i + 1];
-      }
+    if(elements.length != 0) {
+      return elements[0];
     }
-
     return null;
   }
 
