@@ -13,9 +13,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueType;
+import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.beans.ValueSetBeanResolver;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -92,6 +97,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       InstrumentType instrumentType = entry.getValue();
 
       for(InstrumentCalibration instrumentCalibration : experimentalConditionService.getInstrumentCalibrationsByType(instrumentType.getName())) {
+        // Create sources for calibration time, workstation and user.
         BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
         factory.setPrefix(instrumentCalibration.getName());
         factory.setProperties(ImmutableSet.of("time", "workstation", "user.login"));
@@ -100,6 +106,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
         sources.addAll(factory.createSources(collection, resolver));
 
+        // Create source for calibrated instrument's barcode variable.
+        sources.add(createCalibratedInstrumentBarcodeSource(collection, instrumentCalibration.getName()));
+
+        // Create sources for calibration attributes.
         for(int i = 0; i < instrumentCalibration.getAttributes().size(); i++) {
           Attribute calibrationAttribute = instrumentCalibration.getAttributes().get(i);
           String propertyName = "attributes[" + i + "]";
@@ -125,5 +135,24 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     }
 
     return sources;
+  }
+
+  private VariableValueSource createCalibratedInstrumentBarcodeSource(final String collection, final String prefix) {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        return Variable.Builder.newVariable(collection, prefix + '.' + "instrument", getValueType(), "Instrument").build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
+        return getValueType().valueOf(instrumentBarcode);
+      }
+
+      public ValueType getValueType() {
+        return TextType.get();
+      }
+
+    };
   }
 }
