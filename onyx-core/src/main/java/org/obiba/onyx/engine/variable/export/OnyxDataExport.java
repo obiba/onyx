@@ -136,11 +136,7 @@ public class OnyxDataExport {
     for(String entityType : collection.getEntityTypes()) {
       for(VariableEntity entity : collection.getEntities(entityType)) {
         ValueSet valueSet = collection.loadValueSet(entity);
-        for(VariableValueSource source : collection.getVariableValueSources(entityType)) {
 
-          // Value value = source.getValue(valueSet);
-
-        }
         // Find the earliest and latest entity capture date-time
         // Write an entry in ExportLog to flag the set of entities as exported.
 
