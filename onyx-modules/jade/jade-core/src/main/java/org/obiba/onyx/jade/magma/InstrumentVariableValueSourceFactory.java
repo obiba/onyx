@@ -18,6 +18,8 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.Variable.Builder;
+import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.magma.type.TextType;
@@ -29,6 +31,7 @@ import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.magma.DataTypes;
+import org.obiba.onyx.magma.OnyxAttributeHelper;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -46,6 +49,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   //
   // Instance Variables
   //
+
+  private OnyxAttributeHelper attributeHelper;
 
   private InstrumentService instrumentService;
 
@@ -82,6 +87,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   // Methods
   //
 
+  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
+    this.attributeHelper = attributeHelper;
+  }
+
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
   }
@@ -97,17 +106,20 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       InstrumentType instrumentType = entry.getValue();
 
       for(InstrumentCalibration instrumentCalibration : experimentalConditionService.getInstrumentCalibrationsByType(instrumentType.getName())) {
+        InstrumentCalibrationAttributeVisitor calibrationAttributeVisitor = new InstrumentCalibrationAttributeVisitor(attributeHelper, instrumentType.getName(), instrumentCalibration.getName());
+
         // Create sources for calibration time, workstation and user.
         BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
         factory.setPrefix(instrumentCalibration.getName());
         factory.setProperties(ImmutableSet.of("time", "workstation", "user.login"));
         factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
         factory.setOccurrenceGroup(instrumentCalibration.getName());
+        factory.setVariableBuilderVisitors(ImmutableSet.of(calibrationAttributeVisitor));
 
         sources.addAll(factory.createSources(collection, resolver));
 
         // Create source for calibrated instrument's barcode variable.
-        sources.add(createCalibratedInstrumentBarcodeSource(collection, instrumentCalibration.getName()));
+        sources.add(createCalibratedInstrumentBarcodeSource(collection, instrumentType.getName(), instrumentCalibration.getName()));
 
         // Create sources for calibration attributes.
         for(int i = 0; i < instrumentCalibration.getAttributes().size(); i++) {
@@ -128,6 +140,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
           attributeSourceFactory.setPropertyNameToVariableName(nameMapBuilder.build());
           attributeSourceFactory.setMappedPropertyType(mappedPropertyTypeBuilder.build());
           attributeSourceFactory.setOccurrenceGroup(instrumentCalibration.getName());
+          attributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(calibrationAttributeVisitor));
 
           sources.addAll(attributeSourceFactory.createSources(collection, resolver));
         }
@@ -137,11 +150,15 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     return sources;
   }
 
-  private VariableValueSource createCalibratedInstrumentBarcodeSource(final String collection, final String prefix) {
+  private VariableValueSource createCalibratedInstrumentBarcodeSource(final String collection, final String instrumentTypeName, final String instrumentCalibrationName) {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        return Variable.Builder.newVariable(collection, prefix + '.' + "instrument", getValueType(), "Instrument").build();
+        Variable.Builder builder = Variable.Builder.newVariable(collection, instrumentCalibrationName + '.' + "instrument", getValueType(), "Instrument");
+        attributeHelper.addLocalizedAttributes(builder, instrumentCalibrationName);
+        OnyxAttributeHelper.addAttribute(builder, "instrumentType", instrumentTypeName);
+
+        return builder.build();
       }
 
       public Value getValue(ValueSet valueSet) {
@@ -154,5 +171,31 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
     };
+  }
+
+  //
+  // Inner Classes
+  //
+
+  static class InstrumentCalibrationAttributeVisitor implements BuilderVisitor {
+    private OnyxAttributeHelper attributeHelper;
+
+    private String instrumentTypeName;
+
+    private String instrumentCalibrationName;
+
+    public InstrumentCalibrationAttributeVisitor(OnyxAttributeHelper attributeHelper, String instrumentTypeName, String instrumentCalibrationName) {
+      this.attributeHelper = attributeHelper;
+      this.instrumentTypeName = instrumentTypeName;
+      this.instrumentCalibrationName = instrumentCalibrationName;
+    }
+
+    public void visit(Builder builder) {
+      // Add variable's localized attributes.
+      attributeHelper.addLocalizedAttributes(builder, instrumentCalibrationName);
+
+      // Add instrumentType attribute.
+      OnyxAttributeHelper.addAttribute(builder, "instrumentType", instrumentTypeName);
+    }
   }
 }

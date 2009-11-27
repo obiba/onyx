@@ -249,6 +249,7 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     InstrumentVariableValueSourceFactory instrumentSourceFactory = new InstrumentVariableValueSourceFactory();
     instrumentSourceFactory.setInstrumentService(instrumentService);
     instrumentSourceFactory.setExperimentalConditionService(experimentalConditionService);
+    instrumentSourceFactory.setAttributeHelper(attributeHelper);
     sources.addAll(instrumentSourceFactory.createSources(collection, instrumentBeanResolver));
 
     // Create InstrumentRun sources.
