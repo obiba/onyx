@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.magma;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -110,14 +109,14 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor));
     Set<VariableValueSource> sources = delegateFactory.createSources(collection, beanResolver);
 
-    // Add source for contraindication code variable.
+    // Create source for contraindication code variable.
     String ciVariablePrefix = tubeRegistrationPrefix + '.' + CONTRAINDICATION;
     delegateFactory.setPrefix(ciVariablePrefix);
     delegateFactory.setProperties(ImmutableSet.of("contraindicationCode"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("contraindicationCode", "code").build());
     sources.addAll(delegateFactory.createSources(collection, beanResolver));
 
-    // Add source for contraindication type variable.
+    // Create source for contraindication type variable.
     sources.add(createContraindicationTypeSource(collection, ciVariablePrefix, stageAttributeVisitor, beanResolver));
 
     return sources;
@@ -126,32 +125,20 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
   private Set<VariableValueSource> createRegisteredParticipantTubeSources(String collection, String prefix, String stageName, Variable.BuilderVisitor stageAttributeVisitor) {
     String tubePrefix = prefix + '.' + REGISTERED_PARTICIPANT_TUBE;
 
-    List<String> tubeProperties = new ArrayList<String>();
-    tubeProperties.add("barcode");
-    tubeProperties.add("registrationTime");
-    tubeProperties.add("comment");
-
-    String[] remarkProperties = getRemarkProperties(stageName);
-    tubeProperties.addAll(Arrays.asList(remarkProperties));
-
-    ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<String, String>();
-    builder.put("type", "actionType");
-    for(int i = 0; i < remarkProperties.length; i++) {
-      builder.put(remarkProperties[i], "remark" + '.' + tubeRegistrationConfiguration.getAvailableRemarks().get(i).getCode());
-    }
-    ImmutableMap<String, String> propertyNameToVariableNameMap = builder.build();
-
     // Create sources for registered participant tube variables.
     BeanVariableValueSourceFactory<RegisteredParticipantTube> delegateFactory = new BeanVariableValueSourceFactory<RegisteredParticipantTube>("Participant", RegisteredParticipantTube.class);
     delegateFactory.setPrefix(tubePrefix);
     delegateFactory.setOccurrenceGroup(REGISTERED_PARTICIPANT_TUBE);
-    delegateFactory.setProperties(ImmutableSet.copyOf(tubeProperties.iterator()));
-    delegateFactory.setPropertyNameToVariableName(propertyNameToVariableNameMap);
+    delegateFactory.setProperties(ImmutableSet.of("barcode", "registrationTime", "comment"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("type", "actionType").build());
     delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", String.class).build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor(), new OccurrenceCountAttributeVisitor(tubeRegistrationConfiguration.getExpectedTubeCount())));
     Set<VariableValueSource> sources = delegateFactory.createSources(collection, beanResolver);
 
-    // Add sources for barcode part variables.
+    // Create sources for registered participant tube remarks.
+    sources.addAll(createRemarkSources(collection, tubePrefix, stageAttributeVisitor));
+
+    // Create sources for barcode part variables.
     TubeBarcodePartVariableValueSourceFactory barcodePartFactory = new TubeBarcodePartVariableValueSourceFactory(tubeRegistrationConfiguration);
     barcodePartFactory.setPrefix(tubePrefix);
     barcodePartFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new IdentifierAttributeVisitor((String[]) barcodePartFactory.getKeyVariableNames().toArray(new String[0]))));
@@ -167,6 +154,30 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor));
 
     return delegateFactory.createSources(collection, resolver).iterator().next();
+  }
+
+  private Set<VariableValueSource> createRemarkSources(String collection, String tubePrefix, Variable.BuilderVisitor stageAttributeVisitor) {
+    List<String> remarkProperties = Arrays.asList(getRemarkProperties(stageName));
+
+    ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<String, String>();
+    for(int i = 0; i < remarkProperties.size(); i++) {
+      String qualifiedRemarkCode = tubeRegistrationConfiguration.getAvailableRemarks().get(i).getCode();
+      int lastSeparatorIndex = qualifiedRemarkCode.lastIndexOf('.');
+      String remarkCode = (lastSeparatorIndex != -1) ? qualifiedRemarkCode.substring(lastSeparatorIndex + 1) : qualifiedRemarkCode;
+
+      builder.put(remarkProperties.get(i), remarkCode);
+    }
+    ImmutableMap<String, String> propertyNameToVariableNameMap = builder.build();
+
+    // Create sources for registered participant tube variables.
+    BeanVariableValueSourceFactory<RegisteredParticipantTube> delegateFactory = new BeanVariableValueSourceFactory<RegisteredParticipantTube>("Participant", RegisteredParticipantTube.class);
+    delegateFactory.setPrefix(tubePrefix + '.' + "remark");
+    delegateFactory.setProperties(ImmutableSet.copyOf(remarkProperties.iterator()));
+    delegateFactory.setPropertyNameToVariableName(propertyNameToVariableNameMap);
+    delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", String.class).build());
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor()));
+
+    return delegateFactory.createSources(collection, beanResolver);
   }
 
   private String[] getRemarkProperties(String stageName) {
@@ -190,8 +201,6 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
         attributeHelper.addLocalizedAttributes(builder, "Ruby.Barcode");
       } else if(builder.isName("comment")) {
         attributeHelper.addLocalizedAttributes(builder, "Ruby.Comment");
-      } else if(builder.isName("remarks")) {
-        attributeHelper.addLocalizedAttributes(builder, "Ruby.Remark");
       }
     }
   }
