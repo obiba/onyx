@@ -142,7 +142,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
     BeanVariableValueSourceFactory<Participant> delegateFactory = new BeanVariableValueSourceFactory<Participant>(PARTICIPANT, Participant.class);
     delegateFactory.setPrefix(participantPrefix);
-    delegateFactory.setProperties(ImmutableSet.of("barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
+    delegateFactory.setProperties(ImmutableSet.of("barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType", "exported"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("appointment.date", "appointmentDate").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
 
