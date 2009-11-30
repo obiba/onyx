@@ -13,7 +13,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +23,7 @@ import org.junit.Test;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueType;
+import org.obiba.magma.type.BinaryType;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.DecimalType;
@@ -83,6 +86,15 @@ public class DataValueConverterTest {
   }
 
   @Test
+  public void testDataToValueBinaryData() throws Exception {
+    byte[] binaryData = "binary data".getBytes();
+    Data data = new Data(DataType.DATA, binaryData);
+    Value value = DataValueConverter.dataToValue(data);
+    assertThat(value.getValueType(), equalTo((ValueType) BinaryType.get()));
+    assertThat((byte[]) value.getValue(), is(binaryData));
+  }
+
+  @Test
   public void testValueToDataBoolean() throws Exception {
     Value value = ValueType.Factory.newValue(BooleanType.get(), Boolean.TRUE);
     Data data = DataValueConverter.valueToData(value);
@@ -121,5 +133,25 @@ public class DataValueConverterTest {
     Data data = DataValueConverter.valueToData(value);
     assertThat(data.getType(), equalTo(DataType.DECIMAL));
     assertThat((Double) data.getValue(), is(54.32));
+  }
+
+  @Test
+  public void testValueToDataBinaryData() throws Exception {
+    byte[] binaryData = "binary data".getBytes();
+    Value value = ValueType.Factory.newValue(BinaryType.get(), binaryData);
+    Data data = DataValueConverter.valueToData(value);
+    assertThat(data.getType(), equalTo(DataType.DATA));
+    assertThat((byte[]) data.getValue(), is(binaryData));
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void testValueToDataSequence() throws Exception {
+    List<Value> values = new ArrayList<Value>(3);
+    values.add(ValueType.Factory.newValue(TextType.get(), "valueOne"));
+    values.add(ValueType.Factory.newValue(TextType.get(), "valueTwo"));
+    values.add(ValueType.Factory.newValue(TextType.get(), "valueThree"));
+
+    Value value = ValueType.Factory.newSequence(TextType.get(), values);
+    DataValueConverter.valueToData(value);
   }
 }
