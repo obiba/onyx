@@ -12,16 +12,15 @@ package org.obiba.onyx.engine.variable.export;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.util.StreamUtil;
 import org.obiba.magma.Collection;
+import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.VariableEntity;
-import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.engine.output.Strategies;
 import org.obiba.magma.filter.FilteredCollection;
 import org.obiba.magma.xstream.Io;
@@ -70,22 +69,23 @@ public class OnyxDataExport {
 
     log.info("Starting export to configured destinations.");
 
-    ArrayList<Collection> collections = new ArrayList<Collection>();
-    collections.add(MagmaEngine.get().lookupCollection("onyx-baseline"));
+    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
 
-    for(Collection collection : collections) {
+      for(Collection collection : datasource.getCollections()) {
 
-      // Export interviews for each destination
-      for(OnyxDataExportDestination destination : exportDestinations) {
+        // Export interviews for each destination
+        for(OnyxDataExportDestination destination : exportDestinations) {
 
-        // Apply all filters to Collection for current OnyxDestination.
-        Collection filteredCollection = new FilteredCollection(collection, destination.getVariableFilterChainMap(), destination.getEntityFilterChainMap());
+          // Apply all filters to Collection for current OnyxDestination.
+          Collection filteredCollection = new FilteredCollection(collection, destination.getVariableFilterChainMap(), destination.getEntityFilterChainMap());
 
-        // Save FilteredCollection to disk.
-        saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
+          // Save FilteredCollection to disk.
+          saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
 
-        // Mark the data of the FilteredCollection as exported for current destination (log entry).
-        // markAsExported(filteredCollection, destination);
+          // Mark the data of the FilteredCollection as exported for current destination (log entry).
+          // markAsExported(filteredCollection, destination);
+
+        }
 
       }
 

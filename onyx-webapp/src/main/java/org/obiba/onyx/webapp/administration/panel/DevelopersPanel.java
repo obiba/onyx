@@ -22,13 +22,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.obiba.core.util.StreamUtil;
 import org.obiba.magma.Collection;
+import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.xstream.Io;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 
 /**
- *
+ * 
  */
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR" })
 public class DevelopersPanel extends Panel {
@@ -70,11 +71,14 @@ public class DevelopersPanel extends Panel {
     MagmaEngine engine = MagmaEngine.get();
     FileOutputStream os = null;
     Io io = new Io();
+    File temp = new File(System.getProperty("java.io.tmpdir"), "magma-variables.xml");
     try {
-      Collection collection = engine.lookupCollection("onyx-baseline");
-      File temp = new File(System.getProperty("java.io.tmpdir"), "magma-variables.xml");
-      os = new FileOutputStream(temp);
-      io.writeVariables(collection, os);
+      for(Datasource datasource : engine.getDatasources()) {
+        for(Collection collection : datasource.getCollections()) {
+          os = new FileOutputStream(temp);
+          io.writeVariables(collection, os);
+        }
+      }
       os.close();
     } catch(Exception e) {
       e.printStackTrace();
@@ -89,11 +93,14 @@ public class DevelopersPanel extends Panel {
     FileOutputStream os = null;
     Io io = new Io();
     try {
-      Collection collection = engine.lookupCollection("onyx-baseline");
-      File temp = new File(System.getProperty("java.io.tmpdir"), "magma-valuesets.xml");
-      os = new FileOutputStream(temp);
-      io.writeEntities(collection, os);
-
+      for(Datasource datasource : engine.getDatasources()) {
+        for(Collection collection : datasource.getCollections()) {
+          File temp = new File(System.getProperty("java.io.tmpdir"), "magma-valuesets.xml");
+          os = new FileOutputStream(temp);
+          io.writeEntities(collection, os);
+        }
+      }
+      os.close();
     } catch(Exception e) {
       e.printStackTrace();
     } finally {
