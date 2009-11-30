@@ -30,6 +30,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.StageAttributeVisitor;
@@ -272,21 +273,6 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
         OnyxAttributeHelper.addOccurrenceCountAttribute(builder, instrumentType.getExpectedMeasureCount().toString());
       }
-    }
-  }
-
-  private static class CategoryLocalizedAttributeVisitor implements Category.BuilderVisitor {
-    private OnyxAttributeHelper attributeHelper;
-
-    private String code;
-
-    public CategoryLocalizedAttributeVisitor(OnyxAttributeHelper variableHelper, String code) {
-      this.attributeHelper = variableHelper;
-      this.code = code;
-    }
-
-    public void visit(Category.Builder builder) {
-      attributeHelper.addLocalizedAttributes(builder, code);
     }
   }
 }

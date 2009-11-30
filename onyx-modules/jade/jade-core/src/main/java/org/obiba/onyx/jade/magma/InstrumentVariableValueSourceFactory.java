@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.obiba.magma.Category;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueType;
@@ -30,6 +31,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 
@@ -106,15 +108,12 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       InstrumentType instrumentType = entry.getValue();
 
       for(InstrumentCalibration instrumentCalibration : experimentalConditionService.getInstrumentCalibrationsByType(instrumentType.getName())) {
-        InstrumentCalibrationAttributeVisitor calibrationAttributeVisitor = new InstrumentCalibrationAttributeVisitor(attributeHelper, instrumentType.getName(), instrumentCalibration.getName());
-
         // Create sources for calibration time, workstation and user.
         BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
         factory.setPrefix(instrumentCalibration.getName());
         factory.setProperties(ImmutableSet.of("time", "workstation", "user.login"));
         factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
         factory.setOccurrenceGroup(instrumentCalibration.getName());
-        factory.setVariableBuilderVisitors(ImmutableSet.of(calibrationAttributeVisitor));
 
         sources.addAll(factory.createSources(collection, resolver));
 
@@ -131,8 +130,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
           ImmutableMap.Builder<String, Class<?>> mappedPropertyTypeBuilder = new ImmutableMap.Builder<String, Class<?>>();
 
           propertySetBuilder.add(propertyName);
-          nameMapBuilder.put(propertyName, instrumentCalibration.getAttributes().get(i).getName());
+          nameMapBuilder.put(propertyName, calibrationAttribute.getName());
           mappedPropertyTypeBuilder.put("attributes", DataTypes.valueTypeFor(calibrationAttribute.getType()).getJavaClass());
+
+          InstrumentCalibrationAttributeVisitor calibrationAttributeVisitor = new InstrumentCalibrationAttributeVisitor(attributeHelper, instrumentType.getName(), instrumentCalibration.getName(), calibrationAttribute);
 
           BeanVariableValueSourceFactory<ExperimentalCondition> attributeSourceFactory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
           attributeSourceFactory.setPrefix(instrumentCalibration.getName());
@@ -184,10 +185,13 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
     private String instrumentCalibrationName;
 
-    public InstrumentCalibrationAttributeVisitor(OnyxAttributeHelper attributeHelper, String instrumentTypeName, String instrumentCalibrationName) {
+    private Attribute calibrationAttribute;
+
+    public InstrumentCalibrationAttributeVisitor(OnyxAttributeHelper attributeHelper, String instrumentTypeName, String instrumentCalibrationName, Attribute calibrationAttribute) {
       this.attributeHelper = attributeHelper;
       this.instrumentTypeName = instrumentTypeName;
       this.instrumentCalibrationName = instrumentCalibrationName;
+      this.calibrationAttribute = calibrationAttribute;
     }
 
     public void visit(Builder builder) {
@@ -196,6 +200,12 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       // Add instrumentType attribute.
       OnyxAttributeHelper.addAttribute(builder, "instrumentType", instrumentTypeName);
+
+      // If a set of allowed values are declared for the attribute, add them as categories.
+      for(String categoryName : calibrationAttribute.getAllowedValues()) {
+        Category.BuilderVisitor localizedAttributeVisitor = new CategoryLocalizedAttributeVisitor(attributeHelper, categoryName);
+        builder.addCategory(categoryName, null, ImmutableSet.of(localizedAttributeVisitor));
+      }
     }
   }
 }
