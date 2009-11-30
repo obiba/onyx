@@ -48,7 +48,7 @@ public class VariableDataSource implements IDataSource, InitializingBean {
     }
 
     String magmaVariableName = path.replaceFirst("Onyx.", "");
-    log.info("Retrieving the following Magma variable: {}", magmaVariableName);
+    log.info("Retrieving the following Magma variable (collectionName={}): {}", magmaVariableName, onyxCollection);
     try {
       variableValueSource = MagmaEngine.get().lookupVariable("Participant", onyxCollection.getName(), magmaVariableName);
     } catch(NoSuchVariableException noSuchVariableEx) {
