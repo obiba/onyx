@@ -41,6 +41,8 @@ import org.obiba.onyx.jade.magma.InstrumentBeanResolver;
 import org.obiba.onyx.jade.magma.InstrumentRunBeanResolver;
 import org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory;
 import org.obiba.onyx.jade.magma.InstrumentVariableValueSourceFactory;
+import org.obiba.onyx.jade.magma.WorkstationBeanResolver;
+import org.obiba.onyx.jade.magma.WorkstationVariableValueSourceFactory;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,9 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
 
   @Autowired(required = true)
   private InstrumentRunBeanResolver instrumentRunBeanResolver;
+
+  @Autowired(required = true)
+  private WorkstationBeanResolver workstationBeanResolver;
 
   @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
@@ -226,12 +231,16 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     instrumentRunService.deleteAllInstrumentRuns(participant);
   }
 
-  public void setResolver(InstrumentBeanResolver instrumentBeanResolver) {
+  public void setInstrumentBeanResolver(InstrumentBeanResolver instrumentBeanResolver) {
     this.instrumentBeanResolver = instrumentBeanResolver;
   }
 
   public void setInstrumentRunBeanResolver(InstrumentRunBeanResolver instrumentRunBeanResolver) {
     this.instrumentRunBeanResolver = instrumentRunBeanResolver;
+  }
+
+  public void setWorkstationBeanResolver(WorkstationBeanResolver workstationBeanResolver) {
+    this.workstationBeanResolver = workstationBeanResolver;
   }
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
@@ -257,6 +266,13 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     instrumentRunSourceFactory.setInstrumentService(instrumentService);
     instrumentRunSourceFactory.setAttributeHelper(attributeHelper);
     sources.addAll(instrumentRunSourceFactory.createSources(collection, instrumentRunBeanResolver));
+
+    // Create Workstation sources.
+    WorkstationVariableValueSourceFactory workstationSourceFactory = new WorkstationVariableValueSourceFactory();
+    workstationSourceFactory.setExperimentalConditionService(experimentalConditionService);
+    workstationSourceFactory.setBeanResolver(workstationBeanResolver);
+    workstationSourceFactory.setAttributeHelper(attributeHelper);
+    sources.addAll(workstationSourceFactory.createSources(collection));
 
     return sources.build();
   }

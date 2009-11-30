@@ -77,4 +77,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="instrumentRunBeanResolver" class="org.obiba.onyx.jade.magma.InstrumentRunBeanResolver">
   </bean>
   
+  <bean id="workstationBeanResolver" class="org.obiba.onyx.jade.magma.WorkstationBeanResolver">
+  </bean>
+  
 </beans>
