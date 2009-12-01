@@ -86,4 +86,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="entityClass" value="org.obiba.onyx.jade.core.domain.instrument.Instrument" />
   </bean>
   
+  <bean class="org.obiba.onyx.jade.magma.WorkstationValueSetProvider">
+  </bean>
+  
 </beans>
