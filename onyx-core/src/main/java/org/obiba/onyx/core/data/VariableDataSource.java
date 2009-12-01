@@ -13,10 +13,15 @@ import org.obiba.magma.Collection;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchVariableException;
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDirectory;
+import org.obiba.onyx.magma.DataValueConverter;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,18 +67,28 @@ public class VariableDataSource implements IDataSource, InitializingBean {
     if(participant == null) return null;
 
     org.obiba.onyx.engine.variable.Variable variable = variableDirectory.getVariable(path);
-    Data variableDirectoryData = null;
+    Data data = null;
     if(variable != null) {
       VariableData variableData = variableDirectory.getVariableData(participant, path);
       if(variableData != null && variableData.getDatas().size() > 0) {
-        variableDirectoryData = variableData.getDatas().get(0);
+        data = variableData.getDatas().get(0);
       }
     }
 
-    // ValueSet valueSet = onyxCollection.loadValueSet(new VariableEntityBean("Participant", participant.getBarcode()));
-    // Value value = variableValueSource.getValue(valueSet);
+    if(data == null) return data;
 
-    return variableDirectoryData;
+    if(data.equals(DataValueConverter.valueToData(getValue(participant)))) {
+      return data;
+    } else {
+      log.error("Value for variable {} is different in Magma (Onyx Data={}, Magma Value={}). Returned the Onyx Data.", new Object[] { variable.getName(), data, DataValueConverter.valueToData(getValue(participant)) });
+      return data;
+    }
+  }
+
+  private Value getValue(Participant participant) {
+    VariableEntity entity = new VariableEntityBean("participant", participant.getBarcode());
+    ValueSet valueSet = onyxCollection.loadValueSet(entity);
+    return variableValueSource.getValue(valueSet);
   }
 
   public String getUnit() {
@@ -81,7 +96,7 @@ public class VariableDataSource implements IDataSource, InitializingBean {
     String variableDirectoryUnit = (variable != null) ? variable.getUnit() : null;
     String magmaVariableUnit = (variable != null) ? variableValueSource.getVariable().getUnit() : null;
     if(!variableDirectoryUnit.equals(magmaVariableUnit)) {
-      log.error("Unit for variable {} are different in Magma (VariableDirectory={}, Magma={})", new Object[] { variable.getName(), variableDirectoryUnit, magmaVariableUnit });
+      log.error("Unit for variable {} is different in Magma (VariableDirectory={}, Magma={})", new Object[] { variable.getName(), variableDirectoryUnit, magmaVariableUnit });
       return variableDirectoryUnit;
     }
     return magmaVariableUnit;
