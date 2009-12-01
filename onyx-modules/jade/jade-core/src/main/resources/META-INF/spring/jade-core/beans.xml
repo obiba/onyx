@@ -80,4 +80,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="workstationBeanResolver" class="org.obiba.onyx.jade.magma.WorkstationBeanResolver">
   </bean>
   
+  <bean class="org.obiba.onyx.magma.HibernateBeanValueSetProvider">
+    <constructor-arg index="0" value="Instrument" />
+    <constructor-arg index="1" value="barcode" />
+    <property name="entityClass" value="org.obiba.onyx.jade.core.domain.instrument.Instrument" />
+  </bean>
+  
 </beans>

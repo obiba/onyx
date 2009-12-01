@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.magma;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.magma.ValueSet;
@@ -43,7 +44,7 @@ public class InstrumentBeanResolver extends AbstractOnyxBeanResolver {
   //
 
   public boolean resolves(Class<?> type) {
-    return Instrument.class.equals(type) || ExperimentalCondition.class.equals(type);
+    return Instrument.class.equals(type) || ExperimentalCondition.class.equals(type) || ExperimentalConditionValue.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
@@ -51,7 +52,10 @@ public class InstrumentBeanResolver extends AbstractOnyxBeanResolver {
       return resolveInstrument(valueSet);
     } else if(type.equals(ExperimentalCondition.class)) {
       return resolveExperimentalConditions(valueSet);
+    } else if(type.equals(ExperimentalConditionValue.class)) {
+      return resolveExperimentalConditionValue(valueSet, variable);
     }
+
     return null;
   }
 
@@ -79,6 +83,55 @@ public class InstrumentBeanResolver extends AbstractOnyxBeanResolver {
       template.addExperimentalConditionValue(instrumentBarcode);
 
       return experimentalConditionService.getExperimentalConditions(template);
+    }
+    return null;
+  }
+
+  protected List<ExperimentalConditionValue> resolveExperimentalConditionValue(ValueSet valueSet, Variable variable) {
+    String experimentalConditionName = extractExperimentalConditionName(variable.getName());
+    String experimentalConditionAttributeName = extractExperimentalConditionAttributeName(variable.getName());
+
+    if(experimentalConditionName != null && experimentalConditionAttributeName != null) {
+      Instrument instrument = resolveInstrument(valueSet);
+      if(instrument != null) {
+        ExperimentalCondition template = new ExperimentalCondition();
+        template.setName(experimentalConditionName);
+        ExperimentalConditionValue instrumentBarcode = new ExperimentalConditionValue();
+        instrumentBarcode.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+        instrumentBarcode.setAttributeType(DataType.TEXT);
+        instrumentBarcode.setData(DataBuilder.buildText(instrument.getBarcode()));
+        template.addExperimentalConditionValue(instrumentBarcode);
+
+        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template);
+
+        List<ExperimentalConditionValue> experimentalConditionValues = new ArrayList<ExperimentalConditionValue>();
+        for(ExperimentalCondition experimentalCondition : experimentalConditions) {
+          for(ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
+            if(value.getAttributeName().equals(experimentalConditionAttributeName)) {
+              experimentalConditionValues.add(value);
+            }
+          }
+        }
+        return experimentalConditionValues;
+      }
+    }
+    return null;
+  }
+
+  private String extractExperimentalConditionName(String variableName) {
+    // Variable name format: Instrument.<CalibrationName>.(...)
+    String[] variableNameParts = variableName.split("\\.");
+    if(variableNameParts.length >= 2) {
+      return variableNameParts[1];
+    }
+    return null;
+  }
+
+  private String extractExperimentalConditionAttributeName(String variableName) {
+    // Variable name format: Instrument.<CalibrationName>.<CalibrationAttributeName>.(...)
+    String[] variableNameParts = variableName.split("\\.");
+    if(variableNameParts.length >= 3) {
+      return variableNameParts[2];
     }
     return null;
   }
