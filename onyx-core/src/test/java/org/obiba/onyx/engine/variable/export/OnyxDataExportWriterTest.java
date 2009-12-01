@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.engine.output.Strategies;
@@ -23,6 +25,7 @@ import org.obiba.magma.filter.Filter;
 import org.obiba.magma.filter.JavaScriptFilter;
 import org.obiba.magma.filter.VariableAttributeFilter;
 import org.obiba.magma.filter.VariableNameFilter;
+import org.obiba.magma.js.MagmaJsExtension;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -39,6 +42,8 @@ public class OnyxDataExportWriterTest {
 
   @Before
   public void setUp() throws Exception {
+    new MagmaEngine().extend(new MagmaJsExtension());
+
     xstream = new XStream();
     xstream.alias("destinations", List.class);
     xstream.alias("destination", OnyxDataExportDestination.class);
@@ -79,6 +84,11 @@ public class OnyxDataExportWriterTest {
 
     destinations.add(destinationDcc);
 
+  }
+
+  @After
+  public void cleanUp() throws Exception {
+    MagmaEngine.get().shutdown();
   }
 
   @Test

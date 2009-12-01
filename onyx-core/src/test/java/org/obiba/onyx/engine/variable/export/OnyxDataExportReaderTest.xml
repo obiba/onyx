@@ -9,13 +9,13 @@
     <valueset entityTypeName="Participant">
       <entities>
         <excludeAll/>
-        <script type="exclude">
+        <script type="EXCLUDE">
           <javascript><![CDATA[$('Participant.Interview.status').not('CANCELED');]]></javascript>
         </script>        
       </entities>
       <variables>
-        <variableName type="include" prefix="d"/>
-        <variableAttribute type="exclude">
+        <variableName type="INCLUDE" prefix="d"/>
+        <variableAttribute type="EXCLUDE">
           <attribute>name</attribute>
           <value>value</value>
         </variableAttribute>
@@ -31,13 +31,13 @@
     <valueset entityTypeName="Participant">
       <entities>
         <excludeAll/>
-        <script type="exclude">
+        <script type="EXCLUDE">
             <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE');]]></javascript>
         </script>        
       </entities>
       <variables>
-        <variableName type="include" prefix="d"/>
-        <variableAttribute type="exclude">
+        <variableName type="INCLUDE" prefix="d"/>
+        <variableAttribute type="EXCLUDE">
           <attribute>name</attribute>
           <value>value</value>
         </variableAttribute>

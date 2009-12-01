@@ -35,6 +35,7 @@ class ValueSetFilter {
 
   CollectionFilterChain<ValueSet> getEntityFilterChain() {
     if(entityFilterChain == null) entityFilterChain = new CollectionFilterChain<ValueSet>(entityTypeName);
+    if(entityFilterChain.getEntityType() == null) entityFilterChain.setEntityType(entityTypeName);
     return entityFilterChain;
   }
 
@@ -44,6 +45,7 @@ class ValueSetFilter {
 
   CollectionFilterChain<VariableValueSource> getVariableFilterChain() {
     if(variableFilterChain == null) variableFilterChain = new CollectionFilterChain<VariableValueSource>(entityTypeName);
+    if(variableFilterChain.getEntityType() == null) variableFilterChain.setEntityType(entityTypeName);
     return variableFilterChain;
   }
 
@@ -53,12 +55,6 @@ class ValueSetFilter {
 
   public String getEntityTypeName() {
     return entityTypeName;
-  }
-
-  private Object readResolve() {
-    if(entityFilterChain != null) entityFilterChain.setEntityType(entityTypeName);
-    if(variableFilterChain != null) variableFilterChain.setEntityType(entityTypeName);
-    return this;
   }
 
 }
