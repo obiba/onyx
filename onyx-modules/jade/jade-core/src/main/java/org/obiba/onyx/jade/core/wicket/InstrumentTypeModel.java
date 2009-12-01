@@ -9,11 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket;
 
-import java.util.Map;
-
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
 
 public class InstrumentTypeModel extends SpringDetachableModel {
@@ -27,7 +25,7 @@ public class InstrumentTypeModel extends SpringDetachableModel {
   //
 
   @SpringBean
-  private InstrumentTypeFactoryBean instrumentTypeFactoryBean;
+  private InstrumentService instrumentService;
 
   private String instrumentTypeName;
 
@@ -47,15 +45,7 @@ public class InstrumentTypeModel extends SpringDetachableModel {
   @SuppressWarnings("unchecked")
   @Override
   protected Object load() {
-    Map<String, InstrumentType> instrumentTypes = null;
-
-    try {
-      instrumentTypes = (Map<String, InstrumentType>) instrumentTypeFactoryBean.getObject();
-    } catch(Exception ex) {
-      return null;
-    }
-
-    return instrumentTypes.get(instrumentTypeName);
+    return instrumentService.getInstrumentType(instrumentTypeName);
   }
 
 }

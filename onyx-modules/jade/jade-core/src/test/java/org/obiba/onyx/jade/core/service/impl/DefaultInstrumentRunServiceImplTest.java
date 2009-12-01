@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl;
 
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -20,11 +18,11 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.service.impl.hibernate.InstrumentRunServiceHibernateImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +41,8 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
   @Autowired
   private InstrumentTypeFactoryBean instrumentTypeFactoryBean;
 
-  private Map<String, InstrumentType> instrumentTypes;
+  @Autowired
+  private InstrumentService instrumentService;
 
   private User user;
 
@@ -51,13 +50,11 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
 
   @Before
   public void setUp() throws Exception {
-    // Initialize instrumentTypes
-    instrumentTypes = (Map<String, InstrumentType>) instrumentTypeFactoryBean.getObject();
 
     // Initialize activeInstrumentRunService (class being tested).
     defaultInstrumentRunService = new InstrumentRunServiceHibernateImpl();
     defaultInstrumentRunService.setPersistenceManager(persistenceManager);
-    defaultInstrumentRunService.setInstrumentTypes(instrumentTypes);
+    defaultInstrumentRunService.setInstrumentService(instrumentService);
 
   }
 
@@ -107,13 +104,6 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
     Participant participant = persistenceManager.get(Participant.class, 1l);
     InstrumentRun instrumentRun = defaultInstrumentRunService.getInstrumentRun(participant, "ArtStiffness");
     Assert.assertNull(instrumentRun);
-  }
-
-  @Test
-  public void printInstrumentsTest() {
-    for(Map.Entry<String, InstrumentType> entry : instrumentTypes.entrySet()) {
-      System.out.println(entry.getKey() + " " + entry.getValue());
-    }
   }
 
   @Test

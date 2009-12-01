@@ -10,7 +10,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     class="org.obiba.onyx.jade.core.service.impl.hibernate.InstrumentRunServiceHibernateImpl" scope="singleton">
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
-    <property name="instrumentTypes" ref="instrumentTypeFactory" />
+    <property name="instrumentService" ref="instrumentService" />    
   </bean>
   
   <bean id="instrumentService"
@@ -18,7 +18,15 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />   
     <property name="instrumentsPath" value="${org.obiba.onyx.jade.instruments.codebase.path}"/>
-    <property name="instrumentTypes" ref="instrumentTypeFactory" />
+    <property name="instrumentTypes">
+      <bean class="org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean" scope="singleton">
+        <property name="resourcePatterns">
+          <list>
+            <value>${org.obiba.onyx.jade.instruments.path}/**/instrument-descriptor.xml</value>
+          </list>
+        </property>
+      </bean>
+    </property>
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
         <property name="targetBeanName" value="userSessionService" />

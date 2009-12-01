@@ -47,15 +47,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="instrumentService" ref="instrumentService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
-  
-  <bean id="instrumentTypeFactory" class="org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean" scope="singleton">
-    <property name="resourcePatterns">
-      <list>
-        <value>${org.obiba.onyx.jade.instruments.path}/**/instrument-descriptor.xml</value>
-      </list>
-    </property>
-  </bean>
-  
+    
   <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl" init-method="init">
     <property name="experimentalConditionFactory" ref="experimentalConditionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
