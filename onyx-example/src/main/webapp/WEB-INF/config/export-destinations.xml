@@ -9,25 +9,25 @@
     
     <valueset entityType="Participant">
       <entities>
-        <script type="include">
+        <script type="INCLUDE">
           <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
           $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
-        <script type="exclude">
+        <script type="EXCLUDE">
           <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
       <variables>
-        <variableName type="exclude" prefix="Consent.pdfForm" />
-        <variableName type="exclude" prefix="Admin.Participant" />
-        <variableName type="include" prefix="Admin.Participant.barcode" />
-        <variableName type="include" prefix="Admin.Participant.PostalCodePrefix" />
+        <variableName type="EXCLUDE" prefix="Consent.pdfForm" />
+        <variableName type="EXCLUDE" prefix="Admin.Participant" />
+        <variableName type="INCLUDE" prefix="Admin.Participant.barcode" />
+        <variableName type="INCLUDE" prefix="Admin.Participant.PostalCodePrefix" />
       </variables>
     </valueset>
       
     <valueset entityType="Workstation">
       <entities>
-        <script type="exclude">
+        <script type="EXCLUDE">
           <javascript><![CDATA[$('Workstation.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
@@ -35,7 +35,7 @@
 
     <valueset entityType="Instrument">
       <entities>
-        <script type="exclude">
+        <script type="EXCLUDE">
           <javascript><![CDATA[$('Instrument.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
@@ -53,19 +53,19 @@
     
     <valueset entityType="Participant">
       <entities>
-        <script type="include">
+        <script type="INCLUDE">
           <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
           $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
-        <script type="exclude">
+        <script type="EXCLUDE">
           <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
       <variables>
         <excludeAll />        
-        <variableName type="include" prefix="Consent" />
-        <variableName type="include" prefix="Admin.onyxVersion" />
-        <variableName type="exclude" prefix="Consent.actions" />
+        <variableName type="INCLUDE" prefix="Consent" />
+        <variableName type="INCLUDE" prefix="Admin.onyxVersion" />
+        <variableName type="EXCLUDE" prefix="Consent.actions" />
       </variables>
     </valueset>       
   </destination>
@@ -79,19 +79,19 @@
     
     <valueset entityType="Participant">
       <entities>
-        <script type="include">
+        <script type="INCLUDE">
           <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
           $('Participant.Interview.status').any('CANCELLED')]]></javascript>
         </script>
-        <script type="exclude">
+        <script type="EXCLUDE">
           <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
       </entities>
       <variables>
         <excludeAll />        
-        <variableName type="include" prefix="Consent" />
-        <variableName type="include" prefix="Admin.onyxVersion" />
-        <variableName type="exclude" prefix="Consent.actions" />
+        <variableName type="INCLUDE" prefix="Consent" />
+        <variableName type="INCLUDE" prefix="Admin.onyxVersion" />
+        <variableName type="EXCLUDE" prefix="Consent.actions" />
       </variables>
     </valueset>       
   </destination>
