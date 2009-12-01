@@ -155,9 +155,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   private Set<VariableValueSource> createInstrumentCalibrationAttributeSources(String collection, InstrumentType instrumentType, InstrumentCalibration instrumentCalibration, ValueSetBeanResolver resolver) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    for(int i = 0; i < instrumentCalibration.getAttributes().size(); i++) {
-      Attribute calibrationAttribute = instrumentCalibration.getAttributes().get(i);
-
+    for(Attribute calibrationAttribute : instrumentCalibration.getAttributes()) {
       String propertyName = "data.value";
       Class<?> propertyType = DataTypes.valueTypeFor(calibrationAttribute.getType()).getJavaClass();
 

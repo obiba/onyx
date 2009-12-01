@@ -24,6 +24,7 @@ import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.magma.DataTypes;
@@ -123,28 +124,28 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       sources.addAll(factory.createSources(collection, resolver));
 
       // Create sources for ExperimentalCondition attributes.
-      for(int i = 0; i < experimentalConditionLog.getAttributes().size(); i++) {
-        Attribute conditionAttribute = experimentalConditionLog.getAttributes().get(i);
-        String propertyName = "attributes[" + i + "]";
+      sources.addAll(createExperimentalConditionAttributeSources(collection, experimentalConditionLog, resolver));
+    }
 
-        ImmutableSet.Builder<String> propertySetBuilder = new ImmutableSet.Builder<String>();
-        ImmutableMap.Builder<String, String> nameMapBuilder = new ImmutableMap.Builder<String, String>();
-        ImmutableMap.Builder<String, Class<?>> mappedPropertyTypeBuilder = new ImmutableMap.Builder<String, Class<?>>();
+    return sources;
+  }
 
-        propertySetBuilder.add(propertyName);
-        nameMapBuilder.put(propertyName, conditionAttribute.getName());
-        mappedPropertyTypeBuilder.put("attributes", DataTypes.valueTypeFor(conditionAttribute.getType()).getJavaClass());
+  private Set<VariableValueSource> createExperimentalConditionAttributeSources(final String collection, ExperimentalConditionLog experimentalConditionLog, ValueSetBeanResolver resolver) {
+    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-        BeanVariableValueSourceFactory<ExperimentalCondition> conditionAttributeSourceFactory = new BeanVariableValueSourceFactory<ExperimentalCondition>(WORKSTATION, ExperimentalCondition.class);
-        conditionAttributeSourceFactory.setPrefix(experimentalConditionLog.getName());
-        conditionAttributeSourceFactory.setProperties(propertySetBuilder.build());
-        conditionAttributeSourceFactory.setPropertyNameToVariableName(nameMapBuilder.build());
-        conditionAttributeSourceFactory.setMappedPropertyType(mappedPropertyTypeBuilder.build());
-        conditionAttributeSourceFactory.setOccurrenceGroup(experimentalConditionLog.getName());
-        conditionAttributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(new VariableLocalizedAttributeVisitor(attributeHelper, conditionAttribute.getName())));
+    for(Attribute conditionAttribute : experimentalConditionLog.getAttributes()) {
+      String propertyName = "data.value";
+      Class<?> propertyType = DataTypes.valueTypeFor(conditionAttribute.getType()).getJavaClass();
 
-        sources.addAll(conditionAttributeSourceFactory.createSources(collection, resolver));
-      }
+      BeanVariableValueSourceFactory<ExperimentalConditionValue> conditionAttributeSourceFactory = new BeanVariableValueSourceFactory<ExperimentalConditionValue>(WORKSTATION, ExperimentalConditionValue.class);
+      conditionAttributeSourceFactory.setPrefix(experimentalConditionLog.getName());
+      conditionAttributeSourceFactory.setProperties(ImmutableSet.of(propertyName));
+      conditionAttributeSourceFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put(propertyName, conditionAttribute.getName()).build());
+      conditionAttributeSourceFactory.setPropertyNameToPropertyType(new ImmutableMap.Builder<String, Class<?>>().put(propertyName, propertyType).build());
+      conditionAttributeSourceFactory.setOccurrenceGroup(experimentalConditionLog.getName());
+      conditionAttributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(new VariableLocalizedAttributeVisitor(attributeHelper, conditionAttribute.getName())));
+
+      sources.addAll(conditionAttributeSourceFactory.createSources(collection, resolver));
     }
 
     return sources;
