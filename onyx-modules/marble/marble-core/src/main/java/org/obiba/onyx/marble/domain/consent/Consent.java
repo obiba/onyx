@@ -147,12 +147,14 @@ public class Consent extends AbstractEntity {
   public Map<String, String> getPdfFormFields() {
     Map<String, String> pdfFormFields = new HashMap<String, String>();
 
-    PdfReader reader = getPdfReader();
-    Iterator<Map.Entry<String, AcroFields.Item>> acroFields = reader.getAcroFields().getFields().entrySet().iterator();
+    if(pdfForm != null) {
+      PdfReader reader = getPdfReader();
+      Iterator<Map.Entry<String, AcroFields.Item>> acroFields = reader.getAcroFields().getFields().entrySet().iterator();
 
-    while(acroFields.hasNext()) {
-      Map.Entry<String, AcroFields.Item> entry = acroFields.next();
-      pdfFormFields.put(entry.getKey(), (entry.getValue() != null ? entry.getValue().toString() : null));
+      while(acroFields.hasNext()) {
+        Map.Entry<String, AcroFields.Item> entry = acroFields.next();
+        pdfFormFields.put(entry.getKey(), (entry.getValue() != null ? entry.getValue().toString() : null));
+      }
     }
 
     return pdfFormFields;
