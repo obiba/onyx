@@ -91,6 +91,10 @@ public class Consent extends AbstractEntity {
     return accepted;
   }
 
+  public Boolean getAccepted() {
+    return accepted;
+  }
+
   public void setAccepted(Boolean accepted) {
     this.accepted = accepted;
   }
@@ -139,6 +143,7 @@ public class Consent extends AbstractEntity {
   }
 
   @SuppressWarnings("unchecked")
+  @Transient
   public Map<String, String> getPdfFormFields() {
     Map<String, String> pdfFormFields = new HashMap<String, String>();
 

@@ -9,25 +9,29 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.magma;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.beans.ValueSetBeanResolver;
-import org.obiba.magma.type.TextType;
 import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.marble.domain.consent.Consent;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 /**
  * Factory for creating VariableValueSources for all Consent variables.
  */
 public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFactory<Consent> {
+  //
+  // Constants
+  //
+
+  public static final String PARTICIPANT = "Participant";
+
   //
   // Instance Variables
   //
@@ -41,7 +45,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
   //
 
   public ConsentVariableValueSourceFactory(String stageName) {
-    super("Participant", Consent.class);
+    super(PARTICIPANT, Consent.class);
     this.stageName = stageName;
   }
 
@@ -53,16 +57,18 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
   public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
     Set<VariableValueSource> sources = null;
 
-    setProperties(ImmutableSet.of("mode", "locale", "accepted", "pdfForm", "timeStart", "timeEnd"));
+    ImmutableSet.Builder<Variable.BuilderVisitor> visitorSetBuilder = new ImmutableSet.Builder<Variable.BuilderVisitor>();
+    visitorSetBuilder.add(new StageAttributeVisitor(stageName));
+    Set<Variable.BuilderVisitor> visitors = visitorSetBuilder.build();
 
+    // Create the non-PDF form sources.
     setPrefix(stageName);
-    setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(stageName)));
-
-    // Call superclass method to create the non-PDF form sources.
+    setProperties(ImmutableSet.of("mode", "locale", "accepted", "pdfForm", "timeStart", "timeEnd"));
+    setVariableBuilderVisitors(visitors);
     sources = super.createSources(collection, resolver);
 
-    // Add PDF form sources (if applicable).
-    sources.addAll(createPdfFormFieldSources(collection, resolver));
+    // Create the PDF form sources.
+    sources.addAll(createPdfFormFieldSources(collection, stageName, resolver, visitors));
 
     return sources;
   }
@@ -75,14 +81,23 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     this.variableToFieldMap = variableToFieldMap;
   }
 
-  private Set<VariableValueSource> createPdfFormFieldSources(String collection, ValueSetBeanResolver resolver) {
-    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+  private Set<VariableValueSource> createPdfFormFieldSources(String collection, String prefix, ValueSetBeanResolver resolver, Set<Variable.BuilderVisitor> visitors) {
+    ImmutableSet.Builder<String> propertySetBuilder = new ImmutableSet.Builder<String>();
+    ImmutableMap.Builder<String, String> propertyNameToVariableNameMapBuilder = new ImmutableMap.Builder<String, String>();
 
     for(Map.Entry<String, String> entry : variableToFieldMap.entrySet()) {
-      Variable variable = this.doBuildVariable(collection, TextType.get().getJavaClass(), lookupVariableName(entry.getKey()));
-      sources.add(new BeanPropertyVariableValueSource(variable, Consent.class, resolver, "pdfFormFields[" + entry.getValue() + "]"));
+      String propertyName = "pdfFormFields[" + entry.getValue() + "]";
+      propertySetBuilder.add(propertyName);
+      propertyNameToVariableNameMapBuilder.put(propertyName, entry.getKey());
     }
 
-    return sources;
+    BeanVariableValueSourceFactory<Consent> factory = new BeanVariableValueSourceFactory<Consent>(PARTICIPANT, Consent.class);
+    factory.setPrefix(prefix);
+    factory.setProperties(propertySetBuilder.build());
+    factory.setPropertyNameToVariableName(propertyNameToVariableNameMapBuilder.build());
+    factory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("pdfFormFields", String.class).build());
+    factory.setVariableBuilderVisitors(visitors);
+
+    return factory.createSources(collection, resolver);
   }
 }
