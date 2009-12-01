@@ -57,7 +57,7 @@ public class VariableDataSource implements IDataSource, InitializingBean {
     try {
       variableValueSource = MagmaEngine.get().lookupVariable("Participant", onyxCollection.getName(), magmaVariableName);
     } catch(NoSuchVariableException noSuchVariableEx) {
-      log.error("No Magma variable found for the following name: {}", magmaVariableName);
+      log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", magmaVariableName);
     }
 
   }
@@ -80,7 +80,7 @@ public class VariableDataSource implements IDataSource, InitializingBean {
     if(data.equals(DataValueConverter.valueToData(getValue(participant)))) {
       return data;
     } else {
-      log.error("Value for variable {} is different in Magma (Onyx Data={}, Magma Value={}). Returned the Onyx Data.", new Object[] { variable.getName(), data, DataValueConverter.valueToData(getValue(participant)) });
+      log.error("[ONYX MAGMA MATCH FAILURE] Value for variable {} is different in Magma (Onyx Data={}, Magma Value={}). Returned the Onyx Data.", new Object[] { variable.getName(), data, DataValueConverter.valueToData(getValue(participant)) });
       return data;
     }
   }
@@ -96,7 +96,7 @@ public class VariableDataSource implements IDataSource, InitializingBean {
     String variableDirectoryUnit = (variable != null) ? variable.getUnit() : null;
     String magmaVariableUnit = (variable != null) ? variableValueSource.getVariable().getUnit() : null;
     if(!variableDirectoryUnit.equals(magmaVariableUnit)) {
-      log.error("Unit for variable {} is different in Magma (VariableDirectory={}, Magma={})", new Object[] { variable.getName(), variableDirectoryUnit, magmaVariableUnit });
+      log.error("[ONYX MAGMA MATCH FAILURE] Unit for variable {} is different in Magma (VariableDirectory={}, Magma={})", new Object[] { variable.getName(), variableDirectoryUnit, magmaVariableUnit });
       return variableDirectoryUnit;
     }
     return magmaVariableUnit;
