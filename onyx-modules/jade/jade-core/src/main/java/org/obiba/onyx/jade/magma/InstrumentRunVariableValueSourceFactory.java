@@ -152,7 +152,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
         delegateFactory.setProperties(ImmutableSet.of("data.value"));
         delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("data.value", instrumentParameter.getCode()).build());
         delegateFactory.setPropertyNameToPropertyType(getInstrumentParameterMappedPropertyType(instrumentParameter));
-        delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterAttributeVisitor(attributeHelper, instrumentType, instrumentParameter)));
+        delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterVisitor(attributeHelper, instrumentType, instrumentParameter)));
 
         String captureMethodPrefix = null;
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
@@ -212,14 +212,14 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
   // Inner Classes
   //
 
-  static class InstrumentParameterAttributeVisitor implements BuilderVisitor {
+  static class InstrumentParameterVisitor implements BuilderVisitor {
     private OnyxAttributeHelper attributeHelper;
 
     private InstrumentType instrumentType;
 
     private InstrumentParameter instrumentParameter;
 
-    public InstrumentParameterAttributeVisitor(OnyxAttributeHelper attributeHelper, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
+    public InstrumentParameterVisitor(OnyxAttributeHelper attributeHelper, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
       this.attributeHelper = attributeHelper;
       this.instrumentType = instrumentType;
       this.instrumentParameter = instrumentParameter;
@@ -228,6 +228,9 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     public void visit(Builder builder) {
       // Add variable's localized attributes.
       attributeHelper.addLocalizedAttributes(builder, instrumentParameter.getCode());
+
+      // Add variable's unit and mime type.
+      builder.unit(instrumentParameter.getMeasurementUnit()).mimeType(instrumentParameter.getMimeType());
 
       // Add YES and NO categories for interpretative parameters.
       if(instrumentParameter instanceof InterpretativeParameter) {

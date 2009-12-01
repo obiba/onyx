@@ -17,6 +17,7 @@ import org.obiba.magma.beans.NoSuchBeanException;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * ValueSetBeanResolver for Workstation-related beans.
@@ -26,6 +27,7 @@ public class WorkstationBeanResolver extends AbstractOnyxBeanResolver {
   // Instances
   //
 
+  @Autowired(required = true)
   private ExperimentalConditionService experimentalConditionService;
 
   //
