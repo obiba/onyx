@@ -72,9 +72,11 @@ public class CardiosoftInstrumentRunnerTest {
     exportPath.mkdir();
     cardiosoftInstrumentRunner.setExportPath(exportPath.getPath());
 
-    cardiosoftInstrumentRunner.setPdfFileName("Cartagene.pdf");
+    cardiosoftInstrumentRunner.setPdfFileNameRestingEcg("EcgResting.pdf");
+    cardiosoftInstrumentRunner.setPdfFileNameFullEcg("EcgFull.pdf");
     cardiosoftInstrumentRunner.setSettingsFileName("CARDIO.INI");
-    cardiosoftInstrumentRunner.setXmlFileName("Cartagene.XML");
+    cardiosoftInstrumentRunner.setWinSettingsFileName("WIN.INI");
+    cardiosoftInstrumentRunner.setXmlFileName("Ecg.XML");
     cardiosoftInstrumentRunner.setEcgResourceBundle(ResourceBundle.getBundle("ecg-instrument", Locale.getDefault()));
 
     String resourcesParentDir = new File(getClass().getResource("/initecg/CARDIO.INI").toURI().getPath()).getParent();
@@ -190,8 +192,9 @@ public class CardiosoftInstrumentRunnerTest {
     (new FileOutputStream(new File(cardiosoftInstrumentRunner.getCardioPath(), cardiosoftInstrumentRunner.getSettingsFileName()))).write((byte) 234432141);
 
     // Copy the results file + PDF file to test directory.
-    FileUtil.copyFile(new File(getClass().getResource("/Cartagene.pdf").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileName()));
-    FileUtil.copyFile(new File(getClass().getResource("/Cartagene.XML").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getXmlFileName()));
+    FileUtil.copyFile(new File(getClass().getResource("/EcgResting.pdf").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameRestingEcg()));
+    FileUtil.copyFile(new File(getClass().getResource("/EcgFull.pdf").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameFullEcg()));
+    FileUtil.copyFile(new File(getClass().getResource("/Ecg.XML").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getXmlFileName()));
 
   }
 
@@ -207,7 +210,8 @@ public class CardiosoftInstrumentRunnerTest {
 
     // Make sure result files have been deleted.
     Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getXmlFileName()).exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileName()).exists());
+    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameRestingEcg()).exists());
+    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameFullEcg()).exists());
 
   }
 }

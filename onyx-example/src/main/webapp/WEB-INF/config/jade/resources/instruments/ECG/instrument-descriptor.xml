@@ -450,5 +450,13 @@
       <mimeType>application/pdf</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
+    
+    <output>
+      <vendorName>pdfFileFull</vendorName>
+      <code>RES_PDF_FILE_FULL</code>
+      <dataType>DATA</dataType>
+      <mimeType>application/pdf</mimeType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
   </instrumentParameters>
 </instrumentType>
