@@ -15,12 +15,12 @@ import java.util.List;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
 import org.obiba.magma.beans.NoSuchBeanException;
+import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
-import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * ValueSetBeanResolver for Instrument beans.
  */
-public class InstrumentBeanResolver extends AbstractOnyxBeanResolver {
+public class InstrumentBeanResolver implements ValueSetBeanResolver {
   //
   // Instance Variables
   //

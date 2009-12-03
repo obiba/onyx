@@ -15,7 +15,6 @@ import java.util.Set;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.marble.domain.consent.Consent;
 
@@ -54,7 +53,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
+  public Set<VariableValueSource> createSources(String collection) {
     Set<VariableValueSource> sources = null;
 
     ImmutableSet.Builder<Variable.BuilderVisitor> visitorSetBuilder = new ImmutableSet.Builder<Variable.BuilderVisitor>();
@@ -65,10 +64,10 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     setPrefix(stageName);
     setProperties(ImmutableSet.of("mode", "locale", "accepted", "pdfForm", "timeStart", "timeEnd"));
     setVariableBuilderVisitors(visitors);
-    sources = super.createSources(collection, resolver);
+    sources = super.createSources(collection);
 
     // Create the PDF form sources.
-    sources.addAll(createPdfFormFieldSources(collection, stageName, resolver, visitors));
+    sources.addAll(createPdfFormFieldSources(collection, stageName, visitors));
 
     return sources;
   }
@@ -81,7 +80,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     this.variableToFieldMap = variableToFieldMap;
   }
 
-  private Set<VariableValueSource> createPdfFormFieldSources(String collection, String prefix, ValueSetBeanResolver resolver, Set<Variable.BuilderVisitor> visitors) {
+  private Set<VariableValueSource> createPdfFormFieldSources(String collection, String prefix, Set<Variable.BuilderVisitor> visitors) {
     ImmutableSet.Builder<String> propertySetBuilder = new ImmutableSet.Builder<String>();
     ImmutableMap.Builder<String, String> propertyNameToVariableNameMapBuilder = new ImmutableMap.Builder<String, String>();
 
@@ -98,6 +97,6 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     factory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("pdfFormFields", String.class).build());
     factory.setVariableBuilderVisitors(visitors);
 
-    return factory.createSources(collection, resolver);
+    return factory.createSources(collection);
   }
 }

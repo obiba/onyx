@@ -37,14 +37,12 @@ import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.marble.magma.ConsentBeanResolver;
 import org.obiba.onyx.marble.magma.ConsentVariableValueSourceFactory;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -75,9 +73,6 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
   private List<Stage> stages;
 
   private Map<String, String> variableToFieldMap = new HashMap<String, String>();
-
-  @Autowired(required = true)
-  private ConsentBeanResolver resolver;
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
@@ -226,10 +221,6 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
     consentService.purgeConsent(participant.getInterview());
   }
 
-  public void setResolver(ConsentBeanResolver resolver) {
-    this.resolver = resolver;
-  }
-
   //
   // VariableValueSourceFactory Methods
   //
@@ -239,7 +230,7 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
     for(Stage stage : stages) {
       ConsentVariableValueSourceFactory factory = new ConsentVariableValueSourceFactory(stage.getName());
       factory.setVariableToFieldMap(variableToFieldMap);
-      sources.addAll(factory.createSources(collection, resolver));
+      sources.addAll(factory.createSources(collection));
     }
     return sources.build();
   }

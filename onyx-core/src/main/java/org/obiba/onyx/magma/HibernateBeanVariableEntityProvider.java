@@ -10,19 +10,19 @@
 package org.obiba.onyx.magma;
 
 import org.hibernate.SessionFactory;
-import org.obiba.magma.beans.AbstractBeanValueSetProvider;
+import org.obiba.magma.beans.AbstractBeanVariableEntityProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  */
-public class HibernateBeanValueSetProvider<T> extends AbstractBeanValueSetProvider<T> {
+public class HibernateBeanVariableEntityProvider<T> extends AbstractBeanVariableEntityProvider<T> {
 
   private SessionFactory sessionFactory;
 
   private Class<T> entityClass;
 
-  public HibernateBeanValueSetProvider(String entityType, String entityIdentifierPropertyPath) {
+  public HibernateBeanVariableEntityProvider(String entityType, String entityIdentifierPropertyPath) {
     super(entityType, entityIdentifierPropertyPath);
   }
 

@@ -9,15 +9,16 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
-import org.obiba.magma.Collection;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.magma.support.MagmaEngineReferenceResolver;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDirectory;
@@ -40,22 +41,24 @@ public class VariableDataSource implements IDataSource, InitializingBean {
 
   private String path;
 
-  private Collection onyxCollection;
+  private ValueTable onyxParticipantTable;
 
   private VariableValueSource variableValueSource;
+
+  private MagmaEngineReferenceResolver resolver = new MagmaEngineReferenceResolver();
 
   public void afterPropertiesSet() throws Exception {
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      for(Collection collection : datasource.getCollections()) {
-        onyxCollection = collection;
+      for(ValueTable table : datasource.getValueTables()) {
+        onyxParticipantTable = table;
       }
     }
 
     String magmaVariableName = path.replaceFirst("Onyx.", "");
-    log.info("Retrieving the following Magma variable (collectionName={}): {}", magmaVariableName, onyxCollection);
+    log.info("Retrieving the following Magma variable (collectionName={}): {}", magmaVariableName, onyxParticipantTable);
     try {
-      variableValueSource = MagmaEngine.get().lookupVariable("Participant", onyxCollection.getName(), magmaVariableName);
+      variableValueSource = resolver.resolve(onyxParticipantTable, magmaVariableName);
     } catch(NoSuchVariableException noSuchVariableEx) {
       log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", magmaVariableName);
     }
@@ -86,8 +89,8 @@ public class VariableDataSource implements IDataSource, InitializingBean {
   }
 
   private Value getValue(Participant participant) {
-    VariableEntity entity = new VariableEntityBean("participant", participant.getBarcode());
-    ValueSet valueSet = onyxCollection.loadValueSet(entity);
+    VariableEntity entity = new VariableEntityBean("Participant", participant.getBarcode());
+    ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
     return variableValueSource.getValue(valueSet);
   }
 

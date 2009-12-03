@@ -36,7 +36,6 @@ import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
-import org.obiba.onyx.ruby.magma.TubeValueSetBeanResolver;
 import org.obiba.onyx.ruby.magma.TubeVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,9 +86,6 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
   private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
   private String variableRoot;
-
-  @Autowired(required = true)
-  private TubeValueSetBeanResolver resolver;
 
   @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
@@ -382,10 +378,6 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
     activeTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
   }
 
-  public void setResolver(TubeValueSetBeanResolver resolver) {
-    this.resolver = resolver;
-  }
-
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
   }
@@ -398,7 +390,7 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
     ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
     for(Stage stage : stages) {
       TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stage.getName());
-      TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration, resolver);
+      TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
       factory.setAttributeHelper(attributeHelper);
       factory.setVariableRoot(variableRoot);
       sources.addAll(factory.createSources(collection));

@@ -11,12 +11,9 @@ package org.obiba.onyx.jade.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -32,28 +29,17 @@ import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableHelper;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
-import org.obiba.onyx.jade.magma.InstrumentBeanResolver;
-import org.obiba.onyx.jade.magma.InstrumentRunBeanResolver;
-import org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory;
-import org.obiba.onyx.jade.magma.InstrumentVariableValueSourceFactory;
-import org.obiba.onyx.jade.magma.WorkstationBeanResolver;
-import org.obiba.onyx.jade.magma.WorkstationVariableValueSourceFactory;
-import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.google.common.collect.ImmutableSet;
-
-public class JadeModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
+public class JadeModule implements Module, IVariableProvider, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
@@ -65,25 +51,11 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
 
   private InstrumentRunService instrumentRunService;
 
-  private ExperimentalConditionService experimentalConditionService;
-
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
   // private DatabaseSeed databaseSeed;
 
   private List<Stage> stages;
-
-  @Autowired(required = true)
-  private InstrumentBeanResolver instrumentBeanResolver;
-
-  @Autowired(required = true)
-  private InstrumentRunBeanResolver instrumentRunBeanResolver;
-
-  @Autowired(required = true)
-  private WorkstationBeanResolver workstationBeanResolver;
-
-  @Autowired(required = true)
-  private OnyxAttributeHelper attributeHelper;
 
   public String getName() {
     return "jade";
@@ -180,10 +152,6 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     this.instrumentService = instrumentService;
   }
 
-  public void setExperimentalConditionService(ExperimentalConditionService experimentalConditionService) {
-    this.experimentalConditionService = experimentalConditionService;
-  }
-
   public InstrumentRunService getInstrumentRunService() {
     return instrumentRunService;
   }
@@ -231,49 +199,4 @@ public class JadeModule implements Module, IVariableProvider, VariableValueSourc
     instrumentRunService.deleteAllInstrumentRuns(participant);
   }
 
-  public void setInstrumentBeanResolver(InstrumentBeanResolver instrumentBeanResolver) {
-    this.instrumentBeanResolver = instrumentBeanResolver;
-  }
-
-  public void setInstrumentRunBeanResolver(InstrumentRunBeanResolver instrumentRunBeanResolver) {
-    this.instrumentRunBeanResolver = instrumentRunBeanResolver;
-  }
-
-  public void setWorkstationBeanResolver(WorkstationBeanResolver workstationBeanResolver) {
-    this.workstationBeanResolver = workstationBeanResolver;
-  }
-
-  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
-    this.attributeHelper = attributeHelper;
-  }
-
-  //
-  // VariableValueSourceFactory Methods
-  //
-
-  public Set<VariableValueSource> createSources(String collection) {
-    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
-
-    // Create Instrument sources.
-    InstrumentVariableValueSourceFactory instrumentSourceFactory = new InstrumentVariableValueSourceFactory();
-    instrumentSourceFactory.setInstrumentService(instrumentService);
-    instrumentSourceFactory.setExperimentalConditionService(experimentalConditionService);
-    instrumentSourceFactory.setAttributeHelper(attributeHelper);
-    sources.addAll(instrumentSourceFactory.createSources(collection, instrumentBeanResolver));
-
-    // Create InstrumentRun sources.
-    InstrumentRunVariableValueSourceFactory instrumentRunSourceFactory = new InstrumentRunVariableValueSourceFactory();
-    instrumentRunSourceFactory.setInstrumentService(instrumentService);
-    instrumentRunSourceFactory.setAttributeHelper(attributeHelper);
-    sources.addAll(instrumentRunSourceFactory.createSources(collection, instrumentRunBeanResolver));
-
-    // Create Workstation sources.
-    WorkstationVariableValueSourceFactory workstationSourceFactory = new WorkstationVariableValueSourceFactory();
-    workstationSourceFactory.setExperimentalConditionService(experimentalConditionService);
-    workstationSourceFactory.setBeanResolver(workstationBeanResolver);
-    workstationSourceFactory.setAttributeHelper(attributeHelper);
-    sources.addAll(workstationSourceFactory.createSources(collection));
-
-    return sources.build();
-  }
 }

@@ -16,7 +16,6 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
@@ -47,7 +46,7 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
+  public Set<VariableValueSource> createSources(String collection) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
@@ -57,7 +56,7 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
       if(barcodePartVariableName != null) {
         String variableName = lookupVariableName(barcodePartVariableName);
         Variable variable = this.doBuildVariable(collection, TextType.get().getJavaClass(), variableName);
-        sources.add(new BeanPropertyVariableValueSource(variable, BarcodePart.class, resolver, "partValue"));
+        sources.add(new BeanPropertyVariableValueSource(variable, BarcodePart.class, "partValue"));
       }
     }
 

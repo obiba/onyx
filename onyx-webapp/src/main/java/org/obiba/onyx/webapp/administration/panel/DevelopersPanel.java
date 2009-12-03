@@ -9,8 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.administration.panel;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,11 +19,15 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
-import org.obiba.core.util.StreamUtil;
-import org.obiba.magma.Collection;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.xstream.Io;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
+import org.obiba.magma.ValueTableWriter;
+import org.obiba.magma.Variable;
+import org.obiba.magma.ValueTableWriter.ValueSetWriter;
+import org.obiba.magma.ValueTableWriter.VariableWriter;
+import org.obiba.magma.io.FsDatasource;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 
@@ -51,8 +54,11 @@ public class DevelopersPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        dumpVariables();
-        dumpValueSets();
+        try {
+          dump();
+        } catch(IOException e) {
+          throw new RuntimeException(e);
+        }
         target.addComponent(DevelopersPanel.this.get("hibernateStats"));
       }
 
@@ -66,45 +72,26 @@ public class DevelopersPanel extends Panel {
     return ((OnyxApplication) OnyxApplication.get()).isDevelopmentMode();
   }
 
-  private void dumpVariables() {
-
-    MagmaEngine engine = MagmaEngine.get();
-    FileOutputStream os = null;
-    Io io = new Io();
-    File temp = new File(System.getProperty("java.io.tmpdir"), "magma-variables.xml");
-    try {
-      for(Datasource datasource : engine.getDatasources()) {
-        for(Collection collection : datasource.getCollections()) {
-          os = new FileOutputStream(temp);
-          io.writeVariables(collection, os);
+  private void dump() throws IOException {
+    FsDatasource fs = new FsDatasource("target/magma-dump.zip");
+    for(Datasource ds : MagmaEngine.get().getDatasources()) {
+      for(ValueTable table : ds.getValueTables()) {
+        ValueTableWriter writer = fs.createWriter(table.getName());
+        VariableWriter vw = writer.writeVariables(table.getEntityType());
+        for(Variable variable : table.getVariables()) {
+          vw.writeVariable(variable);
         }
-      }
-      os.close();
-    } catch(Exception e) {
-      e.printStackTrace();
-    } finally {
-      StreamUtil.silentSafeClose(os);
-    }
-
-  }
-
-  private void dumpValueSets() {
-    MagmaEngine engine = MagmaEngine.get();
-    FileOutputStream os = null;
-    Io io = new Io();
-    try {
-      for(Datasource datasource : engine.getDatasources()) {
-        for(Collection collection : datasource.getCollections()) {
-          File temp = new File(System.getProperty("java.io.tmpdir"), "magma-valuesets.xml");
-          os = new FileOutputStream(temp);
-          io.writeEntities(collection, os);
+        vw.close();
+        for(ValueSet valueSet : table.getValueSets()) {
+          ValueSetWriter vsw = writer.writeValueSet(valueSet.getVariableEntity());
+          for(Variable variable : table.getVariables()) {
+            vsw.writeValue(variable, table.getValue(variable, valueSet));
+          }
+          vsw.close();
         }
+        writer.close();
       }
-      os.close();
-    } catch(Exception e) {
-      e.printStackTrace();
-    } finally {
-      StreamUtil.silentSafeClose(os);
     }
   }
+
 }

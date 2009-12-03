@@ -22,7 +22,6 @@ import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -35,6 +34,7 @@ import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -53,10 +53,13 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   // Instance Variables
   //
 
+  @Autowired
   private OnyxAttributeHelper attributeHelper;
 
+  @Autowired
   private InstrumentService instrumentService;
 
+  @Autowired
   private ExperimentalConditionService experimentalConditionService;
 
   //
@@ -72,16 +75,16 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
+  public Set<VariableValueSource> createSources(String collection) {
     Set<VariableValueSource> sources = null;
 
     // Create Instrument sources.
     setProperties(ImmutableSet.of("type", "name", "vendor", "model", "serialNumber", "barcode"));
     setPrefix(INSTRUMENT);
-    sources = super.createSources(collection, resolver);
+    sources = super.createSources(collection);
 
     // Create sources for instrument calibrations.
-    sources.addAll(createInstrumentCalibrationSources(collection, resolver));
+    sources.addAll(createInstrumentCalibrationSources(collection));
 
     return sources;
   }
@@ -102,7 +105,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     this.experimentalConditionService = experimentalConditionService;
   }
 
-  private Set<VariableValueSource> createInstrumentCalibrationSources(String collection, ValueSetBeanResolver resolver) {
+  private Set<VariableValueSource> createInstrumentCalibrationSources(String collection) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
@@ -116,13 +119,13 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
         factory.setOccurrenceGroup(instrumentCalibration.getName());
 
-        sources.addAll(factory.createSources(collection, resolver));
+        sources.addAll(factory.createSources(collection));
 
         // Create source for calibrated instrument's barcode variable.
         sources.add(createCalibratedInstrumentBarcodeSource(collection, instrumentType.getName(), instrumentCalibration.getName()));
 
         // Create sources for calibration attributes.
-        sources.addAll(createInstrumentCalibrationAttributeSources(collection, instrumentType, instrumentCalibration, resolver));
+        sources.addAll(createInstrumentCalibrationAttributeSources(collection, instrumentType, instrumentCalibration));
       }
     }
 
@@ -152,7 +155,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     };
   }
 
-  private Set<VariableValueSource> createInstrumentCalibrationAttributeSources(String collection, InstrumentType instrumentType, InstrumentCalibration instrumentCalibration, ValueSetBeanResolver resolver) {
+  private Set<VariableValueSource> createInstrumentCalibrationAttributeSources(String collection, InstrumentType instrumentType, InstrumentCalibration instrumentCalibration) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Attribute calibrationAttribute : instrumentCalibration.getAttributes()) {
@@ -169,7 +172,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       attributeSourceFactory.setOccurrenceGroup(instrumentCalibration.getName());
       attributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(calibrationAttributeVisitor));
 
-      sources.addAll(attributeSourceFactory.createSources(collection, resolver));
+      sources.addAll(attributeSourceFactory.createSources(collection));
     }
 
     return sources;

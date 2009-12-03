@@ -19,7 +19,6 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
@@ -30,6 +29,7 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.VariableLocalizedAttributeVisitor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -48,10 +48,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   // Instances
   //
 
+  @Autowired
   private ExperimentalConditionService experimentalConditionService;
 
-  private ValueSetBeanResolver beanResolver;
-
+  @Autowired
   private OnyxAttributeHelper attributeHelper;
 
   //
@@ -65,7 +65,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     sources.add(createWorkstationSource(collection));
 
     // Create sources for (non-instrument) experimental conditions.
-    sources.addAll(createExperimentalConditionSources(collection, beanResolver));
+    sources.addAll(createExperimentalConditionSources(collection));
 
     return sources;
   }
@@ -76,10 +76,6 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
   public void setExperimentalConditionService(ExperimentalConditionService experimentalConditionService) {
     this.experimentalConditionService = experimentalConditionService;
-  }
-
-  public void setBeanResolver(ValueSetBeanResolver beanResolver) {
-    this.beanResolver = beanResolver;
   }
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
@@ -105,7 +101,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     };
   }
 
-  private Set<VariableValueSource> createExperimentalConditionSources(final String collection, ValueSetBeanResolver resolver) {
+  private Set<VariableValueSource> createExperimentalConditionSources(final String collection) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(ExperimentalConditionLog experimentalConditionLog : experimentalConditionService.getExperimentalConditionLog()) {
@@ -121,16 +117,16 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
       factory.setOccurrenceGroup(experimentalConditionLog.getName());
 
-      sources.addAll(factory.createSources(collection, resolver));
+      sources.addAll(factory.createSources(collection));
 
       // Create sources for ExperimentalCondition attributes.
-      sources.addAll(createExperimentalConditionAttributeSources(collection, experimentalConditionLog, resolver));
+      sources.addAll(createExperimentalConditionAttributeSources(collection, experimentalConditionLog));
     }
 
     return sources;
   }
 
-  private Set<VariableValueSource> createExperimentalConditionAttributeSources(final String collection, ExperimentalConditionLog experimentalConditionLog, ValueSetBeanResolver resolver) {
+  private Set<VariableValueSource> createExperimentalConditionAttributeSources(final String collection, ExperimentalConditionLog experimentalConditionLog) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Attribute conditionAttribute : experimentalConditionLog.getAttributes()) {
@@ -145,7 +141,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       conditionAttributeSourceFactory.setOccurrenceGroup(experimentalConditionLog.getName());
       conditionAttributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(new VariableLocalizedAttributeVisitor(attributeHelper, conditionAttribute.getName())));
 
-      sources.addAll(conditionAttributeSourceFactory.createSources(collection, resolver));
+      sources.addAll(conditionAttributeSourceFactory.createSources(collection));
     }
 
     return sources;

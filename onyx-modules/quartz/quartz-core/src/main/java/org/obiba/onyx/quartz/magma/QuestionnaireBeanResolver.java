@@ -28,7 +28,7 @@ import com.google.common.collect.Iterables;
 public class QuestionnaireBeanResolver extends AbstractQuartzBeanResolver {
 
   public boolean resolves(Class<?> type) {
-    return QuestionnaireParticipant.class.equals(type) || QuestionAnswer.class.equals(type) || CategoryAnswer.class.equals(type) || QuestionnairePageMetricAlgorithm.class.equals(type);
+    return QuestionnaireParticipant.class.equals(type) || QuestionAnswer.class.equals(type) || CategoryAnswer.class.equals(type) || OpenAnswer.class.equals(type) || QuestionnairePageMetricAlgorithm.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, final Variable variable) {

@@ -10,20 +10,19 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.StringWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.obiba.core.util.StreamUtil;
-import org.obiba.magma.Collection;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
-import org.obiba.magma.VariableEntity;
-import org.obiba.magma.engine.output.Strategies;
-import org.obiba.magma.filter.FilteredCollection;
-import org.obiba.magma.xstream.Io;
+import org.obiba.magma.ValueTable;
+import org.obiba.magma.ValueTableWriter;
+import org.obiba.magma.Variable;
+import org.obiba.magma.ValueTableWriter.ValueSetWriter;
+import org.obiba.magma.ValueTableWriter.VariableWriter;
+import org.obiba.magma.io.FsDatasource;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -70,20 +69,22 @@ public class OnyxDataExport {
     log.info("Starting export to configured destinations.");
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+      for(OnyxDataExportDestination destination : exportDestinations) {
+        FsDatasource outputDatasource = new FsDatasource(outputRootDirectory + "/" + destination.getName() + ".zip");
+        for(ValueTable table : datasource.getValueTables()) {
 
-      for(Collection collection : datasource.getCollections()) {
+          // Export interviews for each destination
 
-        // Export interviews for each destination
-        for(OnyxDataExportDestination destination : exportDestinations) {
-
-          // Apply all filters to Collection for current OnyxDestination.
-          Collection filteredCollection = new FilteredCollection(collection, destination.getVariableFilterChainMap(), destination.getEntityFilterChainMap());
+          // Apply all filters to ValueTable for current OnyxDestination.
+          // ValueTable filteredCollection = new FilteredValueTable(table, null, null);
+          ValueTable filteredCollection = table;
 
           // Save FilteredCollection to disk.
-          saveToDisk(filteredCollection, destination.getName(), outputRootDirectory, destination.getStrategies());
+          saveToDisk(filteredCollection, outputDatasource);
 
           // Mark the data of the FilteredCollection as exported for current destination (log entry).
           // markAsExported(filteredCollection, destination);
+          markAsExported(filteredCollection, destination);
 
         }
 
@@ -96,53 +97,30 @@ public class OnyxDataExport {
     log.info("Exported [{}] interview(s) in [{}ms] to [{}] destination(s).", new Object[] { 0, exportEndTime - exportStartTime, 0 });
   }
 
-  private void saveToDisk(Collection collection, String destinationName, File outputDirectory, Strategies outputStrategies) {
-    // Datasource exportDatasource = new FilesystemDatasource(destinationName, outputRootDirectory,
-    // destination.getStrategies());
-    // exportDatasource.createCollection(destinationName);
-    // MagmaUtil.copy(collection, exportDatasource);
+  private void saveToDisk(ValueTable table, FsDatasource outputDatasource) throws IOException {
+    ValueTableWriter writer = outputDatasource.createWriter(table.getName());
 
-    displayCollectionDebugInformation(collection, destinationName, outputDirectory, outputStrategies);
-  }
-
-  private void displayCollectionDebugInformation(Collection collection, String destinationName, File outputDirectory, Strategies outputStrategies) {
-    log.info("Exporting the following destination: {}", destinationName);
-    log.info("Export output directory : {}", outputDirectory);
-
-    StringWriter strategies = new StringWriter();
-    for(String strategy : outputStrategies.getStrategies()) {
-      strategies.append(strategy + ", ");
+    VariableWriter vw = writer.writeVariables(table.getEntityType());
+    for(Variable variable : table.getVariables()) {
+      vw.writeVariable(variable);
     }
-
-    log.info("Export strategies are : {}", strategies);
-
-    Io io = new Io();
-    FileOutputStream os = null;
-    try {
-      File temp = new File(System.getProperty("java.io.tmpdir"), "onyx-export_" + System.currentTimeMillis() + ".xml");
-      log.info("Exporting to {}", temp.getPath());
-      os = new FileOutputStream(temp);
-      io.writeEntities(collection, os);
-    } catch(Exception e) {
-      e.printStackTrace();
-    } finally {
-      StreamUtil.silentSafeClose(os);
-    }
-
-  }
-
-  private void markAsExported(Collection collection, OnyxDataExportDestination destination) {
-
-    for(String entityType : collection.getEntityTypes()) {
-      for(VariableEntity entity : collection.getEntities(entityType)) {
-        ValueSet valueSet = collection.loadValueSet(entity);
-
-        // Find the earliest and latest entity capture date-time
-        // Write an entry in ExportLog to flag the set of entities as exported.
-
-        ExportLog log = ExportLog.Builder.newLog().type(entityType).identifier(entity.getIdentifier()).start(new Date()).end(new Date()).destination(destination.getName()).exportDate(new Date()).user(userSessionService.getUser()).build();
-        exportLogService.save(log);
+    vw.close();
+    for(ValueSet valueSet : table.getValueSets()) {
+      ValueSetWriter vsw = writer.writeValueSet(valueSet.getVariableEntity());
+      for(Variable variable : table.getVariables()) {
+        vsw.writeValue(variable, table.getValue(variable, valueSet));
       }
+      vsw.close();
+    }
+    writer.close();
+  }
+
+  private void markAsExported(ValueTable table, OnyxDataExportDestination destination) {
+    for(ValueSet valueSet : table.getValueSets()) {
+      // Find the earliest and latest entity capture date-time
+      // Write an entry in ExportLog to flag the set of entities as exported.
+      ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(new Date()).end(new Date()).destination(destination.getName()).exportDate(new Date()).user(userSessionService.getUser()).build();
+      exportLogService.save(log);
     }
   }
 

@@ -63,9 +63,6 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   //
 
   @Autowired(required = true)
-  private OnyxAdminValueSetBeanResolver beanResolver;
-
-  @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
 
   @Autowired(required = true)
@@ -94,10 +91,6 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   //
   // Methods
   //
-
-  public void setBeanResolver(OnyxAdminValueSetBeanResolver beanResolver) {
-    this.beanResolver = beanResolver;
-  }
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
@@ -147,7 +140,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
 
     // Get the bean property sources.
-    Set<VariableValueSource> sources = delegateFactory.createSources(collection, beanResolver);
+    Set<VariableValueSource> sources = delegateFactory.createSources(collection);
 
     // Add Javascript sources for birthYear and age.
     String birthDateVariableName = participantPrefix + '.' + "birthDate";
@@ -159,7 +152,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     participantAttributeSourceFactory.setAttributeHelper(attributeHelper);
     participantAttributeSourceFactory.setParticipantMetadata(participantMetadata);
     participantAttributeSourceFactory.setPrefix(participantPrefix);
-    sources.addAll(participantAttributeSourceFactory.createSources(collection, beanResolver));
+    sources.addAll(participantAttributeSourceFactory.createSources(collection));
 
     return sources;
   }
@@ -169,7 +162,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW);
     delegateFactory.setProperties(ImmutableSet.of("startDate", "endDate", "status", "duration"));
 
-    return delegateFactory.createSources(collection, beanResolver);
+    return delegateFactory.createSources(collection);
   }
 
   private Set<VariableValueSource> createAppConfigSources(String collection) {
@@ -178,7 +171,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     delegateFactory.setProperties(ImmutableSet.of("siteNo", "siteName", "studyName"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("siteNo", "siteCode").build());
 
-    return delegateFactory.createSources(collection, beanResolver);
+    return delegateFactory.createSources(collection);
   }
 
   private Set<VariableValueSource> createActionSources(String collection) {
@@ -188,7 +181,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     delegateFactory.setProperties(ImmutableSet.of("user.login", "stage", "fromState", "toState", "actionType", "dateTime", "comment", "eventReason"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
 
-    return delegateFactory.createSources(collection, beanResolver);
+    return delegateFactory.createSources(collection);
   }
 
   private Set<VariableValueSource> createStageInstanceSources(String collection) {
@@ -198,7 +191,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     delegateFactory.setProperties(ImmutableSet.of("stage", "startTime", "lastTime", "lastState", "duration", "interruptionCount", "user.login", "last"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
 
-    return delegateFactory.createSources(collection, beanResolver);
+    return delegateFactory.createSources(collection);
   }
 
   //

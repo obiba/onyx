@@ -54,7 +54,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   //
 
   public boolean resolves(Class<?> type) {
-    return InstrumentRun.class.equals(type) || Measure.class.equals(type) || Data.class.equals(type) || Contraindication.class.equals(type) || Measure.class.equals(type);
+    return InstrumentRun.class.equals(type) || InstrumentRunValue.class.equals(type) || Measure.class.equals(type) || Data.class.equals(type) || Contraindication.class.equals(type) || Measure.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {

@@ -17,7 +17,6 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
@@ -49,7 +48,7 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection, ValueSetBeanResolver resolver) {
+  public Set<VariableValueSource> createSources(String collection) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
@@ -59,7 +58,7 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
       ValueType valueType = ValueType.Factory.forName(attribute.getType().toString().toLowerCase());
       Variable variable = this.doBuildVariable(collection, valueType.getJavaClass(), variableName);
 
-      sources.add(new BeanPropertyVariableValueSource(variable, Participant.class, resolver, "attributes[" + attribute.getName() + "]"));
+      sources.add(new BeanPropertyVariableValueSource(variable, Participant.class, "attributes[" + attribute.getName() + "]"));
     }
 
     return sources;

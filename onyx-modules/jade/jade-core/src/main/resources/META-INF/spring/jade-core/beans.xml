@@ -17,15 +17,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="jadeWaitingState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState"
     scope="prototype" />
 
-  <bean id="jadeReadyState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeReadyState"
-    scope="prototype">
+  <bean id="jadeReadyState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeReadyState" scope="prototype">
   </bean>
 
-  <bean id="jadeNotApplicableState" parent="baseJadeState"
-    class="org.obiba.onyx.jade.engine.state.JadeNotApplicableState" scope="prototype" />
+  <bean id="jadeNotApplicableState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeNotApplicableState"
+    scope="prototype" />
 
-  <bean id="jadeContraIndicatedState" parent="baseJadeState"
-    class="org.obiba.onyx.jade.engine.state.JadeContraIndicatedState" scope="prototype" />
+  <bean id="jadeContraIndicatedState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeContraIndicatedState"
+    scope="prototype" />
 
   <bean id="jadeInProgressState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState"
     scope="prototype">
@@ -36,19 +35,20 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeCompletedState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeCompletedState"
     scope="prototype" />
-    
+
   <bean id="jadeInterruptedState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeInterruptedState"
     scope="prototype" />
 
-  <bean id="activeInstrumentRunService"
-    class="org.obiba.onyx.jade.core.service.impl.DefaultActiveInstrumentRunServiceImpl" scope="session">
+  <bean id="activeInstrumentRunService" class="org.obiba.onyx.jade.core.service.impl.DefaultActiveInstrumentRunServiceImpl"
+    scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />
     <property name="instrumentService" ref="instrumentService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
-    
-  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl" init-method="init">
+
+  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl"
+    init-method="init">
     <property name="experimentalConditionFactory" ref="experimentalConditionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="sessionFactory" ref="sessionFactory" />
@@ -62,23 +62,39 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </list>
     </property>
   </bean>
-  
-  <bean id="instrumentBeanResolver" class="org.obiba.onyx.jade.magma.InstrumentBeanResolver">
+
+  <bean class="org.obiba.magma.spring.BeanValueTableFactoryBean">
+    <property name="name" value="Instruments" />
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
+        <constructor-arg index="0" value="Instrument" />
+        <constructor-arg index="1" value="barcode" />
+        <property name="entityClass" value="org.obiba.onyx.jade.core.domain.instrument.Instrument" />
+      </bean>
+    </property>
+    <property name="valueSetBeanResolver">
+      <bean class="org.obiba.onyx.jade.magma.InstrumentBeanResolver" />
+    </property>
+    <property name="variableValueSourceFactory">
+      <bean class="org.obiba.onyx.jade.magma.InstrumentVariableValueSourceFactory" />
+    </property>
   </bean>
-  
-  <bean id="instrumentRunBeanResolver" class="org.obiba.onyx.jade.magma.InstrumentRunBeanResolver">
+
+  <bean class="org.obiba.magma.spring.BeanValueTableFactoryBean">
+    <property name="name" value="Workstations" />
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.jade.magma.WorkstationValueSetProvider" />
+    </property>
+    <property name="valueSetBeanResolver">
+      <bean class="org.obiba.onyx.jade.magma.WorkstationBeanResolver" />
+    </property>
+    <property name="variableValueSourceFactory">
+      <bean class="org.obiba.onyx.jade.magma.WorkstationVariableValueSourceFactory" />
+    </property>
   </bean>
-  
-  <bean id="workstationBeanResolver" class="org.obiba.onyx.jade.magma.WorkstationBeanResolver">
-  </bean>
-  
-  <bean class="org.obiba.onyx.magma.HibernateBeanValueSetProvider">
-    <constructor-arg index="0" value="Instrument" />
-    <constructor-arg index="1" value="barcode" />
-    <property name="entityClass" value="org.obiba.onyx.jade.core.domain.instrument.Instrument" />
-  </bean>
-  
-  <bean class="org.obiba.onyx.jade.magma.WorkstationValueSetProvider">
-  </bean>
-  
+
+  <bean class="org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory" />
+
+  <bean class="org.obiba.onyx.jade.magma.InstrumentRunBeanResolver" />
+
 </beans>

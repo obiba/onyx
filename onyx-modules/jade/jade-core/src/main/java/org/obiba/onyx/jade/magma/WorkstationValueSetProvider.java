@@ -11,12 +11,9 @@ package org.obiba.onyx.jade.magma;
 
 import java.util.Set;
 
-import org.obiba.magma.Collection;
-import org.obiba.magma.ValueSet;
-import org.obiba.magma.ValueSetProvider;
 import org.obiba.magma.VariableEntity;
-import org.obiba.magma.support.ValueSetBean;
 import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.magma.support.VariableEntityProvider;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Provider of Workstation ValueSets.
  */
-public class WorkstationValueSetProvider implements ValueSetProvider {
+public class WorkstationValueSetProvider implements VariableEntityProvider {
   //
   // Constants
   //
@@ -46,10 +43,6 @@ public class WorkstationValueSetProvider implements ValueSetProvider {
 
   public String getEntityType() {
     return WORKSTATION;
-  }
-
-  public ValueSet getValueSet(Collection collection, VariableEntity entity) {
-    return new ValueSetBean(collection, entity);
   }
 
   public Set<VariableEntity> getVariableEntities() {
