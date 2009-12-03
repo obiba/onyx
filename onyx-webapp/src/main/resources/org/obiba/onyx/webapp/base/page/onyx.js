@@ -181,6 +181,13 @@ NavigationUtil.next = function() {
   }
 }
 
+NavigationUtil.closeWindow = function() {
+  var closeButton = $('input.obiba-button-close');
+  if (closeButton) {
+    closeButton.click();
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // Participant search navigation bar styling
 //////////////////////////////////////////////////////////////////////
