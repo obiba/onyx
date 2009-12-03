@@ -30,6 +30,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.wicket.behavior.FocusBehavior;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
 /**
@@ -182,6 +183,7 @@ public class Dialog extends ModalWindow {
 
     };
     closeButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Close", this, null)));
+    closeButton.add(new FocusBehavior());
     form.add(closeButton);
 
     this.setWindowClosedCallback(new WindowClosedCallback() {
