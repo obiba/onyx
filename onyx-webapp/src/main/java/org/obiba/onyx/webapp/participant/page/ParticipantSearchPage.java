@@ -666,6 +666,7 @@ public class ParticipantSearchPage extends BasePage {
           component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
           editParticipantDetailsModalWindow.setContent(component);
           editParticipantDetailsModalWindow.show(target);
+          target.appendJavascript("$('div.wicket-modal').css('overflow','visible');");
         }
 
         @Override
