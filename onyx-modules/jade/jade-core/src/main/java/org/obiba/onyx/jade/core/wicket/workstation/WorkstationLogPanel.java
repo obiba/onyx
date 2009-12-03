@@ -63,7 +63,8 @@ public class WorkstationLogPanel extends Panel {
 
       @Override
       public Object getDisplayValue(ExperimentalConditionLog object) {
-        return new SpringStringResourceModel(object.getName(), object.getName()).getString();
+        String name = object.getName() + "Log";
+        return new SpringStringResourceModel(name, name).getString();
       }
 
       @Override
