@@ -11,6 +11,7 @@ package org.obiba.onyx.core.service;
 
 import java.util.List;
 
+import org.obiba.magma.ValueSet;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 
 /**
@@ -27,12 +28,25 @@ public interface ExportLogService {
   public void save(ExportLog exportLog);
 
   /**
-   * Returns a list of {@link ExportLog}s for a particular VariableEntity Type and destination.
+   * Returns a list of {@link ExportLog}s for a particular VariableEntity type and destination.
    * @param entityTypeName name of the VariableEntity type. (e.g. Participant)
    * @param destination name of the destination. (e.g. DCC)
+   * @param ascending <code>true</code> returns a list sorted in chronological order (by export date),
+   * <code>false</code> returns a list in reverse chronological order
    * @return list of ExportLogs
    */
-  public List<ExportLog> getExportLogs(String entityTypeName, String destination);
+  public List<ExportLog> getExportLogs(String entityTypeName, String destination, boolean ascending);
+
+  /**
+   * Returns a list of {@link ExportLog}s for a particular entity, of a particular type and destination.
+   * @param entityTypeName name of the VariableEntity type. (e.g. Participant)
+   * @param identifier entity identifier
+   * @param destination name of the destination. (e.g. DCC)
+   * @param ascending <code>true</code> returns a list sorted in chronological order (by export date),
+   * <code>false</code> returns a list in reverse chronological order
+   * @return
+   */
+  public List<ExportLog> getExportLogs(String entityTypeName, String identifier, String destination, boolean ascending);
 
   /**
    * Returns the last {@link ExportLog} for a particular VariableEntity and destination.

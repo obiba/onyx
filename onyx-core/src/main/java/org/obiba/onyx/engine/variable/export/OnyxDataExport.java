@@ -119,7 +119,7 @@ public class OnyxDataExport {
     for(ValueSet valueSet : table.getValueSets()) {
       // Find the earliest and latest entity capture date-time
       // Write an entry in ExportLog to flag the set of entities as exported.
-      ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(new Date()).end(new Date()).destination(destination.getName()).exportDate(new Date()).user(userSessionService.getUser()).build();
+      ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(new Date()).end(new Date()).destination(destination.getName()).exportDate(new Date()).user(userSessionService.getUser().getLogin()).build();
       exportLogService.save(log);
     }
   }

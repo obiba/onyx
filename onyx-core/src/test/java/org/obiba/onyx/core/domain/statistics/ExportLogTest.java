@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.core.domain.user.User;
 
 public class ExportLogTest {
 
@@ -20,28 +19,18 @@ public class ExportLogTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testNullIdentifierFails() throws Exception {
-    ExportLog.Builder.newLog().type("Participant").destination("DCC").start(sevenAm).end(eightAm).exportDate(nineAm).user(new User()).build();
-  }
-
-  @Test(expected = IllegalArgumentException.class)
   public void testEmptyIdentifierFails() throws Exception {
-    ExportLog.Builder.newLog().type("Participant").identifier("").destination("DCC").start(sevenAm).end(eightAm).exportDate(nineAm).user(new User()).build();
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testNullCaptureStartDateFails() throws Exception {
-    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").end(eightAm).exportDate(nineAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("").destination("DCC").start(sevenAm).end(eightAm).exportDate(nineAm).user("user").build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testCaptureEndDateBeforeCaptureStartDateFails() throws Exception {
-    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").start(eightAm).end(sevenAm).exportDate(nineAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").start(eightAm).end(sevenAm).exportDate(nineAm).user("user").build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testExportDateBeforeCaptureEndDateFails() throws Exception {
-    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").start(sevenAm).end(nineAm).exportDate(eightAm).user(new User()).build();
+    ExportLog.Builder.newLog().type("Participant").identifier("1234567").destination("DCC").start(sevenAm).end(nineAm).exportDate(eightAm).user("user").build();
   }
 
   private static Date constructDate(int hour) {

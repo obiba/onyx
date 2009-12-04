@@ -11,10 +11,10 @@ package org.obiba.onyx.core.domain.statistics;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.user.User;
 import org.springframework.util.Assert;
 
 @Entity
@@ -22,21 +22,31 @@ public class ExportLog extends AbstractEntity {
 
   private static final long serialVersionUID = 1L;
 
+  @Column(nullable = false)
   private final String type;
 
+  @Column(nullable = false)
   private final String identifier;
 
+  @Column(nullable = false)
   private final String destination;
 
+  @Column(nullable = false)
   private final Date captureStartDate;
 
+  @Column(nullable = false)
   private final Date captureEndDate;
 
+  @Column(nullable = false)
   private final Date exportDate;
 
-  private User user;
+  /**
+   * Login name of user who performed the export.
+   */
+  @Column(nullable = false)
+  private String user;
 
-  private ExportLog(String type, String identifier, String destination, Date captureStartDate, Date captureEndDate, Date exportDate, User user) {
+  private ExportLog(String type, String identifier, String destination, Date captureStartDate, Date captureEndDate, Date exportDate, String user) {
     super();
     this.type = type;
     this.identifier = identifier;
@@ -71,7 +81,7 @@ public class ExportLog extends AbstractEntity {
     return exportDate;
   }
 
-  public User getUser() {
+  public String getUser() {
     return user;
   }
 
@@ -88,7 +98,7 @@ public class ExportLog extends AbstractEntity {
 
     private Date exportDate;
 
-    private User user;
+    private String user;
 
     public static Builder newLog() {
       return new Builder();
@@ -124,21 +134,27 @@ public class ExportLog extends AbstractEntity {
       return this;
     }
 
-    public Builder user(User user) {
+    public Builder user(String user) {
       this.user = user;
       return this;
     }
 
     public ExportLog build() {
       Assert.hasText(type, "type must not be null or empty");
-      Assert.hasText(identifier, "identifier must not be null or empty");
       Assert.hasText(destination, "destination must not be null or empty");
-      Assert.notNull(captureStartDate, "captureStartDate must not be null");
-      Assert.notNull(captureEndDate, "captureEndDate must not be null");
-      Assert.notNull(exportDate, "exportDate must not be null");
-      Assert.notNull(user, "user must not be null");
-      Assert.isTrue(captureStartDate.before(captureEndDate), "captureStartDate must be before captureEndDate");
-      Assert.isTrue(captureEndDate.before(exportDate), "captureEndDate must be before exportDate");
+
+      if(identifier != null) {
+        Assert.isTrue(identifier.trim().length() != 0, "identifier must not be empty");
+      }
+
+      if(captureStartDate != null && captureEndDate != null) {
+        Assert.isTrue(captureStartDate.before(captureEndDate), "captureStartDate must be before captureEndDate");
+      }
+
+      if(captureEndDate != null && exportDate != null) {
+        Assert.isTrue(captureEndDate.before(exportDate), "captureEndDate must be before exportDate");
+      }
+
       return new ExportLog(type, identifier, destination, captureStartDate, captureEndDate, exportDate, user);
     }
   }

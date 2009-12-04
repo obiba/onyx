@@ -11,23 +11,34 @@ package org.obiba.onyx.core.service.impl;
 
 import java.util.List;
 
+import org.obiba.core.service.SortingClause;
+import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
+import org.springframework.transaction.annotation.Transactional;
 
-public class DefaultExportLogServiceImpl implements ExportLogService {
+@Transactional
+public class DefaultExportLogServiceImpl extends PersistenceManagerAwareService implements ExportLogService {
+  //
+  // ExportLogService Methods
+  //
 
   public void save(ExportLog exportLog) {
-    // TODO Auto-generated method stub
+    getPersistenceManager().save(exportLog);
   }
 
-  public List<ExportLog> getExportLogs(String entityTypeName, String destination) {
-    // TODO Auto-generated method stub
-    return null;
+  public List<ExportLog> getExportLogs(String entityTypeName, String destination, boolean ascending) {
+    return getExportLogs(entityTypeName, null, destination, ascending);
+  }
+
+  public List<ExportLog> getExportLogs(String entityTypeName, String identifier, String destination, boolean ascending) {
+    ExportLog template = ExportLog.Builder.newLog().type(entityTypeName).identifier(identifier).destination(destination).build();
+    return getPersistenceManager().match(template, new SortingClause("exportDate", ascending));
   }
 
   public ExportLog getLastExportLog(String entityTypeName, String identifier, String destination) {
-    // TODO Auto-generated method stub
-    return null;
+    List<ExportLog> exportLogs = getExportLogs(entityTypeName, identifier, destination, false);
+    return !exportLogs.isEmpty() ? exportLogs.get(0) : null;
   }
 
 }
