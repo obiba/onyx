@@ -70,7 +70,7 @@ public class OnyxDataExport {
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination destination : exportDestinations) {
-        FsDatasource outputDatasource = new FsDatasource(outputRootDirectory + "/" + destination.getName() + ".zip");
+        FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputRootDirectory + "/" + destination.getName() + ".zip");
         for(ValueTable table : datasource.getValueTables()) {
 
           // Export interviews for each destination
