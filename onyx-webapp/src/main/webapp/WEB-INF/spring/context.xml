@@ -22,6 +22,9 @@
   <!-- Import Data export pipeline -->
   <import resource="data-export.xml" />
   
+  <!-- Import Data purge configuration -->
+  <import resource="data-purge.xml" />
+  
   <!-- Import Participant reader context -->
   <import resource="participant-reader.xml" />
 

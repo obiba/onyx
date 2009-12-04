@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="onyxDataPurge" class="org.obiba.onyx.engine.variable.export.OnyxDataPurge">
+    <property name="purgeConfiguration" ref="onyxDataPurgeConfiguration" />
+    <property name="userSessionService">
+      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
+        <property name="targetBeanName" value="userSessionService" />
+      </bean>
+    </property>
+    <property name="exportLogService" ref="exportLogService" />
+  </bean>
+
+</beans>
