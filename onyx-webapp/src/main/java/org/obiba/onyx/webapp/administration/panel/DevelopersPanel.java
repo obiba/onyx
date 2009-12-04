@@ -73,7 +73,7 @@ public class DevelopersPanel extends Panel {
   }
 
   private void dump() throws IOException {
-    FsDatasource fs = new FsDatasource("target/magma-dump.zip");
+    FsDatasource fs = new FsDatasource("onyx", "target/magma-dump.zip");
     for(Datasource ds : MagmaEngine.get().getDatasources()) {
       for(ValueTable table : ds.getValueTables()) {
         ValueTableWriter writer = fs.createWriter(table.getName());
