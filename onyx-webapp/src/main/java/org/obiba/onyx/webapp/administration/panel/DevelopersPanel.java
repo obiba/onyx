@@ -21,12 +21,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.ValueSet;
-import org.obiba.magma.ValueTable;
-import org.obiba.magma.ValueTableWriter;
-import org.obiba.magma.Variable;
-import org.obiba.magma.ValueTableWriter.ValueSetWriter;
-import org.obiba.magma.ValueTableWriter.VariableWriter;
+import org.obiba.magma.io.DatasourceCopier;
 import org.obiba.magma.io.FsDatasource;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
@@ -73,24 +68,15 @@ public class DevelopersPanel extends Panel {
   }
 
   private void dump() throws IOException {
-    FsDatasource fs = new FsDatasource("onyx", "target/magma-dump.zip");
-    for(Datasource ds : MagmaEngine.get().getDatasources()) {
-      for(ValueTable table : ds.getValueTables()) {
-        ValueTableWriter writer = fs.createWriter(table.getName());
-        VariableWriter vw = writer.writeVariables(table.getEntityType());
-        for(Variable variable : table.getVariables()) {
-          vw.writeVariable(variable);
-        }
-        vw.close();
-        for(ValueSet valueSet : table.getValueSets()) {
-          ValueSetWriter vsw = writer.writeValueSet(valueSet.getVariableEntity());
-          for(Variable variable : table.getVariables()) {
-            vsw.writeValue(variable, table.getValue(variable, valueSet));
-          }
-          vsw.close();
-        }
-        writer.close();
+    FsDatasource target;
+    MagmaEngine.get().addDatasource(target = new FsDatasource("onyx", "target/magma-dump.zip"));
+    try {
+      DatasourceCopier copier = new DatasourceCopier();
+      for(Datasource ds : MagmaEngine.get().getDatasources()) {
+        copier.copy(ds, target);
       }
+    } finally {
+      MagmaEngine.get().removeDatasource(target);
     }
   }
 

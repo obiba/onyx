@@ -5,6 +5,7 @@
     <property name="extensions">
       <set>
         <bean class="org.obiba.magma.js.MagmaJsExtension" />
+        <bean class="org.obiba.magma.xstream.MagmaXStreamExtension" />
       </set>
     </property>
   </bean>

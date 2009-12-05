@@ -10,7 +10,6 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,10 +17,7 @@ import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
-import org.obiba.magma.ValueTableWriter;
-import org.obiba.magma.Variable;
-import org.obiba.magma.ValueTableWriter.ValueSetWriter;
-import org.obiba.magma.ValueTableWriter.VariableWriter;
+import org.obiba.magma.io.DatasourceCopier;
 import org.obiba.magma.io.FsDatasource;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
@@ -68,26 +64,33 @@ public class OnyxDataExport {
 
     log.info("Starting export to configured destinations.");
 
+    DatasourceCopier copier = new DatasourceCopier();
+
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination destination : exportDestinations) {
         FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputRootDirectory + "/" + destination.getName() + ".zip");
-        for(ValueTable table : datasource.getValueTables()) {
 
-          // Export interviews for each destination
+        MagmaEngine.get().addDatasource(outputDatasource);
+        try {
+          for(ValueTable table : datasource.getValueTables()) {
 
-          // Apply all filters to ValueTable for current OnyxDestination.
-          // ValueTable filteredCollection = new FilteredValueTable(table, null, null);
-          ValueTable filteredCollection = table;
+            // Export interviews for each destination
 
-          // Save FilteredCollection to disk.
-          saveToDisk(filteredCollection, outputDatasource);
+            // Apply all filters to ValueTable for current OnyxDestination.
+            // ValueTable filteredCollection = new FilteredValueTable(table, null, null);
+            ValueTable filteredCollection = table;
 
-          // Mark the data of the FilteredCollection as exported for current destination (log entry).
-          // markAsExported(filteredCollection, destination);
-          markAsExported(filteredCollection, destination);
+            // Save FilteredCollection to disk.
+            copier.copy(table, outputDatasource);
 
+            // Mark the data of the FilteredCollection as exported for current destination (log entry).
+            // markAsExported(filteredCollection, destination);
+            markAsExported(filteredCollection, destination);
+
+          }
+        } finally {
+          MagmaEngine.get().removeDatasource(outputDatasource);
         }
-
       }
 
     }
@@ -95,24 +98,6 @@ public class OnyxDataExport {
     long exportEndTime = new Date().getTime();
 
     log.info("Exported [{}] interview(s) in [{}ms] to [{}] destination(s).", new Object[] { 0, exportEndTime - exportStartTime, 0 });
-  }
-
-  private void saveToDisk(ValueTable table, FsDatasource outputDatasource) throws IOException {
-    ValueTableWriter writer = outputDatasource.createWriter(table.getName());
-
-    VariableWriter vw = writer.writeVariables(table.getEntityType());
-    for(Variable variable : table.getVariables()) {
-      vw.writeVariable(variable);
-    }
-    vw.close();
-    for(ValueSet valueSet : table.getValueSets()) {
-      ValueSetWriter vsw = writer.writeValueSet(valueSet.getVariableEntity());
-      for(Variable variable : table.getVariables()) {
-        vsw.writeValue(variable, table.getValue(variable, valueSet));
-      }
-      vsw.close();
-    }
-    writer.close();
   }
 
   private void markAsExported(ValueTable table, OnyxDataExportDestination destination) {
