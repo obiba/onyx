@@ -21,8 +21,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.io.DatasourceCopier;
-import org.obiba.magma.io.FsDatasource;
+import org.obiba.magma.datasource.fs.DatasourceCopier;
+import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 
@@ -71,7 +71,7 @@ public class DevelopersPanel extends Panel {
     FsDatasource target;
     MagmaEngine.get().addDatasource(target = new FsDatasource("onyx", "target/magma-dump.zip"));
     try {
-      DatasourceCopier copier = new DatasourceCopier();
+      DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().build();
       for(Datasource ds : MagmaEngine.get().getDatasources()) {
         copier.copy(ds, target);
       }
@@ -79,5 +79,4 @@ public class DevelopersPanel extends Panel {
       MagmaEngine.get().removeDatasource(target);
     }
   }
-
 }
