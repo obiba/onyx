@@ -64,7 +64,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean class="org.obiba.magma.spring.BeanValueTableFactoryBean">
-    <property name="name" value="Instruments" />
+    <property name="valueTableName" value="Instruments" />
     <property name="variableEntityProvider">
       <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
         <constructor-arg index="0" value="Instrument" />
@@ -81,7 +81,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean class="org.obiba.magma.spring.BeanValueTableFactoryBean">
-    <property name="name" value="Workstations" />
+    <property name="valueTableName" value="Workstations" />
     <property name="variableEntityProvider">
       <bean class="org.obiba.onyx.jade.magma.WorkstationValueSetProvider" />
     </property>

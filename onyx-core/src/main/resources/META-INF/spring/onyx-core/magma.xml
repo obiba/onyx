@@ -1,5 +1,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" default-autowire="no">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
 
   <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
@@ -14,7 +15,7 @@
     <property name="datasources">
       <set>
         <bean class="org.obiba.magma.spring.SpringContextScanningDatasource">
-          <property name="name" value="${org.obiba.onyx.collection.name}" />
+          <constructor-arg value="${org.obiba.onyx.collection.name}" />
         </bean>
       </set>
     </property>
@@ -23,7 +24,7 @@
   <bean id="onyxAttributeHelper" class="org.obiba.onyx.magma.OnyxAttributeHelper" />
 
   <bean class="org.obiba.onyx.magma.OnyxParticipantValueTableFactoryBean">
-    <property name="name" value="Participants" />
+    <property name="valueTableName" value="Participants" />
     <property name="variableEntityProvider">
       <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
         <constructor-arg index="0" value="Participant" />
@@ -33,7 +34,10 @@
     </property>
   </bean>
 
-  <bean class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory"/>
-  <bean class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver"/>
+  <bean class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory" />
+  <bean class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver" />
+  <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory">
+    <property name="resource" value="${org.obiba.onyx.config.path}/scripted-variables.xml" />
+  </bean>
 
 </beans>

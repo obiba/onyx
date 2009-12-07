@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class OnyxParticipantValueTableFactoryBean implements ValueTableFactoryBean {
 
-  private String name;
+  private String valueTableName;
 
   private VariableEntityProvider variableEntityProvider;
 
@@ -35,8 +35,12 @@ public class OnyxParticipantValueTableFactoryBean implements ValueTableFactoryBe
   @Autowired
   private Set<ValueSetBeanResolver> resolvers;
 
-  public void setName(String name) {
-    this.name = name;
+  public void setValueTableName(String valueTableName) {
+    this.valueTableName = valueTableName;
+  }
+
+  public String getValueTableName() {
+    return valueTableName;
   }
 
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
@@ -44,7 +48,7 @@ public class OnyxParticipantValueTableFactoryBean implements ValueTableFactoryBe
   }
 
   public ValueTable buildValueTable(Datasource datasource) {
-    BeanValueTable bvt = new BeanValueTable(datasource, name, variableEntityProvider);
+    BeanValueTable bvt = new BeanValueTable(datasource, getValueTableName(), variableEntityProvider);
     for(ValueSetBeanResolver resolver : resolvers) {
       bvt.addResolver(resolver);
     }
