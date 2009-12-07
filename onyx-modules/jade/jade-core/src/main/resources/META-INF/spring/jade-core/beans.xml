@@ -47,7 +47,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
 
-  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl"
+  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.hibernate.ExperimentalConditionServiceHibernateImpl"
     init-method="init">
     <property name="experimentalConditionFactory" ref="experimentalConditionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />

@@ -49,6 +49,14 @@ public interface ExportLogService {
   public List<ExportLog> getExportLogs(String entityTypeName, String identifier, String destination, boolean ascending);
 
   /**
+   * Returns the last {@link ExportLog} for a particular VariableEntity.
+   * @param entityTypeName
+   * @param identifier
+   * @return
+   */
+  public ExportLog getLastExportLog(String entityTypeName, String identifier);
+
+  /**
    * Returns the last {@link ExportLog} for a particular VariableEntity and destination.
    * @param entityTypeName
    * @param identifier

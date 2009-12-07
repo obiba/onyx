@@ -36,6 +36,10 @@ public class DefaultExportLogServiceImpl extends PersistenceManagerAwareService 
     return getPersistenceManager().match(template, new SortingClause("exportDate", ascending));
   }
 
+  public ExportLog getLastExportLog(String entityTypeName, String identifier) {
+    return getLastExportLog(entityTypeName, identifier, null);
+  }
+
   public ExportLog getLastExportLog(String entityTypeName, String identifier, String destination) {
     List<ExportLog> exportLogs = getExportLogs(entityTypeName, identifier, destination, false);
     return !exportLogs.isEmpty() ? exportLogs.get(0) : null;

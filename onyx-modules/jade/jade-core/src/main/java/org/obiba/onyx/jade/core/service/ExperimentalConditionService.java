@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.Attribute;
@@ -54,7 +55,7 @@ public interface ExperimentalConditionService {
    * will be returned.
    * @param template The template will be matched on the following attributes: "id", "name", "workstation" as well as an
    * {@link ExperimentalConditionValue} with an attributeName equal to "INSTRUMENT_BARCODE".
-   * @return A list of ExperimentalConditions matching the supplied template.
+   * @return A list of ExperimentalConditions matching the supplied template, in chronological order (earlier first)
    */
   public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template);
 
@@ -95,4 +96,15 @@ public interface ExperimentalConditionService {
    */
   public void deleteExperimentalCondition(ExperimentalCondition experimentalCondition);
 
+  /**
+   * Returns a list of {@link ExperimentalCondition}s for the specified workstation, recorded after the specified date.
+   * 
+   * The list returned includes only {@link ExperimentalCondition}s that are <em>not</em> related to instruments.
+   * 
+   * @param workstationId workstation id
+   * @param date date
+   * @return list of {@link ExperimentalCondition}s for the specified workstation, recorded after the specified date,
+   * in chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getExperimentalConditionsRecordedAfter(String workstationId, Date date);
 }

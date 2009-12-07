@@ -43,7 +43,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
   
-  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl">
+  <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.hibernate.ExperimentalConditionServiceHibernateImpl">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>

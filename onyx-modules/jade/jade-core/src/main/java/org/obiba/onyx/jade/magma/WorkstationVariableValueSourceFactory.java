@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.obiba.magma.Value;
@@ -19,8 +20,11 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
+import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
@@ -52,6 +56,9 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   private ExperimentalConditionService experimentalConditionService;
 
   @Autowired
+  private ExportLogService exportLogService;
+
+  @Autowired
   private OnyxAttributeHelper attributeHelper;
 
   //
@@ -61,8 +68,8 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   public Set<VariableValueSource> createSources(String collection) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    // Create source for Workstation name variable.
-    sources.add(createWorkstationSource(collection));
+    // Create Workstation sources (name, captureStartDate, captureEndDate).
+    sources.addAll(createWorkstationSources(collection));
 
     // Create sources for (non-instrument) experimental conditions.
     sources.addAll(createExperimentalConditionSources(collection));
@@ -78,11 +85,25 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     this.experimentalConditionService = experimentalConditionService;
   }
 
+  public void setExportLogService(ExportLogService exportLogService) {
+    this.exportLogService = exportLogService;
+  }
+
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
   }
 
-  private VariableValueSource createWorkstationSource(final String collection) {
+  private Set<VariableValueSource> createWorkstationSources(String collection) {
+    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+
+    sources.add(createWorkstationNameSource(collection));
+    sources.add(createWorkstationCaptureStartDateSource(collection));
+    sources.add(createWorkstationCaptureEndDateSource(collection));
+
+    return sources;
+  }
+
+  private VariableValueSource createWorkstationNameSource(final String collection) {
     return new VariableValueSource() {
 
       public Variable getVariable() {
@@ -95,8 +116,63 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public ValueType getValueType() {
-        // TODO Auto-generated method stub
         return TextType.get();
+      }
+    };
+  }
+
+  private VariableValueSource createWorkstationCaptureStartDateSource(final String collection) {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(collection, WORKSTATION + '.' + "captureStartDate", getValueType(), WORKSTATION);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String workstationId = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
+        if(exportLog != null) {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditionsRecordedAfter(workstationId, exportLog.getExportDate());
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
+        } else {
+          ExperimentalCondition template = new ExperimentalCondition();
+          template.setWorkstation(workstationId);
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template);
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
+        }
+      }
+
+      public ValueType getValueType() {
+        return DateType.get();
+      }
+    };
+  }
+
+  private VariableValueSource createWorkstationCaptureEndDateSource(final String collection) {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(collection, WORKSTATION + '.' + "captureEndDate", getValueType(), WORKSTATION);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String workstationId = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
+        if(exportLog != null) {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditionsRecordedAfter(workstationId, exportLog.getExportDate());
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
+        } else {
+          ExperimentalCondition template = new ExperimentalCondition();
+          template.setWorkstation(workstationId);
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template);
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
+        }
+      }
+
+      public ValueType getValueType() {
+        return DateType.get();
       }
     };
   }
