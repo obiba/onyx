@@ -88,7 +88,6 @@ public class DataManagementPanel extends Panel {
     };
 
     add(purgeLink);
-    add(new Label("purgeInstruction", new StringResourceModel("PurgeInstruction", null, new Object[] { purgeParticipantDataService.getPurgeDataOlderThanInDays() })));
   }
 
   private void createExportDialog() {
