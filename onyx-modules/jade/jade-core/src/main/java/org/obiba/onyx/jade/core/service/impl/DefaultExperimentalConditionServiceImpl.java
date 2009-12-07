@@ -67,7 +67,7 @@ public abstract class DefaultExperimentalConditionServiceImpl extends Persistenc
     return false;
   }
 
-  private List<InstrumentCalibration> getInstrumentCalibrations() {
+  protected List<InstrumentCalibration> getInstrumentCalibrations() {
     List<InstrumentCalibration> instrumentCalibrations = new ArrayList<InstrumentCalibration>();
     for(ExperimentalConditionLog log : experimentalConditionLogs) {
       if(log instanceof InstrumentCalibration) {

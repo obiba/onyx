@@ -23,8 +23,11 @@ import org.hibernate.criterion.Restrictions;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
+import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.impl.DefaultExperimentalConditionServiceImpl;
+import org.obiba.onyx.util.data.DataBuilder;
+import org.obiba.onyx.util.data.DataType;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -44,25 +47,40 @@ public class ExperimentalConditionServiceHibernateImpl extends DefaultExperiment
     return getCriteria(template).addOrder(Order.asc("time")).list();
   }
 
+  public List<ExperimentalCondition> getNonInstrumentRelatedConditions(String workstationId) {
+    ExperimentalCondition template = new ExperimentalCondition();
+    template.setWorkstation(workstationId);
+    List<ExperimentalCondition> results = getExperimentalConditions(template);
+
+    return extractNonInstrumentRelatedConditions(results);
+  }
+
   @SuppressWarnings("unchecked")
-  public List<ExperimentalCondition> getExperimentalConditionsRecordedAfter(String workstationId, Date date) {
+  public List<ExperimentalCondition> getNonInstrumentRelatedConditionsRecordedAfter(String workstationId, Date date) {
     Criteria criteria = getSession().createCriteria(ExperimentalCondition.class).add(Restrictions.eq("workstation", workstationId)).add(Restrictions.gt("time", date)).addOrder(Order.asc("time"));
     List<ExperimentalCondition> results = criteria.list();
 
-    List<ExperimentalConditionLog> experimentalConditionLogs = this.getExperimentalConditionLog();
-    Set<String> logNames = new HashSet<String>();
-    for(ExperimentalConditionLog log : experimentalConditionLogs) {
-      logNames.add(log.getName());
-    }
+    return extractNonInstrumentRelatedConditions(results);
+  }
 
-    List<ExperimentalCondition> filteredResults = new ArrayList<ExperimentalCondition>();
-    for(ExperimentalCondition ec : results) {
-      if(logNames.contains(ec.getName())) {
-        filteredResults.add(ec);
-      }
-    }
+  public List<ExperimentalCondition> getInstrumentCalibrations(String instrumentBarcode) {
+    ExperimentalCondition template = new ExperimentalCondition();
+    ExperimentalConditionValue experimentalConditionValue = new ExperimentalConditionValue();
+    experimentalConditionValue.setAttributeName(ExperimentalConditionService.INSTRUMENT_BARCODE);
+    experimentalConditionValue.setAttributeType(DataType.TEXT);
+    experimentalConditionValue.setData(DataBuilder.buildText(instrumentBarcode));
+    template.addExperimentalConditionValue(experimentalConditionValue);
+    List<ExperimentalCondition> results = getExperimentalConditions(template);
 
-    return filteredResults;
+    return extractInstrumentCalibrations(results);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ExperimentalCondition> getInstrumentCalibrationsRecordedAfter(String instrumentBarcode, Date date) {
+    Criteria criteria = getSession().createCriteria(ExperimentalCondition.class).add(Restrictions.gt("time", date)).addOrder(Order.asc("time")).createCriteria("experimentalConditionValues").add(Restrictions.eq("attributeName", ExperimentalConditionService.INSTRUMENT_BARCODE)).add(Restrictions.eq("textValue", instrumentBarcode));
+    List<ExperimentalCondition> results = criteria.list();
+
+    return extractInstrumentCalibrations(results);
   }
 
   //
@@ -95,4 +113,37 @@ public class ExperimentalConditionServiceHibernateImpl extends DefaultExperiment
     return criteria;
   }
 
+  private List<ExperimentalCondition> extractNonInstrumentRelatedConditions(List<ExperimentalCondition> experimentalConditions) {
+    List<ExperimentalConditionLog> experimentalConditionLogs = this.getExperimentalConditionLog();
+    Set<String> logNames = new HashSet<String>();
+    for(ExperimentalConditionLog log : experimentalConditionLogs) {
+      logNames.add(log.getName());
+    }
+
+    List<ExperimentalCondition> nonInstrumentRelatedConditions = new ArrayList<ExperimentalCondition>();
+    for(ExperimentalCondition ec : experimentalConditions) {
+      if(logNames.contains(ec.getName())) {
+        nonInstrumentRelatedConditions.add(ec);
+      }
+    }
+
+    return nonInstrumentRelatedConditions;
+  }
+
+  private List<ExperimentalCondition> extractInstrumentCalibrations(List<ExperimentalCondition> experimentalConditions) {
+    List<InstrumentCalibration> instrumentCalibrations = getInstrumentCalibrations();
+    Set<String> instrumentCalibrationNames = new HashSet<String>();
+    for(InstrumentCalibration instrumentCalibration : instrumentCalibrations) {
+      instrumentCalibrationNames.add(instrumentCalibration.getName());
+    }
+
+    List<ExperimentalCondition> persistedInstrumentCalibrations = new ArrayList<ExperimentalCondition>();
+    for(ExperimentalCondition ec : experimentalConditions) {
+      if(instrumentCalibrationNames.contains(ec.getName())) {
+        persistedInstrumentCalibrations.add(ec);
+      }
+    }
+
+    return persistedInstrumentCalibrations;
+  }
 }

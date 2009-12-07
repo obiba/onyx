@@ -68,6 +68,20 @@ public interface ExperimentalConditionService {
   public ExperimentalConditionLog getExperimentalConditionLogByName(String name);
 
   /**
+   * Returns "non-instrument-related" conditions ({@link ExperimentalCondition}s) for the specified workstation.
+   * @param workstationId the workstation's indentifier
+   * @return "non-instrument-related" conditions for the specified workstation, in chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getNonInstrumentRelatedConditions(String workstationId);
+
+  /**
+   * Returns the instrument calibrations ({@link ExperimentalCondition}s) for the specified instrument.
+   * @param instrumentBarcode the instrument's barcode
+   * @return instrument calibrations for the specified instrument, in chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getInstrumentCalibrations(String instrumentBarcode);
+
+  /**
    * Returns true in an {@link InstrumentCalibration} exists for the given instrumentType.
    * @param instrumentType
    * @return True if an InstrumentCalibration exists for the instrumentType.
@@ -97,14 +111,24 @@ public interface ExperimentalConditionService {
   public void deleteExperimentalCondition(ExperimentalCondition experimentalCondition);
 
   /**
-   * Returns a list of {@link ExperimentalCondition}s for the specified workstation, recorded after the specified date.
-   * 
-   * The list returned includes only {@link ExperimentalCondition}s that are <em>not</em> related to instruments.
+   * Returns a list of "non-instrument-related" conditions ({@link ExperimentalCondition}s) for the specified
+   * workstation, recorded after the specified date.
    * 
    * @param workstationId workstation id
    * @param date date
-   * @return list of {@link ExperimentalCondition}s for the specified workstation, recorded after the specified date,
-   * in chronological order (earlier first)
+   * @return list of "non-instrument-related" conditions for the specified workstation, recorded after the specified
+   * date, in chronological order (earlier first)
    */
-  public List<ExperimentalCondition> getExperimentalConditionsRecordedAfter(String workstationId, Date date);
+  public List<ExperimentalCondition> getNonInstrumentRelatedConditionsRecordedAfter(String workstationId, Date date);
+
+  /**
+   * Returns a list of instrument calibrations ({@link ExperimentalCondition}s) for the specified instrument, recorded
+   * after the specified date.
+   * 
+   * @param insturmentBarcode the instrument's barcode
+   * @param date date
+   * @return list of instrument calibrations for the specified instrument, recorded after the specified date, in
+   * chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getInstrumentCalibrationsRecordedAfter(String instrumentBarcode, Date date);
 }

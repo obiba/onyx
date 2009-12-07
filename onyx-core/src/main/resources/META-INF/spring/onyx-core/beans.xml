@@ -166,6 +166,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
   
   <bean id="exportLogService" class="org.obiba.onyx.core.service.impl.DefaultExportLogServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
 </beans>

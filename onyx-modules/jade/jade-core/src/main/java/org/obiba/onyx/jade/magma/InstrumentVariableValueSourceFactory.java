@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,8 +23,11 @@ import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
+import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
@@ -62,6 +66,9 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   @Autowired
   private ExperimentalConditionService experimentalConditionService;
 
+  @Autowired
+  private ExportLogService exportLogService;
+
   //
   // Constructors
   //
@@ -83,6 +90,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     setPrefix(INSTRUMENT);
     sources = super.createSources(collection);
 
+    // Create Instrument captureStartDate and captureEndDate sources.
+    sources.add(createInstrumentCaptureStartDateSource(collection));
+    sources.add(createInstrumentCaptureEndDateSource(collection));
+
     // Create sources for instrument calibrations.
     sources.addAll(createInstrumentCalibrationSources(collection));
 
@@ -103,6 +114,62 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
   public void setExperimentalConditionService(ExperimentalConditionService experimentalConditionService) {
     this.experimentalConditionService = experimentalConditionService;
+  }
+
+  public void setExportLogService(ExportLogService exportLogService) {
+    this.exportLogService = exportLogService;
+  }
+
+  private VariableValueSource createInstrumentCaptureStartDateSource(final String collection) {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(collection, INSTRUMENT + '.' + "captureStartDate", getValueType(), INSTRUMENT);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
+        if(exportLog != null) {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
+        } else {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
+        }
+      }
+
+      public ValueType getValueType() {
+        return DateType.get();
+      }
+    };
+  }
+
+  private VariableValueSource createInstrumentCaptureEndDateSource(final String collection) {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(collection, INSTRUMENT + '.' + "captureEndDate", getValueType(), INSTRUMENT);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
+        if(exportLog != null) {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
+        } else {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
+        }
+      }
+
+      public ValueType getValueType() {
+        return DateType.get();
+      }
+    };
   }
 
   private Set<VariableValueSource> createInstrumentCalibrationSources(String collection) {

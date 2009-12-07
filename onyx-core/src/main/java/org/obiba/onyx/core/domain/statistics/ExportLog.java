@@ -141,7 +141,6 @@ public class ExportLog extends AbstractEntity {
 
     public ExportLog build() {
       Assert.hasText(type, "type must not be null or empty");
-      Assert.hasText(destination, "destination must not be null or empty");
 
       if(identifier != null) {
         Assert.isTrue(identifier.trim().length() != 0, "identifier must not be empty");

@@ -133,12 +133,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
         String workstationId = valueSet.getVariableEntity().getIdentifier();
         ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
         if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditionsRecordedAfter(workstationId, exportLog.getExportDate());
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(workstationId, exportLog.getExportDate());
           return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
         } else {
-          ExperimentalCondition template = new ExperimentalCondition();
-          template.setWorkstation(workstationId);
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template);
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
           return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
         }
       }
@@ -161,12 +159,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
         String workstationId = valueSet.getVariableEntity().getIdentifier();
         ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
         if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditionsRecordedAfter(workstationId, exportLog.getExportDate());
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(workstationId, exportLog.getExportDate());
           return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
         } else {
-          ExperimentalCondition template = new ExperimentalCondition();
-          template.setWorkstation(workstationId);
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getExperimentalConditions(template);
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
           return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
         }
       }
