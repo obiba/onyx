@@ -69,11 +69,13 @@ public class DevelopersPanel extends Panel {
 
   private void dump() throws IOException {
     FsDatasource target;
-    MagmaEngine.get().addDatasource(target = new FsDatasource("onyx", "target/magma-dump.zip"));
+    MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", "target/magma-dump.zip"));
     try {
       DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().build();
       for(Datasource ds : MagmaEngine.get().getDatasources()) {
-        copier.copy(ds, target);
+        if(ds != target) { // Don't copy target datasource on target datasource
+          copier.copy(ds, target);
+        }
       }
     } finally {
       MagmaEngine.get().removeDatasource(target);
