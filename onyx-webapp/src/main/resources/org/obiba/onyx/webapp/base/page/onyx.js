@@ -174,6 +174,13 @@ NavigationUtil.previous = function() {
   }
 }
 	    
+NavigationUtil.admin = function() {
+  var adminButton = $('input.obiba-quartz-nav-admin');
+  if (adminButton) {
+    adminButton.click();
+  }
+}
+
 NavigationUtil.next = function() {
   var nextButton = $('input.obiba-nav-next');
   if (nextButton) {
@@ -296,6 +303,17 @@ function addOnyxWizardBehavior() {
                 			return true;
           				}        
         			});
+        			
+  $(document).bind('keydown', {combi:'a', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.admin();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")) {
+                			return true;
+          				}        
+        			});        			
 		
   WindowUtil.attachEvent("load", Resizer.resizeWizard);
   WindowUtil.attachEvent("resize", Resizer.resizeWizard);
