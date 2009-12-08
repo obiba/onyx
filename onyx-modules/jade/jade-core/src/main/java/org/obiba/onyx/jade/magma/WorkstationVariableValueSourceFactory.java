@@ -133,14 +133,8 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
       public Value getValue(ValueSet valueSet) {
         String workstationId = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
-        if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(workstationId, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
-        } else {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
-        }
+        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
+        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
       }
 
       public ValueType getValueType() {
@@ -159,14 +153,8 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
       public Value getValue(ValueSet valueSet) {
         String workstationId = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
-        if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(workstationId, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
-        } else {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
-        }
+        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
+        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
       }
 
       public ValueType getValueType() {
@@ -184,9 +172,15 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
+        // Return TRUE if new experimental conditions have been recorded since the last export, FALSE
+        // otherwise (return FALSE also if no ExportLog exists for the workstation).
         String workstationId = valueSet.getVariableEntity().getIdentifier();
         ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
-        return (exportLog != null) ? getValueType().valueOf(Boolean.TRUE) : getValueType().valueOf(Boolean.FALSE);
+        if(exportLog != null) {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(workstationId, exportLog.getExportDate());
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(Boolean.FALSE) : getValueType().valueOf(Boolean.TRUE);
+        }
+        return getValueType().valueOf(Boolean.FALSE);
       }
 
       public ValueType getValueType() {

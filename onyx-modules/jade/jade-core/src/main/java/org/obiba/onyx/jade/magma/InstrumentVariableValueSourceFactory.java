@@ -132,14 +132,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       public Value getValue(ValueSet valueSet) {
         String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
-        if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
-        } else {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
-        }
+        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
+        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
       }
 
       public ValueType getValueType() {
@@ -158,14 +152,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       public Value getValue(ValueSet valueSet) {
         String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
-        if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
-        } else {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
-        }
+        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
+        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
       }
 
       public ValueType getValueType() {
@@ -183,9 +171,15 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
+        // Return TRUE if new instrument calibrations have been recorded since the last export, FALSE
+        // otherwise (return FALSE also if no ExportLog exists for the instrument).
         String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
         ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
-        return (exportLog != null) ? getValueType().valueOf(Boolean.TRUE) : getValueType().valueOf(Boolean.FALSE);
+        if(exportLog != null) {
+          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(Boolean.FALSE) : getValueType().valueOf(Boolean.TRUE);
+        }
+        return getValueType().valueOf(Boolean.FALSE);
       }
 
       public ValueType getValueType() {
