@@ -21,8 +21,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.Variable;
 import org.obiba.magma.datasource.fs.DatasourceCopier;
 import org.obiba.magma.datasource.fs.FsDatasource;
+import org.obiba.magma.datasource.fs.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 
@@ -71,7 +74,7 @@ public class DevelopersPanel extends Panel {
     FsDatasource target;
     MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", "target/magma-dump.zip"));
     try {
-      DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().build();
+      DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(new SessionClearingListener()).build();
       for(Datasource ds : MagmaEngine.get().getDatasources()) {
         if(ds != target) { // Don't copy target datasource on target datasource
           copier.copy(ds, target);
@@ -80,5 +83,22 @@ public class DevelopersPanel extends Panel {
     } finally {
       MagmaEngine.get().removeDatasource(target);
     }
+  }
+
+  private class SessionClearingListener implements DatasourceCopyEventListener {
+
+    public void onValueSetCopied(ValueSet valueSet) {
+      factory.getCurrentSession().clear();
+    }
+
+    public void onValueSetCopy(ValueSet valueSet) {
+    }
+
+    public void onVariableCopied(Variable variable) {
+    }
+
+    public void onVariableCopy(Variable variable) {
+    }
+
   }
 }
