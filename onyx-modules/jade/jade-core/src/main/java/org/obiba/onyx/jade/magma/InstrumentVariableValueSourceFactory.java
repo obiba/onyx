@@ -133,10 +133,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
         if(exportLog != null) {
           List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
         } else {
           List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : null;
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
         }
       }
 
@@ -159,10 +159,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
         if(exportLog != null) {
           List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
         } else {
           List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : null;
+          return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
         }
       }
 

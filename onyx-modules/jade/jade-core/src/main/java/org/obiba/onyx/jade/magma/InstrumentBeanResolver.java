@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.obiba.magma.ValueSet;
@@ -80,28 +81,26 @@ public class InstrumentBeanResolver implements ValueSetBeanResolver {
         return getExperimentalConditions(experimentalConditionName, instrument.getBarcode());
       }
     }
-    return null;
+    return Collections.emptyList();
   }
 
   protected List<ExperimentalConditionValue> resolveExperimentalConditionValue(ValueSet valueSet, Variable variable) {
-    Instrument instrument = resolveInstrument(valueSet);
-    if(instrument != null) {
-      String experimentalConditionName = extractVariableNameElement(variable.getName(), 0);
+    List<ExperimentalConditionValue> experimentalConditionValues = new ArrayList<ExperimentalConditionValue>();
+
+    List<ExperimentalCondition> experimentalConditions = resolveExperimentalCondition(valueSet, variable);
+    if(!experimentalConditions.isEmpty()) {
       String experimentalConditionAttributeName = extractVariableNameElement(variable.getName(), 1);
-      if(experimentalConditionName != null && experimentalConditionAttributeName != null) {
-        List<ExperimentalConditionValue> experimentalConditionValues = new ArrayList<ExperimentalConditionValue>();
-        for(ExperimentalCondition experimentalCondition : getExperimentalConditions(experimentalConditionName, instrument.getBarcode())) {
+      if(experimentalConditionAttributeName != null) {
+        for(ExperimentalCondition experimentalCondition : experimentalConditions) {
           for(ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
             if(value.getAttributeName().equals(experimentalConditionAttributeName)) {
               experimentalConditionValues.add(value);
             }
           }
         }
-        return experimentalConditionValues;
       }
     }
-
-    return null;
+    return experimentalConditionValues;
   }
 
   private List<ExperimentalCondition> getExperimentalConditions(String experimentalConditionName, String instrumentBarcode) {
