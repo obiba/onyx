@@ -189,9 +189,9 @@ NavigationUtil.next = function() {
 }
 
 NavigationUtil.closeWindow = function() {
-  var closeButton = $('input.obiba-button-close');
-  if (closeButton) {
-    closeButton.click();
+  var cancelButton = $('input.obiba-button-cancel');
+  if(cancelButton) {
+    cancelButton.click();
   }
 }
 
@@ -288,7 +288,8 @@ function addOnyxWizardBehavior() {
         			}, 
         			function(evt, jTarget, elem) {
           				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				|| elem.is("input[type=text]") || elem.is("textarea")) {
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null) {
                 			return true;
           				}        
         			});
@@ -299,7 +300,8 @@ function addOnyxWizardBehavior() {
         			}, 
         			function(evt, jTarget, elem) {
           				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				|| elem.is("input[type=text]") || elem.is("textarea")) {
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null) {
                 			return true;
           				}        
         			});
@@ -310,10 +312,22 @@ function addOnyxWizardBehavior() {
         			}, 
         			function(evt, jTarget, elem) {
           				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				|| elem.is("input[type=text]") || elem.is("textarea")) {
+   			  				||  elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null ) {
                 			return true;
           				}        
-        			});        			
+        			}); 
+        			
+  $(document).bind('keydown', {combi:'esc', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.closeWindow();
+        			},
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				||  elem.is("input[type=text]") || elem.is("textarea")) {
+                			return true;
+          				}        
+        			});        			       			
 		
   WindowUtil.attachEvent("load", Resizer.resizeWizard);
   WindowUtil.attachEvent("resize", Resizer.resizeWizard);
