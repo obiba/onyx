@@ -15,60 +15,61 @@ import java.util.List;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.filter.FilteredValueTable;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ExportLogService;
-import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Applies filters (from purge.xml) to the current {@link ValueTable} of {@link Participant}s and returns a List of
+ * Participants to be purged.
+ */
 public class OnyxDataPurge {
 
   private static final Logger log = LoggerFactory.getLogger(OnyxDataPurge.class);
 
-  private ExportLogService exportLogService;
-
-  private UserSessionService userSessionService;
-
   private List<OnyxDataExportDestination> purgeConfiguration;
+
+  private ParticipantService participantService;
 
   public void setPurgeConfiguration(List<OnyxDataExportDestination> purgeConfiguration) {
     this.purgeConfiguration = purgeConfiguration;
   }
 
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
+  public void setParticipantService(ParticipantService participantService) {
+    this.participantService = participantService;
   }
 
-  public void setExportLogService(ExportLogService exportLogService) {
-    this.exportLogService = exportLogService;
-  }
-
-  public List<Participant> getParticipantsToPurge() throws Exception {
+  public List<Participant> getParticipantsToPurge() {
     List<Participant> result = new ArrayList<Participant>();
 
-    long exportStartTime = new Date().getTime();
-
-    log.info("Starting export to configured destinations.");
+    long purgeListStartTime = new Date().getTime();
+    log.info("Starting to determine which Participants need to be purged.");
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination purge : purgeConfiguration) {
         for(ValueTable table : datasource.getValueTables()) {
-
-          // Apply all filters to ValueTable for current OnyxDestination.
-          // ValueTable filteredCollection = new FilteredValueTable(table, null, null);
-          ValueTable filteredCollection = table;
-
+          if(table.getEntityType().equalsIgnoreCase("Participant")) {
+            ValueTable filteredCollection = new FilteredValueTable(table, purge.getVariableFilterChainForEntityName(table.getEntityType()), purge.getEntityFilterChainForEntityName(table.getEntityType()));
+            for(ValueSet valueSet : filteredCollection.getValueSets()) {
+              Participant template = new Participant();
+              template.setBarcode(valueSet.getVariableEntity().getIdentifier());
+              Participant participant = participantService.getParticipant(template);
+              if(participant != null) {
+                result.add(participant);
+              }
+            }
+          }
         }
-
       }
-
     }
 
-    long exportEndTime = new Date().getTime();
+    long purgeListEndTime = new Date().getTime();
+    log.info("Determined that [{}] Participants need to be purged in [{}ms].", new Object[] { result.size(), purgeListEndTime - purgeListStartTime });
 
-    log.info("Exported [{}] interview(s) in [{}ms] to [{}] destination(s).", new Object[] { 0, exportEndTime - exportStartTime, 0 });
     return result;
   }
-
 }
