@@ -9,12 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.obiba.magma.ValueSet;
-import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.Variable;
 import org.obiba.magma.engine.output.Strategies;
 import org.obiba.magma.filter.CollectionFilterChain;
 
@@ -53,28 +51,22 @@ public class OnyxDataExportDestination {
     this.valueSetFilters = valueSetFilters;
   }
 
-  /**
-   * Returns a map of entity type names to Variable FilterChains for this destination. Each FilterChain contains a
-   * number filters associated with one particular entity type (e.g. Participant).
-   */
-  Map<String, CollectionFilterChain<VariableValueSource>> getVariableFilterChainMap() {
-    Map<String, CollectionFilterChain<VariableValueSource>> result = new HashMap<String, CollectionFilterChain<VariableValueSource>>();
-    for(ValueSetFilter valueSetFilter : valueSetFilters) {
-      result.put(valueSetFilter.getEntityTypeName(), valueSetFilter.getVariableFilterChain());
+  CollectionFilterChain<Variable> getVariableFilterChainForEntityName(String entityName) {
+    for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
+      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityName)) {
+        return valueSetFilter.getVariableFilterChain();
+      }
     }
-    return result;
+    return new CollectionFilterChain<Variable>(entityName);
   }
 
-  /**
-   * Returns a map of entity type names to Entity FilterChains for this destination. Each FilterChain contains a number
-   * filters associated with one particular entity type (e.g. Participant).
-   */
-  Map<String, CollectionFilterChain<ValueSet>> getEntityFilterChainMap() {
-    Map<String, CollectionFilterChain<ValueSet>> result = new HashMap<String, CollectionFilterChain<ValueSet>>();
-    for(ValueSetFilter valueSetFilter : valueSetFilters) {
-      result.put(valueSetFilter.getEntityTypeName(), valueSetFilter.getEntityFilterChain());
+  CollectionFilterChain<ValueSet> getEntityFilterChainForEntityName(String entityName) {
+    for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
+      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityName)) {
+        return valueSetFilter.getEntityFilterChain();
+      }
     }
-    return result;
+    return new CollectionFilterChain<ValueSet>(entityName);
   }
 
 }
