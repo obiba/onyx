@@ -22,6 +22,7 @@ import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
+import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -29,6 +30,8 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.stage.StageInstance;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.runtime.Version;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +74,9 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   @Autowired(required = true)
   private Version version;
 
+  @Autowired
+  private ExportLogService exportLogService;
+
   //
   // VariableValueSourceFactory Methods
   //
@@ -79,6 +85,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     sources.add(createVersionSource());
+    sources.add(createParticipantExportedSource());
     sources.addAll(createParticipantSources());
     sources.addAll(createInterviewSources());
     sources.addAll(createAppConfigSources());
@@ -102,6 +109,10 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
   public void setVersion(Version version) {
     this.version = version;
+  }
+
+  public void setExportLogService(ExportLogService exportLogService) {
+    this.exportLogService = exportLogService;
   }
 
   private VariableValueSource createVersionSource() {
@@ -130,12 +141,32 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     };
   }
 
+  private VariableValueSource createParticipantExportedSource() {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + "exported", getValueType(), PARTICIPANT);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String participantBarcode = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(PARTICIPANT, participantBarcode);
+        return (exportLog != null) ? getValueType().valueOf(Boolean.TRUE) : getValueType().valueOf(Boolean.FALSE);
+      }
+
+      public ValueType getValueType() {
+        return BooleanType.get();
+      }
+    };
+  }
+
   private Set<VariableValueSource> createParticipantSources() {
     String participantPrefix = ONYX_ADMIN_PREFIX + '.' + PARTICIPANT;
 
     BeanVariableValueSourceFactory<Participant> delegateFactory = new BeanVariableValueSourceFactory<Participant>(PARTICIPANT, Participant.class);
     delegateFactory.setPrefix(participantPrefix);
-    delegateFactory.setProperties(ImmutableSet.of("interview.startDate", "interview.endDate", "barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType", "exported"));
+    delegateFactory.setProperties(ImmutableSet.of("interview.startDate", "interview.endDate", "barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("interview.startDate", "captureStartDate").put("interview.endDate", "captureEndDate").put("appointment.date", "appointmentDate").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
 
