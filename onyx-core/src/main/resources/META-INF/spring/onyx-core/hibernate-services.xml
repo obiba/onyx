@@ -11,6 +11,11 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="userSessionService">
+      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
+        <property name="targetBeanName" value="userSessionService" />
+      </bean>
+    </property>
   </bean>
   
   <bean id="userService"
