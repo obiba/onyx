@@ -23,6 +23,7 @@ import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
+import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
@@ -90,9 +91,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     setPrefix(INSTRUMENT);
     sources = super.createSources();
 
-    // Create Instrument captureStartDate and captureEndDate sources.
+    // Create Instrument captureStartDate, captureEndDate, and exported sources.
     sources.add(createInstrumentCaptureStartDateSource());
     sources.add(createInstrumentCaptureEndDateSource());
+    sources.add(createInstrumentExportedSource());
 
     // Create sources for instrument calibrations.
     sources.addAll(createInstrumentCalibrationSources());
@@ -168,6 +170,26 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       public ValueType getValueType() {
         return DateType.get();
+      }
+    };
+  }
+
+  private VariableValueSource createInstrumentExportedSource() {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "exported", getValueType(), INSTRUMENT);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
+        return (exportLog != null) ? getValueType().valueOf(Boolean.TRUE) : getValueType().valueOf(Boolean.FALSE);
+      }
+
+      public ValueType getValueType() {
+        return BooleanType.get();
       }
     };
   }

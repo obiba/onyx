@@ -20,6 +20,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
+import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
@@ -68,7 +69,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    // Create Workstation sources (name, captureStartDate, captureEndDate).
+    // Create Workstation sources (name, captureStartDate, captureEndDate, exported).
     sources.addAll(createWorkstationSources());
 
     // Create sources for (non-instrument) experimental conditions.
@@ -99,6 +100,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     sources.add(createWorkstationNameSource());
     sources.add(createWorkstationCaptureStartDateSource());
     sources.add(createWorkstationCaptureEndDateSource());
+    sources.add(createWorkstationExportedSource());
 
     return sources;
   }
@@ -169,6 +171,26 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
       public ValueType getValueType() {
         return DateType.get();
+      }
+    };
+  }
+
+  private VariableValueSource createWorkstationExportedSource() {
+    return new VariableValueSource() {
+
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "exported", getValueType(), WORKSTATION);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        String workstationId = valueSet.getVariableEntity().getIdentifier();
+        ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
+        return (exportLog != null) ? getValueType().valueOf(Boolean.TRUE) : getValueType().valueOf(Boolean.FALSE);
+      }
+
+      public ValueType getValueType() {
+        return BooleanType.get();
       }
     };
   }
