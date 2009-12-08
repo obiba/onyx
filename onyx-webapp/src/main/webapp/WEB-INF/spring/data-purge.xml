@@ -9,6 +9,7 @@
       </bean>
     </property>
     <property name="exportLogService" ref="exportLogService" />
+    <property name="participantService" ref="participantService" />
   </bean>
 
 </beans>
