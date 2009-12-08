@@ -36,6 +36,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureDateRangeStrategy;
 import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
@@ -69,6 +70,9 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
   @Autowired
   private ExportLogService exportLogService;
+
+  @Autowired(required = true)
+  private InstrumentCaptureDateRangeStrategy instrumentCaptureDateRangeStrategy;
 
   //
   // Constructors
@@ -122,6 +126,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     this.exportLogService = exportLogService;
   }
 
+  public void setInstrumentCaptureDateRangeStrategy(InstrumentCaptureDateRangeStrategy instrumentCaptureDateRangeStrategy) {
+    this.instrumentCaptureDateRangeStrategy = instrumentCaptureDateRangeStrategy;
+  }
+
   private VariableValueSource createInstrumentCaptureStartDateSource() {
     return new VariableValueSource() {
 
@@ -131,9 +139,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
-        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
+        return getValueType().valueOf(instrumentCaptureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -151,9 +157,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrations(instrumentBarcode);
-        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
+        return getValueType().valueOf(instrumentCaptureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {

@@ -168,4 +168,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
+  <bean id="captureDateRangeStrategyMap" class="org.obiba.onyx.engine.variable.impl.CaptureDateRangeStrategyMapFactoryBean" />
+  
+  <bean id="participantCaptureDateRangeStrategy" class="org.obiba.onyx.engine.variable.impl.ParticipantCaptureDateRangeStrategy" />
+  
 </beans>

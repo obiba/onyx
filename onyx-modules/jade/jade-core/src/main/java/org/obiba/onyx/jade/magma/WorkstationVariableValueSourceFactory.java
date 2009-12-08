@@ -31,6 +31,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
+import org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureDateRangeStrategy;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.VariableLocalizedAttributeVisitor;
@@ -53,14 +54,17 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   // Instances
   //
 
-  @Autowired
+  @Autowired(required = true)
   private ExperimentalConditionService experimentalConditionService;
 
-  @Autowired
+  @Autowired(required = true)
   private ExportLogService exportLogService;
 
-  @Autowired
+  @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
+
+  @Autowired(required = true)
+  private WorkstationCaptureDateRangeStrategy workstationCaptureDateRangeStrategy;
 
   //
   // VariableValueSourceFactory Methods
@@ -92,6 +96,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
+  }
+
+  public void setWorkstationCaptureDateRangeStrategy(WorkstationCaptureDateRangeStrategy workstationCaptureDateRangeStrategy) {
+    this.workstationCaptureDateRangeStrategy = workstationCaptureDateRangeStrategy;
   }
 
   private Set<VariableValueSource> createWorkstationSources() {
@@ -132,9 +140,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        String workstationId = valueSet.getVariableEntity().getIdentifier();
-        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
-        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(0).getTime()) : getValueType().nullValue();
+        return getValueType().valueOf(workstationCaptureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -152,9 +158,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        String workstationId = valueSet.getVariableEntity().getIdentifier();
-        List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditions(workstationId);
-        return !experimentalConditions.isEmpty() ? getValueType().valueOf(experimentalConditions.get(experimentalConditions.size() - 1).getTime()) : getValueType().nullValue();
+        return getValueType().valueOf(workstationCaptureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {

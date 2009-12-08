@@ -12,6 +12,7 @@ package org.obiba.onyx.engine.variable.export;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
@@ -22,6 +23,7 @@ import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.CaptureDateRangeStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,8 @@ public class OnyxDataExport {
   private List<OnyxDataExportDestination> exportDestinations;
 
   private File outputRootDirectory;
+
+  private Map<String, CaptureDateRangeStrategy> captureDateRangeStrategyMap;
 
   public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
     this.exportDestinations = exportDestinations;
@@ -56,6 +60,10 @@ public class OnyxDataExport {
 
   public File getOutputRootDirectory() {
     return outputRootDirectory;
+  }
+
+  public void setCaptureDateRangeStrategyMap(Map<String, CaptureDateRangeStrategy> captureDateRangeStrategyMap) {
+    this.captureDateRangeStrategyMap = captureDateRangeStrategyMap;
   }
 
   public void exportInterviews() throws Exception {
@@ -102,9 +110,20 @@ public class OnyxDataExport {
 
   private void markAsExported(ValueTable table, OnyxDataExportDestination destination) {
     for(ValueSet valueSet : table.getValueSets()) {
+      Date exportDate = new Date();
+
       // Find the earliest and latest entity capture date-time
+      Date captureStartDate = exportDate;
+      Date captureEndDate = exportDate;
+
+      CaptureDateRangeStrategy captureDateRangeStrategy = captureDateRangeStrategyMap.get(valueSet.getVariableEntity().getType());
+      if(captureDateRangeStrategy != null) {
+        captureStartDate = captureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier());
+        captureEndDate = captureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier());
+      }
+
       // Write an entry in ExportLog to flag the set of entities as exported.
-      ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(new Date()).end(new Date()).destination(destination.getName()).exportDate(new Date()).user(userSessionService.getUser().getLogin()).build();
+      ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName()).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
       exportLogService.save(log);
     }
   }

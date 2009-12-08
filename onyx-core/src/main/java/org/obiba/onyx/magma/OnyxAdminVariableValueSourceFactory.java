@@ -23,6 +23,7 @@ import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
 import org.obiba.magma.type.BooleanType;
+import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -33,6 +34,7 @@ import org.obiba.onyx.core.domain.stage.StageInstance;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.variable.impl.ParticipantCaptureDateRangeStrategy;
 import org.obiba.runtime.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -74,8 +76,11 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   @Autowired(required = true)
   private Version version;
 
-  @Autowired
+  @Autowired(required = true)
   private ExportLogService exportLogService;
+
+  @Autowired(required = true)
+  private ParticipantCaptureDateRangeStrategy participantCaptureDateRangeStrategy;
 
   //
   // VariableValueSourceFactory Methods
@@ -86,6 +91,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
     sources.add(createVersionSource());
     sources.add(createParticipantExportedSource());
+    sources.addAll(createParticipantCaptureDateSources());
     sources.addAll(createParticipantSources());
     sources.addAll(createInterviewSources());
     sources.addAll(createAppConfigSources());
@@ -113,6 +119,10 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
   public void setExportLogService(ExportLogService exportLogService) {
     this.exportLogService = exportLogService;
+  }
+
+  public void setParticipantCaptureDateRangeStrategy(ParticipantCaptureDateRangeStrategy participantCaptureDateRangeStrategy) {
+    this.participantCaptureDateRangeStrategy = participantCaptureDateRangeStrategy;
   }
 
   private VariableValueSource createVersionSource() {
@@ -161,13 +171,51 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     };
   }
 
+  private Set<VariableValueSource> createParticipantCaptureDateSources() {
+    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+
+    // Create captureStartDate source.
+    sources.add(new VariableValueSource() {
+      public Variable getVariable() {
+        Variable.Builder builder = Variable.Builder.newVariable(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + "captureStartDate", getValueType(), PARTICIPANT);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        return getValueType().valueOf(participantCaptureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
+      }
+
+      public ValueType getValueType() {
+        return DateType.get();
+      }
+    });
+
+    // Create captureEndDate source.
+    sources.add(new VariableValueSource() {
+      public Variable getVariable() {
+        Variable.Builder builder = Variable.Builder.newVariable(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + "captureEndDate", getValueType(), PARTICIPANT);
+        return builder.build();
+      }
+
+      public Value getValue(ValueSet valueSet) {
+        return getValueType().valueOf(participantCaptureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
+      }
+
+      public ValueType getValueType() {
+        return DateType.get();
+      }
+    });
+
+    return sources;
+  }
+
   private Set<VariableValueSource> createParticipantSources() {
     String participantPrefix = ONYX_ADMIN_PREFIX + '.' + PARTICIPANT;
 
     BeanVariableValueSourceFactory<Participant> delegateFactory = new BeanVariableValueSourceFactory<Participant>(PARTICIPANT, Participant.class);
     delegateFactory.setPrefix(participantPrefix);
-    delegateFactory.setProperties(ImmutableSet.of("interview.startDate", "interview.endDate", "barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
-    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("interview.startDate", "captureStartDate").put("interview.endDate", "captureEndDate").put("appointment.date", "appointmentDate").build());
+    delegateFactory.setProperties(ImmutableSet.of("barcode", "enrollmentId", "appointment.date", "gender", "firstName", "lastName", "fullName", "birthDate", "siteNo", "recruitmentType"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("appointment.date", "appointmentDate").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
 
     // Get the bean property sources.
