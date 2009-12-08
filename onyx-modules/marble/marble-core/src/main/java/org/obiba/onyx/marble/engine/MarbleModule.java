@@ -225,12 +225,12 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
   // VariableValueSourceFactory Methods
   //
 
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
     for(Stage stage : stages) {
       ConsentVariableValueSourceFactory factory = new ConsentVariableValueSourceFactory(stage.getName());
       factory.setVariableToFieldMap(variableToFieldMap);
-      sources.addAll(factory.createSources(collection));
+      sources.addAll(factory.createSources());
     }
     return sources.build();
   }

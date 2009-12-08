@@ -227,12 +227,12 @@ public class QuartzModule implements Module, IVariableProvider, VariableValueSou
     questionnaireParticipantService.deleteAllQuestionnairesParticipant(participant);
   }
 
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
     for(Stage stage : stages) {
       QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
       QuestionnaireStageVariableSourceFactory factory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
-      sources.addAll(factory.createSources(collection));
+      sources.addAll(factory.createSources());
     }
     return sources.build();
   }

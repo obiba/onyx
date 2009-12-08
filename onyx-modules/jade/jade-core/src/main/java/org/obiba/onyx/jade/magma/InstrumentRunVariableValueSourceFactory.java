@@ -76,7 +76,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = null;
 
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
@@ -89,11 +89,11 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       setPrefix(instrumentRunPrefix);
       setProperties(ImmutableSet.of("user.login", "timeStart", "timeEnd", "otherContraindication"));
       setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
-      sources = super.createSources(collection);
+      sources = super.createSources();
 
       // For non-repeatable instrument types, add source for instrument barcode variable.
       if(!instrumentType.isRepeatable()) {
-        sources.add(createBarcodeSource(collection, instrumentRunPrefix, instrumentType));
+        sources.add(createBarcodeSource(instrumentRunPrefix, instrumentType));
       }
 
       // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
@@ -101,13 +101,13 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       setPrefix(ciVariablePrefix);
       setProperties(ImmutableSet.of("contraindicationCode"));
       setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("contraindicationCode", "code").build());
-      sources.addAll(super.createSources(collection));
+      sources.addAll(super.createSources());
 
       // Add source for InstrumentRun.Contraindication.type variable.
-      sources.add(createContraindicationTypeSource(collection, ciVariablePrefix, instrumentType));
+      sources.add(createContraindicationTypeSource(ciVariablePrefix, instrumentType));
 
       // Add sources for instrument parameter variables.
-      sources.addAll(createInstrumentParameterSources(collection, instrumentTypePrefix, instrumentType));
+      sources.addAll(createInstrumentParameterSources(instrumentTypePrefix, instrumentType));
     }
 
     return sources;
@@ -125,26 +125,26 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     this.attributeHelper = attributeHelper;
   }
 
-  private VariableValueSource createBarcodeSource(String collection, String prefix, InstrumentType instrumentType) {
+  private VariableValueSource createBarcodeSource(String prefix, InstrumentType instrumentType) {
     BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
     delegateFactory.setPrefix(prefix);
     delegateFactory.setProperties(ImmutableSet.of("instrument.barcode"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("instrument.barcode", "instrumentBarcode").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
-    return delegateFactory.createSources(collection).iterator().next();
+    return delegateFactory.createSources().iterator().next();
   }
 
-  private VariableValueSource createContraindicationTypeSource(String collection, String prefix, InstrumentType instrumentType) {
+  private VariableValueSource createContraindicationTypeSource(String prefix, InstrumentType instrumentType) {
     BeanVariableValueSourceFactory<Contraindication> delegateFactory = new BeanVariableValueSourceFactory<Contraindication>("Participant", Contraindication.class);
     delegateFactory.setPrefix(prefix);
     delegateFactory.setProperties(ImmutableSet.of("type"));
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
-    return delegateFactory.createSources(collection).iterator().next();
+    return delegateFactory.createSources().iterator().next();
   }
 
-  private Set<VariableValueSource> createInstrumentParameterSources(String collection, String instrumentTypePrefix, InstrumentType instrumentType) {
+  private Set<VariableValueSource> createInstrumentParameterSources(String instrumentTypePrefix, InstrumentType instrumentType) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     List<InstrumentParameter> instrumentParameters = instrumentType.getInstrumentParameters();
@@ -160,7 +160,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
           // Add sources for the measure's user, time and instrumentBarcode variables.
           String measurePrefix = instrumentTypePrefix + '.' + MEASURE;
-          sources.addAll(createMeasureSources(collection, measurePrefix, instrumentType));
+          sources.addAll(createMeasureSources(measurePrefix, instrumentType));
 
           // Configure factory for an instrument parameter that is part of a measure.
           delegateFactory.setPrefix(measurePrefix);
@@ -175,17 +175,17 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
         }
 
         // Add source for the instrument parameter's data.
-        sources.addAll(delegateFactory.createSources(collection));
+        sources.addAll(delegateFactory.createSources());
 
         // Add source for the instrument parameter's capture method.
-        sources.add(createCaptureMethodSource(collection, captureMethodPrefix, instrumentType, instrumentParameter));
+        sources.add(createCaptureMethodSource(captureMethodPrefix, instrumentType, instrumentParameter));
       }
     }
 
     return sources;
   }
 
-  private Set<VariableValueSource> createMeasureSources(String collection, String measurePrefix, InstrumentType instrumentType) {
+  private Set<VariableValueSource> createMeasureSources(String measurePrefix, InstrumentType instrumentType) {
     BeanVariableValueSourceFactory<Measure> delegateFactory = new BeanVariableValueSourceFactory<Measure>("Participant", Measure.class);
     delegateFactory.setPrefix(measurePrefix);
     delegateFactory.setOccurrenceGroup(MEASURE);
@@ -193,16 +193,16 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
-    return delegateFactory.createSources(collection);
+    return delegateFactory.createSources();
   }
 
-  private VariableValueSource createCaptureMethodSource(String collection, String captureMethodPrefix, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
+  private VariableValueSource createCaptureMethodSource(String captureMethodPrefix, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
     BeanVariableValueSourceFactory<InstrumentRunValue> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRunValue>("Participant", InstrumentRunValue.class);
     delegateFactory.setPrefix(captureMethodPrefix);
     delegateFactory.setProperties(ImmutableSet.of("captureMethod"));
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
-    return delegateFactory.createSources(collection).iterator().next();
+    return delegateFactory.createSources().iterator().next();
   }
 
   private Map<String, Class<?>> getInstrumentParameterMappedPropertyType(InstrumentParameter instrumentParameter) {

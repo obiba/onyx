@@ -46,7 +46,7 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
@@ -55,7 +55,7 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
       String barcodePartVariableName = partParser.getVariableName();
       if(barcodePartVariableName != null) {
         String variableName = lookupVariableName(barcodePartVariableName);
-        Variable variable = this.doBuildVariable(collection, TextType.get().getJavaClass(), variableName);
+        Variable variable = this.doBuildVariable(TextType.get().getJavaClass(), variableName);
         sources.add(new BeanPropertyVariableValueSource(variable, BarcodePart.class, "partValue"));
       }
     }

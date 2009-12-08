@@ -385,15 +385,14 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
   //
   // VariableValueSourceFactory Methods
   //
-
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
     for(Stage stage : stages) {
       TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stage.getName());
       TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
       factory.setAttributeHelper(attributeHelper);
       factory.setVariableRoot(variableRoot);
-      sources.addAll(factory.createSources(collection));
+      sources.addAll(factory.createSources());
     }
     return sources.build();
   }

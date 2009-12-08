@@ -75,15 +75,15 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   // VariableValueSourceFactory Methods
   //
 
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    sources.add(createVersionSource(collection));
-    sources.addAll(createParticipantSources(collection));
-    sources.addAll(createInterviewSources(collection));
-    sources.addAll(createAppConfigSources(collection));
-    sources.addAll(createActionSources(collection));
-    sources.addAll(createStageInstanceSources(collection));
+    sources.add(createVersionSource());
+    sources.addAll(createParticipantSources());
+    sources.addAll(createInterviewSources());
+    sources.addAll(createAppConfigSources());
+    sources.addAll(createActionSources());
+    sources.addAll(createStageInstanceSources());
 
     return sources;
   }
@@ -104,7 +104,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     this.version = version;
   }
 
-  private VariableValueSource createVersionSource(final String collection) {
+  private VariableValueSource createVersionSource() {
     return new VariableValueSource() {
       private Variable variable;
 
@@ -114,7 +114,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
         if(variable == null) {
           // Building version variable with entityType "Participant". This is a little odd, since version
           // is in fact not related to *any* entityType.
-          Variable.Builder builder = Variable.Builder.newVariable(collection, ONYX_ADMIN_PREFIX + '.' + ONYX_VERSION, getValueType(), PARTICIPANT);
+          Variable.Builder builder = Variable.Builder.newVariable(ONYX_ADMIN_PREFIX + '.' + ONYX_VERSION, getValueType(), PARTICIPANT);
           variable = builder.build();
         }
         return variable;
@@ -130,7 +130,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     };
   }
 
-  private Set<VariableValueSource> createParticipantSources(String collection) {
+  private Set<VariableValueSource> createParticipantSources() {
     String participantPrefix = ONYX_ADMIN_PREFIX + '.' + PARTICIPANT;
 
     BeanVariableValueSourceFactory<Participant> delegateFactory = new BeanVariableValueSourceFactory<Participant>(PARTICIPANT, Participant.class);
@@ -140,58 +140,58 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new AdminVariableAttributeVisitor()));
 
     // Get the bean property sources.
-    Set<VariableValueSource> sources = delegateFactory.createSources(collection);
+    Set<VariableValueSource> sources = delegateFactory.createSources();
 
     // Add Javascript sources for birthYear and age.
     String birthDateVariableName = participantPrefix + '.' + "birthDate";
-    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, participantPrefix + '.' + "birthYear", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("$('" + birthDateVariableName + "').year()").build()));
-    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(collection, participantPrefix + '.' + "age", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("now().year() - $('" + birthDateVariableName + "').year() - (now().dayOfYear() < $('" + birthDateVariableName + "').dayOfYear() ? 1 : 0)").build()));
+    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(participantPrefix + '.' + "birthYear", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("$('" + birthDateVariableName + "').year()").build()));
+    sources.add(new JavascriptVariableValueSource(Variable.Builder.newVariable(participantPrefix + '.' + "age", IntegerType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript("now().year() - $('" + birthDateVariableName + "').year() - (now().dayOfYear() < $('" + birthDateVariableName + "').dayOfYear() ? 1 : 0)").build()));
 
     // Add sources for any configured attributes.
     ParticipantBeanVariableValueSourceFactory participantAttributeSourceFactory = new ParticipantBeanVariableValueSourceFactory();
     participantAttributeSourceFactory.setAttributeHelper(attributeHelper);
     participantAttributeSourceFactory.setParticipantMetadata(participantMetadata);
     participantAttributeSourceFactory.setPrefix(participantPrefix);
-    sources.addAll(participantAttributeSourceFactory.createSources(collection));
+    sources.addAll(participantAttributeSourceFactory.createSources());
 
     return sources;
   }
 
-  private Set<VariableValueSource> createInterviewSources(String collection) {
+  private Set<VariableValueSource> createInterviewSources() {
     BeanVariableValueSourceFactory<Interview> delegateFactory = new BeanVariableValueSourceFactory<Interview>(PARTICIPANT, Interview.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW);
     delegateFactory.setProperties(ImmutableSet.of("startDate", "endDate", "status", "duration"));
 
-    return delegateFactory.createSources(collection);
+    return delegateFactory.createSources();
   }
 
-  private Set<VariableValueSource> createAppConfigSources(String collection) {
+  private Set<VariableValueSource> createAppConfigSources() {
     BeanVariableValueSourceFactory<ApplicationConfiguration> delegateFactory = new BeanVariableValueSourceFactory<ApplicationConfiguration>(PARTICIPANT, ApplicationConfiguration.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + APPLICATION_CONFIGURATION);
     delegateFactory.setProperties(ImmutableSet.of("siteNo", "siteName", "studyName"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("siteNo", "siteCode").build());
 
-    return delegateFactory.createSources(collection);
+    return delegateFactory.createSources();
   }
 
-  private Set<VariableValueSource> createActionSources(String collection) {
+  private Set<VariableValueSource> createActionSources() {
     BeanVariableValueSourceFactory<Action> delegateFactory = new BeanVariableValueSourceFactory<Action>(PARTICIPANT, Action.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + ACTION);
     delegateFactory.setOccurrenceGroup(ACTION);
     delegateFactory.setProperties(ImmutableSet.of("user.login", "stage", "fromState", "toState", "actionType", "dateTime", "comment", "eventReason"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
 
-    return delegateFactory.createSources(collection);
+    return delegateFactory.createSources();
   }
 
-  private Set<VariableValueSource> createStageInstanceSources(String collection) {
+  private Set<VariableValueSource> createStageInstanceSources() {
     BeanVariableValueSourceFactory<StageInstance> delegateFactory = new BeanVariableValueSourceFactory<StageInstance>(PARTICIPANT, StageInstance.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + STAGE_INSTANCE);
     delegateFactory.setOccurrenceGroup(STAGE_INSTANCE);
     delegateFactory.setProperties(ImmutableSet.of("stage", "startTime", "lastTime", "lastState", "duration", "interruptionCount", "user.login", "last"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
 
-    return delegateFactory.createSources(collection);
+    return delegateFactory.createSources();
   }
 
   //

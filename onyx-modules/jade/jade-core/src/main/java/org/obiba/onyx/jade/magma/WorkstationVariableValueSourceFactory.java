@@ -65,14 +65,14 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   // VariableValueSourceFactory Methods
   //
 
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     // Create Workstation sources (name, captureStartDate, captureEndDate).
-    sources.addAll(createWorkstationSources(collection));
+    sources.addAll(createWorkstationSources());
 
     // Create sources for (non-instrument) experimental conditions.
-    sources.addAll(createExperimentalConditionSources(collection));
+    sources.addAll(createExperimentalConditionSources());
 
     return sources;
   }
@@ -93,21 +93,21 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     this.attributeHelper = attributeHelper;
   }
 
-  private Set<VariableValueSource> createWorkstationSources(String collection) {
+  private Set<VariableValueSource> createWorkstationSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    sources.add(createWorkstationNameSource(collection));
-    sources.add(createWorkstationCaptureStartDateSource(collection));
-    sources.add(createWorkstationCaptureEndDateSource(collection));
+    sources.add(createWorkstationNameSource());
+    sources.add(createWorkstationCaptureStartDateSource());
+    sources.add(createWorkstationCaptureEndDateSource());
 
     return sources;
   }
 
-  private VariableValueSource createWorkstationNameSource(final String collection) {
+  private VariableValueSource createWorkstationNameSource() {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(collection, WORKSTATION + '.' + "name", getValueType(), WORKSTATION);
+        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "name", getValueType(), WORKSTATION);
         return builder.build();
       }
 
@@ -121,11 +121,11 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     };
   }
 
-  private VariableValueSource createWorkstationCaptureStartDateSource(final String collection) {
+  private VariableValueSource createWorkstationCaptureStartDateSource() {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(collection, WORKSTATION + '.' + "captureStartDate", getValueType(), WORKSTATION);
+        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "captureStartDate", getValueType(), WORKSTATION);
         return builder.build();
       }
 
@@ -147,11 +147,11 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     };
   }
 
-  private VariableValueSource createWorkstationCaptureEndDateSource(final String collection) {
+  private VariableValueSource createWorkstationCaptureEndDateSource() {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(collection, WORKSTATION + '.' + "captureEndDate", getValueType(), WORKSTATION);
+        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "captureEndDate", getValueType(), WORKSTATION);
         return builder.build();
       }
 
@@ -173,7 +173,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     };
   }
 
-  private Set<VariableValueSource> createExperimentalConditionSources(final String collection) {
+  private Set<VariableValueSource> createExperimentalConditionSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(ExperimentalConditionLog experimentalConditionLog : experimentalConditionService.getExperimentalConditionLog()) {
@@ -189,16 +189,16 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
       factory.setOccurrenceGroup(experimentalConditionLog.getName());
 
-      sources.addAll(factory.createSources(collection));
+      sources.addAll(factory.createSources());
 
       // Create sources for ExperimentalCondition attributes.
-      sources.addAll(createExperimentalConditionAttributeSources(collection, experimentalConditionLog));
+      sources.addAll(createExperimentalConditionAttributeSources(experimentalConditionLog));
     }
 
     return sources;
   }
 
-  private Set<VariableValueSource> createExperimentalConditionAttributeSources(final String collection, ExperimentalConditionLog experimentalConditionLog) {
+  private Set<VariableValueSource> createExperimentalConditionAttributeSources(ExperimentalConditionLog experimentalConditionLog) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Attribute conditionAttribute : experimentalConditionLog.getAttributes()) {
@@ -213,7 +213,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       conditionAttributeSourceFactory.setOccurrenceGroup(experimentalConditionLog.getName());
       conditionAttributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(new VariableLocalizedAttributeVisitor(attributeHelper, conditionAttribute.getName())));
 
-      sources.addAll(conditionAttributeSourceFactory.createSources(collection));
+      sources.addAll(conditionAttributeSourceFactory.createSources());
     }
 
     return sources;

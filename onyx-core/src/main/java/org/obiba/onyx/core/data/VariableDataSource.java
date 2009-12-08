@@ -18,7 +18,6 @@ import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.support.VariableEntityBean;
-import org.obiba.magma.support.MagmaEngineReferenceResolver;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDirectory;
@@ -45,8 +44,6 @@ public class VariableDataSource implements IDataSource, InitializingBean {
 
   private VariableValueSource variableValueSource;
 
-  private MagmaEngineReferenceResolver resolver = new MagmaEngineReferenceResolver();
-
   public void afterPropertiesSet() throws Exception {
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
@@ -54,11 +51,11 @@ public class VariableDataSource implements IDataSource, InitializingBean {
         onyxParticipantTable = table;
       }
     }
-
     String magmaVariableName = path.replaceFirst("Onyx.", "");
+
     log.info("Retrieving the following Magma variable (collectionName={}): {}", magmaVariableName, onyxParticipantTable);
     try {
-      variableValueSource = resolver.resolve(onyxParticipantTable, magmaVariableName);
+      variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
     } catch(NoSuchVariableException noSuchVariableEx) {
       log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", magmaVariableName);
     }

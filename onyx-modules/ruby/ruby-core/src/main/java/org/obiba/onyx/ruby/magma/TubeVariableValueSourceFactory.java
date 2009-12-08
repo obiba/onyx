@@ -71,14 +71,14 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
   // VariableValueSourceFactory Methods
   //
 
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     String prefix = (variableRoot != null) ? variableRoot + '.' + stageName : stageName;
     Variable.BuilderVisitor stageAttributeVisitor = new StageAttributeVisitor(stageName);
 
-    sources.addAll(createParticipantTubeRegistrationSources(collection, prefix, stageAttributeVisitor));
-    sources.addAll(createRegisteredParticipantTubeSources(collection, prefix, stageName, stageAttributeVisitor));
+    sources.addAll(createParticipantTubeRegistrationSources(prefix, stageAttributeVisitor));
+    sources.addAll(createRegisteredParticipantTubeSources(prefix, stageName, stageAttributeVisitor));
 
     return sources;
   }
@@ -95,7 +95,7 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     this.variableRoot = variableRoot;
   }
 
-  private Set<VariableValueSource> createParticipantTubeRegistrationSources(String collection, String prefix, Variable.BuilderVisitor stageAttributeVisitor) {
+  private Set<VariableValueSource> createParticipantTubeRegistrationSources(String prefix, Variable.BuilderVisitor stageAttributeVisitor) {
     String tubeRegistrationPrefix = prefix + '.' + PARTICIPANT_TUBE_REGISTRATION;
 
     // Create sources for participant tube registration variables.
@@ -103,22 +103,22 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     delegateFactory.setPrefix(tubeRegistrationPrefix);
     delegateFactory.setProperties(ImmutableSet.of("startTime", "endTime", "otherContraindication"));
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor));
-    Set<VariableValueSource> sources = delegateFactory.createSources(collection);
+    Set<VariableValueSource> sources = delegateFactory.createSources();
 
     // Create source for contraindication code variable.
     String ciVariablePrefix = tubeRegistrationPrefix + '.' + CONTRAINDICATION;
     delegateFactory.setPrefix(ciVariablePrefix);
     delegateFactory.setProperties(ImmutableSet.of("contraindicationCode"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("contraindicationCode", "code").build());
-    sources.addAll(delegateFactory.createSources(collection));
+    sources.addAll(delegateFactory.createSources());
 
     // Create source for contraindication type variable.
-    sources.add(createContraindicationTypeSource(collection, ciVariablePrefix, stageAttributeVisitor));
+    sources.add(createContraindicationTypeSource(ciVariablePrefix, stageAttributeVisitor));
 
     return sources;
   }
 
-  private Set<VariableValueSource> createRegisteredParticipantTubeSources(String collection, String prefix, String stageName, Variable.BuilderVisitor stageAttributeVisitor) {
+  private Set<VariableValueSource> createRegisteredParticipantTubeSources(String prefix, String stageName, Variable.BuilderVisitor stageAttributeVisitor) {
     String tubePrefix = prefix + '.' + REGISTERED_PARTICIPANT_TUBE;
 
     // Create sources for registered participant tube variables.
@@ -129,30 +129,30 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("type", "actionType").build());
     delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", String.class).build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor(), new OccurrenceCountAttributeVisitor(tubeRegistrationConfiguration.getExpectedTubeCount())));
-    Set<VariableValueSource> sources = delegateFactory.createSources(collection);
+    Set<VariableValueSource> sources = delegateFactory.createSources();
 
     // Create sources for registered participant tube remarks.
-    sources.addAll(createRemarkSources(collection, tubePrefix, stageAttributeVisitor));
+    sources.addAll(createRemarkSources(tubePrefix, stageAttributeVisitor));
 
     // Create sources for barcode part variables.
     TubeBarcodePartVariableValueSourceFactory barcodePartFactory = new TubeBarcodePartVariableValueSourceFactory(tubeRegistrationConfiguration);
     barcodePartFactory.setPrefix(tubePrefix);
     barcodePartFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new IdentifierAttributeVisitor((String[]) barcodePartFactory.getKeyVariableNames().toArray(new String[0]))));
-    sources.addAll(barcodePartFactory.createSources(collection));
+    sources.addAll(barcodePartFactory.createSources());
 
     return sources;
   }
 
-  private VariableValueSource createContraindicationTypeSource(String collection, String prefix, Variable.BuilderVisitor stageAttributeVisitor) {
+  private VariableValueSource createContraindicationTypeSource(String prefix, Variable.BuilderVisitor stageAttributeVisitor) {
     BeanVariableValueSourceFactory<Contraindication> delegateFactory = new BeanVariableValueSourceFactory<Contraindication>("Participant", Contraindication.class);
     delegateFactory.setPrefix(prefix);
     delegateFactory.setProperties(ImmutableSet.of("type"));
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor));
 
-    return delegateFactory.createSources(collection).iterator().next();
+    return delegateFactory.createSources().iterator().next();
   }
 
-  private Set<VariableValueSource> createRemarkSources(String collection, String tubePrefix, Variable.BuilderVisitor stageAttributeVisitor) {
+  private Set<VariableValueSource> createRemarkSources(String tubePrefix, Variable.BuilderVisitor stageAttributeVisitor) {
     List<String> remarkProperties = Arrays.asList(getRemarkProperties(stageName));
 
     ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<String, String>();
@@ -173,7 +173,7 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", String.class).build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor()));
 
-    return delegateFactory.createSources(collection);
+    return delegateFactory.createSources();
   }
 
   private String[] getRemarkProperties(String stageName) {

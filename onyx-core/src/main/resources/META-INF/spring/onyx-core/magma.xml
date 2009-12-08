@@ -1,6 +1,5 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
-  default-autowire="no">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" default-autowire="no">
 
   <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
@@ -15,7 +14,7 @@
     <property name="datasources">
       <set>
         <bean class="org.obiba.magma.spring.SpringContextScanningDatasource">
-          <constructor-arg value="${org.obiba.onyx.collection.name}" />
+          <constructor-arg value="onyx-datasource" />
         </bean>
       </set>
     </property>
@@ -36,8 +35,8 @@
 
   <bean class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory" />
   <bean class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver" />
-  <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory">
-    <property name="resource" value="${org.obiba.onyx.config.path}/scripted-variables.xml" />
-  </bean>
-
+  <!--
+    <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory"> <property name="resource"
+    value="${org.obiba.onyx.config.path}/scripted-variables.xml" /> </bean>
+  -->
 </beans>

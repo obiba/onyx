@@ -82,20 +82,20 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = null;
 
     // Create Instrument sources.
     setProperties(ImmutableSet.of("type", "name", "vendor", "model", "serialNumber", "barcode"));
     setPrefix(INSTRUMENT);
-    sources = super.createSources(collection);
+    sources = super.createSources();
 
     // Create Instrument captureStartDate and captureEndDate sources.
-    sources.add(createInstrumentCaptureStartDateSource(collection));
-    sources.add(createInstrumentCaptureEndDateSource(collection));
+    sources.add(createInstrumentCaptureStartDateSource());
+    sources.add(createInstrumentCaptureEndDateSource());
 
     // Create sources for instrument calibrations.
-    sources.addAll(createInstrumentCalibrationSources(collection));
+    sources.addAll(createInstrumentCalibrationSources());
 
     return sources;
   }
@@ -120,11 +120,11 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     this.exportLogService = exportLogService;
   }
 
-  private VariableValueSource createInstrumentCaptureStartDateSource(final String collection) {
+  private VariableValueSource createInstrumentCaptureStartDateSource() {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(collection, INSTRUMENT + '.' + "captureStartDate", getValueType(), INSTRUMENT);
+        Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "captureStartDate", getValueType(), INSTRUMENT);
         return builder.build();
       }
 
@@ -146,11 +146,11 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     };
   }
 
-  private VariableValueSource createInstrumentCaptureEndDateSource(final String collection) {
+  private VariableValueSource createInstrumentCaptureEndDateSource() {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(collection, INSTRUMENT + '.' + "captureEndDate", getValueType(), INSTRUMENT);
+        Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "captureEndDate", getValueType(), INSTRUMENT);
         return builder.build();
       }
 
@@ -172,7 +172,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     };
   }
 
-  private Set<VariableValueSource> createInstrumentCalibrationSources(String collection) {
+  private Set<VariableValueSource> createInstrumentCalibrationSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
@@ -186,24 +186,24 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
         factory.setOccurrenceGroup(instrumentCalibration.getName());
 
-        sources.addAll(factory.createSources(collection));
+        sources.addAll(factory.createSources());
 
         // Create source for calibrated instrument's barcode variable.
-        sources.add(createCalibratedInstrumentBarcodeSource(collection, instrumentType.getName(), instrumentCalibration.getName()));
+        sources.add(createCalibratedInstrumentBarcodeSource(instrumentType.getName(), instrumentCalibration.getName()));
 
         // Create sources for calibration attributes.
-        sources.addAll(createInstrumentCalibrationAttributeSources(collection, instrumentType, instrumentCalibration));
+        sources.addAll(createInstrumentCalibrationAttributeSources(instrumentType, instrumentCalibration));
       }
     }
 
     return sources;
   }
 
-  private VariableValueSource createCalibratedInstrumentBarcodeSource(final String collection, final String instrumentTypeName, final String instrumentCalibrationName) {
+  private VariableValueSource createCalibratedInstrumentBarcodeSource(final String instrumentTypeName, final String instrumentCalibrationName) {
     return new VariableValueSource() {
 
       public Variable getVariable() {
-        Variable.Builder builder = Variable.Builder.newVariable(collection, instrumentCalibrationName + '.' + "instrument", getValueType(), "Instrument");
+        Variable.Builder builder = Variable.Builder.newVariable(instrumentCalibrationName + '.' + "instrument", getValueType(), "Instrument");
         attributeHelper.addLocalizedAttributes(builder, instrumentCalibrationName);
         OnyxAttributeHelper.addAttribute(builder, "instrumentType", instrumentTypeName);
 
@@ -222,7 +222,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     };
   }
 
-  private Set<VariableValueSource> createInstrumentCalibrationAttributeSources(String collection, InstrumentType instrumentType, InstrumentCalibration instrumentCalibration) {
+  private Set<VariableValueSource> createInstrumentCalibrationAttributeSources(InstrumentType instrumentType, InstrumentCalibration instrumentCalibration) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Attribute calibrationAttribute : instrumentCalibration.getAttributes()) {
@@ -239,7 +239,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       attributeSourceFactory.setOccurrenceGroup(instrumentCalibration.getName());
       attributeSourceFactory.setVariableBuilderVisitors(ImmutableSet.of(calibrationAttributeVisitor));
 
-      sources.addAll(attributeSourceFactory.createSources(collection));
+      sources.addAll(attributeSourceFactory.createSources());
     }
 
     return sources;

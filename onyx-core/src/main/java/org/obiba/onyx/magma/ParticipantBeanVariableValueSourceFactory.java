@@ -48,7 +48,7 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
   //
 
   @Override
-  public Set<VariableValueSource> createSources(String collection) {
+  public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
@@ -56,7 +56,7 @@ public class ParticipantBeanVariableValueSourceFactory extends BeanVariableValue
       setVariableBuilderVisitors(ImmutableSet.of(new ParticipantVariableBuilderVisitor(attribute)));
 
       ValueType valueType = ValueType.Factory.forName(attribute.getType().toString().toLowerCase());
-      Variable variable = this.doBuildVariable(collection, valueType.getJavaClass(), variableName);
+      Variable variable = this.doBuildVariable(valueType.getJavaClass(), variableName);
 
       sources.add(new BeanPropertyVariableValueSource(variable, Participant.class, "attributes[" + attribute.getName() + "]"));
     }
