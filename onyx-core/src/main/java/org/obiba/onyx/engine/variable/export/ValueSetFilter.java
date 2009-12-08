@@ -10,7 +10,7 @@
 package org.obiba.onyx.engine.variable.export;
 
 import org.obiba.magma.ValueSet;
-import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.Variable;
 import org.obiba.magma.filter.CollectionFilterChain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -27,7 +27,7 @@ class ValueSetFilter {
   private CollectionFilterChain<ValueSet> entityFilterChain;
 
   @XStreamAlias("variables")
-  private CollectionFilterChain<VariableValueSource> variableFilterChain;
+  private CollectionFilterChain<Variable> variableFilterChain;
 
   ValueSetFilter(String entityTypeName) {
     this.entityTypeName = entityTypeName;
@@ -43,13 +43,13 @@ class ValueSetFilter {
     this.entityFilterChain = entityFilterChain;
   }
 
-  CollectionFilterChain<VariableValueSource> getVariableFilterChain() {
-    if(variableFilterChain == null) variableFilterChain = new CollectionFilterChain<VariableValueSource>(entityTypeName);
+  CollectionFilterChain<Variable> getVariableFilterChain() {
+    if(variableFilterChain == null) variableFilterChain = new CollectionFilterChain<Variable>(entityTypeName);
     if(variableFilterChain.getEntityType() == null) variableFilterChain.setEntityType(entityTypeName);
     return variableFilterChain;
   }
 
-  void setVariableFilterChain(CollectionFilterChain<VariableValueSource> variableFilterChain) {
+  void setVariableFilterChain(CollectionFilterChain<Variable> variableFilterChain) {
     this.variableFilterChain = variableFilterChain;
   }
 

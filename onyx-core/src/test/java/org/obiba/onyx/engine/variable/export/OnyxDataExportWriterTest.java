@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
-import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.Variable;
 import org.obiba.magma.engine.output.Strategies;
 import org.obiba.magma.filter.ExcludeAllFilter;
 import org.obiba.magma.filter.Filter;
@@ -71,10 +71,10 @@ public class OnyxDataExportWriterTest {
     participantValueSetFilter.getEntityFilterChain().addFilter(excludeAll);
     participantValueSetFilter.getEntityFilterChain().addFilter(excludeAll2);
 
-    Filter<VariableValueSource> varOne = VariableNameFilter.Builder.newFilter().prefix("Admin.Participant").include().build();
+    Filter<Variable> varOne = VariableNameFilter.Builder.newFilter().prefix("Admin.Participant").include().build();
     participantValueSetFilter.getVariableFilterChain().addFilter(varOne);
 
-    Filter<VariableValueSource> varTwo = VariableAttributeFilter.Builder.newFilter().attributeName("name").attributeValue("value").exclude().build();
+    Filter<Variable> varTwo = VariableAttributeFilter.Builder.newFilter().attributeName("name").attributeValue("value").exclude().build();
     participantValueSetFilter.getVariableFilterChain().addFilter(varTwo);
 
     Filter<ValueSet> varThree = JavaScriptFilter.Builder.newFilter().javascript("$('Participant.Interview.status').any('CLOSED','COMPLETED')").exclude().build();
