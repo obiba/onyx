@@ -212,7 +212,12 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       public Value getValue(ValueSet valueSet) {
         String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-        return getValueType().valueOf(instrumentBarcode);
+        Instrument instrument = instrumentService.getInstrumentByBarcode(instrumentBarcode);
+        if(instrument != null) {
+          return (instrument.getType().equals(instrumentTypeName)) ? getValueType().valueOf(instrumentBarcode) : getValueType().nullValue();
+        } else {
+          return getValueType().nullValue();
+        }
       }
 
       public ValueType getValueType() {
