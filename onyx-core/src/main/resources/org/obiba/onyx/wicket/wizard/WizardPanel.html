@@ -10,17 +10,8 @@
 			<input type="button" class="obiba-button" wicket:id="cancelLink"/>
 		</div>
 	</form>	
-	<script language="JavaScript">
-	    /* Navigation hotkeys */
-		$(document).bind('keydown', 'Ctrl+left', function(evt) {
-          NavigationUtil.previous();
-        });
-		$(document).bind('keydown', 'Ctrl+right', function(evt) { 
-          NavigationUtil.next();
-        });
-        
-		WindowUtil.attachEvent("load", Resizer.resizeWizard);
-		WindowUtil.attachEvent("resize", Resizer.resizeWizard);				
+	<script language="JavaScript">	    
+        addOnyxWizardBehavior();
 	</script>
 </wicket:panel>
 

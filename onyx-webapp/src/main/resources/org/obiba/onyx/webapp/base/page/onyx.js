@@ -273,5 +273,32 @@ function styleSelectedTubeRemark() {
 	$(".editSamplePanel select").children('option:selected').addClass('ui-state-highlight');
 }
 
+function addOnyxWizardBehavior() {
+  /* Navigation hotkeys */
+  $(document).bind('keydown', {combi:'-', disableInInput: true}, 
+					function(evt) {
+          				NavigationUtil.previous();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")) {
+                			return true;
+          				}        
+        			});
+		
+  $(document).bind('keydown', {combi:'+', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.next();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")) {
+                			return true;
+          				}        
+        			});
+		
+  WindowUtil.attachEvent("load", Resizer.resizeWizard);
+  WindowUtil.attachEvent("resize", Resizer.resizeWizard);
+}
 
 
