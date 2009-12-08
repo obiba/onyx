@@ -3,12 +3,6 @@
 
   <bean id="onyxDataPurge" class="org.obiba.onyx.engine.variable.export.OnyxDataPurge">
     <property name="purgeConfiguration" ref="onyxDataPurgeConfiguration" />
-    <property name="userSessionService">
-      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
-        <property name="targetBeanName" value="userSessionService" />
-      </bean>
-    </property>
-    <property name="exportLogService" ref="exportLogService" />
     <property name="participantService" ref="participantService" />
   </bean>
 

@@ -58,6 +58,7 @@
   <bean id="purgeParticipantDataTasklet" class="org.obiba.onyx.core.purge.PurgeParticipantDataTasklet">
     <property name="participantService" ref="participantService" /> 
     <property name="purgeParticipantDataService" ref="purgeParticipantDataService" />    
+    <property name="onyxDataPurge" ref="onyxDataPurge" />    
   </bean>   
   
 </beans>

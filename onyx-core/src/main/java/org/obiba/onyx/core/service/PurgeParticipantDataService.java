@@ -9,27 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service;
 
-import java.util.Date;
-
-/**
- * 
- */
 public interface PurgeParticipantDataService {
-
-  /**
-   * Counts the total number of participants which would be deleted if the purge was launched right now.
-   * 
-   * @return Participant count
-   */
-  public int countParticipantsToBeDeleted();
-
-  /**
-   * Calculates the max date for participant deletion. This date is determined using the purgeDataOlderThanInDays
-   * setting. See getPurgeDataOlderThanInDays() method below.
-   * 
-   * @return Max date for deletion
-   */
-  public Date getMaxDateForDeletion();
 
   /**
    * Retrieves the number of days after which an exported participant can be purged.

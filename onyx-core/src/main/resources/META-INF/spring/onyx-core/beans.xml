@@ -161,7 +161,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
 
   <bean id="purgeParticipantDataService" class="org.obiba.onyx.core.service.impl.PurgeParticipantDataServiceImpl">
-    <property name="participantService" ref="participantService" />
     <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />
   </bean>
   

@@ -10,11 +10,8 @@
 package org.obiba.onyx.core.service.impl.hibernate;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,7 +23,6 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +40,6 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   private static final Logger log = LoggerFactory.getLogger(ParticipantServiceHibernateImpl.class);
 
   private SessionFactory factory;
-
-  private List<OnyxDataExportDestination> exportDestinations;
-
-  public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
-    this.exportDestinations = exportDestinations;
-  }
 
   public void setSessionFactory(SessionFactory factory) {
     this.factory = factory;
@@ -157,29 +147,4 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return criteria.list();
   }
 
-  public List<Participant> getNonExportableParticipants() {
-    return getNonExportableParticipants(null);
-  }
-
-  public List<Participant> getNonExportableParticipants(Date olderThan) {
-
-    Set<InterviewStatus> exportedInterviewStatuses = new HashSet<InterviewStatus>();
-    // TODO: changes to OnyxExportDestination/Magma integration make this fail. Need new way to purge.
-    // for(OnyxDataExportDestination destination : exportDestinations) {
-    // exportedInterviewStatuses.addAll(destination.getExportedInterviewStatuses());
-    // }
-
-    Criteria criteria = getSession().createCriteria(Participant.class);
-    criteria.createAlias("interview", "interview");
-    criteria.add(Restrictions.isNotNull("interview"));
-    for(InterviewStatus interviewStatus : exportedInterviewStatuses) {
-      criteria.add(Restrictions.ne("interview.status", interviewStatus));
-    }
-
-    if(olderThan != null) {
-      criteria.add(Restrictions.lt("interview.startDate", olderThan));
-    }
-
-    return criteria.list();
-  }
 }
