@@ -9,19 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.magma;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
 import org.obiba.magma.beans.NoSuchBeanException;
-import org.obiba.magma.beans.ValueSetBeanResolver;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.StringUtil;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * ValueSetBeanResolver for Instrument beans.
  */
-public class InstrumentBeanResolver implements ValueSetBeanResolver {
+public class InstrumentBeanResolver extends ExperimentalConditionBeanResolver {
   //
   // Instance Variables
   //
@@ -37,15 +36,12 @@ public class InstrumentBeanResolver implements ValueSetBeanResolver {
   @Autowired(required = true)
   private InstrumentService instrumentService;
 
-  @Autowired(required = true)
-  private ExperimentalConditionService experimentalConditionService;
-
   //
-  // AbstractOnyxBeanResolver Methods
+  // ExperimentalConditionBeanResolver Methods
   //
 
   public boolean resolves(Class<?> type) {
-    return Instrument.class.equals(type) || ExperimentalCondition.class.equals(type) || ExperimentalConditionValue.class.equals(type);
+    return super.resolves(type) || Instrument.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
@@ -76,31 +72,12 @@ public class InstrumentBeanResolver implements ValueSetBeanResolver {
   protected List<ExperimentalCondition> resolveExperimentalCondition(ValueSet valueSet, Variable variable) {
     Instrument instrument = resolveInstrument(valueSet);
     if(instrument != null) {
-      String experimentalConditionName = extractVariableNameElement(variable.getName(), 0);
+      String experimentalConditionName = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
       if(experimentalConditionName != null) {
         return getExperimentalConditions(experimentalConditionName, instrument.getBarcode());
       }
     }
     return Collections.emptyList();
-  }
-
-  protected List<ExperimentalConditionValue> resolveExperimentalConditionValue(ValueSet valueSet, Variable variable) {
-    List<ExperimentalConditionValue> experimentalConditionValues = new ArrayList<ExperimentalConditionValue>();
-
-    List<ExperimentalCondition> experimentalConditions = resolveExperimentalCondition(valueSet, variable);
-    if(!experimentalConditions.isEmpty()) {
-      String experimentalConditionAttributeName = extractVariableNameElement(variable.getName(), 1);
-      if(experimentalConditionAttributeName != null) {
-        for(ExperimentalCondition experimentalCondition : experimentalConditions) {
-          for(ExperimentalConditionValue value : experimentalCondition.getExperimentalConditionValues()) {
-            if(value.getAttributeName().equals(experimentalConditionAttributeName)) {
-              experimentalConditionValues.add(value);
-            }
-          }
-        }
-      }
-    }
-    return experimentalConditionValues;
   }
 
   private List<ExperimentalCondition> getExperimentalConditions(String experimentalConditionName, String instrumentBarcode) {
@@ -114,13 +91,5 @@ public class InstrumentBeanResolver implements ValueSetBeanResolver {
     template.addExperimentalConditionValue(experimentalConditionValue);
 
     return experimentalConditionService.getExperimentalConditions(template);
-  }
-
-  private String extractVariableNameElement(String variableName, int index) {
-    String[] variableNameElements = variableName.split("\\.");
-    if(index < variableNameElements.length) {
-      return variableNameElements[index];
-    }
-    return null;
   }
 }
