@@ -1,11 +1,7 @@
 <destinations>
   <destination>
     <name>DCC</name>
-    <strategies>
-      <strategy>encrypt</strategy>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
+    
     <valueset entityTypeName="Participant">
       <entities>
         <excludeAll/>
@@ -24,10 +20,7 @@
   </destination>
   <destination>
     <name>Appointment Unit</name>
-    <strategies>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
+    <encrypt/>
     <valueset entityTypeName="Participant">
       <entities>
         <excludeAll/>

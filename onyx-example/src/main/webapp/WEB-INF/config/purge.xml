@@ -2,15 +2,16 @@
   <purge>
     <valueset entityType="Participant">
       <entities>
-        <excludeAll type="EXCLUDE"/>
+        <excludeAll type="EXCLUDE" />
         <script type="INCLUDE">
           <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
-        <!-- 
         <script type="INCLUDE">
-          <javascript><![CDATA[$('Participant.Interview.status').any('CLOSED','COMPLETED') && $('Participant.Interview.endData').after(onyx('LastExportDate'))]]></javascript>
+          <javascript>
+            $('Admin.Interview.status').any('CLOSED','COMPLETED')
+            //.and($('Admin.Interview.endDate').after($('LastExportDate'))
+          </javascript>
         </script>
-        -->
       </entities>
     </valueset>
   </purge>

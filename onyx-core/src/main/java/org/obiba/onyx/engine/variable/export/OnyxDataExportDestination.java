@@ -13,7 +13,9 @@ import java.util.List;
 
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
-import org.obiba.magma.engine.output.Strategies;
+import org.obiba.magma.crypt.PublicKeyProvider;
+import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
+import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
 import org.obiba.magma.filter.CollectionFilterChain;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -22,7 +24,7 @@ public class OnyxDataExportDestination {
 
   private String name;
 
-  private Strategies strategies;
+  private EncryptionOptions encrypt;
 
   @XStreamImplicit
   private List<ValueSetFilter> valueSetFilters;
@@ -35,12 +37,13 @@ public class OnyxDataExportDestination {
     this.name = name;
   }
 
-  public Strategies getStrategies() {
-    return strategies;
-  }
-
-  void setStrategies(Strategies strategies) {
-    this.strategies = strategies;
+  public DatasourceEncryptionStrategy getEncryptionStrategy(PublicKeyProvider provider) {
+    if(encrypt != null) {
+      GeneratedSecretKeyDatasourceEncryptionStrategy strategy = new GeneratedSecretKeyDatasourceEncryptionStrategy(provider);
+      encrypt.configureStrategy(strategy);
+      return strategy;
+    }
+    return null;
   }
 
   public List<ValueSetFilter> getValueSetFilters() {
@@ -67,6 +70,31 @@ public class OnyxDataExportDestination {
       }
     }
     return new CollectionFilterChain<ValueSet>(entityName);
+  }
+
+  public class EncryptionOptions {
+    private String algorithm;
+
+    private String mode;
+
+    private String padding;
+
+    private Integer keySize;
+
+    private void configureStrategy(GeneratedSecretKeyDatasourceEncryptionStrategy strategy) {
+      if(algorithm != null) {
+        strategy.setAlgorithm(encrypt.algorithm);
+      }
+      if(mode != null) {
+        strategy.setMode(encrypt.mode);
+      }
+      if(padding != null) {
+        strategy.setPadding(encrypt.padding);
+      }
+      if(keySize != null) {
+        strategy.setKeySize(encrypt.keySize);
+      }
+    }
   }
 
 }

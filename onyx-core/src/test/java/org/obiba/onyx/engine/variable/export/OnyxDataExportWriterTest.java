@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
-import org.obiba.magma.engine.output.Strategies;
 import org.obiba.magma.filter.ExcludeAllFilter;
 import org.obiba.magma.filter.Filter;
 import org.obiba.magma.filter.JavaScriptFilter;
@@ -52,13 +51,6 @@ public class OnyxDataExportWriterTest {
 
     destinationDcc = new OnyxDataExportDestination();
     destinationDcc.setName("DCC");
-
-    List<String> strategiesList = new ArrayList<String>();
-    strategiesList.add("encrypt");
-    strategiesList.add("zip");
-    strategiesList.add("file");
-
-    destinationDcc.setStrategies(new Strategies(strategiesList));
 
     List<ValueSetFilter> valueSetFilters = new ArrayList<ValueSetFilter>();
     ValueSetFilter participantValueSetFilter = new ValueSetFilter("Participant");

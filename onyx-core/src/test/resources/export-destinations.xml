@@ -1,12 +1,9 @@
 <destinations>
   <destination>
     <name>DCC</name>
-    <strategies>
-      <strategy>encrypt</strategy>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
-    
+
+    <encrypt />
+
     <valueset entityType="Participant">
       <entities>
         <script type="INCLUDE">
@@ -24,7 +21,7 @@
         <variableName type="INCLUDE" prefix="Admin.Participant.PostalCodePrefix" />
       </variables>
     </valueset>
-      
+
     <valueset entityType="Workstation">
       <entities>
         <script type="EXCLUDE">
@@ -41,16 +38,10 @@
       </entities>
     </valueset>
   </destination>
-      
-    
-    
+
   <destination>
     <name>Appointment Unit</name>
-    <strategies>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
-    
+
     <valueset entityType="Participant">
       <entities>
         <script type="INCLUDE">
@@ -62,21 +53,17 @@
         </script>
       </entities>
       <variables>
-        <excludeAll />        
+        <excludeAll />
         <variableName type="INCLUDE" prefix="Consent" />
         <variableName type="INCLUDE" prefix="Admin.onyxVersion" />
         <variableName type="EXCLUDE" prefix="Consent.actions" />
       </variables>
-    </valueset>       
+    </valueset>
   </destination>
-  
+
   <destination>
     <name>Appointment Unit - Cancelled interviews</name>
-    <strategies>
-      <strategy>zip</strategy>
-      <strategy>file</strategy>
-    </strategies>
-    
+
     <valueset entityType="Participant">
       <entities>
         <script type="INCLUDE">
@@ -88,11 +75,11 @@
         </script>
       </entities>
       <variables>
-        <excludeAll />        
+        <excludeAll />
         <variableName type="INCLUDE" prefix="Consent" />
         <variableName type="INCLUDE" prefix="Admin.onyxVersion" />
         <variableName type="EXCLUDE" prefix="Consent.actions" />
       </variables>
-    </valueset>       
+    </valueset>
   </destination>
 </destinations>

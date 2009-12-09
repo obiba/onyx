@@ -10,19 +10,27 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.FlushMode;
+import org.hibernate.SessionFactory;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.Variable;
+import org.obiba.magma.crypt.NoSuchKeyException;
+import org.obiba.magma.crypt.PublicKeyProvider;
 import org.obiba.magma.datasource.fs.DatasourceCopier;
 import org.obiba.magma.datasource.fs.FsDatasource;
+import org.obiba.magma.datasource.fs.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +48,11 @@ public class OnyxDataExport {
   private File outputRootDirectory;
 
   private Map<String, CaptureAndExportStrategy> captureAndExportStrategyMap;
+
+  private IPublicKeyFactory publicKeyFactory;
+
+  // ONYX-424: Required to set FlushMode to COMMIT
+  private SessionFactory sessionFactory;
 
   public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
     this.exportDestinations = exportDestinations;
@@ -65,17 +78,53 @@ public class OnyxDataExport {
     this.captureAndExportStrategyMap = captureAndExportStrategyMap;
   }
 
+  public void setPublicKeyFactory(IPublicKeyFactory publicKeyFactory) {
+    this.publicKeyFactory = publicKeyFactory;
+  }
+
+  public void setSessionFactory(SessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
+
   public void exportInterviews() throws Exception {
 
     long exportStartTime = new Date().getTime();
 
     log.info("Starting export to configured destinations.");
 
-    DatasourceCopier copier = new DatasourceCopier();
+    sessionFactory.getCurrentSession().setFlushMode(FlushMode.MANUAL);
+
+    DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(new DatasourceCopyEventListener() {
+
+      public void onVariableCopy(Variable variable) {
+      }
+
+      public void onVariableCopied(Variable variable) {
+      }
+
+      public void onValueSetCopy(ValueSet valueSet) {
+      }
+
+      public void onValueSetCopied(ValueSet valueSet) {
+        sessionFactory.getCurrentSession().clear();
+      }
+    }).build();
+
+    PublicKeyProvider pkProvider = new PublicKeyProvider() {
+      public PublicKey getPublicKey(Datasource datasource) throws NoSuchKeyException {
+        PublicKey key = publicKeyFactory.getPublicKey(datasource.getName());
+        if(key == null) {
+          throw new NoSuchKeyException(datasource.getName(), "No PublicKey for destination '" + datasource.getName() + "'");
+        }
+        return key;
+      }
+    };
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination destination : exportDestinations) {
-        FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputRootDirectory + "/" + destination.getName() + ".zip");
+
+        File outputFile = new File(outputRootDirectory, destination.getName() + ".zip");
+        FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputFile, destination.getEncryptionStrategy(pkProvider));
 
         MagmaEngine.get().addDatasource(outputDatasource);
         try {
@@ -93,7 +142,7 @@ public class OnyxDataExport {
             // Mark the data of the FilteredCollection as exported for current destination (log entry).
             // markAsExported(filteredCollection, destination);
             markAsExported(filteredCollection, destination);
-
+            sessionFactory.getCurrentSession().flush();
           }
         } finally {
           MagmaEngine.get().removeDatasource(outputDatasource);

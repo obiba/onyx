@@ -203,9 +203,13 @@
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-spring</artifactId>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-datasource-fs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-crypt</artifactId>
     </dependency>
   </dependencies>
 

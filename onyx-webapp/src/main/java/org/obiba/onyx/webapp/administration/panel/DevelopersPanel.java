@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.administration.panel;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -72,9 +73,9 @@ public class DevelopersPanel extends Panel {
 
   private void dump() throws IOException {
     FsDatasource target;
-    MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", "target/magma-dump.zip"));
+    MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", new File("target", "magma-dump.zip")));
     try {
-      DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(new SessionClearingListener()).build();
+      DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withThroughtputListener().withListener(new SessionClearingListener()).build();
       for(Datasource ds : MagmaEngine.get().getDatasources()) {
         if(ds != target) { // Don't copy target datasource on target datasource
           copier.copy(ds, target);
