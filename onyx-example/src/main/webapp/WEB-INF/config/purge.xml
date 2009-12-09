@@ -6,9 +6,11 @@
         <script type="INCLUDE">
           <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
         </script>
+        <!-- 
         <script type="INCLUDE">
-          <javascript><![CDATA[$('Participant.Interview.status').any('CLOSED','COMPLETED') && $('Participant.Interview.endData') > $('LastExportDate')]]></javascript>
+          <javascript><![CDATA[$('Participant.Interview.status').any('CLOSED','COMPLETED') && $('Participant.Interview.endData').after(onyx('LastExportDate'))]]></javascript>
         </script>
+        -->
       </entities>
     </valueset>
   </purge>
