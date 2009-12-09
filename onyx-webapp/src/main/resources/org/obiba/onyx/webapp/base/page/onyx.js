@@ -189,8 +189,17 @@ NavigationUtil.next = function() {
 }
 
 NavigationUtil.closeWindow = function() {
+  var closeButton = $('input.obiba-button-close');
+  if (closeButton) {
+    closeButton.click();
+  }
+}
+NavigationUtil.closeWindow = function() {
   var cancelButton = $('input.obiba-button-cancel');
-  if(cancelButton) {
+  var closeButton = $('input.obiba-button-close');  
+  if(closeButton.size()>0) {
+    closeButton.click();
+  } else if(cancelButton.size()>0) {
     cancelButton.click();
   }
 }
@@ -323,10 +332,7 @@ function addOnyxWizardBehavior() {
   						NavigationUtil.closeWindow();
         			},
         			function(evt, jTarget, elem) {
-          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				||  elem.is("input[type=text]") || elem.is("textarea")) {
-                			return true;
-          				}        
+          				return false;        
         			});        			       			
 		
   WindowUtil.attachEvent("load", Resizer.resizeWizard);
