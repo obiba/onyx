@@ -93,8 +93,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
 
-  <bean id="instrumentCaptureDateRangeStrategy" class="org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureDateRangeStrategy" />
-  <bean id="workstationCaptureDateRangeStrategy" class="org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureDateRangeStrategy" />
+  <bean id="instrumentCaptureAndExportStrategy" class="org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureAndExportStrategy" />
+  <bean id="workstationCaptureAndExportStrategy" class="org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureAndExportStrategy" />
   
   <bean class="org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory" />
 

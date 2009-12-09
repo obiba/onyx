@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.obiba.magma.Value;
@@ -24,14 +23,12 @@ import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
-import org.obiba.onyx.core.domain.statistics.ExportLog;
-import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
-import org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureDateRangeStrategy;
+import org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureAndExportStrategy;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.VariableLocalizedAttributeVisitor;
@@ -58,13 +55,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   private ExperimentalConditionService experimentalConditionService;
 
   @Autowired(required = true)
-  private ExportLogService exportLogService;
-
-  @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
 
   @Autowired(required = true)
-  private WorkstationCaptureDateRangeStrategy workstationCaptureDateRangeStrategy;
+  private WorkstationCaptureAndExportStrategy workstationCaptureAndExportStrategy;
 
   //
   // VariableValueSourceFactory Methods
@@ -90,16 +84,12 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     this.experimentalConditionService = experimentalConditionService;
   }
 
-  public void setExportLogService(ExportLogService exportLogService) {
-    this.exportLogService = exportLogService;
-  }
-
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
   }
 
-  public void setWorkstationCaptureDateRangeStrategy(WorkstationCaptureDateRangeStrategy workstationCaptureDateRangeStrategy) {
-    this.workstationCaptureDateRangeStrategy = workstationCaptureDateRangeStrategy;
+  public void setWorkstationCaptureAndExportStrategy(WorkstationCaptureAndExportStrategy workstationCaptureAndExportStrategy) {
+    this.workstationCaptureAndExportStrategy = workstationCaptureAndExportStrategy;
   }
 
   private Set<VariableValueSource> createWorkstationSources() {
@@ -140,7 +130,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(workstationCaptureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
+        return getValueType().valueOf(workstationCaptureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -158,7 +148,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(workstationCaptureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
+        return getValueType().valueOf(workstationCaptureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -176,15 +166,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        // Return TRUE if new experimental conditions have been recorded since the last export, FALSE
-        // otherwise (return FALSE also if no ExportLog exists for the workstation).
-        String workstationId = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(WORKSTATION, workstationId);
-        if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(workstationId, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(Boolean.FALSE) : getValueType().valueOf(Boolean.TRUE);
-        }
-        return getValueType().valueOf(Boolean.FALSE);
+        return getValueType().valueOf(workstationCaptureAndExportStrategy.isExported(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {

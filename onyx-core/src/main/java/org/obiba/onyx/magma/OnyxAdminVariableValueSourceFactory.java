@@ -31,10 +31,8 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.stage.StageInstance;
-import org.obiba.onyx.core.domain.statistics.ExportLog;
-import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.variable.impl.ParticipantCaptureDateRangeStrategy;
+import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.runtime.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -77,10 +75,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   private Version version;
 
   @Autowired(required = true)
-  private ExportLogService exportLogService;
-
-  @Autowired(required = true)
-  private ParticipantCaptureDateRangeStrategy participantCaptureDateRangeStrategy;
+  private ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy;
 
   //
   // VariableValueSourceFactory Methods
@@ -117,12 +112,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     this.version = version;
   }
 
-  public void setExportLogService(ExportLogService exportLogService) {
-    this.exportLogService = exportLogService;
-  }
-
-  public void setParticipantCaptureDateRangeStrategy(ParticipantCaptureDateRangeStrategy participantCaptureDateRangeStrategy) {
-    this.participantCaptureDateRangeStrategy = participantCaptureDateRangeStrategy;
+  public void setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
+    this.participantCaptureAndExportStrategy = participantCaptureAndExportStrategy;
   }
 
   private VariableValueSource createVersionSource() {
@@ -160,9 +151,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       }
 
       public Value getValue(ValueSet valueSet) {
-        String participantBarcode = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(PARTICIPANT, participantBarcode);
-        return (exportLog != null) ? getValueType().valueOf(Boolean.TRUE) : getValueType().valueOf(Boolean.FALSE);
+        return getValueType().valueOf(participantCaptureAndExportStrategy.isExported(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -182,7 +171,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       }
 
       public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(participantCaptureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
+        return getValueType().valueOf(participantCaptureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -198,7 +187,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       }
 
       public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(participantCaptureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
+        return getValueType().valueOf(participantCaptureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {

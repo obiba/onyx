@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,8 +26,6 @@ import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
-import org.obiba.onyx.core.domain.statistics.ExportLog;
-import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
@@ -36,7 +33,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
-import org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureDateRangeStrategy;
+import org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureAndExportStrategy;
 import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
@@ -68,11 +65,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   @Autowired
   private ExperimentalConditionService experimentalConditionService;
 
-  @Autowired
-  private ExportLogService exportLogService;
-
   @Autowired(required = true)
-  private InstrumentCaptureDateRangeStrategy instrumentCaptureDateRangeStrategy;
+  private InstrumentCaptureAndExportStrategy instrumentCaptureAndExportStrategy;
 
   //
   // Constructors
@@ -122,12 +116,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     this.experimentalConditionService = experimentalConditionService;
   }
 
-  public void setExportLogService(ExportLogService exportLogService) {
-    this.exportLogService = exportLogService;
-  }
-
-  public void setInstrumentCaptureDateRangeStrategy(InstrumentCaptureDateRangeStrategy instrumentCaptureDateRangeStrategy) {
-    this.instrumentCaptureDateRangeStrategy = instrumentCaptureDateRangeStrategy;
+  public void setInstrumentCaptureAndExportStrategy(InstrumentCaptureAndExportStrategy instrumentCaptureAndExportStrategy) {
+    this.instrumentCaptureAndExportStrategy = instrumentCaptureAndExportStrategy;
   }
 
   private VariableValueSource createInstrumentCaptureStartDateSource() {
@@ -139,7 +129,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(instrumentCaptureDateRangeStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
+        return getValueType().valueOf(instrumentCaptureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -157,7 +147,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(instrumentCaptureDateRangeStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
+        return getValueType().valueOf(instrumentCaptureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {
@@ -175,15 +165,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public Value getValue(ValueSet valueSet) {
-        // Return TRUE if new instrument calibrations have been recorded since the last export, FALSE
-        // otherwise (return FALSE also if no ExportLog exists for the instrument).
-        String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-        ExportLog exportLog = exportLogService.getLastExportLog(INSTRUMENT, instrumentBarcode);
-        if(exportLog != null) {
-          List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(instrumentBarcode, exportLog.getExportDate());
-          return !experimentalConditions.isEmpty() ? getValueType().valueOf(Boolean.FALSE) : getValueType().valueOf(Boolean.TRUE);
-        }
-        return getValueType().valueOf(Boolean.FALSE);
+        return getValueType().valueOf(instrumentCaptureAndExportStrategy.isExported(valueSet.getVariableEntity().getIdentifier()));
       }
 
       public ValueType getValueType() {

@@ -23,28 +23,32 @@ public class ExportLog extends AbstractEntity {
   private static final long serialVersionUID = 1L;
 
   @Column(nullable = false)
-  private final String type;
+  private String type;
 
   @Column(nullable = false)
-  private final String identifier;
+  private String identifier;
 
   @Column(nullable = false)
-  private final String destination;
+  private String destination;
 
   @Column(nullable = false)
-  private final Date captureStartDate;
+  private Date captureStartDate;
 
   @Column(nullable = false)
-  private final Date captureEndDate;
+  private Date captureEndDate;
 
   @Column(nullable = false)
-  private final Date exportDate;
+  private Date exportDate;
 
   /**
    * Login name of user who performed the export.
    */
   @Column(nullable = false)
   private String user;
+
+  ExportLog() {
+    super();
+  }
 
   private ExportLog(String type, String identifier, String destination, Date captureStartDate, Date captureEndDate, Date exportDate, String user) {
     super();
@@ -147,11 +151,11 @@ public class ExportLog extends AbstractEntity {
       }
 
       if(captureStartDate != null && captureEndDate != null) {
-        Assert.isTrue(captureStartDate.before(captureEndDate), "captureStartDate must be before captureEndDate");
+        Assert.isTrue(!captureStartDate.after(captureEndDate), "captureStartDate must be equal to or before captureEndDate");
       }
 
       if(captureEndDate != null && exportDate != null) {
-        Assert.isTrue(captureEndDate.before(exportDate), "captureEndDate must be before exportDate");
+        Assert.isTrue(!captureEndDate.after(exportDate), "captureEndDate must be equal to or before exportDate");
       }
 
       return new ExportLog(type, identifier, destination, captureStartDate, captureEndDate, exportDate, user);
