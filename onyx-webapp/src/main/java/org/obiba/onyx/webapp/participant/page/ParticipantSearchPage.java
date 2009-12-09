@@ -61,6 +61,7 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
@@ -93,6 +94,9 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private ParticipantMetadata participantMetadata;
+
+  @SpringBean
+  private ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -278,6 +282,10 @@ public class ParticipantSearchPage extends BasePage {
   private void showFeedback(AjaxRequestTarget target) {
     getFeedbackWindow().setContent(new FeedbackPanel("content"));
     getFeedbackWindow().show(target);
+  }
+
+  private boolean isParticipantExported(Participant participant) {
+    return participantCaptureAndExportStrategy.isExported(participant.getBarcode());
   }
 
   @SuppressWarnings("serial")
@@ -519,7 +527,7 @@ public class ParticipantSearchPage extends BasePage {
       super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
 
       Label statusLabel;
-      boolean isExportedParticipant = ((Participant) participantModel.getObject()).getExported();
+      boolean isExportedParticipant = isParticipantExported(((Participant) participantModel.getObject()));
       if(isExportedParticipant) {
         statusLabel = new Label("status", new StringResourceModel("ExportedInterview", ParticipantSearchPage.this, null));
       } else {
@@ -625,7 +633,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public boolean isVisible() {
           // Visible when participant has been assigned a barcode and participant not exported.
-          return getParticipant().getBarcode() != null && !getParticipant().getExported();
+          return getParticipant().getBarcode() != null && !isParticipantExported(getParticipant());
         }
       };
       link.add(new Label("label", new ResourceModel("Interview")));
@@ -673,7 +681,7 @@ public class ParticipantSearchPage extends BasePage {
         public boolean isVisible() {
           // Visible if participant has been received and some attributes are editable. Also not visible if participant
           // has been exported.
-          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute() && !getParticipant().getExported();
+          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute() && !isParticipantExported(getParticipant());
         }
       };
       link.add(new Label("label", new ResourceModel("Edit")));

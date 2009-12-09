@@ -34,7 +34,7 @@ public class ParticipantCaptureAndExportStrategy implements CaptureAndExportStra
   private ExportLogService exportLogService;
 
   //
-  // CaptureDateRangeStrategy Methods
+  // CaptureAndExportStrategy Methods
   //
 
   public String getEntityType() {
@@ -52,8 +52,11 @@ public class ParticipantCaptureAndExportStrategy implements CaptureAndExportStra
   }
 
   public boolean isExported(String entityIdentifier) {
-    ExportLog exportLog = exportLogService.getLastExportLog("Participant", entityIdentifier);
-    return exportLog != null;
+    if(entityIdentifier != null) {
+      ExportLog exportLog = exportLogService.getLastExportLog("Participant", entityIdentifier);
+      return exportLog != null;
+    }
+    return false;
   }
 
   //
