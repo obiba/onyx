@@ -83,11 +83,6 @@ public class Participant extends AbstractEntity {
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
   private Interview interview;
 
-  private Boolean exported;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date exportDate;
-
   //
   // Methods
   //
@@ -342,35 +337,9 @@ public class Participant extends AbstractEntity {
     }
   }
 
-  public Boolean getExported() {
-    return exported;
-  }
-
-  public void setExported(Boolean exported) {
-    this.exported = exported;
-  }
-
   @Override
   public String toString() {
     return "Participant[" + barcode + "]";
-  }
-
-  /**
-   * Defines if a participant and his interview are in the right states to allow the data export.
-   * @return
-   */
-  public boolean isExportable() {
-    if(exported != null && exported == true) return false;
-    if(getInterview() == null) return false;
-    return true;
-  }
-
-  public Date getExportDate() {
-    return exportDate;
-  }
-
-  public void setExportDate(Date exportDate) {
-    this.exportDate = exportDate;
   }
 
 }

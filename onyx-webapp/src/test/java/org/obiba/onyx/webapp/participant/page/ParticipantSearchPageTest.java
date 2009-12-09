@@ -186,7 +186,6 @@ public class ParticipantSearchPageTest {
     p.setEnrollmentId("1000001");
     p.setId(1);
     p.setRecruitmentType(RecruitmentType.ENROLLED);
-    p.setExported(false);
 
     Appointment a = new Appointment(p, getDate(2009, 9, 1, 9, 0));
     a.setAppointmentCode("1000001");
@@ -207,7 +206,6 @@ public class ParticipantSearchPageTest {
     p2.setEnrollmentId("1000002");
     p2.setId(1);
     p2.setRecruitmentType(RecruitmentType.ENROLLED);
-    p2.setExported(false);
 
     Appointment a2 = new Appointment(p, getDate(2009, 9, 1, 10, 0));
     a2.setAppointmentCode("1000002");

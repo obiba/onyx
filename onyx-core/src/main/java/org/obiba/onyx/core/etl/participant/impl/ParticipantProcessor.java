@@ -96,8 +96,6 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
           log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => adding appointment anyway."));
         }
 
-        participant.setExported(false);
-
         // Participant exists already in database
       } else if(participant != null) {
         Interview interview = participant.getInterview();

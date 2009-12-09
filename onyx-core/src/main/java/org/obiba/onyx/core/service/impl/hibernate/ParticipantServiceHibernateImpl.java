@@ -134,17 +134,4 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
   }
 
-  public List<Participant> getExportedParticipants() {
-    return getExportedParticipants(null);
-  }
-
-  public List<Participant> getExportedParticipants(Date exportedBefore) {
-    AssociationCriteria criteria = AssociationCriteria.create(Participant.class, getSession());
-    criteria.add("exported", Operation.eq, true);
-    if(exportedBefore != null) {
-      criteria.add("exportDate", Operation.lt, exportedBefore);
-    }
-    return criteria.list();
-  }
-
 }

@@ -129,19 +129,4 @@ public interface ParticipantService {
    */
   public void deleteParticipant(Participant participant);
 
-  /**
-   * Gets all the participants marked as exported.
-   * 
-   * @return List of exported participants.
-   */
-  public List<Participant> getExportedParticipants();
-
-  /**
-   * Gets all the participants marked as exported before a specific date (exportDate < exportedBefore).
-   * 
-   * @param exportedBefore
-   * @return List of exported participants.
-   */
-  public List<Participant> getExportedParticipants(Date exportedBefore);
-
 }

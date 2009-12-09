@@ -43,9 +43,7 @@
     first_name="John"
     last_name="Hudson"
     gender="MALE"
-    birth_date="1964-10-01 00:00:00"
-    exported="true"
-    export_date="2009-09-30 13:59:59"/>
+    birth_date="1964-10-01 00:00:00" />
 
   <appointment id="2"
     appointment_code="100002"
@@ -77,9 +75,7 @@
     first_name="Dennis"
     last_name="Spathis"
     gender="MALE"
-    birth_date="1972-10-01 00:00:00"
-    exported="true"
-    export_date="2009-09-30 14:00:01"/>
+    birth_date="1972-10-01 00:00:00" />
   
   <appointment id="4"
     appointment_code="100004"
