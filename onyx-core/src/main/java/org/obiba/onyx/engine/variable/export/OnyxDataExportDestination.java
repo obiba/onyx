@@ -17,6 +17,7 @@ import org.obiba.magma.crypt.PublicKeyProvider;
 import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
 import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
 import org.obiba.magma.filter.CollectionFilterChain;
+import org.obiba.magma.filter.FilterChain;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
@@ -54,7 +55,16 @@ public class OnyxDataExportDestination {
     this.valueSetFilters = valueSetFilters;
   }
 
-  CollectionFilterChain<Variable> getVariableFilterChainForEntityName(String entityName) {
+  public boolean wantsEntityType(String entityType) {
+    for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
+      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  FilterChain<Variable> getVariableFilterChainForEntityName(String entityName) {
     for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
       if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityName)) {
         return valueSetFilter.getVariableFilterChain();
@@ -63,7 +73,7 @@ public class OnyxDataExportDestination {
     return new CollectionFilterChain<Variable>(entityName);
   }
 
-  CollectionFilterChain<ValueSet> getEntityFilterChainForEntityName(String entityName) {
+  FilterChain<ValueSet> getEntityFilterChainForEntityName(String entityName) {
     for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
       if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityName)) {
         return valueSetFilter.getEntityFilterChain();

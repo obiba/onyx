@@ -27,6 +27,7 @@ import org.obiba.magma.crypt.PublicKeyProvider;
 import org.obiba.magma.datasource.fs.DatasourceCopier;
 import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.magma.datasource.fs.DatasourceCopier.DatasourceCopyEventListener;
+import org.obiba.magma.filter.FilteredValueTable;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -129,20 +130,21 @@ public class OnyxDataExport {
         MagmaEngine.get().addDatasource(outputDatasource);
         try {
           for(ValueTable table : datasource.getValueTables()) {
+            // Check whether the destination wants this type of entity
+            if(destination.wantsEntityType(table.getEntityType())) {
+              // Export interviews for each destination
 
-            // Export interviews for each destination
+              // Apply all filters to ValueTable for current OnyxDestination.
+              ValueTable filteredTable = new FilteredValueTable(table, destination.getVariableFilterChainForEntityName(table.getEntityType()), destination.getEntityFilterChainForEntityName(table.getEntityType()));
 
-            // Apply all filters to ValueTable for current OnyxDestination.
-            // ValueTable filteredCollection = new FilteredValueTable(table, null, null);
-            ValueTable filteredCollection = table;
+              // Save FilteredCollection to disk.
+              copier.copy(filteredTable, outputDatasource);
 
-            // Save FilteredCollection to disk.
-            copier.copy(table, outputDatasource);
-
-            // Mark the data of the FilteredCollection as exported for current destination (log entry).
-            // markAsExported(filteredCollection, destination);
-            markAsExported(filteredCollection, destination);
-            sessionFactory.getCurrentSession().flush();
+              // Mark the data of the FilteredCollection as exported for current destination (log entry).
+              // markAsExported(filteredCollection, destination);
+              markAsExported(filteredTable, destination);
+              sessionFactory.getCurrentSession().flush();
+            }
           }
         } finally {
           MagmaEngine.get().removeDatasource(outputDatasource);
