@@ -1,9 +1,3 @@
--- Set export_date to current system time for already exported interviews (ONYX-821)
-update participant
-set export_date = sysdate()
-where exported = true
-and export_date is null;
-
 -- Set the status to VALID and workstation to Unknown for all existing measure rows (ONYX-1004)
 update measure set status = 'VALID', workstation = 'Unknown';
 
@@ -11,4 +5,4 @@ update measure set status = 'VALID', workstation = 'Unknown';
 update consent c, interview i SET c.time_start = i.start_date where c.interview_id = i.id;
 
 -- ONYX-1049 In the improbable case that an instrument contains an empty string as barcode, which should not be possible.
-update instrument set barcode = CONCAT(type, '_barcode') where barcode = "";
+update instrument set barcode = CONCAT(type, '_barcode') where barcode = '';
