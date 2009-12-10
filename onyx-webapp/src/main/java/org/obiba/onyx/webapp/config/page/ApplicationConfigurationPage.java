@@ -151,15 +151,16 @@ public class ApplicationConfigurationPage extends BasePage {
 
       RepeatingView destinations = new RepeatingView("destinations");
       for(OnyxDataExportDestination destination : exportDestinations) {
-        WebMarkupContainer container = new WebMarkupContainer(destinations.newChildId());
-        container.add(new Label("destinationName", destination.getName()));
-        TextArea destinationCert = new TextArea("destinationCert", new ExportDestinationCertificateModel(destination.getName()));
-        destinationCert.setLabel(new Model(destination.getName()));
-        destinationCert.add(new RequiredFormFieldBehavior());
-        destinationCert.add(new X509CertificateValidator());
-        container.add(destinationCert);
-
-        destinations.add(container);
+        if(destination.isEncryptionRequested()) {
+          WebMarkupContainer container = new WebMarkupContainer(destinations.newChildId());
+          container.add(new Label("destinationName", destination.getName()));
+          TextArea destinationCert = new TextArea("destinationCert", new ExportDestinationCertificateModel(destination.getName()));
+          destinationCert.setLabel(new Model(destination.getName()));
+          destinationCert.add(new RequiredFormFieldBehavior());
+          destinationCert.add(new X509CertificateValidator());
+          container.add(destinationCert);
+          destinations.add(container);
+        }
       }
       add(destinations);
 

@@ -47,6 +47,10 @@ public class OnyxDataExportDestination {
     return null;
   }
 
+  public boolean isEncryptionRequested() {
+    return encrypt != null;
+  }
+
   public List<ValueSetFilter> getValueSetFilters() {
     return valueSetFilters;
   }
