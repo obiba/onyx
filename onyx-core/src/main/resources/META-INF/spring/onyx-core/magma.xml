@@ -4,7 +4,15 @@
   <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
       <set>
-        <bean class="org.obiba.magma.js.MagmaJsExtension" />
+        <bean class="org.obiba.magma.js.MagmaJsExtension">
+          <property name="globalMethodProviders">
+            <set>
+              <bean id="onyxGlobalJsMethods" class="org.obiba.onyx.magma.OnyxGlobalJsMethods" init-method="init">
+                <property name="onyxPropertyResource" value="${org.obiba.onyx.config.path}/onyx-config.properties" />
+              </bean>
+            </set>
+          </property>
+        </bean>
         <bean class="org.obiba.magma.xstream.MagmaXStreamExtension" />
       </set>
     </property>
