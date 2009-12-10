@@ -36,6 +36,8 @@ public class VariableDataSource implements IDataSource, InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(VariableDataSource.class);
 
+  private static final String PARTICIPANT_TABLE_NAME = "Participants";
+
   private transient VariableDirectory variableDirectory;
 
   private String path;
@@ -45,24 +47,11 @@ public class VariableDataSource implements IDataSource, InitializingBean {
   private VariableValueSource variableValueSource;
 
   public void afterPropertiesSet() throws Exception {
-
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      for(ValueTable table : datasource.getValueTables()) {
-        onyxParticipantTable = table;
-      }
-    }
-    String magmaVariableName = path.replaceFirst("Onyx.", "");
-
-    log.info("Retrieving the following Magma variable (collectionName={}): {}", magmaVariableName, onyxParticipantTable);
-    try {
-      variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
-    } catch(NoSuchVariableException noSuchVariableEx) {
-      log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", magmaVariableName);
-    }
-
+    setVariableEnvironment();
   }
 
   public Data getData(Participant participant) {
+    if(onyxParticipantTable == null) setVariableEnvironment();
 
     if(participant == null) return null;
 
@@ -113,6 +102,21 @@ public class VariableDataSource implements IDataSource, InitializingBean {
   @Override
   public String toString() {
     return "Variable[" + path + "]";
+  }
+
+  private void setVariableEnvironment() {
+    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
+    }
+
+    String magmaVariableName = path.replaceFirst("Onyx.", "");
+
+    log.info("Retrieving the following Magma variable (collectionName={}): {}", magmaVariableName, onyxParticipantTable);
+    try {
+      variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
+    } catch(NoSuchVariableException noSuchVariableEx) {
+      log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", magmaVariableName);
+    }
   }
 
 }
