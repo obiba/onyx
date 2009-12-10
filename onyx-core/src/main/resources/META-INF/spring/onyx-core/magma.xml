@@ -4,13 +4,19 @@
   <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
       <set>
+        <!-- Add the JavaScript extension -->
         <bean class="org.obiba.magma.js.MagmaJsExtension">
-          <property name="globalMethodProviders">
-            <set>
-              <bean id="onyxGlobalJsMethods" class="org.obiba.onyx.magma.OnyxGlobalJsMethods" init-method="init">
-                <property name="onyxPropertyResource" value="${org.obiba.onyx.config.path}/onyx-config.properties" />
-              </bean>
-            </set>
+          <property name="magmaContextFactory">
+            <!-- Use our own MagmaContextFactory to add Onyx-specific methods to the global scope -->
+            <bean class="org.obiba.magma.js.MagmaContextFactory">
+              <property name="globalMethodProviders">
+                <set>
+                  <bean class="org.obiba.onyx.magma.OnyxGlobalJsMethods" init-method="init">
+                    <property name="onyxPropertyResource" value="${org.obiba.onyx.config.path}/onyx-config.properties" />
+                  </bean>
+                </set>
+              </property>
+            </bean>
           </property>
         </bean>
         <bean class="org.obiba.magma.xstream.MagmaXStreamExtension" />
