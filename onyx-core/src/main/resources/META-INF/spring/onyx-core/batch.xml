@@ -20,25 +20,25 @@
 
   <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
     <property name="jobRepository" ref="jobRepository"/>
-    <!-- <property name="taskExecutor">
+    <property name="taskExecutor">
       <bean class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
-    </property> -->    
+    </property>    
   </bean>
   
   <!-- Code added for the scheduler -->
-  <!-- <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+  <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
     <property name="jobClass" value="org.springframework.batch.sample.quartz.JobLauncherDetails" />
     <property name="group" value="quartz-batch" />
     <property name="jobDataAsMap">
       <map>
         <entry key="jobName" value="appointmentListUpdateJob"/>
-        <entry key="jobLocator" value-ref="jobRegistry"/>
+        <entry key="jobLocator" value-ref="jobRepository"/>
         <entry key="jobLauncher" value-ref="jobLauncher"/>
       </map>
     </property>
   </bean>
   
-  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+  <!-- <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
     <property name="triggers">
       <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="jobDetail" />
