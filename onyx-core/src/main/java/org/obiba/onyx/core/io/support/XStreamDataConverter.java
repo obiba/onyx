@@ -58,6 +58,9 @@ public class XStreamDataConverter implements Converter {
     Serializable value = null;
 
     switch(type) {
+    case BOOLEAN:
+      value = Boolean.parseBoolean(stringValue);
+      break;
     case TEXT:
       value = stringValue;
       break;
