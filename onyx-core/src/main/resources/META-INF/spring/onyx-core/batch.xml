@@ -9,6 +9,12 @@
   <!-- Spring batch database schema property -->
   <batch:job-repository id="jobRepository" data-source="dataSource" isolation-level-for-create="DEFAULT"/>
   
+  <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
+    
+  <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+    <property name="jobRegistry" ref="jobRegistry" />
+  </bean>
+  
   <!-- Spring batch In-memory property -->
   <!-- <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
       <property name="transactionManager" ref="transactionManager"/>
@@ -19,10 +25,7 @@
   </bean>
 
   <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
-    <property name="jobRepository" ref="jobRepository"/>
-    <property name="taskExecutor">
-      <bean class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
-    </property>    
+    <property name="jobRepository" ref="jobRepository"/>   
   </bean>
   
   <!-- Code added for the scheduler -->
@@ -32,18 +35,18 @@
     <property name="jobDataAsMap">
       <map>
         <entry key="jobName" value="appointmentListUpdateJob"/>
-        <entry key="jobLocator" value-ref="jobRepository"/>
+        <entry key="jobLocator" value-ref="jobRegistry"/>
         <entry key="jobLauncher" value-ref="jobLauncher"/>
       </map>
     </property>
   </bean>
   
-  <!-- <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
     <property name="triggers">
       <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="jobDetail" />
-        <property name="cronExpression" value="0 0 4 * * *" />
+        <property name="cronExpression" value="0 0 4 * * ?" />
       </bean>
     </property>
-  </bean> -->
+  </bean>
 </beans>
