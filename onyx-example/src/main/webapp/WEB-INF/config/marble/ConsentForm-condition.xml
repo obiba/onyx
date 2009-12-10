@@ -1,34 +1,3 @@
 <variableDataSource>
   <path>Onyx.Consent.accepted</path>
 </variableDataSource>
-
-<!-- <comparingDataSource comparisonOperator="eq">
-  <dataSourceLeft class="participantPropertyDataSource" property="gender"/>
-  <dataSourceRight class="fixedDataSource">
-    <data type="TEXT">
-      <value class="string">FEMALE</value>
-    </data>
-  </dataSourceRight>
-</comparingDataSource>-->
-
-<!--<computingDataSource dataType="BOOLEAN">
-        
-  <expression>
-    $1 &amp;&amp; $2
-  </expression>
-    
-  <dataSources>
-    <comparingDataSource comparisonOperator="eq">
-      <dataSourceLeft class="participantPropertyDataSource" property="gender"/>
-      <dataSourceRight class="fixedDataSource">
-        <data type="TEXT">
-          <value class="string">FEMALE</value>
-        </data>
-      </dataSourceRight>
-    </comparingDataSource>
-    <variableDataSource>
-      <path>Onyx.Consent.accepted</path>
-    </variableDataSource>
-  </dataSources>
-
-</computingDataSource>-->

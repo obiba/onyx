@@ -313,6 +313,9 @@
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>   
     </output>
 
     <output>
@@ -321,8 +324,11 @@
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>    
     </output>
-
+    
     <output>
       <vendorName>QRsDuration</vendorName>
       <code>RES_QRS_DURATION</code>
