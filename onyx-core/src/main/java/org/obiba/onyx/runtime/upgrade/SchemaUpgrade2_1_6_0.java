@@ -36,9 +36,8 @@ public class SchemaUpgrade2_1_6_0 extends LiquiBaseUpgradeStep {
       throw new RuntimeException("Could not create a database snapshot", ex);
     }
 
-    // Drop participant exported and export_date columns (ONYX-1037).
+    // Drop participant exported column (ONYX-1037).
     changes.add(createDropColumnChange(databaseSnapshot, "participant", "exported"));
-    changes.add(createDropColumnChange(databaseSnapshot, "participant", "export_date"));
 
     return changes;
   }
