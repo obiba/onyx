@@ -37,9 +37,12 @@
         <entry key="jobName" value="appointmentListUpdateJob"/>
         <entry key="jobLocator" value-ref="jobRegistry"/>
         <entry key="jobLauncher" value-ref="jobLauncher"/>
+        <entry key="date" value-ref="appointmentListUpdateDateParameter" />
       </map>
     </property>
   </bean>
+  
+  <bean id="appointmentListUpdateDateParameter" class="java.util.Date" scope="prototype" />
   
   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
     <property name="triggers">
