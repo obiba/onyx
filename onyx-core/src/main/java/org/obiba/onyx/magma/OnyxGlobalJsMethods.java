@@ -40,7 +40,7 @@ import com.google.common.collect.Lists;
  */
 public class OnyxGlobalJsMethods implements GlobalMethodProvider {
 
-  private static final String LAST_EXPORT_DATE = "lastExportDate";
+  private static final String LAST_EXPORT_DATE = "org.obiba.onyx.lastExportDate";
 
   private static final Set<String> GLOBAL_METHODS = ImmutableSet.of("onyx");
 
@@ -71,7 +71,7 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
    * javascript.
    * 
    * <pre>
-   *   onyx('lastExportDate')
+   *   onyx('org.obiba.onyx.lastExportDate')
    *   onyx('org.obiba.onyx.participant.purge')
    *   onyx('org.obiba.onyx.webapp.configurationType')
    * </pre>
