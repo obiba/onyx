@@ -81,16 +81,22 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   public void onTransition(IStageExecution execution, TransitionEvent event) {
     Boolean var = areDependenciesCompleted();
 
-    if(var == null) {
-      // ONYX-383 ignore if master stage is interactive and this stage is completed (waiting from a stable state from
-      // master stage).
-      if((!execution.isInteractive() || !isCompleted()) && wantTransitionEvent(TransitionEvent.INVALID)) {
-        castEvent(TransitionEvent.INVALID);
+    StageState currentState = StageState.valueOf(getName());
+
+    // ONYX-936 : Update current stage state only if no data has been collected for that stage, i.e. stage state equals
+    // Contraindicated, NotApplicable, Ready, Waiting.
+    if(currentState == StageState.Contraindicated || currentState == StageState.NotApplicable || currentState == StageState.Ready || currentState == StageState.Waiting) {
+      if(var == null) {
+        // ONYX-383 ignore if master stage is interactive and this stage is completed (waiting from a stable state from
+        // master stage).
+        if((!execution.isInteractive() || !isCompleted()) && wantTransitionEvent(TransitionEvent.INVALID)) {
+          castEvent(TransitionEvent.INVALID);
+        }
+      } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) {
+        castEvent(TransitionEvent.VALID);
+      } else if(var == false && wantTransitionEvent(TransitionEvent.NOTAPPLICABLE)) {
+        castEvent(TransitionEvent.NOTAPPLICABLE);
       }
-    } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) {
-      castEvent(TransitionEvent.VALID);
-    } else if(var == false && wantTransitionEvent(TransitionEvent.NOTAPPLICABLE)) {
-      castEvent(TransitionEvent.NOTAPPLICABLE);
     }
   }
 
