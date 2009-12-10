@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -21,7 +23,10 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.obiba.magma.js.GlobalMethodProvider;
 import org.obiba.magma.js.ScriptableValue;
+import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
@@ -35,14 +40,22 @@ import com.google.common.collect.Lists;
  */
 public class OnyxGlobalJsMethods implements GlobalMethodProvider {
 
-  public static final Set<String> GLOBAL_METHODS = ImmutableSet.of("onyx");
+  private static final String LAST_EXPORT_DATE = "lastExportDate";
+
+  private static final Set<String> GLOBAL_METHODS = ImmutableSet.of("onyx");
 
   private Resource onyxPropertyResource;
+
+  private static ExportLogService exportLogService;
 
   private static Properties onyxProperties;
 
   public void setOnyxPropertyResource(Resource onyxPropertyResource) {
     this.onyxPropertyResource = onyxPropertyResource;
+  }
+
+  public void setExportLogService(ExportLogService exportLogService) {
+    OnyxGlobalJsMethods.exportLogService = exportLogService;
   }
 
   public void init() {
@@ -58,6 +71,7 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
    * javascript.
    * 
    * <pre>
+   *   onyx('lastExportDate')
    *   onyx('org.obiba.onyx.participant.purge')
    *   onyx('org.obiba.onyx.webapp.configurationType')
    * </pre>
@@ -69,6 +83,24 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
     }
 
     String propertyName = (String) args[0];
+    if(propertyName.equals(LAST_EXPORT_DATE)) {
+      return OnyxGlobalJsMethods.getLastExportDate(thisObj);
+    } else {
+      return OnyxGlobalJsMethods.getProperty(thisObj, propertyName);
+    }
+  }
+
+  private static Scriptable getLastExportDate(Scriptable thisObj) {
+    List<ExportLog> logs = exportLogService.getExportLogs("Participant", null, false);
+    if(logs.size() > 0) {
+      return new ScriptableValue(thisObj, DateType.get().valueOf(logs.get(0).getExportDate()));
+    } else {
+      // No export has occurred. Will return the beginning of (unix) time.
+      return new ScriptableValue(thisObj, DateType.get().valueOf(new Date(0L)));
+    }
+  }
+
+  private static Scriptable getProperty(Scriptable thisObj, String propertyName) {
     String property = onyxProperties.getProperty(propertyName);
     if(property == null) {
       return new ScriptableValue(thisObj, TextType.get().nullValue());
