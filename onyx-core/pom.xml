@@ -41,6 +41,11 @@
 
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+    </dependency>
+      
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
     </dependency>
 
@@ -83,12 +88,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.springframework.batch</groupId>
-      <artifactId>spring-batch-samples</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>opensymphony</groupId>
-      <artifactId>quartz-all</artifactId>
+      <groupId>org.opensymphony.quartz</groupId>
+      <artifactId>quartz</artifactId>
     </dependency>
     
     <dependency>
