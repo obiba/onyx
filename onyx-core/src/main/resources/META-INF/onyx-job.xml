@@ -10,7 +10,9 @@
     <property name="appointmentManagementService" ref="appointmentManagementService"/>
   </bean>
   
-  <batch:job id="appointmentListUpdateJob">
+  <bean id="appointmentListUpdateJobParameterIncrementer" class="org.obiba.onyx.core.batch.AppointmentListUpdateJobParameterIncrementer" />
+  
+  <batch:job id="appointmentListUpdateJob" incrementer="appointmentListUpdateJobParameterIncrementer">
     <batch:step id="deleteUnreceivedparticipantsStep" next="updateParticipantsStep">
       <batch:tasklet ref="deleteUnreceivedParticipantsTasklet"/>
     </batch:step>

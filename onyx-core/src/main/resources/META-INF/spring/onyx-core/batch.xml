@@ -28,22 +28,26 @@
     <property name="jobRepository" ref="jobRepository"/>   
   </bean>
   
+  <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator">
+    <property name="jobExplorer" ref="jobExplorer" />
+    <property name="jobRepository" ref="jobRepository" />
+    <property name="jobRegistry" ref="jobRegistry" />
+    <property name="jobLauncher" ref="jobLauncher" />
+  </bean>
+  
   <!-- Code added for the scheduler -->
   <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
-    <property name="jobClass" value="org.springframework.batch.sample.quartz.JobLauncherDetails" />
+    <property name="jobClass" value="org.obiba.onyx.core.batch.OnyxJobDetailDelegate" />
     <property name="group" value="quartz-batch" />
     <property name="jobDataAsMap">
       <map>
         <entry key="jobName" value="appointmentListUpdateJob"/>
         <entry key="jobLocator" value-ref="jobRegistry"/>
-        <entry key="jobLauncher" value-ref="jobLauncher"/>
-        <entry key="date" value-ref="appointmentListUpdateDateParameter" />
+        <entry key="jobOperator" value-ref="jobOperator"/>
       </map>
     </property>
   </bean>
-  
-  <bean id="appointmentListUpdateDateParameter" class="java.util.Date" scope="prototype" />
-  
+    
   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
     <property name="triggers">
       <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
