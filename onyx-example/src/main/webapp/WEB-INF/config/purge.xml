@@ -4,12 +4,23 @@
       <entities>
         <excludeAll type="EXCLUDE" />
         <script type="INCLUDE">
-          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
+          <javascript>
+            if($('Admin.Participant.exported').any('TRUE') == false) {
+              false;
+            } else {
+              var purgeDate = $('Admin.Interview.endDate').add(onyx('org.obiba.onyx.participant.purge'));
+              now().after(purgeDate);
+              true;
+            }
+          </javascript>
         </script>
         <script type="INCLUDE">
           <javascript>
-            $('Admin.Interview.status').any('CLOSED','COMPLETED')
-            //.and($('Admin.Interview.endDate').after($('LastExportDate'))
+            if($('Admin.Interview.endDate').isNull()) {
+              false;
+            } else {
+              $('Admin.Interview.status').any('CLOSED','CANCELED').and($('Admin.Interview.endDate').before(onyx('org.obiba.onyx.lastExportDate')))
+            }
           </javascript>
         </script>
       </entities>
