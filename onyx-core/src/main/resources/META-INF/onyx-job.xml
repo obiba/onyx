@@ -13,7 +13,9 @@
   <bean id="appointmentListUpdateJobParameterIncrementer" class="org.obiba.onyx.core.batch.AppointmentListUpdateJobParameterIncrementer" />
   
   <batch:job id="appointmentListUpdateJob" incrementer="appointmentListUpdateJobParameterIncrementer">
-    <batch:step id="deleteUnreceivedparticipantsStep" next="updateParticipantsStep">
+    <batch:step id="deleteUnreceivedparticipantsStep">
+      <batch:end on="NO UPDATE" />
+      <batch:next on="UPDATE" to="updateParticipantsStep" />
       <batch:tasklet ref="deleteUnreceivedParticipantsTasklet"/>
     </batch:step>
   
@@ -33,6 +35,7 @@
   
   <bean id="deleteUnreceivedParticipantsTasklet" class="org.obiba.onyx.core.etl.participant.impl.DeleteUnreceivedParticipantsTasklet">
     <property name="participantService" ref="participantService" />
+    <property name="participantReader" ref="participantReader" />
   </bean>
     
   <bean id="archiveAppointmentFileTasklet" class="org.obiba.onyx.core.etl.participant.impl.ArchiveAppointmentFileTasklet">
