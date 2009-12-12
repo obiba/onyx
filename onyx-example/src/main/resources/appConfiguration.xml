@@ -1,30 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<linked-list>
-
-  <role id="sysAdmin">
-    <name>SYSTEM_ADMINISTRATOR</name>
-  </role>
-  <role id="partManager">
-    <name>PARTICIPANT_MANAGER</name>
-  </role>
-  <role id="dataOperator">
-    <name>DATA_COLLECTION_OPERATOR</name>
-  </role>
-  <user>
-    <lastName>Onyx Administrator</lastName>
-    <firstName>The</firstName>
-    <login>administrator</login>
-    <password>password</password>
-    <email>test@obiba.org</email>
-    <status>ACTIVE</status>
-    <deleted>false</deleted>
-    <language>en</language>
-    <roles>
-      <role reference="sysAdmin" />
-      <role reference="partManager" />
-      <role reference="dataOperator" />
-    </roles>
-  </user>
+<seedConfig>
 
   <config>
     <siteName>CHUM</siteName>
@@ -33,4 +8,98 @@
     <sessionTimeout>60</sessionTimeout>
   </config>
 
-</linked-list>
+  <users>
+    <user>
+      <lastName>Onyx Administrator</lastName>
+      <firstName>The</firstName>
+      <login>administrator</login>
+      <password>password</password>
+      <email>test@obiba.org</email>
+      <status>ACTIVE</status>
+      <deleted>false</deleted>
+      <language>en</language>
+      <roles>
+        <role>
+          <name>SYSTEM_ADMINISTRATOR</name>
+        </role>
+        <role>
+          <name>PARTICIPANT_MANAGER</name>
+        </role>
+        <role>
+          <name>DATA_COLLECTION_OPERATOR</name>
+        </role>
+      </roles>
+    </user>
+  </users>
+
+  <!-- The corresponding private key for both certificates is in the privateKey.pem file next to this one -->
+  <destinationCerts>
+    <entry>
+      <string>DCC</string>
+      <string><![CDATA[-----BEGIN CERTIFICATE-----
+MIIEFTCCAv2gAwIBAgIJAJl+qhCYPtKkMA0GCSqGSIb3DQEBBQUAMGQxCzAJBgNV
+BAYTAkNBMQ8wDQYDVQQIEwZRdWViZWMxETAPBgNVBAcTCE1vbnRyZWFsMQ4wDAYD
+VQQKEwVPQmlCYTEhMB8GA1UEAxMYRGF0YSBDb29yZGluYXRpbmcgQ2VudGVyMB4X
+DTA5MTIxMjAxNTMwMFoXDTEyMDUzMDAxNTMwMFowZDELMAkGA1UEBhMCQ0ExDzAN
+BgNVBAgTBlF1ZWJlYzERMA8GA1UEBxMITW9udHJlYWwxDjAMBgNVBAoTBU9CaUJh
+MSEwHwYDVQQDExhEYXRhIENvb3JkaW5hdGluZyBDZW50ZXIwggEiMA0GCSqGSIb3
+DQEBAQUAA4IBDwAwggEKAoIBAQC9KSTyW1+lxfW40CXqP5NpqErknM8ZucneXEfG
+is2pRG4hj9J7Nx/0VJm5MRqKWR7jwPpbz5jszQJiosda9zSctzKDD27gKylvlvqZ
+Lgx4zGX3dZAysskhGMFgBK9dkxeb8y3Bh4zliuvzAIT9E62BhD0JKrkfBLH5vnNV
+UnadnXoDQHvmmtgLlm3O+Kg/gJlL8xc/4nZHv5OQH6vV5hNN8rkAeudTwgpJ/7M1
+BaLMB/73DexEBEmv0ClRvkAZA2uphNjo8mTbYK/TfvPygL1jQ0zHFulYMsO/W4G7
+M1S+IkMvIxKMTOAKrKj4h37+hQRH54fqYMxaZED+KOQ8T5PJAgMBAAGjgckwgcYw
+HQYDVR0OBBYEFF+FElzB7Ykkh/SV/oVO+rxinvYYMIGWBgNVHSMEgY4wgYuAFF+F
+ElzB7Ykkh/SV/oVO+rxinvYYoWikZjBkMQswCQYDVQQGEwJDQTEPMA0GA1UECBMG
+UXVlYmVjMREwDwYDVQQHEwhNb250cmVhbDEOMAwGA1UEChMFT0JpQmExITAfBgNV
+BAMTGERhdGEgQ29vcmRpbmF0aW5nIENlbnRlcoIJAJl+qhCYPtKkMAwGA1UdEwQF
+MAMBAf8wDQYJKoZIhvcNAQEFBQADggEBALCkkLFf9FKIxsB3SHRomeIxaC7OAKZv
+ObXE6urADPKhkBAQWjO039JRgikxFd+R2bFfT/NcIZC1xyecQFLfIePZfgkAHMb/
+Yoo1mITWkkCd2aw6KUsEahvWm6bNw2bbaRNAMngUt0pnwoTyT/k1g910+mSgk5gr
+LqxX/lmTnBqaD4oybJf9zfp9Nn8cNAHdlqJKwnDJWAnTSaamuG2bi7FqHf4i3E8F
+AHIKRdw0D1V6UDqFg8mwuVXTLuPoRG+DOxWohWqdUzW6Pkvluf7ydYbjoOKHs5iJ
+7AjHU+rITV6H6FQP0YgioJ8NHDGHhGHL62DQVzlALG2ftHale4+UFxQ=
+-----END CERTIFICATE-----]]></string>
+    </entry>
+    <entry>
+      <string>Appointment Unit</string>
+      <string><![CDATA[-----BEGIN CERTIFICATE-----
+MIIEFTCCAv2gAwIBAgIJAJl+qhCYPtKkMA0GCSqGSIb3DQEBBQUAMGQxCzAJBgNV
+BAYTAkNBMQ8wDQYDVQQIEwZRdWViZWMxETAPBgNVBAcTCE1vbnRyZWFsMQ4wDAYD
+VQQKEwVPQmlCYTEhMB8GA1UEAxMYRGF0YSBDb29yZGluYXRpbmcgQ2VudGVyMB4X
+DTA5MTIxMjAxNTMwMFoXDTEyMDUzMDAxNTMwMFowZDELMAkGA1UEBhMCQ0ExDzAN
+BgNVBAgTBlF1ZWJlYzERMA8GA1UEBxMITW9udHJlYWwxDjAMBgNVBAoTBU9CaUJh
+MSEwHwYDVQQDExhEYXRhIENvb3JkaW5hdGluZyBDZW50ZXIwggEiMA0GCSqGSIb3
+DQEBAQUAA4IBDwAwggEKAoIBAQC9KSTyW1+lxfW40CXqP5NpqErknM8ZucneXEfG
+is2pRG4hj9J7Nx/0VJm5MRqKWR7jwPpbz5jszQJiosda9zSctzKDD27gKylvlvqZ
+Lgx4zGX3dZAysskhGMFgBK9dkxeb8y3Bh4zliuvzAIT9E62BhD0JKrkfBLH5vnNV
+UnadnXoDQHvmmtgLlm3O+Kg/gJlL8xc/4nZHv5OQH6vV5hNN8rkAeudTwgpJ/7M1
+BaLMB/73DexEBEmv0ClRvkAZA2uphNjo8mTbYK/TfvPygL1jQ0zHFulYMsO/W4G7
+M1S+IkMvIxKMTOAKrKj4h37+hQRH54fqYMxaZED+KOQ8T5PJAgMBAAGjgckwgcYw
+HQYDVR0OBBYEFF+FElzB7Ykkh/SV/oVO+rxinvYYMIGWBgNVHSMEgY4wgYuAFF+F
+ElzB7Ykkh/SV/oVO+rxinvYYoWikZjBkMQswCQYDVQQGEwJDQTEPMA0GA1UECBMG
+UXVlYmVjMREwDwYDVQQHEwhNb250cmVhbDEOMAwGA1UEChMFT0JpQmExITAfBgNV
+BAMTGERhdGEgQ29vcmRpbmF0aW5nIENlbnRlcoIJAJl+qhCYPtKkMAwGA1UdEwQF
+MAMBAf8wDQYJKoZIhvcNAQEFBQADggEBALCkkLFf9FKIxsB3SHRomeIxaC7OAKZv
+ObXE6urADPKhkBAQWjO039JRgikxFd+R2bFfT/NcIZC1xyecQFLfIePZfgkAHMb/
+Yoo1mITWkkCd2aw6KUsEahvWm6bNw2bbaRNAMngUt0pnwoTyT/k1g910+mSgk5gr
+LqxX/lmTnBqaD4oybJf9zfp9Nn8cNAHdlqJKwnDJWAnTSaamuG2bi7FqHf4i3E8F
+AHIKRdw0D1V6UDqFg8mwuVXTLuPoRG+DOxWohWqdUzW6Pkvluf7ydYbjoOKHs5iJ
+7AjHU+rITV6H6FQP0YgioJ8NHDGHhGHL62DQVzlALG2ftHale4+UFxQ=
+-----END CERTIFICATE-----]]></string>
+    </entry>
+  </destinationCerts>
+
+  <entities>
+    <role>
+      <name>SYSTEM_ADMINISTRATOR</name>
+    </role>
+    <role>
+      <name>PARTICIPANT_MANAGER</name>
+    </role>
+    <role>
+      <name>DATA_COLLECTION_OPERATOR</name>
+    </role>
+  </entities>
+
+</seedConfig>

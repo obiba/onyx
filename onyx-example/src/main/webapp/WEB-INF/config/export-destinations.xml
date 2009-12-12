@@ -1,8 +1,15 @@
 <destinations>
+
   <destination>
     <name>DCC</name>
 
-    <encrypt/>
+    <encrypt>
+      <!-- Override default values to use Triple-DES. -->
+      <algorithm>DESede</algorithm>
+      <mode>CBC</mode>
+      <padding>PKCS5Padding</padding>
+      <keySize>112</keySize>
+    </encrypt>
 
     <valueset entityType="Participant">
       <entities>
@@ -39,11 +46,9 @@
     </valueset>
   </destination>
 
-
-
   <destination>
     <name>Appointment Unit</name>
-    <encrypt/>
+    <encrypt />
 
     <valueset entityType="Participant">
       <entities>
@@ -66,7 +71,6 @@
 
   <destination>
     <name>Appointment Unit - Cancelled interviews</name>
-    <encrypt/>
 
     <valueset entityType="Participant">
       <entities>

@@ -86,7 +86,7 @@ public class OnyxDataExportDestination {
     return new CollectionFilterChain<ValueSet>(entityName);
   }
 
-  public class EncryptionOptions {
+  public static class EncryptionOptions {
     private String algorithm;
 
     private String mode;
@@ -97,16 +97,16 @@ public class OnyxDataExportDestination {
 
     private void configureStrategy(GeneratedSecretKeyDatasourceEncryptionStrategy strategy) {
       if(algorithm != null) {
-        strategy.setAlgorithm(encrypt.algorithm);
+        strategy.setAlgorithm(algorithm);
       }
       if(mode != null) {
-        strategy.setMode(encrypt.mode);
+        strategy.setMode(mode);
       }
       if(padding != null) {
-        strategy.setPadding(encrypt.padding);
+        strategy.setPadding(padding);
       }
       if(keySize != null) {
-        strategy.setKeySize(encrypt.keySize);
+        strategy.setKeySize(keySize);
       }
     }
   }

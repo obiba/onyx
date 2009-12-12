@@ -62,7 +62,6 @@
       </list>
     </property>
     <property name="developmentSeed" value="true" />
-    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
   <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener" scope="singleton">
