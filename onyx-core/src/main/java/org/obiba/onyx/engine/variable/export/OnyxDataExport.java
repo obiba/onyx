@@ -36,6 +36,8 @@ import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Iterables;
+
 public class OnyxDataExport {
 
   private static final Logger log = LoggerFactory.getLogger(OnyxDataExport.class);
@@ -159,7 +161,7 @@ public class OnyxDataExport {
 
     long exportEndTime = new Date().getTime();
 
-    log.info("Exported [{}] interview(s) in [{}ms] to [{}] destination(s).", new Object[] { 0, exportEndTime - exportStartTime, 0 });
+    log.info("Export took [{}ms].", new Object[] { exportEndTime - exportStartTime });
   }
 
   private void markAsExported(ValueTable table, OnyxDataExportDestination destination) {
@@ -183,6 +185,7 @@ public class OnyxDataExport {
       ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName()).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
       exportLogService.save(log);
     }
+    log.info("Marked [{}] [{}] entites as exported to the destination [{}].", new Object[] { Iterables.size(table.getValueSets()), table.getEntityType(), destination.getName() });
   }
 
 }
