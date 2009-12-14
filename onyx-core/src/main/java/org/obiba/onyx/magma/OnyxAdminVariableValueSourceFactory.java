@@ -263,15 +263,19 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     public void visit(Builder builder) {
       // For variables containing personally identifiable information, add "pii"
       // attribute with value "true".
-      if(builder.isName("barcode", "firstName", "lastName", "fullName", "birthDate")) {
+      if(builder.isName(prefix("firstName"), prefix("lastName"), prefix("fullName"), prefix("birthDate"))) {
         OnyxAttributeHelper.addPiiAttribute(builder);
       }
 
       // For variables that are participant identifiers, add "identifier" attribute
       // with value "true".
-      if(builder.isName("barcode")) {
+      if(builder.isName(prefix("barcode"))) {
         OnyxAttributeHelper.addIdentifierAttribute(builder);
       }
+    }
+
+    private String prefix(String name) {
+      return ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + name;
     }
 
   }
