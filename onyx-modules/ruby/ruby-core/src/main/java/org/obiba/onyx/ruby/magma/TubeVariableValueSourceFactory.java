@@ -127,8 +127,8 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     delegateFactory.setOccurrenceGroup(REGISTERED_PARTICIPANT_TUBE);
     delegateFactory.setProperties(ImmutableSet.of("barcode", "registrationTime", "comment"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("type", "actionType").build());
-    delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", String.class).build());
-    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor(), new OccurrenceCountAttributeVisitor(tubeRegistrationConfiguration.getExpectedTubeCount())));
+    delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", Boolean.class).build());
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor(), new OccurrenceCountAttributeVisitor(tubeRegistrationConfiguration.getExpectedTubeCount()), new IdentifierAttributeVisitor(tubePrefix + ".barcode")));
     Set<VariableValueSource> sources = delegateFactory.createSources();
 
     // Create sources for registered participant tube remarks.
