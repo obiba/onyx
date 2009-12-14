@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -47,7 +48,7 @@ public class DevelopersPanel extends Panel {
   public DevelopersPanel(String id) {
     super(id);
 
-    AjaxLink devTab = new AjaxLink("dumpLink") {
+    AjaxLink dumpLink = new AjaxLink("dumpLink") {
 
       private static final long serialVersionUID = 109761762415267865L;
 
@@ -62,7 +63,21 @@ public class DevelopersPanel extends Panel {
       }
 
     };
-    add(devTab);
+    add(dumpLink);
+    add(new Label("dumpFilename", new PropertyModel<String>(this, "dumpFile.absolutePath")));
+
+    AjaxLink clearCacheLink = new AjaxLink("clearCacheLink") {
+
+      private static final long serialVersionUID = 109761762415267865L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        factory.evictQueries();
+        target.addComponent(DevelopersPanel.this.get("hibernateStats"));
+      }
+
+    };
+    add(clearCacheLink);
     add(new HibernateStatisticsPanel("hibernateStats", new PropertyModel<Statistics>(factory, "statistics")).setOutputMarkupId(true));
   }
 
@@ -72,8 +87,14 @@ public class DevelopersPanel extends Panel {
   }
 
   private void dump() throws IOException {
+
+    File dumpFile = getDumpFile();
+    if(dumpFile.exists()) {
+      dumpFile.delete();
+    }
+
     FsDatasource target;
-    MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", new File("target", "magma-dump.zip")));
+    MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", dumpFile));
     try {
       DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withThroughtputListener().withListener(new SessionClearingListener()).build();
       for(Datasource ds : MagmaEngine.get().getDatasources()) {
@@ -84,6 +105,10 @@ public class DevelopersPanel extends Panel {
     } finally {
       MagmaEngine.get().removeDatasource(target);
     }
+  }
+
+  public File getDumpFile() {
+    return new File(System.getProperty("java.io.tmpdir"), "magma-dump.zip");
   }
 
   private class SessionClearingListener implements DatasourceCopyEventListener {
