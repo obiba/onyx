@@ -11,6 +11,8 @@ package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
 import java.security.PublicKey;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +132,7 @@ public class OnyxDataExport {
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination destination : exportDestinations) {
 
-        File outputFile = new File(outputRootDirectory, destination.getName() + ".zip");
+        File outputFile = new File(outputRootDirectory, destination.getName() + "-" + getCurrentDateTimeString() + ".zip");
         FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputFile, destination.getEncryptionStrategy(pkProvider));
 
         MagmaEngine.get().addDatasource(outputDatasource);
@@ -186,6 +188,11 @@ public class OnyxDataExport {
       exportLogService.save(log);
     }
     log.info("Marked [{}] [{}] entites as exported to the destination [{}].", new Object[] { Iterables.size(table.getValueSets()), table.getEntityType(), destination.getName() });
+  }
+
+  private String getCurrentDateTimeString() {
+    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+    return df.format(new Date());
   }
 
 }
