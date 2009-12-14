@@ -1,5 +1,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" default-autowire="no">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
 
   <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
@@ -50,8 +51,9 @@
 
   <bean class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory" />
   <bean class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver" />
-  <!--
-    <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory"> <property name="resource"
-    value="${org.obiba.onyx.config.path}/scripted-variables.xml" /> </bean>
-  -->
+
+  <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory">
+    <property name="resource" value="${org.obiba.onyx.config.path}/custom-variables.xml" />
+  </bean>
+
 </beans>
