@@ -50,6 +50,8 @@ public abstract class AbstractJadeCaptureAndExportStrategy implements CaptureAnd
 
   public abstract boolean isExported(String entityIdentifier);
 
+  public abstract boolean isExported(String entityIdentifier, String destinationName);
+
   //
   // Methods
   //

@@ -59,6 +59,10 @@ public class OnyxDataExport {
     this.exportDestinations = exportDestinations;
   }
 
+  public List<OnyxDataExportDestination> getExportDestinations() {
+    return exportDestinations;
+  }
+
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
   }

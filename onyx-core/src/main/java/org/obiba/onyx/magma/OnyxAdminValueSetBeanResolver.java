@@ -15,9 +15,12 @@ import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageInstance;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.InterviewService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -25,27 +28,32 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class OnyxAdminValueSetBeanResolver extends AbstractOnyxBeanResolver {
 
-  @Autowired(required = true)
+  @Autowired
   private ApplicationConfigurationService applicationConfigService;
 
-  @Autowired(required = true)
+  @Autowired
   private InterviewService interviewService;
 
   @Autowired
+  private ExportLogService exportLogService;
+
   public void setApplicationConfigService(ApplicationConfigurationService applicationConfigService) {
     this.applicationConfigService = applicationConfigService;
   }
 
-  @Autowired
   public void setInterviewService(InterviewService interviewService) {
     this.interviewService = interviewService;
   }
 
-  public boolean resolves(Class<?> type) {
-    return Interview.class.equals(type) || Participant.class.equals(type) || Action.class.equals(type) || ApplicationConfiguration.class.equals(type) || StageInstance.class.equals(type);
+  public void setExportLogService(ExportLogService exportLogService) {
+    this.exportLogService = exportLogService;
   }
 
-  public Object resolve(Class<?> type, ValueSet valueSet, Variable Variable) {
+  public boolean resolves(Class<?> type) {
+    return Interview.class.equals(type) || Participant.class.equals(type) || Action.class.equals(type) || ApplicationConfiguration.class.equals(type) || StageInstance.class.equals(type) || ExportLog.class.equals(type);
+  }
+
+  public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) {
     if(type.equals(Interview.class)) {
       return getParticipant(valueSet).getInterview();
     }
@@ -61,6 +69,11 @@ public class OnyxAdminValueSetBeanResolver extends AbstractOnyxBeanResolver {
     if(type.equals(StageInstance.class)) {
       Participant participant = getParticipant(valueSet);
       return interviewService.getStageInstances(participant.getInterview());
+    }
+    if(type.equals(ExportLog.class)) {
+      // Admin.Interview.exportLog.destination
+      String destination = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 3);
+      return exportLogService.getExportLogs("Participant", valueSet.getVariableEntity().getIdentifier(), destination, true);
     }
     return null;
   }

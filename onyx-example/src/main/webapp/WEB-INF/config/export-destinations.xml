@@ -4,7 +4,6 @@
     <name>DCC</name>
 
     <encrypt>
-      <!-- Override default values to use Triple-DES. -->
       <algorithm>DESede</algorithm>
       <mode>CBC</mode>
       <padding>PKCS5Padding</padding>
@@ -18,7 +17,7 @@
           $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -32,7 +31,7 @@
     <valueset entityType="Workstation">
       <entities>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Workstation.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Workstation.exportLog.destination').any('DCC')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -40,7 +39,7 @@
     <valueset entityType="Instrument">
       <entities>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Instrument.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Instrument.exportLog.destination').any('DCC')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -48,6 +47,7 @@
 
   <destination>
     <name>Appointment Unit</name>
+ 
     <encrypt />
 
     <valueset entityType="Participant">
@@ -57,7 +57,7 @@
           $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('Appointment Unit')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -75,11 +75,11 @@
     <valueset entityType="Participant">
       <entities>
         <script type="INCLUDE">
-          <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
+          <javascript><![CDATA[// Include any ValueSet that has 'CANCELLED' as a value for the 'Participant.Interview.Status' variable
           $('Participant.Interview.status').any('CANCELLED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Admin.Participant.exported').any('TRUE')]]></javascript>
+          <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('Appointment Unit - Cancelled interviews')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -90,4 +90,5 @@
       </variables>
     </valueset>
   </destination>
+    
 </destinations>

@@ -52,8 +52,12 @@ public class ParticipantCaptureAndExportStrategy implements CaptureAndExportStra
   }
 
   public boolean isExported(String entityIdentifier) {
+    return isExported(entityIdentifier, null);
+  }
+
+  public boolean isExported(String entityIdentifier, String destinationName) {
     if(entityIdentifier != null) {
-      ExportLog exportLog = exportLogService.getLastExportLog("Participant", entityIdentifier);
+      ExportLog exportLog = (destinationName != null) ? exportLogService.getLastExportLog("Participant", entityIdentifier, destinationName) : exportLogService.getLastExportLog("Participant", entityIdentifier);
       return exportLog != null;
     }
     return false;

@@ -42,10 +42,19 @@ public interface CaptureAndExportStrategy {
   public Date getCaptureEndDate(String entityIdentifier);
 
   /**
-   * Indicates whether the specified entity has been exported or not.
+   * Indicates whether the specified entity has been exported or not (to <em>any</em> specified destination).
    * 
    * @param entityIdentifier entity identifier
    * @return <code>true</code> if exported
    */
   public boolean isExported(String entityIdentifier);
+
+  /**
+   * Indicates whether the specified entity has been exported or not to the specified destination.
+   * 
+   * @param entityIdentifier entity identifier
+   * @param destinationName destination name
+   * @return <code>true</code> if exported
+   */
+  public boolean isExported(String entityIdentifier, String destinationName);
 }

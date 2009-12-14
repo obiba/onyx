@@ -27,9 +27,13 @@ public class InstrumentCaptureAndExportStrategy extends AbstractJadeCaptureAndEx
   }
 
   public boolean isExported(String entityIdentifier) {
+    return isExported(entityIdentifier, null);
+  }
+
+  public boolean isExported(String entityIdentifier, String destinationName) {
     // Return TRUE if new instrument calibrations have been recorded since the last export, FALSE
     // otherwise (return FALSE also if no ExportLog exists for the instrument).
-    ExportLog exportLog = exportLogService.getLastExportLog("Instrument", entityIdentifier);
+    ExportLog exportLog = (destinationName != null) ? exportLogService.getLastExportLog("Instrument", entityIdentifier, destinationName) : exportLogService.getLastExportLog("Instrument", entityIdentifier);
     if(exportLog != null) {
       List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getInstrumentCalibrationsRecordedAfter(entityIdentifier, exportLog.getExportDate());
       return experimentalConditions.isEmpty();

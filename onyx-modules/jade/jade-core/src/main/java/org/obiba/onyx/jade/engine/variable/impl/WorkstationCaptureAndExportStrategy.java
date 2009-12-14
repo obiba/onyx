@@ -27,9 +27,13 @@ public class WorkstationCaptureAndExportStrategy extends AbstractJadeCaptureAndE
   }
 
   public boolean isExported(String entityIdentifier) {
+    return isExported(entityIdentifier, null);
+  }
+
+  public boolean isExported(String entityIdentifier, String destinationName) {
     // Return TRUE if new experimental conditions have been recorded since the last export, FALSE
     // otherwise (return FALSE also if no ExportLog exists for the workstation).
-    ExportLog exportLog = exportLogService.getLastExportLog("Workstation", entityIdentifier);
+    ExportLog exportLog = (destinationName != null) ? exportLogService.getLastExportLog("Workstation", entityIdentifier, destinationName) : exportLogService.getLastExportLog("Workstation", entityIdentifier);
     if(exportLog != null) {
       List<ExperimentalCondition> experimentalConditions = experimentalConditionService.getNonInstrumentRelatedConditionsRecordedAfter(entityIdentifier, exportLog.getExportDate());
       return experimentalConditions.isEmpty();

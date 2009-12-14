@@ -19,10 +19,10 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
@@ -47,6 +47,8 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
   public static final String WORKSTATION = "Workstation";
 
+  public static final String EXPORT_LOG = "exportLog";
+
   //
   // Instances
   //
@@ -67,11 +69,14 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    // Create Workstation sources (name, captureStartDate, captureEndDate, exported).
+    // Create Workstation sources (name, captureStartDate, captureEndDate).
     sources.addAll(createWorkstationSources());
 
     // Create sources for (non-instrument) experimental conditions.
     sources.addAll(createExperimentalConditionSources());
+
+    // Create sources for export logs.
+    sources.addAll(createExportLogSources());
 
     return sources;
   }
@@ -98,7 +103,6 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     sources.add(createWorkstationNameSource());
     sources.add(createWorkstationCaptureStartDateSource());
     sources.add(createWorkstationCaptureEndDateSource());
-    sources.add(createWorkstationExportedSource());
 
     return sources;
   }
@@ -157,24 +161,6 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     };
   }
 
-  private VariableValueSource createWorkstationExportedSource() {
-    return new VariableValueSource() {
-
-      public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "exported", getValueType(), WORKSTATION);
-        return builder.build();
-      }
-
-      public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(workstationCaptureAndExportStrategy.isExported(valueSet.getVariableEntity().getIdentifier()));
-      }
-
-      public ValueType getValueType() {
-        return BooleanType.get();
-      }
-    };
-  }
-
   private Set<VariableValueSource> createExperimentalConditionSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
@@ -219,5 +205,14 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
     }
 
     return sources;
+  }
+
+  private Set<VariableValueSource> createExportLogSources() {
+    BeanVariableValueSourceFactory<ExportLog> exportLogFactory = new BeanVariableValueSourceFactory<ExportLog>(WORKSTATION, ExportLog.class);
+    exportLogFactory.setPrefix(WORKSTATION + '.' + EXPORT_LOG);
+    exportLogFactory.setOccurrenceGroup(EXPORT_LOG);
+    exportLogFactory.setProperties(ImmutableSet.of("type", "destination", "captureStartDate", "captureEndDate", "exportDate"));
+
+    return exportLogFactory.createSources();
   }
 }

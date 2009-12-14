@@ -22,10 +22,10 @@ import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
@@ -52,6 +52,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
   public static final String INSTRUMENT = "Instrument";
 
+  public static final String EXPORT_LOG = "exportLog";
+
   //
   // Instance Variables
   //
@@ -65,7 +67,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   @Autowired
   private ExperimentalConditionService experimentalConditionService;
 
-  @Autowired(required = true)
+  @Autowired
   private InstrumentCaptureAndExportStrategy instrumentCaptureAndExportStrategy;
 
   //
@@ -89,13 +91,15 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     setPrefix(INSTRUMENT);
     sources = super.createSources();
 
-    // Create Instrument captureStartDate, captureEndDate, and exported sources.
+    // Create Instrument captureStartDate and captureEndDate sources.
     sources.add(createInstrumentCaptureStartDateSource());
     sources.add(createInstrumentCaptureEndDateSource());
-    sources.add(createInstrumentExportedSource());
 
     // Create sources for instrument calibrations.
     sources.addAll(createInstrumentCalibrationSources());
+
+    // Create sources for export logs.
+    sources.addAll(createExportLogSources());
 
     return sources;
   }
@@ -152,24 +156,6 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       public ValueType getValueType() {
         return DateType.get();
-      }
-    };
-  }
-
-  private VariableValueSource createInstrumentExportedSource() {
-    return new VariableValueSource() {
-
-      public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "exported", getValueType(), INSTRUMENT);
-        return builder.build();
-      }
-
-      public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(instrumentCaptureAndExportStrategy.isExported(valueSet.getVariableEntity().getIdentifier()));
-      }
-
-      public ValueType getValueType() {
-        return BooleanType.get();
       }
     };
   }
@@ -250,6 +236,15 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     }
 
     return sources;
+  }
+
+  private Set<VariableValueSource> createExportLogSources() {
+    BeanVariableValueSourceFactory<ExportLog> exportLogFactory = new BeanVariableValueSourceFactory<ExportLog>(INSTRUMENT, ExportLog.class);
+    exportLogFactory.setPrefix(INSTRUMENT + '.' + EXPORT_LOG);
+    exportLogFactory.setOccurrenceGroup(EXPORT_LOG);
+    exportLogFactory.setProperties(ImmutableSet.of("type", "destination", "captureStartDate", "captureEndDate", "exportDate"));
+
+    return exportLogFactory.createSources();
   }
 
   //

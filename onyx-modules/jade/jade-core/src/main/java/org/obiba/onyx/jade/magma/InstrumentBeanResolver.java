@@ -15,6 +15,8 @@ import java.util.List;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
 import org.obiba.magma.beans.NoSuchBeanException;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
@@ -33,40 +35,32 @@ public class InstrumentBeanResolver extends ExperimentalConditionBeanResolver {
   // Instance Variables
   //
 
-  @Autowired(required = true)
+  @Autowired
   private InstrumentService instrumentService;
+
+  @Autowired
+  private ExportLogService exportLogService;
 
   //
   // ExperimentalConditionBeanResolver Methods
   //
 
   public boolean resolves(Class<?> type) {
-    return super.resolves(type) || Instrument.class.equals(type);
+    return super.resolves(type) || Instrument.class.equals(type) || ExportLog.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
-    if(type.equals(Instrument.class)) {
+    if(Instrument.class.equals(type)) {
       return resolveInstrument(valueSet);
-    } else if(type.equals(ExperimentalCondition.class)) {
+    } else if(ExperimentalCondition.class.equals(type)) {
       return resolveExperimentalCondition(valueSet, variable);
-    } else if(type.equals(ExperimentalConditionValue.class)) {
+    } else if(ExperimentalConditionValue.class.equals(type)) {
       return resolveExperimentalConditionValue(valueSet, variable);
+    } else if(ExportLog.class.equals(type)) {
+      return resolveExportLog(valueSet, variable);
     }
 
     return null;
-  }
-
-  //
-  // Methods
-  //
-
-  public void setInstrumentService(InstrumentService instrumentService) {
-    this.instrumentService = instrumentService;
-  }
-
-  protected Instrument resolveInstrument(ValueSet valueSet) {
-    String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
-    return instrumentService.getInstrumentByBarcode(instrumentBarcode);
   }
 
   protected List<ExperimentalCondition> resolveExperimentalCondition(ValueSet valueSet, Variable variable) {
@@ -78,6 +72,29 @@ public class InstrumentBeanResolver extends ExperimentalConditionBeanResolver {
       }
     }
     return Collections.emptyList();
+  }
+
+  //
+  // Methods
+  //
+
+  public void setInstrumentService(InstrumentService instrumentService) {
+    this.instrumentService = instrumentService;
+  }
+
+  public void setExportLogService(ExportLogService exportLogService) {
+    this.exportLogService = exportLogService;
+  }
+
+  protected Instrument resolveInstrument(ValueSet valueSet) {
+    String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
+    return instrumentService.getInstrumentByBarcode(instrumentBarcode);
+  }
+
+  protected List<ExportLog> resolveExportLog(ValueSet valueSet, Variable variable) {
+    // Instrument.exportLog.destination
+    String destination = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
+    return exportLogService.getExportLogs("Instrument", valueSet.getVariableEntity().getIdentifier(), destination, true);
   }
 
   private List<ExperimentalCondition> getExperimentalConditions(String experimentalConditionName, String instrumentBarcode) {

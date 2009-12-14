@@ -22,7 +22,6 @@ import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
-import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
@@ -31,6 +30,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.stage.StageInstance;
+import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.runtime.Version;
@@ -61,20 +61,22 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
   public static final String STAGE_INSTANCE = "StageInstance";
 
+  public static final String EXPORT_LOG = "exportLog";
+
   //
   // Instance Variables
   //
 
-  @Autowired(required = true)
+  @Autowired
   private OnyxAttributeHelper attributeHelper;
 
-  @Autowired(required = true)
+  @Autowired
   private ParticipantMetadata participantMetadata;
 
-  @Autowired(required = true)
+  @Autowired
   private Version version;
 
-  @Autowired(required = true)
+  @Autowired
   private ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy;
 
   //
@@ -85,7 +87,6 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     sources.add(createVersionSource());
-    sources.add(createParticipantExportedSource());
     sources.addAll(createParticipantCaptureDateSources());
     sources.addAll(createParticipantSources());
     sources.addAll(createInterviewSources());
@@ -138,24 +139,6 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
       public ValueType getValueType() {
         return type;
-      }
-    };
-  }
-
-  private VariableValueSource createParticipantExportedSource() {
-    return new VariableValueSource() {
-
-      public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(ONYX_ADMIN_PREFIX + '.' + PARTICIPANT + '.' + "exported", getValueType(), PARTICIPANT);
-        return builder.build();
-      }
-
-      public Value getValue(ValueSet valueSet) {
-        return getValueType().valueOf(participantCaptureAndExportStrategy.isExported(valueSet.getVariableEntity().getIdentifier()));
-      }
-
-      public ValueType getValueType() {
-        return BooleanType.get();
       }
     };
   }
@@ -226,11 +209,20 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   }
 
   private Set<VariableValueSource> createInterviewSources() {
-    BeanVariableValueSourceFactory<Interview> delegateFactory = new BeanVariableValueSourceFactory<Interview>(PARTICIPANT, Interview.class);
-    delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW);
-    delegateFactory.setProperties(ImmutableSet.of("startDate", "endDate", "status", "duration"));
+    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    return delegateFactory.createSources();
+    BeanVariableValueSourceFactory<Interview> interviewFactory = new BeanVariableValueSourceFactory<Interview>(PARTICIPANT, Interview.class);
+    interviewFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW);
+    interviewFactory.setProperties(ImmutableSet.of("startDate", "endDate", "status", "duration"));
+    sources.addAll(interviewFactory.createSources());
+
+    BeanVariableValueSourceFactory<ExportLog> exportLogFactory = new BeanVariableValueSourceFactory<ExportLog>(PARTICIPANT, ExportLog.class);
+    exportLogFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW + '.' + EXPORT_LOG);
+    exportLogFactory.setOccurrenceGroup(EXPORT_LOG);
+    exportLogFactory.setProperties(ImmutableSet.of("type", "destination", "captureStartDate", "captureEndDate", "exportDate"));
+    sources.addAll(exportLogFactory.createSources());
+
+    return sources;
   }
 
   private Set<VariableValueSource> createAppConfigSources() {
