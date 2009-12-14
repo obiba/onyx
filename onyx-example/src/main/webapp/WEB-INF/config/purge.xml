@@ -5,13 +5,7 @@
         <excludeAll type="EXCLUDE" />
         <script type="INCLUDE">
           <javascript>
-            if($('Admin.Participant.exported').any('TRUE') == false) {
-              false;
-            } else {
-              var purgeDate = $('Admin.Interview.endDate').add(onyx('org.obiba.onyx.participant.purge'));
-              now().after(purgeDate);
-              true;
-            }
+            false;          
           </javascript>
         </script>
         <script type="INCLUDE">
