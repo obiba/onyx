@@ -26,7 +26,7 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
 
   private static final Logger log = LoggerFactory.getLogger(ConsentServiceImpl.class);
 
-  private EnumSet<ConsentMode> supportedConsentModes;
+  private boolean electronicModeAllowedString;
 
   private List<Locale> supportedConsentLocales;
 
@@ -54,30 +54,23 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
     getPersistenceManager().save(consent);
   }
 
+  public boolean isElectronicModeAllowedString() {
+    return electronicModeAllowedString;
+  }
+
+  public void setElectronicModeAllowedString(boolean electronicModeAllowedString) {
+    this.electronicModeAllowedString = electronicModeAllowedString;
+  }
+
   public EnumSet<ConsentMode> getSupportedConsentModes() {
-    return supportedConsentModes;
-  }
+    List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
 
-  public void setSupportedConsentModes(EnumSet<ConsentMode> supportedConsentModes) {
-    this.supportedConsentModes = supportedConsentModes;
-  }
-
-  /**
-   * Set the supported consent mode using a comma separated set of consent mode.
-   * @param supportedConsentModes.
-   */
-  public void setSupportedConsentModesString(String supportedConsentModes) {
-    if(supportedConsentModes != null && supportedConsentModes.length() > 0) {
-
-      List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
-
-      String supportedConsentModeArray[] = supportedConsentModes.split(",");
-      for(String mode : supportedConsentModeArray) {
-        consentModesList.add(ConsentMode.valueOf(mode));
-      }
-
-      this.setSupportedConsentModes(EnumSet.copyOf(consentModesList));
+    consentModesList.add(ConsentMode.MANUAL);
+    if(isElectronicModeAllowedString()) {
+      consentModesList.add(ConsentMode.ELECTRONIC);
     }
+
+    return EnumSet.copyOf(consentModesList);
   }
 
   public List<Locale> getSupportedConsentLocales() {
@@ -103,14 +96,6 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
       }
 
       this.setSupportedConsentLocales(consentLocaleList);
-    }
-  }
-
-  public void validateInstance() {
-    if(!supportedConsentModes.contains(ConsentMode.MANUAL)) {
-      IllegalArgumentException ex = new IllegalArgumentException();
-      log.error("Consent mode electronic only is not supported.", ex);
-      throw ex;
     }
   }
 
