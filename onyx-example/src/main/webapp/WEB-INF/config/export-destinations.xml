@@ -47,14 +47,13 @@
 
   <destination>
     <name>Appointment Unit</name>
- 
     <encrypt />
-
     <valueset entityType="Participant">
       <entities>
+        <excludeAll />
         <script type="INCLUDE">
           <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
-          $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
+          $('Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
           <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('Appointment Unit')]]></javascript>
@@ -74,9 +73,10 @@
 
     <valueset entityType="Participant">
       <entities>
+        <excludeAll />
         <script type="INCLUDE">
           <javascript><![CDATA[// Include any ValueSet that has 'CANCELLED' as a value for the 'Participant.Interview.Status' variable
-          $('Participant.Interview.status').any('CANCELLED')]]></javascript>
+          $('Admin.Interview.status').any('CANCELLED')]]></javascript>
         </script>
         <script type="EXCLUDE">
           <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('Appointment Unit - Cancelled interviews')]]></javascript>
