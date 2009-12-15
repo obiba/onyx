@@ -90,7 +90,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
 
   @SuppressWarnings("unchecked")
   public List<Participant> getParticipantsByInputField(String inputField, PagingClause paging, SortingClause... clauses) {
-    Query participantQuery = createParticipantsByInputFieldQuery(inputField);
+    Query participantQuery = createParticipantsByInputFieldQuery(inputField, clauses);
 
     participantQuery.setMaxResults(paging.getLimit());
     participantQuery.setFirstResult(paging.getOffset());
@@ -113,20 +113,29 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return count;
   }
 
-  private Query createParticipantsByInputFieldQuery(String inputField) {
+  private Query createParticipantsByInputFieldQuery(String inputField, SortingClause... clauses) {
     Query participantQuery = null;
 
-    if(inputField != null) {
-      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode or p.lastName like :lastName or p.firstName like :firstName or concat(p.firstName, ' ', p.lastName) = :fullName");
-      participantQuery.setString("barcode", inputField);
-      participantQuery.setString("appointmentCode", inputField);
-      participantQuery.setString("lastName", "%" + inputField + "%");
-      participantQuery.setString("firstName", "%" + inputField + "%");
-      participantQuery.setString("fullName", inputField);
-    } else {
-      participantQuery = getSession().createQuery("from Participant");
-    }
+    String queryString = "from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode or p.lastName like :lastName or p.firstName like :firstName or concat(p.firstName, ' ', p.lastName) = :fullName";
+    if(clauses != null) {
+      int i = 0;
+      for(SortingClause clause : clauses) {
+        queryString += (i == 0) ? " order by " : ", ";
+        queryString += clause.getField() + ((clause.isAscending()) ? " asc" : " desc");
+        i++;
+      }
 
+      if(inputField != null) {
+        participantQuery = getSession().createQuery(queryString);
+        participantQuery.setString("barcode", inputField);
+        participantQuery.setString("appointmentCode", inputField);
+        participantQuery.setString("lastName", "%" + inputField + "%");
+        participantQuery.setString("firstName", "%" + inputField + "%");
+        participantQuery.setString("fullName", inputField);
+      } else {
+        participantQuery = getSession().createQuery("from Participant");
+      }
+    }
     return participantQuery;
   }
 

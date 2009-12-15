@@ -316,7 +316,7 @@ public class ParticipantSearchPage extends BasePage {
     public ParticipantByInputFieldProvider(String inputField) {
       super(queryService, Participant.class);
       this.inputField = inputField;
-      setSort(new SortParam("barcode", true));
+      setSort(new SortParam("lastName", true));
     }
 
     @Override
