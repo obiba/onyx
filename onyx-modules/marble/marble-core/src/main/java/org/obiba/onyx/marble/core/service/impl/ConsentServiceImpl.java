@@ -109,7 +109,7 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
   public void validateInstance() {
     if(!supportedConsentModes.contains(ConsentMode.MANUAL)) {
       IllegalArgumentException ex = new IllegalArgumentException();
-      log.error("Consent mode electronic only is not supported yet", ex);
+      log.error("Consent mode electronic only is not supported.", ex);
       throw ex;
     }
   }

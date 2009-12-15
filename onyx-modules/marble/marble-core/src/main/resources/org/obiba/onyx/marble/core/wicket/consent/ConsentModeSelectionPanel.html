@@ -1,12 +1,18 @@
 <wicket:panel>
 	<div class="wizard-instructions">
-		<wicket:message key="ConsentModeSelection" /> 		
+		<span wicket:id="instruction" /> 		
 	</div>
 	<div class="wizard-body">
 		<span wicket:id="consentMode"  class="wizard-radio"/>
-		<div class="wizard-separator"/>
+		<span wicket:id="separator"/>
+		
 		<p>
 			<wicket:message key="ConsentLanguageSelection" />&nbsp;&nbsp;<select wicket:id="consentLanguage"/>
 		</p>
 	</div>
+	
+	<wicket:fragment wicket:id="separatorFragment">
+	  <div class="wizard-separator"/>
+	</wicket:fragment>
+	
 </wicket:panel>

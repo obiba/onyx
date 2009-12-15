@@ -13,11 +13,14 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.RadioChoice;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
@@ -43,21 +46,27 @@ public class ConsentModeSelectionPanel extends Panel {
 
   private RadioChoice<ConsentMode> modeChoice;
 
+  private SeparatorFragment separatorFragment;
+
   public ConsentModeSelectionPanel(String id) {
     super(id);
     setOutputMarkupId(true);
     List<Locale> locales;
 
     add(modeChoice = createConsentModeRadio());
+    add(separatorFragment = new SeparatorFragment("separator"));
 
     // Set default consent mode to electronic.
     if(consentService.getSupportedConsentModes().containsAll(EnumSet.allOf(ConsentMode.class))) {
       activeConsentService.getConsent().setMode(ConsentMode.ELECTRONIC);
       locales = consentFormTemplateLoader.getAvailableLocales();
+      add(new Label("instruction", new StringResourceModel("ConsentModeSelection", ConsentModeSelectionPanel.this, null)));
     } else {
       activeConsentService.getConsent().setMode(ConsentMode.MANUAL);
-      modeChoice.setEnabled(false);
+      modeChoice.setVisible(false);
       locales = consentService.getSupportedConsentLocales();
+      add(new Label("instruction", new StringResourceModel("ConsenLanguageSelection", ConsentModeSelectionPanel.this, null)));
+      separatorFragment.setVisible(false);
     }
 
     add(createConsentLanguageDropDown(locales));
@@ -107,6 +116,14 @@ public class ConsentModeSelectionPanel extends Panel {
       if(new SpringStringResourceModel(locale.toString()).getString().equals(locale.toString())) return false;
     }
     return true;
+  }
+
+  private class SeparatorFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    public SeparatorFragment(String id) {
+      super(id, "separatorFragment", ConsentModeSelectionPanel.this);
+    }
   }
 
 }
