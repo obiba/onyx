@@ -26,7 +26,7 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
 
   private static final Logger log = LoggerFactory.getLogger(ConsentServiceImpl.class);
 
-  private boolean electronicModeAllowedString;
+  private boolean allowElectronicMode;
 
   private List<Locale> supportedConsentLocales;
 
@@ -54,19 +54,19 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
     getPersistenceManager().save(consent);
   }
 
-  public boolean isElectronicModeAllowedString() {
-    return electronicModeAllowedString;
+  public boolean isElectronicModeAllowed() {
+    return allowElectronicMode;
   }
 
-  public void setElectronicModeAllowedString(boolean electronicModeAllowedString) {
-    this.electronicModeAllowedString = electronicModeAllowedString;
+  public void setAllowElectronicMode(boolean allowElectronicMode) {
+    this.allowElectronicMode = allowElectronicMode;
   }
 
   public EnumSet<ConsentMode> getSupportedConsentModes() {
     List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
 
     consentModesList.add(ConsentMode.MANUAL);
-    if(isElectronicModeAllowedString()) {
+    if(isElectronicModeAllowed()) {
       consentModesList.add(ConsentMode.ELECTRONIC);
     }
 
