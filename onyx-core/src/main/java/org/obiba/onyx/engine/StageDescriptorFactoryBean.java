@@ -13,22 +13,21 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
-import com.thoughtworks.xstream.converters.reflection.ReflectionProviderWrapper;
 
 /**
  * Loads {@link Stage} instances from an XML XStream file.
  */
-public class StageDescriptorFactoryBean implements FactoryBean, ApplicationContextAware {
+public class StageDescriptorFactoryBean implements FactoryBean, ApplicationContextAware, InitializingBean {
 
   protected ApplicationContext applicationContext;
 
@@ -37,9 +36,18 @@ public class StageDescriptorFactoryBean implements FactoryBean, ApplicationConte
   protected Resource stageDescriptor;
 
   public StageDescriptorFactoryBean() {
-    XStream defaultProvider = new XStream();
+  }
 
-    xstream = new XStream(new InjectingReflectionProviderWrapper(defaultProvider.getReflectionProvider()));
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  public void setStageDescriptor(Resource stageDescriptor) {
+    this.stageDescriptor = stageDescriptor;
+  }
+
+  public void afterPropertiesSet() throws Exception {
+    xstream = new XStream(new InjectingReflectionProviderWrapper(new XStream().getReflectionProvider(), applicationContext));
     xstream.alias("stages", LinkedList.class);
     xstream.alias("stage", Stage.class);
     xstream.alias("stageCondition", PreviousStageDependencyCondition.class);
@@ -49,14 +57,6 @@ public class StageDescriptorFactoryBean implements FactoryBean, ApplicationConte
     xstream.alias("moduleCondition", ModuleDependencyCondition.class);
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");
-  }
-
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
-  }
-
-  public void setStageDescriptor(Resource stageDescriptor) {
-    this.stageDescriptor = stageDescriptor;
   }
 
   public Object getObject() throws Exception {
@@ -80,31 +80,6 @@ public class StageDescriptorFactoryBean implements FactoryBean, ApplicationConte
 
   public boolean isSingleton() {
     return true;
-  }
-
-  /**
-   * A implementation of {@code ReflectionProvider} that autowires the created objects. This could be moved to a
-   * top-level class when it is better tested.
-   */
-  public class InjectingReflectionProviderWrapper extends ReflectionProviderWrapper {
-
-    public InjectingReflectionProviderWrapper(ReflectionProvider wrapper) {
-      super(wrapper);
-    }
-
-    @Override
-    public Object newInstance(Class type) {
-      // Let the wrapped instance create the bean
-      Object value = super.newInstance(type);
-      if(value != null) {
-        // If we can, autowire the instance
-        if(applicationContext != null && applicationContext.getAutowireCapableBeanFactory() != null) {
-          // Autowire by type
-          applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(value, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, false);
-        }
-      }
-      return value;
-    }
   }
 
 }

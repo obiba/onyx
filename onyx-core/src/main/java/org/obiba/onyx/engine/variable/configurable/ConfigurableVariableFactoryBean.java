@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FirstNotNullDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
@@ -23,7 +24,6 @@ import org.obiba.onyx.core.data.RegexDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.io.support.XStreamDataConverter;
 import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;

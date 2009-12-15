@@ -30,10 +30,12 @@ public class DataValueConverter {
    * @return Magma Value
    */
   public static Value dataToValue(Data data) {
-    String dataTypeName = data.getType().name();
-    if(dataTypeName.equalsIgnoreCase(DataType.DATA.name())) dataTypeName = BinaryType.get().getName();
+    String valueTypeName = data.getType().name();
+    if(valueTypeName.equalsIgnoreCase(DataType.DATA.name())) {
+      valueTypeName = BinaryType.get().getName();
+    }
 
-    return ValueType.Factory.newValue(ValueType.Factory.forName(dataTypeName), (Serializable) data.getValue());
+    return ValueType.Factory.forName(valueTypeName).valueOf(data.getValue());
   }
 
   /**
@@ -46,8 +48,15 @@ public class DataValueConverter {
   public static Data valueToData(Value value) {
     if(value.isSequence()) throw new UnsupportedOperationException("Cannot convert a ValueSequence object to a Data object.");
 
-    String dataTypeName = value.getValueType().getName();
-    if(dataTypeName.equalsIgnoreCase(BinaryType.get().getName())) dataTypeName = DataType.DATA.name();
+    ValueType valueType = value.getValueType();
+    String dataTypeName = valueType.getName();
+    if(valueType == BinaryType.get()) {
+      dataTypeName = DataType.DATA.name();
+    }
+
+    if(value.isNull()) {
+      return null;
+    }
 
     return new Data(DataType.valueOf(dataTypeName.toUpperCase()), (Serializable) value.getValue());
   }

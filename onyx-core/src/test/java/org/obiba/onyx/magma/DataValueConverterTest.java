@@ -65,7 +65,7 @@ public class DataValueConverterTest {
     Data data = new Data(DataType.INTEGER, 42);
     Value value = DataValueConverter.dataToValue(data);
     assertThat(value.getValueType(), equalTo((ValueType) IntegerType.get()));
-    assertThat((Integer) value.getValue(), is(42));
+    assertThat((Long) value.getValue(), is(42l));
   }
 
   @Test

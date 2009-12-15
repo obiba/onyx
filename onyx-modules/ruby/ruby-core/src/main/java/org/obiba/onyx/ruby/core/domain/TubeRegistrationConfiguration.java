@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
@@ -25,7 +26,6 @@ import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
