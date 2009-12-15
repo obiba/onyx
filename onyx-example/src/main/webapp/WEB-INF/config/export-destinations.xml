@@ -12,9 +12,10 @@
 
     <valueset entityType="Participant">
       <entities>
+        <excludeAll />
         <script type="INCLUDE">
           <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
-          $('Participant.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
+          $('Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
           <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
