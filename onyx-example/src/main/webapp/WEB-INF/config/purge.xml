@@ -2,21 +2,23 @@
   <purge>
     <valueset entityType="Participant">
       <entities>
-        <excludeAll type="EXCLUDE" />
+      
+        <excludeAll />
+        
         <script type="INCLUDE">
           <javascript>
-            false;          
+             // If the interview has been exported AND the interview was finished more than 'org.obiba.onyx.participant.purge' days ago, then purge.
+             ($('Admin.Interview.exportLog.destination').empty().not()).and(now().after($('Admin.Interview.endDate').add(onyx('org.obiba.onyx.participant.purge'))))  
           </javascript>
         </script>
+    
         <script type="INCLUDE">
           <javascript>
-            if($('Admin.Interview.endDate').isNull()) {
-              false;
-            } else {
-              $('Admin.Interview.status').any('CLOSED','CANCELED').and($('Admin.Interview.endDate').before(onyx('org.obiba.onyx.lastExportDate')))
-            }
+             // If the interview has been 'CLOSED' or 'CANCELED' AND the interview was finished prior to the last export, then purge.
+             ($('Admin.Interview.endDate').isNull().not()).and(onyx('org.obiba.onyx.lastExportDate').after($('Admin.Interview.endDate'))).and($('Admin.Interview.status').any('CLOSED','CANCELED'))
           </javascript>
         </script>
+    
       </entities>
     </valueset>
   </purge>
