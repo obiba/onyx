@@ -1,39 +1,19 @@
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:util="http://www.springframework.org/schema/util"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
   <import resource="classpath:META-INF/spring/ruby-core/context.xml" />
 
-  <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
-    <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="stages">
-      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
-        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/ruby/stages.xml" />
-      </bean>
-    </property>
-    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
-    <property name="tubeToVariableMappingStrategy" ref="tubeToVariableMappingStrategy" />
-    <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
-    <property name="variableRoot" value="SamplesCollection" /> 
-  </bean>
-  
-  <bean id="tubeToVariableMappingStrategy" class="org.obiba.onyx.ruby.engine.variable.impl.DefaultTubeToVariableMappingStrategy">
-    <property name="queryService" ref="persistenceManager" />
-    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
-    <property name="variableRoot" value="SamplesCollection" /> 
-  </bean>
-
   <util:map id="tubeRegistrationConfigurationMap">
-    <entry key="BloodUrineSamplesCollection" value-ref="bloodUrineTubeRegistrationConfiguration"/>
-    <entry key="UrineSamplesCollection" value-ref="urineTubeRegistrationConfiguration"/>
+    <entry key="BloodUrineSamplesCollection" value-ref="bloodUrineTubeRegistrationConfiguration" />
+    <entry key="UrineSamplesCollection" value-ref="urineTubeRegistrationConfiguration" />
   </util:map>
-  
+
   <bean id="bloodUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
     <property name="infoMessagesFile" value="info-messages.bloodUrine.xml" />
-    
+
     <property name="expectedTubeCount" value="15" />
 
     <property name="barcodeStructure">
@@ -78,13 +58,13 @@
         </property>
       </bean>
     </property>
-  </bean>  
+  </bean>
 
   <bean id="urineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
     <property name="infoMessagesFile" value="info-messages.urine.xml" />
-    
+
     <property name="expectedTubeCount" value="1" />
 
     <property name="barcodeStructure">
@@ -115,5 +95,5 @@
       </bean>
     </property>
   </bean>
-  
+
 </beans>

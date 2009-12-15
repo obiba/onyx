@@ -6,6 +6,40 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
+  
+  <bean id="instrumentTypeToVariableMappingStrategy" class="org.obiba.onyx.jade.engine.variable.impl.DefaultInstrumentTypeToVariableMappingStrategy">
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="instrumentService" ref="instrumentService" />
+  </bean>
+
+  <bean id="jadeModule" class="org.obiba.onyx.jade.engine.JadeModule">
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="instrumentService" ref="instrumentService" />
+    <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />
+    <property name="stages">
+      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="participantReport" class="org.obiba.onyx.print.impl.PdfTemplateReport" scope="session">
+    <property name="name" value="${org.obiba.onyx.jade.report.basename}" />
+    <property name="label">
+      <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+        <constructor-arg value="ParticipantReportLabel" />
+      </bean>
+    </property>
+    <property name="reportTemplateLoader">
+      <bean class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
+        <property name="resourcePath" value="${org.obiba.onyx.jade.resources.path}" />
+        <property name="resourceName" value="${org.obiba.onyx.jade.report.basename}" />
+        <property name="resourceExtension" value=".pdf" />
+      </bean>
+    </property>
+    <property name="fieldToVariableMap" value="${org.obiba.onyx.jade.report.fieldToVariable}" />
+  </bean>
 
   <bean name="baseJadeState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.AsbtractJadeState"
     abstract="true" scope="prototype">
@@ -95,7 +129,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="instrumentCaptureAndExportStrategy" class="org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureAndExportStrategy" />
   <bean id="workstationCaptureAndExportStrategy" class="org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureAndExportStrategy" />
-  
+
   <bean class="org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory" />
 
   <bean class="org.obiba.onyx.jade.magma.InstrumentRunBeanResolver" />
