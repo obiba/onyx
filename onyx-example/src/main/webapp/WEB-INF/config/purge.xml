@@ -8,7 +8,7 @@
         <script type="INCLUDE">
           <javascript>
              // If the interview has been exported AND the interview was finished more than 'org.obiba.onyx.participant.purge' days ago, then purge.
-             ($('Admin.Interview.exportLog.destination').empty().not()).and(now().after($('Admin.Interview.endDate').add(onyx('org.obiba.onyx.participant.purge'))))  
+             ($('Admin.Interview.exportLog.destination').empty().not()).and($('Admin.Interview.endDate').isNull().not()).and(now().after($('Admin.Interview.endDate').add(onyx('org.obiba.onyx.participant.purge'))))
           </javascript>
         </script>
     
