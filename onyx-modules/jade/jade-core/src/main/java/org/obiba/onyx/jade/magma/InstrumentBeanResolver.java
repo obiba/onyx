@@ -92,9 +92,7 @@ public class InstrumentBeanResolver extends ExperimentalConditionBeanResolver {
   }
 
   protected List<ExportLog> resolveExportLog(ValueSet valueSet, Variable variable) {
-    // Instrument.exportLog.destination
-    String destination = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
-    return exportLogService.getExportLogs("Instrument", valueSet.getVariableEntity().getIdentifier(), destination, true);
+    return exportLogService.getExportLogs("Instrument", valueSet.getVariableEntity().getIdentifier(), null, true);
   }
 
   private List<ExperimentalCondition> getExperimentalConditions(String experimentalConditionName, String instrumentBarcode) {

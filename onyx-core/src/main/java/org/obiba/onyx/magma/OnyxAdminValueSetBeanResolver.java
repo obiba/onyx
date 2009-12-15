@@ -20,7 +20,6 @@ import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.InterviewService;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -71,9 +70,7 @@ public class OnyxAdminValueSetBeanResolver extends AbstractOnyxBeanResolver {
       return interviewService.getStageInstances(participant.getInterview());
     }
     if(type.equals(ExportLog.class)) {
-      // Admin.Interview.exportLog.destination
-      String destination = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 3);
-      return exportLogService.getExportLogs("Participant", valueSet.getVariableEntity().getIdentifier(), destination, true);
+      return exportLogService.getExportLogs("Participant", valueSet.getVariableEntity().getIdentifier(), null, true);
     }
     return null;
   }

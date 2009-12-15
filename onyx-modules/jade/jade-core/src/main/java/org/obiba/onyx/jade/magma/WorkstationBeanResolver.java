@@ -71,8 +71,6 @@ public class WorkstationBeanResolver extends ExperimentalConditionBeanResolver {
   }
 
   protected List<ExportLog> resolveExportLog(ValueSet valueSet, Variable variable) {
-    // Workstation.exportLog.destination
-    String destination = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
-    return exportLogService.getExportLogs("Workstation", valueSet.getVariableEntity().getIdentifier(), destination, true);
+    return exportLogService.getExportLogs("Workstation", valueSet.getVariableEntity().getIdentifier(), null, true);
   }
 }
