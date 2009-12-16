@@ -37,8 +37,7 @@ import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Iterables;
+import org.springframework.transaction.annotation.Transactional;
 
 public class OnyxDataExport {
 
@@ -56,7 +55,7 @@ public class OnyxDataExport {
 
   private IPublicKeyFactory publicKeyFactory;
 
-  // ONYX-424: Required to set FlushMode to COMMIT
+  // ONYX-424: Required to set FlushMode
   private SessionFactory sessionFactory;
 
   public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
@@ -95,31 +94,27 @@ public class OnyxDataExport {
     this.sessionFactory = sessionFactory;
   }
 
+  @Transactional(rollbackFor = Exception.class)
   public void exportInterviews() throws Exception {
 
-    int numberEntitiesExported = 0;
-    long exportStartTime = new Date().getTime();
-
-    log.info("Starting export to configured destinations.");
-
+    FlushMode originalExportMode = sessionFactory.getCurrentSession().getFlushMode();
+    // Change the flushMode. We'll flush the session manually: see ExportListener below.
     sessionFactory.getCurrentSession().setFlushMode(FlushMode.MANUAL);
+    try {
+      log.info("Starting export to configured destinations.");
+      internalExport();
+      log.info("Export successfully completed.");
+    } finally {
+      // Reset the flushMode
+      sessionFactory.getCurrentSession().setFlushMode(originalExportMode);
+    }
 
-    DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(new DatasourceCopyEventListener() {
+  }
 
-      public void onVariableCopy(Variable variable) {
-      }
-
-      public void onVariableCopied(Variable variable) {
-      }
-
-      public void onValueSetCopy(ValueSet valueSet) {
-      }
-
-      public void onValueSetCopied(ValueSet valueSet) {
-        sessionFactory.getCurrentSession().clear();
-      }
-    }).build();
-
+  /**
+   * Private method for performing the complete export process
+   */
+  private void internalExport() throws Exception {
     PublicKeyProvider pkProvider = new PublicKeyProvider() {
       public PublicKey getPublicKey(Datasource datasource) throws NoSuchKeyException {
         PublicKey key = publicKeyFactory.getPublicKey(datasource.getName());
@@ -133,6 +128,7 @@ public class OnyxDataExport {
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination destination : exportDestinations) {
 
+        boolean exportFailed = false;
         File outputFile = new File(outputRootDirectory, destination.getName() + "-" + getCurrentDateTimeString() + ".zip");
         FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputFile, destination.getEncryptionStrategy(pkProvider));
 
@@ -142,58 +138,104 @@ public class OnyxDataExport {
             // Check whether the destination wants this type of entity
             if(destination.wantsEntityType(table.getEntityType())) {
               // Export interviews for each destination
+              long exportStartTime = System.currentTimeMillis();
 
               // Apply all filters to ValueTable for current OnyxDestination.
               ValueTable filteredTable = new FilteredValueTable(table, destination.getVariableFilterChainForEntityName(table.getEntityType()), destination.getEntityFilterChainForEntityName(table.getEntityType()));
 
-              // Save FilteredCollection to disk.
+              ExportListener listener = new ExportListener(destination);
+              DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener).build();
+
+              // Copy the filtered table to the destination datasource
               copier.copy(filteredTable, outputDatasource);
 
-              // Mark the data of the FilteredCollection as exported for current destination (log entry).
-              markAsExported(filteredTable, destination);
-              numberEntitiesExported += Iterables.size(filteredTable.getValueSets());
-              sessionFactory.getCurrentSession().flush();
+              long exportEndTime = System.currentTimeMillis();
+              log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName() });
             }
           }
+        } catch(Exception e) {
+          // Flag the export as failed so we delete the output file
+          exportFailed = true;
+          throw e;
         } finally {
           MagmaEngine.get().removeDatasource(outputDatasource);
+          if(exportFailed == true) {
+            outputFile.delete();
+          }
         }
       }
-
     }
-
-    long exportEndTime = new Date().getTime();
-
-    log.info("Exported [{}] entities in [{}ms].", new Object[] { numberEntitiesExported, exportEndTime - exportStartTime });
   }
 
-  private void markAsExported(ValueTable table, OnyxDataExportDestination destination) {
-    for(ValueSet valueSet : table.getValueSets()) {
-      Date exportDate = new Date();
+  /**
+   * Creates an {@code ExportLog} entry for the specified {@code valueSet} and {@code destination}.
+   * @param valueSet
+   * @param destination
+   */
+  private void markAsExported(ValueSet valueSet, OnyxDataExportDestination destination) {
 
-      // Find the earliest and latest entity capture date-time
-      Date captureStartDate = null;
-      Date captureEndDate = null;
-      CaptureAndExportStrategy captureAndExportStrategy = captureAndExportStrategyMap.get(valueSet.getVariableEntity().getType());
-      if(captureAndExportStrategy != null) {
-        captureStartDate = captureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier());
-        captureEndDate = captureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier());
-      }
+    Date exportDate = new Date();
 
-      // If capture dates null, default to export date (could happen for instruments and workstations).
-      captureStartDate = (captureStartDate != null) ? captureStartDate : exportDate;
-      captureEndDate = (captureEndDate != null) ? captureEndDate : exportDate;
-
-      // Write an entry in ExportLog to flag the set of entities as exported.
-      ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName()).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
-      exportLogService.save(log);
+    // Find the earliest and latest entity capture date-time
+    Date captureStartDate = null;
+    Date captureEndDate = null;
+    CaptureAndExportStrategy captureAndExportStrategy = captureAndExportStrategyMap.get(valueSet.getVariableEntity().getType());
+    if(captureAndExportStrategy != null) {
+      captureStartDate = captureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier());
+      captureEndDate = captureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier());
     }
-    log.info("Marked [{}] [{}] entites as exported to the destination [{}].", new Object[] { Iterables.size(table.getValueSets()), table.getEntityType(), destination.getName() });
+
+    // If capture dates null, default to export date (could happen for instruments and workstations).
+    captureStartDate = (captureStartDate != null) ? captureStartDate : exportDate;
+    captureEndDate = (captureEndDate != null) ? captureEndDate : exportDate;
+
+    // Write an entry in ExportLog to flag the set of entities as exported.
+    ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName()).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
+    exportLogService.save(log);
   }
 
   private String getCurrentDateTimeString() {
     DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
     return df.format(new Date());
+  }
+
+  private class ExportListener implements DatasourceCopyEventListener {
+    long valueSetCount = 0;
+
+    OnyxDataExportDestination destination;
+
+    ExportListener(OnyxDataExportDestination destination) {
+      this.destination = destination;
+    }
+
+    public long getValueSetCount() {
+      return valueSetCount;
+    }
+
+    public void onVariableCopy(Variable variable) {
+    }
+
+    public void onVariableCopied(Variable variable) {
+    }
+
+    public void onValueSetCopy(ValueSet valueSet) {
+    }
+
+    public void onValueSetCopied(ValueSet valueSet) {
+      valueSetCount++;
+
+      // Clear the session: this empties the first-level cache which is currently filled with the entity's data.
+      // Clearing the session also clears any pending write operations (INSERT or UPDATE). This is safe because
+      // the copy operation is read-only.
+      // We clear the session before we create the export log. It helps the flush call below run faster since the
+      // session will only contain the new export log.
+      sessionFactory.getCurrentSession().clear();
+
+      // Create the export log
+      markAsExported(valueSet, destination);
+      // Flush the export log (this executes the underlying INSERT statement for the ExportLog within the transaction)
+      sessionFactory.getCurrentSession().flush();
+    }
   }
 
 }
