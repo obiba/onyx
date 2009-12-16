@@ -52,7 +52,7 @@
     <property name="triggers">
       <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="jobDetail" />
-        <property name="cronExpression" value="0 0 4 * * ?" />
+        <property name="cronExpression" value="${org.obiba.onyx.appointments.schedule}" />
       </bean>
     </property>
   </bean>
