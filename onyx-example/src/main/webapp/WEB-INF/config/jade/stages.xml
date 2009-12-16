@@ -4,7 +4,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Onyx.Consent.accepted</variablePath>
+      <variablePath>Consent.accepted</variablePath>
     </stageDependencyCondition>
   </stage>
   
@@ -16,15 +16,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.SH_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.SH_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -40,7 +40,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Onyx.Consent.accepted</variablePath>
+      <variablePath>Consent.accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -49,7 +49,7 @@
     <module>jade</module>
     <!-- <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Onyx.Consent.accepted</variablePath>
+      <variablePath>Consent.accepted</variablePath>
     </stageDependencyCondition> -->
     <!-- PL: this is not working since question HW_CI_BP is a boilerplate and does no produce a variable. -->
     <stageDependencyCondition class="multipleCondition">
@@ -57,15 +57,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.WH_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.WH_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -84,15 +84,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.GS_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.GS_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -111,15 +111,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.BP_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BP_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -138,15 +138,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.BI_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BI_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -155,7 +155,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>Onyx.StandingHeight.CALC_AVG_HEIGHT</variablePath>
+          <variablePath>StandingHeight.CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
@@ -169,15 +169,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.WT_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.WT_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -187,7 +187,7 @@
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
             <stageName>Impedance310</stageName>
-            <variablePath>Onyx.Impedance310.CALC_AVG_WEIGHT</variablePath>
+            <variablePath>Impedance310.CALC_AVG_WEIGHT</variablePath>
           </stageDependencyCondition>
         </inverseCondition>
       </conditions>
@@ -202,15 +202,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.SP_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.SP_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -219,18 +219,18 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>Onyx.StandingHeight.CALC_AVG_HEIGHT</variablePath>
+          <variablePath>StandingHeight.CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedance310</stageName>
-              <variablePath>Onyx.Impedance310.CALC_AVG_WEIGHT</variablePath>
+              <variablePath>Impedance310.CALC_AVG_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>Onyx.Weight.RES_WEIGHT</variablePath>
+              <variablePath>Weight.RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -243,7 +243,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Onyx.Consent.accepted</variablePath>
+      <variablePath>Consent.accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -255,15 +255,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.BD_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BD_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -282,15 +282,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.AS_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.AS_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -299,11 +299,11 @@
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>Onyx.BloodPressure.CALC_AVG_SYSTOLIC_BP</variablePath>
+          <variablePath>BloodPressure.CALC_AVG_SYSTOLIC_BP</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>Onyx.BloodPressure.CALC_AVG_DIASTOLIC_BP</variablePath>
+          <variablePath>BloodPressure.CALC_AVG_DIASTOLIC_BP</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>

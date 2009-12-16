@@ -8,15 +8,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -35,15 +35,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Onyx.Consent.accepted</variablePath>
+          <variablePath>Consent.accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>Onyx.CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
+          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
