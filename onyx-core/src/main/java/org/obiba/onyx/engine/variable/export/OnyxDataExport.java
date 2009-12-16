@@ -97,6 +97,7 @@ public class OnyxDataExport {
 
   public void exportInterviews() throws Exception {
 
+    int numberEntitiesExported = 0;
     long exportStartTime = new Date().getTime();
 
     log.info("Starting export to configured destinations.");
@@ -149,8 +150,8 @@ public class OnyxDataExport {
               copier.copy(filteredTable, outputDatasource);
 
               // Mark the data of the FilteredCollection as exported for current destination (log entry).
-              // markAsExported(filteredCollection, destination);
               markAsExported(filteredTable, destination);
+              numberEntitiesExported += Iterables.size(filteredTable.getValueSets());
               sessionFactory.getCurrentSession().flush();
             }
           }
@@ -163,7 +164,7 @@ public class OnyxDataExport {
 
     long exportEndTime = new Date().getTime();
 
-    log.info("Export took [{}ms].", new Object[] { exportEndTime - exportStartTime });
+    log.info("Exported [{}] entities in [{}ms].", new Object[] { numberEntitiesExported, exportEndTime - exportStartTime });
   }
 
   private void markAsExported(ValueTable table, OnyxDataExportDestination destination) {
