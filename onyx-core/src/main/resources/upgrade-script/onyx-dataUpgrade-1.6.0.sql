@@ -6,3 +6,6 @@ update consent c, interview i SET c.time_start = i.start_date where c.interview_
 
 -- In the improbable case that an instrument contains an empty string as barcode, which should not be possible (ONYX-1049)
 update instrument set barcode = CONCAT(type, '_barcode') where barcode = '';
+
+-- Set all null question_answer active fields to true (ONYX-1084)
+update question_answer set active = true where active is null;
