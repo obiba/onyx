@@ -1,19 +1,13 @@
 <wicket:panel>
     <div>
-        <wicket:message key="TotalInterviewsToBePurged" /> [<span wicket:id="totalInterviewsToPurge" />]
-        <div wicket:id="PurgeDetails">
-	        &nbsp;&nbsp;&nbsp;&nbsp;<wicket:message key="WhichIncludes" /><br/>
-	        <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalExportedInterviewsToPurge" />] <wicket:message key="ExportedInterviews" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalExportedInProgressToPurge" />] <wicket:message key="Inprogress" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalExportedCompletedToPurge" />] <wicket:message key="Completed" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalExportedCancelledToPurge" />] <wicket:message key="Cancelled" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalExportedClosedToPurge" />] <wicket:message key="Closed" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalUnexportedInterviewsToPurge" />] <wicket:message key="UnexportedInterviews" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalUnexportedInProgressToPurge" />] <wicket:message key="Inprogress" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalUnexportedCompletedToPurge" />] <wicket:message key="Completed" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalUnexportedCancelledToPurge" />] <wicket:message key="Cancelled" /><br/></wicket:enclosure>
-            <wicket:enclosure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span wicket:id="totalUnexportedClosedToPurge" />] <wicket:message key="Closed" /><br/></wicket:enclosure>
-        </div>
-        <br/>
+	    <div wicket:id="PurgeDetails">
+	    	<span wicket:id="configurablePurgeMessage" />
+	    	<br/>
+	    	<br/>
+	    	<span wicket:id="interviewToBeDeletedMessage" />	    	
+	    </div>
+    	<div wicket:id="NoPurgeMessage">
+    		<wicket:message key="NoPurgeMessage" />
+    	</div>
     </div>
 </wicket:panel>

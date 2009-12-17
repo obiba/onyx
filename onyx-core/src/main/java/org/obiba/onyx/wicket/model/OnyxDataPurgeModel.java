@@ -17,6 +17,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
 
 /**
@@ -28,12 +29,17 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
 
   private int totalInterviewsToPurge;
 
+  private int totalInterviews;
+
   private List<Participant> exportedInterviews;
 
   private List<Participant> unexportedInterviews;
 
   @SpringBean
   private OnyxDataPurge onyxDataPurge;
+
+  @SpringBean
+  private ParticipantService participantService;
 
   @SpringBean
   private ExportLogService exportLogService;
@@ -46,6 +52,8 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
   protected OnyxDataPurge load() {
     List<Participant> participantsToPurge = onyxDataPurge.getParticipantsToPurge();
     totalInterviewsToPurge = participantsToPurge.size();
+    totalInterviews = participantService.countParticipants(null, null);
+
     exportedInterviews = new ArrayList<Participant>();
     unexportedInterviews = new ArrayList<Participant>();
     for(Participant participant : participantsToPurge) {
@@ -61,6 +69,10 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
 
   public String getTotalInterviewsToPurge() {
     return Integer.toString(totalInterviewsToPurge);
+  }
+
+  public String getTotalInterviews() {
+    return Integer.toString(totalInterviews);
   }
 
   public String getTotalExportedInterviewsToPurge() {
