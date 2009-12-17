@@ -86,7 +86,7 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
 
   @Override
   protected boolean shouldSeed(WebApplication application) {
-    boolean seed = super.shouldSeed(application);
+    boolean seed = super.shouldSeed(application) && getResource() != null && getResource().exists();
     return seed && (persistenceManager.count(User.class) == 0);
   }
 
