@@ -19,7 +19,19 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSequence;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
+import org.obiba.magma.VariableEntity;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.magma.type.DateType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -32,21 +44,29 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
-/**
- * 
- */
 public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
   private static final Logger log = LoggerFactory.getLogger(PdfTemplateReport.class);
 
+  private static final String PARTICIPANT_TABLE_NAME = "Participants";
+
+  private static final Pattern onyxPattern = Pattern.compile("^Onyx\\.");
+
   private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   private VariableDirectory variableDirectory;
+
+  private ActiveInterviewService activeInterviewService;
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
 
   public InputStream applyTemplate(Locale locale, Map<String, String> fieldToVariableMap, LocalizedResourceLoader reportTemplateLoader, ActiveInterviewService activeInterviewService) {
 
@@ -106,6 +126,13 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
     HashMap<String, String> fieldList = form.getFields();
 
+    ValueTable participantValueTable = getOnyxParticipantTable();
+    ValueSet valueSet = null;
+
+    if(participantValueTable != null) {
+      valueSet = getCurrentParticipantValueSet(participantValueTable);
+    }
+
     try {
       // Iterate on each field of pdf template
       for(Entry<String, String> field : fieldList.entrySet()) {
@@ -143,7 +170,23 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
                   }
 
                 }
-                form.setField(field.getKey(), fieldValue);
+                if(valueSet == null) {
+                  log.error("Cannot lookup value in Magma. The Onyx Participant ValueTable is null. Using the Onyx Data instead.");
+                  form.setField(field.getKey(), fieldValue);
+                } else {
+                  VariableValueSource variableValueSource = participantValueTable.getVariableValueSource(stripOnyxPrefix(variablePath));
+                  Value value = variableValueSource.getValue(valueSet);
+                  String valueString = getValueAsString(variableValueSource.getVariable(), value);
+                  if(value.isSequence()) {
+                    // Use Magma always, since there is no Onyx Data equivalent to a Magma Sequence.
+                    form.setField(field.getKey(), valueString);
+                  } else if(!valueString.equals(fieldValue)) {
+                    log.error("[ONYX MAGMA MATCH FAILURE] Value for variable [{}] is different in Magma (Onyx Data=[{}], Magma Value=[{}]). Returned the Onyx Data.", new Object[] { variable.getName(), fieldValue, valueString });
+                    form.setField(field.getKey(), fieldValue);
+                  } else {
+                    form.setField(field.getKey(), valueString);
+                  }
+                }
                 break;
               }
             }
@@ -153,6 +196,47 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     } catch(Exception ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  private ValueTable getOnyxParticipantTable() {
+    ValueTable onyxParticipantTable = null;
+    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
+    }
+    return onyxParticipantTable;
+  }
+
+  private ValueSet getCurrentParticipantValueSet(ValueTable onyxParticipantTable) {
+    Assert.notNull(onyxParticipantTable, "onyxParticipantTable must not be null.");
+    // Get the currently interviewed participant's ValueSet.
+    VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
+    return onyxParticipantTable.getValueSet(entity);
+  }
+
+  private String stripOnyxPrefix(String variablePath) {
+    Assert.notNull(variablePath, "variablePath must not be null.");
+    Matcher matcher = onyxPattern.matcher(variablePath);
+    return matcher.replaceAll("");
+  }
+
+  private String getValueAsString(org.obiba.magma.Variable variable, Value value) {
+    if(value == null || value.isNull()) return "";
+
+    String valueString = "";
+    if(value.isSequence()) {
+      ValueSequence valueSequence = value.asSequence();
+      for(Value v : valueSequence.getValues()) {
+        valueString += " " + getValueAsString(variable, v);
+      }
+    }
+    if(value.getValueType() == DateType.get()) {
+      valueString = dateFormat.format(value.getValue());
+    } else {
+      valueString = value.getValue().toString();
+
+      if(variable != null && variable.getUnit() != null) valueString += " " + variable.getUnit();
+    }
+    return valueString;
   }
 
   private String[] splitData(String string) {
