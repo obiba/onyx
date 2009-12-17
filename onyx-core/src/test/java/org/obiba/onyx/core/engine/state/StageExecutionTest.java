@@ -284,10 +284,10 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     assertStateName(context1, InProgressState.NAME);
     assertStateName(context2, CompletedState.NAME);
 
-    // 1 goes in ready, 2 does not change
+    // 1 goes in ready, 2 goes waiting
     doAction(ActionType.STOP);
     assertStateName(context1, ReadyState.NAME);
-    assertStateName(context2, CompletedState.NAME);
+    assertStateName(context2, WaitingState.NAME);
 
   }
 
@@ -324,11 +324,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(false, context1.isInteractive());
     assertStateClass(context1, ReadyState.class);
 
-    assertStateName(context2, CompletedState.NAME);
-    assertStateClass(context2, CompletedState.class);
+    assertStateName(context2, WaitingState.NAME);
+    assertStateClass(context2, WaitingState.class);
 
-    assertStateName(context3, NotApplicableState.NAME);
-    assertStateClass(context3, NotApplicableState.class);
+    assertStateName(context3, WaitingState.NAME);
+    assertStateClass(context3, WaitingState.class);
   }
 
   @Test
@@ -360,7 +360,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     doAction(context2, ActionType.EXECUTE);
     doAction(context2, ActionType.COMPLETE);
-    assertStateName(context3, CompletedState.NAME);
+    assertStateName(context3, NotApplicableState.NAME);
   }
 
   private void doAction(ActionType type) {
