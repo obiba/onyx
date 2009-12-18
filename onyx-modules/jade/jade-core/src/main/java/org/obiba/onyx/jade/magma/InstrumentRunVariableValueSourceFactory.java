@@ -150,9 +150,9 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     List<InstrumentParameter> instrumentParameters = instrumentType.getInstrumentParameters();
     if(instrumentParameters.size() > 0) {
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
-        BeanVariableValueSourceFactory<InstrumentRunValue> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRunValue>("Participant", InstrumentRunValue.class);
-        delegateFactory.setProperties(ImmutableSet.of("data.value"));
-        delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("data.value", instrumentParameter.getCode()).build());
+        BeanVariableValueSourceFactory<Data> delegateFactory = new BeanVariableValueSourceFactory<Data>("Participant", Data.class);
+        delegateFactory.setProperties(ImmutableSet.of("value"));
+        delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("value", instrumentParameter.getCode()).build());
         delegateFactory.setPropertyNameToPropertyType(getInstrumentParameterMappedPropertyType(instrumentParameter));
         delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterVisitor(attributeHelper, instrumentType, instrumentParameter)));
 
@@ -206,7 +206,7 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
   }
 
   private Map<String, Class<?>> getInstrumentParameterMappedPropertyType(InstrumentParameter instrumentParameter) {
-    Map<String, Class<?>> propertyType = new ImmutableMap.Builder<String, Class<?>>().put("data.value", DataTypes.valueTypeFor(instrumentParameter.getDataType()).getJavaClass()).build();
+    Map<String, Class<?>> propertyType = new ImmutableMap.Builder<String, Class<?>>().put("value", DataTypes.valueTypeFor(instrumentParameter.getDataType()).getJavaClass()).build();
     return propertyType;
   }
 

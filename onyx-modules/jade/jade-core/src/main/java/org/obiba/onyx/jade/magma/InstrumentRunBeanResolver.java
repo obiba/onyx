@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.magma;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.obiba.magma.ValueSet;
@@ -24,6 +26,7 @@ import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
+import org.obiba.onyx.util.StringUtil;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,10 +46,10 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   // Instance Variables
   //
 
-  @Autowired(required = true)
+  @Autowired
   private InstrumentService instrumentService;
 
-  @Autowired(required = true)
+  @Autowired
   private InstrumentRunService instrumentRunService;
 
   //
@@ -60,10 +63,26 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
     if(type.equals(InstrumentRun.class)) {
       return resolveInstrumentRun(valueSet, variable);
+    } else if(type.equals(InstrumentRunValue.class)) {
+      String secondToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
+      if(secondToken != null) {
+        if(secondToken.equals("MEASURE")) {
+          return resolveInstrumentRunValues(valueSet, variable);
+        } else {
+          return resolveInstrumentRunValue(valueSet, variable);
+        }
+      }
     } else if(type.equals(Measure.class)) {
       return resolveMeasure(valueSet, variable);
     } else if(type.equals(Data.class)) {
-      return resolveData(valueSet, variable);
+      String secondToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
+      if(secondToken != null) {
+        if(secondToken.equals("MEASURE")) {
+          return resolveDatas(valueSet, variable);
+        } else {
+          return resolveData(valueSet, variable);
+        }
+      }
     } else if(type.equals(Contraindication.class)) {
       return resolveContraindication(valueSet, variable);
     } else if(type.equals(Measure.class)) {
@@ -104,6 +123,40 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     return null;
   }
 
+  protected InstrumentRunValue resolveInstrumentRunValue(ValueSet valueSet, Variable variable) {
+    InstrumentRun instrumentRun = resolveInstrumentRun(valueSet, variable);
+    if(instrumentRun != null) {
+      String parameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
+      if(parameterCode != null) {
+        for(InstrumentRunValue runValue : instrumentRun.getInstrumentRunValues()) {
+          if(runValue.getInstrumentParameter().equals(parameterCode)) {
+            return runValue;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  protected List<InstrumentRunValue> resolveInstrumentRunValues(ValueSet valueSet, Variable variable) {
+    InstrumentRun instrumentRun = resolveInstrumentRun(valueSet, variable);
+    if(instrumentRun != null) {
+      String parameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
+      if(parameterCode != null) {
+        List<InstrumentRunValue> values = new ArrayList<InstrumentRunValue>();
+        for(Measure measure : instrumentRun.getMeasures()) {
+          for(InstrumentRunValue runValue : measure.getInstrumentRunValues()) {
+            if(runValue.getInstrumentParameter().equals(parameterCode)) {
+              values.add(runValue);
+            }
+          }
+        }
+        return values;
+      }
+    }
+    return Collections.emptyList();
+  }
+
   protected List<Measure> resolveMeasure(ValueSet valueSet, Variable variable) {
     InstrumentRun instrumentRun = (InstrumentRun) resolveInstrumentRun(valueSet, variable);
     if(instrumentRun != null) {
@@ -121,23 +174,55 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   }
 
   protected Data resolveData(ValueSet valueSet, Variable variable) {
-    String instrumentTypeName = extractInstrumentTypeName(variable.getName());
-    if(instrumentTypeName != null) {
-      InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
-      if(instrumentType != null) {
-        String instrumentParameterCode = extractInstrumentParameterCode(variable.getName(), instrumentTypeName);
-        if(instrumentParameterCode != null) {
+    String instrumentTypeName = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
+    String instrumentParameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
+
+    if(instrumentTypeName != null && instrumentParameterCode != null) {
+      InstrumentRunValue instrumentRunValue = resolveInstrumentRunValue(valueSet, variable);
+
+      if(instrumentRunValue != null) {
+        InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
+
+        if(instrumentType != null) {
           InstrumentParameter instrumentParameter = instrumentType.getInstrumentParameter(instrumentParameterCode);
+
           if(instrumentParameter != null) {
-            InstrumentRunValue instrumentRunValue = getInstrumentRunValue(valueSet, instrumentType, instrumentParameter);
-            if(instrumentRunValue != null) {
-              return instrumentRunValue.getData(instrumentParameter.getDataType());
-            }
+            return instrumentRunValue.getData(instrumentParameter.getDataType());
           }
         }
       }
     }
+
     return null;
+  }
+
+  protected List<Data> resolveDatas(ValueSet valueSet, Variable variable) {
+    String instrumentTypeName = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
+    String instrumentParameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
+
+    if(instrumentTypeName != null && instrumentParameterCode != null) {
+      List<InstrumentRunValue> instrumentRunValues = resolveInstrumentRunValues(valueSet, variable);
+
+      if(!instrumentRunValues.isEmpty()) {
+        List<Data> datas = new ArrayList<Data>();
+
+        for(InstrumentRunValue instrumentRunValue : instrumentRunValues) {
+          InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
+
+          if(instrumentType != null) {
+            InstrumentParameter instrumentParameter = instrumentType.getInstrumentParameter(instrumentParameterCode);
+
+            if(instrumentParameter != null) {
+              datas.add(instrumentRunValue.getData(instrumentParameter.getDataType()));
+            }
+          }
+        }
+
+        return datas;
+      }
+    }
+
+    return Collections.emptyList();
   }
 
   protected Object resolveContraindication(ValueSet valueSet, Variable variable) {
