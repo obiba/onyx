@@ -149,6 +149,8 @@ public class ApplicationConfigurationPage extends BasePage {
       setMaxSize(Bytes.megabytes(2));
       setMultiPart(false);
 
+      WebMarkupContainer destinationsContainter = new WebMarkupContainer("exportDestinationCertificatesGroup");
+      add(destinationsContainter);
       RepeatingView destinations = new RepeatingView("destinations");
       for(OnyxDataExportDestination destination : exportDestinations) {
         if(destination.isEncryptionRequested()) {
@@ -162,7 +164,8 @@ public class ApplicationConfigurationPage extends BasePage {
           destinations.add(container);
         }
       }
-      add(destinations);
+      destinationsContainter.add(destinations);
+      if(!isEncryptionRequired()) destinationsContainter.setVisible(false);
 
       add(new AjaxButton("saveButton") {
 
@@ -181,6 +184,15 @@ public class ApplicationConfigurationPage extends BasePage {
         }
 
       });
+    }
+
+    private boolean isEncryptionRequired() {
+      for(OnyxDataExportDestination destination : exportDestinations) {
+        if(destination.isEncryptionRequested()) {
+          return true;
+        }
+      }
+      return false;
     }
 
     private void saveExportDestinationCertificates() {
