@@ -15,9 +15,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.obiba.magma.Category;
+import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
+import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -94,6 +96,8 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
       // For non-repeatable instrument types, add source for instrument barcode variable.
       if(!instrumentType.isRepeatable()) {
         sources.add(createBarcodeSource(instrumentRunPrefix, instrumentType));
+      } else {
+        sources.addAll(createMeasureSources(instrumentTypePrefix + '.' + MEASURE, instrumentType));
       }
 
       // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
@@ -150,35 +154,25 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     List<InstrumentParameter> instrumentParameters = instrumentType.getInstrumentParameters();
     if(instrumentParameters.size() > 0) {
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
-        BeanVariableValueSourceFactory<Data> delegateFactory = new BeanVariableValueSourceFactory<Data>("Participant", Data.class);
-        delegateFactory.setProperties(ImmutableSet.of("value"));
-        delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("value", instrumentParameter.getCode()).build());
-        delegateFactory.setPropertyNameToPropertyType(getInstrumentParameterMappedPropertyType(instrumentParameter));
-        delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterVisitor(attributeHelper, instrumentType, instrumentParameter)));
+        String name = instrumentTypePrefix + '.' + instrumentParameter.getCode();
 
-        String captureMethodPrefix = null;
+        // Test whether this parameter is part of the "Measure"
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
-          // Add sources for the measure's user, time and instrumentBarcode variables.
-          String measurePrefix = instrumentTypePrefix + '.' + MEASURE;
-          sources.addAll(createMeasureSources(measurePrefix, instrumentType));
-
-          // Configure factory for an instrument parameter that is part of a measure.
-          delegateFactory.setPrefix(measurePrefix);
-          delegateFactory.setOccurrenceGroup(MEASURE);
-
-          captureMethodPrefix = measurePrefix + '.' + instrumentParameter.getCode();
-        } else {
-          // Configure factory for an instrument parameter that is not part of a measure.
-          delegateFactory.setPrefix(instrumentTypePrefix);
-
-          captureMethodPrefix = instrumentTypePrefix + '.' + instrumentParameter.getCode();
+          name = instrumentTypePrefix + '.' + MEASURE + '.' + instrumentParameter.getCode();
         }
 
-        // Add source for the instrument parameter's data.
-        sources.addAll(delegateFactory.createSources());
+        Variable.Builder builder = Variable.Builder.newVariable(name, DataTypes.valueTypeFor(instrumentParameter.getDataType()), "Participant");
+
+        if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+          builder.repeatable().occurrenceGroup(MEASURE);
+        }
+
+        builder.accept(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName()), new InstrumentParameterVisitor(attributeHelper, instrumentType, instrumentParameter)));
+
+        sources.add(new BeanPropertyVariableValueSource(builder.build(), Data.class, "value"));
 
         // Add source for the instrument parameter's capture method.
-        sources.add(createCaptureMethodSource(captureMethodPrefix, instrumentType, instrumentParameter));
+        sources.add(createCaptureMethodSource(name, instrumentType, instrumentParameter));
       }
     }
 
@@ -203,11 +197,6 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources().iterator().next();
-  }
-
-  private Map<String, Class<?>> getInstrumentParameterMappedPropertyType(InstrumentParameter instrumentParameter) {
-    Map<String, Class<?>> propertyType = new ImmutableMap.Builder<String, Class<?>>().put("value", DataTypes.valueTypeFor(instrumentParameter.getDataType()).getJavaClass()).build();
-    return propertyType;
   }
 
   //
