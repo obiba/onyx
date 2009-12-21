@@ -14,8 +14,8 @@
     
         <script type="INCLUDE">
           <javascript>
-             // If the interview has been 'CLOSED' or 'CANCELED' AND the interview was finished prior to the last export, then purge.
-             ($('Admin.Interview.endDate').isNull().not()).and(onyx('org.obiba.onyx.lastExportDate').after($('Admin.Interview.endDate'))).and($('Admin.Interview.status').any('CLOSED','CANCELED'))
+             // If the interview has been 'CLOSED' or 'CANCELLED' AND the interview was finished prior to the last export, then purge.
+             ($('Admin.Interview.endDate').isNull().not()).and(onyx('org.obiba.onyx.lastExportDate').after($('Admin.Interview.endDate'))).and($('Admin.Interview.status').any('CLOSED','CANCELLED'))
           </javascript>
         </script>
     

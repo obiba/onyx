@@ -39,7 +39,7 @@ public class QuartzInProgressStateTest {
   private QuartzInProgressState inProgressState;
 
   /**
-   * Tests that the questionnaireParticipant is deleted if stage canceled or not applicable
+   * Tests that the questionnaireParticipant is deleted if stage cancelled or not applicable
    */
 
   @Before

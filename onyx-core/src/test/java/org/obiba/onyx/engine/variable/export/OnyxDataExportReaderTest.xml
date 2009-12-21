@@ -6,7 +6,7 @@
       <entities>
         <excludeAll/>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participant.Interview.status').not('CANCELED');]]></javascript>
+          <javascript><![CDATA[$('Participant.Interview.status').not('CANCELLED');]]></javascript>
         </script>        
       </entities>
       <variables>

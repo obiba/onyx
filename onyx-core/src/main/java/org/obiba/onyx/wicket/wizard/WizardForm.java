@@ -36,10 +36,10 @@ public abstract class WizardForm extends Form {
   private static final Logger log = LoggerFactory.getLogger(WizardForm.class);
 
   /**
-   * Indicates whether the action was canceled or not. TODO: should probably go in an Action interface or abstract class
-   * of some sort
+   * Indicates whether the action was cancelled or not. TODO: should probably go in an Action interface or abstract
+   * class of some sort
    */
-  private boolean canceled = false;
+  private boolean cancelled = false;
 
   public WizardForm(String id) {
     this(id, null);
@@ -199,7 +199,7 @@ public abstract class WizardForm extends Form {
   }
 
   protected void onCancelClick(AjaxRequestTarget target) {
-    canceled = true;
+    cancelled = true;
     onCancel(target);
   }
 
@@ -291,12 +291,12 @@ public abstract class WizardForm extends Form {
     target.addComponent(this);
   }
 
-  public boolean isCanceled() {
-    return canceled;
+  public boolean isCancelled() {
+    return cancelled;
   }
 
-  public void setCanceled(boolean canceled) {
-    this.canceled = canceled;
+  public void setCancelled(boolean cancelled) {
+    this.cancelled = cancelled;
   }
 
   protected void showFeedbackWindow(AjaxRequestTarget target) {
