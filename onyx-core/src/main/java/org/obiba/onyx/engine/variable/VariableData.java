@@ -162,4 +162,8 @@ public class VariableData implements Serializable {
     return this;
   }
 
+  public DataType getType() {
+    return type;
+  }
+
 }
