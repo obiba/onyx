@@ -245,6 +245,11 @@ div.wicket-modal div.onyx .long-confirmation-dialog-content {
   padding-top: 7px; 
 }
 
+div.wicket-modal div.onyx .long-confirmation-dialog-content p {
+  padding-top: 0px; 
+  margin-top: 0px;
+}
+
 div.wicket-modal div.onyx .instrument-run-panel-content {
 	height:371px;
 }
