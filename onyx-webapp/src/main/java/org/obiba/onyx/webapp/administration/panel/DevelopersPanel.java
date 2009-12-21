@@ -30,6 +30,8 @@ import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.magma.datasource.fs.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -38,6 +40,8 @@ import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 public class DevelopersPanel extends Panel {
 
   private static final long serialVersionUID = 8577685399815703632L;
+
+  private static final Logger log = LoggerFactory.getLogger(DatasourceCopier.class);
 
   @SpringBean
   private SessionFactory factory;
@@ -103,7 +107,11 @@ public class DevelopersPanel extends Panel {
         }
       }
     } finally {
-      MagmaEngine.get().removeDatasource(target);
+      try {
+        MagmaEngine.get().removeDatasource(target);
+      } catch(RuntimeException e) {
+        log.warn("Exception thrown while removing datasource. May be caused by ", e);
+      }
     }
   }
 
