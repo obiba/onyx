@@ -15,12 +15,14 @@ import java.util.Locale;
 import javax.print.PrintException;
 
 import org.obiba.onyx.print.PdfPrintingService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * IPrintableReport implementation for PDF reports.
  */
 public abstract class PdfReport extends AbstractPrintableReport {
 
+  @Autowired
   private PdfPrintingService printingService;
 
   public void print(Locale locale) {
@@ -32,10 +34,5 @@ public abstract class PdfReport extends AbstractPrintableReport {
   }
 
   protected abstract InputStream getReport(Locale locale);
-
-  public void afterPropertiesSet() {
-    super.afterPropertiesSet();
-    printingService = (PdfPrintingService) applicationContext.getBean("pdfPrintingService");
-  }
 
 }

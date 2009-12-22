@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueSet;
@@ -35,12 +36,7 @@ import org.obiba.magma.type.DateType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.print.PdfTemplateEngine;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -59,8 +55,6 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
   private static final Pattern onyxPattern = Pattern.compile("^Onyx\\.");
 
   private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-  private VariableDirectory variableDirectory;
 
   private ActiveInterviewService activeInterviewService;
 
@@ -127,11 +121,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     HashMap<String, String> fieldList = form.getFields();
 
     ValueTable participantValueTable = getOnyxParticipantTable();
-    ValueSet valueSet = null;
-
-    if(participantValueTable != null) {
-      valueSet = getCurrentParticipantValueSet(participantValueTable);
-    }
+    ValueSet valueSet = getCurrentParticipantValueSet(participantValueTable);
 
     try {
       // Iterate on each field of pdf template
@@ -148,53 +138,26 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
         // instruments)
         for(String variableKey : keys) {
           String variablePath = fieldToVariableMap.get(variableKey);
-
           if(variablePath != null) {
-            Variable variable = variableDirectory.getVariable(variablePath);
-
-            if(variable != null) {
-              VariableData variableData = variableDirectory.getVariableData(participant, variablePath);
-
-              if(variableData != null && variableData.getDatas().size() > 0) {
-                String fieldValue = null;
-
-                // find data to put in field
-                for(Data data : variableData.getDatas()) {
-                  if(fieldValue != null) fieldValue += " ";
-
-                  if(data.getType().equals(DataType.DATE)) {
-                    fieldValue = dateFormat.format(data.getValue());
-                  } else {
-                    fieldValue = data.getValueAsString();
-                    if(variable.getUnit() != null) fieldValue += " " + variable.getUnit();
-                  }
-
-                }
-                if(valueSet == null) {
-                  log.error("Cannot lookup value in Magma. The Onyx Participant ValueTable is null. Using the Onyx Data instead.");
-                  form.setField(field.getKey(), fieldValue);
-                } else {
-                  VariableValueSource variableValueSource = participantValueTable.getVariableValueSource(stripOnyxPrefix(variablePath));
-                  Value value = variableValueSource.getValue(valueSet);
-                  String valueString = getValueAsString(variableValueSource.getVariable(), value);
-                  if(value.isSequence()) {
-                    // Use Magma always, since there is no Onyx Data equivalent to a Magma Sequence.
-                    form.setField(field.getKey(), valueString);
-                  } else if(!valueString.equals(fieldValue)) {
-                    log.error("[ONYX MAGMA MATCH FAILURE] Value for variable [{}] is different in Magma (Onyx Data=[{}], Magma Value=[{}]). Returned the Onyx Data.", new Object[] { variable.getName(), fieldValue, valueString });
-                    form.setField(field.getKey(), fieldValue);
-                  } else {
-                    form.setField(field.getKey(), valueString);
-                  }
-                }
-                break;
-              }
-            }
+            String valueString = getStringValue(participantValueTable, valueSet, field.getKey(), variablePath);
+            form.setField(field.getKey(), valueString);
           }
         }
       }
     } catch(Exception ex) {
       throw new RuntimeException(ex);
+    }
+  }
+
+  private String getStringValue(ValueTable participantValueTable, ValueSet valueSet, String fieldName, String variablePath) {
+    try {
+      VariableValueSource variableValueSource = participantValueTable.getVariableValueSource(stripOnyxPrefix(variablePath));
+      Value value = variableValueSource.getValue(valueSet);
+      return getValueAsString(variableValueSource.getVariable(), value);
+    } catch(NoSuchVariableException e) {
+      log.error("Invalid PDF template definition. Field '{}' is linked to inexistent variable '{}'.", fieldName, variablePath);
+      throw e;
+
     }
   }
 
@@ -232,7 +195,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     if(value.getValueType() == DateType.get()) {
       valueString = dateFormat.format(value.getValue());
     } else {
-      valueString = value.getValue().toString();
+      valueString = value.toString();
 
       if(variable != null && variable.getUnit() != null) valueString += " " + variable.getUnit();
     }
@@ -256,10 +219,6 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
   public void setDateFormat(String dateFormat) {
     this.dateFormat = new SimpleDateFormat(dateFormat);
-  }
-
-  public void setVariableDirectory(VariableDirectory variableDirectory) {
-    this.variableDirectory = variableDirectory;
   }
 
 }

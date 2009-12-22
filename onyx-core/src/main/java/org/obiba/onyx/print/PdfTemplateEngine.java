@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.engine.variable.VariableDirectory;
 
 public interface PdfTemplateEngine {
   /**
@@ -32,7 +31,5 @@ public interface PdfTemplateEngine {
   public InputStream applyTemplate(Locale locale, Map<String, String> fieldToVariableMap, LocalizedResourceLoader reportTemplateLoader, ActiveInterviewService activeInterviewService);
 
   public void setDateFormat(String dateFormat);
-
-  public void setVariableDirectory(VariableDirectory variableDirectory);
 
 }
