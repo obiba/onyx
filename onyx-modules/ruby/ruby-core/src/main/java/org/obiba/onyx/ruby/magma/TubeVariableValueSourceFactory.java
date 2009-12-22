@@ -137,6 +137,7 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     // Create sources for barcode part variables.
     TubeBarcodePartVariableValueSourceFactory barcodePartFactory = new TubeBarcodePartVariableValueSourceFactory(tubeRegistrationConfiguration);
     barcodePartFactory.setPrefix(tubePrefix);
+    barcodePartFactory.setOccurrenceGroup(REGISTERED_PARTICIPANT_TUBE);
     barcodePartFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new IdentifierAttributeVisitor((String[]) barcodePartFactory.getKeyVariableNames().toArray(new String[0]))));
     sources.addAll(barcodePartFactory.createSources());
 
@@ -168,9 +169,10 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     // Create sources for registered participant tube variables.
     BeanVariableValueSourceFactory<RegisteredParticipantTube> delegateFactory = new BeanVariableValueSourceFactory<RegisteredParticipantTube>("Participant", RegisteredParticipantTube.class);
     delegateFactory.setPrefix(tubePrefix + '.' + "remark");
+    delegateFactory.setOccurrenceGroup(REGISTERED_PARTICIPANT_TUBE);
     delegateFactory.setProperties(ImmutableSet.copyOf(remarkProperties.iterator()));
     delegateFactory.setPropertyNameToVariableName(propertyNameToVariableNameMap);
-    delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", String.class).build());
+    delegateFactory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("remarkSelections", Boolean.class).build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(stageAttributeVisitor, new LocalizedAttributeVisitor()));
 
     return delegateFactory.createSources();

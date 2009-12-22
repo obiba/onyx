@@ -36,10 +36,9 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
   // Instance Variables
   //
 
-  @Autowired(required = true)
   private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
-  @Autowired(required = true)
+  @Autowired
   private EntityQueryService queryService;
 
   private String variableRoot;
