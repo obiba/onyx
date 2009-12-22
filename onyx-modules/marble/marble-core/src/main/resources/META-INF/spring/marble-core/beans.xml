@@ -76,7 +76,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="dataCollectionMode">
       <bean class="org.obiba.onyx.core.data.VariableDataSource">
         <constructor-arg value="Onyx.Consent.mode" />
-        <property name="variableDirectory" ref="variableDirectory" />
       </bean>
     </property>
   </bean>

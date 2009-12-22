@@ -19,15 +19,13 @@ import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.magma.DataValueConverter;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Get data from a variable kept in variable directory
+ * Get data from a variable.
  */
 public class VariableDataSource implements IDataSource {
 
@@ -37,16 +35,10 @@ public class VariableDataSource implements IDataSource {
 
   private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
-  private transient VariableDirectory variableDirectory;
-
   private String path;
 
   public VariableDataSource(String path) {
     this.path = path;
-  }
-
-  public void setVariableDirectory(VariableDirectory variableDirectory) {
-    this.variableDirectory = variableDirectory;
   }
 
   public Data getData(Participant participant) {
@@ -55,39 +47,21 @@ public class VariableDataSource implements IDataSource {
 
     Value value = getValue(participant);
 
-    org.obiba.onyx.engine.variable.Variable variable = variableDirectory.getVariable(path);
-    if(variable != null) {
-      Data data = null;
-      VariableData variableData = variableDirectory.getVariableData(participant, path);
-      if(variableData != null && variableData.getDatas().size() > 0) {
-        data = variableData.getDatas().get(0);
-      }
-      Data convertedData = DataValueConverter.valueToData(value);
-      if(data != null && data.equals(convertedData) == false) {
-        log.error("[ONYX MAGMA MATCH FAILURE] Value for variable {} is different in Magma (Onyx Data={}, Magma Value={}). Returned the Onyx Data.", new Object[] { variable.getName(), data, DataValueConverter.valueToData(getValue(participant)) });
-      }
-    }
     return DataValueConverter.valueToData(value);
   }
 
   private Value getValue(Participant participant) {
     VariableEntity entity = new VariableEntityBean("Participant", participant.getBarcode());
-
     ValueTable table = getParticipantValueTable();
     ValueSet valueSet = table.getValueSet(entity);
+
     return getVariableValueSource(table).getValue(valueSet);
   }
 
   public String getUnit() {
     ValueTable table = getParticipantValueTable();
+    String magmaVariableUnit = getVariableValueSource(table).getVariable().getUnit();
 
-    org.obiba.onyx.engine.variable.Variable variable = variableDirectory.getVariable(path);
-    String variableDirectoryUnit = (variable != null) ? variable.getUnit() : null;
-    String magmaVariableUnit = (variable != null) ? getVariableValueSource(table).getVariable().getUnit() : null;
-    if(!variableDirectoryUnit.equals(magmaVariableUnit)) {
-      log.error("[ONYX MAGMA MATCH FAILURE] Unit for variable {} is different in Magma (VariableDirectory={}, Magma={})", new Object[] { variable.getName(), variableDirectoryUnit, magmaVariableUnit });
-      return variableDirectoryUnit;
-    }
     return magmaVariableUnit;
   }
 

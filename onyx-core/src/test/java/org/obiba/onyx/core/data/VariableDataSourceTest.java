@@ -59,7 +59,6 @@ public class VariableDataSourceTest {
   public void testVariableDataSourceNoVariable() {
     Participant participant = createParticipant();
     VariableDataSource variableDataSource = new VariableDataSource("/PARTICIPANT/FULL_NAME");
-    variableDataSource.setVariableDirectory(mockDirectory);
     Data data = variableDataSource.getData(participant);
     Assert.assertNull(data);
   }
@@ -69,7 +68,6 @@ public class VariableDataSourceTest {
   public void testVariableDataSourceNoData() {
     Participant participant = createParticipant();
     VariableDataSource variableDataSource = new VariableDataSource("/PARTICIPANT/FIRST_NAME");
-    variableDataSource.setVariableDirectory(mockDirectory);
     Data data = variableDataSource.getData(participant);
     Assert.assertNull(data);
   }
@@ -79,7 +77,6 @@ public class VariableDataSourceTest {
   public void testVariableDataSourceDataNoUnit() {
     Participant participant = createParticipant();
     VariableDataSource variableDataSource = new VariableDataSource("/PARTICIPANT/LAST_NAME");
-    variableDataSource.setVariableDirectory(mockDirectory);
 
     Data data = variableDataSource.getData(participant);
     String unit = variableDataSource.getUnit();
@@ -94,7 +91,6 @@ public class VariableDataSourceTest {
   public void testVariableDataSourceDataWithUnit() {
     Participant participant = createParticipant();
     VariableDataSource variableDataSource = new VariableDataSource("/PARTICIPANT/AGE");
-    variableDataSource.setVariableDirectory(mockDirectory);
 
     Data data = variableDataSource.getData(participant);
     String unit = variableDataSource.getUnit();
@@ -109,7 +105,6 @@ public class VariableDataSourceTest {
   public void testVariableDataSourceMultipleData() {
     Participant participant = createParticipant();
     VariableDataSource variableDataSource = new VariableDataSource("/PARTICIPANT/WEIGHT");
-    variableDataSource.setVariableDirectory(mockDirectory);
 
     Data data = variableDataSource.getData(participant);
     String unit = variableDataSource.getUnit();
