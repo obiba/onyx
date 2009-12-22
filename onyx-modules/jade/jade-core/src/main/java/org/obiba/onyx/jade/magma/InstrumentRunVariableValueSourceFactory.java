@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.Set;
 import org.obiba.magma.Category;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
@@ -36,6 +38,8 @@ import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
@@ -44,10 +48,12 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Factory for creating VariableValueSources for InstrumentRun variables.
  */
-public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSourceFactory<InstrumentRun> {
+public class InstrumentRunVariableValueSourceFactory implements VariableValueSourceFactory {
   //
   // Constants
   //
+
+  private static final Logger log = LoggerFactory.getLogger(InstrumentRunVariableValueSourceFactory.class);
 
   public static final String INSTRUMENT_RUN = "InstrumentRun";
 
@@ -66,32 +72,19 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
   private OnyxAttributeHelper attributeHelper;
 
   //
-  // Constructors
-  //
-
-  public InstrumentRunVariableValueSourceFactory() {
-    super("Participant", InstrumentRun.class);
-  }
-
-  //
   // BeanVariableValueSourceFactory Methods
   //
 
-  @Override
   public Set<VariableValueSource> createSources() {
-    Set<VariableValueSource> sources = null;
+    Set<VariableValueSource> sources = new LinkedHashSet<VariableValueSource>();
 
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
       InstrumentType instrumentType = entry.getValue();
-      setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
       String instrumentTypePrefix = instrumentType.getName();
 
       // Call superclass method to create the sources for InstrumentRun variables.
       String instrumentRunPrefix = instrumentTypePrefix + '.' + INSTRUMENT_RUN;
-      setPrefix(instrumentRunPrefix);
-      setProperties(ImmutableSet.of("user.login", "timeStart", "timeEnd", "otherContraindication"));
-      setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
-      sources = super.createSources();
+      sources.addAll(createTimeAndContraindication(instrumentRunPrefix, instrumentType));
 
       // For non-repeatable instrument types, add source for instrument barcode variable.
       if(!instrumentType.isRepeatable()) {
@@ -102,16 +95,14 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
 
       // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
       String ciVariablePrefix = instrumentType.getName() + '.' + INSTRUMENT_RUN + '.' + CONTRAINDICATION;
-      setPrefix(ciVariablePrefix);
-      setProperties(ImmutableSet.of("contraindicationCode"));
-      setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("contraindicationCode", "code").build());
-      sources.addAll(super.createSources());
+      sources.add(createContraindicationCode(ciVariablePrefix, instrumentType));
 
       // Add source for InstrumentRun.Contraindication.type variable.
       sources.add(createContraindicationTypeSource(ciVariablePrefix, instrumentType));
 
       // Add sources for instrument parameter variables.
       sources.addAll(createInstrumentParameterSources(instrumentTypePrefix, instrumentType));
+
     }
 
     return sources;
@@ -127,6 +118,26 @@ public class InstrumentRunVariableValueSourceFactory extends BeanVariableValueSo
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
+  }
+
+  private Set<VariableValueSource> createTimeAndContraindication(String prefix, InstrumentType instrumentType) {
+    BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
+    delegateFactory.setPrefix(prefix);
+    delegateFactory.setProperties(ImmutableSet.of("user.login", "timeStart", "timeEnd", "otherContraindication"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+
+    return delegateFactory.createSources();
+  }
+
+  private VariableValueSource createContraindicationCode(String prefix, InstrumentType instrumentType) {
+    BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
+    delegateFactory.setPrefix(prefix);
+    delegateFactory.setProperties(ImmutableSet.of("contraindication"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("contraindication", "code").build());
+    delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
+
+    return delegateFactory.createSources().iterator().next();
   }
 
   private VariableValueSource createBarcodeSource(String prefix, InstrumentType instrumentType) {
