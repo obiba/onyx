@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.obiba.core.util.StringUtil;
 import org.quartz.JobExecutionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
@@ -37,7 +37,7 @@ public class OnyxJobDetailDelegate extends QuartzJobBean {
    */
   static final String JOB_NAME = "jobName";
 
-  private static Log log = LogFactory.getLog(OnyxJobDetailDelegate.class);
+  private static Logger log = LoggerFactory.getLogger(OnyxJobDetailDelegate.class);
 
   private JobLocator jobLocator;
 

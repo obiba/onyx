@@ -129,7 +129,6 @@ public class ParticipantSearchPageTest {
   public void testSearchByInputFieldParticipant() {
 
     // methods expected on the page initialization for the first participant list
-    expect(mockParticipantService.getParticipants((Date) EasyMock.anyObject(), (Date) EasyMock.anyObject(), (PagingClause) EasyMock.anyObject(), (SortingClause) EasyMock.anyObject())).andReturn(new ArrayList<Participant>());
     expect(mockParticipantService.countParticipants((Date) EasyMock.anyObject(), (Date) EasyMock.anyObject())).andReturn(0);
 
     // methods expected after pressing the search button
