@@ -34,9 +34,9 @@
     <property name="jobRegistry" ref="jobRegistry" />
     <property name="jobLauncher" ref="jobLauncher" />
   </bean>
-  
-  <!-- Code added for the scheduler -->
-  <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+    
+  <!-- JobDetail for appointmentListUpdateJob -->
+  <bean id="appointmentListUpdateJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
     <property name="jobClass" value="org.obiba.onyx.core.batch.OnyxJobDetailDelegate" />
     <property name="group" value="quartz-batch" />
     <property name="jobDataAsMap">
@@ -47,13 +47,19 @@
       </map>
     </property>
   </bean>
-    
-  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-    <property name="triggers">
-      <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="jobDetail" />
-        <property name="cronExpression" value="${org.obiba.onyx.appointments.schedule}" />
-      </bean>
-    </property>
+  
+  <!-- Trigger for appointmentListUpdateJob -->
+  <bean id="appointmentListUpdateTrigger" class="org.obiba.onyx.core.batch.JobTriggerFactory" factory-method="newTrigger">
+    <constructor-arg type="org.quartz.JobDetail" ref="appointmentListUpdateJobDetail" />
+    <constructor-arg type="java.lang.String" value="${org.obiba.onyx.appointments.schedule}" />
   </bean>
+  
+  <!-- Onyx job triggers -->
+  <bean id="jobTriggers" class="org.obiba.onyx.core.batch.JobTriggerListFactoryBean" />
+      
+  <!-- Scheduler -->
+  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers" ref="jobTriggers" />
+  </bean>
+    
 </beans>
