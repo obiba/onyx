@@ -9,17 +9,22 @@
 package org.obiba.onyx.marble.core.wicket.consent;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.RadioChoice;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
@@ -36,21 +41,40 @@ public class ConsentModeSelectionPanel extends Panel {
   @SpringBean
   private ActiveConsentService activeConsentService;
 
+  @SpringBean
+  private ConsentService consentService;
+
+  private RadioChoice<ConsentMode> modeChoice;
+
+  private SeparatorFragment separatorFragment;
+
   public ConsentModeSelectionPanel(String id) {
     super(id);
     setOutputMarkupId(true);
+    List<Locale> locales;
 
-    add(createConsentModeRadio());
-    add(createConsentLanguageDropDown(consentFormTemplateLoader.getAvailableLocales()));
+    add(modeChoice = createConsentModeRadio());
+    add(separatorFragment = new SeparatorFragment("separator"));
 
     // Set default consent mode to electronic.
-    activeConsentService.getConsent().setMode(ConsentMode.ELECTRONIC);
+    if(consentService.getSupportedConsentModes().containsAll(EnumSet.allOf(ConsentMode.class))) {
+      activeConsentService.getConsent().setMode(ConsentMode.ELECTRONIC);
+      locales = consentFormTemplateLoader.getAvailableLocales();
+      add(new Label("instruction", new StringResourceModel("ConsentModeSelection", ConsentModeSelectionPanel.this, null)));
+    } else {
+      activeConsentService.getConsent().setMode(ConsentMode.MANUAL);
+      modeChoice.setVisible(false);
+      locales = consentService.getSupportedConsentLocales();
+      add(new Label("instruction", new StringResourceModel("ConsenLanguageSelection", ConsentModeSelectionPanel.this, null)));
+      separatorFragment.setVisible(false);
+    }
 
+    add(createConsentLanguageDropDown(locales));
   }
 
   @SuppressWarnings("serial")
-  private RadioChoice createConsentModeRadio() {
-    RadioChoice consentModeRadio = new RadioChoice("consentMode", new PropertyModel(activeConsentService, "consent.mode"), Arrays.asList(ConsentMode.values()), new ChoiceRenderer()) {
+  private RadioChoice<ConsentMode> createConsentModeRadio() {
+    RadioChoice<ConsentMode> consentModeRadio = new RadioChoice<ConsentMode>("consentMode", new PropertyModel(activeConsentService, "consent.mode"), Arrays.asList(ConsentMode.values()), new ChoiceRenderer()) {
 
       @Override
       protected boolean localizeDisplayValues() {
@@ -92,6 +116,14 @@ public class ConsentModeSelectionPanel extends Panel {
       if(new SpringStringResourceModel(locale.toString()).getString().equals(locale.toString())) return false;
     }
     return true;
+  }
+
+  private class SeparatorFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
+    public SeparatorFragment(String id) {
+      super(id, "separatorFragment", ConsentModeSelectionPanel.this);
+    }
   }
 
 }

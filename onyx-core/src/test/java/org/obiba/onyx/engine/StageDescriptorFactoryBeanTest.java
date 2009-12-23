@@ -24,6 +24,7 @@ public class StageDescriptorFactoryBeanTest {
   public void testStageLoad() throws Exception {
     StageDescriptorFactoryBean bean = new StageDescriptorFactoryBean();
     bean.setStageDescriptor(new ClassPathResource("testStages.xml", StageDescriptorFactoryBeanTest.class));
+    bean.afterPropertiesSet();
 
     List<Stage> stages = (List<Stage>) bean.getObject();
     Assert.assertNotNull(stages);

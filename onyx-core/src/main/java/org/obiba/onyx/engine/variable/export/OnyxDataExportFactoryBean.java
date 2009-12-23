@@ -9,25 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
-import com.thoughtworks.xstream.XStream;
-
-/**
- * 
- */
-public class OnyxDataExportFactoryBean implements FactoryBean, InitializingBean {
-
-  private XStream destinationXstream;
+public class OnyxDataExportFactoryBean implements FactoryBean {
 
   private Resource destinationsResource;
 
@@ -36,18 +23,9 @@ public class OnyxDataExportFactoryBean implements FactoryBean, InitializingBean 
   }
 
   public Object getObject() throws Exception {
-    InputStream is = destinationsResource.getInputStream();
-    try {
-      return destinationXstream.fromXML(is);
-    } finally {
-      if(is != null) {
-        try {
-          is.close();
-        } catch(IOException e) {
-          // Ignore
-        }
-      }
-    }
+    OnyxDataExportReader onyxDataExportReader = new OnyxDataExportReader();
+    onyxDataExportReader.setResources(new Resource[] { destinationsResource });
+    return onyxDataExportReader.read();
   }
 
   public Class<?> getObjectType() {
@@ -57,13 +35,4 @@ public class OnyxDataExportFactoryBean implements FactoryBean, InitializingBean 
   public boolean isSingleton() {
     return false;
   }
-
-  public void afterPropertiesSet() throws Exception {
-    destinationXstream = new XStream();
-    destinationXstream.alias("destinations", LinkedList.class);
-    destinationXstream.alias("destination", OnyxDataExportDestination.class);
-    destinationXstream.alias("exportedInterviewStatuses", HashSet.class);
-    destinationXstream.alias("status", InterviewStatus.class);
-  }
-
 }

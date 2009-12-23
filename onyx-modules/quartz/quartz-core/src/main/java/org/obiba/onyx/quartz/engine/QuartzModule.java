@@ -11,9 +11,12 @@ package org.obiba.onyx.quartz.engine;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -34,13 +37,16 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
+import org.obiba.onyx.quartz.magma.QuestionnaireStageVariableSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class QuartzModule implements Module, IVariableProvider, ApplicationContextAware {
+import com.google.common.collect.ImmutableSet;
+
+public class QuartzModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzModule.class);
 
@@ -72,6 +78,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
       }
 
     }
+
   }
 
   public void shutdown(WebApplication application) {
@@ -220,4 +227,13 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     questionnaireParticipantService.deleteAllQuestionnairesParticipant(participant);
   }
 
+  public Set<VariableValueSource> createSources() {
+    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
+    for(Stage stage : stages) {
+      QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
+      QuestionnaireStageVariableSourceFactory factory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
+      sources.addAll(factory.createSources());
+    }
+    return sources.build();
+  }
 }

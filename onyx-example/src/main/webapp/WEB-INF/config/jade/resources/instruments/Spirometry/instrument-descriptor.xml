@@ -2,50 +2,6 @@
 <instrumentType>
 
   <name>Spirometry</name>
-
- <!-- <contraindications>  commented out
-    <contraIndication>
-      <code>Other_CI</code>
-      <requiresDescription>true</requiresDescription>
-      <type>OBSERVED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>HeartAttack</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>AbdominalThoracicEyeSurgery</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>ChestInfection</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Tuberculosis</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>DetachedRetina</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Pneumothorax</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Stoma</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-  </contraindications>  -->
   
   <!-- A maximum of 3 measures is supported in one minispir software run. 
   Requesting for more than 3 measures while require multiple runs. -->
@@ -54,41 +10,6 @@
   </expectedMeasureCount>
 
   <instrumentParameters>
-  <!--  <interpretative>   commented out
-      <code>IV_BRONCHODILATOR</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_SMOKED</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_ALCOHOL</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_HEARTY_MEAL</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_COFFEE</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative> -->
-
     <input>
       <vendorName>ID</vendorName>
       <code>INPUT_PARTICIPANT_BARCODE</code>

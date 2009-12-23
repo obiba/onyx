@@ -43,6 +43,10 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
     return category.getOpenAnswerDefinition();
   }
 
+  public boolean hasOpenAnswerDefinition() {
+    return getOpenAnswerDefinition() != null;
+  }
+
   public void setCategory(Category category) {
     this.category = category;
   }

@@ -84,7 +84,6 @@
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
-    <property name="exportDestinations" ref="onyxDataExportDestinations" />    
   </bean>  
   
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry">

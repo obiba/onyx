@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -29,15 +32,21 @@ import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
+import org.obiba.onyx.ruby.magma.TubeVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class RubyModule implements Module, IVariableProvider, ApplicationContextAware {
+import com.google.common.collect.ImmutableSet;
+
+public class RubyModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
   //
   // Constants
   //
@@ -74,9 +83,24 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
   private List<Stage> stages;
 
+  private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
+
+  private String variableRoot;
+
+  @Autowired(required = true)
+  private OnyxAttributeHelper attributeHelper;
+
   //
   // Module Methods
   //
+
+  public void setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap) {
+    this.tubeRegistrationConfigurationMap = tubeRegistrationConfigurationMap;
+  }
+
+  public void setVariableRoot(String variableRoot) {
+    this.variableRoot = variableRoot;
+  }
 
   public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
     this.activeTubeRegistrationService = activeTubeRegistrationService;
@@ -354,4 +378,22 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
     activeTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
   }
 
+  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
+    this.attributeHelper = attributeHelper;
+  }
+
+  //
+  // VariableValueSourceFactory Methods
+  //
+  public Set<VariableValueSource> createSources() {
+    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
+    for(Stage stage : stages) {
+      TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stage.getName());
+      TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
+      factory.setAttributeHelper(attributeHelper);
+      factory.setVariableRoot(variableRoot);
+      sources.addAll(factory.createSources());
+    }
+    return sources.build();
+  }
 }

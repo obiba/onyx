@@ -12,13 +12,10 @@ package org.obiba.onyx.jade.core.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
+import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionFactory;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionLog;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
@@ -26,18 +23,14 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerAwareService implements ExperimentalConditionService {
+public abstract class DefaultExperimentalConditionServiceImpl extends PersistenceManagerAwareService implements ExperimentalConditionService {
+
+  private ExperimentalConditionFactory experimentalConditionFactory;
 
   private List<ExperimentalConditionLog> experimentalConditionLogs = new ArrayList<ExperimentalConditionLog>();
 
-  private SessionFactory factory;
-
-  public void setSessionFactory(SessionFactory factory) {
-    this.factory = factory;
-  }
-
-  private Session getSession() {
-    return factory.getCurrentSession();
+  public void init() {
+    experimentalConditionFactory.registerExperimentalConditions();
   }
 
   public void save(ExperimentalCondition experimentalCondition) {
@@ -50,29 +43,6 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
 
   public List<ExperimentalConditionLog> getExperimentalConditionLog() {
     return experimentalConditionLogs;
-  }
-
-  private Criteria getCriteria(ExperimentalCondition template) {
-    Criteria criteria = getSession().createCriteria(ExperimentalCondition.class);
-
-    if(template != null) {
-      if(template.getId() != null) criteria.add(Restrictions.eq("id", template.getId()));
-      if(template.getName() != null) criteria.add(Restrictions.like("name", template.getName()));
-      if(template.getWorkstation() != null) criteria.add(Restrictions.like("workstation", template.getWorkstation()));
-      if(!template.getExperimentalConditionValues().isEmpty()) {
-        for(ExperimentalConditionValue ecv : template.getExperimentalConditionValues()) {
-          if(ecv.getAttributeName().equals(ExperimentalConditionService.INSTRUMENT_BARCODE)) {
-            criteria.createCriteria("experimentalConditionValues").add(Restrictions.eq("attributeName", ExperimentalConditionService.INSTRUMENT_BARCODE)).add(Restrictions.eq("textValue", ecv.getValue()));
-          }
-        }
-      }
-    }
-    return criteria;
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template) {
-    return getCriteria(template).list();
   }
 
   public ExperimentalConditionLog getExperimentalConditionLogByName(String name) {
@@ -97,7 +67,7 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
     return false;
   }
 
-  private List<InstrumentCalibration> getInstrumentCalibrations() {
+  protected List<InstrumentCalibration> getInstrumentCalibrations() {
     List<InstrumentCalibration> instrumentCalibrations = new ArrayList<InstrumentCalibration>();
     for(ExperimentalConditionLog log : experimentalConditionLogs) {
       if(log instanceof InstrumentCalibration) {
@@ -120,5 +90,9 @@ public class DefaultExperimentalConditionServiceImpl extends PersistenceManagerA
   public void deleteExperimentalCondition(ExperimentalCondition experimentalCondition) {
     if(experimentalCondition == null) throw new IllegalArgumentException("The experimentalCondition must not be null.");
     getPersistenceManager().delete(experimentalCondition);
+  }
+
+  public void setExperimentalConditionFactory(ExperimentalConditionFactory experimentalConditionFactory) {
+    this.experimentalConditionFactory = experimentalConditionFactory;
   }
 }

@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
@@ -36,7 +37,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
-import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.springframework.context.ApplicationContext;
 
 import com.thoughtworks.xstream.XStream;

@@ -10,7 +10,9 @@
 package org.obiba.onyx.ruby.core.domain;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -20,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
@@ -96,5 +99,14 @@ public class RegisteredParticipantTube extends AbstractEntity {
 
   public void addRemark(String remark) {
     getRemarks().add(remark);
+  }
+
+  @Transient
+  public Map<String, Boolean> getRemarkSelections() {
+    Map<String, Boolean> remarkSelections = new HashMap<String, Boolean>();
+    for(String remark : getRemarks()) {
+      remarkSelections.put(remark, Boolean.TRUE);
+    }
+    return remarkSelections;
   }
 }

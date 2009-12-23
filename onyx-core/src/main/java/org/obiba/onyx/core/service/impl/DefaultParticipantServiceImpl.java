@@ -153,7 +153,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     // Write the deleted participant information to InterviewDeletionLog
     InterviewDeletionLog deletionLog = new InterviewDeletionLog();
     deletionLog.setDate(new Date());
-    deletionLog.setExportDate(participant.getExportDate());
+    // deletionLog.setExportDate(participant.getExportDate());
     deletionLog.setParticipantBarcode(participant.getBarcode());
     deletionLog.setStatus(participant.getInterview().getStatus().toString());
     deletionLog.setUser(userSessionService.getUser().getLogin() + " - " + userSessionService.getUser().getFullName());

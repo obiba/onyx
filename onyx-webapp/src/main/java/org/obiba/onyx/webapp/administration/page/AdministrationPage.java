@@ -18,7 +18,9 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.model.Model;
+import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.administration.panel.DataManagementPanel;
+import org.obiba.onyx.webapp.administration.panel.DevelopersPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.user.panel.UserSearchPanel;
 
@@ -64,6 +66,23 @@ public class AdministrationPage extends BasePage {
     dataTab.setOutputMarkupId(true);
     add(dataTab);
     links.add(dataTab);
+
+    AjaxLink devTab = new AjaxLink("devTab") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        replaceContent(target, new DevelopersPanel(getContentId()));
+        activateLink(this, target);
+      }
+
+      @Override
+      public boolean isVisible() {
+        return ((OnyxApplication) OnyxApplication.get()).isDevelopmentMode();
+      }
+    };
+    devTab.setOutputMarkupId(true);
+    add(devTab);
+    links.add(devTab);
 
     // First screen displayed is user tab
     Component content = new UserSearchPanel(getContentId());

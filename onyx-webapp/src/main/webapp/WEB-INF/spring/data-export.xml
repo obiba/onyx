@@ -4,34 +4,16 @@
   <!-- Data export pipeline -->
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
     <property name="exportDestinations" ref="onyxDataExportDestinations" />
-    <property name="queryService" ref="persistenceManager" />
-    <property name="variableDirectory" ref="variableDirectory" />
-    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
         <property name="targetBeanName" value="userSessionService" />
       </bean>
     </property>
-    <property name="configDirectory" value="${org.obiba.onyx.config.path}" />
-    <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
-    <property name="exportStrategy">
-      <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
-        <property name="chainedStrategies">
-          <list>
-            <bean class="org.obiba.onyx.engine.variable.export.EncryptingOnyxDataExportStrategy">
-              <property name="publicKeyFactory" ref="onyxKeyStore" />
-            </bean>
-            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
-            <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
-            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
-            <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
-              <property name="applicationConfigurationService" ref="appConfigService" />
-              <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
-            </bean>
-          </list>
-        </property>
-      </bean>
-    </property>
+    <property name="exportLogService" ref="exportLogService" />
+    <property name="captureAndExportStrategyMap" ref="captureAndExportStrategyMap" />
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="publicKeyFactory" ref="onyxKeyStore" />
   </bean>
 
 </beans>

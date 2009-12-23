@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.core.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -20,19 +19,20 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
 
-  private Map<String, InstrumentType> instrumentTypes;
+  private InstrumentService instrumentService;
 
-  public void setInstrumentTypes(Map<String, InstrumentType> instrumentTypes) {
-    this.instrumentTypes = instrumentTypes;
+  public void setInstrumentService(InstrumentService instrumentService) {
+    this.instrumentService = instrumentService;
   }
 
   public InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {
     if(participant == null) throw new IllegalArgumentException("The participant must not be null.");
     if(instrumentTypeName == null) throw new IllegalArgumentException("The instrumentTypeName must not be null.");
-    InstrumentType instrumentType = instrumentTypes.get(instrumentTypeName);
+    InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve instrument run for a null instrument type. InstrumentTypeName was [" + instrumentTypeName + "].");
     InstrumentRun template = new InstrumentRun();
     template.setInstrumentType(instrumentType.getName());
@@ -56,7 +56,7 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
   }
 
   public void deleteAllInstrumentRuns(Participant participant) {
-    for(InstrumentType type : instrumentTypes.values()) {
+    for(InstrumentType type : instrumentService.getInstrumentTypes().values()) {
       deleteInstrumentRun(participant, type.getName());
     }
   }

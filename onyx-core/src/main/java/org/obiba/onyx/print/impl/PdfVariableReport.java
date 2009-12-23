@@ -11,44 +11,85 @@ package org.obiba.onyx.print.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Locale;
 
-import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.engine.variable.VariableDirectory;
+import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchVariableException;
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
+import org.obiba.magma.VariableEntity;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.magma.DataValueConverter;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PdfReport implementation for reports that are retrieved from a variable to be printed.
  */
 public class PdfVariableReport extends PdfReport {
+  //
+  // Constants
+  //
+
+  private static final Logger log = LoggerFactory.getLogger(VariableDataSource.class);
+
+  private static final String PARTICIPANT_TABLE_NAME = "Participants";
+
+  //
+  // Instance Variables
+  //
 
   private String pdfVariablePath;
 
-  private VariableDirectory variableDirectory;
+  //
+  // PdfReport Methods
+  //
 
   @Override
   protected InputStream getReport(Locale locale) {
-    VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), pdfVariablePath);
-    List<Data> datas = variableData.getDatas();
-    if(datas.size() > 1) {
-      throw new RuntimeException("The report variable has more than one data object associated to it, please verify the variable path is one of an actual PDF report.");
+    // Get the Participant ValueTable.
+    ValueTable onyxParticipantTable = null;
+    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
     }
-    for(Data data : datas) {
-      if(data.getType() == DataType.DATA) {
-        return new ByteArrayInputStream((byte[]) data.getValue());
-      } else {
-        throw new RuntimeException("The report variable does not contain any data, please verify the variable path is one of an actual PDF report.");
+
+    if(onyxParticipantTable != null) {
+      String magmaVariableName = pdfVariablePath.replaceFirst("Onyx.", "");
+      try {
+        // Get the currently interviewed participant's ValueSet.
+        VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
+        ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
+
+        // Get the PDF data.
+        VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
+        Value pdfValue = variableValueSource.getValue(valueSet);
+        if(!pdfValue.isNull()) {
+          Data pdfData = DataValueConverter.valueToData(pdfValue);
+          return new ByteArrayInputStream((byte[]) pdfData.getValue());
+        }
+
+      } catch(NoSuchVariableException noSuchVariableEx) {
+        log.error("No Magma variable found for the following name: {}", magmaVariableName);
       }
+    } else {
+      log.error("No Magma ValueTable found for the following name: {}", PARTICIPANT_TABLE_NAME);
     }
+
     return null;
   }
 
   public void afterPropertiesSet() {
     super.afterPropertiesSet();
-    variableDirectory = (VariableDirectory) applicationContext.getBean("variableDirectory");
   }
+
+  //
+  // Methods
+  //
 
   public void setPdfVariablePath(String pdfVariablePath) {
     this.pdfVariablePath = pdfVariablePath;

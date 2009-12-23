@@ -50,6 +50,8 @@
             <property name="appliesTo" value="1.6.0" />  
           </bean>
           <ref bean="onyx-dataUpgrade-1.6.0" />
+          <ref bean="onyx-dataUpgrade2-1.6.0" />
+          <ref bean="onyx-schemaUpgrade2-1.6.0" />
           <ref bean="onyx-constraints-1.6.0" />
         </list>
      </property>
@@ -168,4 +170,15 @@
     <property name="appliesTo" value="1.6.0" />   
   </bean>
   
+  <bean id="onyx-dataUpgrade2-1.6.0" class="org.obiba.onyx.runtime.upgrade.DataUpgrade2_1_6_0">
+    <property name="description" value="Onyx Core Data Upgrade Part 2 1.6.0"/>
+    <property name="appliesTo" value="1.6.0" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="onyx-schemaUpgrade2-1.6.0" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade2_1_6_0">
+    <property name="description" value="Onyx Schema Upgrade Part 2 1.6.0"/>
+    <property name="appliesTo" value="1.6.0" />    
+    <property name="dataSource" ref="dataSource" />
+  </bean>
 </beans>

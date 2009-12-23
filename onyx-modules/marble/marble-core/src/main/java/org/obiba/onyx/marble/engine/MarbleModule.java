@@ -15,10 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Module;
@@ -34,6 +37,7 @@ import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.magma.ConsentVariableValueSourceFactory;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -42,10 +46,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.google.common.collect.ImmutableSet;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 
-public class MarbleModule implements Module, IVariableProvider, ApplicationContextAware {
+public class MarbleModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleModule.class);
 
@@ -67,7 +72,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
   private List<Stage> stages;
 
-  private Map<String, String> variableToFieldMap;
+  private Map<String, String> variableToFieldMap = new HashMap<String, String>();
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
@@ -186,7 +191,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
   }
 
   public void setVariableToFieldMap(String keyValuePairs) {
-    variableToFieldMap = new HashMap<String, String>();
+    variableToFieldMap.clear();
     // Get list of strings separated by the delimiter
     StringTokenizer tokenizer = new StringTokenizer(keyValuePairs, ",");
     while(tokenizer.hasMoreElements()) {
@@ -216,4 +221,17 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     consentService.purgeConsent(participant.getInterview());
   }
 
+  //
+  // VariableValueSourceFactory Methods
+  //
+
+  public Set<VariableValueSource> createSources() {
+    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
+    for(Stage stage : stages) {
+      ConsentVariableValueSourceFactory factory = new ConsentVariableValueSourceFactory(stage.getName());
+      factory.setVariableToFieldMap(variableToFieldMap);
+      sources.addAll(factory.createSources());
+    }
+    return sources.build();
+  }
 }

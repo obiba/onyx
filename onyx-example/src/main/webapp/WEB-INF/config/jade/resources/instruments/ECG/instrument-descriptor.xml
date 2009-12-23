@@ -314,6 +314,9 @@
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>   
     </output>
 
     <output>
@@ -322,8 +325,11 @@
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>    
     </output>
-
+    
     <output>
       <vendorName>QRsDuration</vendorName>
       <code>RES_QRS_DURATION</code>
@@ -446,6 +452,14 @@
     <output>
       <vendorName>pdfFile</vendorName>
       <code>RES_PDF_FILE</code>
+      <dataType>DATA</dataType>
+      <mimeType>application/pdf</mimeType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>pdfFileFull</vendorName>
+      <code>RES_PDF_FILE_FULL</code>
       <dataType>DATA</dataType>
       <mimeType>application/pdf</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>

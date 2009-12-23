@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl.hibernate;
 
-import java.util.Map;
-
 import junit.framework.Assert;
 
 import org.hibernate.SessionFactory;
@@ -21,10 +19,9 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.core.test.spring.DatasetOperationType;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,25 +34,21 @@ public class InstrumentRunServiceHibernateImplTest extends BaseDefaultSpringCont
   private PersistenceManager persistenceManager;
 
   @Autowired
-  private InstrumentTypeFactoryBean instrumentTypeFactoryBean;
-
-  @Autowired
   private SessionFactory factory;
 
-  private Map<String, InstrumentType> instrumentTypes;
+  @Autowired
+  private InstrumentService instrumentService;
 
   private Participant participantLauraDupont;
 
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() throws Exception {
-    // Initialize instrumentTypes
-    instrumentTypes = (Map<String, InstrumentType>) instrumentTypeFactoryBean.getObject();
 
     // Initialize activeInstrumentRunService (class being tested).
     newInstrumentRunServiceHibernateImpl = new InstrumentRunServiceHibernateImpl();
     newInstrumentRunServiceHibernateImpl.setPersistenceManager(persistenceManager);
-    newInstrumentRunServiceHibernateImpl.setInstrumentTypes(instrumentTypes);
+    newInstrumentRunServiceHibernateImpl.setInstrumentService(instrumentService);
     newInstrumentRunServiceHibernateImpl.setSessionFactory(factory);
 
     participantLauraDupont = persistenceManager.get(Participant.class, 1l);

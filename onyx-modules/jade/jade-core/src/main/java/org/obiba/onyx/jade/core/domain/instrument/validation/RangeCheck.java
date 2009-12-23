@@ -9,8 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
@@ -25,6 +25,8 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(RangeCheck.class);
+
+  private IDataSource genderSource;
 
   private Long integerMinValueMale;
 
@@ -78,15 +80,29 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
     decimalMaxValueFemale = value;
   }
 
+  public void setGenderSource(IDataSource genderSource) {
+    this.genderSource = genderSource;
+  }
+
+  private Gender getGender(ActiveInstrumentRunService activeRunService) {
+    // Get the participant's gender (range is gender-dependent).
+    Gender gender;
+    if(genderSource != null) {
+      gender = Gender.valueOf(genderSource.getData(activeRunService.getParticipant()).getValueAsString());
+    } else {
+      gender = activeRunService.getParticipant().getGender();
+    }
+    return gender;
+  }
+
   //
   // IntegrityCheck Methods
   //
 
   @Override
   public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
-    // Get the participant's gender (range is gender-dependent).
-    Gender gender = activeRunService.getParticipant().getGender();
 
+    Gender gender = getGender(activeRunService);
     if(checkedParameter.getDataType() == DataType.INTEGER) {
       return checkIntegerParameterValue(paramData, gender);
     } else if(checkedParameter.getDataType() == DataType.DECIMAL) {
@@ -101,18 +117,18 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
     // For male participants, return the min/max values for males; for female participants,
     // return the min/max values for females.
-    Participant participant = activeRunService.getParticipant();
+    Gender gender = getGender(activeRunService);
 
     if(checkedParameter.getDataType() == DataType.INTEGER) {
-      if(participant.getGender().equals(Gender.MALE)) {
+      if(gender.equals(Gender.MALE)) {
         args = new Object[] { checkedParameter.getLabel(), integerMinValueMale, integerMaxValueMale };
-      } else if(participant.getGender().equals(Gender.FEMALE)) {
+      } else if(gender.equals(Gender.FEMALE)) {
         args = new Object[] { checkedParameter.getLabel(), integerMinValueFemale, integerMaxValueFemale };
       }
     } else if(checkedParameter.getDataType() == DataType.DECIMAL) {
-      if(participant.getGender().equals(Gender.MALE)) {
+      if(gender.equals(Gender.MALE)) {
         args = new Object[] { checkedParameter.getLabel(), decimalMinValueMale, decimalMaxValueMale };
-      } else if(participant.getGender().equals(Gender.FEMALE)) {
+      } else if(gender.equals(Gender.FEMALE)) {
         args = new Object[] { checkedParameter.getLabel(), decimalMinValueFemale, decimalMaxValueFemale };
       }
     }
@@ -221,4 +237,5 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
     rval.append("]");
     return rval.toString();
   }
+
 }

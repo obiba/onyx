@@ -9,10 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
+import org.obiba.magma.VariableEntity;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.engine.variable.VariableDirectory;
+import org.obiba.onyx.magma.DataValueConverter;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -29,7 +36,9 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
 
   private static final Logger log = LoggerFactory.getLogger(VariableStageDependencyCondition.class);
 
-  private VariableDirectory variableDirectory;
+  private static final String PARTICIPANT_TABLE_NAME = "Participants";
+
+  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   private String stageName;
 
@@ -44,10 +53,6 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
 
   public VariableStageDependencyCondition(String name) {
     this.stageName = name;
-  }
-
-  public void setVariableDirectory(VariableDirectory variableDirectory) {
-    this.variableDirectory = variableDirectory;
   }
 
   /**
@@ -67,19 +72,36 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       }
     }
 
+    // Get the Participant ValueTable.
+    ValueTable onyxParticipantTable = null;
+    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
+    }
+
+    // Get the currently interviewed participant's ValueSet.
+    VariableEntity entity = new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, activeInterviewService.getParticipant().getBarcode());
+    ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
+
+    // Get the condition value.
+    String magmaVariableName = variablePath.replaceFirst("Onyx.", "");
+    VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
+    Value conditionValue = variableValueSource.getValue(valueSet);
     Boolean rval = null;
 
-    // ask variable directory
-    log.debug("Testing variable: {} {} {}", new Object[] { variablePath, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
-    VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), variablePath);
-    if(variableData != null) {
-      // apply a OR among the data of the variable
-      for(Data varData : variableData.getDatas()) {
-        log.debug("varData={}", varData);
-        rval = compare(varData);
-        if(rval != null && rval) {
-          break;
+    log.debug("Testing variable: {} {} {}", new Object[] { magmaVariableName, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
+    if(!conditionValue.isNull()) {
+      if(conditionValue.isSequence()) {
+        // apply an OR among the data of the variable
+        for(Value partialConditionValue : conditionValue.asSequence().getValues()) {
+          Data partialConditionData = DataValueConverter.valueToData(partialConditionValue);
+          rval = compare(partialConditionData);
+          if(rval != null && rval) {
+            break;
+          }
         }
+      } else {
+        Data conditionData = DataValueConverter.valueToData(conditionValue);
+        rval = compare(conditionData);
       }
     }
 
@@ -146,5 +168,4 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
   public String toString() {
     return "[" + getClass().getSimpleName() + ":" + stageName + "." + variablePath + "]";
   }
-
 }

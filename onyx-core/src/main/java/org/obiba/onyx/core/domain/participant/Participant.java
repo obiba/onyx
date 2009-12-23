@@ -29,10 +29,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Participant extends AbstractEntity {
   //
   // Constants
@@ -71,6 +74,7 @@ public class Participant extends AbstractEntity {
    * List of values of configured participant attributes.
    */
   @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+  @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
   private List<ParticipantAttributeValue> configuredAttributeValues;
 
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
@@ -78,11 +82,6 @@ public class Participant extends AbstractEntity {
 
   @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
   private Interview interview;
-
-  private Boolean exported;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date exportDate;
 
   //
   // Methods
@@ -338,35 +337,9 @@ public class Participant extends AbstractEntity {
     }
   }
 
-  public Boolean getExported() {
-    return exported;
-  }
-
-  public void setExported(Boolean exported) {
-    this.exported = exported;
-  }
-
   @Override
   public String toString() {
     return "Participant[" + barcode + "]";
-  }
-
-  /**
-   * Defines if a participant and his interview are in the right states to allow the data export.
-   * @return
-   */
-  public boolean isExportable() {
-    if(exported != null && exported == true) return false;
-    if(getInterview() == null) return false;
-    return true;
-  }
-
-  public Date getExportDate() {
-    return exportDate;
-  }
-
-  public void setExportDate(Date exportDate) {
-    this.exportDate = exportDate;
   }
 
 }

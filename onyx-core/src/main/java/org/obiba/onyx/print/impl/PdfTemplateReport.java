@@ -22,6 +22,7 @@ import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.print.PdfTemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * PdfReport implementation for reports that are constructed at the time of printing by filling in the template with
@@ -31,9 +32,10 @@ public class PdfTemplateReport extends PdfReport {
 
   private static final Logger log = LoggerFactory.getLogger(PdfTemplateReport.class);
 
-  private LocalizedResourceLoader reportTemplateLoader;
-
+  @Autowired
   private PdfTemplateEngine pdfTemplateEngine;
+
+  private LocalizedResourceLoader reportTemplateLoader;
 
   private Map<String, String> fieldToVariableMap;
 
@@ -66,11 +68,6 @@ public class PdfTemplateReport extends PdfReport {
     Set<Locale> availableLocales = new HashSet<Locale>();
     availableLocales.addAll(availableLocalesList);
     return availableLocales;
-  }
-
-  public void afterPropertiesSet() {
-    super.afterPropertiesSet();
-    pdfTemplateEngine = (PdfTemplateEngine) applicationContext.getBean("pdfTemplateEngine");
   }
 
 }

@@ -37,8 +37,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   }
 
   public QuestionnaireParticipant getQuestionnaireParticipant(Participant participant, String questionnaireName) {
-    Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("questionnaireName", Operation.eq, questionnaireName).add("participant", Operation.eq, participant).getCriteria();
-
+    Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("questionnaireName", Operation.eq, questionnaireName).add("participant", Operation.eq, participant).getCriteria().setCacheable(true);
     return (QuestionnaireParticipant) criteria.setMaxResults(1).uniqueResult();
   }
 

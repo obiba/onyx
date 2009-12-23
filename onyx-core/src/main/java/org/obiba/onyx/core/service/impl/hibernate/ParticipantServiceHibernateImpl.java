@@ -10,11 +10,8 @@
 package org.obiba.onyx.core.service.impl.hibernate;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,7 +23,6 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +40,6 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   private static final Logger log = LoggerFactory.getLogger(ParticipantServiceHibernateImpl.class);
 
   private SessionFactory factory;
-
-  private List<OnyxDataExportDestination> exportDestinations;
-
-  public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
-    this.exportDestinations = exportDestinations;
-  }
 
   public void setSessionFactory(SessionFactory factory) {
     this.factory = factory;
@@ -100,7 +90,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
 
   @SuppressWarnings("unchecked")
   public List<Participant> getParticipantsByInputField(String inputField, PagingClause paging, SortingClause... clauses) {
-    Query participantQuery = createParticipantsByInputFieldQuery(inputField);
+    Query participantQuery = createParticipantsByInputFieldQuery(inputField, clauses);
 
     participantQuery.setMaxResults(paging.getLimit());
     participantQuery.setFirstResult(paging.getOffset());
@@ -123,20 +113,29 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return count;
   }
 
-  private Query createParticipantsByInputFieldQuery(String inputField) {
+  private Query createParticipantsByInputFieldQuery(String inputField, SortingClause... clauses) {
     Query participantQuery = null;
 
-    if(inputField != null) {
-      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode or p.lastName like :lastName or p.firstName like :firstName or concat(p.firstName, ' ', p.lastName) = :fullName");
-      participantQuery.setString("barcode", inputField);
-      participantQuery.setString("appointmentCode", inputField);
-      participantQuery.setString("lastName", "%" + inputField + "%");
-      participantQuery.setString("firstName", "%" + inputField + "%");
-      participantQuery.setString("fullName", inputField);
-    } else {
-      participantQuery = getSession().createQuery("from Participant");
-    }
+    String queryString = "from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode or p.lastName like :lastName or p.firstName like :firstName or concat(p.firstName, ' ', p.lastName) = :fullName";
+    if(clauses != null) {
+      int i = 0;
+      for(SortingClause clause : clauses) {
+        queryString += (i == 0) ? " order by " : ", ";
+        queryString += clause.getField() + ((clause.isAscending()) ? " asc" : " desc");
+        i++;
+      }
 
+      if(inputField != null) {
+        participantQuery = getSession().createQuery(queryString);
+        participantQuery.setString("barcode", inputField);
+        participantQuery.setString("appointmentCode", inputField);
+        participantQuery.setString("lastName", "%" + inputField + "%");
+        participantQuery.setString("firstName", "%" + inputField + "%");
+        participantQuery.setString("fullName", inputField);
+      } else {
+        participantQuery = getSession().createQuery("from Participant");
+      }
+    }
     return participantQuery;
   }
 
@@ -144,41 +143,4 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
   }
 
-  public List<Participant> getExportedParticipants() {
-    return getExportedParticipants(null);
-  }
-
-  public List<Participant> getExportedParticipants(Date exportedBefore) {
-    AssociationCriteria criteria = AssociationCriteria.create(Participant.class, getSession());
-    criteria.add("exported", Operation.eq, true);
-    if(exportedBefore != null) {
-      criteria.add("exportDate", Operation.lt, exportedBefore);
-    }
-    return criteria.list();
-  }
-
-  public List<Participant> getNonExportableParticipants() {
-    return getNonExportableParticipants(null);
-  }
-
-  public List<Participant> getNonExportableParticipants(Date olderThan) {
-
-    Set<InterviewStatus> exportedInterviewStatuses = new HashSet<InterviewStatus>();
-    for(OnyxDataExportDestination destination : exportDestinations) {
-      exportedInterviewStatuses.addAll(destination.getExportedInterviewStatuses());
-    }
-
-    Criteria criteria = getSession().createCriteria(Participant.class);
-    criteria.createAlias("interview", "interview");
-    criteria.add(Restrictions.isNotNull("interview"));
-    for(InterviewStatus interviewStatus : exportedInterviewStatuses) {
-      criteria.add(Restrictions.ne("interview.status", interviewStatus));
-    }
-
-    if(olderThan != null) {
-      criteria.add(Restrictions.lt("interview.startDate", olderThan));
-    }
-
-    return criteria.list();
-  }
 }

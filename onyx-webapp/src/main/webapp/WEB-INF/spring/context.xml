@@ -22,6 +22,9 @@
   <!-- Import Data export pipeline -->
   <import resource="data-export.xml" />
   
+  <!-- Import Data purge configuration -->
+  <import resource="data-purge.xml" />
+  
   <!-- Import Participant reader context -->
   <import resource="participant-reader.xml" />
 
@@ -59,7 +62,6 @@
       </list>
     </property>
     <property name="developmentSeed" value="true" />
-    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
   <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener" scope="singleton">

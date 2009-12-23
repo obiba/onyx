@@ -17,15 +17,16 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.FirstNotNullDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
+import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -311,15 +312,17 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
       xstream.alias("info-messages", LinkedList.class);
       xstream.alias("message", ConditionalMessage.class);
       xstream.alias("arguments", LinkedList.class);
+      xstream.useAttributeFor(Data.class, "type");
       xstream.alias("variableDataSource", VariableDataSource.class);
       xstream.alias("comparingDataSource", ComparingDataSource.class);
       xstream.useAttributeFor(ComparingDataSource.class, "comparisonOperator");
       xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
       xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "property");
       xstream.alias("fixedDataSource", FixedDataSource.class);
-      xstream.useAttributeFor("type", DataType.class);
-      xstream.useAttributeFor("dataType", DataType.class);
       xstream.alias("computingDataSource", ComputingDataSource.class);
+      xstream.useAttributeFor(ComputingDataSource.class, "dataType");
+      xstream.aliasField("type", ComputingDataSource.class, "dataType");
+      xstream.alias("firstNotNullDataSource", FirstNotNullDataSource.class);
 
       List<ConditionalMessage> infoMessages = (List<ConditionalMessage>) xstream.fromXML(fis);
       setInfoMessages(infoMessages);

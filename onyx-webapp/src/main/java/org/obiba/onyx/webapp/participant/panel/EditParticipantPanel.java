@@ -251,9 +251,6 @@ public class EditParticipantPanel extends Panel {
       participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
     }
 
-    if(participant.getExported() == null) {
-      participant.setExported(false);
-    }
     if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
       add(new EmptyPanel("enrollmentId"));
     } else

@@ -106,6 +106,7 @@ public class Constraints_1_6_0 extends LiquiBaseUpgradeStep {
     // question_answer
     changes.add(createAddNotNullConstraintChange(databaseSnapshot, "question_answer", "question_name"));
     changes.add(createAddNotNullConstraintChange(databaseSnapshot, "question_answer", "questionnaire_participant_id"));
+    changes.add(createAddNotNullConstraintChange(databaseSnapshot, "question_answer", "active"));
 
     // questionnaire_participant
     changes.add(createAddNotNullConstraintChange(databaseSnapshot, "questionnaire_participant", "participant_id"));

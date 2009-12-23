@@ -1401,6 +1401,38 @@ div#instrumentContent .label {
   padding-bottom:10px;
 }
 
+
+div.command > .newNavigatorLabel {
+  position: relative;
+  right: 10px;
+  top: 2px;
+  color:#333333;
+  font-family:arial;
+  font-size:11px;
+  font-weight:normal;
+}
+
+div.command > .newNavigator {
+  position: relative;
+  right: 0px; 
+  top: 2px;
+  color:#333333;
+  font-family:arial;
+  font-size:11px;
+  font-weight:normal;  
+}
+
+div.command > .newNavigator a {
+  color:#333333;
+  text-decoration:none;
+  padding-right:0;
+}
+
+div.command > .newNavigator em  {
+  font-style:normal;
+  font-weight:bold;
+}
+
 /******************* End WorkstationPage *******************************************/
 
 /******************* ParticipantReceptionPage **************************************/

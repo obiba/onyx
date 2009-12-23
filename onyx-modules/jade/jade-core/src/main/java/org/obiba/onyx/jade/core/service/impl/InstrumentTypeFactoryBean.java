@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FirstNotNullDataSource;
@@ -38,7 +39,6 @@ import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsValueCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.ParameterSpreadCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.RangeCheck;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;

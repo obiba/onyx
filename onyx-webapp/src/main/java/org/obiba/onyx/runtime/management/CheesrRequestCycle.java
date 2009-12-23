@@ -12,7 +12,6 @@ package org.obiba.onyx.runtime.management;
 import org.apache.wicket.Page;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
-import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
@@ -35,11 +34,19 @@ public class CheesrRequestCycle extends WebRequestCycle {
 
   @Override
   public Page onRuntimeException(Page page, RuntimeException e) {
-    if(e instanceof WicketRuntimeException) {
-      if(e.getCause() instanceof NoSuchInterviewException) {
+    Throwable t = e;
+
+    while(true) {
+      if(t instanceof NoSuchInterviewException) {
         page = new ErrorPage();
         Session.get().error("No current interview");
         return page;
+      }
+
+      if(t.getCause() != null) {
+        t = t.getCause();
+      } else {
+        break;
       }
     }
 

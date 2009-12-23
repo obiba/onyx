@@ -174,10 +174,33 @@ NavigationUtil.previous = function() {
   }
 }
 	    
+NavigationUtil.admin = function() {
+  var adminButton = $('input.obiba-quartz-nav-admin');
+  if (adminButton) {
+    adminButton.click();
+  }
+}
+
 NavigationUtil.next = function() {
   var nextButton = $('input.obiba-nav-next');
   if (nextButton) {
     nextButton.click();
+  }
+}
+
+NavigationUtil.closeWindow = function() {
+  var closeButton = $('input.obiba-button-close');
+  if (closeButton) {
+    closeButton.click();
+  }
+}
+NavigationUtil.closeWindow = function() {
+  var cancelButton = $('input.obiba-button-cancel');
+  var closeButton = $('input.obiba-button-close');  
+  if(closeButton.size()>0) {
+    closeButton.click();
+  } else if(cancelButton.size()>0) {
+    cancelButton.click();
   }
 }
 
@@ -266,5 +289,54 @@ function styleSelectedTubeRemark() {
 	$(".editSamplePanel select").children('option:selected').addClass('ui-state-highlight');
 }
 
+function addOnyxWizardBehavior() {
+  /* Navigation hotkeys */
+  $(document).bind('keydown', {combi:'-', disableInInput: true}, 
+					function(evt) {
+          				NavigationUtil.previous();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null) {
+                			return true;
+          				}        
+        			});
+		
+  $(document).bind('keydown', {combi:'+', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.next();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null) {
+                			return true;
+          				}        
+        			});
+        			
+  $(document).bind('keydown', {combi:'a', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.admin();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				||  elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null ) {
+                			return true;
+          				}        
+        			}); 
+        			
+  $(document).bind('keydown', {combi:'esc', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.closeWindow();
+        			},
+        			function(evt, jTarget, elem) {
+          				return false;        
+        			});        			       			
+		
+  WindowUtil.attachEvent("load", Resizer.resizeWizard);
+  WindowUtil.attachEvent("resize", Resizer.resizeWizard);
+}
 
 

@@ -63,7 +63,8 @@ public class WorkstationLogPanel extends Panel {
 
       @Override
       public Object getDisplayValue(ExperimentalConditionLog object) {
-        return new SpringStringResourceModel(object.getName(), object.getName()).getString();
+        String name = object.getName() + "Log";
+        return new SpringStringResourceModel(name, name).getString();
       }
 
       @Override
@@ -135,7 +136,7 @@ public class WorkstationLogPanel extends Panel {
     }
     IModel<String> titleModel = new Model<String>();
     if(selectedExperimentalConditionLog != null) {
-      titleModel = new SpringStringResourceModel(selectedExperimentalConditionLog.getName(), selectedExperimentalConditionLog.getName());
+      titleModel = new SpringStringResourceModel(selectedExperimentalConditionLog.getName() + "Log", selectedExperimentalConditionLog.getName() + "Log");
     }
     return new ExperimentalConditionHistoryPanel("experimentalConditionHistoryPanel", template, titleModel, 5);
   }

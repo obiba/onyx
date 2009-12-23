@@ -239,10 +239,15 @@ div.wicket-modal div.onyx .confirmation-dialog-content {
 }
 
 div.wicket-modal div.onyx .long-confirmation-dialog-content {
-  height: 84px;
+  height: 134px;
   margin-left: 10px; 
   margin-right: 10px;
   padding-top: 7px; 
+}
+
+div.wicket-modal div.onyx .long-confirmation-dialog-content p {
+  padding-top: 0px; 
+  margin-top: 0px;
 }
 
 div.wicket-modal div.onyx .instrument-run-panel-content {

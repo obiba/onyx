@@ -1,32 +1,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-  <import resource="classpath:META-INF/spring/marble-core/context.xml" />
 
-  <bean class="org.obiba.onyx.marble.engine.MarbleModule">
-    <property name="stages">
-      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
-        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/marble/stages.xml" />
-      </bean>
-    </property>
-    <property name="consentService" ref="consentService" />
-    <property name="variableToFieldMap" value="${org.obiba.onyx.marble.consent.variableToField}" />
-  </bean>
-    
-  <bean id="consentForm" class="org.obiba.onyx.print.impl.PdfVariableReport" scope="session">
-    <property name="name" value="${org.obiba.onyx.marble.consent.basename}" />
-    <property name="label">
-      <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
-        <constructor-arg value="ConsentFormLabel" />
-      </bean>
-    </property>   
-    <property name="readyConditionConfigPath" value="${org.obiba.onyx.marble.path}" />    
-    <property name="pdfVariablePath" value="${org.obiba.onyx.marble.consent.pdfvariablepath}" />    
-    <property name="dataCollectionMode">
-      <bean class="org.obiba.onyx.core.data.VariableDataSource">
-        <property name="variableDirectory" ref="variableDirectory" />
-        <constructor-arg value="${org.obiba.onyx.marble.consent.mode}" />            
-      </bean>
-    </property>    
-  </bean>
+  <import resource="classpath:META-INF/spring/marble-core/context.xml" />
 
 </beans>

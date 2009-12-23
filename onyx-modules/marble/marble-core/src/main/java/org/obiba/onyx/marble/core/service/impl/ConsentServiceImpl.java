@@ -12,6 +12,7 @@ package org.obiba.onyx.marble.core.service.impl;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -25,7 +26,9 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
 
   private static final Logger log = LoggerFactory.getLogger(ConsentServiceImpl.class);
 
-  private EnumSet<ConsentMode> supportedConsentModes;
+  private boolean allowElectronicMode;
+
+  private List<Locale> supportedConsentLocales;
 
   public Consent getConsent(Interview interview) {
     Consent template = new Consent();
@@ -51,37 +54,48 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
     getPersistenceManager().save(consent);
   }
 
-  public EnumSet<ConsentMode> getSupportedConsentModes() {
-    return supportedConsentModes;
+  public boolean isElectronicModeAllowed() {
+    return allowElectronicMode;
   }
 
-  public void setSupportedConsentModes(EnumSet<ConsentMode> supportedConsentModes) {
-    this.supportedConsentModes = supportedConsentModes;
+  public void setAllowElectronicMode(boolean allowElectronicMode) {
+    this.allowElectronicMode = allowElectronicMode;
+  }
+
+  public EnumSet<ConsentMode> getSupportedConsentModes() {
+    List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
+
+    consentModesList.add(ConsentMode.MANUAL);
+    if(isElectronicModeAllowed()) {
+      consentModesList.add(ConsentMode.ELECTRONIC);
+    }
+
+    return EnumSet.copyOf(consentModesList);
+  }
+
+  public List<Locale> getSupportedConsentLocales() {
+    return supportedConsentLocales;
+  }
+
+  public void setSupportedConsentLocales(List<Locale> supportedConsentLocales) {
+    this.supportedConsentLocales = supportedConsentLocales;
   }
 
   /**
-   * Set the supported consent mode using a comma separated set of consent mode.
-   * @param supportedConsentModes.
+   * Set the supported consent locales using a comma separated set of consent locale.
+   * @param supportedConsentLocales.
    */
-  public void setSupportedConsentModesString(String supportedConsentModes) {
-    if(supportedConsentModes != null && supportedConsentModes.length() > 0) {
+  public void setSupportedConsentLocalesString(String supportedConsentLocales) {
+    if(supportedConsentLocales != null && supportedConsentLocales.length() > 0) {
 
-      List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
+      List<Locale> consentLocaleList = new ArrayList<Locale>();
 
-      String supportedConsentModeArray[] = supportedConsentModes.split(",");
-      for(String mode : supportedConsentModeArray) {
-        consentModesList.add(ConsentMode.valueOf(mode));
+      String supportedConsentLocaleArray[] = supportedConsentLocales.split(",");
+      for(String locale : supportedConsentLocaleArray) {
+        consentLocaleList.add(new Locale(locale));
       }
 
-      this.setSupportedConsentModes(EnumSet.copyOf(consentModesList));
-    }
-  }
-
-  public void validateInstance() {
-    if(!supportedConsentModes.contains(ConsentMode.MANUAL)) {
-      IllegalArgumentException ex = new IllegalArgumentException();
-      log.error("Consent mode electronic only is not supported yet", ex);
-      throw ex;
+      this.setSupportedConsentLocales(consentLocaleList);
     }
   }
 

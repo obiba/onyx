@@ -1,0 +1,59 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+
+  <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
+    <property name="extensions">
+      <set>
+        <!-- Add the JavaScript extension -->
+        <bean class="org.obiba.magma.js.MagmaJsExtension">
+          <property name="magmaContextFactory">
+            <!-- Use our own MagmaContextFactory to add Onyx-specific methods to the global scope -->
+            <bean class="org.obiba.magma.js.MagmaContextFactory">
+              <property name="globalMethodProviders">
+                <set>
+                  <bean class="org.obiba.onyx.magma.OnyxGlobalJsMethods" init-method="init">
+                    <property name="onyxPropertyResource" value="${org.obiba.onyx.config.path}/onyx-config.properties" />
+                    <property name="exportLogService" ref="exportLogService" />
+                  </bean>
+                </set>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean class="org.obiba.magma.xstream.MagmaXStreamExtension" />
+      </set>
+    </property>
+  </bean>
+
+  <bean class="org.obiba.magma.spring.DatasourceRegistratingFactoryBean">
+    <property name="datasources">
+      <set>
+        <bean class="org.obiba.magma.spring.SpringContextScanningDatasource">
+          <constructor-arg value="onyx-datasource" />
+        </bean>
+      </set>
+    </property>
+  </bean>
+
+  <bean id="onyxAttributeHelper" class="org.obiba.onyx.magma.OnyxAttributeHelper" />
+
+  <bean class="org.obiba.onyx.magma.OnyxParticipantValueTableFactoryBean">
+    <property name="valueTableName" value="Participants" />
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
+        <constructor-arg index="0" value="Participant" />
+        <constructor-arg index="1" value="participant.barcode" />
+        <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory" />
+  <bean class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver" />
+
+  <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory">
+    <property name="resource" value="${org.obiba.onyx.config.path}/custom-variables.xml" />
+  </bean>
+
+</beans>

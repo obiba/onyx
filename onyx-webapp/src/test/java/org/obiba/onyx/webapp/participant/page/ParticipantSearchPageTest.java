@@ -42,10 +42,12 @@ import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.etl.participant.impl.ParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
+import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
+import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.onyx.print.IPrintableReport;
 import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -77,6 +79,8 @@ public class ParticipantSearchPageTest {
 
   private ParticipantReader mockParticipantReader;
 
+  private ExportLogService mockExportLogService;
+
   private List<Participant> participants;
 
   @Before
@@ -90,6 +94,7 @@ public class ParticipantSearchPageTest {
     mockAppointmentManagementService = createMock(AppointmentManagementService.class);
     mockOnyxDataExport = new OnyxDataExportMock();
     mockPrintableReportsRegistery = createMock(PrintableReportsRegistry.class);
+    mockExportLogService = createMock(ExportLogService.class);
 
     mockCtx.putBean("participantService", mockParticipantService);
     mockCtx.putBean("entityQueryService", mockEntityQueryService);
@@ -98,6 +103,12 @@ public class ParticipantSearchPageTest {
     mockCtx.putBean("appointmentManagementService", mockAppointmentManagementService);
     mockCtx.putBean("onyxDataExport", mockOnyxDataExport);
     mockCtx.putBean("printableReportsRegistry", mockPrintableReportsRegistery);
+    mockCtx.putBean("exportLogService", mockExportLogService);
+
+    ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy = new ParticipantCaptureAndExportStrategy();
+    participantCaptureAndExportStrategy.setParticipantService(mockParticipantService);
+    participantCaptureAndExportStrategy.setExportLogService(mockExportLogService);
+    mockCtx.putBean("participantCaptureAndExportStrategy", participantCaptureAndExportStrategy);
 
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
     mockParticipantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
@@ -118,7 +129,6 @@ public class ParticipantSearchPageTest {
   public void testSearchByInputFieldParticipant() {
 
     // methods expected on the page initialization for the first participant list
-    expect(mockParticipantService.getParticipants((Date) EasyMock.anyObject(), (Date) EasyMock.anyObject(), (PagingClause) EasyMock.anyObject(), (SortingClause) EasyMock.anyObject())).andReturn(new ArrayList<Participant>());
     expect(mockParticipantService.countParticipants((Date) EasyMock.anyObject(), (Date) EasyMock.anyObject())).andReturn(0);
 
     // methods expected after pressing the search button
@@ -133,11 +143,14 @@ public class ParticipantSearchPageTest {
     expect(mockInterviewManager.isInterviewAvailable((Participant) EasyMock.anyObject())).andReturn(true).anyTimes();
     expect(mockPrintableReportsRegistery.availableReports()).andReturn(Collections.<IPrintableReport> emptySet()).anyTimes();
 
+    expect(mockExportLogService.getLastExportLog((String) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(null).anyTimes();
+
     replay(mockParticipantService);
     replay(mockEntityQueryService);
     replay(mockUserSessionService);
     replay(mockInterviewManager);
     replay(mockPrintableReportsRegistery);
+    replay(mockExportLogService);
 
     tester.startPage(new ITestPageSource() {
       private static final long serialVersionUID = 1L;
@@ -172,7 +185,6 @@ public class ParticipantSearchPageTest {
     p.setEnrollmentId("1000001");
     p.setId(1);
     p.setRecruitmentType(RecruitmentType.ENROLLED);
-    p.setExported(false);
 
     Appointment a = new Appointment(p, getDate(2009, 9, 1, 9, 0));
     a.setAppointmentCode("1000001");
@@ -193,7 +205,6 @@ public class ParticipantSearchPageTest {
     p2.setEnrollmentId("1000002");
     p2.setId(1);
     p2.setRecruitmentType(RecruitmentType.ENROLLED);
-    p2.setExported(false);
 
     Appointment a2 = new Appointment(p, getDate(2009, 9, 1, 10, 0));
     a2.setAppointmentCode("1000002");

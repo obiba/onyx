@@ -11,7 +11,6 @@ package org.obiba.onyx.core.service;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -304,72 +303,4 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
   }
 
-  @Test
-  @Dataset
-  public void testGetExportedParticipants() {
-    List<Participant> exportedParticipants = participantService.getExportedParticipants();
-
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 1l)));
-    Assert.assertTrue(exportedParticipants.contains(persistenceManager.get(Participant.class, 2l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 3l)));
-    Assert.assertTrue(exportedParticipants.contains(persistenceManager.get(Participant.class, 4l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 5l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 6l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 7l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 8l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 9l)));
-  }
-
-  @Test
-  @Dataset
-  public void testGetExportedParticipantsBeforeSpecificDate() {
-    Calendar calendar = new GregorianCalendar();
-    calendar.set(2009, 8, 30, 14, 0, 0);
-    List<Participant> exportedParticipants = participantService.getExportedParticipants(calendar.getTime());
-
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 1l)));
-    Assert.assertTrue(exportedParticipants.contains(persistenceManager.get(Participant.class, 2l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 3l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 4l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 5l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 6l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 7l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 8l)));
-    Assert.assertFalse(exportedParticipants.contains(persistenceManager.get(Participant.class, 9l)));
-  }
-
-  @Test
-  @Dataset
-  public void testGetNonExportableParticipants() {
-    List<Participant> nonExportableParticipants = participantService.getNonExportableParticipants();
-
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 1l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 2l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 3l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 4l)));
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 5l)));
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 6l)));
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 7l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 8l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 9l)));
-  }
-
-  @Test
-  @Dataset
-  public void testGetNonExportableParticipantsWithInterviewStartedBeforeSpecificDate() {
-    Calendar calendar = new GregorianCalendar();
-    calendar.set(2009, 8, 30, 14, 0, 0);
-    List<Participant> nonExportableParticipants = participantService.getNonExportableParticipants(calendar.getTime());
-
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 1l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 2l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 3l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 4l)));
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 5l)));
-    Assert.assertTrue(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 6l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 7l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 8l)));
-    Assert.assertFalse(nonExportableParticipants.contains(persistenceManager.get(Participant.class, 9l)));
-
-  }
 }

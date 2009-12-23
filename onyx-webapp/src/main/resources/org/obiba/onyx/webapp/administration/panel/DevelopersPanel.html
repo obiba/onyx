@@ -1,0 +1,18 @@
+<html>
+  <body>
+    <wicket:panel>
+      <div class="obiba-content-region">
+        <h1>Developer Tools</h1>
+        <div>
+          <button class="obiba-button ui-corner-all" wicket:id="dumpLink">Dump Variables & ValueSets</button> Dump variables and valuesets to <span wicket:id="dumpFilename"></span>. If the file already exists, it will be overwritten.
+        </div>
+        <br />
+        <div>
+          <button class="obiba-button ui-corner-all" wicket:id="clearCacheLink">Clear Hibernate Query Cache</button> Empties the Hibernate query result cache.
+        </div>
+        <br />
+        <div wicket:id="hibernateStats" />
+      </div>
+    </wicket:panel>
+  </body>
+</html>

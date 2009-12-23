@@ -262,9 +262,6 @@ public class InstrumentPanel extends Panel {
   }
 
   private void clearForm(AjaxRequestTarget target) {
-    ((Instrument) getDefaultModelObject()).setStatus(InstrumentStatus.ACTIVE);
-    ((Instrument) getDefaultModelObject()).setWorkstation(userSessionService.getWorkstation());
-
     if(measurementDropDown.isEnabled() == false) {
       measurementDropDown.setEnabled(true);
       measurementDropDown.setChoices(new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()));
@@ -275,6 +272,9 @@ public class InstrumentPanel extends Panel {
     instrumentFragment.getVendor().setDefaultModelObject(null);
     instrumentFragment.getModel().setDefaultModelObject(null);
     instrumentFragment.getSerialNumber().setDefaultModelObject(null);
+
+    ((Instrument) getDefaultModelObject()).setStatus(InstrumentStatus.ACTIVE);
+    ((Instrument) getDefaultModelObject()).setWorkstation(userSessionService.getWorkstation());
   }
 
   private void displayFeedback(AjaxRequestTarget target) {

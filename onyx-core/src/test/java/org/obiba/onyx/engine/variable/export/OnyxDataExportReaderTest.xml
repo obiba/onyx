@@ -1,0 +1,40 @@
+<destinations>
+  <destination>
+    <name>DCC</name>
+    
+    <valueset entityTypeName="Participant">
+      <entities>
+        <excludeAll/>
+        <script type="EXCLUDE">
+          <javascript><![CDATA[$('Participant.Interview.status').not('CANCELLED');]]></javascript>
+        </script>        
+      </entities>
+      <variables>
+        <variableName type="INCLUDE" prefix="d"/>
+        <variableAttribute type="EXCLUDE">
+          <attribute>name</attribute>
+          <value>value</value>
+        </variableAttribute>
+      </variables>
+    </valueset>
+  </destination>
+  <destination>
+    <name>Appointment Unit</name>
+    <encrypt/>
+    <valueset entityTypeName="Participant">
+      <entities>
+        <excludeAll/>
+        <script type="EXCLUDE">
+            <javascript><![CDATA[$('Admin.Interview.exported').any('TRUE');]]></javascript>
+        </script>        
+      </entities>
+      <variables>
+        <variableName type="INCLUDE" prefix="d"/>
+        <variableAttribute type="EXCLUDE">
+          <attribute>name</attribute>
+          <value>value</value>
+        </variableAttribute>
+      </variables>
+    </valueset>
+  </destination>  
+</destinations>

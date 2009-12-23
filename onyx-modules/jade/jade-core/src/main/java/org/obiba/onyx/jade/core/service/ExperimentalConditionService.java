@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.Attribute;
@@ -25,6 +26,11 @@ public interface ExperimentalConditionService {
 
   /** Instrument barcode attribute name. */
   public final static String INSTRUMENT_BARCODE = "INSTRUMENT_BARCODE";
+
+  /**
+   * Initializes the service. In particular, it registers the configured experimental conditions.
+   */
+  public void init();
 
   /**
    * Persists an {@link ExperimentalCondition} and all its associated {@link ExperimentalConditionValues}.
@@ -49,7 +55,7 @@ public interface ExperimentalConditionService {
    * will be returned.
    * @param template The template will be matched on the following attributes: "id", "name", "workstation" as well as an
    * {@link ExperimentalConditionValue} with an attributeName equal to "INSTRUMENT_BARCODE".
-   * @return A list of ExperimentalConditions matching the supplied template.
+   * @return A list of ExperimentalConditions matching the supplied template, in chronological order (earlier first)
    */
   public List<ExperimentalCondition> getExperimentalConditions(ExperimentalCondition template);
 
@@ -60,6 +66,20 @@ public interface ExperimentalConditionService {
    * @throws IllegalStateException If no ExperimentalLogCondition exists with the provided name.
    */
   public ExperimentalConditionLog getExperimentalConditionLogByName(String name);
+
+  /**
+   * Returns "non-instrument-related" conditions ({@link ExperimentalCondition}s) for the specified workstation.
+   * @param workstationId the workstation's indentifier
+   * @return "non-instrument-related" conditions for the specified workstation, in chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getNonInstrumentRelatedConditions(String workstationId);
+
+  /**
+   * Returns the instrument calibrations ({@link ExperimentalCondition}s) for the specified instrument.
+   * @param instrumentBarcode the instrument's barcode
+   * @return instrument calibrations for the specified instrument, in chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getInstrumentCalibrations(String instrumentBarcode);
 
   /**
    * Returns true in an {@link InstrumentCalibration} exists for the given instrumentType.
@@ -90,4 +110,25 @@ public interface ExperimentalConditionService {
    */
   public void deleteExperimentalCondition(ExperimentalCondition experimentalCondition);
 
+  /**
+   * Returns a list of "non-instrument-related" conditions ({@link ExperimentalCondition}s) for the specified
+   * workstation, recorded after the specified date.
+   * 
+   * @param workstationId workstation id
+   * @param date date
+   * @return list of "non-instrument-related" conditions for the specified workstation, recorded after the specified
+   * date, in chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getNonInstrumentRelatedConditionsRecordedAfter(String workstationId, Date date);
+
+  /**
+   * Returns a list of instrument calibrations ({@link ExperimentalCondition}s) for the specified instrument, recorded
+   * after the specified date.
+   * 
+   * @param insturmentBarcode the instrument's barcode
+   * @param date date
+   * @return list of instrument calibrations for the specified instrument, recorded after the specified date, in
+   * chronological order (earlier first)
+   */
+  public List<ExperimentalCondition> getInstrumentCalibrationsRecordedAfter(String instrumentBarcode, Date date);
 }

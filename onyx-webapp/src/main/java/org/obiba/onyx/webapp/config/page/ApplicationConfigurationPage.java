@@ -19,9 +19,10 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -29,6 +30,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -49,6 +51,7 @@ import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.crypt.X509CertificateValidator;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +72,8 @@ public class ApplicationConfigurationPage extends BasePage {
 
   @SpringBean(name = "onyxDataExportDestinations")
   private List<OnyxDataExportDestination> exportDestinations;
+
+  FeedbackWindow feedbackWindow;
 
   private List<ExportDestinationCertificateModel> certificateModels = new LinkedList<ExportDestinationCertificateModel>();
 
@@ -142,30 +147,52 @@ public class ApplicationConfigurationPage extends BasePage {
 
       // Set max size of upload to two megabytes. A logo should not be bigger than that!!
       setMaxSize(Bytes.megabytes(2));
-      setMultiPart(true);
+      setMultiPart(false);
 
+      WebMarkupContainer destinationsContainter = new WebMarkupContainer("exportDestinationCertificatesGroup");
+      add(destinationsContainter);
       RepeatingView destinations = new RepeatingView("destinations");
       for(OnyxDataExportDestination destination : exportDestinations) {
-        WebMarkupContainer container = new WebMarkupContainer(destinations.newChildId());
-        container.add(new Label("destinationName", destination.getName()));
-        TextArea destinationCert = new TextArea("destinationCert", new ExportDestinationCertificateModel(destination.getName()));
-        destinationCert.setLabel(new Model(destination.getName()));
-        destinationCert.add(new RequiredFormFieldBehavior());
-        destinationCert.add(new X509CertificateValidator());
-        container.add(destinationCert);
-
-        destinations.add(container);
+        if(destination.isEncryptionRequested()) {
+          WebMarkupContainer container = new WebMarkupContainer(destinations.newChildId());
+          container.add(new Label("destinationName", destination.getName()));
+          TextArea destinationCert = new TextArea("destinationCert", new ExportDestinationCertificateModel(destination.getName()));
+          destinationCert.setLabel(new Model(destination.getName()));
+          destinationCert.add(new RequiredFormFieldBehavior());
+          destinationCert.add(new X509CertificateValidator());
+          container.add(destinationCert);
+          destinations.add(container);
+        }
       }
-      add(destinations);
+      destinationsContainter.add(destinations);
+      if(!isEncryptionRequired()) destinationsContainter.setVisible(false);
 
-      add(new Button("saveButton"));
+      add(new AjaxButton("saveButton") {
+
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+          saveConfiguration();
+          uploadStudyLogo();
+          saveExportDestinationCertificates();
+          setResponsePage(getApplication().getHomePage());
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form) {
+          getFeedbackWindow().setContent(new FeedbackPanel("content"));
+          getFeedbackWindow().show(target);
+        }
+
+      });
     }
 
-    public void onSubmit() {
-      saveConfiguration();
-      uploadStudyLogo();
-      saveExportDestinationCertificates();
-      setResponsePage(getApplication().getHomePage());
+    private boolean isEncryptionRequired() {
+      for(OnyxDataExportDestination destination : exportDestinations) {
+        if(destination.isEncryptionRequested()) {
+          return true;
+        }
+      }
+      return false;
     }
 
     private void saveExportDestinationCertificates() {

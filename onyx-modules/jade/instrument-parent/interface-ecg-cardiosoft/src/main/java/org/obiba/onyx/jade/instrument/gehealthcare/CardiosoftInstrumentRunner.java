@@ -70,6 +70,8 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
   private String settingsFileName;
 
+  private String winSettingsFileName;
+
   private String btrRecordFileName;
 
   private String btrDatabaseFileName;
@@ -78,7 +80,9 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
   private String xmlFileName;
 
-  private String pdfFileName;
+  private String pdfFileNameRestingEcg;
+
+  private String pdfFileNameFullEcg;
 
   private ResourceBundle ecgResourceBundle;
 
@@ -144,6 +148,14 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     this.settingsFileName = settingsFileName;
   }
 
+  public String getWinSettingsFileName() {
+    return winSettingsFileName;
+  }
+
+  public void setWinSettingsFileName(String winSettingsFileName) {
+    this.winSettingsFileName = winSettingsFileName;
+  }
+
   public String getBtrRecordFileName() {
     return btrRecordFileName;
   }
@@ -176,12 +188,20 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     this.xmlFileName = xmlFileName;
   }
 
-  public String getPdfFileName() {
-    return pdfFileName;
+  public String getPdfFileNameRestingEcg() {
+    return pdfFileNameRestingEcg;
   }
 
-  public void setPdfFileName(String pdfFileName) {
-    this.pdfFileName = pdfFileName;
+  public void setPdfFileNameRestingEcg(String pdfFileNameRestingEcg) {
+    this.pdfFileNameRestingEcg = pdfFileNameRestingEcg;
+  }
+
+  public String getPdfFileNameFullEcg() {
+    return pdfFileNameFullEcg;
+  }
+
+  public void setPdfFileNameFullEcg(String pdfFileNameFullEcg) {
+    this.pdfFileNameFullEcg = pdfFileNameFullEcg;
   }
 
   /**
@@ -191,18 +211,8 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   protected void deleteDeviceData() {
 
     // Overwrite the CardioSoft configuration file
-    File backupSettingsFile = new File(getInitPath(), getSettingsFileName());
-    File currentSettingsFile = new File(getCardioPath(), getSettingsFileName());
-    try {
-      if(backupSettingsFile.exists()) {
-        FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
-      } else {
-        new File(getInitPath()).mkdir();
-        FileUtil.copyFile(currentSettingsFile, backupSettingsFile);
-      }
-    } catch(Exception ex) {
-      throw new RuntimeException("Error initializing ECG cardio.ini file", ex);
-    }
+    overwriteIniFile(getSettingsFileName());
+    overwriteIniFile(getWinSettingsFileName());
 
     // Initialize the CardioSoft database
     FilenameFilter filter = new FilenameFilter() {
@@ -239,11 +249,31 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       log.warn("Could not delete Cardiosoft XML output file!");
     }
 
-    reportFile = new File(getExportPath(), getPdfFileName());
+    reportFile = new File(getExportPath(), getPdfFileNameRestingEcg());
     if(!reportFile.delete()) {
-      log.warn("Could not delete Cardiosoft PDF output file!");
+      log.warn("Could not delete Resting Ecg PDF output file!");
     }
 
+    reportFile = new File(getExportPath(), getPdfFileNameFullEcg());
+    if(!reportFile.delete()) {
+      log.warn("Could not delete Full Ecg PDF output file!");
+    }
+
+  }
+
+  private void overwriteIniFile(String settingsFileName) {
+    File backupSettingsFile = new File(getInitPath(), settingsFileName);
+    File currentSettingsFile = new File(getCardioPath(), settingsFileName);
+    try {
+      if(backupSettingsFile.exists()) {
+        FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
+      } else {
+        new File(getInitPath()).mkdir();
+        FileUtil.copyFile(currentSettingsFile, backupSettingsFile);
+      }
+    } catch(Exception ex) {
+      throw new RuntimeException("Error initializing ECG " + currentSettingsFile.getName() + " file", ex);
+    }
   }
 
   /**
@@ -295,8 +325,11 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       File xmlFile = new File(getExportPath(), getXmlFileName());
       outputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
 
-      File pdfFile = new File(getExportPath(), getPdfFileName());
-      outputToSend.put("pdfFile", DataBuilder.buildBinary(pdfFile));
+      File pdfRestingEcgFile = new File(getExportPath(), getPdfFileNameRestingEcg());
+      outputToSend.put("pdfFile", DataBuilder.buildBinary(pdfRestingEcgFile));
+
+      File pdfFullEcgFile = new File(getExportPath(), getPdfFileNameFullEcg());
+      outputToSend.put("pdfFileFull", DataBuilder.buildBinary(pdfFullEcgFile));
 
       instrumentExecutionService.addOutputParameterValues(outputToSend);
 

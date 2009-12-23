@@ -43,8 +43,7 @@ public class ExperimentalConditionFactory implements ResourceLoaderAware {
             experimentalConditionService.register(experimentalConditionLog);
           }
         } catch(IOException e) {
-          log.error("Error resolving resource pattern {}: {}", resourcePattern, e.getMessage());
-          throw new RuntimeException(e);
+          log.warn("No Experimental Log configuration file was found at {}.  This file is optional but required to setup Experimental Condition Logs and/or Instrument Calibration Logs.", resourcePattern);
         }
       }
     }

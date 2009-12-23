@@ -36,8 +36,8 @@ public abstract class WizardPanel extends Panel {
     return wizardForm;
   }
 
-  public boolean isCanceled() {
-    return wizardForm.isCanceled();
+  public boolean isCancelled() {
+    return wizardForm.isCancelled();
   }
 
   public abstract WizardForm createForm(String componentId);

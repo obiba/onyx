@@ -12,10 +12,12 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="databasePath" value="C:\\CARDIO\\DATABASE\\"/>
     <property name="exportPath" value="C:\\CARDIO\\Export\\"/>
     <property name="settingsFileName" value="CARDIO.INI"/>
+    <property name="winSettingsFileName" value="WIN.INI"/>
     <property name="btrRecordFileName" value="btr-record.dat"/>
     <property name="btrDatabaseFileName" value="PATIENT.BTR"/>
-    <property name="xmlFileName" value="cartagene.xml"/>
-    <property name="pdfFileName" value="cartagene.pdf"/>
+    <property name="xmlFileName" value="Ecg.xml"/>
+    <property name="pdfFileNameRestingEcg" value="EcgResting.pdf"/>
+    <property name="pdfFileNameFullEcg" value="EcgFull.pdf"/>    
     <property name="executableForParticipantInfo" value="butil.exe -LOAD"/>
     <property name="locale" ref="locale"/>     
   </bean>

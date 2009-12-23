@@ -47,11 +47,11 @@ Note:
             "8":"*", "9":"(", "0":")", "-":"_", "=":"+", ";":":", "'":"\"", ",":"<", 
             ".":">",  "/":"?",  "\\":"|" },
         
-        newTrigger: function (type, combi, callback) { 
+        newTrigger: function (type, combi, callback, customDisableInput) { 
             // i.e. {'keyup': {'ctrl': {cb: callback, disableInInput: false}}}
             var result = {};
             result[type] = {};
-            result[type][combi] = {cb: callback, disableInInput: false};
+            result[type][combi] = {cb: callback, disableInInput: false, customDisableInput:customDisableInput};
             return result;
         }
     };
@@ -87,7 +87,7 @@ Note:
         return  this.__unbind__(type, fn);
     };
     
-    jQuery.fn.bind = function(type, data, fn){
+    jQuery.fn.bind = function(type, data, fn, customDisableInput){
         // grab keyup,keydown,keypress
         var handle = type.match(hotkeys.override);
         
@@ -113,7 +113,7 @@ Note:
                 for (var x=0; x < handle.length; x++){
                     var eventType = handle[x];
                     var combi = data.combi.toLowerCase(),
-                        trigger = hotkeys.newTrigger(eventType, combi, fn),
+                        trigger = hotkeys.newTrigger(eventType, combi, fn, customDisableInput),
                         selectorId = ((this.prevObject && this.prevObject.query) || (this[0].id && this[0].id) || this[0]).toString();
                         
                     //trigger[eventType][combi].propagate = data.propagate;
@@ -225,9 +225,14 @@ Note:
                         if(trigger[x].disableInInput){
                             // double check event.currentTarget and event.target
                             var elem = jQuery(event.target);
-                            if (jTarget.is("input") || jTarget.is("textarea") || jTarget.is("select") 
-                                || elem.is("input") || elem.is("textarea") || elem.is("select")) {
-                                return true;
+
+                            if(typeof trigger[x].customDisableInput == 'function') {
+                              if (trigger[x].customDisableInput.apply(this, [event, jTarget, elem]) == true) {
+                              	return true;
+                              }
+                            } else if (jTarget.is("input") || jTarget.is("textarea") || jTarget.is("select") 
+                                	   || elem.is("input") || elem.is("textarea") || elem.is("select")) {
+                              return true;
                             }
                         }                       
                         // call the registered callback function

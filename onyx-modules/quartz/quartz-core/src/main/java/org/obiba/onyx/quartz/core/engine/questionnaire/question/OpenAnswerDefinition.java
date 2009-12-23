@@ -176,6 +176,10 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     return openAnswerDefinitions != null ? openAnswerDefinitions : (openAnswerDefinitions = new ArrayList<OpenAnswerDefinition>());
   }
 
+  public boolean hasChildOpenAnswerDefinitions() {
+    return getOpenAnswerDefinitions().size() > 0;
+  }
+
   public void addOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
     if(openAnswerDefinition != null) {
       getOpenAnswerDefinitions().add(openAnswerDefinition);

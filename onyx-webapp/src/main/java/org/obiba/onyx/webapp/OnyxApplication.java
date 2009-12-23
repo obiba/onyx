@@ -181,7 +181,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
     createApplicationContext();
 
-    super.addComponentInstantiationListener(new SpringComponentInjector(this, applicationContext));
+    super.addComponentInstantiationListener(new SpringComponentInjector(this, applicationContext, true));
 
     forEachListeners(new IListenerCallback() {
       public void handleListener(String beanName, WebApplicationStartupListener listener) {

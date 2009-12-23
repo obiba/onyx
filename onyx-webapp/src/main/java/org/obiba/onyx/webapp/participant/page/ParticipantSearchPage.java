@@ -61,6 +61,7 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
@@ -93,6 +94,9 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private ParticipantMetadata participantMetadata;
+
+  @SpringBean
+  private ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -280,6 +284,10 @@ public class ParticipantSearchPage extends BasePage {
     getFeedbackWindow().show(target);
   }
 
+  private boolean isParticipantExported(Participant participant) {
+    return participantCaptureAndExportStrategy.isExported(participant.getBarcode());
+  }
+
   @SuppressWarnings("serial")
   private class ParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
@@ -308,7 +316,7 @@ public class ParticipantSearchPage extends BasePage {
     public ParticipantByInputFieldProvider(String inputField) {
       super(queryService, Participant.class);
       this.inputField = inputField;
-      setSort(new SortParam("barcode", true));
+      setSort(new SortParam("lastName", true));
     }
 
     @Override
@@ -519,7 +527,7 @@ public class ParticipantSearchPage extends BasePage {
       super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
 
       Label statusLabel;
-      boolean isExportedParticipant = ((Participant) participantModel.getObject()).getExported();
+      boolean isExportedParticipant = isParticipantExported(((Participant) participantModel.getObject()));
       if(isExportedParticipant) {
         statusLabel = new Label("status", new StringResourceModel("ExportedInterview", ParticipantSearchPage.this, null));
       } else {
@@ -625,7 +633,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public boolean isVisible() {
           // Visible when participant has been assigned a barcode and participant not exported.
-          return getParticipant().getBarcode() != null && !getParticipant().getExported();
+          return getParticipant().getBarcode() != null && !isParticipantExported(getParticipant());
         }
       };
       link.add(new Label("label", new ResourceModel("Interview")));
@@ -666,13 +674,14 @@ public class ParticipantSearchPage extends BasePage {
           component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
           editParticipantDetailsModalWindow.setContent(component);
           editParticipantDetailsModalWindow.show(target);
+          target.appendJavascript("$('div.wicket-modal').css('overflow','visible');");
         }
 
         @Override
         public boolean isVisible() {
           // Visible if participant has been received and some attributes are editable. Also not visible if participant
           // has been exported.
-          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute() && !getParticipant().getExported();
+          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute() && !isParticipantExported(getParticipant());
         }
       };
       link.add(new Label("label", new ResourceModel("Edit")));
@@ -692,11 +701,11 @@ public class ParticipantSearchPage extends BasePage {
     private static final long serialVersionUID = 1L;
 
     public ParticipantEntityList(String id, Class<Participant> type, IColumnProvider columns, IModel title) {
-      super(id, type, columns, title);
+      super(id, queryService, type, columns, title);
     }
 
     public ParticipantEntityList(String id, Participant template, IColumnProvider columns, IModel title) {
-      super(id, template, columns, title);
+      super(id, queryService, template, columns, title);
     }
 
     public ParticipantEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
