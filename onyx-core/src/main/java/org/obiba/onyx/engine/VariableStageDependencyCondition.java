@@ -83,11 +83,12 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
     ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
 
     // Get the condition value.
-    VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(variablePath);
+    String magmaVariableName = variablePath.replaceFirst("Onyx.", "");
+    VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
     Value conditionValue = variableValueSource.getValue(valueSet);
     Boolean rval = null;
 
-    log.debug("Testing variable: {} {} {}", new Object[] { variablePath, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
+    log.debug("Testing variable: {} {} {}", new Object[] { magmaVariableName, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
     if(!conditionValue.isNull()) {
       if(conditionValue.isSequence()) {
         // apply an OR among the data of the variable

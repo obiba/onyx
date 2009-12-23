@@ -59,13 +59,14 @@ public class PdfVariableReport extends PdfReport {
     }
 
     if(onyxParticipantTable != null) {
+      String magmaVariableName = pdfVariablePath.replaceFirst("Onyx.", "");
       try {
         // Get the currently interviewed participant's ValueSet.
         VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
         ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
 
         // Get the PDF data.
-        VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(pdfVariablePath);
+        VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
         Value pdfValue = variableValueSource.getValue(valueSet);
         if(!pdfValue.isNull()) {
           Data pdfData = DataValueConverter.valueToData(pdfValue);
@@ -73,7 +74,7 @@ public class PdfVariableReport extends PdfReport {
         }
 
       } catch(NoSuchVariableException noSuchVariableEx) {
-        log.error("No Magma variable found for the following name: {}", pdfVariablePath);
+        log.error("No Magma variable found for the following name: {}", magmaVariableName);
       }
     } else {
       log.error("No Magma ValueTable found for the following name: {}", PARTICIPANT_TABLE_NAME);
