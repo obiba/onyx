@@ -22,6 +22,7 @@ import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.magma.Attribute;
 import org.obiba.magma.AttributeAwareBuilder;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
@@ -129,11 +130,12 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         } else if(question.hasSubQuestions()) {
           new QuestionVariableBuilder(question).build();
           for(Question subQuestion : question.getQuestions()) {
-            new QuestionVariableBuilder(subQuestion).withCategories().build();
+            new QuestionVariableBuilder(subQuestion).withCategories().withComment(subQuestion.isBoilerPlate() == false).build();
           }
         } else {
           QuestionVariableBuilder builder = new QuestionVariableBuilder(question).withCategories();
-          if(question.hasDataSource()) {
+          // If the question has a datasource, then it's never displayed. BoilerPlates don't allow comments.
+          if(question.hasDataSource() || question.isBoilerPlate()) {
             builder.withoutComment();
           }
           builder.build();
@@ -223,6 +225,13 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     public QuestionVariableBuilder withoutComment() {
       properties.remove("comment");
+      return this;
+    }
+
+    public QuestionVariableBuilder withComment(boolean with) {
+      if(with == false) {
+        withoutComment();
+      }
       return this;
     }
 
@@ -447,8 +456,12 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       super.visitAttributes(builder);
       // Provide the category name to the resolver
       builder.addAttribute("categoryName", questionCategory.getCategory().getName());
+      if(this.questionCategory.getQuestion().isMultiple() == false) {
+        // Add a marker indicating that this is single-choice category variable
+        builder.addAttribute(Attribute.Builder.newAttribute("exclusiveChoiceCategoryVariable").withValue(BooleanType.get().valueOf(true)).build());
+      }
 
-      // an open answer is implicitly always conditioned by the selection of its parent category.
+      // a category variable is implicitly always conditioned by it's parent question
       OnyxAttributeHelper.addConditionAttribute(builder, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
     }
   }

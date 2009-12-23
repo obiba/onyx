@@ -57,7 +57,7 @@ public abstract class AbstractQuartzBeanResolver extends AbstractOnyxBeanResolve
   protected QuestionAnswer findQuestionAnswer(final QuestionnaireParticipant qp, final String questionName) {
     return Iterables.find(qp.getParticipantAnswers(), new Predicate<QuestionAnswer>() {
       public boolean apply(QuestionAnswer input) {
-        return input.getQuestionName().equals(questionName);
+        return input.isActive() && input.getQuestionName().equals(questionName);
       }
     });
   }
@@ -65,7 +65,7 @@ public abstract class AbstractQuartzBeanResolver extends AbstractOnyxBeanResolve
   protected CategoryAnswer findCategoryAnswer(final QuestionAnswer qa, final String categoryName) {
     return Iterables.find(qa.getCategoryAnswers(), new Predicate<CategoryAnswer>() {
       public boolean apply(CategoryAnswer input) {
-        return input.getCategoryName().equals(categoryName);
+        return input.isActive() && input.getCategoryName().equals(categoryName);
       }
     });
   }
