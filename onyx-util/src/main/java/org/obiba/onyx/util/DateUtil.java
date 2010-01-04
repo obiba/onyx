@@ -26,6 +26,8 @@ public class DateUtil {
 
     Calendar c = Calendar.getInstance();
 
+    if(startDate.after(endDate)) return daysBetween;
+
     c.setTime(startDate);
     int startYear = c.get(Calendar.YEAR);
     int startDay = c.get(Calendar.DAY_OF_YEAR);
@@ -36,7 +38,7 @@ public class DateUtil {
 
     if(startYear == endYear) {
       daysBetween = endDay - startDay;
-    } else if(endYear > startYear) {
+    } else {
       c.setTime(startDate);
       daysBetween = c.getActualMaximum(Calendar.DAY_OF_YEAR) - startDay;
 
