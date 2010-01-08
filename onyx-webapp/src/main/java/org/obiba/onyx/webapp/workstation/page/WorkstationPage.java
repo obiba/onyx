@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.workstation.page;
 
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -43,4 +44,9 @@ public class WorkstationPage extends BasePage {
     }
   }
 
+  @Override
+  public void renderHead(IHeaderResponse response) {
+    super.renderHead(response);
+    response.renderOnLoadJavascript("styleWorkstationNavigationBar();");
+  }
 }
