@@ -46,10 +46,13 @@ public class TestQuestionnaire {
     builder.inQuestion("ARRAY").withQuestion("Q1");
     builder.inQuestion("ARRAY").withQuestion("Q2");
 
+    builder.inPage("P1").withQuestion("ARRAY_OPEN").withCategory("MONDAY").withOpenAnswerDefinition("MONDAY_QUANTITY", DataType.INTEGER);
+    builder.inQuestion("ARRAY_OPEN").withCategory("TUESDAY").withOpenAnswerDefinition("TUESDAY_QUANTITY", DataType.INTEGER);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE");
+    builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE");
+
     builder.inPage("P1").withQuestion("Q_INNER_CONDITION").setCondition("$1 || $2>1 || $3>1", builder.newDataSource("Q_MULTIPLE", "PNA"), builder.newDataSource("OPEN_QUESTION", "OTHER", "NUMERIC"), builder.newDataSource("Q_MULTIPLE", "OTHER", "NUMERIC"));
     builder.inQuestion("Q_INNER_CONDITION").withCategories("1", "2", "3");
-
-    builder.inPage("P1").addTimestamp();
 
     builder.inSection("S1").withPage("P2").withQuestion("DATE_QUESTION").withCategory("DATE").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE);
 
