@@ -188,6 +188,13 @@ NavigationUtil.next = function() {
   }
 }
 
+NavigationUtil.finish = function() {
+  var finishButton = $('input.obiba-nav-finish');
+  if (finishButton) {
+    finishButton.click();
+  }
+}
+
 NavigationUtil.closeWindow = function() {
   var closeButton = $('input.obiba-button-close');
   if (closeButton) {
@@ -319,6 +326,18 @@ function addOnyxWizardBehavior() {
   $(document).bind('keydown', {combi:'+', disableInInput: true}, 
   					function(evt) { 
   						NavigationUtil.next();
+        			}, 
+        			function(evt, jTarget, elem) {
+          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
+   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
+   			  				Wicket.Window.get() != null) {
+                			return true;
+          				}        
+        			});
+        			
+  $(document).bind('keydown', {combi:'f', disableInInput: true}, 
+  					function(evt) { 
+  						NavigationUtil.finish();
         			}, 
         			function(evt, jTarget, elem) {
           				if (jTarget.is("input[type=text]") || jTarget.is("textarea")

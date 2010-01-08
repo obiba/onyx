@@ -96,7 +96,6 @@ public class ConsentWizardForm extends WizardForm {
         adminWindow.setInitialWidth(350);
         adminWindow.setInterruptState(false, false, buttonDisableBehavior);
         if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
-        adminWindow.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible(), buttonDisableBehavior);
         adminWindow.show(target);
       }
 
@@ -130,7 +129,6 @@ public class ConsentWizardForm extends WizardForm {
     adminWindow = new WizardAdministrationWindow("adminWindow");
 
     adminWindow.setCancelLink("CancelConsent");
-    adminWindow.createFinishLink(this.getRootForm());
     adminWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
