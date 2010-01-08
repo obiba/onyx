@@ -1847,3 +1847,15 @@ div.measuresListPanel table.entityTable td.refresh {
 div.measuresListPanel table.entityTable td.refresh a {
   color:#C65F02;
 }
+
+div.wizard-content span.instrument-run-panel-content div.section {
+  margin-bottom:10px;
+}
+
+div.wicket-modal div.onyx div.section {
+  margin-bottom: 10px; margin-left: 20px; margin-right: 20px;
+}
+
+div.wizard-content #instrumentRunPanelTitle {
+  color: #C65F02; margin-top: 20px; margin-bottom: 10px; font-weight: bold;
+}
