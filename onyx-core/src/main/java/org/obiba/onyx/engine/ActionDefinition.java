@@ -75,6 +75,10 @@ public class ActionDefinition implements Serializable {
    */
   private List<String> reasons;
 
+  public ActionDefinition() {
+    // no-arg constructor for XStream deserialization with PureJavaReflectionProvider
+  }
+
   public ActionDefinition(ActionType type, String code) {
     this.type = type;
     this.code = code;

@@ -16,17 +16,20 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 
 /**
  * Deserialises {@code ActionDefinition} instances from XML files using XStream.
  */
 public class ActionDefinitionReader {
 
-  private XStream xstream = new XStream();
+  private XStream xstream;
 
   private Resource[] resources;
 
   public ActionDefinitionReader() {
+    // Use a PureJavaReflectionProvider so that XStream instantiates objects using standard Java reflection.
+    xstream = new XStream(new PureJavaReflectionProvider());
     // Create an alias for the root node
     xstream.alias("actionDefinitions", ArrayList.class);
     // Create an alias for ActionDefinition nodes
