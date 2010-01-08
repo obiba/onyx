@@ -146,7 +146,7 @@
                 </question>
               </questions>
             </question>
-            <question id="70" name="ARRAY_OPEN" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="70" name="ARRAY_OPEN" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="7"/>
               <questionCategories id="71">
                 <questionCategory id="72">
