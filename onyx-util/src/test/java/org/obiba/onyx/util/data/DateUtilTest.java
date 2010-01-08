@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -34,11 +34,15 @@ public class DateUtilTest {
     daysBetween = DateUtil.getDaysBetween(currentDate, threeDaysInFuture);
     Assert.assertEquals(3, daysBetween);
 
-    // StartDate = current date, EndDate in the past.
-    calendar.add(Calendar.DATE, -45);
-    Date forthyTwoDaysInThePast = calendar.getTime();
-    daysBetween = DateUtil.getDaysBetween(currentDate, forthyTwoDaysInThePast);
-    Assert.assertEquals(-42, daysBetween);
+    // StartDate = current date, EndDate in the past. Should return -1 because StartDate is greater than EndDate
+	calendar.add(Calendar.DATE, -45);
+	Date forthyTwoDaysInThePast = calendar.getTime();
+	daysBetween = DateUtil.getDaysBetween(currentDate, forthyTwoDaysInThePast);
+	Assert.assertEquals(-1, daysBetween);
+
+	// EndDate = current date, StartDate in the past.
+	daysBetween = DateUtil.getDaysBetween(forthyTwoDaysInThePast, currentDate);
+	Assert.assertEquals(42, daysBetween);
 
     // Calculate the days between two dates in different months, EndDate in the future.
     calendar.set(2009, 01, 01);

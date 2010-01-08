@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -16,13 +16,15 @@ public class DateUtil {
 
   /**
    * Returns the number of calendar days between two dates.
-   * 
+   *
    * @param startDate start date
    * @param endDate end date
    * @return number of days between start date and end date (<code>-1</code> if the former is after the latter)
    */
   public static int getDaysBetween(Date startDate, Date endDate) {
     int daysBetween = -1;
+
+	if(startDate.after(endDate)) return daysBetween;
 
     Calendar c = Calendar.getInstance();
 
@@ -36,7 +38,7 @@ public class DateUtil {
 
     if(startYear == endYear) {
       daysBetween = endDay - startDay;
-    } else if(endYear > startYear) {
+    } else {
       c.setTime(startDate);
       daysBetween = c.getActualMaximum(Calendar.DAY_OF_YEAR) - startDay;
 
