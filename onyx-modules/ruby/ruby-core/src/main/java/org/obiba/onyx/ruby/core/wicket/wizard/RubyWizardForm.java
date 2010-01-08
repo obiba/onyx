@@ -110,7 +110,6 @@ public class RubyWizardForm extends WizardForm {
       public void onClick(AjaxRequestTarget target) {
         adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
         if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
-        adminWindow.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible(), buttonDisableBehavior);
         adminWindow.show(target);
       }
 

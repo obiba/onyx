@@ -13,9 +13,7 @@ import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.IBehavior;
-import org.apache.wicket.markup.html.form.Form;
 
 /**
  * 
@@ -23,8 +21,6 @@ import org.apache.wicket.markup.html.form.Form;
 public class WizardAdministrationWindow extends Dialog {
 
   private static final long serialVersionUID = -8541405625420712641L;
-
-  private AjaxButton finishLink;
 
   private AjaxLink interruptLink;
 
@@ -43,8 +39,6 @@ public class WizardAdministrationWindow extends Dialog {
     setTitle("Administration");
 
     setOptions(Dialog.Option.CANCEL_OPTION);
-
-    createFinishLink(null);
 
     interruptLink = new AjaxLink("interrupt") {
 
@@ -83,32 +77,7 @@ public class WizardAdministrationWindow extends Dialog {
     this.cancelLabel = label;
   }
 
-  public void createFinishLink(Form form) {
-    if(form == null) form = getForm();
-    finishLink = new AjaxButton("finish", form) {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
-        setStatus(Status.SUCCESS);
-        if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) {
-          WizardAdministrationWindow.this.close(target);
-        }
-      }
-
-      @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
-        setStatus(Status.ERROR);
-        if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) {
-          WizardAdministrationWindow.this.close(target);
-        }
-      }
-    };
-  }
-
   public void setOptionsToShow() {
-    addSubmitOption("Finish", OptionSide.RIGHT, finishLink, "finish");
     addOption("Interrupt", OptionSide.RIGHT, interruptLink, "interrupt");
     addOption(cancelLabel, OptionSide.RIGHT, cancelLink, "cancelStage");
   }
@@ -125,13 +94,6 @@ public class WizardAdministrationWindow extends Dialog {
     interruptLink.add(buttonDisableBehavior);
     interruptLink.setEnabled(enabled);
     interruptLink.setVisible(visible);
-    return this;
-  }
-
-  public WizardAdministrationWindow setFinishState(boolean enabled, boolean visible, IBehavior buttonDisableBehavior) {
-    finishLink.add(buttonDisableBehavior);
-    finishLink.setEnabled(enabled);
-    finishLink.setVisible(visible);
     return this;
   }
 
