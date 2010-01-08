@@ -149,7 +149,7 @@ public class WorkstationPanel extends Panel {
     protected void onPageChanged() {
       IRequestTarget target = getRequestCycle().getRequestTarget();
       if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
-        ((AjaxRequestTarget) target).appendJavascript("styleParticipantSearchNavigationBar();");
+        ((AjaxRequestTarget) target).appendJavascript("styleWorkstationNavigationBar();");
       }
       super.onPageChanged();
     }
@@ -296,4 +296,5 @@ public class WorkstationPanel extends Panel {
 
     return experimentalConditionService.getExperimentalConditions(template);
   }
+
 }
