@@ -70,18 +70,14 @@ public abstract class ActionWindow extends Dialog {
 
     setWindowClosedCallback(new WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target, Status status) {
-
-        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getWindowContent();
-
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
+          ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getWindowContent();
           Action action = pane.getAction();
-          log.debug("action=" + action);
           Stage stage = null;
           if(getDefaultModel() != null && getDefaultModelObject() != null) {
             stage = (Stage) getDefaultModelObject();
           }
-          activeInterviewService.doAction(stage, action);
-          onActionPerformed(target, stage, action);
+          doAction(target, stage, action);
         }
 
         if(additionnalWindowClosedCallback != null) {
@@ -100,37 +96,48 @@ public abstract class ActionWindow extends Dialog {
   public abstract void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
   @SuppressWarnings("serial")
-  public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition) {
+  public void show(AjaxRequestTarget target, IModel<Stage> stageModel, ActionDefinition actionDefinition) {
     show(target, stageModel, actionDefinition, null);
   }
 
-  public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition, WindowClosedCallback additionnalWindowClosedCallback) {
-    this.additionnalWindowClosedCallback = additionnalWindowClosedCallback;
-    setDefaultModel(stageModel);
-    ActionDefinitionPanel component = new ActionDefinitionPanel(getContentId(), actionDefinition, target) {
-    };
-    component.add(new AttributeModifier("class", true, new Model("obiba-content window-action-content")));
-    setContent(content = component);
-
-    final IModel labelModel = new MessageSourceResolvableStringModel(actionDefinition.getLabel());
-    if(stageModel != null && stageModel.getObject() != null) {
-      Model titleModel = new Model() {
-        @Override
-        public Serializable getObject() {
-          Stage stage = (Stage) ActionWindow.this.getDefaultModelObject();
-          MessageSourceResolvableStringModel stageDescriptionModel = new MessageSourceResolvableStringModel(stage.getDescription());
-          return stageDescriptionModel.getObject() + ": " + labelModel.getObject();
-        }
+  public void show(AjaxRequestTarget target, IModel<Stage> stageModel, ActionDefinition actionDefinition, WindowClosedCallback additionnalWindowClosedCallback) {
+    if(actionDefinition.somethingAsked()) {
+      this.additionnalWindowClosedCallback = additionnalWindowClosedCallback;
+      setDefaultModel(stageModel);
+      ActionDefinitionPanel component = new ActionDefinitionPanel(getContentId(), actionDefinition, target) {
       };
-      setTitle(titleModel);
-    } else {
-      setTitle(labelModel);
-    }
+      component.add(new AttributeModifier("class", true, new Model("obiba-content window-action-content")));
+      setContent(content = component);
 
-    show(target);
+      final IModel labelModel = new MessageSourceResolvableStringModel(actionDefinition.getLabel());
+      if(stageModel != null && stageModel.getObject() != null) {
+        Model titleModel = new Model() {
+          @Override
+          public Serializable getObject() {
+            Stage stage = (Stage) ActionWindow.this.getDefaultModelObject();
+            MessageSourceResolvableStringModel stageDescriptionModel = new MessageSourceResolvableStringModel(stage.getDescription());
+            return stageDescriptionModel.getObject() + ": " + labelModel.getObject();
+          }
+        };
+        setTitle(titleModel);
+      } else {
+        setTitle(labelModel);
+      }
+
+      show(target);
+    } else {
+      // Do action without showing the window (nothing to ask).
+      doAction(target, stageModel.getObject(), new Action(actionDefinition));
+    }
   }
 
   public ActionDefinitionPanel getWindowContent() {
     return content;
+  }
+
+  private void doAction(AjaxRequestTarget target, Stage stage, Action action) {
+    log.debug("action=" + action);
+    activeInterviewService.doAction(stage, action);
+    onActionPerformed(target, stage, action);
   }
 }
