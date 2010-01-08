@@ -10,12 +10,11 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
-import org.obiba.onyx.wicket.reusable.Dialog;
 
 public class ConclusionPanel extends Panel {
 
@@ -29,24 +28,11 @@ public class ConclusionPanel extends Panel {
   public ConclusionPanel(String id) {
     super(id);
     setOutputMarkupId(true);
+    InstrumentRunPanel instrumentRunPanel = new InstrumentRunPanel("instrumentRun");
+    instrumentRunPanel.add(new AttributeModifier("class", true, new Model("obiba-content instrument-run-panel-content")));
+    add(instrumentRunPanel);
 
-    final Dialog modal;
-    add(modal = new Dialog("modal"));
-
-    modal.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
-    modal.setInitialWidth(DEFAULT_INITIAL_WIDTH);
-    modal.setOptions(Dialog.Option.CLOSE_OPTION);
-
-    add(new AjaxLink("show") {
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        InstrumentRunPanel instrumentRunPanel = new InstrumentRunPanel(modal.getContentId(), modal);
-        instrumentRunPanel.add(new AttributeModifier("class", true, new Model("obiba-content instrument-run-panel-content")));
-        modal.setContent(instrumentRunPanel);
-        modal.show(target);
-      }
-
-    });
+    add(new Label("title", instrumentRunPanel.getTitle((InstrumentRun) instrumentRunPanel.getDefaultModelObject())));
   }
+
 }

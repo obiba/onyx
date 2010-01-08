@@ -71,14 +71,13 @@ public class InstrumentRunPanel extends Panel {
    * Build the panel with the current instrument run.
    * @param id
    */
-  public InstrumentRunPanel(String id, final ModalWindow modal) {
+  public InstrumentRunPanel(String id) {
     super(id);
 
     InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
     if(run == null) {
       throw new IllegalStateException("No instrument run in session.");
     }
-    modal.setTitle(getTitle(run));
 
     setDefaultModel(new DetachableEntityModel(queryService, run));
 
@@ -99,14 +98,13 @@ public class InstrumentRunPanel extends Panel {
       throw new IllegalStateException("No instrument run in session.");
     }
     modal.setTitle(getTitle(run));
-
     setDefaultModel(new DetachableEntityModel(queryService, run));
     if(measure != null) setMeasure(measure);
 
     build();
   }
 
-  private IModel<String> getTitle(InstrumentRun run) {
+  public IModel<String> getTitle(InstrumentRun run) {
     String instrumentName = new SpringStringResourceModel(run.getInstrumentType() + ".description", run.getInstrumentType()).getString();
     return new StringResourceModel("CollectedDataTitle", this, new Model<ValueMap>(new ValueMap("instrument=" + instrumentName)));
   }
