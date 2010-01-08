@@ -101,12 +101,13 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     Object commentNoteKey = new PropertyModel(definition, "commentNote").getObject();
     String defaultNote = new StringResourceModel("AnonymousComments", this, null).getString();
-    add(new Label("commentNote", new SpringStringResourceModel(commentNoteKey != null ? commentNoteKey.toString() : "", defaultNote).getString()));
+    Label commentNoteLabel = new Label("commentNote", new SpringStringResourceModel(commentNoteKey != null ? commentNoteKey.toString() : "", defaultNote).getString());
+    add(commentNoteLabel.setEnabled(definition.isAskComment()));
 
     TextArea commentArea = new TextArea("comment", new PropertyModel(this, "action.comment"));
-    commentArea.setRequired(definition.isCommentMandatory());
+    commentArea.setRequired(definition.isAskComment() && definition.isCommentMandatory());
     commentArea.add(new StringValidator.MaximumLengthValidator(2000));
-    add(commentArea);
+    add(commentArea.setEnabled(definition.isAskComment()));
 
     // request for focus on first field
     if(password.isEnabled()) {
@@ -115,7 +116,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     } else if(barcode.isEnabled()) {
       barcode.setOutputMarkupId(true);
       target.focusComponent(barcode);
-    } else {
+    } else if(commentArea.isEnabled()) {
       commentArea.setOutputMarkupId(true);
       target.focusComponent(commentArea);
     }

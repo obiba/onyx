@@ -44,7 +44,14 @@ public class ActionDefinition implements Serializable {
   private boolean askParticipantId = false;
 
   /**
-   * Says if a comment is mandatory.
+   * Says if it requires that the operator be asked for a comment.
+   * 
+   * Note: This defaults to <code>true</code> for backward compatibility.
+   */
+  private boolean askComment = true;
+
+  /**
+   * Says if a comment is mandatory (ignored if askComment is <code>false</code>).
    */
   private boolean commentMandatory = true;
 
@@ -78,6 +85,7 @@ public class ActionDefinition implements Serializable {
     this.code = rhs.code;
     this.askPassword = rhs.askPassword;
     this.askParticipantId = rhs.askParticipantId;
+    this.askComment = rhs.askComment;
     this.commentNote = rhs.commentNote;
     this.commentMandatory = rhs.commentMandatory;
     this.reasonMandatory = rhs.reasonMandatory;
@@ -126,6 +134,23 @@ public class ActionDefinition implements Serializable {
 
   public void setAskParticipantId(boolean askParticipantId) {
     this.askParticipantId = askParticipantId;
+  }
+
+  public boolean isAskComment() {
+    return askComment;
+  }
+
+  public void setAskComment(boolean askComment) {
+    this.askComment = askComment;
+  }
+
+  /**
+   * Indicates whether the <code>ActionDefinition</code> asks anything.
+   * 
+   * @return <code>true</code> if something asked
+   */
+  public boolean somethingAsked() {
+    return isAskPassword() || isAskParticipantId() || isAskComment();
   }
 
   public boolean isCommentMandatory() {

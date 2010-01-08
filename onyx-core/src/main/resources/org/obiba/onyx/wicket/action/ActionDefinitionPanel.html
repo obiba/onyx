@@ -32,7 +32,7 @@
   	
   	<script language="JavaScript">
   		$(document).ready(function () {
-            $('input[disabled], select[disabled]').each(function() {
+            $('input[disabled], select[disabled], textarea[disabled]').each(function() {
                 $(this).parent().parent().addClass('ui-state-disabled');
             });
         });
