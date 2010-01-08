@@ -12,7 +12,10 @@ package org.obiba.onyx.webapp.user.page;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.UserService;
@@ -20,6 +23,9 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.base.panel.AjaxLanguageChoicePanel;
 import org.obiba.onyx.webapp.user.panel.ChangePasswordPanel;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 
 /**
  * Allows the signed user to change his password and preferred language
@@ -56,12 +62,40 @@ public class ProfilePage extends BasePage {
     ChangePasswordPanel changePassword = new ChangePasswordPanel("changePassword", previousPageId) {
       private static final long serialVersionUID = 1L;
 
-      public void onSuccess() {
-        setResponsePage(getApplication().getHomePage());
+      public void onSuccess(AjaxRequestTarget target) {
+        Label contentLabel = new Label("content", new StringResourceModel("PasswordSuccessfullyChanged", this, null));
+        contentLabel.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+        contentLabel.add(new AttributeModifier("style", true, new Model("text-align: center;")));
+
+        Dialog conclusionWindow = getConclusionWindow();
+        conclusionWindow.setContent(contentLabel);
+        conclusionWindow.setWindowClosedCallback(new WindowClosedCallback() {
+
+          public void onClose(AjaxRequestTarget target, Status status) {
+            ProfilePage.this.setResponsePage(getApplication().getHomePage());
+          }
+
+        });
+
+        conclusionWindow.show(target);
       }
 
-      public void onFailure() {
-        setResponsePage(getPage());
+      public void onFailure(AjaxRequestTarget target) {
+        Label contentLabel = new Label("content", new StringResourceModel("PasswordChangingFailed", this, null));
+        contentLabel.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+        contentLabel.add(new AttributeModifier("style", true, new Model("text-align: center;")));
+
+        Dialog conclusionWindow = getConclusionWindow();
+        conclusionWindow.setContent(contentLabel);
+        conclusionWindow.setWindowClosedCallback(new WindowClosedCallback() {
+
+          public void onClose(AjaxRequestTarget target, Status status) {
+            ProfilePage.this.setResponsePage(ProfilePage.this.getPage());
+          }
+
+        });
+
+        conclusionWindow.show(target);
       }
     };
 

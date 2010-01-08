@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
@@ -25,6 +25,8 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.Dialog.Option;
 
 /**
  * Defines form for password changing
@@ -41,9 +43,22 @@ public abstract class ChangePasswordPanel extends Panel {
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
+  private Dialog conclusionWindow;
+
   public ChangePasswordPanel(String id, int previousPageId) {
     super(id);
+    addConclusionWindow();
     add(new ChangePasswordForm("changePasswordForm", previousPageId));
+  }
+
+  private void addConclusionWindow() {
+    conclusionWindow = new Dialog("conclusionWindow");
+    conclusionWindow.setOptions(Option.CLOSE_OPTION);
+    conclusionWindow.setInitialHeight(115);
+    conclusionWindow.setInitialWidth(400);
+    conclusionWindow.setTitle(new StringResourceModel("ChangePassword", this, null));
+    conclusionWindow.setOutputMarkupId(true);
+    add(conclusionWindow);
   }
 
   private class ChangePasswordForm extends Form {
@@ -66,12 +81,12 @@ public abstract class ChangePasswordPanel extends Panel {
       // Validate that the password and the confirmed password are the same.
       add(new EqualPasswordInputValidator(password, confirmPassword));
 
-      add(new Button("submit") {
+      add(new AjaxButton("submit") {
 
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void onSubmit() {
+        public void onSubmit(AjaxRequestTarget target, Form form) {
           super.onSubmit();
 
           String password = model.getPassword();
@@ -80,14 +95,14 @@ public abstract class ChangePasswordPanel extends Panel {
           if(userService.isNewPassword(user, User.digest(password))) {
             try {
               userService.updatePassword(user, User.digest(password));
-              onSuccess();
+              onSuccess(target);
             } catch(Exception e) {
               e.printStackTrace();
-              onFailure();
+              onFailure(target);
             }
           } else {
             error(new StringResourceModel("PasswordPreviouslyUsed", this, null).getString());
-            onFailure();
+            onFailure(target);
           }
         }
 
@@ -109,13 +124,13 @@ public abstract class ChangePasswordPanel extends Panel {
    * Called when password is successfully changed
    * 
    */
-  public abstract void onSuccess();
+  public abstract void onSuccess(AjaxRequestTarget target);
 
   /**
    * Called when password check or update failed.
    * 
    */
-  public abstract void onFailure();
+  public abstract void onFailure(AjaxRequestTarget target);
 
   private class ChangePasswordPanelModel implements Serializable {
 
@@ -140,5 +155,9 @@ public abstract class ChangePasswordPanel extends Panel {
     public void setConfirmPassword(String confirmPassword) {
       this.confirmPassword = confirmPassword;
     }
+  }
+
+  public Dialog getConclusionWindow() {
+    return conclusionWindow;
   }
 }
