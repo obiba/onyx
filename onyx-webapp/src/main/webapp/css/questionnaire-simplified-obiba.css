@@ -46,7 +46,7 @@
 
 .obiba-quartz-instructions {
 	color:#999999;
-	font-size:14px;
+	font-size:0.7778em;
 	font-weight:bold;
 	padding-left:20px;
 	padding-right:20px;
@@ -56,7 +56,7 @@
 
 .obiba-quartz-caption {
 	color:#999999;
-	font-size:14px;
+	font-size:0.7778em;
 	font-weight:bold;
 	margin-left: auto;
 	margin-right: auto;
@@ -68,7 +68,7 @@
 
 .obiba-quartz-specifications {
 	color:#999999;
-	font-size:14px;
+	font-size:0.7778em;
 	font-weight:bold;
 	padding-left:20px;
 	padding-right:20px;
@@ -157,7 +157,7 @@ a.button .label {
 }
 
 a.button .description {
-    font-size: 12px;
+    font-size: 0.6667em;
     display: block;
     padding-left: 18px;
     padding-right: 18px;
@@ -236,7 +236,6 @@ a.button {
 .obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value {
 	border: solid 1px #aaa;
 	height:30px;
-	font-size: 18px;
 	line-height:1.6;
 	margin-left:auto;
 	margin-right:auto;
@@ -249,7 +248,7 @@ a.button {
 }
 
 .obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category a.button {
-	font-size:10px;
+	font-size:0.5556em;
 	margin-top:5px;
 	text-transform:uppercase;
 	margin-left:auto;
@@ -383,7 +382,7 @@ table.obiba-quartz-array {
 }
 
 .obiba-quartz-array .ui-widget-header .obiba-quartz-category {
-	font-size:14px;
+	font-size:0.7778em;
 	text-align:center;
 }
 
@@ -444,7 +443,6 @@ div.form-button {
   border: none;
   background-color: #fff;
   font-family: arial, helvetica, sans-serif;
-  font-size: 18px;
   font-weight: normal;
 }
 

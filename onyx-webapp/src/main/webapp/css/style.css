@@ -43,7 +43,7 @@ A:hover {
 .subLegend {
   border-style: none;
   background: white;
-  font-size: 10px;
+  font-size: 0.8333em;
   color: #00008B;
 }
 
@@ -65,7 +65,6 @@ div.banner {
   margin-left: auto; 
   margin-right: auto;
   text-align: left;
-  font-size: 12px;
 }
 
 #pageHeader1 {
@@ -73,7 +72,7 @@ div.banner {
 	width: 100%;
 	float: left;
 	text-align: right;
-	font-size: 11px;
+	font-size: 0.9167em;
 }
 
 #logo {
@@ -105,7 +104,7 @@ div.banner {
   padding-top:30px;
   padding-left:25px;
   font-family: verdana, arial, sans-serif;
-  font-size:32px;
+  font-size:2.6667em;
   font-weight: bold;
   letter-spacing: -1px;
   color: #FFFFFF;
@@ -116,7 +115,7 @@ div.banner {
   padding-left:25px;
   padding-top:65px;
   font-family: verdana, arial, sans-serif;
-  font-size:13px;
+  font-size:1.0833em;
   font-weight: bold;
   letter-spacing: 2px;
   color: #00CAA4;
@@ -125,7 +124,6 @@ div.banner {
 #menuBar {
   color: #FFFFFF;
   font-family: arial, verdana, sans-serif;
-  font-size: 12px;
   font-weight: bold;
 }
 
@@ -149,7 +147,7 @@ div.banner {
 #menuAddOns{
 	padding-top:1px;
 	float:right;
-	font-size:11px;
+	font-size:0.9167em;
 	margin-right:15px;
 }
 
@@ -164,7 +162,6 @@ div.banner {
   margin-left:15px;
   margin-right:15px;
   clear:both;
-  font-size: 12px;
 }
 
 
@@ -189,14 +186,14 @@ div#leftColumn {
   float: left;
   width:145px;
   border:0px dashed #cccccc;
-  font-size: 11px;
+  font-size: 0.9167em;
   color: #000000;
 }
 
 div#leftColumn h1 {
   margin-top:0px;
   margin-bottom:10px;
-  font-size: 14px;
+  font-size: 1.1667em;
   color: #666666;
   padding:4px;
   border: 1px solid #cccccc;
@@ -206,7 +203,7 @@ div#leftColumn h1 {
 div#leftColumn h2 {
   margin-top:0px;
   margin-bottom:10px;
-  font-size: 14px;
+  font-size: 1.1667em;
   color: #666666;
   padding:4px;
   border: 1px solid #cccccc;
@@ -216,7 +213,7 @@ div#leftColumn h2 {
 div#leftColumn h3 {
   margin-top:0px;
   margin-bottom:10px;
-  font-size: 14px;
+  font-size: 1.1667em;
   color: #666666;
   padding:4px;
   border: 1px solid #cccccc;
@@ -238,7 +235,6 @@ div#centerColumn {
   width:610px; /*450 px when having 3 columns layout*/
   background-color: #FFFFFF;
   border:0px dashed #cccccc;
-  font-size: 12px;
   margin-left: 25px;
 }
 
@@ -246,7 +242,7 @@ div#centerColumn h1 {
   margin-top:0px;
   margin-bottom:10px;
   font-family: verdana, arial, sans-serif;
-  font-size: 22px;
+  font-size: 1.8333em;
   color: #CC3300;
   background-color:#FFFFFF;
   padding:4px;
@@ -258,7 +254,7 @@ div#centerColumn h2 {
   margin-top:15px;
   margin-bottom:10px;
   font-family: verdana, arial, sans-serif;
-  font-size: 20px;
+  font-size: 1.6667em;
   color: #CC3300;
   background-color:#FFFFFF;
   padding:4px;
@@ -270,7 +266,7 @@ div#centerColumn h3 {
   margin-top:15px;
   margin-bottom:10px;
   font-family: verdana, arial, sans-serif;
-  font-size: 18px;
+  font-size: 1.5em;
   color: #CC3300;
   background-color:#FFFFFF;
   padding:4px;
@@ -341,7 +337,6 @@ div#feedback ul li{
   margin-top:10px;
   margin-bottom:5px;
   margin-right:8px;*/
-  font-size:12px;
   width:97%;
   height:97%;
 text-align:center;
@@ -364,13 +359,12 @@ text-align:center;
   margin-top:0px;
   margin-bottom:5px;
   font-family: verdana, arial, sans-serif;
-  font-size: 12px;
   color: #779E28;
 }
 
 #featureBox p {
   font-family: verdana, arial, sans-serif;
-  font-size: 11px;
+  font-size: 0.9167em;
   color: #555555;
   line-height: 16px;
   margin-bottom:5px;
@@ -383,7 +377,7 @@ text-align:center;
 }
 
 #pageFooter > div {
-  font-size: 11px;
+  font-size: 0.9167em;
   letter-spacing: 1px;
   margin-right: 16px;
   text-align: right;  
@@ -421,14 +415,14 @@ text-align:center;
   background-repeat: no-repeat;
   background-position: 0 7px;
   font-family: verdana, arial, sans-serif;
-  font-size: 11px;
+  font-size: 0.9167em;
   line-height:18px;
 }
 
 /*************** Wicket Autocomplete ********************/
 
 div.wicket-aa {
-  font-size: 10px;
+  font-size: 0.8333em;
   background-color: white;
   border-width: 1px;
   border-color: #cccccc;
@@ -492,7 +486,7 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .obiba-content{
-  font-size:11px;
+  font-size:0.9167em;
 }
 
 .obiba-content.invalid-measure-details-content {
@@ -598,7 +592,6 @@ table.entityTable tr.odd {
 table.entityTable tr.navigation {
   color:#999999;
   font-family:arial;
-  font-size:12px;
 }
 
 table.entityTable .navigator a {
@@ -612,7 +605,7 @@ table.entityTable .navigator em {
 table.entityTable th {
   border-bottom:1px solid #C65F02;
   font-family:arial;
-  font-size:11px;
+  font-size:0.9167em;
   font-weight:bold;
   padding:3px;
   color:#999999;
@@ -640,7 +633,7 @@ table.entityTable th.wicket_orderDown {
 table.entityTable td {
   color:#333333;
   font-family:arial;
-  font-size:11px;
+  font-size:0.9167em;
   font-weight:bold;
   padding:3px;
 }
@@ -672,7 +665,6 @@ td.keyValueTableHeader {
 	border-style:none none solid;
 	border-width:1px;
 	color:#C65F02;
-	font-size:12px;
 	text-align: left;
 	margin-bottom:25px;
     margin-top:7px;
@@ -704,7 +696,6 @@ td.keyValueTableValueOdd {
 	color: #000000;
 	background-color: #FFFFFF;
 	font-weight: bold;
-	font-size:12px;
 	text-align: left;
 	padding-left:10px;
 }
@@ -1149,7 +1140,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 
 #loginFooter p {
 	font-family:verdana,arial,sans-serif;
-	font-size:11px;
+	font-size:0.9167em;
 	letter-spacing:1px;
 	text-align:center;
 }
@@ -1176,10 +1167,10 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   border-style: none none solid none;
   border-width: 1px;
   color: #C65F02;
-  font-size: 12px;
   margin-bottom: 25px;
   margin-top: 7px;
   padding-bottom: 1px;
+  font-size:1em;
 }
 
 .obiba-content-region > h1.results-list {
@@ -1191,7 +1182,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   border-style: none none solid none;
   border-width: 1px;
   color: #666666;
-  font-size: 11px;
+  font-size: 0.9167em;
   margin-bottom: 15px;
   padding-bottom: 1px;
   margin-top:17px;
@@ -1203,7 +1194,6 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 
 .h2-short span {
   font-weight: bold;
-  font-size: 12px;
 }
 
 /******************* End Content Region ********************************************/
@@ -1221,7 +1211,6 @@ A:hover.obiba-button {
   border-width: 1px 2px 2px 1px;
   color: #000000;
   font-family: arial, verdana, sans-serif;
-  font-size: 12px;
 }
 
 .obiba-button.ui-state-disabled, 
@@ -1357,7 +1346,7 @@ div#participantPageSearchResults #newNavigatorLabel {
   top: 6px;
   color:#333333;
   font-family:arial;
-  font-size:11px;
+  font-size:0.9167em;
 }
 
 div#participantPageSearchResults #newNavigator {
@@ -1367,7 +1356,7 @@ div#participantPageSearchResults #newNavigator {
   top: 6px;
   color:#333333;
   font-family:arial;
-  font-size:11px;  
+  font-size:0.9167em;  
 }
 
 div#participantPageSearchResults #newNavigator a {
@@ -1408,7 +1397,7 @@ div#workstationInstrument #newNavigatorLabel {
   top: 6px;
   color:#333333;
   font-family:arial;
-  font-size:11px;
+  font-size:0.9167em;
 }
 
 div#workstationInstrument #newNavigator {
@@ -1418,7 +1407,7 @@ div#workstationInstrument #newNavigator {
   top: 6px;
   color:#333333;
   font-family:arial;
-  font-size:11px;  
+  font-size:0.9167em;  
 }
 
 div#workstationInstrument #newNavigator a {
@@ -1590,7 +1579,6 @@ div#workstationInstrument #newNavigator em {
 
 .experimental-condition-history-panel tr.titleToolbar div.title {
   color: #C65F02;
-  font-size: 12px;
 }
 
 .experimental-condition-instructions-title {
@@ -1628,7 +1616,7 @@ ul#interviewMenuBar li > div {
 ul#interviewMenuBar li a {
   bottom:2px;
   display:inline;
-  font-size:14px;
+  font-size:1.1667em;
   padding-bottom:0;
   padding-left:0;
   padding-right:0;
@@ -1639,7 +1627,6 @@ ul#interviewMenuBar li a {
 }
 
 ul#interviewMenuBar li a span {
-  font-size: 12px;
   padding-right:5px;
 }
 
@@ -1811,13 +1798,11 @@ div.log-comment {
 
 .editSamplePanel .value{
   font-weight:bold;
-  font-size:12px;
   color:#000000;
 }
 
 .editSamplePanel select option {
   font-weight:bold;
-  font-size:12px;
 }
 
 .editSamplePanel select option{
@@ -1836,7 +1821,7 @@ div.log-comment {
 
 div.measuresListPanel table.entityTable td.count, div.measuresListPanel table.entityTable td.refresh {
   color:#C65F02;
-  font-size:11px;
+  font-size:0.9167em;
   border-bottom: solid 1px #C65F02;
 }
 

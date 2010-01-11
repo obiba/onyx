@@ -1,7 +1,7 @@
 div.wicket-modal div.onyx .feedbackLine {
   margin-left:30px;  
   font-weight:bold;  
-  font-size:14px;
+  font-size:1.1667em;
   color:black;
   overflow: auto;
 }
@@ -9,7 +9,7 @@ div.wicket-modal div.onyx .feedbackLine {
 div.wicket-modal div.onyx .feedback {
   margin-left:-30px;  
   font-weight:bold;  
-  font-size:14px;
+  font-size:1.1667em;
   overflow: auto;
   height: 67px;
 }

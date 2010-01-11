@@ -79,7 +79,7 @@ div.wicket-modal div.onyx a.w_close {
 
 div.wicket-modal div.onyx .imagelink { 
   font-family:arial,sans-serif;
-  font-size:18px;  
+  font-size:1.5em;  
 }
 
 div.wicket-modal div.onyx .obiba-content {
@@ -176,7 +176,7 @@ div.wicket-modal div.onyx .experimental-condition-form p, .experimental-conditio
 }
 
 div.wicket-modal div.onyx .experimental-condition-form p select, .experimental-condition-history-panel  p select {
-  font-size: 13px;
+  font-size: 1.0833em;
   font-family: arial,sans-serif;
   font-weight: bold;
 }
