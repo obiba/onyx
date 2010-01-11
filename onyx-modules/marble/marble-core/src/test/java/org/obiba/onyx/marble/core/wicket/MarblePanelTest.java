@@ -89,6 +89,7 @@ public class MarblePanelTest {
 
   @SuppressWarnings("serial")
   @Test
+  @Ignore
   public void testManualOption() {
 
     Consent consent;
