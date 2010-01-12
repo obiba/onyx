@@ -94,8 +94,12 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     builder.setSimplifiedUI();
 
+    builder.withSection("ALCOHOL").withPage("0").withQuestion("ARRAY_OPEN", true).withCategory("MONDAY").withOpenAnswerDefinition("MONDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withCategory("TUESDAY").withOpenAnswerDefinition("TUESDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE");
+    builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE");
+
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
-    builder.inPage("1").addTimestamp("TS_START");
 
     builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE", "1");
     builder.inQuestion("SEX").withCategory("FEMALE", "2");
