@@ -57,9 +57,9 @@ public class InstrumentSelectionStep extends WizardStepPanel {
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     // No previous step
-    form.getPreviousLink().setEnabled(false);
-    form.getNextLink().setEnabled(true);
-    form.getFinishLink().setEnabled(false);
+    form.getPreviousLink().setVisible(false);
+    form.getNextLink().setVisible(true);
+    form.getFinishLink().setVisible(false);
     if(target != null) {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());

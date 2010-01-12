@@ -94,8 +94,8 @@ public class ConsentWizardForm extends WizardForm {
       @Override
       public void onClick(AjaxRequestTarget target) {
         adminWindow.setInitialWidth(350);
-        adminWindow.setInterruptState(false, false, buttonDisableBehavior);
-        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setInterruptState(false);
+        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled());
         adminWindow.show(target);
       }
 

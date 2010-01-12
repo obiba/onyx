@@ -34,13 +34,13 @@ public class InputParametersStep extends WizardStepPanel {
     // Disable previous button when not needed.
     WizardStepPanel previousStep = this.getPreviousStep();
     if(previousStep == null || previousStep.equals(this)) {
-      form.getPreviousLink().setEnabled(false);
+      form.getPreviousLink().setVisible(false);
     } else {
-      form.getPreviousLink().setEnabled(true);
+      form.getPreviousLink().setVisible(true);
     }
 
-    form.getNextLink().setEnabled(true);
-    form.getFinishLink().setEnabled(false);
+    form.getNextLink().setVisible(true);
+    form.getFinishLink().setVisible(false);
     if(target != null) {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());

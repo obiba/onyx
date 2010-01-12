@@ -46,10 +46,10 @@ public class ConfirmResumeStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getNextLink().setEnabled(true);
-    form.getPreviousLink().setEnabled(false);
+    form.getNextLink().setVisible(true);
+    form.getPreviousLink().setVisible(false);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(false);
-    form.getFinishLink().setEnabled(false);
+    form.getFinishLink().setVisible(false);
 
     if(target != null) {
       target.addComponent(form);

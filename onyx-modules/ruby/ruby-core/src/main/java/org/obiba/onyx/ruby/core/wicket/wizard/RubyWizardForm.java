@@ -14,7 +14,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -100,16 +99,14 @@ public class RubyWizardForm extends WizardForm {
 
     createModalAdministrationPanel();
 
-    final IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
-
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {
       private static final long serialVersionUID = 0L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
-        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setInterruptState(getInterruptLink().isEnabled());
+        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled());
         adminWindow.show(target);
       }
 

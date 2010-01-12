@@ -51,26 +51,28 @@ public abstract class WizardForm extends Form {
     setOutputMarkupId(true);
 
     IBehavior buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
-    IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
 
     // finish button
     AjaxButton finish = createFinish();
-    finish.add(buttonStyleBehavior).add(buttonDisableBehavior);
-    finish.setEnabled(false);
+    finish.add(buttonStyleBehavior);
+    finish.setVisible(false);
     finish.setOutputMarkupId(true);
+    finish.setOutputMarkupPlaceholderTag(true);
     add(finish);
 
     // previous button
     AjaxLink link = createPrevious();
-    link.setEnabled(false);
+    link.setVisible(false);
     link.setOutputMarkupId(true);
-    link.add(buttonStyleBehavior).add(buttonDisableBehavior);
+    link.setOutputMarkupPlaceholderTag(true);
+    link.add(buttonStyleBehavior);
     add(link);
 
     // next button
     AjaxButton button = createNext();
     button.setOutputMarkupId(true);
-    button.add(buttonStyleBehavior).add(buttonDisableBehavior);
+    button.setOutputMarkupPlaceholderTag(true);
+    button.add(buttonStyleBehavior);
     add(button);
 
     // cancel button
@@ -332,24 +334,6 @@ public abstract class WizardForm extends Form {
 
   public static String getStepId() {
     return "step";
-  }
-
-  protected class WizardButtonDisableBehavior extends AttributeAppender {
-
-    private static final long serialVersionUID = -2793180600410649652L;
-
-    public WizardButtonDisableBehavior() {
-      super("class", new Model("ui-state-disabled"), " ");
-    }
-
-    /**
-     * Overriden to enable the behaviour if the component is disabled. We want to append the attribute when the
-     * component is disabled.
-     */
-    @Override
-    public boolean isEnabled(Component component) {
-      return component.isEnabled() == false;
-    }
   }
 
   public LoadableDetachableModel getLabelModel(String label) {

@@ -53,10 +53,10 @@ public class ConclusionStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getNextLink().setEnabled(false);
-    form.getPreviousLink().setEnabled(true);
+    form.getNextLink().setVisible(false);
+    form.getPreviousLink().setVisible(true);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(false);
-    form.getFinishLink().setEnabled(true).add(new AttributeModifier("style", new Model("display:inline;")));
+    form.getFinishLink().setVisible(true).add(new AttributeModifier("style", new Model("display:inline;")));
 
     if(target != null) {
       target.addComponent(form);

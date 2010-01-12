@@ -46,9 +46,9 @@ public class WarningsStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(true);
-    form.getNextLink().setEnabled(true);
-    form.getFinishLink().setEnabled(false);
+    form.getPreviousLink().setVisible(true);
+    form.getNextLink().setVisible(true);
+    form.getFinishLink().setVisible(false);
 
     if(target != null) {
       target.addComponent(form.getPreviousLink());

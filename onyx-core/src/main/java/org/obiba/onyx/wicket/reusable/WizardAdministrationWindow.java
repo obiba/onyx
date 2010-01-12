@@ -13,7 +13,6 @@ import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.IBehavior;
 
 /**
  * 
@@ -53,6 +52,7 @@ public class WizardAdministrationWindow extends Dialog {
       }
 
     };
+    interruptLink.setOutputMarkupPlaceholderTag(true);
 
     cancelLink = new AjaxLink("cancelStage") {
 
@@ -66,6 +66,7 @@ public class WizardAdministrationWindow extends Dialog {
         }
       }
     };
+    cancelLink.setOutputMarkupPlaceholderTag(true);
   }
 
   public void setCancelLink(String label) {
@@ -90,16 +91,12 @@ public class WizardAdministrationWindow extends Dialog {
     super.show(target);
   };
 
-  public WizardAdministrationWindow setInterruptState(boolean enabled, boolean visible, IBehavior buttonDisableBehavior) {
-    interruptLink.add(buttonDisableBehavior);
-    interruptLink.setEnabled(enabled);
+  public WizardAdministrationWindow setInterruptState(boolean visible) {
     interruptLink.setVisible(visible);
     return this;
   }
 
-  public WizardAdministrationWindow setCancelState(boolean enabled, boolean visible, IBehavior buttonDisableBehavior) {
-    cancelLink.add(buttonDisableBehavior);
-    cancelLink.setEnabled(enabled);
+  public WizardAdministrationWindow setCancelState(boolean visible) {
     cancelLink.setVisible(visible);
     return this;
   }

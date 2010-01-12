@@ -56,9 +56,9 @@ public class ValidationStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getNextLink().setEnabled(false);
-    form.getPreviousLink().setEnabled(true);
-    form.getFinishLink().setEnabled(true);
+    form.getNextLink().setVisible(false);
+    form.getPreviousLink().setVisible(true);
+    form.getFinishLink().setVisible(true);
 
     if(target != null) {
       target.addComponent(form);
