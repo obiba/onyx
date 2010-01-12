@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.instrument.gehealthcare;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,7 +80,8 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
     participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
     participantLastName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME").getValue();
     participantID = instrumentExecutionService.getParticipantID();
-    participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
+    SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    participantBirthDate = birthDateFormatter.parse(instrumentExecutionService.getParticipantBirthDateAsString());
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
   }
 

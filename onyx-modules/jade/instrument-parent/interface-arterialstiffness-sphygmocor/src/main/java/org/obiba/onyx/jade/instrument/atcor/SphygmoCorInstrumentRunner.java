@@ -15,6 +15,7 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -78,7 +79,12 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     // Fetch the current participant's data.
     participantLastName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME").getValue();
     participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
-    participantBirthDate = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH").getValue();
+    SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    try {
+      participantBirthDate = birthDateFormatter.parse(instrumentExecutionService.getParticipantBirthDateAsString());
+    } catch(ParseException e) {
+      throw new RuntimeException(e);
+    }
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
     participantId = new Integer(instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_BARCODE").getValueAsString());
     systolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE").getValue();

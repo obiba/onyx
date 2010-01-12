@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +71,11 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   public Date getParticipantBirthDate() {
     return (getInstrumentRun().getParticipant().getBirthDate());
+  }
+
+  public String getParticipantBirthDateAsString() {
+    SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    return birthDateFormatter.format(getInstrumentRun().getParticipant().getBirthDate());
   }
 
   public String getParticipantGender() {

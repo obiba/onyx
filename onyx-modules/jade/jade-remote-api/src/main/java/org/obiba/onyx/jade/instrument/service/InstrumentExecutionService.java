@@ -42,6 +42,13 @@ public interface InstrumentExecutionService {
 
   public Date getParticipantBirthDate();
 
+  /**
+   * Returns the participants birth date as a String in the format "yyyy-MM-dd". This is useful to ensure the correct
+   * birthday will be returned regardless of the timezone.
+   * @return The participant's birthday as a String.
+   */
+  public String getParticipantBirthDateAsString();
+
   public String getParticipantGender();
 
   public int getExpectedMeasureCount();
