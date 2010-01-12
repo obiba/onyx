@@ -152,8 +152,10 @@ public class UpdateParticipantListPanel extends Panel {
     updateAppointmentLogWindow = new Dialog("updateAppointmentLogWindow");
     updateAppointmentLogWindow.setTitle(new ResourceModel("Log"));
     updateAppointmentLogWindow.setOptions(Option.CLOSE_OPTION);
-    updateAppointmentLogWindow.setInitialHeight(400);
-    updateAppointmentLogWindow.setInitialWidth(700);
+    updateAppointmentLogWindow.setHeightUnit("em");
+    updateAppointmentLogWindow.setWidthUnit("em");
+    updateAppointmentLogWindow.setInitialHeight(34);
+    updateAppointmentLogWindow.setInitialWidth(59);
     updateAppointmentLogWindow.setOutputMarkupId(true);
     add(updateAppointmentLogWindow);
   }

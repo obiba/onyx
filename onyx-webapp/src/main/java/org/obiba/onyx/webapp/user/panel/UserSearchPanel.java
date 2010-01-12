@@ -100,8 +100,10 @@ public class UserSearchPanel extends Panel {
         target.addComponent(userList);
       }
     });
-    userDetailsModalWindow.setInitialWidth(400);
-    userDetailsModalWindow.setInitialHeight(400);
+    userDetailsModalWindow.setHeightUnit("em");
+    userDetailsModalWindow.setWidthUnit("em");
+    userDetailsModalWindow.setInitialWidth(34);
+    userDetailsModalWindow.setInitialHeight(34);
     userDetailsModalWindow.setResizable(false);
 
   }

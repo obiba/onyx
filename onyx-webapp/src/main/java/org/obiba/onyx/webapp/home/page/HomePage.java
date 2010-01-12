@@ -49,9 +49,9 @@ public class HomePage extends BasePage {
 
   private UnlockInterviewPanel content;
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 146;
+  private static final int DEFAULT_INITIAL_HEIGHT = 13;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 400;
+  private static final int DEFAULT_INITIAL_WIDTH = 34;
 
   public HomePage() {
     super();
@@ -61,6 +61,8 @@ public class HomePage extends BasePage {
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
     unlockInterviewWindow.setOptions(Dialog.Option.YES_NO_CANCEL_OPTION);
+    unlockInterviewWindow.setHeightUnit("em");
+    unlockInterviewWindow.setWidthUnit("em");
     unlockInterviewWindow.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     unlockInterviewWindow.setInitialWidth(DEFAULT_INITIAL_WIDTH);
 

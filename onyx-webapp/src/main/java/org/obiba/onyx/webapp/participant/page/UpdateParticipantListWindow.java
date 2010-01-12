@@ -45,9 +45,9 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private static final Logger log = LoggerFactory.getLogger(UpdateParticipantListWindow.class);
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 150;
+  private static final int DEFAULT_INITIAL_HEIGHT = 13;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 450;
+  private static final int DEFAULT_INITIAL_WIDTH = 38;
 
   //
   // Instance Variables
@@ -75,6 +75,8 @@ public class UpdateParticipantListWindow extends Dialog {
     setCssClassName("onyx");
 
     setTitle((new ResourceModel("UpdateParticipantList")));
+    setHeightUnit("em");
+    setWidthUnit("em");
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
 

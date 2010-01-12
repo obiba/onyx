@@ -33,9 +33,9 @@ public abstract class ActionWindow extends Dialog {
 
   private static final Logger log = LoggerFactory.getLogger(ActionWindow.class);
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 393;
+  private static final int DEFAULT_INITIAL_HEIGHT = 33;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 370;
+  private static final int DEFAULT_INITIAL_WIDTH = 31;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -49,6 +49,8 @@ public abstract class ActionWindow extends Dialog {
     super(id);
 
     setOptions(Dialog.Option.OK_CANCEL_OPTION, "Continue");
+    setHeightUnit("em");
+    setWidthUnit("em");
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setType(Type.PLAIN);

@@ -110,7 +110,8 @@ public class LoginPanel extends SignInPanel {
     Component content = new MultiLineLabel("content", messageModel);
 
     dialog = DialogBuilder.buildInfoDialog("forgotPasswordDialog", titleModel, content).getDialog();
-    dialog.setInitialHeight(102);
+    dialog.setHeightUnit("em");
+    dialog.setInitialHeight(9);
 
     return dialog;
   }

@@ -44,8 +44,10 @@ public class ExperimentalConditionDialogHelperPanel extends Panel {
 
   public ExperimentalConditionDialogHelperPanel(String id, IModel model, final IModel<Instrument> instrumentModel) {
     super(id, model);
-    logDialog.setInitialWidth(488);
-    logDialog.setInitialHeight(300);
+    logDialog.setHeightUnit("em");
+    logDialog.setWidthUnit("em");
+    logDialog.setInitialWidth(41);
+    logDialog.setInitialHeight(25);
     logDialog.setCloseButtonCallback(new CloseButtonCallback() {
       private static final long serialVersionUID = 1L;
 

@@ -24,9 +24,9 @@ import org.apache.wicket.model.StringResourceModel;
  */
 public class FeedbackWindow extends Dialog {
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 105;
+  private static final int DEFAULT_INITIAL_HEIGHT = 9;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 400;
+  private static final int DEFAULT_INITIAL_WIDTH = 34;
 
   private static final long serialVersionUID = -9039412352683671244L;
 
@@ -36,6 +36,8 @@ public class FeedbackWindow extends Dialog {
   public FeedbackWindow(String id) {
     super(id);
     setCssClassName("onyx onyx-feedback");
+    setHeightUnit("em");
+    setWidthUnit("em");
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setOptions(Dialog.Option.CLOSE_OPTION);

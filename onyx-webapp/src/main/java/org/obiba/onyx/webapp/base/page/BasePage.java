@@ -91,6 +91,10 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
     });
 
+    reusablePrintDialog.setWidthUnit("em");
+    reusablePrintDialog.setHeightUnit("em");
+    reusablePrintDialog.setInitialHeight(34);
+    reusablePrintDialog.setInitialWidth(50);
     add(reusablePrintDialog);
 
     ContextImage img = new ContextImage("logo", new Model("images/logo/logo_on_dark.png"));

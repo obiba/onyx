@@ -110,9 +110,9 @@ public class ParticipantSearchPage extends BasePage {
 
   private UnlockInterviewPanel content;
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 146;
+  private static final int DEFAULT_INITIAL_HEIGHT = 13;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 400;
+  private static final int DEFAULT_INITIAL_WIDTH = 34;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
 
@@ -128,6 +128,8 @@ public class ParticipantSearchPage extends BasePage {
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
     unlockInterviewWindow.setOptions(Dialog.Option.YES_NO_CANCEL_OPTION);
+    unlockInterviewWindow.setHeightUnit("em");
+    unlockInterviewWindow.setWidthUnit("em");
     unlockInterviewWindow.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     unlockInterviewWindow.setInitialWidth(DEFAULT_INITIAL_WIDTH);
 
@@ -252,8 +254,10 @@ public class ParticipantSearchPage extends BasePage {
   private Dialog createParticipantDialog(String id) {
     Dialog participantDialog = new Dialog(id);
     participantDialog.setTitle(new StringResourceModel("Participant", this, null));
-    participantDialog.setInitialHeight(530);
-    participantDialog.setInitialWidth(507);
+    participantDialog.setHeightUnit("em");
+    participantDialog.setWidthUnit("em");
+    participantDialog.setInitialHeight(45);
+    participantDialog.setInitialWidth(43);
     participantDialog.setType(Dialog.Type.PLAIN);
     participantDialog.setOptions(Dialog.Option.CLOSE_OPTION);
     return participantDialog;

@@ -39,8 +39,10 @@ public class StageMenuBar extends MenuBar {
 
     participantDetailsModalWindow = new Dialog("participantDetailsModalWindow");
     participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    participantDetailsModalWindow.setInitialHeight(530);
-    participantDetailsModalWindow.setInitialWidth(507);
+    participantDetailsModalWindow.setHeightUnit("em");
+    participantDetailsModalWindow.setWidthUnit("em");
+    participantDetailsModalWindow.setInitialHeight(45);
+    participantDetailsModalWindow.setInitialWidth(34);
     participantDetailsModalWindow.setType(Dialog.Type.PLAIN);
     participantDetailsModalWindow.setOptions(Dialog.Option.CLOSE_OPTION);
     add(participantDetailsModalWindow);
