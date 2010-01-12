@@ -1,6 +1,23 @@
 <destinations>
+
   <destination>
     <name>DCC</name>
-    <includeAll>true</includeAll>
+
+    <valueset entityType="Participant">
+      <entities>
+        <excludeAll />
+        <script type="INCLUDE">
+          <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
+          $('Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
+        </script>
+        <script type="EXCLUDE">
+          <javascript><![CDATA[$('Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+        </script>
+      </entities>
+      <variables>
+      </variables>
+    </valueset>
+
   </destination>
+    
 </destinations>
