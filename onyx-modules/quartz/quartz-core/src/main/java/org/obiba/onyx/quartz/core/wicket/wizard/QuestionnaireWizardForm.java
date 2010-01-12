@@ -122,8 +122,8 @@ public class QuestionnaireWizardForm extends WizardForm {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        adminWindow.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible(), buttonDisableBehavior);
-        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible(), buttonDisableBehavior);
+        adminWindow.setInterruptState(getInterruptLink().isEnabled());
+        if(getCancelLink() != null) adminWindow.setCancelState(getCancelLink().isEnabled());
         adminWindow.show(target);
       }
 

@@ -79,10 +79,10 @@ public class PageStepPanel extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(previousEnabled);
-    form.getNextLink().setEnabled(true);
+    form.getPreviousLink().setVisible(previousEnabled);
+    form.getNextLink().setVisible(true);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(true);
-    form.getFinishLink().setEnabled(false);
+    form.getFinishLink().setVisible(false);
 
     if(target != null) {
       target.addComponent(form);

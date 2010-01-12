@@ -49,17 +49,17 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getNextLink().setEnabled(true);
+    form.getNextLink().setVisible(true);
 
     // Disable previous button when not needed.
     WizardStepPanel previousStep = this.getPreviousStep();
     if(previousStep == null || previousStep.equals(this)) {
-      form.getPreviousLink().setEnabled(false);
+      form.getPreviousLink().setVisible(false);
     } else {
-      form.getPreviousLink().setEnabled(true);
+      form.getPreviousLink().setVisible(true);
     }
 
-    form.getFinishLink().setEnabled(false);
+    form.getFinishLink().setVisible(false);
     if(target != null) {
       target.addComponent(form.getNextLink());
       target.addComponent(form.getPreviousLink());

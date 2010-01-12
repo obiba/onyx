@@ -32,9 +32,9 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(getPreviousStep() != null);
-    form.getNextLink().setEnabled(true);
-    form.getFinishLink().setEnabled(false);
+    form.getPreviousLink().setVisible(getPreviousStep() != null);
+    form.getNextLink().setVisible(true);
+    form.getFinishLink().setVisible(false);
     if(target != null) {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());
