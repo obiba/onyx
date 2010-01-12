@@ -16,15 +16,17 @@ import org.apache.wicket.model.ResourceModel;
 
 public class AddCommentWindow extends Dialog {
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 420;
+  private static final int DEFAULT_INITIAL_HEIGHT = 35;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 375;
+  private static final int DEFAULT_INITIAL_WIDTH = 32;
 
   private static final long serialVersionUID = 283560854902508942L;
 
   public AddCommentWindow(String id) {
     super(id);
 
+    setHeightUnit("em");
+    setWidthUnit("em");
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");

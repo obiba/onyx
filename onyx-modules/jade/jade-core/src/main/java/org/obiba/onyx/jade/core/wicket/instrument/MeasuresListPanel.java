@@ -62,9 +62,9 @@ public abstract class MeasuresListPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 400;
+  private static final int DEFAULT_INITIAL_WIDTH = 34;
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 420;
+  private static final int DEFAULT_INITIAL_HEIGHT = 35;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
@@ -106,6 +106,8 @@ public abstract class MeasuresListPanel extends Panel {
 
   private void addViewMeasureDetailsDialog() {
     add(measuresDetailsDialog = new Dialog("measuresDetailsDialog"));
+    measuresDetailsDialog.setHeightUnit("em");
+    measuresDetailsDialog.setWidthUnit("em");
     measuresDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     measuresDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
     measuresDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
@@ -113,6 +115,8 @@ public abstract class MeasuresListPanel extends Panel {
 
   private void addViewInvalidMeasureDetailsDialog() {
     add(invalidMeasureDetailsDialog = new Dialog("invalidMeasureDetailsDialog"));
+    measuresDetailsDialog.setHeightUnit("em");
+    measuresDetailsDialog.setWidthUnit("em");
     invalidMeasureDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     invalidMeasureDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
     invalidMeasureDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
@@ -301,7 +305,8 @@ public abstract class MeasuresListPanel extends Panel {
   private void addConfirmDeleteMeasureDialog() {
     confirmationDialog = new ConfirmationDialog("confirmDeleteMeasureDialog");
     confirmationDialog.setTitle(new ResourceModel("ConfirmDeleteMeasure"));
-    confirmationDialog.setInitialHeight(140);
+    confirmationDialog.setHeightUnit("em");
+    confirmationDialog.setInitialHeight(12);
     add(confirmationDialog);
   }
 

@@ -93,7 +93,8 @@ public class DataManagementPanel extends Panel {
   private void createExportDialog() {
     confirmationDialog = new ConfirmationDialog("confirmExportModalWindow");
     confirmationDialog.setTitle(new ResourceModel("ConfirmExport"));
-    confirmationDialog.setInitialHeight(180);
+    confirmationDialog.setHeightUnit("em");
+    confirmationDialog.setInitialHeight(15);
     add(confirmationDialog);
 
   }

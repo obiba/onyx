@@ -68,14 +68,14 @@
 	if you do it, make sure you 110% know what you do */
 .menu ul {
 	background-image: url(empty.gif);	/* required for sticky to work in IE6 and IE7 - due to their (different) hover bugs */
-	padding: 10px 30px 30px 30px;
-	margin: -10px 0 0 -30px;
+	padding: 0.8333em 2.5em 2.5em 2.5em;
+	margin: -0.8333em 0 0 -2.5em;
 	/*background: #f00;*/	/* uncomment this if you want to see the "safe" area.
 								you can also use to adjust the safe area to your requirement */
 }
 .menu ul ul {
-	padding: 30px 30px 30px 10px;
-	margin: -30px 0 0 -10px;
+	padding: 2.5em 2.5em 2.5em 0.8333em;
+	margin: -2.5em 0 0 -0.8333em;
 }
 /* -- sticky.submenu.END -- */
 
@@ -115,7 +115,7 @@
   	text-decoration:none;
 }
 .menu li li {	/* create borders around each item */
-	border: 1px solid #fff;
+	border: 0.0833em solid #fff;
 }
 .menu ul>li + li {	/* and remove the top border on all but first item in the list */
 	border-top: 0;
@@ -123,12 +123,12 @@
 }
 
 .menu li li:hover>ul {	/* inset 2nd+ submenus, to show off overlapping */
-	top: 5px;
+	top: 0.4167em;
 	left: 90%;
 	background-color: #AAAAAA;
 }
 .menu li li:hover ul{
-	top: 5px;
+	top: 0.4167em;
 	left: 90%;
 	background-color: #AAAAAA;
 }
@@ -185,7 +185,7 @@
 }
 
 .menu li li {	/* prevent double-line between items */
-	margin-top: -1px;
+	margin-top: -0.0833em;
 }
 
 .menu a:hover, .menu .adxmhoverA {		/* li:hover>a selector */
@@ -193,7 +193,7 @@
 }
 
 .menu .adxmhoverUL .adxmhoverUL {	/* inset 2nd+ submenus, to show off overlapping */
-	top: 5px;
+	top: 0.4167em;
 	left: 90%;
 }
 

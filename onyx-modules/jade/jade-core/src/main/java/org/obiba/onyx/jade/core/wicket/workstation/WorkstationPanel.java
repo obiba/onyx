@@ -126,8 +126,10 @@ public class WorkstationPanel extends Panel {
   private Dialog createAddInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
     addInstrumentDialog.setTitle(new ResourceModel("RegisterInstrument"));
-    addInstrumentDialog.setInitialHeight(234);
-    addInstrumentDialog.setInitialWidth(400);
+    addInstrumentDialog.setHeightUnit("em");
+    addInstrumentDialog.setWidthUnit("em");
+    addInstrumentDialog.setInitialHeight(20);
+    addInstrumentDialog.setInitialWidth(34);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Register");
     return addInstrumentDialog;

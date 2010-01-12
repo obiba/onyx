@@ -1,5 +1,5 @@
 div.wicket-modal div.onyx .feedbackLine {
-  margin-left:30px;  
+  margin-left:1.5em;  
   font-weight:bold;  
   font-size:1.1667em;
   color:black;
@@ -7,11 +7,11 @@ div.wicket-modal div.onyx .feedbackLine {
 }
 
 div.wicket-modal div.onyx .feedback {
-  margin-left:-30px;  
+  margin-left:-1.5em;  
   font-weight:bold;  
   font-size:1.1667em;
   overflow: auto;
-  height: 67px;
+  height: 5.5833em;
 }
 
 .feedbackPanelERROR {
@@ -22,47 +22,47 @@ div.wicket-modal div.onyx .ui-state-error {
 	background-image: url(../icons/error.png);
 	background-repeat: no-repeat;
 	color:black !important;
-	padding-left: 30px;
+	padding-left: 2.5em;
 }
 
 div.wicket-modal div.onyx .ui-state-highlight {
 	background-image: url(../icons/info.png);
 	background-repeat: no-repeat;
 	color:black !important;
-	padding-left: 30px;
+	padding-left: 2.5em;
 }
 
 div.wicket-modal div.onyx .ui-state-warning {
 	background-image: url(../icons/warning.png);
 	background-repeat: no-repeat;
 	color: black !important;
-	padding-left: 30px;
+	padding-left: 2.5em;
 }
 
 div.wicket-modal div.onyx div.onyx-feedback .separator {
-  border-top:1px solid #B7B7B7;
+  border-top:0.0833em solid #B7B7B7;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelERROR {
   background-image:none;
-  padding-left:0px;
+  padding-left:0em;
   list-style-type:none;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelWARNING{
   background-image:none;
-  padding-left:0px;
+  padding-left:0em;
   list-style-type:none;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelINFO{
   background-image:none;
-  padding-left:0px;
+  padding-left:0em;
   list-style-type:none;
 }
 
 div.wicket-modal div.onyx div.close {
   position: absolute; 
-  right: 15px; 
-  bottom: 10px; 
+  right: 1.2500em; 
+  bottom: 0.8333em; 
 }

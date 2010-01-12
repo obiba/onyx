@@ -197,8 +197,10 @@ public class ActionsPanel extends Panel {
   private Dialog createEditInstrumentWindow(String id) {
     Dialog addInstrumentDialog = new Dialog(id);
     addInstrumentDialog.setTitle(new ResourceModel("EditInstrument"));
-    addInstrumentDialog.setInitialHeight(234);
-    addInstrumentDialog.setInitialWidth(400);
+    addInstrumentDialog.setHeightUnit("em");
+    addInstrumentDialog.setWidthUnit("em");
+    addInstrumentDialog.setInitialHeight(20);
+    addInstrumentDialog.setInitialWidth(34);
     addInstrumentDialog.setType(Dialog.Type.PLAIN);
     addInstrumentDialog.setOptions(Dialog.Option.OK_CANCEL_OPTION, "Save");
     return addInstrumentDialog;
@@ -277,8 +279,10 @@ public class ActionsPanel extends Panel {
   private Dialog createDeleteInstrumentConfirmationDialogWindow(String id) {
     Dialog deleteInstrumentConfirmationDialog = new Dialog(id);
     deleteInstrumentConfirmationDialog.setTitle(new ResourceModel("DeleteInstrumentConfirmationTitle"));
-    deleteInstrumentConfirmationDialog.setInitialHeight(95);
-    deleteInstrumentConfirmationDialog.setInitialWidth(400);
+    deleteInstrumentConfirmationDialog.setHeightUnit("em");
+    deleteInstrumentConfirmationDialog.setWidthUnit("em");
+    deleteInstrumentConfirmationDialog.setInitialHeight(8);
+    deleteInstrumentConfirmationDialog.setInitialWidth(34);
     deleteInstrumentConfirmationDialog.setType(Dialog.Type.PLAIN);
     deleteInstrumentConfirmationDialog.setOptions(Dialog.Option.YES_NO_OPTION);
     return deleteInstrumentConfirmationDialog;

@@ -5,19 +5,19 @@
 */
 
 .wizard-content {
-  padding-top: 0px;
+  padding-top: 0em;
 }
 
 .page {
-	padding-top: 10px;
+	padding-top: 0.8333em;
 }
 
 .section {
 	font-weight: bold;
 	font-size: larger;	
-	padding-bottom:10px;
-	border-bottom: 1px solid #C65F02;
-	margin-bottom: 7px;
+	padding-bottom:0.8333em;
+	border-bottom: 0.0833em solid #C65F02;
+	margin-bottom: 0.5833em;
 }
 
 .page > div.label {
@@ -25,13 +25,13 @@
 }
 
 .questions {
-	padding-bottom:21px;
-	border-bottom: 1px solid #C65F02;
-	margin-bottom:7px;
+	padding-bottom:1.7500em;
+	border-bottom: 0.0833em solid #C65F02;
+	margin-bottom:0.5833em;
 }
 
 .questions:last-child {
-	border-bottom: 0px !important;
+	border-bottom: 0em !important;
 }
 
 .obiba-quartz-boilerplate {
@@ -40,13 +40,13 @@
 
 .categories .questions > .obiba-quartz-boilerplate {
 	background: transparent url(../icons/bullet_orange.png) no-repeat scroll left center;
-	margin-left:20px;
-	margin-top:10px;
-	padding-left:15px;
+	margin-left:1.6667em;
+	margin-top:0.8333em;
+	padding-left:1.2500em;
 }
 
 .categories > .questions {
-	border-bottom: 0px;
+	border-bottom: 0em;
 }
 
 .question {	
@@ -54,14 +54,14 @@
 
 .question > div.label {
 	font-weight: bold;
-	padding-bottom:5px;
-	padding-top:5px;
-	text-indent: 10px;
+	padding-bottom:0.4167em;
+	padding-top:0.4167em;
+	text-indent: 0.8333em;
 }
 
 .help-toggle {
 	background: url(../images/icons/16X16/help2.gif) no-repeat;
-	margin-left: 5px;
+	margin-left: 0.4167em;
 }
 
 .help-toggle a:hover {
@@ -70,14 +70,14 @@
 
 .comment-add {
 	background:transparent url(../icons/note_b_add.png) no-repeat scroll center top;
-	padding-left:10px;
-	padding-right:10px;
+	padding-left:0.8333em;
+	padding-right:0.8333em;
 }
 
 .comment-edit {
 	background:transparent url(../icons/note_b_mod.png) no-repeat scroll center top;
-	padding-left:10px;
-	padding-right:10px;
+	padding-left:0.8333em;
+	padding-right:0.8333em;
 }
 
 .comment-edit a:hover {
@@ -89,28 +89,28 @@
 }
 
 .help {
-	padding:5px;
-	margin-top:5px;
+	padding:0.4167em;
+	margin-top:0.4167em;
 	background-color:#F0F0F0;
-	border:1px solid #BBBBBB;
+	border:0.0833em solid #BBBBBB;
 }
 
 .instructions {
 	font-style: italic;
-	padding-bottom:5px;
-	padding-left: 10px;
+	padding-bottom:0.4167em;
+	padding-left: 0.8333em;
 }
 
 .caption {
-	padding-left:15px;
-	padding-bottom:5px;
+	padding-left:1.2500em;
+	padding-bottom:0.4167em;
 }
 
 .specifications {
-	padding-bottom:5px;
-	padding-top:5px;
+	padding-bottom:0.4167em;
+	padding-top:0.4167em;
 	font-style: italic;
-	text-indent: 10px;
+	text-indent: 0.8333em;
 }
 
 .specifications:before {
@@ -118,40 +118,40 @@
 }
 
 .categories {
-	//padding-left:15px;
-	padding-top:10px;
-	padding-bottom:3px;
-	/*border-top:1px solid #C65F02;*/
-	margin-top: 7px;
+	//padding-left:1.2500em;
+	padding-top:0.8333em;
+	padding-bottom:0.2500em;
+	/*border-top:0.0833em solid #C65F02;*/
+	margin-top: 0.5833em;
 }
 
 .categories > .questions .categories {
-	border-top:0px;
+	border-top:0em;
 	margin-top:0;
 	padding:0;
 }
 
 .categories > .questions .question {
-	padding-left:10px;
+	padding-left:0.8333em;
 }
 
 .categories td.category {
-	padding-right:3px;
-	padding-bottom:3px;
-	min-width:160px;
+	padding-right:0.2500em;
+	padding-bottom:0.2500em;
+	min-width:13.3333em;
 }
 
 .categories td.category:first-child {
-	padding-left:20px;
+	padding-left:1.6667em;
 }
 
 .category .label {
 }
 
 label.label-open {
-	/*margin-left:25px;*/
+	/*margin-left:2.0833em;*/
 	float:left;
-	margin-right:5px;
+	margin-right:0.4167em;
 }
 
 div.open {
@@ -159,50 +159,50 @@ div.open {
 }
 
 table.array {
-	border-bottom:1px #666666 dotted;
+	border-bottom:0.0833em #666666 dotted;
 	border-spacing:0;
 }
 
 table.array tr.ui-widget-header th.obiba-quartz-category {
 	color:#666666;
-	padding:6px 10px 10px;
+	padding:0.5000em 0.8333em 0.8333em;
 	font-weight: normal;
 	text-align:center;
-	/*width: 100px;*/
+	/*width: 8.3333em;*/
 }
 
 table.array tr.even {
 	background-color:#FFFFFF;
 	color:#666666;
-	padding-left:5px;
-	padding-right:5px;
+	padding-left:0.4167em;
+	padding-right:0.4167em;
 	text-align:left;
 }
 
 table.array tr.odd {
 	color:#666666;
-	padding-left:5px;
-	padding-right:5px;
+	padding-left:0.4167em;
+	padding-right:0.4167em;
 	text-align:left;
 }
 
 table.array td.label {
-	border-top: 1px #666666 dotted;
-	height: 23px;
+	border-top: 0.0833em #666666 dotted;
+	height: 1.9167em;
 	color:#666666;
-	padding-left:5px;
-	padding-right:5px;
+	padding-left:0.4167em;
+	padding-right:0.4167em;
 	text-align:left;
-	width: 270px;
+	width: 22.5000em;
 }
 
 table.array td.category {
 	text-align:center;
-	border-top: 1px #666666 dotted;
+	border-top: 0.0833em #666666 dotted;
 }
 
 div.page div.question div.categories div.category {
-	padding-bottom:5px;
+	padding-bottom:0.4167em;
 }
 
 .radio-open {
@@ -210,34 +210,34 @@ div.page div.question div.categories div.category {
 }
 
 .obiba-quartz-checkbox-category:first-child {
-	padding-left: 21px;
+	padding-left: 1.7500em;
 }
 
 .obiba-quartz-checkbox-category {
-	width: 170px;
-	padding-bottom: 3px;
+	width: 14.1667em;
+	padding-bottom: 0.2500em;
 }
 
 .categories .even:first-child > td.obiba-quartz-checkbox-category{
-	padding-top:11px;
+	padding-top:0.9167em;
 }
 
 .checkbox-open {
 }
 
 .obiba-quartz-dropdown-category:first-child {
-	padding-top:9px;
-	padding-left:27px;
+	padding-top:0.7500em;
+	padding-left:2.2500em;
 }
 
 .obiba-quartz-dropdown-category {
-	padding-bottom:5px;
-	padding-left:7px;
+	padding-bottom:0.4167em;
+	padding-left:0.5833em;
 }
 
 div.field-invalid {
-	border-left:3px solid red;
-	padding-left:5px;
+	border-left:0.2500em solid red;
+	padding-left:0.4167em;
 }
 
 input.field-invalid {

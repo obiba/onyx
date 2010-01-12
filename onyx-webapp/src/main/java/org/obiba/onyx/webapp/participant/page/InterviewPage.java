@@ -114,8 +114,10 @@ public class InterviewPage extends BasePage {
       final Dialog interviewLogsDialog;
       interviewLogPanel = new InterviewLogPanel("content", 329, new LoadableInterviewLogModel());
       interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.CLOSE_OPTION).setFormCssClass("interview-log-dialog-form").getDialog();
-      interviewLogsDialog.setInitialHeight(400);
-      interviewLogsDialog.setInitialWidth(700);
+      interviewLogsDialog.setHeightUnit("em");
+      interviewLogsDialog.setWidthUnit("em");
+      interviewLogsDialog.setInitialHeight(34);
+      interviewLogsDialog.setInitialWidth(59);
       interviewLogsDialog.setCloseButtonCallback(new CloseButtonCallback() {
         private static final long serialVersionUID = 1L;
 
@@ -141,8 +143,10 @@ public class InterviewPage extends BasePage {
       add(commentsWindow = new ModalWindow("addCommentsModal"));
       commentsWindow.setCssClassName("onyx");
       commentsWindow.setTitle(new StringResourceModel("CommentsWindow", this, null));
-      commentsWindow.setInitialHeight(400);
-      commentsWindow.setInitialWidth(600);
+      commentsWindow.setHeightUnit("em");
+      commentsWindow.setWidthUnit("em");
+      commentsWindow.setInitialHeight(34);
+      commentsWindow.setInitialWidth(50);
 
       commentsWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 

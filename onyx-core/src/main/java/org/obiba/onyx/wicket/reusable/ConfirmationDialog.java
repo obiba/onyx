@@ -18,9 +18,9 @@ public class ConfirmationDialog extends Dialog {
 
   private static final long serialVersionUID = 3542344658891842366L;
 
-  private static final int DEFAULT_CONFIRMATION_DIALOG_HEIGHT = 115;
+  private static final int DEFAULT_CONFIRMATION_DIALOG_HEIGHT = 10;
 
-  private static final int DEFAULT_CONFIRMATION_DIALOG_WIDTH = 400;
+  private static final int DEFAULT_CONFIRMATION_DIALOG_WIDTH = 34;
 
   private OnYesCallback onYesCallback;
 
@@ -29,6 +29,8 @@ public class ConfirmationDialog extends Dialog {
   public ConfirmationDialog(String id) {
     super(id);
     setOptions(Option.YES_NO_OPTION);
+    setHeightUnit("em");
+    setWidthUnit("em");
     setInitialHeight(DEFAULT_CONFIRMATION_DIALOG_HEIGHT);
     setInitialWidth(DEFAULT_CONFIRMATION_DIALOG_WIDTH);
     setType(Dialog.Type.WARNING);

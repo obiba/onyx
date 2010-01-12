@@ -39,7 +39,7 @@ public class ScrollableTableBodyBehaviour extends AbstractBehavior {
   public void renderHead(IHeaderResponse response) {
     // Works for FireFox. For a solution including IE support see:
     // http://plugins.jquery.com/files/jquery.scrollabletable.js_2.txt
-    String script = "if($('#" + component.getMarkupId() + " tbody').height() > " + tableBodyHeight + " ) { $('#" + component.getMarkupId() + " tbody').css('height', '" + tableBodyHeight + "px' ); } else { $('#" + component.getMarkupId() + " tbody').css('height', '' ); }";
+    String script = "if($('#" + component.getMarkupId() + " tbody').height() > " + tableBodyHeight + " ) { $('#" + component.getMarkupId() + " tbody').css('height', '" + tableBodyHeight / 12 + "em' ); } else { $('#" + component.getMarkupId() + " tbody').css('height', '' ); }";
     response.renderOnLoadJavascript(script);
   }
 }

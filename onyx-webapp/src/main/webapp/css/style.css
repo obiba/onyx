@@ -2,7 +2,7 @@ body {
   text-align: left;
   background: url(../icons/background_tile.png) repeat;
   font-family: arial, verdana, sans-serif;
-  font-size:12px;
+  font-size:16px;
   color: #666666;
   margin: 0pt; 
   padding: 0pt; 
@@ -12,7 +12,7 @@ body {
 }
 
 input, select, textarea {
-    border: solid 1px #cccccc;
+    border: solid 0.0833em #cccccc;
 }
 
 A:link {
@@ -48,17 +48,17 @@ A:hover {
 }
 
 div.banner {
-	margin-top: 4px;
-	margin-right: 10px;
+	margin-top: 0.3333em;
+	margin-right: 0.8333em;
 }
 
 #pageWrapper {
   margin-left: auto; 
   margin-right: auto;
-  width: 1000px;
+  width: 83.3333em;
   text-align: left;
   background-color:#FFFFFF;
-  border: 1px solid #AFBBC5;
+  border: 0.0833em solid #AFBBC5;
 }
 
 #popupWrapper {
@@ -77,12 +77,12 @@ div.banner {
 
 #logo {
   float: left;
-  margin-left: 50px;
-  margin-top: 8px;
+  margin-left: 4.1667em;
+  margin-top: 0.6667em;
 }
 
 #pageHeader2 {
-	height: 59px;
+	height: 4.9167em;
 	background-image: url('../images/genome_banner-repeat.png');
 	background-position: left top;
 }
@@ -94,30 +94,30 @@ div.banner {
 
 #userLogged{
 	float:right;
-	padding-top:70px;
-	padding-right:39px;
+	padding-top:5.8333em;
+	padding-right:3.2500em;
 	color:#FFFFFF;
 	font-weight:bold;
 }
 #pageHeader h1 {
-  margin: 0px;
-  padding-top:30px;
-  padding-left:25px;
+  margin: 0em;
+  padding-top:2.5000em;
+  padding-left:2.0833em;
   font-family: verdana, arial, sans-serif;
   font-size:2.6667em;
   font-weight: bold;
-  letter-spacing: -1px;
+  letter-spacing: -0.0833em;
   color: #FFFFFF;
 }
 
 #pageHeader h2 {
-  margin: 0px;
-  padding-left:25px;
-  padding-top:65px;
+  margin: 0em;
+  padding-left:2.0833em;
+  padding-top:5.4167em;
   font-family: verdana, arial, sans-serif;
   font-size:1.0833em;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 0.1667em;
   color: #00CAA4;
 }
 
@@ -135,7 +135,7 @@ div.banner {
 #menuBar .obiba-menu .obiba-menu-item {
   background-color: #888888;
   color: #C0C0C0 !important;
-  margin: 0 2px 0 2px;
+  margin: 0 0.1667em 0 0.1667em;
   padding: 0.4em 1em;
 }
 
@@ -145,22 +145,22 @@ div.banner {
 }
 
 #menuAddOns{
-	padding-top:1px;
+	padding-top:0.0833em;
 	float:right;
 	font-size:0.9167em;
-	margin-right:15px;
+	margin-right:1.2500em;
 }
 
 #menuAddOns form{
-	padding:0px;
-	margin:0px;
-	padding-left:5px;
+	padding:0em;
+	margin:0em;
+	padding-left:0.4167em;
 	display:inline;
 }
 
 #contentWrapper {
-  margin-left:15px;
-  margin-right:15px;
+  margin-left:1.2500em;
+  margin-right:1.2500em;
   clear:both;
 }
 
@@ -168,13 +168,13 @@ div.banner {
 #contentWrapper td.keyValueTableValue,
 #contentWrapper td.keyValueTableValueEven,
 #contentWrapper td.keyValueTableValueOdd {
-	padding-left:10px;
+	padding-left:0.8333em;
 }
 
 .base-ajax-indicator {
 	background-color: #E97723;
 	color: #ffffff;
-	padding: 5px;
+	padding: 0.4167em;
 	position: fixed;
 	right:0;
 	top:0;
@@ -182,105 +182,105 @@ div.banner {
 }
 
 div#leftColumn {
-  margin-top:5px;
+  margin-top:0.4167em;
   float: left;
-  width:145px;
-  border:0px dashed #cccccc;
+  width:12.0833em;
+  border:0em dashed #cccccc;
   font-size: 0.9167em;
   color: #000000;
 }
 
 div#leftColumn h1 {
-  margin-top:0px;
-  margin-bottom:10px;
+  margin-top:0em;
+  margin-bottom:0.8333em;
   font-size: 1.1667em;
   color: #666666;
-  padding:4px;
-  border: 1px solid #cccccc;
+  padding:0.3333em;
+  border: 0.0833em solid #cccccc;
   background-color:#FDFDEB;
 }
 
 div#leftColumn h2 {
-  margin-top:0px;
-  margin-bottom:10px;
+  margin-top:0em;
+  margin-bottom:0.8333em;
   font-size: 1.1667em;
   color: #666666;
-  padding:4px;
-  border: 1px solid #cccccc;
+  padding:0.3333em;
+  border: 0.0833em solid #cccccc;
   background-color:#FDFDEB;
 }
 
 div#leftColumn h3 {
-  margin-top:0px;
-  margin-bottom:10px;
+  margin-top:0em;
+  margin-bottom:0.8333em;
   font-size: 1.1667em;
   color: #666666;
-  padding:4px;
-  border: 1px solid #cccccc;
+  padding:0.3333em;
+  border: 0.0833em solid #cccccc;
   background-color:#FDFDEB; /*F6F8FF F9FBFD*/
 }
 
 div#leftColumn p {
-  margin-top:0px;
-  margin-bottom:15px;
+  margin-top:0em;
+  margin-bottom:1.2500em;
   font-family: verdana, arial, sans-serif;
   color: #000000;
-  line-height: 16px;
-  padding-left:4px;
+  line-height: 1.3333em;
+  padding-left:0.3333em;
   text-align:justify;
 }
 
 div#centerColumn {
   float: left;
-  width:610px; /*450 px when having 3 columns layout*/
+  width:50.8333em;
   background-color: #FFFFFF;
-  border:0px dashed #cccccc;
-  margin-left: 25px;
+  border:0em dashed #cccccc;
+  margin-left: 2.0833em;
 }
 
 div#centerColumn h1 {
-  margin-top:0px;
-  margin-bottom:10px;
+  margin-top:0em;
+  margin-bottom:0.8333em;
   font-family: verdana, arial, sans-serif;
   font-size: 1.8333em;
   color: #CC3300;
   background-color:#FFFFFF;
-  padding:4px;
-  border-bottom: 1px solid #666666;
+  padding:0.3333em;
+  border-bottom: 0.0833em solid #666666;
   clear:both;
 }
 
 div#centerColumn h2 {
-  margin-top:15px;
-  margin-bottom:10px;
+  margin-top:1.2500em;
+  margin-bottom:0.8333em;
   font-family: verdana, arial, sans-serif;
   font-size: 1.6667em;
   color: #CC3300;
   background-color:#FFFFFF;
-  padding:4px;
-  border-bottom: 1px solid #666666;
+  padding:0.3333em;
+  border-bottom: 0.0833em solid #666666;
   clear:both;
 }
 
 div#centerColumn h3 {
-  margin-top:15px;
-  margin-bottom:10px;
+  margin-top:1.2500em;
+  margin-bottom:0.8333em;
   font-family: verdana, arial, sans-serif;
   font-size: 1.5em;
   color: #CC3300;
   background-color:#FFFFFF;
-  padding:4px;
-  border-bottom: 1px solid #666666;
+  padding:0.3333em;
+  border-bottom: 0.0833em solid #666666;
   clear:both;
 }
 
 div#centerColumn p {
-  margin-top:0px;
-  margin-bottom:15px;
+  margin-top:0em;
+  margin-bottom:1.2500em;
   font-family: verdana, arial, sans-serif;
   color: #666666;
-  line-height: 18px;
-  padding-left:4px;
+  line-height: 1.5em;
+  padding-left:0.3333em;
   text-align:justify;
 }
 
@@ -291,52 +291,45 @@ div#feedback {
 }
 
 .page-feedback{
-	width: 300px;
-	margin-left:20px !important;
-	margin-top:20px !important;
+	width: 25em;
+	margin-left:1.6667em !important;
+	margin-top:1.6667em !important;
 	background-color: #FFFFFF;
   border-color: #B8B8B8;
   border-style: solid;
-  border-width: 1px;
+  border-width: 0.0833em;
 }
 
 div#feedback ul {
   text-align: left;
-  /*width:600px;
-  background-color: #F6FCEC;
-  border:1px solid #336799;*/
-  padding:10px;
-  /*padding-left: 40px;*/
- /* margin-top:10px;
-  margin-bottom:5px;
-  margin-right:8px;*/
+  padding:0.8333em;
   list-style-type:none;
-  
 }
+
 div#feedback ul li{
   list-style-type:none;
 }
 .floatLeft {
   float: left;
-  margin-right: 10px;
+  margin-right: 0.8333em;
 }
 
 .floatRight {
   float: right;
-  margin-left: 10px;
+  margin-left: 0.8333em;
 }
 
 .messageBox {
   text-align: left;
-  width:300px;
+  width:25em;
   background-color: #E1E3E5;
-  padding:3px;
-  margin:2px;
-  /*border:1px solid #336799;
-  padding:10px;
-  margin-top:10px;
-  margin-bottom:5px;
-  margin-right:8px;*/
+  padding:0.2500em;
+  margin:0.1667em;
+  /*border:0.0833em solid #336799;
+  padding:0.8333em;
+  margin-top:0.8333em;
+  margin-bottom:0.4167em;
+  margin-right:0.6667em;*/
   width:97%;
   height:97%;
 text-align:center;
@@ -345,19 +338,19 @@ text-align:center;
 
 #featureBox {
   float:left;
-  width:250px;
+  width:20.8333em;
   background-color: #F6FCEC;
-  border:1px solid #AAE5A4;
-  padding:10px;
-  margin-top:10px;
-  margin-bottom:5px;
-  margin-right:8px;
+  border:0.0833em solid #AAE5A4;
+  padding:0.8333em;
+  margin-top:0.8333em;
+  margin-bottom:0.4167em;
+  margin-right:0.6667em;
 }
 
 #featureBox h4 {
-  padding-left:5px;
-  margin-top:0px;
-  margin-bottom:5px;
+  padding-left:0.4167em;
+  margin-top:0em;
+  margin-bottom:0.4167em;
   font-family: verdana, arial, sans-serif;
   color: #779E28;
 }
@@ -366,25 +359,25 @@ text-align:center;
   font-family: verdana, arial, sans-serif;
   font-size: 0.9167em;
   color: #555555;
-  line-height: 16px;
-  margin-bottom:5px;
+  line-height: 1.3333em;
+  margin-bottom:0.4167em;
 }
 
 #pageFooter {
   clear: both;
   color: #000000;
-  height: 30px;
+  height: 2.5000em;
 }
 
 #pageFooter > div {
   font-size: 0.9167em;
-  letter-spacing: 1px;
-  margin-right: 16px;
+  letter-spacing: 0.0833em;
+  margin-right: 1.3333em;
   text-align: right;  
 }
 
 #pageFooter > div#currentUser {
-  float: left; margin-left: 16px;
+  float: left; margin-left: 1.3333em;
 }
 
 #pageFooter > div#currentVersion {
@@ -393,30 +386,30 @@ text-align:center;
 
 
 #spacer {
-  height:30px;
+  height:2.5000em;
   clear:both;
 }
 
 .arrowList { 
-  margin-left: 10px;
+  margin-left: 0.8333em;
   padding-left: 0;
   list-style: none;
 } 
 
 .arrowList ul { 
-  padding-left: 0px;
-  margin-left:0px;
+  padding-left: 0em;
+  margin-left:0em;
   list-style:none;  
 }
 
 .arrowList li { 
-  padding-left: 10px;
+  padding-left: 0.8333em;
   background-image: url(../images/menu-bullet.png);
   background-repeat: no-repeat;
-  background-position: 0 7px;
+  background-position: 0 0.5833em;
   font-family: verdana, arial, sans-serif;
   font-size: 0.9167em;
-  line-height:18px;
+  line-height:1.5em;
 }
 
 /*************** Wicket Autocomplete ********************/
@@ -424,15 +417,15 @@ text-align:center;
 div.wicket-aa {
   font-size: 0.8333em;
   background-color: white;
-  border-width: 1px;
+  border-width: 0.0833em;
   border-color: #cccccc;
   border-style: solid;
-  padding: 2px;
-  margin: 1px 0 0 0;
+  padding: 0.1667em;
+  margin: 0.0833em 0 0 0;
   text-align:left;
 }
-div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
-div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0; }
+div.wicket-aa ul { list-style:none; padding: 0.1667em; margin:0; }
+div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 0.1667em; margin:0; }
 
 /*************** End Wicket Autocomplete ********************/
 
@@ -443,35 +436,35 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .smallTopMargin {
-  margin-top: 10px;
+  margin-top: 0.8333em;
 }
 
 .largeTopMargin {
-  margin-top: 30px;
+  margin-top: 2.5000em;
 }
 
 .dialogContent {
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 0.8333em;
+  margin-right: 0.8333em;
 }
 
 .dialogIcon {
   float: left;
-  margin-right:5px;
+  margin-right:0.4167em;
 }
 
 .dialogMessage {
-  padding-left: 35px;
+  padding-left: 2.9167em;
 }
 
 .dialogMessage p {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  padding-top: 5px;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  padding-top: 0.4167em;
 }
 
 .dialogButtons ul {
-  margin-bottom: 10px;
+  margin-bottom: 0.8333em;
   padding: 0;
   list-style-type: none;
   text-align: center;
@@ -482,7 +475,7 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .progressBar {
-  padding-top: 5px;
+  padding-top: 0.4167em;
 }
 
 .obiba-content{
@@ -490,12 +483,12 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .obiba-content.invalid-measure-details-content {
-  height:365px;
+  height:30.4167em;
 }
 
 .obiba-content.invalid-measure-details-content > div {
-  padding-bottom:5px;
-  padding-top:5px;
+  padding-bottom:0.4167em;
+  padding-top:0.4167em;
 }
 
 /*************** End Dialog ********************/
@@ -504,18 +497,18 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 
 .form-data {
   overflow:auto;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 1.6667em;
+  padding-right: 1.6667em;
 }
 
 .form-button {
-  border-top:1px solid #C65F02;
-  height: 40px;
-  margin-left:20px;
-  margin-right:20px;
-  padding-left:10px;
-  padding-right:10px;
-  padding-top:20px;
+  border-top:0.0833em solid #C65F02;
+  height: 3.3333em;
+  margin-left:1.6667em;
+  margin-right:1.6667em;
+  padding-left:0.8333em;
+  padding-right:0.8333em;
+  padding-top:1.6667em;
 }
 
 .form-button .obiba-nav-left {
@@ -527,14 +520,14 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .wizard-title {
-  padding-top:20px;
+  padding-top:1.6667em;
   font-weight: bold;
 }
 
 .wizard-content {
-  padding-top: 5px;
-  margin-top:0px;
-  margin-bottom:0px;
+  padding-top: 0.4167em;
+  margin-top:0em;
+  margin-bottom:0em;
 }
 
 .wizard-content em {
@@ -542,16 +535,16 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .wizard-body {
-  	border-top:1px solid #C65F02;
-	margin-top:5px;
-	padding-top:15px;
+  	border-top:0.0833em solid #C65F02;
+	margin-top:0.4167em;
+	padding-top:1.2500em;
 }
 
 .wizard-separator {
-	border-top:1px dotted #666666;
-	margin-top:11px;
-	padding-bottom:7px;
-	width:250px;
+	border-top:0.0833em dotted #666666;
+	margin-top:0.9167em;
+	padding-bottom:0.5833em;
+	width:20.8333em;
 }
 
 .wizard-instructions {
@@ -559,7 +552,7 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 }
 
 .wizard-radio {
-	line-height: 25px;
+	line-height: 2.0833em;
 }
 
 /*************** End Wizard ********************/
@@ -567,11 +560,11 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 /*************** Entity Table ********************/
 
 table.entityTable {
-  /*border-width: 1px;
+  /*border-width: 0.0833em;
   border-style: solid;
   border-color: #375FB7;
-  padding:1px;*/
-  border-spacing: 0px;
+  padding:0.0833em;*/
+  border-spacing: 0em;
   width:100%;
 }
 
@@ -579,10 +572,10 @@ table.entityTable tr.titleToolbar {
   /*color: #F6F8FF;
   background-color: #375FB7;
   border-color: #375FB7;
-  border-width: 1px;
+  border-width: 0.0833em;
   border-style: solid;*/
   font-weight: bold;
-  padding: 3px;
+  padding: 0.2500em;
 }
 
 table.entityTable tr.odd {
@@ -603,11 +596,11 @@ table.entityTable .navigator em {
 }
 
 table.entityTable th {
-  border-bottom:1px solid #C65F02;
+  border-bottom:0.0833em solid #C65F02;
   font-family:arial;
   font-size:0.9167em;
   font-weight:bold;
-  padding:3px;
+  padding:0.2500em;
   color:#999999;
 }
 
@@ -616,14 +609,14 @@ table.entityTable th a:link {
 }
 
 table.entityTable th.wicket_orderUp {
-  padding-right:15px;
+  padding-right:1.2500em;
   background-image: url(../images/up.png);
   background-repeat: no-repeat;
   background-position: 95% 50%;
 }
 
 table.entityTable th.wicket_orderDown {
-  padding-right:15px;
+  padding-right:1.2500em;
   background-image: url(../images/down.png);
   background-repeat: no-repeat;
   background-position: right;
@@ -635,12 +628,12 @@ table.entityTable td {
   font-family:arial;
   font-size:0.9167em;
   font-weight:bold;
-  padding:3px;
+  padding:0.2500em;
 }
 
 table.entityTable td A {
   color: #333333;
-  padding-right: 12px;
+  padding-right: 1em;
   text-decoration: underline;
 }
 
@@ -663,16 +656,16 @@ table.keyValueTable {
 td.keyValueTableHeader {
     border-color:#C65F02;
 	border-style:none none solid;
-	border-width:1px;
+	border-width:0.0833em;
 	color:#C65F02;
 	text-align: left;
-	margin-bottom:25px;
-    margin-top:7px;
-	padding-bottom:1px;
+	margin-bottom:2.0833em;
+    margin-top:0.5833em;
+	padding-bottom:0.0833em;
 }
 
 td.keyValueTableKey {
-	width:75px;
+	width:6.2500em;
 	color: #666666;
 	background-color: #FFFFFF;
 	text-align: left;
@@ -686,7 +679,7 @@ td.keyValueTableKeyIndent {
 	/*width:30%;*/
 	color: #666666;
 	background-color: #FFFFFF;
-	padding: 2px 5px 2px 15px;
+	padding: 0.1667em 0.4167em 0.1667em 1.2500em;
 	text-align: left; 
 }
 
@@ -697,7 +690,7 @@ td.keyValueTableValueOdd {
 	background-color: #FFFFFF;
 	font-weight: bold;
 	text-align: left;
-	padding-left:10px;
+	padding-left:0.8333em;
 }
 
 td.keyValueTableValue input, td.keyValueTableValue select,
@@ -708,20 +701,20 @@ td.keyValueTableValueOdd input, td.keyValueTableValueOdd select {
 }
 
 td.keyValueTableValue input{
-	width: 217px;
+	width: 18.0833em;
 }
 
 td.keyValueTableValue select{
-	width: 220px;
+	width: 18.3333em;
 }
 
 /*******************END KEY VALUE TABLE LAYOUT********************************/
 
 table.gertTable {
-	border-width: 1px;
+	border-width: 0.0833em;
 	border-style: solid;
 	border-color: #375FB7;
-	padding:1px;
+	padding:0.0833em;
 
 }
 
@@ -729,10 +722,10 @@ td.gertTableDataHeader {
 	font-weight: bold;
 	color: #F6F8FF;
 	background-color: #375FB7;
-	border-width: 1px;
+	border-width: 0.0833em;
 	border-style: solid;
 	border-color: #375FB7;
-	padding: 3px;
+	padding: 0.2500em;
 
 }
 
@@ -741,11 +734,11 @@ td.gertTableDataKey {
 	color: #003366;
 	font-weight:bold;
 	background-color: #AAAAAA;
-	padding-right: 5px;
-	padding-left: 5px;
-	padding-top:2px;
-	padding-bottom:2px;
-	border-bottom: 1px solid #FFFFFF; 
+	padding-right: 0.4167em;
+	padding-left: 0.4167em;
+	padding-top:0.1667em;
+	padding-bottom:0.1667em;
+	border-bottom: 0.0833em solid #FFFFFF; 
 }
 
 td.gertTableDataKeyIndent {
@@ -753,17 +746,17 @@ td.gertTableDataKeyIndent {
 	color: #003366;
 	font-weight:bold;
 	background-color: #AAAAAA;
-	padding-right: 5px;
-	padding-left: 15px;
-	padding-top:2px;
-	padding-bottom:2px;
-	border-bottom: 1px solid #FFFFFF; 
+	padding-right: 0.4167em;
+	padding-left: 1.2500em;
+	padding-top:0.1667em;
+	padding-bottom:0.1667em;
+	border-bottom: 0.0833em solid #FFFFFF; 
 }
 
 td.gertTableFormKey {
 	color: #003366;
 	background-color: #E1E3E5;
-	padding: 3px;
+	padding: 0.2500em;
 	text-align: right;
 }
 
@@ -775,34 +768,34 @@ td.gertTableDataValue {
 td.gertTableFormValue {
 	color: #003366;
 	background-color: #E1E3E5;
-	padding: 5px;
+	padding: 0.4167em;
 }
 
 td.gertTableDataValueEven {
 	color: #003366;
 	background-color: #ffffff;
-	padding-right: 5px;
-	padding-left: 5px;
+	padding-right: 0.4167em;
+	padding-left: 0.4167em;
 }
 
 td.gertTableFormValueEven {
 	color: #003366;
 	background-color: #ffffff;
-	padding: 5px;
+	padding: 0.4167em;
 }
 
 td.gertTableDataValueOdd {
 	color: #003366;
 	background-color: #E1E3E5;
-	padding-right: 5px;
-	padding-left: 5px;
-	border-bottom: 1px solid #FFFFFF; 
+	padding-right: 0.4167em;
+	padding-left: 0.4167em;
+	border-bottom: 0.0833em solid #FFFFFF; 
 }
 
 td.gertTableFormValueOdd {
 	color: #003366;
 	background-color: #E1E3E5;
-	padding: 5px;
+	padding: 0.4167em;
 }
 
 div.tab-panel {
@@ -811,7 +804,7 @@ div.tab-panel {
 
 .requiredField {
 	color: #ff0000;
-	padding-left:5px;
+	padding-left:0.4167em;
 }
 
 .feedbackPanelERROR {
@@ -821,28 +814,28 @@ li.feedbackPanelERROR {
     background-image:url(../images/icons/16X16/error.gif);
 	background-position:top left;
 	background-repeat:no-repeat;
-	padding-left:24px;
-	padding-bottom:4px;
+	padding-left:2em;
+	padding-bottom:0.3333em;
 	list-style-type:none;
 }
 li.feedbackPanelWARNING{
 	background-image:url(../images/icons/16X16/warning.gif);
 	background-position:top left;
 	background-repeat:no-repeat;
-	padding-left:24px;
-	padding-bottom:4px;
+	padding-left:2em;
+	padding-bottom:0.3333em;
 	list-style-type:none;
 }
 li.feedbackPanelINFO{
 	background-image:url(../images/icons/16X16/information.gif);
 	background-position:top left;
 	background-repeat:no-repeat;
-	padding-left:24px;
-	padding-bottom:4px;
+	padding-left:2em;
+	padding-bottom:0.3333em;
 	list-style-type:none;
 }
 .indent{
-	padding-left:25px;
+	padding-left:2.0833em;
 }
 form {
 	padding:0;
@@ -854,10 +847,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .closeLotBtn{
@@ -865,10 +858,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .openLotBtn{
@@ -876,10 +869,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .reportLotBtn{
@@ -887,10 +880,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .infoLotBtn{
@@ -898,10 +891,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .addUserBtn{
@@ -909,10 +902,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .deleteParticipantBtn{
@@ -920,10 +913,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .deleteParticipantDerivedBtn{
@@ -931,10 +924,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 .navNextBtn{
@@ -942,8 +935,8 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:right;
 }
 .editableField{
@@ -951,7 +944,7 @@ form {
 	background-position:right;
 	background-repeat:no-repeat;
 	display:block;
-	padding-right:18px;
+	padding-right:1.5em;
 	text-decoration:none !important;
 }
 
@@ -960,10 +953,10 @@ form {
 	background-position:center;
 	background-repeat:no-repeat;
 	display:block;
-	padding-left:30px;
-    margin-right:10px;
-	padding-top:6px;
-	padding-bottom:6px;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
 	background-position:left;
 }
 
@@ -976,13 +969,13 @@ float:left;
 width:100%;
 font-size:90%;
 line-height:normal;
-/*border-bottom: 1px solid #375FB7;*/ /*Add border strip to bottom of menu*/
+/*border-bottom: 0.0833em solid #375FB7;*/ /*Add border strip to bottom of menu*/
 }
 
 div.tab-row ul{
 list-style-type: none;
 margin:0;
-margin-left: 5px; /*Left offset of entire tab menu relative to page*/
+margin-left: 0.4167em; /*Left offset of entire tab menu relative to page*/
 padding:0;
 }
 
@@ -999,8 +992,8 @@ background-repeat: no-repeat;
 background-position:left top;
 text-decoration:none;
 margin:0;
-margin-right: 5px; /*spacing between each tab*/
-padding:0 0 0 9px;
+margin-right: 0.4167em; /*spacing between each tab*/
+padding:0 0 0 0.7500em;
 text-decoration:none;
 }
 
@@ -1008,7 +1001,7 @@ div.tab-row a span{
 float:left;
 display:block;
 background:url(../images/tabs/glowtab2.gif) no-repeat right top;
-padding: 8px 12px 6px 3px;
+padding: 0.6667em 1em 0.5em 0.2500em;
 color:#FFFFFF;
 }
 
@@ -1021,23 +1014,23 @@ color:#FFFFFF;
 }
 
 div.tab-row .selected a{ /*Selected Tab style*/
-background-position:0 -82px; /*Shift background image up to start of 2nd tab image*/
+background-position:0 -6.8333em; /*Shift background image up to start of 2nd tab image*/
 text-decoration:none;
 }
 
 div.tab-row .selected a span{ /*Selected Tab style*/
-background-position:100% -82px; /*Shift background image up to start of 2nd tab image*/
+background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
 color:#FFFFFF;
 font-weight:bold;
 }
 
 div.tab-row a:hover{ /*onMouseover style*/
-background-position:0% -82px; /*Shift background image up to start of 2nd tab image*/
+background-position:0% -6.8333em; /*Shift background image up to start of 2nd tab image*/
 text-decoration:none;
 }
 
 div.tab-row a:hover span{ /*onMouseover style*/
-background-position:100% -82px; /*Shift background image up to start of 2nd tab image*/
+background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
 }
 
 .maxWidthTextArea {
@@ -1049,7 +1042,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 /******************* Stage Layout **************************************************/
 
 .stage {
-  	padding: 0px;
+  	padding: 0em;
 }
 
 .stage .ui-layout-center {
@@ -1089,26 +1082,26 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 
 .obiba-box {
 	background-color:#FFFFFF;
-	border:3px solid #C65F02;
+	border:0.2500em solid #C65F02;
 }
 
 .obiba-box-content {
-	padding: 18px 20px;
+	padding: 1.5em 1.6667em;
 }
 
 .obiba-box-tab {
-	margin-left: 20px;
+	margin-left: 1.6667em;
 }
 
 .obiba-box-tab > .obiba-button {
 	-moz-border-radius-bottomleft:0 !important;
 	-moz-border-radius-bottomright:0 !important;
 	background-color:#C0C0C0 !important;
-	border-width:1px 1px 0 !important;
+	border-width:0.0833em 0.0833em 0 !important;
 	color:#888888 !important;
 	font-weight:bold;
-	margin-right:7px;
-	padding:2px 10px 1px !important;
+	margin-right:0.5833em;
+	padding:0.1667em 0.8333em 0.0833em !important;
 }
 
 .obiba-box-tab > .obiba-button.selected {
@@ -1121,27 +1114,27 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 /******************* Login *********************************************************/
 
 #login {
-	width: 575px;
+	width: 47.9167em;
 }
 
 #loginHeader {
-	border-bottom: 1px solid #C65F02;
-	margin-bottom: 10px;
+	border-bottom: 0.0833em solid #C65F02;
+	margin-bottom: 0.8333em;
 }
 
 #loginHeader > img {
-    padding-bottom: 10px;
+    padding-bottom: 0.8333em;
 }
 
 #loginFooter {
-	border-top: 1px solid #888888;
-	margin-top: 10px;
+	border-top: 0.0833em solid #888888;
+	margin-top: 0.8333em;
 }
 
 #loginFooter p {
 	font-family:verdana,arial,sans-serif;
 	font-size:0.9167em;
-	letter-spacing:1px;
+	letter-spacing:0.0833em;
 	text-align:center;
 }
 
@@ -1153,43 +1146,43 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   background-color: #FFFFFF;
   border-color: #B8B8B8;
   border-style: solid;
-  border-width: 1px;
-  padding: 0px 14px 36px;
+  border-width: 0.0833em;
+  padding: 0em 1.1667em 3.0000em;
 }
 
 .obiba-content-region.ui-corner-all {
-  -moz-border-radius: 6px; 
-  -webkit-border-radius: 6px;	
+  -moz-border-radius: 0.5em; 
+  -webkit-border-radius: 0.5em;	
 }
 
 .obiba-content-region > h1 {
   border-color: #C65F02;
   border-style: none none solid none;
-  border-width: 1px;
+  border-width: 0.0833em;
   color: #C65F02;
-  margin-bottom: 25px;
-  margin-top: 7px;
-  padding-bottom: 1px;
+  margin-bottom: 2.0833em;
+  margin-top: 0.5833em;
+  padding-bottom: 0.0833em;
   font-size:1em;
 }
 
 .obiba-content-region > h1.results-list {
-  margin-bottom:0px;
+  margin-bottom:0em;
 }
 
 .obiba-content-region h2, h2 {
   border-color: #666666;
   border-style: none none solid none;
-  border-width: 1px;
+  border-width: 0.0833em;
   color: #666666;
   font-size: 0.9167em;
-  margin-bottom: 15px;
-  padding-bottom: 1px;
-  margin-top:17px;
+  margin-bottom: 1.2500em;
+  padding-bottom: 0.0833em;
+  margin-top:1.4167em;
 }
 
 .h2-short {
-	width:453px;
+	width:37.7500em;
 }
 
 .h2-short span {
@@ -1208,9 +1201,10 @@ A:hover.obiba-button {
   background-color: white;
   border-color: #B8B8B8;
   border-style: solid;
-  border-width: 1px 2px 2px 1px;
+  border-width: 0.0833em 0.1667em 0.1667em 0.0833em;
   color: #000000;
   font-family: arial, verdana, sans-serif;
+  font-size:1em;
 }
 
 .obiba-button.ui-state-disabled, 
@@ -1225,30 +1219,31 @@ A:link.obiba-button,
 A:visited.obiba-button,
 A:active.obiba-button,
 A:hover.obiba-button {
-  padding: 3px 5px 2px 5px;
+  padding: 0.2500em 0.4167em 0.1667em 0.4167em;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 button.obiba-button,
 input.obiba-button {
-  padding: 2px 5px 1px 5px;	
+  padding: 0.1667em 0.4167em 0.0833em 0.4167em;	
 }
 
 img.obiba-button {
-  padding: 2px 3px 3px 3px;	
+  padding: 0.1667em 0.2500em 0.2500em 0.2500em;	
 }
 
 .obiba-button.ui-corner-all {
-  -moz-border-radius: 6px; 
-  -webkit-border-radius: 6px;
+  -moz-border-radius: 0.5em; 
+  -webkit-border-radius: 0.5em;
 }
 
 div .button-vertical-list{
-	margin-bottom: 15px;
+	margin-bottom: 1.2500em;
 }
 
 .button-vertical-list > a {
-	margin-right: 10px;
+	margin-right: 0.8333em;
 }
 
 /******************* End Buttons ***************************************************/
@@ -1260,7 +1255,7 @@ div .button-vertical-list{
 }
 
 .obiba-feedback ul {
-  height: 120px;
+  height: 10em;
   overflow: auto;
 }
 
@@ -1269,24 +1264,24 @@ div .button-vertical-list{
 /******************* ParticipantSearchPage *****************************************/
 
 #participantSearchPageContent.obiba-box-content {
-  padding: 7px 9px;
+  padding: 0.5833em 0.7500em;
 }
 
 #participantSearchPageContent > table {
-  border-spacing: 10px;
+  border-spacing: 0.8333em;
   width: 100%;
 }
 
 #participantPageSearch,
 #participantPageActions {
-  height: 95px;
+  height: 7.9167em;
 }
 
 #participantPageSearch #searchByInputField.obiba-button {
   background-image: url(../icons/loupe_button.png);
   background-repeat: no-repeat;
   background-position: center center;
-  padding: 3px 9px 2px;
+  padding: 0.2500em 0.7500em 0.1667em;
 }
 
 #participantPageSearch #searchByInputField.obiba-button::-moz-focus-inner {
@@ -1295,24 +1290,24 @@ div .button-vertical-list{
 
 #participantPageActions #enrollAndUpdateActions {
   float: left;
-  margin-top: 5px;
+  margin-top: 0.4167em;
 }
 
 #participantPageActions #enrollAndUpdateActions > div:first-child {
-  margin-bottom: 15px;
+  margin-bottom: 1.2500em;
 }
 
 #participantPageActions #enrollAndUpdateActions > div:empty {
-  margin-bottom: 0px !important;
+  margin-bottom: 0em !important;
 }
 
 #participantPageActions #exportAction {
   float: right;
-  margin-top: 5px;
+  margin-top: 0.4167em;
 }
 
 span.interviewStatus {
-  padding-left:12px;
+  padding-left:1em;
   background-position:0 53%;
   background-repeat:no-repeat;
   background-attachment:scroll;
@@ -1342,8 +1337,8 @@ span.interviewStatus.obiba-state-exported {
 div#participantPageSearchResults #newNavigatorLabel {
   float: right; 
   position: relative;
-  right: 10px;
-  top: 6px;
+  right: 0.8333em;
+  top: 0.5em;
   color:#333333;
   font-family:arial;
   font-size:0.9167em;
@@ -1352,8 +1347,8 @@ div#participantPageSearchResults #newNavigatorLabel {
 div#participantPageSearchResults #newNavigator {
   float: right; 
   position: relative;
-  right: 0px; 
-  top: 6px;
+  right: 0em; 
+  top: 0.5em;
   color:#333333;
   font-family:arial;
   font-size:0.9167em;  
@@ -1372,29 +1367,29 @@ div#participantPageSearchResults #newNavigator em {
 
 /******************* WorkstationPage ***********************************************/
 div#instrumentContent .label {
-  margin-bottom:15px;
-  margin-top:7px;
+  margin-bottom:1.2500em;
+  margin-top:0.5833em;
 }
 
 #workstationPanelContent.obiba-box-content {
-  padding: 7px 9px;
+  padding: 0.5833em 0.7500em;
 }
 
 #workstationPanelContent > table {
-  border-spacing: 10px;
+  border-spacing: 0.8333em;
   width: 100%;
 }
 
 #workstationPanelContent #addInstrumentAction {
-  margin-top: 5px;
-  padding-bottom:10px;
+  margin-top: 0.4167em;
+  padding-bottom:0.8333em;
 }
 
 div#workstationInstrument #newNavigatorLabel {
   float: right; 
   position: relative;
-  right: 10px;
-  top: 6px;
+  right: 0.8333em;
+  top: 0.5em;
   color:#333333;
   font-family:arial;
   font-size:0.9167em;
@@ -1403,8 +1398,8 @@ div#workstationInstrument #newNavigatorLabel {
 div#workstationInstrument #newNavigator {
   float: right; 
   position: relative;
-  right: 0px; 
-  top: 6px;
+  right: 0em; 
+  top: 0.5em;
   color:#333333;
   font-family:arial;
   font-size:0.9167em;  
@@ -1430,17 +1425,17 @@ div#workstationInstrument #newNavigator em {
 #participantReceptionPageContent td.keyValueTableKey,
 #participantReceptionPageContent td.keyValueTableKeyIndent,
 #assignCodeToParticipant tr > td:first-child {
-  width: 186px;
+  width: 15.5000em;
   vertical-align:top;
 }
 
 #assignCodeToParticipant td {
-  //padding: 2px 5px;
+  //padding: 0.1667em 0.4167em;
 }
 
 #participantReceptionPageContent .obiba-footer {
-  border-top: 1px solid #C65F02;
-  padding-top: 10px;
+  border-top: 0.0833em solid #C65F02;
+  padding-top: 0.8333em;
 }
 
 #participantReceptionPageContent .obiba-footer > .obiba-footer-content {
@@ -1460,7 +1455,7 @@ div#workstationInstrument #newNavigator em {
 
 #participantPageSearchResults.obiba-content-region > h1,
 #interviewPageStages.obiba-content-region > h1 {
-  margin-bottom: 0px;	
+  margin-bottom: 0em;	
 }
 
 /******************* End Global List Styling ***************************************/
@@ -1468,11 +1463,11 @@ div#workstationInstrument #newNavigator em {
 /******************* InterviewPage *************************************************/
 
 #interviewPageContent.obiba-box-content {
-  padding: 7px 9px;
+  padding: 0.5833em 0.7500em;
 }
 
 #interviewPageContent > table {
-  border-spacing: 10px;
+  border-spacing: 0.8333em;
   width: 100%;	
 }
 
@@ -1484,15 +1479,19 @@ div#workstationInstrument #newNavigator em {
 #interviewPageParticipant,
 #interviewPageInterview,
 #interviewPageLog {
-  height: 105px;
+  height: 8.7500em;
+}
+
+#interviewPageLog, #interviewPageParticipant, #interviewPageInterview, #interviewPageStages, #participantPageSearchResults{
+  white-space: nowrap;
 }
 
 #interviewPageParticipant td.keyValueTableKey,
 #interviewPageInterview td.keyValueTableKey {
   background-color: #FFFFFF;
   font-weight: regular;
-  padding-right: 0px;
-  padding-left: 0px; 
+  padding-right: 0em;
+  padding-left: 0em; 
 }
 
 #interviewPageParticipant td.keyValueTableValueEven,
@@ -1507,17 +1506,17 @@ div#workstationInstrument #newNavigator em {
 #interviewPageParticipant.obiba-content-region > h1,
 #interviewPageInterview.obiba-content-region > h1,
 #interviewPageLog.obiba-content-region > h1 {
-  margin-bottom: 10px;	
+  margin-bottom: 0.8333em;	
 }
 
 #interviewPageLog #viewCommentsIconLink {
   color: #FFFFFF;
   position: relative;
-  top: 4px;
+  top: 0.3333em;
 }
 
 #interviewPageLog div {
-  margin-bottom: 15px;
+  margin-bottom: 1.2500em;
 }
 
 #interviewPageStages table.entityTable tr > th:first-child,
@@ -1527,7 +1526,7 @@ div#workstationInstrument #newNavigator em {
 }
 
 #interviewPageStages td > span.obiba-state {
-  padding-left: 14px;
+  padding-left: 1.1667em;
 }
 
 #interviewPageStages td > span.obiba-state.obiba-state-waiting {
@@ -1560,21 +1559,21 @@ div#workstationInstrument #newNavigator em {
 }
 
 #interviewPageStages table.entityTable {
-  border-bottom:1px solid #C65F02;
+  border-bottom:0.0833em solid #C65F02;
 }
 
 #interviewPageStages #exitInterview {
   position:relative;
   text-align:center;
-  top:18px;  
+  top:1.5em;  
 }
 
 .navigation {
-  border-bottom:1px solid #C65F02;
+  border-bottom:0.0833em solid #C65F02;
 }
 
 .experimental-condition-history-panel table.entityTable th {
-  border-top:1px solid #C65F02;
+  border-top:0.0833em solid #C65F02;
 }
 
 .experimental-condition-history-panel tr.titleToolbar div.title {
@@ -1582,30 +1581,30 @@ div#workstationInstrument #newNavigator em {
 }
 
 .experimental-condition-instructions-title {
-  margin-left: 5px;
-  margin-top: 10px;
-  margin-bottom: 2px;
+  margin-left: 0.4167em;
+  margin-top: 0.8333em;
+  margin-bottom: 0.1667em;
   font-weight: bold;
 }
 
 .experimental-condition-instructions {
-  margin-left: 17px;
-  margin-bottom: 6px;
+  margin-left: 1.4167em;
+  margin-bottom: 0.5em;
 }
 
 ul#interviewMenuBar li {
- width:200px;
+ width:16.6667em;
 }
 
 ul#interviewMenuBar li > div {
-  /*padding-left:63px !important;*/
-  padding-right:3px !important;
+  /*padding-left:5.2500em !important;*/
+  padding-right:0.2500em !important;
 }
 
 .menu-center {
   display: block;
   float: left;
-  padding-left:51px !important;
+  padding-left:4.2500em !important;
 }
 
 .menu-right {
@@ -1614,7 +1613,7 @@ ul#interviewMenuBar li > div {
 }
 
 ul#interviewMenuBar li a {
-  bottom:2px;
+  bottom:0.1667em;
   display:inline;
   font-size:1.1667em;
   padding-bottom:0;
@@ -1622,16 +1621,16 @@ ul#interviewMenuBar li a {
   padding-right:0;
   padding-top:0;
   position:relative;
-  /*left:15px;*/
+  /*left:1.2500em;*/
   text-align:right;
 }
 
 ul#interviewMenuBar li a span {
-  padding-right:5px;
+  padding-right:0.4167em;
 }
 
 #interviewPageStages #exitInterview a.obiba-button:link, #interviewPageStages #exitInterview a.obiba-button:visited, #interviewPageStages #exitInterview a.obiba-button:active, #interviewPageStages #exitInterview a.obiba-button:hover {
-  padding:3px 50px 2px;
+  padding:0.2500em 4.1667em 0.1667em;
 }
 
 #commentInstructions, .comment-text {
@@ -1640,21 +1639,21 @@ ul#interviewMenuBar li a span {
 }
 
 .comment-text {
-    height:288px;
-    width:329px;
+    height:24.0000em;
+    width:27.4167em;
     overflow: auto;
 }
 
 /******************* End InterviewPage *********************************************/
 
 #commentIcon, #logIcon {
-  margin-right: 5px;
+  margin-right: 0.4167em;
   border-style: none;
 }
 
 .log-comment {
   white-space: normal;
-  padding-right: 20px;
+  padding-right: 1.6667em;
 }
  
 td > .log-comment {
@@ -1663,32 +1662,32 @@ td > .log-comment {
 }
 
 div.log-comment {
-  padding-left:20px;
-  padding-right:20px;
+  padding-left:1.6667em;
+  padding-right:1.6667em;
 }
  
 /******************* Sample Collection *********************************************/
  
 #rubyPanel #wizardContent {
-  padding-left:0px;
-  padding-right:0px;
-  margin:20px 20px 0;
-  border:1px solid #C65F02;
+  padding-left:0em;
+  padding-right:0em;
+  margin:1.6667em 1.6667em 0;
+  border:0.0833em solid #C65F02;
 }
 
 #rubyPanel #wizardContent table.entityTable td {
   font-weight:normal;
-  padding:6px !important;  
+  padding:0.5em !important;  
 }
 
 #rubyPanel #wizardContent table.entityTable th {
-  border-top:1px solid #CCCCCC;
-  padding-left:8px;  
+  border-top:0.0833em solid #CCCCCC;
+  padding-left:0.6667em;  
 }
 
 #rubyPanel #wizardContent #tubeBarcodePanel {
-  border-top:1px solid #C65F02;
-  padding:8px;  
+  border-top:0.0833em solid #C65F02;
+  padding:0.6667em;  
 }
 
 #rubyPanel #wizardContent  #tubeBarcodePanel > div {
@@ -1705,95 +1704,95 @@ div.log-comment {
 
 #rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel ul.feedbackPanel li span {
   display: table-cell;  
-  width: 230px;
+  width: 19.1667em;
 }
 
 #rubyPanel #wizardContent  #tubeBarcodePanel li.feedbackPanelINFO > span {
-  background: transparent url(../icons/completed.png) no-repeat scroll 165px center;   
+  background: transparent url(../icons/completed.png) no-repeat scroll 13.7500em center;   
 }
 
 #rubyPanel #wizardContent #tubeBarcodePanel li {
   background-image:none;
-  padding:0px;  
+  padding:0em;  
 }
 
 #rubyPanel #wizardContent #tubeBarcodePanel ul {
- padding:0px;
- margin-bottom:0px;
- margin-top:0px !important; 
+ padding:0em;
+ margin-bottom:0em;
+ margin-top:0em !important; 
 }
 
 #rubyPanel #wizardContent .wizard-content {
-  padding-top:0px;
+  padding-top:0em;
 }
 
 #rubyPanel #wizardContent .wizard-content table:first-child {
-  border-spacing:0px;
+  border-spacing:0em;
 }
 
 #rubyPanel #wizardContent .wizard-content table:first-child td:first-child {
-  padding: 0px;
+  padding: 0em;
 }
 
 #rubyPanel #wizardContent .wizard-title {
-  padding-bottom:8px;
-  padding-top:8px;
-  padding-left:10px;  
+  padding-bottom:0.6667em;
+  padding-top:0.6667em;
+  padding-left:0.8333em;  
 }
 
 #rubyPanel #wizardFooter {
-  border-top:0px;
+  border-top:0em;
 }
 
 #tubesScannedLabel {
   font-weight:bold;
-  padding-right:25px;
+  padding-right:2.0833em;
   display:inline;  
 }
 
 #anonymousComments {
-  margin:0px;
-  padding:0 30px; 
+  margin:0em;
+  padding:0 2.5000em; 
   font-weight:normal;
 }
 
 .editSamplePanel {
-  height:375px;
+  height:31.2500em;
 }
 
 .editSamplePanel #barcodeParts {
-    height:80px
+    height:6.6667em
 }
 
 .editSamplePanel textarea {
-  width:280px;
+  width:23.33330em;
 }
 
 .editSamplePanel select {
-  width:282px;
+  width:23.5000em;
 }
 
 .editSamplePanel table td {
   vertical-align:top;
-  padding-top:5px;
+  padding-top:0.4167em;
 }
 
 .editSamplePanel table td > div {
-  margin-right:5px;
-  width:60px;
+  margin-right:0.4167em;
+  width:5em;
 }
 
 .editSamplePanel #barcodeParts {
   height:auto;
-  margin-left:-4px;
-  margin-top:-6px;  
-  width:354px;
+  margin-left:-0.3333em;
+  margin-top:-0.5em;  
+  width:29.5000em;
   overflow-y:auto;
 }
  
 .editSamplePanel #barcodeParts td {
-  height:20px;
-  width:61px;  
+  height:1.6667em;
+  width:5.0833em;  
 }
 
 .editSamplePanel .value{
@@ -1806,15 +1805,15 @@ div.log-comment {
 }
 
 .editSamplePanel select option{
-  padding:2px;
-  padding-left:15px;
-  margin-left:5px;
+  padding:0.1667em;
+  padding-left:1.2500em;
+  margin-left:0.4167em;
 }
 
 .editSamplePanel select option.ui-state-highlight {
   background-image:url(../icons/selected.png) !important;
   background-position: left;
-  padding-left:15px !important;
+  padding-left:1.2500em !important;
 }
   
 /******************* End Sample Collection *********************************************/
@@ -1822,7 +1821,7 @@ div.log-comment {
 div.measuresListPanel table.entityTable td.count, div.measuresListPanel table.entityTable td.refresh {
   color:#C65F02;
   font-size:0.9167em;
-  border-bottom: solid 1px #C65F02;
+  border-bottom: solid 0.0833em #C65F02;
 }
 
 div.measuresListPanel table.entityTable td.refresh {
@@ -1834,13 +1833,13 @@ div.measuresListPanel table.entityTable td.refresh a {
 }
 
 div.wizard-content span.instrument-run-panel-content div.section {
-  margin-bottom:10px;
+  margin-bottom:0.8333em;
 }
 
 div.wicket-modal div.onyx div.section {
-  margin-bottom: 10px; margin-left: 20px; margin-right: 20px;
+  margin-bottom: 0.8333em; margin-left: 1.6667em; margin-right: 1.6667em;
 }
 
 div.wizard-content #instrumentRunPanelTitle {
-  color: #C65F02; margin-top: 20px; margin-bottom: 10px; font-weight: bold;
+  color: #C65F02; margin-top: 1.6667em; margin-bottom: 0.8333em; font-weight: bold;
 }

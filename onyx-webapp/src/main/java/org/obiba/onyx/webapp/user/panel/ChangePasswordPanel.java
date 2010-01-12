@@ -54,8 +54,10 @@ public abstract class ChangePasswordPanel extends Panel {
   private void addConclusionWindow() {
     conclusionWindow = new Dialog("conclusionWindow");
     conclusionWindow.setOptions(Option.CLOSE_OPTION);
-    conclusionWindow.setInitialHeight(115);
-    conclusionWindow.setInitialWidth(400);
+    conclusionWindow.setHeightUnit("em");
+    conclusionWindow.setWidthUnit("em");
+    conclusionWindow.setInitialHeight(10);
+    conclusionWindow.setInitialWidth(34);
     conclusionWindow.setTitle(new StringResourceModel("ChangePassword", this, null));
     conclusionWindow.setOutputMarkupId(true);
     add(conclusionWindow);
