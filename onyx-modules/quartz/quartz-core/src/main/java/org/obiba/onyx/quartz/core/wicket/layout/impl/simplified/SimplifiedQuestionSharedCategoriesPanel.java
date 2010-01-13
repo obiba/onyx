@@ -26,6 +26,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
@@ -85,7 +86,14 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
         @Override
         public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {
-          cellItem.add(new QuestionCategoryLink(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;"), null));
+          // if category has an open answer, show only the open box
+          // show a link for check marking
+          QuestionCategory questionCategory = (QuestionCategory) cellItem.getModel().getObject();
+          if(questionCategory.getOpenAnswerDefinition() != null) {
+            cellItem.add(new QuestionCategoryOpenAnswerDefinitionPanel(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;"), null));
+          } else {
+            cellItem.add(new QuestionCategoryLink(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;"), null));
+          }
         }
 
       });

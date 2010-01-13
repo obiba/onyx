@@ -48,8 +48,10 @@ public class TestQuestionnaire {
 
     builder.inPage("P1").withQuestion("ARRAY_OPEN", true).withCategory("MONDAY").withOpenAnswerDefinition("MONDAY_QUANTITY", DataType.INTEGER);
     builder.inQuestion("ARRAY_OPEN").withCategory("TUESDAY").withOpenAnswerDefinition("TUESDAY_QUANTITY", DataType.INTEGER);
-    builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE");
-    builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE");
+    builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE", true);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE", true);
+    builder.inQuestion("ARRAY_OPEN").withSharedCategory(PNA).setEscape(true);
+    builder.inQuestion("ARRAY_OPEN").withSharedCategory(DNK).setEscape(true);
 
     builder.inPage("P1").withQuestion("Q_INNER_CONDITION").setCondition("$1 || $2>1 || $3>1", builder.newDataSource("Q_MULTIPLE", "PNA"), builder.newDataSource("OPEN_QUESTION", "OTHER", "NUMERIC"), builder.newDataSource("Q_MULTIPLE", "OTHER", "NUMERIC"));
     builder.inQuestion("Q_INNER_CONDITION").withCategories("1", "2", "3");
