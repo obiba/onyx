@@ -12,6 +12,10 @@
 	padding-top: 0.8333em;
 }
 
+.page a:hover {
+  text-decoration: none;
+}
+
 .section {
 	font-weight: bold;
 	font-size: larger;	
