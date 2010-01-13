@@ -28,6 +28,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.CheckGroupView;
@@ -95,7 +96,12 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
       });
     } else {
       for(IModel questionCategoryModel : provider.getDataList()) {
-        columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")));
+        QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
+        if(!questionCategory.isEscape()) {
+          columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")));
+        } else {
+          log.error("Escape categories in arrays with multiple choices is not supported: {}.", questionCategory.getName());
+        }
       }
 
       add(array = new AbstractQuestionArray("array", getDefaultModel(), columns, questionsProvider) {

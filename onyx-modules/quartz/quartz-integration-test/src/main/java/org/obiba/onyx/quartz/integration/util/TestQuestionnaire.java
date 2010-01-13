@@ -46,8 +46,8 @@ public class TestQuestionnaire {
     builder.inQuestion("ARRAY").withQuestion("Q1");
     builder.inQuestion("ARRAY").withQuestion("Q2");
 
-    builder.inPage("P1").withQuestion("ARRAY_OPEN", true).withCategory("MONDAY").withOpenAnswerDefinition("MONDAY_QUANTITY", DataType.INTEGER);
-    builder.inQuestion("ARRAY_OPEN").withCategory("TUESDAY").withOpenAnswerDefinition("TUESDAY_QUANTITY", DataType.INTEGER);
+    builder.inPage("P1").withQuestion("ARRAY_OPEN", true).withCategory("MONDAY").withOpenAnswerDefinition("MONDAY_QUANTITY", DataType.INTEGER).setSize(2);
+    builder.inQuestion("ARRAY_OPEN").withCategory("TUESDAY").withOpenAnswerDefinition("TUESDAY_QUANTITY", DataType.INTEGER).setSize(2);
     builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE", true);
     builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE", true);
     builder.inQuestion("ARRAY_OPEN").withSharedCategory(PNA).setEscape(true);
