@@ -240,6 +240,7 @@ a.button {
 	margin-left:auto;
 	margin-right:auto;
 	width:70px;
+	cursor:pointer;
 }
 
 .obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value.ui-state-highlight {
@@ -399,6 +400,7 @@ table.obiba-quartz-array {
 	margin-left:auto;
 	margin-right:auto;
 	text-align: center;
+	cursor:pointer;
 }
 
 .obiba-quartz-array .obiba-quartz-category .obiba-value.ui-state-highlight {
