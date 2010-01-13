@@ -36,7 +36,7 @@ public class FeedbackWindowTest {
   public void testInitialSize() {
     FeedbackWindow feedbackWindow = new FeedbackWindow("test");
     int expectedInitialHeight = 9;
-    int expectedInitialWidth = 400;
+    int expectedInitialWidth = 34;
 
     assertEquals(expectedInitialHeight, feedbackWindow.getInitialHeight());
     assertEquals(expectedInitialWidth, feedbackWindow.getInitialWidth());
