@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -57,8 +58,20 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
     updateState();
 
-    add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
+    // make a clickable label with the current value.
+    Label value = new Label("value", new PropertyModel(this, "openValue"));
+    value.setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior());
+    value.add(new AjaxEventBehavior("onclick") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        padWindow.show(target);
+      }
+
+    });
+    add(value);
     add(new Label("label", getCategoryLabelResourceModel()));
+
     QuestionnaireStringResourceModel unitLabelModel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel");
     add(new Label("unit", unitLabelModel).setVisible(StringUtils.hasLength(unitLabelModel.getString())));
 

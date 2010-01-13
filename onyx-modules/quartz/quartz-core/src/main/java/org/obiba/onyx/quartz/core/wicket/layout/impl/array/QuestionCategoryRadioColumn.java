@@ -52,7 +52,7 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
     cellItem.add(qCategoryPanel = new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false));
 
     if(qCategoryPanel.hasOpenField()) {
-      cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
+      cellItem.add(new AttributeAppender("class", new Model("category category-open"), " "));
     } else {
       cellItem.add(new AttributeAppender("class", new Model("category"), " "));
     }

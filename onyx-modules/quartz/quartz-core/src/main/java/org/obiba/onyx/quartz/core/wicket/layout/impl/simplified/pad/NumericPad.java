@@ -71,7 +71,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
     // Create the dialog input field.
     valuePressed = createPadInputField(type);
-    QuestionnaireStringResourceModel labelModel = createCategoryLabel(questionCategoryModel, openAnswerDefinitionModel);
+    IModel labelModel = createCategoryLabel();
     valuePressed.setLabel(labelModel);
 
     // Add a feedback panel to the numeric pad for error reporting.
@@ -110,6 +110,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       public void onClick(AjaxRequestTarget target) {
         resetField();
         valuePressed.getField().clearInput();
+        valuePressed.focusField(target);
         target.addComponent(valuePressed);
       }
 
@@ -170,12 +171,17 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
         Question question = getQuestion();
         QuestionCategory questionCategory = getQuestionCategory();
-        // persist
+
         if(!question.isMultiple() || questionCategory.isEscape()) {
           // exclusive choice: delete other category answers
           for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(question)) {
             if(!categoryAnswer.getCategoryName().equals(questionCategory.getCategory().getName())) {
-              activeQuestionnaireAdministrationService.deleteAnswer(question, question.findQuestionCategory(categoryAnswer.getCategoryName()));
+              QuestionCategory qCategory = question.findQuestionCategory(categoryAnswer.getCategoryName());
+              if(qCategory == null && question.getParentQuestion() != null) {
+                // case of shared category
+                qCategory = question.getParentQuestion().findQuestionCategory(categoryAnswer.getCategoryName());
+              }
+              activeQuestionnaireAdministrationService.deleteAnswer(question, qCategory);
             }
           }
         } else if(!questionCategory.isEscape()) {
@@ -183,6 +189,10 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
           // deselected
           for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(question)) {
             QuestionCategory qCategory = question.findQuestionCategory(categoryAnswer.getCategoryName());
+            if(qCategory == null && question.getParentQuestion() != null) {
+              // case of shared category
+              qCategory = question.getParentQuestion().findQuestionCategory(categoryAnswer.getCategoryName());
+            }
             if(qCategory != null && qCategory.isEscape()) {
               activeQuestionnaireAdministrationService.deleteAnswer(question, qCategory);
             }
@@ -190,9 +200,9 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
         }
 
         if(getData() != null) {
-          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+          activeQuestionnaireAdministrationService.answer(question, questionCategory, getOpenAnswerDefinition(), getData());
         } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition());
+          activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory, getOpenAnswerDefinition());
         }
 
         valuePressed.getField().clearInput();
@@ -218,17 +228,24 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     return link;
   }
 
-  private QuestionnaireStringResourceModel createCategoryLabel(IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+  private IModel createCategoryLabel() {
     // Create and add the label for the numeric input field.
-    OpenAnswerDefinition parentOpenAnswer = ((OpenAnswerDefinition) openAnswerDefinitionModel.getObject()).getParentOpenAnswerDefinition();
+
+    OpenAnswerDefinition parentOpenAnswer = getOpenAnswerDefinition().getParentOpenAnswerDefinition();
     IModel labelModel;
     if(parentOpenAnswer != null && parentOpenAnswer.getOpenAnswerDefinitions().size() > 0) {
-      labelModel = openAnswerDefinitionModel;
+      labelModel = getOpenAnswerDefinitionModel();
     } else {
-      labelModel = questionCategoryModel;
+      labelModel = getQuestionCategoryModel();
     }
 
-    return new QuestionnaireStringResourceModel(labelModel, "label");
+    labelModel = new QuestionnaireStringResourceModel(labelModel, "label");
+
+    if(getQuestion().getParentQuestion() != null && getQuestion().getParentQuestion().isArrayOfSharedCategories()) {
+      labelModel = new Model(new QuestionnaireStringResourceModel(getQuestionModel(), "label").getString() + ": " + labelModel.getObject());
+    }
+
+    return labelModel;
   }
 
   private void addNumericButtons() {
@@ -243,7 +260,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     openField.getField().clearInput();
     openField.setOutputMarkupId(true);
     openField.setMarkupId("valuePressed");
-    openField.setRequired(true);
+    openField.setRequired(isRequired());
 
     ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
     int size = 2;
@@ -261,6 +278,10 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     }
 
     return openField;
+  }
+
+  public boolean isRequired() {
+    return getOpenAnswerDefinition().isRequired();
   }
 
   @Override

@@ -47,7 +47,7 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
     cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup.getModel(), false));
 
     if(qCategoryPanel.hasOpenField()) {
-      cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
+      cellItem.add(new AttributeAppender("class", new Model("category category-open"), " "));
     } else {
       cellItem.add(new AttributeAppender("class", new Model("category"), " "));
     }

@@ -19,11 +19,17 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionStateHolder {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoryLinkSelectionPanel.class);
+
   //
   // Instance Variables
   //
@@ -106,10 +112,14 @@ public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQue
       activeQuestionnaireAdministrationService.answer(question, questionCategory);
     }
 
+    fireSelectionEvent(target, !isSelected);
+  }
+
+  protected void fireSelectionEvent(AjaxRequestTarget target, boolean isSelected) {
     // fire event to other selectors in case of exclusive choice
     IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
-      listener.onQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), !isSelected);
+      listener.onQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), isSelected);
     }
   }
 }
