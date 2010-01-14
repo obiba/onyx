@@ -9,12 +9,19 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxRequestTarget.IJavascriptResponse;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -52,6 +59,8 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
+  private DataView<QuestionPanel> questionsView;
+
   /**
    * Constructor, given a questionnaire page.
    * @param id
@@ -78,8 +87,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     QuestionnaireStringResourceModel pageLabelModel = new QuestionnaireStringResourceModel(page, "label");
     add(new Label("label", pageLabelModel).setVisible(!isEmptyString(pageLabelModel.getString())));
 
-    DataView questionsView;
-    add(questionsView = new DataView("questions", new PageQuestionsProvider(page)) {
+    add(questionsView = new DataView<QuestionPanel>("questions", new PageQuestionsProvider(page)) {
 
       @Override
       protected void populateItem(Item item) {
@@ -117,10 +125,52 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
 
   @Override
   public void onStepInNext(AjaxRequestTarget target) {
+    setFocus(target);
   }
 
   @Override
   public void onStepInPrevious(AjaxRequestTarget target) {
+    setFocus(target);
+  }
+
+  /**
+   * Set the focus to the first input of the first question.
+   * @param target
+   */
+  private void setFocus(final AjaxRequestTarget target) {
+    // must do that after rendering, otherwise there is nothing populated in the views.
+    target.addListener(new AjaxRequestTarget.IListener() {
+
+      public void onAfterRespond(Map<String, Component> map, IJavascriptResponse response) {
+        Iterator<Item<QuestionPanel>> iter = questionsView.getItems();
+        if(iter.hasNext()) {
+          setFocus(iter.next(), target);
+        }
+      }
+
+      public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {
+
+      }
+
+    });
+  }
+
+  /**
+   * Look for an input component to be focused by looking in the children component recursively.
+   * @param parent
+   * @param target
+   */
+  private void setFocus(MarkupContainer parent, final AjaxRequestTarget target) {
+    parent.visitChildren(new IVisitor<Component>() {
+
+      public Object component(Component component) {
+        if(component instanceof Radio || component instanceof CheckBox || component instanceof DropDownChoice<?>) {
+          target.focusComponent(component);
+          return STOP_TRAVERSAL;
+        }
+        return null;
+      }
+    });
   }
 
   /**
