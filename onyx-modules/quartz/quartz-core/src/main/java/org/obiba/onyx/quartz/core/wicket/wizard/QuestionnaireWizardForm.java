@@ -301,6 +301,14 @@ public class QuestionnaireWizardForm extends WizardForm {
     return get("interrupt");
   }
 
+  public Component getBeginLink() {
+    return ((QuestionnaireWizardAdministrationWindow) adminWindow).getBeginLink();
+  }
+
+  public Component getEndLink() {
+    return ((QuestionnaireWizardAdministrationWindow) adminWindow).getEndLink();
+  }
+
   /**
    * Returns the first page step.
    * 

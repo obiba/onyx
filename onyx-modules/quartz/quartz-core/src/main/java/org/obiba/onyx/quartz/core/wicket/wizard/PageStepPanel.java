@@ -82,6 +82,8 @@ public class PageStepPanel extends WizardStepPanel {
     form.getPreviousLink().setVisible(previousEnabled);
     form.getNextLink().setVisible(true);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(true);
+    ((QuestionnaireWizardForm) form).getBeginLink().setVisible(true);
+    ((QuestionnaireWizardForm) form).getEndLink().setVisible(true);
     form.getFinishLink().setVisible(false);
 
     if(target != null) {

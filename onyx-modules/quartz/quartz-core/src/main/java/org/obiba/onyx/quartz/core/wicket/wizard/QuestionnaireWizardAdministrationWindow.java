@@ -9,10 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.Model;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +85,7 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
       }
 
     };
+    beginLink.add(new AttributeAppender("class", new Model("home"), " "));
 
     endLink = new AjaxButton("end", form) {
 
@@ -101,5 +105,14 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
         ((QuestionnaireWizardForm) form).showFeedbackWindow(target);
       }
     };
+    endLink.add(new AttributeAppender("class", new Model("end"), " "));
+  }
+
+  public Component getBeginLink() {
+    return beginLink;
+  }
+
+  public Component getEndLink() {
+    return endLink;
   }
 }

@@ -68,6 +68,8 @@ public class LanguageSelectionStep extends WizardStepPanel {
     form.getPreviousLink().setVisible(false);
     form.getNextLink().setVisible(true);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(false);
+    ((QuestionnaireWizardForm) form).getBeginLink().setVisible(false);
+    ((QuestionnaireWizardForm) form).getEndLink().setVisible(false);
     form.getFinishLink().setVisible(false);
 
     if(target != null) {
