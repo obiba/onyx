@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -136,7 +135,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   @SuppressWarnings("serial")
   private void createModalAdministrationPanel() {
     // Create modal feedback window
-    adminWindow = new WizardAdministrationWindow("adminWindow");
+    adminWindow = new QuestionnaireWizardAdministrationWindow("adminWindow", this);
 
     AjaxLink cancelLink = new AjaxLink("cancelStage") {
 
@@ -181,11 +180,14 @@ public class QuestionnaireWizardForm extends WizardForm {
         case OTHER:
           onInterrupt(target);
           break;
-        case SUCCESS:
-          onFinishSubmit(target, QuestionnaireWizardForm.this);
+        case OTHER2: // begin
+          onBegin(target);
+          break;
+        case OTHER3: // end
+          onEnd(target);
           break;
         case ERROR:
-          onFinishError(target, QuestionnaireWizardForm.this);
+          onError(target, QuestionnaireWizardForm.this);
           break;
         case CLOSED:
           onCancelClick(target);
@@ -209,6 +211,14 @@ public class QuestionnaireWizardForm extends WizardForm {
     }
   }
 
+  public void onBegin(AjaxRequestTarget target) {
+    gotoBegin(target);
+  }
+
+  public void onEnd(AjaxRequestTarget target) {
+    gotoEnd(target);
+  }
+
   public void onCancel(AjaxRequestTarget target) {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
@@ -217,6 +227,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     }
   }
 
+  @Override
   public void onFinish(AjaxRequestTarget target, Form form) {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
@@ -226,13 +237,16 @@ public class QuestionnaireWizardForm extends WizardForm {
   }
 
   public void onError(AjaxRequestTarget target, Form form) {
-    log.info("onError={}", Session.get().getFeedbackMessages().iterator().next());
     showFeedbackWindow(target);
   }
 
   @Override
   public FeedbackWindow getFeedbackWindow() {
     return feedbackWindow;
+  }
+
+  public void showFeedbackWindow(AjaxRequestTarget target) {
+    super.showFeedbackWindow(target);
   }
 
   //
@@ -356,6 +370,26 @@ public class QuestionnaireWizardForm extends WizardForm {
     }
   }
 
+  public WizardStepPanel getBeginStep() {
+    Page beginPage = activeQuestionnaireAdministrationService.beginPage();
+
+    if(beginPage != null) {
+      return new PageStepPanel(getStepId(), new QuestionnaireModel(beginPage));
+    }
+
+    return null;
+  }
+
+  public WizardStepPanel getEndStep() {
+    Page endPage = activeQuestionnaireAdministrationService.endPage();
+
+    if(endPage != null) {
+      return new PageStepPanel(getStepId(), new QuestionnaireModel(endPage));
+    }
+
+    return null;
+  }
+
   public WizardStepPanel getResumeStep() {
     Page resumePage = activeQuestionnaireAdministrationService.resumePage();
 
@@ -425,4 +459,27 @@ public class QuestionnaireWizardForm extends WizardForm {
     this.adminWindowClosed = adminWindowClosed;
   }
 
+  protected void gotoBegin(AjaxRequestTarget target) {
+    WizardStepPanel currentStep = (WizardStepPanel) get("step");
+    log.debug("gotoBegin.currentStep={}", currentStep.getClass().getName());
+
+    WizardStepPanel beginStep = getBeginStep();
+    if(beginStep != null) {
+      currentStep.replaceWith(beginStep);
+      beginStep.handleWizardState(this, target);
+    }
+    target.addComponent(this);
+  }
+
+  protected void gotoEnd(AjaxRequestTarget target) {
+    WizardStepPanel currentStep = (WizardStepPanel) get("step");
+    log.debug("gotoEnd.currentStep={}", currentStep.getClass().getName());
+
+    WizardStepPanel endStep = getEndStep();
+    if(endStep != null) {
+      currentStep.replaceWith(endStep);
+      endStep.handleWizardState(this, target);
+    }
+    target.addComponent(this);
+  }
 }

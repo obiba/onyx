@@ -129,14 +129,14 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals(2, subQuestionVariable.getCategories().size());
     Assert.assertEquals("Y", subQuestionVariable.getCategories().get(0).getName());
     Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
-    Assert.assertEquals(3, subQuestionVariable.getVariables().size());
+    Assert.assertEquals(4, subQuestionVariable.getVariables().size());
 
     subQuestionVariable = questionVariable.getVariables().get(3);
     Assert.assertEquals("Q3_2", subQuestionVariable.getName());
     Assert.assertEquals(2, subQuestionVariable.getCategories().size());
     Assert.assertEquals("Y", subQuestionVariable.getCategories().get(0).getName());
     Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
-    Assert.assertEquals(3, subQuestionVariable.getVariables().size());
+    Assert.assertEquals(4, subQuestionVariable.getVariables().size());
 
     questionVariable = questionnaireVariable.getVariable("Q4");
     Assert.assertEquals("Q4", questionVariable.getName());

@@ -58,22 +58,40 @@ public class NavigationStrategySupport {
     List<Question> questions = page.getQuestions();
 
     for(Question question : questions) {
-      if(question.isToBeAnswered(service)) {
-        List<CategoryAnswer> answers = service.findAnswers(question);
+      if(isUnanswered(service, question)) {
+        return true;
+      }
 
-        if(!answers.isEmpty()) {
-          for(CategoryAnswer answer : answers) {
-            if(answer.getOpenAnswers() == null) {
-              return true;
-            } else {
-              for(OpenAnswer openAnswer : answer.getOpenAnswers()) {
-                if(openAnswer.getData() == null || openAnswer.getData().getValue() == null) return true;
+      if(question.hasSubQuestions()) {
+        for(Question subQuestion : question.getQuestions()) {
+          if(isUnanswered(service, subQuestion)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  public static boolean isUnanswered(ActiveQuestionnaireAdministrationService service, Question question) {
+    if(!question.isBoilerPlate() && !question.hasDataSource() && !question.hasSubQuestions() && question.isToBeAnswered(service)) {
+      List<CategoryAnswer> answers = service.findAnswers(question);
+
+      if(!answers.isEmpty()) {
+        for(CategoryAnswer answer : answers) {
+          if(answer.getOpenAnswers() == null) {
+            return true;
+          } else {
+            for(OpenAnswer openAnswer : answer.getOpenAnswers()) {
+              if(openAnswer.getData() == null || openAnswer.getData().getValue() == null) {
+                return true;
               }
             }
           }
-        } else {
-          return true;
         }
+      } else {
+        return true;
       }
     }
 

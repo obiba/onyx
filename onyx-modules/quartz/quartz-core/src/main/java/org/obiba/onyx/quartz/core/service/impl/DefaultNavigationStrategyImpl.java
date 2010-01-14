@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.service.INavigationStrategy;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultNavigationStrategyImpl implements INavigationStrategy {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultNavigationStrategyImpl.class);
 
   /**
@@ -57,8 +57,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   }
 
   /**
-   * Returns the last page arrived at, when beginning from the start page (<code>getPageOnStart</code>) and
-   * navigating forwards (<code>getPageOnNext</code>).
+   * Returns the last page arrived at, when beginning from the start page (<code>getPageOnStart</code>) and navigating
+   * forwards (<code>getPageOnNext</code>).
    * 
    * @service service
    * @return last page (last page arrived at when navigating forwards from the start page)
@@ -139,6 +139,63 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     }
 
     return previousPage;
+  }
+
+  public Page getPageOnBegin(ActiveQuestionnaireAdministrationService service, Page currentPage) {
+    Page beginPage = null;
+
+    Questionnaire questionnaire = service.getQuestionnaire();
+
+    List<Page> pages = questionnaire.getPages();
+
+    for(Page page : pages) {
+      if(NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
+        beginPage = page;
+        break;
+      }
+    }
+
+    return beginPage;
+  }
+
+  public Page getPageOnEnd(ActiveQuestionnaireAdministrationService service, Page currentPage) {
+    Page endPage = currentPage;
+
+    log.debug("searching for endPage");
+    while(endPage != null) {
+      log.debug("endPage = {}", endPage.getName());
+
+      // Make active the answers to all questions to be answered on the current page.
+      for(Question question : endPage.getQuestions()) {
+        if(question.isToBeAnswered(service)) {
+          if(question.hasSubQuestions()) {
+            for(Question subQuestion : question.getQuestions()) {
+              if(subQuestion.isToBeAnswered(service)) {
+                service.setActiveAnswers(subQuestion, true);
+              }
+            }
+          } else {
+            service.setActiveAnswers(question, true);
+          }
+        }
+      }
+
+      if(NavigationStrategySupport.hasUnansweredQuestion(service, endPage)) {
+        break;
+      }
+
+      endPage = getPageOnNext(service, endPage);
+    }
+
+    if(endPage == null) {
+      endPage = getPageOnLast(service);
+    }
+
+    if(endPage != null) {
+      log.debug("found endPage = {}", endPage.getName());
+    }
+
+    return endPage;
   }
 
   /**
