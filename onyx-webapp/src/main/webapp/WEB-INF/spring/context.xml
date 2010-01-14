@@ -56,11 +56,7 @@
 
   <!-- Used only during development -->
   <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
-    <property name="resourcePatterns">
-      <list>
-        <value>classpath:/appConfiguration.xml</value>
-      </list>
-    </property>
+    <property name="resource" value="classpath:/appConfiguration.xml"/>
     <property name="developmentSeed" value="true" />
   </bean>
 

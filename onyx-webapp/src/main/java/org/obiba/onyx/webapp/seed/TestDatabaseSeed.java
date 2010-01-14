@@ -27,7 +27,6 @@ import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -41,7 +40,7 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
   private OnyxKeyStore keystore;
 
   @Override
-  protected void handleXstreamResult(Resource resource, Object result) {
+  protected void handleXstreamResult(Object result) {
     if(result != null) {
       SeedConfiguration config = (SeedConfiguration) result;
 
