@@ -37,7 +37,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
-import org.obiba.onyx.wicket.reusable.Dialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +60,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private DataView<QuestionPanel> questionsView;
-
-  private boolean stopFocusTraversal = false;
 
   /**
    * Constructor, given a questionnaire page.
@@ -141,7 +138,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
    * @param target
    */
   private void setFocus(final AjaxRequestTarget target) {
-    stopFocusTraversal = false;
     // must do that after rendering, otherwise there is nothing populated in the views.
     target.addListener(new AjaxRequestTarget.IListener() {
 
@@ -168,18 +164,9 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     parent.visitChildren(new IVisitor<Component>() {
 
       public Object component(Component component) {
-        if(stopFocusTraversal) {
-          return stopFocusTraversal;
-        }
-
         if(component instanceof Radio || component instanceof CheckBox || component instanceof DropDownChoice<?>) {
           target.focusComponent(component);
-          stopFocusTraversal = true;
           return STOP_TRAVERSAL;
-        } else if(component instanceof MarkupContainer && !(component instanceof Dialog)) {
-          if(stopFocusTraversal) {
-            setFocus((MarkupContainer) component, target);
-          }
         }
         return null;
       }
