@@ -172,6 +172,45 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  public Page beginPage() {
+    currentPage = navigationStrategy.getPageOnBegin(this, getCurrentPage());
+
+    if(currentPage != null) {
+      // Make inactive the answers to all questions on subsequent pages.
+      boolean subsequentPage = false;
+      for(Page page : getQuestionnaire().getPages()) {
+        if(page.getName() != null && page.getName().equals(currentPage.getName())) {
+          subsequentPage = true;
+        }
+        if(subsequentPage) {
+          for(Question question : page.getQuestions()) {
+            setActiveAnswers(question, false);
+          }
+        }
+      }
+
+      updateResumePage(currentPage);
+    } else {
+      // will resume to first page
+      updateResumePage(navigationStrategy.getPageOnStart(this));
+    }
+
+    return currentPage;
+  }
+
+  public Page endPage() {
+    currentPage = navigationStrategy.getPageOnEnd(this, getCurrentPage());
+
+    if(currentPage != null) {
+      updateResumePage(currentPage);
+    } else {
+      // will resume to first page
+      updateResumePage(navigationStrategy.getPageOnStart(this));
+    }
+
+    return currentPage;
+  }
+
   public Page resumePage() {
     currentPage = navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
     return currentPage;

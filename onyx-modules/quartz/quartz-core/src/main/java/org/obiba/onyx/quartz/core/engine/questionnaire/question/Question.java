@@ -94,7 +94,7 @@ public class Question implements Serializable, IQuestionnaireElement {
   }
 
   public boolean isBoilerPlate() {
-    return (getQuestionCategories().size() == 0 && getQuestions().size() == 0);
+    return (!hasCategories() && !hasSubQuestions() && (getParentQuestion() == null || !getParentQuestion().hasCategories()));
   }
 
   public boolean hasSubQuestions() {

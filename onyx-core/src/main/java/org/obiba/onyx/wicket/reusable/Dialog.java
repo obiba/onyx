@@ -92,7 +92,11 @@ public class Dialog extends ModalWindow {
     /** "Close" button clicked. */
     CLOSED,
     /** Other option clicked */
-    OTHER
+    OTHER,
+    /** Other2 option clicked */
+    OTHER2,
+    /** Other3 option clicked */
+    OTHER3
   }
 
   public Dialog(String id) {
@@ -437,6 +441,7 @@ public class Dialog extends ModalWindow {
       button.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all left")));
       customOptionsLeft.add(button);
     } else {
+      button.add(new AttributeAppender("class", new Model("right"), " "));
       customOptionsRight.add(button);
     }
   }

@@ -62,6 +62,24 @@ public interface INavigationStrategy {
   public Page getPageOnPrevious(ActiveQuestionnaireAdministrationService service, Page currentPage);
 
   /**
+   * Returns the questionnaire page containing the first question.
+   * 
+   * @param service service that may be used by implementors to determine the previous page
+   * @param currentPage currently displayed page
+   * @return page with first question
+   */
+  public Page getPageOnBegin(ActiveQuestionnaireAdministrationService service, Page currentPage);
+
+  /**
+   * Returns the questionnaire page containing the next question to be answered.
+   * 
+   * @param service service that may be used by implementors to determine the previous page
+   * @param currentPage currently displayed page
+   * @return page with next question to be answered
+   */
+  public Page getPageOnEnd(ActiveQuestionnaireAdministrationService service, Page currentPage);
+
+  /**
    * Returns the questionnaire page that should be displayed when the questionnaire stage is resumed (i.e., after having
    * been interrupted).
    * 

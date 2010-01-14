@@ -89,6 +89,20 @@ public interface ActiveQuestionnaireAdministrationService {
   public Page nextPage();
 
   /**
+   * Positions the questionnaire at the first page containing a question.
+   * 
+   * @return new current page (first page with a question)
+   */
+  public Page beginPage();
+
+  /**
+   * Positions the questionnaire at the page with the next question to be answered
+   * 
+   * @return new current page (page with next question to be answered)
+   */
+  public Page endPage();
+
+  /**
    * Positions the questionnaire at the resume page.
    * 
    * @return new current page (resume page)
