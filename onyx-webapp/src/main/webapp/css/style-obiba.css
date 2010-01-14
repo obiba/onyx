@@ -1843,3 +1843,16 @@ div.wicket-modal div.onyx div.section {
 div.wizard-content #instrumentRunPanelTitle {
   color: #C65F02; margin-top: 1.6667em; margin-bottom: 0.8333em; font-weight: bold;
 }
+
+div.appointment-update-log-panel-content  {
+  white-space:nowrap;
+}
+
+div.stageMenuBar {
+  margin-top: 1.5em;
+}
+
+div.interviewMenuBar {
+  margin-top: 1.5em;
+}
+
