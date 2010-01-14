@@ -1,0 +1,1845 @@
+body {
+  text-align: left;
+  background: url(../icons/background_tile.png) repeat;
+  font-family: arial, verdana, sans-serif;
+  font-size:16px;
+  color: #666666;
+  margin: 0pt; 
+  padding: 0pt; 
+  overflow: hidden; 
+  position: relative; 
+  height: 100%;
+}
+
+input, select, textarea {
+    border: solid 0.0833em #cccccc;
+}
+
+A:link {
+	COLOR: #D85D03; text-decoration: none;
+}
+A:visited {
+	COLOR: #D85D03; text-decoration: none;
+}
+A:active {
+	COLOR: #D85D03; text-decoration: none;
+}
+A:hover {
+	COLOR: #375FB7; text-decoration: underline;
+}
+
+.required {
+	/*background: #FFB6C1;*/
+	/*background-image:url(../images/icons/16X16/warning.gif);
+	background-position:top right;
+	background-repeat:no-repeat;*/
+}
+
+.toggler {
+	cursor:pointer;
+	vertical-align:middle;
+}
+
+.subLegend {
+  border-style: none;
+  background: white;
+  font-size: 0.8333em;
+  color: #00008B;
+}
+
+div.banner {
+	margin-top: 0.3333em;
+	margin-right: 0.8333em;
+}
+
+#pageWrapper {
+  margin-left: auto; 
+  margin-right: auto;
+  width: 83.3333em;
+  text-align: left;
+  background-color:#FFFFFF;
+  border: 0.0833em solid #AFBBC5;
+}
+
+#popupWrapper {
+  margin-left: auto; 
+  margin-right: auto;
+  text-align: left;
+}
+
+#pageHeader1 {
+    color: #000000;
+	width: 100%;
+	float: left;
+	text-align: right;
+	font-size: 0.9167em;
+}
+
+#logo {
+  float: left;
+  margin-left: 4.1667em;
+  margin-top: 0.6667em;
+}
+
+#pageHeader2 {
+	height: 4.9167em;
+	background-image: url('../images/genome_banner-repeat.png');
+	background-position: left top;
+}
+
+#pageHeader a {
+  color: #000000;
+  text-decoration: none;
+}
+
+#userLogged{
+	float:right;
+	padding-top:5.8333em;
+	padding-right:3.2500em;
+	color:#FFFFFF;
+	font-weight:bold;
+}
+#pageHeader h1 {
+  margin: 0em;
+  padding-top:2.5000em;
+  padding-left:2.0833em;
+  font-family: verdana, arial, sans-serif;
+  font-size:2.6667em;
+  font-weight: bold;
+  letter-spacing: -0.0833em;
+  color: #FFFFFF;
+}
+
+#pageHeader h2 {
+  margin: 0em;
+  padding-left:2.0833em;
+  padding-top:5.4167em;
+  font-family: verdana, arial, sans-serif;
+  font-size:1.0833em;
+  font-weight: bold;
+  letter-spacing: 0.1667em;
+  color: #00CAA4;
+}
+
+#menuBar {
+  color: #FFFFFF;
+  font-family: arial, verdana, sans-serif;
+  font-weight: bold;
+}
+
+#menuWrapper {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#menuBar .obiba-menu .obiba-menu-item {
+  background-color: #888888;
+  color: #C0C0C0 !important;
+  margin: 0 0.1667em 0 0.1667em;
+  padding: 0.4em 1em;
+}
+
+#menuBar .obiba-menu .obiba-menu-item.ui-state-highlight {
+  background-color: #C65F00;
+  color: #FFFFFF !important;
+}
+
+#menuAddOns{
+	padding-top:0.0833em;
+	float:right;
+	font-size:0.9167em;
+	margin-right:1.2500em;
+}
+
+#menuAddOns form{
+	padding:0em;
+	margin:0em;
+	padding-left:0.4167em;
+	display:inline;
+}
+
+#contentWrapper {
+  margin-left:1.2500em;
+  margin-right:1.2500em;
+  clear:both;
+}
+
+
+#contentWrapper td.keyValueTableValue,
+#contentWrapper td.keyValueTableValueEven,
+#contentWrapper td.keyValueTableValueOdd {
+	padding-left:0.8333em;
+}
+
+.base-ajax-indicator {
+	background-color: #E97723;
+	color: #ffffff;
+	padding: 0.4167em;
+	position: fixed;
+	right:0;
+	top:0;
+	border:thin solid #B22807;
+}
+
+div#leftColumn {
+  margin-top:0.4167em;
+  float: left;
+  width:12.0833em;
+  border:0em dashed #cccccc;
+  font-size: 0.9167em;
+  color: #000000;
+}
+
+div#leftColumn h1 {
+  margin-top:0em;
+  margin-bottom:0.8333em;
+  font-size: 1.1667em;
+  color: #666666;
+  padding:0.3333em;
+  border: 0.0833em solid #cccccc;
+  background-color:#FDFDEB;
+}
+
+div#leftColumn h2 {
+  margin-top:0em;
+  margin-bottom:0.8333em;
+  font-size: 1.1667em;
+  color: #666666;
+  padding:0.3333em;
+  border: 0.0833em solid #cccccc;
+  background-color:#FDFDEB;
+}
+
+div#leftColumn h3 {
+  margin-top:0em;
+  margin-bottom:0.8333em;
+  font-size: 1.1667em;
+  color: #666666;
+  padding:0.3333em;
+  border: 0.0833em solid #cccccc;
+  background-color:#FDFDEB; /*F6F8FF F9FBFD*/
+}
+
+div#leftColumn p {
+  margin-top:0em;
+  margin-bottom:1.2500em;
+  font-family: verdana, arial, sans-serif;
+  color: #000000;
+  line-height: 1.3333em;
+  padding-left:0.3333em;
+  text-align:justify;
+}
+
+div#centerColumn {
+  float: left;
+  width:50.8333em;
+  background-color: #FFFFFF;
+  border:0em dashed #cccccc;
+  margin-left: 2.0833em;
+}
+
+div#centerColumn h1 {
+  margin-top:0em;
+  margin-bottom:0.8333em;
+  font-family: verdana, arial, sans-serif;
+  font-size: 1.8333em;
+  color: #CC3300;
+  background-color:#FFFFFF;
+  padding:0.3333em;
+  border-bottom: 0.0833em solid #666666;
+  clear:both;
+}
+
+div#centerColumn h2 {
+  margin-top:1.2500em;
+  margin-bottom:0.8333em;
+  font-family: verdana, arial, sans-serif;
+  font-size: 1.6667em;
+  color: #CC3300;
+  background-color:#FFFFFF;
+  padding:0.3333em;
+  border-bottom: 0.0833em solid #666666;
+  clear:both;
+}
+
+div#centerColumn h3 {
+  margin-top:1.2500em;
+  margin-bottom:0.8333em;
+  font-family: verdana, arial, sans-serif;
+  font-size: 1.5em;
+  color: #CC3300;
+  background-color:#FFFFFF;
+  padding:0.3333em;
+  border-bottom: 0.0833em solid #666666;
+  clear:both;
+}
+
+div#centerColumn p {
+  margin-top:0em;
+  margin-bottom:1.2500em;
+  font-family: verdana, arial, sans-serif;
+  color: #666666;
+  line-height: 1.5em;
+  padding-left:0.3333em;
+  text-align:justify;
+}
+
+div#feedback {
+	text-align:left;
+	margin:0 !important;
+	padding:0 !important;
+}
+
+.page-feedback{
+	width: 25em;
+	margin-left:1.6667em !important;
+	margin-top:1.6667em !important;
+	background-color: #FFFFFF;
+  border-color: #B8B8B8;
+  border-style: solid;
+  border-width: 0.0833em;
+}
+
+div#feedback ul {
+  text-align: left;
+  padding:0.8333em;
+  list-style-type:none;
+}
+
+div#feedback ul li{
+  list-style-type:none;
+}
+.floatLeft {
+  float: left;
+  margin-right: 0.8333em;
+}
+
+.floatRight {
+  float: right;
+  margin-left: 0.8333em;
+}
+
+.messageBox {
+  text-align: left;
+  width:25em;
+  background-color: #E1E3E5;
+  padding:0.2500em;
+  margin:0.1667em;
+  /*border:0.0833em solid #336799;
+  padding:0.8333em;
+  margin-top:0.8333em;
+  margin-bottom:0.4167em;
+  margin-right:0.6667em;*/
+  width:97%;
+  height:97%;
+text-align:center;
+  
+}
+
+#featureBox {
+  float:left;
+  width:20.8333em;
+  background-color: #F6FCEC;
+  border:0.0833em solid #AAE5A4;
+  padding:0.8333em;
+  margin-top:0.8333em;
+  margin-bottom:0.4167em;
+  margin-right:0.6667em;
+}
+
+#featureBox h4 {
+  padding-left:0.4167em;
+  margin-top:0em;
+  margin-bottom:0.4167em;
+  font-family: verdana, arial, sans-serif;
+  color: #779E28;
+}
+
+#featureBox p {
+  font-family: verdana, arial, sans-serif;
+  font-size: 0.9167em;
+  color: #555555;
+  line-height: 1.3333em;
+  margin-bottom:0.4167em;
+}
+
+#pageFooter {
+  clear: both;
+  color: #000000;
+  height: 2.5000em;
+}
+
+#pageFooter > div {
+  font-size: 0.9167em;
+  letter-spacing: 0.0833em;
+  margin-right: 1.3333em;
+  text-align: right;  
+}
+
+#pageFooter > div#currentUser {
+  float: left; margin-left: 1.3333em;
+}
+
+#pageFooter > div#currentVersion {
+  float: right;
+}
+
+
+#spacer {
+  height:2.5000em;
+  clear:both;
+}
+
+.arrowList { 
+  margin-left: 0.8333em;
+  padding-left: 0;
+  list-style: none;
+} 
+
+.arrowList ul { 
+  padding-left: 0em;
+  margin-left:0em;
+  list-style:none;  
+}
+
+.arrowList li { 
+  padding-left: 0.8333em;
+  background-image: url(../images/menu-bullet.png);
+  background-repeat: no-repeat;
+  background-position: 0 0.5833em;
+  font-family: verdana, arial, sans-serif;
+  font-size: 0.9167em;
+  line-height:1.5em;
+}
+
+/*************** Wicket Autocomplete ********************/
+
+div.wicket-aa {
+  font-size: 0.8333em;
+  background-color: white;
+  border-width: 0.0833em;
+  border-color: #cccccc;
+  border-style: solid;
+  padding: 0.1667em;
+  margin: 0.0833em 0 0 0;
+  text-align:left;
+}
+div.wicket-aa ul { list-style:none; padding: 0.1667em; margin:0; }
+div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 0.1667em; margin:0; }
+
+/*************** End Wicket Autocomplete ********************/
+
+/*************** Dialog ********************/
+
+.centeredHorizontally {
+  text-align: center;
+}
+
+.smallTopMargin {
+  margin-top: 0.8333em;
+}
+
+.largeTopMargin {
+  margin-top: 2.5000em;
+}
+
+.dialogContent {
+  margin-left: 0.8333em;
+  margin-right: 0.8333em;
+}
+
+.dialogIcon {
+  float: left;
+  margin-right:0.4167em;
+}
+
+.dialogMessage {
+  padding-left: 2.9167em;
+}
+
+.dialogMessage p {
+  margin-top: 0em;
+  margin-bottom: 0em;
+  padding-top: 0.4167em;
+}
+
+.dialogButtons ul {
+  margin-bottom: 0.8333em;
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
+}
+
+.dialogButtons ul li {
+  display: inline;
+}
+
+.progressBar {
+  padding-top: 0.4167em;
+}
+
+.obiba-content{
+  font-size:0.9167em;
+}
+
+.obiba-content.invalid-measure-details-content {
+  height:30.4167em;
+}
+
+.obiba-content.invalid-measure-details-content > div {
+  padding-bottom:0.4167em;
+  padding-top:0.4167em;
+}
+
+/*************** End Dialog ********************/
+
+/*************** Wizard ********************/
+
+.form-data {
+  overflow:auto;
+  padding-left: 1.6667em;
+  padding-right: 1.6667em;
+}
+
+.form-button {
+  border-top:0.0833em solid #C65F02;
+  height: 3.3333em;
+  margin-left:1.6667em;
+  margin-right:1.6667em;
+  padding-left:0.8333em;
+  padding-right:0.8333em;
+  padding-top:1.6667em;
+}
+
+.form-button .obiba-nav-left {
+	float: left;
+}
+
+.form-button .obiba-nav-right {
+	float: right;
+}
+
+.wizard-title {
+  padding-top:1.6667em;
+  font-weight: bold;
+}
+
+.wizard-content {
+  padding-top: 0.4167em;
+  margin-top:0em;
+  margin-bottom:0em;
+}
+
+.wizard-content em {
+ font-weight:bold;
+}
+
+.wizard-body {
+  	border-top:0.0833em solid #C65F02;
+	margin-top:0.4167em;
+	padding-top:1.2500em;
+}
+
+.wizard-separator {
+	border-top:0.0833em dotted #666666;
+	margin-top:0.9167em;
+	padding-bottom:0.5833em;
+	width:20.8333em;
+}
+
+.wizard-instructions {
+	font-style:italic;	
+}
+
+.wizard-radio {
+	line-height: 2.0833em;
+}
+
+/*************** End Wizard ********************/
+
+/*************** Entity Table ********************/
+
+table.entityTable {
+  /*border-width: 0.0833em;
+  border-style: solid;
+  border-color: #375FB7;
+  padding:0.0833em;*/
+  border-spacing: 0em;
+  width:100%;
+}
+
+table.entityTable tr.titleToolbar {
+  /*color: #F6F8FF;
+  background-color: #375FB7;
+  border-color: #375FB7;
+  border-width: 0.0833em;
+  border-style: solid;*/
+  font-weight: bold;
+  padding: 0.2500em;
+}
+
+table.entityTable tr.odd {
+  background-color: #ECECEC;
+}
+
+table.entityTable tr.navigation {
+  color:#999999;
+  font-family:arial;
+}
+
+table.entityTable .navigator a {
+  color: #AFBBC5
+}
+
+table.entityTable .navigator em {
+  font-weight: bold
+}
+
+table.entityTable th {
+  border-bottom:0.0833em solid #C65F02;
+  font-family:arial;
+  font-size:0.9167em;
+  font-weight:bold;
+  padding:0.2500em;
+  color:#999999;
+}
+
+table.entityTable th a:link {
+  color:#999999;
+}
+
+table.entityTable th.wicket_orderUp {
+  padding-right:1.2500em;
+  background-image: url(../images/up.png);
+  background-repeat: no-repeat;
+  background-position: 95% 50%;
+}
+
+table.entityTable th.wicket_orderDown {
+  padding-right:1.2500em;
+  background-image: url(../images/down.png);
+  background-repeat: no-repeat;
+  background-position: right;
+  background-position: 95% 50%;
+}
+
+table.entityTable td {
+  color:#333333;
+  font-family:arial;
+  font-size:0.9167em;
+  font-weight:bold;
+  padding:0.2500em;
+}
+
+table.entityTable td A {
+  color: #333333;
+  padding-right: 1em;
+  text-decoration: underline;
+}
+
+table.entityTable td A img {
+  border:none;
+}
+
+table.entityTable tr.ui-state-error td {
+  color:red;
+}
+
+/*************** End Entity Table ********************/
+
+/*******************KEY VALUE TABLE LAYOUT************************************/
+
+table.keyValueTable {
+	width:100%;
+}
+
+td.keyValueTableHeader {
+    border-color:#C65F02;
+	border-style:none none solid;
+	border-width:0.0833em;
+	color:#C65F02;
+	text-align: left;
+	margin-bottom:2.0833em;
+    margin-top:0.5833em;
+	padding-bottom:0.0833em;
+}
+
+td.keyValueTableKey {
+	width:6.2500em;
+	color: #666666;
+	background-color: #FFFFFF;
+	text-align: left;
+}
+
+.wicket-modal td.keyValueTableKey {
+	white-space:nowrap;
+} 
+
+td.keyValueTableKeyIndent {
+	/*width:30%;*/
+	color: #666666;
+	background-color: #FFFFFF;
+	padding: 0.1667em 0.4167em 0.1667em 1.2500em;
+	text-align: left; 
+}
+
+td.keyValueTableValue,
+td.keyValueTableValueEven,
+td.keyValueTableValueOdd {
+	color: #000000;
+	background-color: #FFFFFF;
+	font-weight: bold;
+	text-align: left;
+	padding-left:0.8333em;
+}
+
+td.keyValueTableValue input, td.keyValueTableValue select,
+td.keyValueTableValueEven input, td.keyValueTableValueEven select,
+td.keyValueTableValueOdd input, td.keyValueTableValueOdd select {
+    font-family: arial, verdana, sans-serif;
+    font-weight: bold;
+}
+
+td.keyValueTableValue input{
+	width: 18.0833em;
+}
+
+td.keyValueTableValue select{
+	width: 18.3333em;
+}
+
+/*******************END KEY VALUE TABLE LAYOUT********************************/
+
+table.gertTable {
+	border-width: 0.0833em;
+	border-style: solid;
+	border-color: #375FB7;
+	padding:0.0833em;
+
+}
+
+td.gertTableDataHeader {
+	font-weight: bold;
+	color: #F6F8FF;
+	background-color: #375FB7;
+	border-width: 0.0833em;
+	border-style: solid;
+	border-color: #375FB7;
+	padding: 0.2500em;
+
+}
+
+td.gertTableDataKey {
+	width:30%;
+	color: #003366;
+	font-weight:bold;
+	background-color: #AAAAAA;
+	padding-right: 0.4167em;
+	padding-left: 0.4167em;
+	padding-top:0.1667em;
+	padding-bottom:0.1667em;
+	border-bottom: 0.0833em solid #FFFFFF; 
+}
+
+td.gertTableDataKeyIndent {
+	width:30%;
+	color: #003366;
+	font-weight:bold;
+	background-color: #AAAAAA;
+	padding-right: 0.4167em;
+	padding-left: 1.2500em;
+	padding-top:0.1667em;
+	padding-bottom:0.1667em;
+	border-bottom: 0.0833em solid #FFFFFF; 
+}
+
+td.gertTableFormKey {
+	color: #003366;
+	background-color: #E1E3E5;
+	padding: 0.2500em;
+	text-align: right;
+}
+
+td.gertTableDataValue {
+	color: #003366;
+	background-color: #ffffff;
+}
+
+td.gertTableFormValue {
+	color: #003366;
+	background-color: #E1E3E5;
+	padding: 0.4167em;
+}
+
+td.gertTableDataValueEven {
+	color: #003366;
+	background-color: #ffffff;
+	padding-right: 0.4167em;
+	padding-left: 0.4167em;
+}
+
+td.gertTableFormValueEven {
+	color: #003366;
+	background-color: #ffffff;
+	padding: 0.4167em;
+}
+
+td.gertTableDataValueOdd {
+	color: #003366;
+	background-color: #E1E3E5;
+	padding-right: 0.4167em;
+	padding-left: 0.4167em;
+	border-bottom: 0.0833em solid #FFFFFF; 
+}
+
+td.gertTableFormValueOdd {
+	color: #003366;
+	background-color: #E1E3E5;
+	padding: 0.4167em;
+}
+
+div.tab-panel {
+	clear:both;
+}
+
+.requiredField {
+	color: #ff0000;
+	padding-left:0.4167em;
+}
+
+.feedbackPanelERROR {
+	color: #ff0000;
+}
+li.feedbackPanelERROR {
+    background-image:url(../images/icons/16X16/error.gif);
+	background-position:top left;
+	background-repeat:no-repeat;
+	padding-left:2em;
+	padding-bottom:0.3333em;
+	list-style-type:none;
+}
+li.feedbackPanelWARNING{
+	background-image:url(../images/icons/16X16/warning.gif);
+	background-position:top left;
+	background-repeat:no-repeat;
+	padding-left:2em;
+	padding-bottom:0.3333em;
+	list-style-type:none;
+}
+li.feedbackPanelINFO{
+	background-image:url(../images/icons/16X16/information.gif);
+	background-position:top left;
+	background-repeat:no-repeat;
+	padding-left:2em;
+	padding-bottom:0.3333em;
+	list-style-type:none;
+}
+.indent{
+	padding-left:2.0833em;
+}
+form {
+	padding:0;
+	margin:0;
+}
+/*************************************************eddition styles**************************************/
+.addTubeBtn{
+	background-image:url(../images/icons/24X24/box_add.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.closeLotBtn{
+	background-image:url(../images/icons/24X24/box_preferences.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.openLotBtn{
+	background-image:url(../images/icons/24X24/box.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.reportLotBtn{
+	background-image:url(../images/icons/24X24/document_notebook.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.infoLotBtn{
+	background-image:url(../images/icons/24X24/information2.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.addUserBtn{
+	background-image:url(../images/icons/24X24/user1_add.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.deleteParticipantBtn{
+	background-image:url(../images/icons/24X24/user1_delete.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.deleteParticipantDerivedBtn{
+	background-image:url(../images/icons/24X24/tube_delete.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+.navNextBtn{
+	background-image:url(../images/icons/24X24/nav_right_blue.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:right;
+}
+.editableField{
+	background-image:url(../images/icons/16X16/pencil.gif);
+	background-position:right;
+	background-repeat:no-repeat;
+	display:block;
+	padding-right:1.5em;
+	text-decoration:none !important;
+}
+
+.deleteBtn{
+	background-image:url(../images/icons/24X24/delete2.gif);
+	background-position:center;
+	background-repeat:no-repeat;
+	display:block;
+	padding-left:2.5000em;
+    margin-right:0.8333em;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	background-position:left;
+}
+
+/******************* Tab Layout ************************************************/
+/*Credits: Dynamic Drive CSS Library */
+/*URL: http://www.dynamicdrive.com/style/ */
+    
+div.tab-row{
+float:left;
+width:100%;
+font-size:90%;
+line-height:normal;
+/*border-bottom: 0.0833em solid #375FB7;*/ /*Add border strip to bottom of menu*/
+}
+
+div.tab-row ul{
+list-style-type: none;
+margin:0;
+margin-left: 0.4167em; /*Left offset of entire tab menu relative to page*/
+padding:0;
+}
+
+div.tab-row li{
+display:inline;
+margin:0;
+padding:0;
+}
+
+div.tab-row a{
+float:left;
+background-image:url(../images/tabs/glowtab-left2.gif);
+background-repeat: no-repeat;
+background-position:left top;
+text-decoration:none;
+margin:0;
+margin-right: 0.4167em; /*spacing between each tab*/
+padding:0 0 0 0.7500em;
+text-decoration:none;
+}
+
+div.tab-row a span{
+float:left;
+display:block;
+background:url(../images/tabs/glowtab2.gif) no-repeat right top;
+padding: 0.6667em 1em 0.5em 0.2500em;
+color:#FFFFFF;
+}
+
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+div.tab-row a span {float:none;}
+/* End IE5-Mac hack */
+
+div.tab-row a:hover span {
+color:#FFFFFF;
+}
+
+div.tab-row .selected a{ /*Selected Tab style*/
+background-position:0 -6.8333em; /*Shift background image up to start of 2nd tab image*/
+text-decoration:none;
+}
+
+div.tab-row .selected a span{ /*Selected Tab style*/
+background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+color:#FFFFFF;
+font-weight:bold;
+}
+
+div.tab-row a:hover{ /*onMouseover style*/
+background-position:0% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+text-decoration:none;
+}
+
+div.tab-row a:hover span{ /*onMouseover style*/
+background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+}
+
+.maxWidthTextArea {
+	width: 100%;
+}
+
+/******************* End Tab Layout ************************************************/
+
+/******************* Stage Layout **************************************************/
+
+.stage {
+  	padding: 0em;
+}
+
+.stage .ui-layout-center {
+ 	
+}
+
+/******************* End Stage Layout **********************************************/
+
+/******************* Centering *****************************************************/
+/* http://www.jakpsatweb.cz/css/css-vertical-center-solution.html */
+
+.obiba-center-vertical-outer {
+	overflow: hidden;
+	display: table;
+	position: static;
+}
+
+.obiba-center-vertical-outer.obiba-center-vertical-outer-page {
+	overflow: visible;
+	height: 100%;
+}
+
+.obiba-center-vertical-middle {
+	display: table-cell;
+	vertical-align: middle;
+	position: static;
+}
+
+.obiba-center-horizontal {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/******************* End Centering *************************************************/
+
+/******************* Boxing ********************************************************/
+
+.obiba-box {
+	background-color:#FFFFFF;
+	border:0.2500em solid #C65F02;
+}
+
+.obiba-box-content {
+	padding: 1.5em 1.6667em;
+}
+
+.obiba-box-tab {
+	margin-left: 1.6667em;
+}
+
+.obiba-box-tab > .obiba-button {
+	-moz-border-radius-bottomleft:0 !important;
+	-moz-border-radius-bottomright:0 !important;
+	background-color:#C0C0C0 !important;
+	border-width:0.0833em 0.0833em 0 !important;
+	color:#888888 !important;
+	font-weight:bold;
+	margin-right:0.5833em;
+	padding:0.1667em 0.8333em 0.0833em !important;
+}
+
+.obiba-box-tab > .obiba-button.selected {
+	background-color:white !important;
+	color:#C65F02 !important;
+}
+
+/******************* End Boxing ****************************************************/
+
+/******************* Login *********************************************************/
+
+#login {
+	width: 47.9167em;
+}
+
+#loginHeader {
+	border-bottom: 0.0833em solid #C65F02;
+	margin-bottom: 0.8333em;
+}
+
+#loginHeader > img {
+    padding-bottom: 0.8333em;
+}
+
+#loginFooter {
+	border-top: 0.0833em solid #888888;
+	margin-top: 0.8333em;
+}
+
+#loginFooter p {
+	font-family:verdana,arial,sans-serif;
+	font-size:0.9167em;
+	letter-spacing:0.0833em;
+	text-align:center;
+}
+
+/******************* End Login *****************************************************/
+
+/******************* Content Region ************************************************/
+
+.obiba-content-region {
+  background-color: #FFFFFF;
+  border-color: #B8B8B8;
+  border-style: solid;
+  border-width: 0.0833em;
+  padding: 0em 1.1667em 3.0000em;
+}
+
+.obiba-content-region.ui-corner-all {
+  -moz-border-radius: 0.5em; 
+  -webkit-border-radius: 0.5em;	
+}
+
+.obiba-content-region > h1 {
+  border-color: #C65F02;
+  border-style: none none solid none;
+  border-width: 0.0833em;
+  color: #C65F02;
+  margin-bottom: 2.0833em;
+  margin-top: 0.5833em;
+  padding-bottom: 0.0833em;
+  font-size:1em;
+}
+
+.obiba-content-region > h1.results-list {
+  margin-bottom:0em;
+}
+
+.obiba-content-region h2, h2 {
+  border-color: #666666;
+  border-style: none none solid none;
+  border-width: 0.0833em;
+  color: #666666;
+  font-size: 0.9167em;
+  margin-bottom: 1.2500em;
+  padding-bottom: 0.0833em;
+  margin-top:1.4167em;
+}
+
+.h2-short {
+	width:37.7500em;
+}
+
+.h2-short span {
+  font-weight: bold;
+}
+
+/******************* End Content Region ********************************************/
+
+/******************* Buttons *******************************************************/
+
+.obiba-button, 
+A:link.obiba-button,
+A:visited.obiba-button,
+A:active.obiba-button,
+A:hover.obiba-button {
+  background-color: white;
+  border-color: #B8B8B8;
+  border-style: solid;
+  border-width: 0.0833em 0.1667em 0.1667em 0.0833em;
+  color: #000000;
+  font-family: arial, verdana, sans-serif;
+  font-size:1em;
+}
+
+.obiba-button.ui-state-disabled, 
+A:link.obiba-button.ui-state-disabled,
+A:visited.obiba-button.ui-state-disabled,
+A:active.obiba-button.ui-state-disabled,
+A:hover.obiba-button.ui-state-disabled {
+  color: #B8B8B8;
+}
+
+A:link.obiba-button,
+A:visited.obiba-button,
+A:active.obiba-button,
+A:hover.obiba-button {
+  padding: 0.2500em 0.4167em 0.1667em 0.4167em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+button.obiba-button,
+input.obiba-button {
+  padding: 0.1667em 0.4167em 0.0833em 0.4167em;	
+}
+
+img.obiba-button {
+  padding: 0.1667em 0.2500em 0.2500em 0.2500em;	
+}
+
+.obiba-button.ui-corner-all {
+  -moz-border-radius: 0.5em; 
+  -webkit-border-radius: 0.5em;
+}
+
+div .button-vertical-list{
+	margin-bottom: 1.2500em;
+}
+
+.button-vertical-list > a {
+	margin-right: 0.8333em;
+}
+
+/******************* End Buttons ***************************************************/
+
+/******************* Miscellaneous *************************************************/
+
+.obiba-scrollable {
+  overflow: auto;
+}
+
+.obiba-feedback ul {
+  height: 10em;
+  overflow: auto;
+}
+
+/******************* End Miscellaneous *********************************************/
+
+/******************* ParticipantSearchPage *****************************************/
+
+#participantSearchPageContent.obiba-box-content {
+  padding: 0.5833em 0.7500em;
+}
+
+#participantSearchPageContent > table {
+  border-spacing: 0.8333em;
+  width: 100%;
+}
+
+#participantPageSearch,
+#participantPageActions {
+  height: 7.9167em;
+}
+
+#participantPageSearch #searchByInputField.obiba-button {
+  background-image: url(../icons/loupe_button.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0.2500em 0.7500em 0.1667em;
+}
+
+#participantPageSearch #searchByInputField.obiba-button::-moz-focus-inner {
+  border: none;	
+}
+
+#participantPageActions #enrollAndUpdateActions {
+  float: left;
+  margin-top: 0.4167em;
+}
+
+#participantPageActions #enrollAndUpdateActions > div:first-child {
+  margin-bottom: 1.2500em;
+}
+
+#participantPageActions #enrollAndUpdateActions > div:empty {
+  margin-bottom: 0em !important;
+}
+
+#participantPageActions #exportAction {
+  float: right;
+  margin-top: 0.4167em;
+}
+
+span.interviewStatus {
+  padding-left:1em;
+  background-position:0 53%;
+  background-repeat:no-repeat;
+  background-attachment:scroll;
+  background-color:transparent;
+}
+
+span.interviewStatus.obiba-state-inprogress {
+  background-image:url(../icons/progress.png);
+}
+
+span.interviewStatus.obiba-state-cancelled {
+  background-image:url(../icons/cancelled.png);
+}	
+
+span.interviewStatus.obiba-state-completed {
+  background-image:url(../icons/completed.png);
+}
+
+span.interviewStatus.obiba-state-closed {
+  background-image:url(../icons/closed.png);
+}
+
+span.interviewStatus.obiba-state-exported {
+  background-image:url(../icons/exported.png);
+}
+
+div#participantPageSearchResults #newNavigatorLabel {
+  float: right; 
+  position: relative;
+  right: 0.8333em;
+  top: 0.5em;
+  color:#333333;
+  font-family:arial;
+  font-size:0.9167em;
+}
+
+div#participantPageSearchResults #newNavigator {
+  float: right; 
+  position: relative;
+  right: 0em; 
+  top: 0.5em;
+  color:#333333;
+  font-family:arial;
+  font-size:0.9167em;  
+}
+
+div#participantPageSearchResults #newNavigator a {
+  color:#333333;
+}
+
+div#participantPageSearchResults #newNavigator em {
+  font-style:normal;
+  font-weight:bold;
+}
+
+/******************* End ParticipantSearchPage *************************************/
+
+/******************* WorkstationPage ***********************************************/
+div#instrumentContent .label {
+  margin-bottom:1.2500em;
+  margin-top:0.5833em;
+}
+
+#workstationPanelContent.obiba-box-content {
+  padding: 0.5833em 0.7500em;
+}
+
+#workstationPanelContent > table {
+  border-spacing: 0.8333em;
+  width: 100%;
+}
+
+#workstationPanelContent #addInstrumentAction {
+  margin-top: 0.4167em;
+  padding-bottom:0.8333em;
+}
+
+div#workstationInstrument #newNavigatorLabel {
+  float: right; 
+  position: relative;
+  right: 0.8333em;
+  top: 0.5em;
+  color:#333333;
+  font-family:arial;
+  font-size:0.9167em;
+}
+
+div#workstationInstrument #newNavigator {
+  float: right; 
+  position: relative;
+  right: 0em; 
+  top: 0.5em;
+  color:#333333;
+  font-family:arial;
+  font-size:0.9167em;  
+}
+
+div#workstationInstrument #newNavigator a {
+  color:#333333;
+}
+
+div#workstationInstrument #newNavigator em {
+  font-style:normal;
+  font-weight:bold;
+}
+
+/******************* End WorkstationPage *******************************************/
+
+/******************* ParticipantReceptionPage **************************************/
+
+#participantReceptionPageContent #participantAndBarcodeAssignmentWrapper {
+  overflow: auto;
+}
+
+#participantReceptionPageContent td.keyValueTableKey,
+#participantReceptionPageContent td.keyValueTableKeyIndent,
+#assignCodeToParticipant tr > td:first-child {
+  width: 15.5000em;
+  vertical-align:top;
+}
+
+#assignCodeToParticipant td {
+  //padding: 0.1667em 0.4167em;
+}
+
+#participantReceptionPageContent .obiba-footer {
+  border-top: 0.0833em solid #C65F02;
+  padding-top: 0.8333em;
+}
+
+#participantReceptionPageContent .obiba-footer > .obiba-footer-content {
+  float: right;
+}
+ 
+/******************* End ParticipantReceptionPage **********************************/
+
+/******************* Global List Styling *******************************************/
+
+#participantPageSearchResults table.entityTable tr.titleToolbar,
+#instrumentContent table.entityTable tr.titleToolbar,
+#interviewPageStages table.entityTable tr.titleToolbar,
+#rubyPanel table.entityTable tr.titleToolbar {
+  display: none;	
+}
+
+#participantPageSearchResults.obiba-content-region > h1,
+#interviewPageStages.obiba-content-region > h1 {
+  margin-bottom: 0em;	
+}
+
+/******************* End Global List Styling ***************************************/
+
+/******************* InterviewPage *************************************************/
+
+#interviewPageContent.obiba-box-content {
+  padding: 0.5833em 0.7500em;
+}
+
+#interviewPageContent > table {
+  border-spacing: 0.8333em;
+  width: 100%;	
+}
+
+#interviewPageParticipantContainer,
+#interviewPageInterviewContainer {
+  width: 30%;	
+}
+
+#interviewPageParticipant,
+#interviewPageInterview,
+#interviewPageLog {
+  height: 8.7500em;
+}
+
+#interviewPageLog, #interviewPageParticipant, #interviewPageInterview, #interviewPageStages, #participantPageSearchResults{
+  white-space: nowrap;
+}
+
+#interviewPageParticipant td.keyValueTableKey,
+#interviewPageInterview td.keyValueTableKey {
+  background-color: #FFFFFF;
+  font-weight: regular;
+  padding-right: 0em;
+  padding-left: 0em; 
+}
+
+#interviewPageParticipant td.keyValueTableValueEven,
+#interviewPageParticipant td.keyValueTableValueOdd,
+#interviewPageInterview td.keyValueTableValueEven,
+#interviewPageInterview td.keyValueTableValueOdd {
+  color: #000000;
+  background-color: #FFFFFF;
+  font-weight: bold;
+}
+
+#interviewPageParticipant.obiba-content-region > h1,
+#interviewPageInterview.obiba-content-region > h1,
+#interviewPageLog.obiba-content-region > h1 {
+  margin-bottom: 0.8333em;	
+}
+
+#interviewPageLog #viewCommentsIconLink {
+  color: #FFFFFF;
+  position: relative;
+  top: 0.3333em;
+}
+
+#interviewPageLog div {
+  margin-bottom: 1.2500em;
+}
+
+#interviewPageStages table.entityTable tr > th:first-child,
+#interviewPageStages table.entityTable tr > td:first-child {
+  text-align: right;
+  width: 4%;  
+}
+
+#interviewPageStages td > span.obiba-state {
+  padding-left: 1.1667em;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-waiting {
+  color: #999999;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-contraindicated {
+  background: url('../icons/cancelled.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-ready {
+  background: url('../icons/arrow_green.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-inprogress {
+  background: url('../icons/progress.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-interrupted {
+  background: url('../icons/arrow_yellow.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-completed {
+  background: url('../icons/completed.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-skipped,
+#interviewPageStages td > span.obiba-state.obiba-state-notapplicable {
+  background: url('../icons/cancelled.png') no-repeat center left;
+}
+
+#interviewPageStages table.entityTable {
+  border-bottom:0.0833em solid #C65F02;
+}
+
+#interviewPageStages #exitInterview {
+  position:relative;
+  text-align:center;
+  top:1.5em;  
+}
+
+.navigation {
+  border-bottom:0.0833em solid #C65F02;
+}
+
+.experimental-condition-history-panel table.entityTable th {
+  border-top:0.0833em solid #C65F02;
+}
+
+.experimental-condition-history-panel tr.titleToolbar div.title {
+  color: #C65F02;
+}
+
+.experimental-condition-instructions-title {
+  margin-left: 0.4167em;
+  margin-top: 0.8333em;
+  margin-bottom: 0.1667em;
+  font-weight: bold;
+}
+
+.experimental-condition-instructions {
+  margin-left: 1.4167em;
+  margin-bottom: 0.5em;
+}
+
+ul#interviewMenuBar li {
+ width:16.6667em;
+}
+
+ul#interviewMenuBar li > div {
+  /*padding-left:5.2500em !important;*/
+  padding-right:0.2500em !important;
+}
+
+.menu-center {
+  display: block;
+  float: left;
+  padding-left:4.2500em !important;
+}
+
+.menu-right {
+  display: block;
+  text-align: right;
+}
+
+ul#interviewMenuBar li a {
+  bottom:0.1667em;
+  display:inline;
+  font-size:1.1667em;
+  padding-bottom:0;
+  padding-left:0;
+  padding-right:0;
+  padding-top:0;
+  position:relative;
+  /*left:1.2500em;*/
+  text-align:right;
+}
+
+ul#interviewMenuBar li a span {
+  padding-right:0.4167em;
+}
+
+#interviewPageStages #exitInterview a.obiba-button:link, #interviewPageStages #exitInterview a.obiba-button:visited, #interviewPageStages #exitInterview a.obiba-button:active, #interviewPageStages #exitInterview a.obiba-button:hover {
+  padding:0.2500em 4.1667em 0.1667em;
+}
+
+#commentInstructions, .comment-text {
+  color: #000000;
+  font-weight: bold;	
+}
+
+.comment-text {
+    height:24.0000em;
+    width:27.4167em;
+    overflow: auto;
+}
+
+/******************* End InterviewPage *********************************************/
+
+#commentIcon, #logIcon {
+  margin-right: 0.4167em;
+  border-style: none;
+}
+
+.log-comment {
+  white-space: normal;
+  padding-right: 1.6667em;
+}
+ 
+td > .log-comment {
+  background-image:url(../icons/note.png);
+  background-repeat: no-repeat;
+}
+
+div.log-comment {
+  padding-left:1.6667em;
+  padding-right:1.6667em;
+}
+ 
+/******************* Sample Collection *********************************************/
+ 
+#rubyPanel #wizardContent {
+  padding-left:0em;
+  padding-right:0em;
+  margin:1.6667em 1.6667em 0;
+  border:0.0833em solid #C65F02;
+}
+
+#rubyPanel #wizardContent table.entityTable td {
+  font-weight:normal;
+  padding:0.5em !important;  
+}
+
+#rubyPanel #wizardContent table.entityTable th {
+  border-top:0.0833em solid #CCCCCC;
+  padding-left:0.6667em;  
+}
+
+#rubyPanel #wizardContent #tubeBarcodePanel {
+  border-top:0.0833em solid #C65F02;
+  padding:0.6667em;  
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel > div {
+  display: inline; 
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel > div {
+  display: inline; 
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel {
+  display:table-cell;
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel #feedbackPanel ul.feedbackPanel li span {
+  display: table-cell;  
+  width: 19.1667em;
+}
+
+#rubyPanel #wizardContent  #tubeBarcodePanel li.feedbackPanelINFO > span {
+  background: transparent url(../icons/completed.png) no-repeat scroll 13.7500em center;   
+}
+
+#rubyPanel #wizardContent #tubeBarcodePanel li {
+  background-image:none;
+  padding:0em;  
+}
+
+#rubyPanel #wizardContent #tubeBarcodePanel ul {
+ padding:0em;
+ margin-bottom:0em;
+ margin-top:0em !important; 
+}
+
+#rubyPanel #wizardContent .wizard-content {
+  padding-top:0em;
+}
+
+#rubyPanel #wizardContent .wizard-content table:first-child {
+  border-spacing:0em;
+}
+
+#rubyPanel #wizardContent .wizard-content table:first-child td:first-child {
+  padding: 0em;
+}
+
+#rubyPanel #wizardContent .wizard-title {
+  padding-bottom:0.6667em;
+  padding-top:0.6667em;
+  padding-left:0.8333em;  
+}
+
+#rubyPanel #wizardFooter {
+  border-top:0em;
+}
+
+#tubesScannedLabel {
+  font-weight:bold;
+  padding-right:2.0833em;
+  display:inline;  
+}
+
+#anonymousComments {
+  margin:0em;
+  padding:0 2.5000em; 
+  font-weight:normal;
+}
+
+.editSamplePanel {
+  height:31.2500em;
+}
+
+.editSamplePanel #barcodeParts {
+    height:6.6667em
+}
+
+.editSamplePanel textarea {
+  width:23.33330em;
+}
+
+.editSamplePanel select {
+  width:23.5000em;
+}
+
+.editSamplePanel table td {
+  vertical-align:top;
+  padding-top:0.4167em;
+}
+
+.editSamplePanel table td > div {
+  margin-right:0.4167em;
+  width:5em;
+}
+
+.editSamplePanel #barcodeParts {
+  height:auto;
+  margin-left:-0.3333em;
+  margin-top:-0.5em;  
+  width:29.5000em;
+  overflow-y:auto;
+}
+ 
+.editSamplePanel #barcodeParts td {
+  height:1.6667em;
+  width:5.0833em;  
+}
+
+.editSamplePanel .value{
+  font-weight:bold;
+  color:#000000;
+}
+
+.editSamplePanel select option {
+  font-weight:bold;
+}
+
+.editSamplePanel select option{
+  padding:0.1667em;
+  padding-left:1.2500em;
+  margin-left:0.4167em;
+}
+
+.editSamplePanel select option.ui-state-highlight {
+  background-image:url(../icons/selected.png) !important;
+  background-position: left;
+  padding-left:1.2500em !important;
+}
+  
+/******************* End Sample Collection *********************************************/
+
+div.measuresListPanel table.entityTable td.count, div.measuresListPanel table.entityTable td.refresh {
+  color:#C65F02;
+  font-size:0.9167em;
+  border-bottom: solid 0.0833em #C65F02;
+}
+
+div.measuresListPanel table.entityTable td.refresh {
+  text-align:right;
+}
+
+div.measuresListPanel table.entityTable td.refresh a {
+  color:#C65F02;
+}
+
+div.wizard-content span.instrument-run-panel-content div.section {
+  margin-bottom:0.8333em;
+}
+
+div.wicket-modal div.onyx div.section {
+  margin-bottom: 0.8333em; margin-left: 1.6667em; margin-right: 1.6667em;
+}
+
+div.wizard-content #instrumentRunPanelTitle {
+  color: #C65F02; margin-top: 1.6667em; margin-bottom: 0.8333em; font-weight: bold;
+}
