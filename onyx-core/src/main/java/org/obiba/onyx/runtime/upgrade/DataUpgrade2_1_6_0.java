@@ -33,6 +33,8 @@ public class DataUpgrade2_1_6_0 extends AbstractUpgradeStep {
 
   private static final String INSERT_EXPORT_LOG = "INSERT INTO export_log (type, identifier, destination, user, capture_start_date, capture_end_date, export_date) VALUES ('Participant', :identifier, 'Unknown', 'Unknown', :capture_start_date, :capture_end_date, :export_date)";
 
+  private static final String UPDATE_CANCELED_TO_CANCELLED = "UPDATE instrument_run SET status='CANCELLED' WHERE STATUS='CANCELED'";
+
   //
   // Instance Variables
   //
@@ -45,6 +47,7 @@ public class DataUpgrade2_1_6_0 extends AbstractUpgradeStep {
 
   public void execute(Version currentVersion) {
     createExportLogs();
+    changeCanceledToCancelled();
   }
 
   //
@@ -70,5 +73,10 @@ public class DataUpgrade2_1_6_0 extends AbstractUpgradeStep {
 
       jdbcTemplate.update(INSERT_EXPORT_LOG, paramMap);
     }
+  }
+
+  private void changeCanceledToCancelled() {
+    Map<String, Object> paramMap = new HashMap<String, Object>();
+    jdbcTemplate.update(UPDATE_CANCELED_TO_CANCELLED, paramMap);
   }
 }
