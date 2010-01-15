@@ -213,10 +213,12 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   public void onBegin(AjaxRequestTarget target) {
     gotoBegin(target);
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   public void onEnd(AjaxRequestTarget target) {
     gotoEnd(target);
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   public void onCancel(AjaxRequestTarget target) {
