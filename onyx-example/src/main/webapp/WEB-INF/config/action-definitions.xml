@@ -96,9 +96,8 @@
   <actionDefinition>
     <code>action.EXECUTE.Ready.Jade</code>
     <type>EXECUTE</type>
-    <askParticipantId>false</askParticipantId>    
-    <askPassword>false</askPassword>
-    <askComment>false</askComment>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>true</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>   
   </actionDefinition>
