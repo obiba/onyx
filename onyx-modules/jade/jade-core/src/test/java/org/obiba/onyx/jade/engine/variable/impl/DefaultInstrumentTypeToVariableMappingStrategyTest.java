@@ -450,7 +450,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
   private Instrument createInstrument(InstrumentType instrumentType) {
     Instrument instrument = new Instrument();
-    instrument.setType(instrumentType.getName());
+    instrument.addType(instrumentType.getName());
     instrument.setBarcode("123");
     instrument.setName("Instrument");
     instrument.setSerialNumber("321");

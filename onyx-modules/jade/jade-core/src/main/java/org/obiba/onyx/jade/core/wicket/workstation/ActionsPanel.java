@@ -25,8 +25,8 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
@@ -62,16 +62,15 @@ public class ActionsPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
-
   private ExperimentalConditionDialogHelperPanel experimentalConditionDialogHelperPanel;
 
-  public ActionsPanel(String id, IModel<Instrument> model) {
+  public ActionsPanel(String id, IModel<InstrumentMeasurementType> model) {
     super(id, model);
     setOutputMarkupId(true);
 
-    experimentalConditionDialogHelperPanel = new ExperimentalConditionDialogHelperPanel("experimentalConditionDialogHelperPanel", model, model);
+    InstrumentMeasurementType instrumentMeasurementType = (InstrumentMeasurementType) model.getObject();
+
+    experimentalConditionDialogHelperPanel = new ExperimentalConditionDialogHelperPanel("experimentalConditionDialogHelperPanel", new Model<Instrument>(instrumentMeasurementType.getInstrument()), new Model<Instrument>(instrumentMeasurementType.getInstrument()));
     add(experimentalConditionDialogHelperPanel);
 
     editInstrumentWindow = createEditInstrumentWindow("editInstrumentWindow");
@@ -84,7 +83,7 @@ public class ActionsPanel extends Panel {
     add(repeating);
     SeparatorMarkupComponentBorder border = new SeparatorMarkupComponentBorder();
 
-    for(LinkInfo linkInfo : getListOfLinkInfo((Instrument) model.getObject())) {
+    for(LinkInfo linkInfo : getListOfLinkInfo(instrumentMeasurementType.getInstrument())) {
       AjaxLink<LinkInfo> link = new AjaxLink<LinkInfo>(repeating.newChildId(), new Model<LinkInfo>(linkInfo)) {
         private static final long serialVersionUID = 1L;
 
@@ -146,16 +145,16 @@ public class ActionsPanel extends Panel {
 
     @Override
     public boolean isVisible() {
-      return instrument.getStatus().equals(InstrumentStatus.ACTIVE) && experimentalConditionService.instrumentCalibrationExists(instrument.getType());
+      return instrument.getStatus().equals(InstrumentStatus.ACTIVE) && experimentalConditionService.instrumentCalibrationExists(getInstrumentMeasurementType().getType());
     }
 
     @Override
     public void onClick(AjaxRequestTarget target) {
       List<ExperimentalConditionLog> log = new ArrayList<ExperimentalConditionLog>();
-      for(InstrumentCalibration cal : experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType())) {
+      for(InstrumentCalibration cal : experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType())) {
         log.add((ExperimentalConditionLog) cal);
       }
-      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType());
       InstrumentCalibration instrumentCalibration = null;
       if(!instrumentCalibrations.isEmpty()) {
         instrumentCalibration = instrumentCalibrations.get(0);
@@ -166,11 +165,11 @@ public class ActionsPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         public void onClose(AjaxRequestTarget target, Status status) {
-          target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+          target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
         }
 
       });
-      SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(instrument.getType() + ".description", instrument.getType());
+      SpringStringResourceModel experimentalConditionNameResource = new SpringStringResourceModel(getInstrumentMeasurementType().getType() + ".description", getInstrumentMeasurementType().getType());
       String experimentalConditionName = experimentalConditionNameResource.getString();
       experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().setTitle(new StringResourceModel("ExperimentalConditionDialogTitle", ActionsPanel.this, new Model<ValueMap>(new ValueMap("experimentalConditionName=" + experimentalConditionName))));
       experimentalConditionDialogHelperPanel.getExperimentalConditionDialog().show(target);
@@ -206,6 +205,10 @@ public class ActionsPanel extends Panel {
     return addInstrumentDialog;
   }
 
+  private InstrumentMeasurementType getInstrumentMeasurementType() {
+    return (InstrumentMeasurementType) (ActionsPanel.this.getDefaultModelObject());
+  }
+
   private class DeleteLinkInfo extends LinkInfo {
     private static final long serialVersionUID = 1L;
 
@@ -222,7 +225,8 @@ public class ActionsPanel extends Panel {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      String instrumentType = new SpringStringResourceModel(instrument.getType() + ".description", instrument.getType()).getString();
+
+      String instrumentType = new SpringStringResourceModel(getInstrumentMeasurementType().getType() + ".description", getInstrumentMeasurementType().getType()).getString();
       StringResourceModel questionModel = new StringResourceModel("DeleteInstrumentConfirmationQuestion", ActionsPanel.this, new Model<ValueMap>(new ValueMap("instrumentType=" + instrumentType + ",barcode=" + instrument.getBarcode())));
       Label question = new Label("content", questionModel);
       question.add(new AttributeModifier("class", true, new Model<String>("obiba-content delete-instrument-dialog")));
@@ -234,7 +238,7 @@ public class ActionsPanel extends Panel {
         public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
           if(status.equals(Status.YES)) {
             deleteInstrumentCalibrations(instrument.getBarcode());
-            instrumentService.deleteInstrument(instrument);
+            instrumentService.deleteInstrumentMeasurementType(getInstrumentMeasurementType());
           }
           return true;
         }
@@ -247,7 +251,7 @@ public class ActionsPanel extends Panel {
         public void onClose(AjaxRequestTarget target, Status status) {
           if(status.equals(Status.YES)) {
             // Refresh instrument list.
-            target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+            target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
           }
         }
 

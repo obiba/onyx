@@ -69,15 +69,16 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   // ActiveInstrumentRunService Methods
   //
 
-  public InstrumentRun start(Participant participant, Instrument instrument) {
+  public InstrumentRun start(Participant participant, Instrument instrument, InstrumentType instrumentType) {
     if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
     if(instrument == null) throw new IllegalArgumentException("Instrument cannot be null.");
+    if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
 
     InstrumentRun currentRun = new InstrumentRun();
     // Instrument must not be null when InstrumentRun is persisted.
     currentRun.setInstrument(instrument);
     currentRun.setParticipant(participant);
-    currentRun.setInstrumentType(instrument.getType());
+    currentRun.setInstrumentType(instrumentType.getName());
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
     currentRun.setUser(userSessionService.getUser());

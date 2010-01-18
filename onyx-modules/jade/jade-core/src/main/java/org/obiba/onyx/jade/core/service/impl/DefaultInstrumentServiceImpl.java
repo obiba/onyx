@@ -16,6 +16,7 @@ import java.util.Map;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -60,15 +61,23 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
   }
 
   public List<Instrument> getInstruments(InstrumentType instrumentType) {
-    Instrument template = new Instrument();
+    InstrumentMeasurementType template = new InstrumentMeasurementType();
     template.setType(instrumentType.getName());
 
-    return getPersistenceManager().match(template);
+    List<InstrumentMeasurementType> instrumentMeasurementTypes = getPersistenceManager().match(template);
+    List<Instrument> instruments = new ArrayList<Instrument>();
+    if(instrumentMeasurementTypes != null) {
+      for(InstrumentMeasurementType type : instrumentMeasurementTypes) {
+        instruments.add(type.getInstrument());
+      }
+    }
+
+    return instruments;
   }
 
   public List<Instrument> getActiveInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
-    template.setType(instrumentType.getName());
+    template.addType(instrumentType.getName());
     template.setStatus(InstrumentStatus.ACTIVE);
 
     return getPersistenceManager().match(template);
@@ -76,18 +85,6 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
 
   public String getInstrumentInstallPath(InstrumentType type) {
     return instrumentsPath + "/" + type.getName();
-  }
-
-  public List<String> getWorkstationInstrumentTypes(String workstation) {
-    List<String> instrumentTypes = new ArrayList<String>();
-    Instrument template = new Instrument();
-    template.setWorkstation(workstation);
-
-    for(Instrument instrument : getPersistenceManager().match(template)) {
-      instrumentTypes.add(instrument.getType());
-    }
-
-    return instrumentTypes;
   }
 
   public Instrument getInstrumentByBarcode(String barcode) {
@@ -109,6 +106,19 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     }
 
     getPersistenceManager().save(persistedIntrument);
+  }
+
+  public void addInstrumentMeasurementType(Instrument instrument, InstrumentMeasurementType type) {
+    Instrument persistedInstrument = getPersistenceManager().get(Instrument.class, instrument.getId());
+
+    InstrumentMeasurementType template = new InstrumentMeasurementType();
+    template.setInstrument(persistedInstrument);
+    template.setType(type.getType());
+
+    InstrumentMeasurementType persistedType = getPersistenceManager().matchOne(template);
+    if(persistedType == null) {
+      getPersistenceManager().save(template);
+    }
   }
 
   public void updateStatus(Instrument instrument, InstrumentStatus status) {
@@ -158,8 +168,8 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     return activeInstrumentsForCurrentWorkstation;
   }
 
-  public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument) {
-    List<Instrument> activeInstruments = getActiveInstrumentsForCurrentWorkstation(getInstrumentType(instrument.getType()));
+  public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument, InstrumentType instrumentType) {
+    List<Instrument> activeInstruments = getActiveInstrumentsForCurrentWorkstation(instrumentType);
     for(Instrument activeInstrument : activeInstruments) {
       if(activeInstrument.getBarcode() == instrument.getBarcode()) {
         return true;
@@ -173,4 +183,17 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().delete(instrument);
   }
 
+  public void deleteInstrumentMeasurementType(InstrumentMeasurementType type) {
+    if(type == null) throw new IllegalArgumentException("The instrument measurement type must not be null.");
+
+    InstrumentMeasurementType template = new InstrumentMeasurementType();
+    template.setInstrument(type.getInstrument());
+
+    if(getPersistenceManager().count(template) > 1) {
+      getPersistenceManager().delete(type);
+    } else {
+      // cascading will delete the instrument measurement type also
+      getPersistenceManager().delete(type.getInstrument());
+    }
+  }
 }

@@ -281,11 +281,11 @@ public class InstrumentWizardForm extends WizardForm {
       // A single instrument of the correct type is associated with this workstation.
       if(resuming) {
         activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
-        log.debug("Resuming an InstrumentRun with the instrument type [" + activeInstrumentsForCurrentWorkstation.get(0).getType() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
+        log.debug("Resuming an InstrumentRun with the instrument type [" + activeInstrumentRunService.getInstrumentType().getName() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
       } else {
         if(!instrumentSelected) {
-          activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0));
-          log.debug("Starting a new InstrumentRun with the instrument type [" + activeInstrumentsForCurrentWorkstation.get(0).getType() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
+          activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0), activeInstrumentRunService.getInstrumentType());
+          log.debug("Starting a new InstrumentRun with the instrument type [" + activeInstrumentRunService.getInstrumentType().getName() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
           instrumentSelected = true;
         }
       }

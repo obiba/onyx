@@ -53,6 +53,7 @@
           <ref bean="onyx-dataUpgrade2-1.6.0" />
           <ref bean="onyx-schemaUpgrade2-1.6.0" />
           <ref bean="onyx-constraints-1.6.0" />
+          <ref bean="onyx-schemaUpgrade-1.6.1" />
         </list>
      </property>
      <property name="stepListeners">
@@ -180,5 +181,12 @@
     <property name="description" value="Onyx Schema Upgrade Part 2 1.6.0"/>
     <property name="appliesTo" value="1.6.0" />    
     <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="onyx-schemaUpgrade-1.6.1" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.6.1.sql"/>
+    <property name="description" value="Onyx Core Data Upgrade 1.6.1"/>
+    <property name="appliesTo" value="1.6.1" />   
   </bean>
 </beans>

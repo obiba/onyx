@@ -9,10 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -25,8 +30,8 @@ public class Instrument extends AbstractEntity {
 
   private static final long serialVersionUID = 14533453L;
 
-  @Column(length = 200, nullable = false)
-  private String type;
+  @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "instrument")
+  private List<InstrumentMeasurementType> types;
 
   @Column(length = 200)
   @Index(name = "name_index")
@@ -52,14 +57,6 @@ public class Instrument extends AbstractEntity {
   private String workstation;
 
   public Instrument() {
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
   }
 
   public String getName() {
@@ -124,5 +121,25 @@ public class Instrument extends AbstractEntity {
 
   public void setWorkstation(String workstation) {
     this.workstation = workstation;
+  }
+
+  public List<InstrumentMeasurementType> getInstrumentMeasurementTypes() {
+    return types != null ? types : (types = new ArrayList<InstrumentMeasurementType>());
+  }
+
+  public void addType(String type) {
+    if(type != null) {
+      getInstrumentMeasurementTypes().add(new InstrumentMeasurementType(this, type));
+    }
+  }
+
+  public List<String> getTypes() {
+    List<String> typeStr = new ArrayList<String>();
+
+    for(InstrumentMeasurementType instrumentMeasurementType : getInstrumentMeasurementTypes()) {
+      typeStr.add(instrumentMeasurementType.getType());
+    }
+
+    return typeStr;
   }
 }

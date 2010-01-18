@@ -87,9 +87,12 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     Set<VariableValueSource> sources = null;
 
     // Create Instrument sources.
-    setProperties(ImmutableSet.of("type", "name", "vendor", "model", "serialNumber", "barcode"));
+    setProperties(ImmutableSet.of("name", "vendor", "model", "serialNumber", "barcode"));
     setPrefix(INSTRUMENT);
     sources = super.createSources();
+
+    // Create sources for instrument types.
+    // sources.add(createInstrumentTypesSources());
 
     // Create Instrument captureStartDate and captureEndDate sources.
     sources.add(createInstrumentCaptureStartDateSource());
@@ -202,7 +205,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
         Instrument instrument = instrumentService.getInstrumentByBarcode(instrumentBarcode);
         if(instrument != null) {
-          return (instrument.getType().equals(instrumentTypeName)) ? getValueType().valueOf(instrumentBarcode) : getValueType().nullValue();
+          return (instrument.getTypes().contains(instrumentTypeName)) ? getValueType().valueOf(instrumentBarcode) : getValueType().nullValue();
         } else {
           return getValueType().nullValue();
         }

@@ -40,6 +40,7 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
@@ -47,7 +48,6 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -75,7 +75,9 @@ public class WorkstationPanel extends Panel {
 
   private Dialog addInstrumentWindow;
 
-  private InstrumentEntityList instrumentList;
+  // private InstrumentEntityList instrumentList;
+
+  private InstrumentMeasurementTypeEntityList instrumentMTypeList;
 
   /**
    * @param id
@@ -119,9 +121,13 @@ public class WorkstationPanel extends Panel {
 
     add(addInstrumentLink);
 
-    instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
-    instrumentList.setPageSize(5);
-    add(instrumentList);
+    // instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new
+    // InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
+    // add(instrumentList);
+
+    instrumentMTypeList = new InstrumentMeasurementTypeEntityList("instrument-list", new InstrumentMeasurementTypeProvider(), new InstrumentMeasurementTypeListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
+    instrumentMTypeList.setPageSize(5);
+    add(instrumentMTypeList);
   }
 
   private Dialog createAddInstrumentWindow(String id) {
@@ -140,11 +146,11 @@ public class WorkstationPanel extends Panel {
   // Internal class
   //
   @SuppressWarnings("unchecked")
-  private class InstrumentEntityList extends OnyxEntityList<Instrument> {
+  private class InstrumentMeasurementTypeEntityList extends OnyxEntityList<InstrumentMeasurementType> {
 
     private static final long serialVersionUID = 1L;
 
-    public InstrumentEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
+    public InstrumentMeasurementTypeEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
       super(id, dataProvider, columns, title);
     }
 
@@ -159,27 +165,27 @@ public class WorkstationPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private class InstrumentProvider extends SortableDataProviderEntityServiceImpl<Instrument> {
+  private class InstrumentMeasurementTypeProvider extends SortableDataProviderEntityServiceImpl<InstrumentMeasurementType> {
 
-    public InstrumentProvider() {
-      super(queryService, Instrument.class);
+    public InstrumentMeasurementTypeProvider() {
+      super(queryService, InstrumentMeasurementType.class);
       setSort(new SortParam("type", true));
     }
 
     @Override
-    protected List<Instrument> getList(PagingClause paging, SortingClause... clauses) {
-      return instrumentService.getWorkstationInstruments(userSessionService.getWorkstation(), paging, clauses);
+    protected List<InstrumentMeasurementType> getList(PagingClause paging, SortingClause... clauses) {
+      return instrumentService.getWorkstationInstrumentMeasurementTypes(userSessionService.getWorkstation(), paging, clauses);
     }
 
     @Override
     public int size() {
-      return instrumentService.countWorkstationInstruments(userSessionService.getWorkstation());
+      return instrumentService.countWorkstationInstrumentMeasurementTypes(userSessionService.getWorkstation());
     }
 
   }
 
   @SuppressWarnings("unchecked")
-  private class InstrumentListColumnProvider implements IColumnProvider, Serializable {
+  private class InstrumentMeasurementTypeListColumnProvider implements IColumnProvider, Serializable {
 
     private static final long serialVersionUID = -9121583835357007L;
 
@@ -188,23 +194,17 @@ public class WorkstationPanel extends Panel {
     private List<IColumn> additional = new ArrayList<IColumn>();
 
     @SuppressWarnings("serial")
-    public InstrumentListColumnProvider() {
-      columns.add(new AbstractColumn(new ResourceModel("Measurement", "Measurement"), "type") {
+    public InstrumentMeasurementTypeListColumnProvider() {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Instrument instrument = (Instrument) rowModel.getObject();
-          cellItem.add(new Label(componentId, new SpringStringResourceModel(instrument.getType() + ".description", instrument.getType())));
-        }
-      });
-
-      columns.add(new PropertyColumn(new StringResourceModel("Name", WorkstationPanel.this, null), "name", "name"));
-      columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "barcode", "barcode"));
+      columns.add(new PropertyColumn(new StringResourceModel("Measurement", WorkstationPanel.this, null), "type", "type"));
+      columns.add(new PropertyColumn(new StringResourceModel("Name", WorkstationPanel.this, null), "instrument.name", "instrument.name"));
+      columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "instrument.barcode", "instrument.barcode"));
 
       columns.add(new AbstractColumn(new ResourceModel("Status")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Instrument instrument = (Instrument) rowModel.getObject();
-          cellItem.add(new Label(componentId, new ResourceModel("InstrumentUsage." + instrument.getUsage())));
+          InstrumentMeasurementType instrumentMType = (InstrumentMeasurementType) rowModel.getObject();
+          cellItem.add(new Label(componentId, new ResourceModel("InstrumentUsage." + instrumentMType.getInstrument().getUsage())));
         }
 
       });
@@ -220,11 +220,11 @@ public class WorkstationPanel extends Panel {
       columns.add(new AbstractColumn(new ResourceModel("LastCalibration", "LastCalibration")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Instrument instrument = (Instrument) rowModel.getObject();
-          if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
-            ExperimentalCondition calibration = getLatestInstrumentCalibration(instrument);
+          InstrumentMeasurementType instrumentMType = (InstrumentMeasurementType) rowModel.getObject();
+          if(experimentalConditionService.instrumentCalibrationExists(instrumentMType.getType())) {
+            ExperimentalCondition calibration = getLatestInstrumentMeasurementTypeCalibration(instrumentMType);
             if(calibration != null) {
-              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<InstrumentListColumnProvider>(InstrumentListColumnProvider.this, "dateTimeFormat"), new Model(calibration.getTime()))));
+              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<InstrumentMeasurementTypeListColumnProvider>(InstrumentMeasurementTypeListColumnProvider.this, "dateTimeFormat"), new Model(calibration.getTime()))));
               return;
             }
           }
@@ -265,15 +265,15 @@ public class WorkstationPanel extends Panel {
     }
   }
 
-  public InstrumentEntityList getInstrumentList() {
-    return instrumentList;
+  public InstrumentMeasurementTypeEntityList getInstrumentMeasurementTypeList() {
+    return instrumentMTypeList;
   }
 
-  private ExperimentalCondition getLatestInstrumentCalibration(Instrument instrument) {
-    List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+  private ExperimentalCondition getLatestInstrumentMeasurementTypeCalibration(InstrumentMeasurementType instrumentMType) {
+    List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrumentMType.getType());
     List<ExperimentalCondition> allCalibrations = new ArrayList<ExperimentalCondition>();
     for(InstrumentCalibration instrumentCalibration : instrumentCalibrations) {
-      allCalibrations.addAll(getExperimentalConditions(instrumentCalibration.getName(), instrument.getBarcode()));
+      allCalibrations.addAll(getExperimentalConditions(instrumentCalibration.getName(), instrumentMType.getInstrument().getBarcode()));
     }
     Collections.sort(allCalibrations, new Comparator<ExperimentalCondition>() {
 

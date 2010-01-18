@@ -1,10 +1,20 @@
 <dataset>
     
-  <instrument id="1" barcode="sphygmoCor1" model="SphygmoCor" name="SphygmoCor 1" serial_number="01400" status="ACTIVE" type="ArtStiffness" vendor="AtCor Medical" workstation="onyx001-127.0.32.5"/>   
-  <instrument id="2" barcode="CAG0189" model="MiniSpir" name="Spirometer 1" serial_number="1234567890" status="ACTIVE" type="Spirometry" vendor="MIR"/>
-  <instrument id="3" barcode="sta01" model="Model 214" name="tape 1" serial_number="1234567890" status="ACTIVE" type="StandingHeight" vendor="Seca" workstation="onyx001-127.0.32.5"/>   
-  <instrument id="4" barcode="sit01" model="Model 214" name="tape 2" serial_number="1267890" status="ACTIVE" type="SittingHeight" vendor="Seca" workstation="onyx001-127.0.32.5"/>
-  <instrument id="5" barcode="gh01" model="Model GS0098" name="tape 1" serial_number="1234590" status="INACTIVE" type="GripStrengh" vendor="Secateur" workstation="onyx001-127.0.32.5"/>
-  <instrument id="6" barcode="sta02" model="Model 214" name="tape 3" serial_number="12345670" status="ACTIVE" type="StandingHeight" vendor="Seca" workstation="onyx001-127.0.32.6"/> 
+  <instrument id="1" barcode="sphygmoCor1" model="SphygmoCor" name="SphygmoCor 1" serial_number="01400" status="ACTIVE" vendor="AtCor Medical" workstation="onyx001-127.0.32.5"/>   
+  <instrument id="2" barcode="CAG0189" model="MiniSpir" name="Spirometer 1" serial_number="1234567890" status="ACTIVE" vendor="MIR"/>
+  <instrument id="3" barcode="sta01" model="Model 214" name="tape 1" serial_number="1234567890" status="ACTIVE" vendor="Seca" workstation="onyx001-127.0.32.5"/>   
+  <instrument id="4" barcode="sit01" model="Model 214" name="tape 2" serial_number="1267890" status="ACTIVE" vendor="Seca" workstation="onyx001-127.0.32.5"/>
+  <instrument id="5" barcode="gh01" model="Model GS0098" name="tape 1" serial_number="1234590" status="INACTIVE" vendor="Secateur" workstation="onyx001-127.0.32.5"/>
+  <instrument id="6" barcode="sta02" model="Model 214" name="tape 3" serial_number="12345670" status="ACTIVE" vendor="Seca" workstation="onyx001-127.0.32.6"/>
+  <instrument id="7" barcode="sta03" model="Model 214" name="tape 3" serial_number="12345670" status="ACTIVE" vendor="Seca" /> 
+
+  <instrument_measurement_type id="1" instrument_id="1" type="ArtStiffness"/>   
+  <instrument_measurement_type id="2" instrument_id="2" type="Spirometry"/>
+  <instrument_measurement_type id="3" instrument_id="3" type="StandingHeight"/>   
+  <instrument_measurement_type id="4" instrument_id="3" type="SittingHeight"/>
+  <instrument_measurement_type id="5" instrument_id="5" type="GripStrengh"/>
+  <instrument_measurement_type id="6" instrument_id="6" type="StandingHeight"/>
+  <instrument_measurement_type id="7" instrument_id="6" type="SittingHeight"/>
+  <instrument_measurement_type id="8" instrument_id="7" type="SittingHeight"/>  
 
 </dataset>

@@ -23,6 +23,7 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean;
@@ -60,24 +61,14 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
 
   @Test
   @Dataset
-  public void getWorkstationInstrumentTypesTest() {
-    List<String> types = instrumentServiceHibernateImpl.getWorkstationInstrumentTypes("onyx001-127.0.32.5");
-    Assert.assertEquals(4, types.size());
-    types = instrumentServiceHibernateImpl.getWorkstationInstrumentTypes("onyx001-127.0.32.6");
-    Assert.assertEquals(1, types.size());
-    Assert.assertEquals("StandingHeight", types.get(0));
-  }
-
-  @Test
-  @Dataset
   public void getWorkstationInstrumentsTest() {
     List<Instrument> instruments = instrumentServiceHibernateImpl.getWorkstationInstruments("onyx001-127.0.32.5", new PagingClause(0, 10), new SortingClause("barcode", true));
-    Assert.assertEquals(5, instruments.size());
+    Assert.assertEquals(6, instruments.size());
     Assert.assertEquals("CAG0189", instruments.get(0).getBarcode());
     Assert.assertEquals("sta01", instruments.get(4).getBarcode());
 
     instruments = instrumentServiceHibernateImpl.getWorkstationInstruments("onyx001-127.0.32.6", new PagingClause(0, 10), new SortingClause("model", true));
-    Assert.assertEquals(2, instruments.size());
+    Assert.assertEquals(3, instruments.size());
     Assert.assertEquals("MiniSpir", instruments.get(0).getModel());
     Assert.assertEquals("Model 214", instruments.get(1).getModel());
   }
@@ -86,9 +77,26 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   @Dataset
   public void countWorkstationInstrumentsTest() {
     int count = instrumentServiceHibernateImpl.countWorkstationInstruments("onyx001-127.0.32.5");
-    Assert.assertEquals(5, count);
+    Assert.assertEquals(6, count);
     count = instrumentServiceHibernateImpl.countWorkstationInstruments("onyx001-127.0.32.6");
-    Assert.assertEquals(2, count);
+    Assert.assertEquals(3, count);
+  }
+
+  @Test
+  @Dataset
+  public void getWorkstationInstrumentMeasurementTypesTest() {
+    List<InstrumentMeasurementType> instrumentMeasurementTypes = instrumentServiceHibernateImpl.getWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.5", null, (SortingClause[]) null);
+    Assert.assertEquals(6, instrumentMeasurementTypes.size());
+
+    instrumentMeasurementTypes = instrumentServiceHibernateImpl.getWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.6", null, (SortingClause[]) null);
+    Assert.assertEquals(4, instrumentMeasurementTypes.size());
+  }
+
+  @Test
+  @Dataset
+  public void countWorkstationInstrumentMeasurementTypesTest() {
+    Assert.assertEquals(6, instrumentServiceHibernateImpl.countWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.5"));
+    Assert.assertEquals(4, instrumentServiceHibernateImpl.countWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.6"));
   }
 
   @Test
@@ -118,7 +126,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   @Dataset
   public void createInstrumentTest() {
     Instrument instrument = new Instrument();
-    instrument.setType("testType");
+    instrument.addType("testType");
     instrument.setBarcode("99999");
     instrument.setModel("908908");
     instrument.setVendor("mySelf");
@@ -128,7 +136,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
     instrumentServiceHibernateImpl.updateInstrument(instrument);
 
     List<Instrument> instruments = instrumentServiceHibernateImpl.getWorkstationInstruments("onyx001-127.0.32.6", new PagingClause(0, 10), new SortingClause("barcode", true));
-    Assert.assertEquals(3, instruments.size());
+    Assert.assertEquals(4, instruments.size());
     Assert.assertEquals("99999", instruments.get(0).getBarcode());
   }
 

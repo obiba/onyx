@@ -645,19 +645,19 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     Instrument instrument = instrumentService.getInstrumentByBarcode(BARCODE);
     if(instrument == null) {
       instrument = new Instrument();
-      instrument.setType(instrumentType.getName());
+      instrument.addType(instrumentType.getName());
       instrument.setStatus(InstrumentStatus.ACTIVE);
       instrument.setBarcode(BARCODE);
       instrumentService.updateInstrument(instrument);
       instrument = instrumentService.getInstrumentByBarcode(BARCODE);
     } else {
-      instrument.setType(instrumentType.getName());
+      instrument.addType(instrumentType.getName());
       instrumentService.updateInstrument(instrument);
       instrument = instrumentService.getInstrumentByBarcode(BARCODE);
     }
 
     // Start a new InstrumentRun.
-    instrumentRun = activeInstrumentRunService.start(participant, instrument);
+    instrumentRun = activeInstrumentRunService.start(participant, instrument, instrumentType);
 
     // Verify mock expectations.
     verify(userSessionService);

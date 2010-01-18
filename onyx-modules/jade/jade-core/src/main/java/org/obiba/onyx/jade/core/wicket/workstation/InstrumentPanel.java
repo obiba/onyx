@@ -10,7 +10,6 @@
 package org.obiba.onyx.jade.core.wicket.workstation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -31,8 +30,10 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentUsage;
@@ -69,7 +70,7 @@ public class InstrumentPanel extends Panel {
 
   private final InstrumentFragment instrumentFragment;
 
-  private DropDownChoice<InstrumentType> measurementDropDown;
+  private Model<InstrumentMeasurementType> instrumentMeasurementTypeModel;
 
   /**
    * Indicates whether the <code>InstrumentPanel</code> should be created in "edit" mode (as opposed to "add" mode).
@@ -83,6 +84,9 @@ public class InstrumentPanel extends Panel {
   public InstrumentPanel(String id, IModel<Instrument> instrumentModel, Dialog instrumentWindow, boolean editMode) {
     super(id, instrumentModel);
     setDefaultModel(instrumentModel);
+    if(!editMode) {
+      instrumentMeasurementTypeModel = new Model<InstrumentMeasurementType>(new InstrumentMeasurementType());
+    }
 
     this.editMode = editMode;
     if(!editMode) {
@@ -127,34 +131,50 @@ public class InstrumentPanel extends Panel {
    * @param instrumentTypeModel
    */
   private void addMeasurementField() {
-    // Model saves an instrument type name (as a String) and returns the associated InstrumentType.
-    PropertyModel<InstrumentType> instrumentTypeModel = new PropertyModel<InstrumentType>(getDefaultModel(), "type") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public InstrumentType getObject() {
-        return instrumentService.getInstrumentType(((Instrument) getDefaultModelObject()).getType());
+    if(editMode) {
+      Instrument instrument = ((Instrument) getDefaultModelObject());
+      String str = "";
+      for(InstrumentMeasurementType type : instrumentService.getWorkstationInstrumentMeasurementTypes(userSessionService.getWorkstation(), null, SortingClause.create("type"))) {
+        if(str.length() > 0) {
+          str += ", ";
+        }
+        str += type.getType();
       }
+      add(new TextField<String>("measurements", new Model<String>(str)).setEnabled(false));
+      add(new DropDownChoice<InstrumentType>("measurementSelect").setVisible(false));
 
-    };
+    } else {
+      // Model saves an instrument type name (as a String) and returns the associated InstrumentType.
+      PropertyModel<InstrumentType> instrumentTypeModel = new PropertyModel<InstrumentType>(instrumentMeasurementTypeModel, "type") {
+        private static final long serialVersionUID = 1L;
 
-    measurementDropDown = new DropDownChoice<InstrumentType>("measurementSelect", instrumentTypeModel, new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()), new IChoiceRenderer<InstrumentType>() {
-      private static final long serialVersionUID = 1L;
+        @Override
+        public InstrumentType getObject() {
+          return instrumentService.getInstrumentType(instrumentMeasurementTypeModel.getObject().getType());
+        }
 
-      public Object getDisplayValue(InstrumentType object) {
-        return new SpringStringResourceModel(object.getName() + ".description", object.getName()).getString();
-      }
+      };
 
-      public String getIdValue(InstrumentType object, int index) {
-        return object.getName();
-      }
-    });
+      DropDownChoice<InstrumentType> measurementDropDown = new DropDownChoice<InstrumentType>("measurementSelect", instrumentTypeModel, new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()), new IChoiceRenderer<InstrumentType>() {
+        private static final long serialVersionUID = 1L;
 
-    measurementDropDown.setEnabled(!editMode);
-    measurementDropDown.setLabel(new ResourceModel("Measurement"));
-    measurementDropDown.setRequired(true);
-    measurementDropDown.setOutputMarkupId(true);
-    add(measurementDropDown);
+        public Object getDisplayValue(InstrumentType object) {
+          return new SpringStringResourceModel(object.getName() + ".description", object.getName()).getString();
+        }
+
+        public String getIdValue(InstrumentType object, int index) {
+          return object.getName();
+        }
+      });
+
+      // measurementDropDown.setVisible(!editMode);
+      measurementDropDown.setLabel(new ResourceModel("Measurement"));
+      measurementDropDown.setRequired(true);
+      measurementDropDown.setOutputMarkupId(true);
+      add(measurementDropDown);
+
+      add(new TextField<String>("measurements").setVisible(false));
+    }
   }
 
   /**
@@ -186,7 +206,6 @@ public class InstrumentPanel extends Panel {
             setInstrumentUsage(InstrumentUsage.RESERVED);
 
             displayInstrument(instrument);
-            target.addComponent(measurementDropDown);
 
           } else {
             // In case of back and forth, between existing and non-existing instruments.
@@ -246,28 +265,23 @@ public class InstrumentPanel extends Panel {
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
           Instrument instrument = (Instrument) getDefaultModelObject();
           instrumentService.updateInstrument(instrument);
+
+          if(!editMode) {
+            InstrumentMeasurementType instrumentMeasurementType = instrumentMeasurementTypeModel.getObject();
+            instrumentService.addInstrumentMeasurementType(instrument, instrumentMeasurementType);
+          }
         }
-        target.addComponent(InstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentList());
+        target.addComponent(InstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
       }
     });
   }
 
   private void displayInstrument(Instrument instrument) {
     InstrumentPanel.this.setDefaultModelObject(instrument);
-    measurementDropDown.setChoices(Arrays.asList(new InstrumentType[] { instrumentService.getInstrumentType(instrument.getType()) }));
-
-    measurementDropDown.setEnabled(false);
-
     instrumentFragment.getInstructions().setVisible(false);
   }
 
   private void clearForm(AjaxRequestTarget target) {
-    if(measurementDropDown.isEnabled() == false) {
-      measurementDropDown.setEnabled(true);
-      measurementDropDown.setChoices(new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values()));
-      target.addComponent(measurementDropDown);
-      InstrumentPanel.this.setDefaultModelObject(new Instrument());
-    }
     instrumentFragment.getName().setDefaultModelObject(null);
     instrumentFragment.getVendor().setDefaultModelObject(null);
     instrumentFragment.getModel().setDefaultModelObject(null);

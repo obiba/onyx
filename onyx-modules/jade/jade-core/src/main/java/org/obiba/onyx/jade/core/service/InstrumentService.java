@@ -15,6 +15,7 @@ import java.util.Map;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
@@ -67,8 +68,7 @@ public interface InstrumentService {
    * @param workstation
    * @return
    */
-  public List<String> getWorkstationInstrumentTypes(String workstation);
-
+  // public List<String> getWorkstationInstrumentTypes(String workstation);
   /**
    * Get the instruments for given workstation.
    * @param workstation, paging, clauses
@@ -95,7 +95,7 @@ public interface InstrumentService {
    * @param instrument The instrument to check
    * @return True if available, false if available
    */
-  public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument);
+  public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument, InstrumentType instrumentType);
 
   /**
    * Get the number of instruments for given workstation.
@@ -118,6 +118,12 @@ public interface InstrumentService {
   public void updateInstrument(Instrument instrument);
 
   /**
+   * Add a type to the instrument, ignore if type was already added.
+   * @param instrument, type
+   */
+  public void addInstrumentMeasurementType(Instrument instrument, InstrumentMeasurementType type);
+
+  /**
    * Update the instrument's status.
    * @param instrument, status
    */
@@ -135,4 +141,26 @@ public interface InstrumentService {
    * @throws IllegalArgumentException if instrument is null.
    */
   public void deleteInstrument(Instrument instrument);
+
+  /**
+   * Delete the instrument measurement type association, and delete the instrument if there is no more instrument
+   * measurement types.
+   * @param type
+   */
+  public void deleteInstrumentMeasurementType(InstrumentMeasurementType type);
+
+  /**
+   * Get the instruments and types for given workstation.
+   * @param workstation, paging, clauses
+   * @return
+   */
+  public List<InstrumentMeasurementType> getWorkstationInstrumentMeasurementTypes(String workstation, PagingClause paging, SortingClause... clauses);
+
+  /**
+   * Get the number of instruments and types for given workstation.
+   * @param workstation
+   * @return
+   */
+  public int countWorkstationInstrumentMeasurementTypes(String workstation);
+
 }

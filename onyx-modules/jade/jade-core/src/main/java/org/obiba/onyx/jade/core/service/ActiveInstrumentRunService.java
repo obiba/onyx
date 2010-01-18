@@ -34,7 +34,7 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @param instrument
    * @return
    */
-  public InstrumentRun start(Participant participant, Instrument instrument);
+  public InstrumentRun start(Participant participant, Instrument instrument, InstrumentType instrumentType);
 
   /**
    * Set the end date to the current {@link InstrumentRun} with its current status.
