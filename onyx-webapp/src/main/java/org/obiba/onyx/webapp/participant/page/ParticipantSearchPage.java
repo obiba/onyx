@@ -114,6 +114,10 @@ public class ParticipantSearchPage extends BasePage {
 
   private static final int DEFAULT_INITIAL_WIDTH = 34;
 
+  private static final int DEFAULT_PARTICIPANT_HEIGHT = 35;
+
+  private static final int DEFAULT_PARTICIPANT_WIDTH = 34;
+
   private UpdateParticipantListWindow updateParticipantListWindow;
 
   @SuppressWarnings("serial")
@@ -121,9 +125,17 @@ public class ParticipantSearchPage extends BasePage {
     super();
 
     add(participantDetailsModalWindow = createParticipantDialog("participantDetailsModalWindow"));
+    participantDetailsModalWindow.setHeightUnit("em");
+    participantDetailsModalWindow.setInitialHeight(DEFAULT_PARTICIPANT_HEIGHT);
+    participantDetailsModalWindow.setWidthUnit("em");
+    participantDetailsModalWindow.setInitialWidth(DEFAULT_PARTICIPANT_WIDTH);
     add(editParticipantDetailsModalWindow = createParticipantDialog("editParticipantDetailsModalWindow"));
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
     editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION, "Save");
+    editParticipantDetailsModalWindow.setHeightUnit("em");
+    editParticipantDetailsModalWindow.setInitialHeight(DEFAULT_PARTICIPANT_HEIGHT);
+    editParticipantDetailsModalWindow.setWidthUnit("em");
+    editParticipantDetailsModalWindow.setInitialWidth(DEFAULT_PARTICIPANT_WIDTH);
 
     unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
