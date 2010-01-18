@@ -120,6 +120,7 @@ public class WorkstationPanel extends Panel {
     add(addInstrumentLink);
 
     instrumentList = new InstrumentEntityList("instrument-list", new InstrumentProvider(), new InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
+    instrumentList.setPageSize(5);
     add(instrumentList);
   }
 
