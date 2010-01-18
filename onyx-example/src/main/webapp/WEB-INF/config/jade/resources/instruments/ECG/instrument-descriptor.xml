@@ -2,41 +2,32 @@
 <instrumentType>
 
   <name>ECG</name>
-
+  
   <instrumentParameters>
     <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="hashedDataSource">  
-        <hashedStringMaxLength>30</hashedStringMaxLength>  
-        <dataSource class="participantPropertyDataSource">
-          <property>barcode</property>
-        </dataSource>
+      <captureMethod>AUTOMATIC</captureMethod>     
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">TEST DEMO 000000</data>
       </dataSource>
     </input>
 
     <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="hashedDataSource">  
-        <hashedStringMaxLength>30</hashedStringMaxLength>  
-        <dataSource class="participantPropertyDataSource">
-          <property>lastName</property>
-        </dataSource>    
+      <captureMethod>AUTOMATIC</captureMethod>     
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">TEST-DEMO</data>
       </dataSource>
     </input>
 
     <input>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="hashedDataSource">  
-        <hashedStringMaxLength>30</hashedStringMaxLength>     
-        <dataSource class="participantPropertyDataSource">
-          <property>firstName</property>
-        </dataSource>
+      <captureMethod>AUTOMATIC</captureMethod>  
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">TEST-DEMO</data>
       </dataSource>
     </input>
 
@@ -44,8 +35,8 @@
       <code>INPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>birthYear</property>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">1968</data>
       </dataSource>
     </input>
 
@@ -53,8 +44,8 @@
       <code>INPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>birthMonth</property>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">3</data>
       </dataSource>
     </input>
 
@@ -62,8 +53,8 @@
       <code>INPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>birthDay</property>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">28</data>
       </dataSource>
     </input>
 
@@ -81,7 +72,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
-        <data type="TEXT">CAUCASIAN</data>
+        <data type="TEXT">UNKNOWN</data>
       </dataSource>
     </input>
 
@@ -90,7 +81,7 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
-        <data type="INTEGER">1</data>
+        <data type="INTEGER">0</data>
       </dataSource>
     </input>
 
@@ -100,7 +91,7 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
-        <data type="INTEGER">1</data>
+        <data type="INTEGER">80</data>
       </dataSource>
     </input>
 
@@ -110,7 +101,7 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
-        <data type="INTEGER">1</data>
+        <data type="INTEGER">156</data>
       </dataSource>
     </input>
 
@@ -314,9 +305,6 @@
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
-      <condition class="fixedDataSource">
-         <data type="BOOLEAN">false</data>
-      </condition>   
     </output>
 
     <output>
@@ -325,11 +313,8 @@
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
-      <condition class="fixedDataSource">
-         <data type="BOOLEAN">false</data>
-      </condition>    
     </output>
-    
+
     <output>
       <vendorName>QRsDuration</vendorName>
       <code>RES_QRS_DURATION</code>
@@ -463,6 +448,6 @@
       <dataType>DATA</dataType>
       <mimeType>application/pdf</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
-    </output>
+    </output>    
   </instrumentParameters>
 </instrumentType>
