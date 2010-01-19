@@ -116,7 +116,7 @@ public class ParticipantSearchPage extends BasePage {
 
   private static final int DEFAULT_PARTICIPANT_HEIGHT = 36;
 
-  private static final int DEFAULT_PARTICIPANT_WIDTH = 37;
+  private static final int DEFAULT_PARTICIPANT_WIDTH = 39;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
 
