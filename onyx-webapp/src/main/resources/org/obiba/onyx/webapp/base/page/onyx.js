@@ -188,6 +188,20 @@ NavigationUtil.next = function() {
   }
 }
 
+NavigationUtil.begin = function() {
+  var beginButton = $('input.obiba-button.begin, #beginButton');
+  if (beginButton) {
+    beginButton.click();
+  }
+}
+
+NavigationUtil.end = function() {
+  var endButton = $('input.obiba-button.end, #endButton');
+  if (endButton) {
+    endButton.click();
+  }
+}
+
 NavigationUtil.finish = function() {
   var finishButton = $('input.obiba-nav-finish');
   if (finishButton) {
@@ -334,6 +348,21 @@ function addOnyxWizardBehavior() {
                 			return true;
           				}        
         			});
+        			
+  $(document).bind('keydown', 'home',
+                    function (evt){ 
+                      NavigationUtil.begin(); 
+                      return false; 
+                    }
+                  );
+
+        			
+  $(document).bind('keydown', 'end',
+                    function (evt){ 
+                      NavigationUtil.end(); 
+                      return false; 
+                    }
+                  );
         			
   $(document).bind('keydown', {combi:'f', disableInInput: true}, 
   					function(evt) { 

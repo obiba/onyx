@@ -85,7 +85,7 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
       }
 
     };
-    beginLink.add(new AttributeAppender("class", new Model("home"), " "));
+    beginLink.add(new AttributeAppender("class", new Model("begin"), " "));
 
     endLink = new AjaxButton("end", form) {
 
