@@ -1114,7 +1114,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
 /******************* Login *********************************************************/
 
 #login {
-	width: 47.9167em;
+	width: 30em;
 }
 
 #loginHeader {
@@ -1133,7 +1133,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
 
 #loginFooter p {
 	font-family:verdana,arial,sans-serif;
-	font-size:0.9167em;
+	font-size:0.7em;
 	letter-spacing:0.0833em;
 	text-align:center;
 }
