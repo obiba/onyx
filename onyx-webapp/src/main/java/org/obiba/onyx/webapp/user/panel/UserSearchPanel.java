@@ -86,7 +86,7 @@ public class UserSearchPanel extends Panel {
   private void setModalWindow() {
     userDetailsModalWindow = new ModalWindow("userDetailsModalWindow");
     userDetailsModalWindow.setCssClassName("onyx");
-    userDetailsModalWindow.setTitle(new StringResourceModel("UserManagement", this, null));
+    userDetailsModalWindow.setTitle(new StringResourceModel("EditUser", this, null));
 
     userDetailsModalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
@@ -102,8 +102,8 @@ public class UserSearchPanel extends Panel {
     });
     userDetailsModalWindow.setHeightUnit("em");
     userDetailsModalWindow.setWidthUnit("em");
-    userDetailsModalWindow.setInitialWidth(34);
-    userDetailsModalWindow.setInitialHeight(34);
+    userDetailsModalWindow.setInitialWidth(22);
+    userDetailsModalWindow.setInitialHeight(16);
     userDetailsModalWindow.setResizable(false);
 
   }
