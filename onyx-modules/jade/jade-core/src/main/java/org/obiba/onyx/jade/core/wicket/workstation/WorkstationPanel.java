@@ -48,6 +48,7 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -126,7 +127,7 @@ public class WorkstationPanel extends Panel {
     // add(instrumentList);
 
     instrumentMTypeList = new InstrumentMeasurementTypeEntityList("instrument-list", new InstrumentMeasurementTypeProvider(), new InstrumentMeasurementTypeListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
-    instrumentMTypeList.setPageSize(5);
+    instrumentMTypeList.setPageSize(20);
     add(instrumentMTypeList);
   }
 
@@ -196,7 +197,13 @@ public class WorkstationPanel extends Panel {
     @SuppressWarnings("serial")
     public InstrumentMeasurementTypeListColumnProvider() {
 
-      columns.add(new PropertyColumn(new StringResourceModel("Measurement", WorkstationPanel.this, null), "type", "type"));
+      columns.add(new PropertyColumn(new StringResourceModel("Measurement", WorkstationPanel.this, null), "type", "type") {
+        @Override
+        protected IModel createLabelModel(IModel rowModel) {
+          InstrumentMeasurementType instrumentMType = (InstrumentMeasurementType) rowModel.getObject();
+          return new SpringStringResourceModel(instrumentMType.getType() + ".description", instrumentMType.getType());
+        }
+      });
       columns.add(new PropertyColumn(new StringResourceModel("Name", WorkstationPanel.this, null), "instrument.name", "instrument.name"));
       columns.add(new PropertyColumn(new StringResourceModel("Barcode", WorkstationPanel.this, null), "instrument.barcode", "instrument.barcode"));
 

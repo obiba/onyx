@@ -196,4 +196,11 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
       getPersistenceManager().delete(type.getInstrument());
     }
   }
+
+  public List<InstrumentMeasurementType> getWorkstationInstrumentMeasurementTypes(Instrument instrument) {
+    InstrumentMeasurementType template = new InstrumentMeasurementType();
+    template.setInstrument(instrument);
+
+    return getPersistenceManager().match(template);
+  }
 }

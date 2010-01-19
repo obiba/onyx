@@ -151,10 +151,10 @@ public class ActionsPanel extends Panel {
     @Override
     public void onClick(AjaxRequestTarget target) {
       List<ExperimentalConditionLog> log = new ArrayList<ExperimentalConditionLog>();
-      for(InstrumentCalibration cal : experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType())) {
+      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType());
+      for(InstrumentCalibration cal : instrumentCalibrations) {
         log.add((ExperimentalConditionLog) cal);
       }
-      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType());
       InstrumentCalibration instrumentCalibration = null;
       if(!instrumentCalibrations.isEmpty()) {
         instrumentCalibration = instrumentCalibrations.get(0);
@@ -220,6 +220,7 @@ public class ActionsPanel extends Panel {
     public boolean isVisible() {
       InstrumentRun template = new InstrumentRun();
       template.setInstrument(instrument);
+      template.setInstrumentType(getInstrumentMeasurementType().getType());
       return instrumentRunService.getInstrumentRuns(template).isEmpty();
     }
 
@@ -260,6 +261,10 @@ public class ActionsPanel extends Panel {
       deleteInstrumentConfirmationWindow.show(target);
     }
 
+    /**
+     * Delete the experimental conditions logged for the instrument and the measurement type.
+     * @param barcode
+     */
     private void deleteInstrumentCalibrations(String barcode) {
       List<ExperimentalCondition> experimentalConditions = getExperimentalConditions(barcode);
       for(ExperimentalCondition ec : experimentalConditions) {
@@ -267,7 +272,14 @@ public class ActionsPanel extends Panel {
       }
     }
 
+    /**
+     * Get the experimental conditions logged for the instrument and the measurement type.
+     * @param barcode
+     * @return
+     */
     private List<ExperimentalCondition> getExperimentalConditions(String barcode) {
+      List<ExperimentalCondition> experimentalConditions = new ArrayList<ExperimentalCondition>();
+
       ExperimentalCondition template = new ExperimentalCondition();
       ExperimentalConditionValue ecv = new ExperimentalConditionValue();
       ecv.setAttributeType(DataType.TEXT);
@@ -276,7 +288,12 @@ public class ActionsPanel extends Panel {
       ecv.setExperimentalCondition(template);
       template.addExperimentalConditionValue(ecv);
 
-      return experimentalConditionService.getExperimentalConditions(template);
+      for(InstrumentCalibration instrumentCalibration : experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType())) {
+        template.setName(instrumentCalibration.getName());
+        experimentalConditions.addAll(experimentalConditionService.getExperimentalConditions(template));
+      }
+
+      return experimentalConditions;
     }
   }
 

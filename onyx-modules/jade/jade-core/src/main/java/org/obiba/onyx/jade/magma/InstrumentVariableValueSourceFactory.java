@@ -9,7 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.magma;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,12 +25,14 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
+import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
@@ -92,7 +98,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     sources = super.createSources();
 
     // Create sources for instrument types.
-    // sources.add(createInstrumentTypesSources());
+    sources.add(createInstrumentTypesSource());
 
     // Create Instrument captureStartDate and captureEndDate sources.
     sources.add(createInstrumentCaptureStartDateSource());
@@ -125,6 +131,28 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
   public void setInstrumentCaptureAndExportStrategy(InstrumentCaptureAndExportStrategy instrumentCaptureAndExportStrategy) {
     this.instrumentCaptureAndExportStrategy = instrumentCaptureAndExportStrategy;
+  }
+
+  private VariableValueSource createInstrumentTypesSource() {
+    Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "type", TextType.get(), INSTRUMENT);
+    builder.repeatable();
+
+    List<InstrumentType> instrumentTypes = new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values());
+    Collections.sort(instrumentTypes, new Comparator<InstrumentType>() {
+
+      public int compare(InstrumentType o1, InstrumentType o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+
+    });
+
+    for(InstrumentType type : instrumentTypes) {
+      Category.Builder catBuilder = Category.Builder.newCategory(type.getName());
+      attributeHelper.addLocalizedAttributes(catBuilder, type.getName() + ".description");
+      builder.addCategory(catBuilder.build());
+    }
+
+    return new BeanPropertyVariableValueSource(builder.build(), InstrumentMeasurementType.class, "type");
   }
 
   private VariableValueSource createInstrumentCaptureStartDateSource() {

@@ -163,4 +163,11 @@ public interface InstrumentService {
    */
   public int countWorkstationInstrumentMeasurementTypes(String workstation);
 
+  /**
+   * Get the instrument types associated to the given instrument.
+   * @param instrument
+   * @return
+   */
+  public List<InstrumentMeasurementType> getWorkstationInstrumentMeasurementTypes(Instrument instrument);
+
 }
