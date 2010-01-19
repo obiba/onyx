@@ -1644,6 +1644,10 @@ ul#interviewMenuBar li a span {
     overflow: auto;
 }
 
+textarea.actionComment {
+	width:18.7em;
+}
+
 /******************* End InterviewPage *********************************************/
 
 #commentIcon, #logIcon {
