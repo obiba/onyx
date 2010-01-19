@@ -11,12 +11,15 @@ package org.obiba.onyx.jade.core.service.impl.hibernate;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.core.service.impl.hibernate.AssociationCriteria;
+import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,44 +42,31 @@ public class InstrumentServiceHibernateImpl extends DefaultInstrumentServiceImpl
   }
 
   public List<Instrument> getWorkstationInstruments(String workstation, PagingClause paging, SortingClause... clauses) {
-    Query query = createQuery(workstation, clauses);
+    AssociationCriteria criteria = AssociationCriteria.create(Instrument.class, getSession()).addPagingClause(paging).addSortingClauses(clauses);
+    criteria.getCriteria().add(Restrictions.or(Restrictions.eq("workstation", workstation), Restrictions.isNull("workstation")));
 
-    query.setMaxResults(paging.getLimit());
-    query.setFirstResult(paging.getOffset());
-
-    return query.list();
+    return criteria.list();
   }
 
   public int countWorkstationInstruments(String workstation) {
-    Query query = createQuery(workstation);
+    AssociationCriteria criteria = AssociationCriteria.create(Instrument.class, getSession());
+    criteria.getCriteria().add(Restrictions.or(Restrictions.eq("workstation", workstation), Restrictions.isNull("workstation")));
 
-    List results = query.list();
-
-    int count = 0;
-
-    if(results != null) {
-      count = results.size();
-    }
-
-    return count;
+    return criteria.count();
   }
 
-  private Query createQuery(String workstation, SortingClause... clauses) {
-    String queryString = "from Instrument i";
+  public List<InstrumentMeasurementType> getWorkstationInstrumentMeasurementTypes(String workstation, PagingClause paging, SortingClause... clauses) {
+    AssociationCriteria criteria = AssociationCriteria.create(InstrumentMeasurementType.class, getSession()).addPagingClause(paging).addSortingClauses(clauses);
+    criteria.add("instrument", Operation.or, Restrictions.eq("workstation", workstation), Restrictions.isNull("workstation"));
 
-    if(workstation != null) {
-      queryString += " where i.workstation = '" + workstation + "' or i.workstation is null";
-    }
-
-    if(clauses != null) {
-      int i = 0;
-      for(SortingClause clause : clauses) {
-        queryString += (i == 0) ? " order by " : ", ";
-        queryString += clause.getField() + ((clause.isAscending()) ? " asc" : " desc");
-        i++;
-      }
-    }
-
-    return getSession().createQuery(queryString);
+    return criteria.list();
   }
+
+  public int countWorkstationInstrumentMeasurementTypes(String workstation) {
+    AssociationCriteria criteria = AssociationCriteria.create(InstrumentMeasurementType.class, getSession());
+    criteria.add("instrument", Operation.or, Restrictions.eq("workstation", workstation), Restrictions.isNull("workstation"));
+
+    return criteria.count();
+  }
+
 }

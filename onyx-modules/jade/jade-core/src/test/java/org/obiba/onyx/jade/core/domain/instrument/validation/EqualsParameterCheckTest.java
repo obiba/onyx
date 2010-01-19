@@ -58,7 +58,7 @@ public class EqualsParameterCheckTest {
     instrumentType = new InstrumentType();
 
     instrument = new Instrument();
-    instrument.setType(instrumentType.getName());
+    instrument.addType(instrumentType.getName());
 
     instrumentRun = new InstrumentRun();
     instrumentRun.setParticipant(participant);

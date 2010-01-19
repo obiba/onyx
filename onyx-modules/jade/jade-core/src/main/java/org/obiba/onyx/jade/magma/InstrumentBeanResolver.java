@@ -18,6 +18,7 @@ import org.obiba.magma.beans.NoSuchBeanException;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
@@ -46,12 +47,14 @@ public class InstrumentBeanResolver extends ExperimentalConditionBeanResolver {
   //
 
   public boolean resolves(Class<?> type) {
-    return super.resolves(type) || Instrument.class.equals(type) || ExportLog.class.equals(type);
+    return super.resolves(type) || Instrument.class.equals(type) || InstrumentMeasurementType.class.equals(type) || ExportLog.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
     if(Instrument.class.equals(type)) {
       return resolveInstrument(valueSet);
+    } else if(InstrumentMeasurementType.class.equals(type)) {
+      return resolveInstrumentMeasurementType(valueSet);
     } else if(ExperimentalCondition.class.equals(type)) {
       return resolveExperimentalCondition(valueSet, variable);
     } else if(ExperimentalConditionValue.class.equals(type)) {
@@ -89,6 +92,11 @@ public class InstrumentBeanResolver extends ExperimentalConditionBeanResolver {
   protected Instrument resolveInstrument(ValueSet valueSet) {
     String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
     return instrumentService.getInstrumentByBarcode(instrumentBarcode);
+  }
+
+  private List<InstrumentMeasurementType> resolveInstrumentMeasurementType(ValueSet valueSet) {
+    String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
+    return instrumentService.getInstrumentByBarcode(instrumentBarcode).getInstrumentMeasurementTypes();
   }
 
   protected List<ExportLog> resolveExportLog(ValueSet valueSet, Variable variable) {

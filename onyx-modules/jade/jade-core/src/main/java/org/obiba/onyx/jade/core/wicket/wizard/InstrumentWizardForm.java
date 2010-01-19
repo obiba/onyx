@@ -253,17 +253,23 @@ public class InstrumentWizardForm extends WizardForm {
     return !getContraindications(type).isEmpty();
   }
 
+  private InstrumentType getInstrumentType() {
+    return (InstrumentType) getModelObject();
+  }
+
   public WizardStepPanel setUpWizardFlow(WizardStepPanel startStepWhenResuming) {
     boolean resuming = startStepWhenResuming != null;
     WizardStepPanel startStep = startStepWhenResuming;
     WizardStepPanel lastStep = null;
 
-    List<Instrument> activeInstrumentsForCurrentWorkstation = instrumentService.getActiveInstrumentsForCurrentWorkstation((InstrumentType) getModelObject());
+    List<Instrument> activeInstrumentsForCurrentWorkstation = instrumentService.getActiveInstrumentsForCurrentWorkstation(getInstrumentType());
     log.debug("instruments.count={}", activeInstrumentsForCurrentWorkstation.size());
     if(activeInstrumentsForCurrentWorkstation.size() == 0) {
+      log.debug("activeInstrumentsForCurrentWorkstation.size() == 0");
       startStep = noInstrumentAvailableStep;
       lastStep = startStep;
     } else if(activeInstrumentsForCurrentWorkstation.size() > 1) {
+      log.debug("activeInstrumentsForCurrentWorkstation.size() > 1");
       // Found too many instruments of the correct type.
       // Prompt the user to enter the instrument they will be using for this measure.
       if(startStep == null || startStep.equals(instrumentSelectionStep)) {
@@ -278,14 +284,16 @@ public class InstrumentWizardForm extends WizardForm {
       }
       instrumentSelected = true;
     } else {
+      log.debug("activeInstrumentsForCurrentWorkstation.size() == 1");
       // A single instrument of the correct type is associated with this workstation.
       if(resuming) {
+        log.debug("Resuming an InstrumentRun with the instrument type [" + getInstrumentType().getName() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
         activeInstrumentRunService.setInstrument(activeInstrumentsForCurrentWorkstation.get(0));
-        log.debug("Resuming an InstrumentRun with the instrument type [" + activeInstrumentsForCurrentWorkstation.get(0).getType() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
       } else {
+        log.debug("Not resuming, instrumentSelected={}", instrumentSelected);
         if(!instrumentSelected) {
-          activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0));
-          log.debug("Starting a new InstrumentRun with the instrument type [" + activeInstrumentsForCurrentWorkstation.get(0).getType() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
+          log.debug("Starting a new InstrumentRun with the instrument type [" + getInstrumentType().getName() + "] and barcode [" + activeInstrumentsForCurrentWorkstation.get(0).getBarcode() + "].");
+          activeInstrumentRunService.start(activeInterviewService.getParticipant(), activeInstrumentsForCurrentWorkstation.get(0), getInstrumentType());
           instrumentSelected = true;
         }
       }
@@ -400,7 +408,7 @@ public class InstrumentWizardForm extends WizardForm {
       return null;
     }
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = getInstrumentType();
     if(hasSomeOrAllOutputParameterValues()) {
       log.info("Has all output values.");
       if(getOutputParametersOriginallyMarkedForManualCapture().size() > 0) {
@@ -526,7 +534,9 @@ public class InstrumentWizardForm extends WizardForm {
     WizardStepPanel startStepWhenResuming = null;
 
     InstrumentRun previousInstrumentRun = instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName());
+    log.debug("resuming[{}] && previousInstrumentRun != null[{}]", resuming, previousInstrumentRun != null);
     if(resuming && previousInstrumentRun != null) {
+      log.debug("resuming && previousInstrumentRun != null");
       activeInstrumentRunService.setInstrumentRun(instrumentRunService.getInstrumentRun(activeInterviewService.getParticipant(), ((InstrumentType) getModelObject()).getName()));
       startStepWhenResuming = getStepWhenResuming();
       instrumentSelected = true;
@@ -545,7 +555,7 @@ public class InstrumentWizardForm extends WizardForm {
    * @return True if we have at least one output parameter value;
    */
   private boolean hasSomeOrAllOutputParameterValues() {
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = getInstrumentType();
     if(instrumentType.isRepeatable()) {
       return haveSomeOrAllRepeatingOutputParameterValues();
     } else {
@@ -554,7 +564,7 @@ public class InstrumentWizardForm extends WizardForm {
   }
 
   private boolean haveSomeOrAllNonRepeatableOutputParameterValues() {
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = getInstrumentType();
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     for(InstrumentOutputParameter instrumentOutputParameter : instrumentType.getOutputParameters()) {
       InstrumentRunValue instrumentRunValue = instrumentRun.getInstrumentRunValue(instrumentOutputParameter);
@@ -566,7 +576,7 @@ public class InstrumentWizardForm extends WizardForm {
   }
 
   private boolean haveSomeOrAllRepeatingOutputParameterValues() {
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = getInstrumentType();
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     Participant participant = activeInstrumentRunService.getParticipant();
     if(instrumentType.getExpectedMeasureCount(participant) == 0) return false; // No values
@@ -587,7 +597,7 @@ public class InstrumentWizardForm extends WizardForm {
    * @return True if we have at least one interpretive parameter value.
    */
   private boolean hasSomeOrAllInterpretiveParameterValues() {
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    InstrumentType instrumentType = getInstrumentType();
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     for(InterpretativeParameter interpretiveParameter : instrumentType.getInterpretativeParameters()) {
       InstrumentRunValue instrumentRunValue = instrumentRun.getInstrumentRunValue(interpretiveParameter);

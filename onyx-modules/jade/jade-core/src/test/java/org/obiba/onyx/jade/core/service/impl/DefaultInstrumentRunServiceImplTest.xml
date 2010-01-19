@@ -8,9 +8,12 @@
   <participant id="1" site_no="onyx001" enrollment_id="1" barcode="0000001" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
   <participant id="2" site_no="onyx001" enrollment_id="2" barcode="0000002" last_name="Hillenius" first_name="Eelco" gender="MALE" birth_date="1979-09-04 00:00:00"/>
   
-  <instrument id="1" barcode="sphygmoCor1" model="SphygmoCor" name="SphygmoCor 1" serial_number="01400" status="ACTIVE" type="ArtStiffness" vendor="AtCor Medical" />  
-  <instrument id="13" barcode="sta01" model="Model 214" name="tape 1" serial_number="1234567890" status="ACTIVE" type="StandingHeight" vendor="Seca" />   
-    
+  <instrument id="1" barcode="sphygmoCor1" model="SphygmoCor" name="SphygmoCor 1" serial_number="01400" status="ACTIVE" vendor="AtCor Medical" />  
+  <instrument id="13" barcode="sta01" model="Model 214" name="tape 1" serial_number="1234567890" status="ACTIVE" vendor="Seca" />   
+  
+  <instrument_measurement_type id="1" instrument_id="1" type="ArtStiffness" />
+  <instrument_measurement_type id="2" instrument_id="13" type="StandingHeight" />
+  
   <instrument_run id="1" instrument_type="StandingHeight" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="13" participant_id="1" user_id="1" />
   <instrument_run id="2" instrument_type="StandingHeight" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="13" participant_id="2" user_id="1" />  
   <instrument_run id="3" instrument_type="ArtStiffness" status="COMPLETED" time_end="2009-03-23 02:00:00" time_start="2009-03-23 01:00:00" instrument_id="1" participant_id="2" user_id="1" />

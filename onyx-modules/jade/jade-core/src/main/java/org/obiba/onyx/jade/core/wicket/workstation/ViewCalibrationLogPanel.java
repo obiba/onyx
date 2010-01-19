@@ -21,6 +21,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalCondition;
 import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
@@ -37,7 +38,7 @@ public class ViewCalibrationLogPanel extends Panel {
   @SpringBean
   private ExperimentalConditionService experimentalConditionService;
 
-  public ViewCalibrationLogPanel(String id, IModel<Instrument> model) {
+  public ViewCalibrationLogPanel(String id, IModel<InstrumentMeasurementType> model) {
     super(id, model);
 
     ResourceModel logTitleModel = new ResourceModel("CalibrationHistory");
@@ -48,7 +49,7 @@ public class ViewCalibrationLogPanel extends Panel {
     logDialog.setInitialWidth(84);
     add(logDialog);
 
-    AjaxLink<Instrument> viewCalibrationLink = new AjaxLink<Instrument>("viewCalibrationLog", model) {
+    AjaxLink<InstrumentMeasurementType> viewCalibrationLink = new AjaxLink<InstrumentMeasurementType>("viewCalibrationLog", model) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -63,10 +64,9 @@ public class ViewCalibrationLogPanel extends Panel {
 
   @Override
   public boolean isVisible() {
-    Instrument instrument = (Instrument) getDefaultModelObject();
-    if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
+    if(experimentalConditionService.instrumentCalibrationExists(getInstrumentMeasurementType().getType())) {
 
-      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+      List<InstrumentCalibration> instrumentCalibrations = experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType());
       List<ExperimentalCondition> calibrations = new ArrayList<ExperimentalCondition>();
       for(InstrumentCalibration instrumentCalibration : instrumentCalibrations) {
         calibrations.addAll(getExperimentalConditionsForInstrumentCalibration(instrumentCalibration));
@@ -80,7 +80,7 @@ public class ViewCalibrationLogPanel extends Panel {
   }
 
   private List<ExperimentalCondition> getExperimentalConditionsForInstrumentCalibration(InstrumentCalibration instrumentCalibration) {
-    Instrument instrument = (Instrument) getDefaultModelObject();
+    Instrument instrument = getInstrumentMeasurementType().getInstrument();
     ExperimentalCondition template = new ExperimentalCondition();
     template.setName(instrumentCalibration.getName());
 
@@ -95,13 +95,17 @@ public class ViewCalibrationLogPanel extends Panel {
   }
 
   private ExperimentalConditionHistoryPanel getExperimentalConditionHistoryPanel() {
-    Instrument instrument = (Instrument) getDefaultModelObject();
-    if(experimentalConditionService.instrumentCalibrationExists(instrument.getType())) {
-      List<InstrumentCalibration> calibrations = experimentalConditionService.getInstrumentCalibrationsByType(instrument.getType());
+    Instrument instrument = getInstrumentMeasurementType().getInstrument();
+    if(experimentalConditionService.instrumentCalibrationExists(getInstrumentMeasurementType().getType())) {
+      List<InstrumentCalibration> calibrations = experimentalConditionService.getInstrumentCalibrationsByType(getInstrumentMeasurementType().getType());
       return new ExperimentalConditionHistoryPanel("content", calibrations, 5, instrument);
     }
     ExperimentalCondition template = new ExperimentalCondition();
     return new ExperimentalConditionHistoryPanel("content", template, new Model<String>("titleModel"), 5);
+  }
+
+  private InstrumentMeasurementType getInstrumentMeasurementType() {
+    return (InstrumentMeasurementType) getDefaultModelObject();
   }
 
 }

@@ -47,11 +47,11 @@ public class InstrumentBarcodeConverter implements IConverter {
     Instrument instrument = queryService.matchOne(template);
     if(instrument == null) {
       displayConversionErrorMsg(value, "InstrumentBarcodeConverter.NoInstrumentForBarcode");
-    } else if(!instrumentType.getName().equals(instrument.getType())) {
+    } else if(!instrument.getTypes().contains(instrumentType.getName())) {
       displayConversionErrorMsg(value, "InstrumentBarcodeConverter.WrongInstrumentType");
     } else if(!instrument.getStatus().equals(InstrumentStatus.ACTIVE)) {
       displayConversionErrorMsg(value, "InstrumentBarcodeConverter.NotAnActiveInstrument");
-    } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument)) {
+    } else if(!instrumentService.isActiveInstrumentOfCurrentWorkstation(instrument, instrumentType)) {
       displayConversionErrorMsg(value, "InstrumentBarcodeConverter.NotAnActiveInstrumentForCurrentWorkstation");
     }
 
