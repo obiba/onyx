@@ -13,6 +13,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.basic.Label;
@@ -130,6 +131,43 @@ public class QuestionnaireWizardForm extends WizardForm {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Administration", this, null)));
     link.add(new AttributeAppender("class", new Model("ui-corner-all"), " "));
     add(link);
+
+    // hidden, page-level Begin and End buttons
+    createBeginAndEndButtons();
+  }
+
+  private void createBeginAndEndButtons() {
+    AjaxLink beginLink = new AjaxLink("beginLink") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        onBegin(target);
+      }
+
+    };
+    beginLink.setMarkupId("beginButton");
+    beginLink.add(new AttributeAppender("class", new Model("begin"), " "));
+    add(beginLink);
+
+    AjaxButton endLink = new AjaxButton("endLink", this) {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
+        onEnd(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        showFeedbackWindow(target);
+      }
+    };
+    endLink.setMarkupId("endButton");
+    endLink.add(new AttributeAppender("class", new Model("end"), " "));
+    add(endLink);
   }
 
   @SuppressWarnings("serial")
@@ -472,24 +510,26 @@ public class QuestionnaireWizardForm extends WizardForm {
   protected void gotoBegin(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.debug("gotoBegin.currentStep={}", currentStep.getClass().getName());
-
-    WizardStepPanel beginStep = getBeginStep();
-    if(beginStep != null) {
-      currentStep.replaceWith(beginStep);
-      beginStep.handleWizardState(this, target);
+    if(currentStep instanceof PageStepPanel) {
+      WizardStepPanel beginStep = getBeginStep();
+      if(beginStep != null) {
+        currentStep.replaceWith(beginStep);
+        beginStep.handleWizardState(this, target);
+      }
+      target.addComponent(this);
     }
-    target.addComponent(this);
   }
 
   protected void gotoEnd(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.debug("gotoEnd.currentStep={}", currentStep.getClass().getName());
-
-    WizardStepPanel endStep = getEndStep();
-    if(endStep != null) {
-      currentStep.replaceWith(endStep);
-      endStep.handleWizardState(this, target);
+    if(currentStep instanceof PageStepPanel) {
+      WizardStepPanel endStep = getEndStep();
+      if(endStep != null) {
+        currentStep.replaceWith(endStep);
+        endStep.handleWizardState(this, target);
+      }
+      target.addComponent(this);
     }
-    target.addComponent(this);
   }
 }
