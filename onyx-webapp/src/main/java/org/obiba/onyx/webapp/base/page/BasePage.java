@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -47,7 +48,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
   private PrintableReportPanel printableReportPanel;
 
-  private final Dialog reusablePrintDialog = DialogBuilder.buildDialog("reusable-print-dialog", "Report Dialog", printableReportPanel = new PrintableReportPanel("content")).setOptions(Option.OK_CANCEL_OPTION, "PrintReports").getDialog();
+  private final Dialog reusablePrintDialog = DialogBuilder.buildDialog("reusable-print-dialog", new ResourceModel("PrintReport"), printableReportPanel = new PrintableReportPanel("content")).setOptions(Option.OK_CANCEL_OPTION, "PrintReports").getDialog();
 
   public BasePage() {
     super();
