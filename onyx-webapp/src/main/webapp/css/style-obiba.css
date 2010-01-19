@@ -1639,8 +1639,8 @@ ul#interviewMenuBar li a span {
 }
 
 .comment-text {
-    height:24.0000em;
-    width:27.4167em;
+    height:80%;
+    width:98%;
     overflow: auto;
 }
 
