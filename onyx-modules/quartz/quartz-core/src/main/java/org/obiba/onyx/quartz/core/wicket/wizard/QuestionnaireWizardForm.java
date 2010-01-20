@@ -252,11 +252,13 @@ public class QuestionnaireWizardForm extends WizardForm {
   public void onBegin(AjaxRequestTarget target) {
     gotoBegin(target);
     target.appendJavascript("Resizer.resizeWizard();");
+    updateProgressBar(this);
   }
 
   public void onEnd(AjaxRequestTarget target) {
     gotoEnd(target);
     target.appendJavascript("Resizer.resizeWizard();");
+    updateProgressBar(this);
   }
 
   public void onCancel(AjaxRequestTarget target) {
@@ -462,6 +464,10 @@ public class QuestionnaireWizardForm extends WizardForm {
     this.modalFeedback = modalFeedback;
   }
 
+  public void showProgressBar(boolean visible) {
+    progressBar.setVisible(visible);
+  }
+
   /**
    * Updates the progress bar to display the percentage completed for this Questionnaire Wizard.
    * 
@@ -475,9 +481,6 @@ public class QuestionnaireWizardForm extends WizardForm {
     // Update the progress bar to display the percentage
     ProgressBarPanel progressBar = ((QuestionnaireWizardForm) form).getProgressBar();
     progressBar.setProgressPercentage(progressPercentage);
-
-    // Make sure the progress bar is visible
-    progressBar.setVisible(true);
   }
 
   /**
