@@ -513,7 +513,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   protected void gotoBegin(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.debug("gotoBegin.currentStep={}", currentStep.getClass().getName());
-    if(currentStep instanceof PageStepPanel) {
+    if(currentStep instanceof PageStepPanel || currentStep instanceof ConclusionStep) {
       WizardStepPanel beginStep = getBeginStep();
       if(beginStep != null) {
         currentStep.replaceWith(beginStep);
@@ -526,7 +526,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   protected void gotoEnd(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.debug("gotoEnd.currentStep={}", currentStep.getClass().getName());
-    if(currentStep instanceof PageStepPanel) {
+    if(currentStep instanceof PageStepPanel || currentStep instanceof ConclusionStep) {
       WizardStepPanel endStep = getEndStep();
       if(endStep != null) {
         currentStep.replaceWith(endStep);
