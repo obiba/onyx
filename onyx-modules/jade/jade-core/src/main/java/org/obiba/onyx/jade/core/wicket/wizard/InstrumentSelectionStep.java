@@ -17,6 +17,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentSelector;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -44,8 +45,8 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
   private boolean instrumentSelected = false;
 
-  public InstrumentSelectionStep(String id, IModel instrumentTypeModel) {
-    super(id);
+  public InstrumentSelectionStep(String id, IModel<InstrumentType> instrumentTypeModel) {
+    super(id, instrumentTypeModel);
     setOutputMarkupId(true);
 
     add(new Label(getTitleId(), new StringResourceModel("InstrumentSelection", this, null)));
@@ -71,12 +72,16 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     super.onStepOutNext(form, target);
     if(instrumentSelected) {
       activeInstrumentRunService.setInstrument(instrument);
-      log.debug("Updated instrument with the instrument type [" + activeInstrumentRunService.getInstrumentType().getName() + "] and user selected barcode [" + instrument.getBarcode() + "].");
+      log.debug("Updated instrument with the instrument type [" + getInstrumentType().getName() + "] and user selected barcode [" + instrument.getBarcode() + "].");
     } else {
-      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument, activeInstrumentRunService.getInstrumentType());
+      activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument, getInstrumentType());
       instrumentSelected = true;
-      log.debug("Starting a new InstrumentRun with the instrument type [" + activeInstrumentRunService.getInstrumentType().getName() + "] and user selected barcode [" + instrument.getBarcode() + "].");
+      log.debug("Starting a new InstrumentRun with the instrument type [" + getInstrumentType().getName() + "] and user selected barcode [" + instrument.getBarcode() + "].");
     }
+  }
+
+  private InstrumentType getInstrumentType() {
+    return (InstrumentType) getDefaultModelObject();
   }
 
   public void setInstrumentSelected(boolean instrumentSelected) {

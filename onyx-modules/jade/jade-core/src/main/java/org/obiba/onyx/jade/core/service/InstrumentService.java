@@ -49,13 +49,6 @@ public interface InstrumentService {
   public List<Instrument> getInstruments(InstrumentType instrumentType);
 
   /**
-   * Get the active instruments for given instrument type.
-   * @param instrumentType
-   * @return
-   */
-  public List<Instrument> getActiveInstruments(InstrumentType instrumentType);
-
-  /**
    * Get the install path of the instrument type's specific code.
    * 
    * @param type the instrument
