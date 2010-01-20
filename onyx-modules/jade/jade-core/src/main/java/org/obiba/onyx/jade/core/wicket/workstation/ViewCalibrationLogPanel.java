@@ -45,8 +45,8 @@ public class ViewCalibrationLogPanel extends Panel {
     final Dialog logDialog = DialogBuilder.buildDialog("calibrationLogDialog", logTitleModel, getExperimentalConditionHistoryPanel()).setOptions(Option.CLOSE_OPTION).getDialog();
     logDialog.setHeightUnit("em");
     logDialog.setWidthUnit("em");
-    logDialog.setInitialHeight(21);
-    logDialog.setInitialWidth(84);
+    logDialog.setInitialHeight(20);
+    logDialog.setInitialWidth(50);
     add(logDialog);
 
     AjaxLink<InstrumentMeasurementType> viewCalibrationLink = new AjaxLink<InstrumentMeasurementType>("viewCalibrationLog", model) {

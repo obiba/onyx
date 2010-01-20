@@ -143,8 +143,8 @@ div.wicket-modal div.onyx .purge-panel-content {
 }
 
 div.wicket-modal div.onyx .experimental-condition-history-panel {
-  height: 16.9167em;
-  width: 80em;
+  height: 16em;
+  width: 96%;
   margin-left: 0.8333em;
   margin-top: 0.9167em;
 }
@@ -176,7 +176,6 @@ div.wicket-modal div.onyx .experimental-condition-form p, .experimental-conditio
 }
 
 div.wicket-modal div.onyx .experimental-condition-form p select, .experimental-condition-history-panel  p select {
-  font-size: 1.0833em;
   font-family: arial,sans-serif;
   font-weight: bold;
 }
