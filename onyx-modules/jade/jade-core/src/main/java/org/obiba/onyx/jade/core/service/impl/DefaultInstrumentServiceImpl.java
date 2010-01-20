@@ -75,14 +75,6 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     return instruments;
   }
 
-  public List<Instrument> getActiveInstruments(InstrumentType instrumentType) {
-    Instrument template = new Instrument();
-    template.addType(instrumentType.getName());
-    template.setStatus(InstrumentStatus.ACTIVE);
-
-    return getPersistenceManager().match(template);
-  }
-
   public String getInstrumentInstallPath(InstrumentType type) {
     return instrumentsPath + "/" + type.getName();
   }
@@ -167,6 +159,8 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
     }
     return activeInstrumentsForCurrentWorkstation;
   }
+
+  protected abstract List<Instrument> getActiveInstruments(InstrumentType instrumentType);
 
   public boolean isActiveInstrumentOfCurrentWorkstation(Instrument instrument, InstrumentType instrumentType) {
     List<Instrument> activeInstruments = getActiveInstrumentsForCurrentWorkstation(instrumentType);

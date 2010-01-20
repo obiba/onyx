@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -20,6 +21,8 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +70,20 @@ public class InstrumentServiceHibernateImpl extends DefaultInstrumentServiceImpl
     criteria.add("instrument", Operation.or, Restrictions.eq("workstation", workstation), Restrictions.isNull("workstation"));
 
     return criteria.count();
+  }
+
+  public List<Instrument> getActiveInstruments(InstrumentType instrumentType) {
+    AssociationCriteria criteria = AssociationCriteria.create(InstrumentMeasurementType.class, getSession());
+    criteria.add("type", Operation.eq, instrumentType.getName());
+    criteria.add("instrument.status", Operation.eq, InstrumentStatus.ACTIVE);
+
+    List<Instrument> instruments = new ArrayList<Instrument>();
+    List<InstrumentMeasurementType> types = criteria.list();
+    for(InstrumentMeasurementType type : types) {
+      instruments.add(type.getInstrument());
+    }
+
+    return instruments;
   }
 
 }
