@@ -109,6 +109,16 @@ public class SimplifiedPageLayout extends PageLayout {
     }
   }
 
+  @Override
+  public void onBegin(AjaxRequestTarget target) {
+    updateProgressBar();
+  }
+
+  @Override
+  public void onEnd(AjaxRequestTarget target) {
+    updateProgressBar();
+  }
+
   private void updateProgressBar() {
     QuestionnaireWizardForm form = (QuestionnaireWizardForm) findParent(QuestionnaireWizardForm.class);
     form.updateProgressBar(form);

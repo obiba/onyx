@@ -518,6 +518,11 @@ public class QuestionnaireWizardForm extends WizardForm {
       if(beginStep != null) {
         currentStep.replaceWith(beginStep);
         beginStep.handleWizardState(this, target);
+
+        // Inform the new step that it was arrived at with a "Begin" operation.
+        if(beginStep instanceof BeginEndListener) {
+          ((BeginEndListener) beginStep).onBegin(this, target);
+        }
       }
       target.addComponent(this);
     }
@@ -531,6 +536,11 @@ public class QuestionnaireWizardForm extends WizardForm {
       if(endStep != null) {
         currentStep.replaceWith(endStep);
         endStep.handleWizardState(this, target);
+
+        // Inform the new step that it was arrived at with a "End" operation.
+        if(endStep instanceof BeginEndListener) {
+          ((BeginEndListener) endStep).onEnd(this, target);
+        }
       }
       target.addComponent(this);
     }
