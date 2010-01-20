@@ -2,7 +2,7 @@ body {
   text-align: left;
   background: url(../icons/background_tile.png) repeat;
   font-family: arial, verdana, sans-serif;
-  font-size:16px;
+  font-size:12px;
   color: #666666;
   margin: 0pt; 
   padding: 0pt; 
@@ -136,7 +136,7 @@ div.banner {
   background-color: #888888;
   color: #C0C0C0 !important;
   margin: 0 0.1667em 0 0.1667em;
-  padding: 0.4em 1em;
+  padding: 0.5em 1em;
 }
 
 #menuBar .obiba-menu .obiba-menu-item.ui-state-highlight {
