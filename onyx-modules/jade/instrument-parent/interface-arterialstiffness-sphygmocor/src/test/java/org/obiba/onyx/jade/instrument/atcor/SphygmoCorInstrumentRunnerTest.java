@@ -15,7 +15,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +28,8 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 public class SphygmoCorInstrumentRunnerTest {
 
@@ -73,7 +74,7 @@ public class SphygmoCorInstrumentRunnerTest {
    * </ul>
    */
   @Test
-  public void testInitialize() {
+  public void testInitialize() throws ParseException {
     // Expect that all instrument data are deleted.
     sphygmoCorDaoMock.deleteAllOutput();
     sphygmoCorDaoMock.deleteAllPatients();
@@ -81,7 +82,6 @@ public class SphygmoCorInstrumentRunnerTest {
     // Expect that the current participant is retrieved...
     String participantLastName = "Tremblay";
     String participantFirstName = "Chantal";
-    java.util.Date participantBirthDate = getBirthDate();
     String participantGender = "FEMALE";
     int participantBarcode = 123;
     long systolicPressure = 123;
@@ -89,7 +89,7 @@ public class SphygmoCorInstrumentRunnerTest {
 
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME")).andReturn(DataBuilder.buildText(participantLastName));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME")).andReturn(DataBuilder.buildText(participantFirstName));
-    expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(DataBuilder.buildDate(participantBirthDate));
+    expect(instrumentExecutionServiceMock.getParticipantBirthDateAsString()).andReturn("1964-03-12");
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_GENDER")).andReturn(DataBuilder.buildText(participantGender));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_BARCODE")).andReturn(DataBuilder.buildInteger(participantBarcode));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(systolicPressure));
@@ -133,8 +133,7 @@ public class SphygmoCorInstrumentRunnerTest {
   }
 
   /**
-   * Test the behaviour of the <code>run</code> method, when the instrument's output is <code>null</code> (error
-   * case).
+   * Test the behaviour of the <code>run</code> method, when the instrument's output is <code>null</code> (error case).
    */
   @Test
   public void testRunOutputIsNull() {
@@ -168,15 +167,6 @@ public class SphygmoCorInstrumentRunnerTest {
     sphygmoCorInstrumentRunner.shutdown();
 
     verify(sphygmoCorDaoMock);
-  }
-
-  private java.util.Date getBirthDate() {
-    Calendar c = Calendar.getInstance();
-    c.set(Calendar.YEAR, 1964);
-    c.set(Calendar.MONTH, 2);
-    c.set(Calendar.DAY_OF_MONTH, 12);
-
-    return c.getTime();
   }
 
   private List<Map> getOutput() {
