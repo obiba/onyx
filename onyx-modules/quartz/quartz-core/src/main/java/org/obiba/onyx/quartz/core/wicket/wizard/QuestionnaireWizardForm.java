@@ -358,7 +358,9 @@ public class QuestionnaireWizardForm extends WizardForm {
    */
   public WizardStepPanel getFirstPageStep() {
     Page startPage = activeQuestionnaireAdministrationService.startPage();
-    return new PageStepPanel(getStepId(), new QuestionnaireModel(startPage));
+    PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(startPage));
+    pageStepPanel.setPreviousEnabled(false);
+    return pageStepPanel;
   }
 
   /**
@@ -370,10 +372,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     Page lastPage = activeQuestionnaireAdministrationService.lastPage();
 
     PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(lastPage));
-
-    if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
-      pageStepPanel.setPreviousEnabled(false);
-    }
+    pageStepPanel.setPreviousEnabled(!activeQuestionnaireAdministrationService.isOnStartPage());
 
     return pageStepPanel;
   }
@@ -391,14 +390,12 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     if(previousPage != null) {
       PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(previousPage));
-
-      if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
-        pageStepPanel.setPreviousEnabled(false);
-      }
+      pageStepPanel.setPreviousEnabled(!activeQuestionnaireAdministrationService.isOnStartPage());
 
       return pageStepPanel;
     } else {
-      return (resuming ? null : languageSelectionStep);
+      log.debug("getPreviousStep: previousPage == null resuming={}", resuming);
+      return languageSelectionStep;
     }
   }
 
@@ -421,13 +418,15 @@ public class QuestionnaireWizardForm extends WizardForm {
   }
 
   public WizardStepPanel getBeginStep() {
-    Page beginPage = activeQuestionnaireAdministrationService.beginPage();
+    PageStepPanel pageStepPanel = null;
 
+    Page beginPage = activeQuestionnaireAdministrationService.beginPage();
     if(beginPage != null) {
-      return new PageStepPanel(getStepId(), new QuestionnaireModel(beginPage));
+      pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(beginPage));
+      pageStepPanel.setPreviousEnabled(false);
     }
 
-    return null;
+    return pageStepPanel;
   }
 
   public WizardStepPanel getEndStep() {
@@ -445,10 +444,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     if(resumePage != null) {
       PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(resumePage));
-
-      if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
-        pageStepPanel.setPreviousEnabled(false);
-      }
+      pageStepPanel.setPreviousEnabled(!activeQuestionnaireAdministrationService.isOnStartPage());
 
       return pageStepPanel;
     } else {
