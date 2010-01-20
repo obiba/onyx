@@ -32,6 +32,10 @@ public class TestQuestionnaire {
   public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("Test", "1.0");
 
+    builder.withSection("S0").withPage("P0").withQuestion("ARRAY_CONDITION").withCategories(Y, N);
+    builder.inQuestion("ARRAY_CONDITION").withQuestion("A");
+    builder.inQuestion("ARRAY_CONDITION").withQuestion("B").setCondition("A", "Y");
+
     builder.withSection("S1").withPage("P1").withQuestion("OPEN_QUESTION").withCategory("OPEN").withOpenAnswerDefinition("OPEN_MULTIPLE", DataType.TEXT);
     builder.inOpenAnswerDefinition("OPEN_MULTIPLE").withOpenAnswerDefinition("CHOICE1", DataType.TEXT).setDefaultData("A", "B", "C").setRequired(true);
     builder.inOpenAnswerDefinition("OPEN_MULTIPLE").withOpenAnswerDefinition("CHOICE2", DataType.TEXT).setDefaultData("X", "Y", "Z").setRequired(true);

@@ -65,9 +65,4 @@ public class CheckGroupView extends GroupView<CheckGroup> {
     return new CheckGroup(id, new ArrayList<IModel>());
   }
 
-  @Override
-  protected CheckGroup[] newGroups(int size) {
-    return new CheckGroup[size];
-  }
-
 }

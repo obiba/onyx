@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
+import java.util.AbstractList;
+
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.repeater.Item;
@@ -30,14 +32,14 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategoryRadioColumn.class);
 
-  private IModel radioGroupsModel;
+  private IModel<AbstractList<RadioGroup>> radioGroupsModel;
 
   /**
    * Constructor given a way to find the radio group to associate using row index.
    * @param questionCategoryModel
    * @param radioGroupsModel
    */
-  public QuestionCategoryRadioColumn(IModel questionCategoryModel, IModel radioGroupsModel) {
+  public QuestionCategoryRadioColumn(IModel questionCategoryModel, IModel<AbstractList<RadioGroup>> radioGroupsModel) {
     super(questionCategoryModel);
     this.radioGroupsModel = radioGroupsModel;
   }
@@ -45,7 +47,7 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
   @SuppressWarnings("serial")
   @Override
   public void populateItem(Item cellItem, String componentId, IModel rowModel, final int index) {
-    RadioGroup radioGroup = ((RadioGroup[]) radioGroupsModel.getObject())[index];
+    RadioGroup radioGroup = radioGroupsModel.getObject().get(index);
     radioGroup.add(new AnswerCountValidator(rowModel));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
