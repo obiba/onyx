@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
+import java.util.AbstractList;
+
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.repeater.Item;
@@ -25,14 +27,14 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
 
   private static final long serialVersionUID = 1L;
 
-  private IModel checkGroupsModel;
+  private IModel<AbstractList<CheckGroup>> checkGroupsModel;
 
   /**
    * Constructor given a way to find the check box group to associate using row index.
    * @param questionCategoryModel
    * @param defaultQuestionSharedCategoriesPanel
    */
-  public QuestionCategoryCheckBoxColumn(IModel questionCategoryModel, IModel checkGroupsModel) {
+  public QuestionCategoryCheckBoxColumn(IModel questionCategoryModel, IModel<AbstractList<CheckGroup>> checkGroupsModel) {
     super(questionCategoryModel);
     this.checkGroupsModel = checkGroupsModel;
   }
@@ -40,7 +42,7 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
   @SuppressWarnings("serial")
   @Override
   public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {
-    CheckGroup checkGroup = ((CheckGroup[]) checkGroupsModel.getObject())[index];
+    CheckGroup checkGroup = checkGroupsModel.getObject().get(index);
     checkGroup.add(new AnswerCountValidator(rowModel));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;

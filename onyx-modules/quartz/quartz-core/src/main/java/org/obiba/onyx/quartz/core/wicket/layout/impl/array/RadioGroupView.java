@@ -64,9 +64,4 @@ public class RadioGroupView extends GroupView<RadioGroup> {
     return new RadioGroup(id, new Model());
   }
 
-  @Override
-  protected RadioGroup[] newGroups(int size) {
-    return new RadioGroup[size];
-  }
-
 }

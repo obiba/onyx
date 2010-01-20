@@ -9,8 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
-import java.util.Arrays;
+import java.util.AbstractList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.DataGridView;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -47,7 +48,7 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
 
   private static final String GROUP_ID = "group";
 
-  private T[] groups;
+  private Vector<T> groups;
 
   /**
    * Constructor.
@@ -70,10 +71,9 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
   public GroupView(String id, ICellPopulator[] populators, IDataProvider dataProvider) {
     super(id, populators, dataProvider);
 
-    this.groups = newGroups(dataProvider.size());
+    this.groups = new Vector<T>();
+    this.groups.setSize(dataProvider.size());
   }
-
-  protected abstract T[] newGroups(int size);
 
   /**
    * Factory method for radio groups.
@@ -82,12 +82,12 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
    */
   protected abstract T newGroup(final String id, int index);
 
-  public T[] getGroups() {
-    return Arrays.copyOf(groups, groups.length);
+  public AbstractList<T> getGroups() {
+    return groups;
   }
 
   public T getGroup(int index) {
-    return groups[index];
+    return groups.get(index);
   }
 
   /**
@@ -96,7 +96,10 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
   @SuppressWarnings("unchecked")
   protected final void populateItem(Item item) {
     T group = newGroup(GROUP_ID, item.getIndex());
-    groups[item.getIndex()] = group;
+    if(item.getIndex() >= groups.size()) {
+      groups.setSize(item.getIndex() + 1);
+    }
+    groups.set(item.getIndex(), group);
     item.add(group);
     RepeatingView cells = newCells();
     group.add(cells);
