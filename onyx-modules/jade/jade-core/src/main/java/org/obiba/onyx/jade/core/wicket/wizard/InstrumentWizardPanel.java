@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -46,7 +47,7 @@ public class InstrumentWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    wizardForm = new InstrumentWizardForm(componentId, getDefaultModel());
+    wizardForm = new InstrumentWizardForm(componentId, (IModel<InstrumentType>) getDefaultModel());
 
     return wizardForm;
   }

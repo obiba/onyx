@@ -105,7 +105,7 @@ public class InstrumentWizardForm extends WizardForm {
 
   private boolean instrumentSelected = false;
 
-  public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
+  public InstrumentWizardForm(String id, IModel<InstrumentType> instrumentTypeModel) {
     super(id, instrumentTypeModel);
 
     // Add Interrupt button.
