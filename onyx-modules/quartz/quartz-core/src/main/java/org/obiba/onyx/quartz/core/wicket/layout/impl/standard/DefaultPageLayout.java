@@ -133,6 +133,16 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     setFocus(target);
   }
 
+  @Override
+  public void onBegin(AjaxRequestTarget target) {
+    // no-op
+  }
+
+  @Override
+  public void onEnd(AjaxRequestTarget target) {
+    // no-op
+  }
+
   /**
    * Set the focus to the first input of the first question.
    * @param target

@@ -24,7 +24,7 @@ import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PageStepPanel extends WizardStepPanel {
+public class PageStepPanel extends WizardStepPanel implements BeginEndListener {
   //
   // Constants
   //
@@ -128,6 +128,18 @@ public class PageStepPanel extends WizardStepPanel {
     pageLayout.onStepInPrevious(target);
 
     from = System.currentTimeMillis();
+  }
+
+  //
+  // BeginEndListener Methods
+  //
+
+  public void onBegin(WizardForm form, AjaxRequestTarget target) {
+    pageLayout.onBegin(target);
+  }
+
+  public void onEnd(WizardForm form, AjaxRequestTarget target) {
+    pageLayout.onEnd(target);
   }
 
   //
