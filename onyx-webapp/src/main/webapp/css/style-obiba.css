@@ -1840,6 +1840,10 @@ div.wizard-content span.instrument-run-panel-content div.section {
   margin-bottom:0.8333em;
 }
 
+div.wizard-content span.instrument-run-panel-content td.keyValueTableKey {
+  white-space:nowrap;
+}
+
 div.wicket-modal div.onyx div.section {
   margin-bottom: 0.8333em; margin-left: 1.6667em; margin-right: 1.6667em;
 }
