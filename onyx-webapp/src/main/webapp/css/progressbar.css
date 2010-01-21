@@ -1,14 +1,14 @@
 div.obiba-progressbar-container {
   background-image:url(../icons/bar_tile_light.png);
   background-repeat:repeat-x;
-  margin:1.6667em auto auto;
-  width:33.3333em;
+  margin:10px auto auto;
+  width:400px;
 }
 
 div.obiba-progressbar-container > div {
   background-image:url(../icons/bar_tile_dark.png);
   background-repeat:repeat-x;
-  height:2.0833em;
+  height:25px;
 }
 
 div.obiba-progressbar-right {
