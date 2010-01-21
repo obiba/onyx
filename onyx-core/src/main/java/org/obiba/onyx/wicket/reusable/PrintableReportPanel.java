@@ -279,8 +279,11 @@ public class PrintableReportPanel extends Panel {
       log.error("Unable to print the report [" + store.reportName + "]. ", e);
       return;
     }
-    StringResourceModel successMessageModel = new StringResourceModel("printSuccessMessage", this, new Model(""));
-    info(successMessageModel.getString());
+    log.info("checkedReports.size()={}", checkedReports.size());
+    if(checkedReports.size() > 0) {
+      StringResourceModel successMessageModel = new StringResourceModel("printSuccessMessage", this, new Model(""));
+      info(successMessageModel.getString());
+    }
   }
 
   public IFormValidator getFormValidator() {
