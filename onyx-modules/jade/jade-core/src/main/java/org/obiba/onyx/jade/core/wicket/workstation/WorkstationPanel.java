@@ -126,7 +126,7 @@ public class WorkstationPanel extends Panel {
     // InstrumentListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
     // add(instrumentList);
 
-    instrumentMTypeList = new InstrumentMeasurementTypeEntityList("instrument-list", new InstrumentMeasurementTypeProvider(), new InstrumentMeasurementTypeListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, null));
+    instrumentMTypeList = new InstrumentMeasurementTypeEntityList("instrument-list", new InstrumentMeasurementTypeProvider(), new InstrumentMeasurementTypeListColumnProvider(), new StringResourceModel("WorkstationInstruments", WorkstationPanel.this, new StringResourceModel("WorkstationInstruments", this, null)));
     instrumentMTypeList.setPageSize(20);
     add(instrumentMTypeList);
   }
@@ -159,10 +159,11 @@ public class WorkstationPanel extends Panel {
     protected void onPageChanged() {
       IRequestTarget target = getRequestCycle().getRequestTarget();
       if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
-        ((AjaxRequestTarget) target).appendJavascript("styleWorkstationNavigationBar();");
+        ((AjaxRequestTarget) target).appendJavascript("styleOnyxEntityListNavigationBar('instrumentContent');");
       }
       super.onPageChanged();
     }
+
   }
 
   @SuppressWarnings("serial")

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -165,7 +166,9 @@ public class ActionsPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         public void onClose(AjaxRequestTarget target, Status status) {
-          target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
+          Component list = ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList();
+          target.addComponent(list);
+          target.appendJavascript("styleOnyxEntityListNavigationBar('instrumentContent');");
         }
 
       });
@@ -252,7 +255,9 @@ public class ActionsPanel extends Panel {
         public void onClose(AjaxRequestTarget target, Status status) {
           if(status.equals(Status.YES)) {
             // Refresh instrument list.
-            target.addComponent(ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
+            Component list = ActionsPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList();
+            target.addComponent(list);
+            target.appendJavascript("styleOnyxEntityListNavigationBar('instrumentContent');");
           }
         }
 
