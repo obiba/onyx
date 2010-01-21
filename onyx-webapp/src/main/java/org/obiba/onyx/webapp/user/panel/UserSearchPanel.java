@@ -102,8 +102,8 @@ public class UserSearchPanel extends Panel {
     });
     userDetailsModalWindow.setHeightUnit("em");
     userDetailsModalWindow.setWidthUnit("em");
-    userDetailsModalWindow.setInitialWidth(26);
-    userDetailsModalWindow.setInitialHeight(20);
+    userDetailsModalWindow.setInitialWidth(32);
+    userDetailsModalWindow.setInitialHeight(21);
     userDetailsModalWindow.setResizable(false);
 
   }

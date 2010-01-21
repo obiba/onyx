@@ -306,7 +306,7 @@ public abstract class MeasuresListPanel extends Panel {
     confirmationDialog = new ConfirmationDialog("confirmDeleteMeasureDialog");
     confirmationDialog.setTitle(new ResourceModel("ConfirmDeleteMeasure"));
     confirmationDialog.setHeightUnit("em");
-    confirmationDialog.setInitialHeight(12);
+    confirmationDialog.setInitialHeight(15);
     add(confirmationDialog);
   }
 

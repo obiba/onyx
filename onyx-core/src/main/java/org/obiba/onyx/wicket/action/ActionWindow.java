@@ -35,7 +35,7 @@ public abstract class ActionWindow extends Dialog {
 
   private static final int DEFAULT_INITIAL_HEIGHT = 33;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 31;
+  private static final int DEFAULT_INITIAL_WIDTH = 32;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
