@@ -333,6 +333,7 @@ public class InstrumentPanel extends Panel {
           }
         }
         target.addComponent(InstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
+        target.appendJavascript("styleWorkstationNavigationBar();");
       }
     });
   }
