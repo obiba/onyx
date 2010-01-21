@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -274,13 +275,18 @@ public class PrintableReportPanel extends Panel {
       } else {
         reportName = store.getReportName();
       }
-      StringResourceModel errorMessageModel = new StringResourceModel("printErrorMessage", this, new Model(new ValueMap("reportName=" + reportName)));
-      error(errorMessageModel.getString());
+      if(!Session.get().getFeedbackMessages().hasErrorMessageFor(this)) {
+        // unknown error
+        StringResourceModel errorMessageModel = new StringResourceModel("printErrorMessage", this, new Model(new ValueMap("reportName=" + reportName)));
+        error(errorMessageModel.getString());
+      }
       log.error("Unable to print the report [" + store.reportName + "]. ", e);
       return;
     }
-    StringResourceModel successMessageModel = new StringResourceModel("printSuccessMessage", this, new Model(""));
-    info(successMessageModel.getString());
+    if(checkedReports.size() > 0) {
+      StringResourceModel successMessageModel = new StringResourceModel("printSuccessMessage", this, new Model(""));
+      info(successMessageModel.getString());
+    }
   }
 
   public IFormValidator getFormValidator() {

@@ -9,13 +9,11 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxRequestTarget.IJavascriptResponse;
 import org.apache.wicket.markup.html.basic.Label;
@@ -135,12 +133,12 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
 
   @Override
   public void onBegin(AjaxRequestTarget target) {
-    // no-op
+    setFocus(target);
   }
 
   @Override
   public void onEnd(AjaxRequestTarget target) {
-    // no-op
+    setFocus(target);
   }
 
   /**
@@ -152,10 +150,16 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     target.addListener(new AjaxRequestTarget.IListener() {
 
       public void onAfterRespond(Map<String, Component> map, IJavascriptResponse response) {
-        Iterator<Item<QuestionPanel>> iter = questionsView.getItems();
-        if(iter.hasNext()) {
-          setFocus(iter.next(), target);
-        }
+        DefaultPageLayout.this.visitChildren(new IVisitor<Component>() {
+
+          public Object component(Component component) {
+            if(component instanceof Radio || component instanceof CheckBox || component instanceof DropDownChoice<?>) {
+              target.focusComponent(component);
+              return STOP_TRAVERSAL;
+            }
+            return null;
+          }
+        });
       }
 
       public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {
@@ -166,31 +170,13 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
   }
 
   /**
-   * Look for an input component to be focused by looking in the children component recursively.
-   * @param parent
-   * @param target
-   */
-  private void setFocus(MarkupContainer parent, final AjaxRequestTarget target) {
-    parent.visitChildren(new IVisitor<Component>() {
-
-      public Object component(Component component) {
-        if(component instanceof Radio || component instanceof CheckBox || component instanceof DropDownChoice<?>) {
-          target.focusComponent(component);
-          return STOP_TRAVERSAL;
-        }
-        return null;
-      }
-    });
-  }
-
-  /**
    * Get by introspection the question panels (at all depth) of the page.
    * @return
    */
   public List<QuestionPanel> getQuestionPanels() {
     final List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
 
-    visitChildren(QuestionPanel.class, new Component.IVisitor() {
+    visitChildren(QuestionPanel.class, new Component.IVisitor<Component>() {
 
       public Object component(Component component) {
         questionPanels.add((QuestionPanel) component);

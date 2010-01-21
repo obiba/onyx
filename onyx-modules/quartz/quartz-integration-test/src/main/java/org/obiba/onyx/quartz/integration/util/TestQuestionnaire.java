@@ -32,7 +32,10 @@ public class TestQuestionnaire {
   public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("Test", "1.0");
 
-    builder.withSection("S0").withPage("P0").withQuestion("ARRAY_CONDITION").withCategories(Y, N);
+    builder.withSection("S0").withPage("P00").withQuestion("BP_QUESTION");
+    builder.inPage("P00").withQuestion("REAL_QUESTION").withCategories(Y, N);
+
+    builder.inSection("S0").withPage("P0").withQuestion("ARRAY_CONDITION").withCategories(Y, N);
     builder.inQuestion("ARRAY_CONDITION").withQuestion("A");
     builder.inQuestion("ARRAY_CONDITION").withQuestion("B").setCondition("A", "Y");
 

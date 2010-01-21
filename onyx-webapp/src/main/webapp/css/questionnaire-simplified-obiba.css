@@ -526,10 +526,10 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   -moz-outline-style: none;
 }
 
-body {
-  font-size:12px;
+#wizardFooter {
+  font-size:18px;
 }
 
-div.stageMenuBar {
-  margin-top: 34px;
+div.obiba-progressbar-label {
+  font-size:0.77em;
 }

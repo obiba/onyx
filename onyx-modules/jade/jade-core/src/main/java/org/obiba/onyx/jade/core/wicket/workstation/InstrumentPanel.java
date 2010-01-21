@@ -332,8 +332,9 @@ public class InstrumentPanel extends Panel {
             instrumentService.addInstrumentMeasurementType(getInstrument(), instrumentMeasurementType);
           }
         }
-        target.addComponent(InstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList());
-        target.appendJavascript("styleWorkstationNavigationBar();");
+        Component list = InstrumentPanel.this.findParent(WorkstationPanel.class).getInstrumentMeasurementTypeList();
+        target.addComponent(list);
+        target.appendJavascript("styleOnyxEntityListNavigationBar('instrumentContent');");
       }
     });
   }

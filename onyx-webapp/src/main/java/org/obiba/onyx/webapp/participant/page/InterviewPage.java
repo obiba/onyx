@@ -112,7 +112,7 @@ public class InterviewPage extends BasePage {
 
       final InterviewLogPanel interviewLogPanel;
       final Dialog interviewLogsDialog;
-      interviewLogPanel = new InterviewLogPanel("content", 329, new LoadableInterviewLogModel());
+      interviewLogPanel = new InterviewLogPanel("content", 338, new LoadableInterviewLogModel());
       interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.CLOSE_OPTION).setFormCssClass("interview-log-dialog-form").getDialog();
       interviewLogsDialog.setHeightUnit("em");
       interviewLogsDialog.setWidthUnit("em");
