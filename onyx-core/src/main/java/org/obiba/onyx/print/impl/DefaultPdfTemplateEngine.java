@@ -140,7 +140,10 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
           String variablePath = fieldToVariableMap.get(variableKey);
           if(variablePath != null) {
             String valueString = getStringValue(participantValueTable, valueSet, field.getKey(), variablePath);
-            form.setField(field.getKey(), valueString);
+            if(valueString != null && valueString.length() != 0) {
+              form.setField(field.getKey(), valueString);
+              break;
+            }
           }
         }
       }
