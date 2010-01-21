@@ -150,13 +150,13 @@ div.wicket-modal div.onyx .experimental-condition-history-panel {
 }
 
 div.wicket-modal div.onyx .interview-log-panel-content {
-  height: 29.1667em;
+  height: 31em;
   width: 55em;
   margin-left: 0.8333em;
 }
 
 div.wicket-modal div.onyx .interview-log-panel-content tbody {
-  max-height: 27.4167em;
+  max-height: 29em;
   overflow-y: auto;
   overflow-x: hidden;
 }
