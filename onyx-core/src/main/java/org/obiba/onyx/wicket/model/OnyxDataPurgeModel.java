@@ -24,7 +24,7 @@ import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
  * Model to obtain details of the Participants that are scheduled to be purged. The load method obtains all the
  * Participants to be purged. Other methods provide access to high level details about those Participants.
  */
-public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
+public class OnyxDataPurgeModel extends SpringDetachableModel<List<Participant>> {
   private static final long serialVersionUID = 1L;
 
   private int totalInterviewsToPurge;
@@ -49,7 +49,7 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
   }
 
   @Override
-  protected OnyxDataPurge load() {
+  protected List<Participant> load() {
     List<Participant> participantsToPurge = onyxDataPurge.getParticipantsToPurge();
     totalInterviewsToPurge = participantsToPurge.size();
     totalInterviews = participantService.countParticipants(null, null);
@@ -64,26 +64,45 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
         exportedInterviews.add(participant);
       }
     }
-    return onyxDataPurge;
+    return participantsToPurge;
+  }
+
+  @Override
+  protected void onDetach() {
+    super.onDetach();
+    totalInterviewsToPurge = 0;
+    totalInterviews = 0;
+    exportedInterviews = null;
+    unexportedInterviews = null;
+  }
+
+  public boolean hasInterviewsToPurge() {
+    getObject();
+    return totalInterviewsToPurge > 0;
   }
 
   public String getTotalInterviewsToPurge() {
+    getObject();
     return Integer.toString(totalInterviewsToPurge);
   }
 
   public String getTotalInterviews() {
+    getObject();
     return Integer.toString(totalInterviews);
   }
 
   public String getTotalExportedInterviewsToPurge() {
+    getObject();
     return Integer.toString(exportedInterviews.size());
   }
 
   public String getTotalUnexportedInterviewsToPurge() {
+    getObject();
     return Integer.toString(unexportedInterviews.size());
   }
 
   public String getTotalUnexportedInterviewsWithStatus(InterviewStatus status) {
+    getObject();
     int result = 0;
     for(Participant participant : unexportedInterviews) {
       if(participant.getInterview().getStatus() == status) result++;
@@ -92,6 +111,7 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<OnyxDataPurge> {
   }
 
   public String getTotalExportedInterviewsWithStatus(InterviewStatus status) {
+    getObject();
     int result = 0;
     for(Participant participant : exportedInterviews) {
       if(participant.getInterview().getStatus() == status) result++;

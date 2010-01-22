@@ -22,6 +22,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.JobExecutionService;
+import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
+import org.obiba.onyx.wicket.model.OnyxDataPurgeModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -41,11 +43,16 @@ public class PurgeDialog extends Dialog {
   @SpringBean
   private JobExecutionService jobExecutionService;
 
+  @SpringBean
+  private OnyxDataPurge onyxDataPurge;
+
   private PurgeDialogPanel content;
 
   private AjaxLink purgeSubmitLink;
 
   private int participantsDeleted;
+
+  private OnyxDataPurgeModel purgeInfoModel;
 
   public PurgeDialog(String id) {
     super(id);
@@ -55,6 +62,8 @@ public class PurgeDialog extends Dialog {
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setType(Type.PLAIN);
+
+    purgeInfoModel = new OnyxDataPurgeModel();
 
     // Set submit button
     addOption("PurgeParticipants", OptionSide.RIGHT, purgeSubmitLink = new AjaxLink("submitPurge") {
@@ -73,9 +82,15 @@ public class PurgeDialog extends Dialog {
 
         target.addComponent(PurgeDialog.this.get("content"));
       }
+
+      @Override
+      public boolean isVisible() {
+        return purgeInfoModel.hasInterviewsToPurge();
+      }
+
     });
 
-    content = new PurgeDialogPanel(getContentId());
+    content = new PurgeDialogPanel(getContentId(), purgeInfoModel);
     content.add(new AttributeModifier("class", true, new Model("obiba-content purge-panel-content")));
     content.setOutputMarkupId(true);
     setContent(content);

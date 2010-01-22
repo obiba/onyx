@@ -12,7 +12,7 @@ package org.obiba.onyx.webapp.administration.panel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.wicket.model.OnyxDataPurgeModel;
@@ -25,25 +25,38 @@ import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 public class PurgeDetailsPanel extends Panel {
   private static final long serialVersionUID = 1L;
 
-  public PurgeDetailsPanel(String id, final IModel<OnyxDataPurgeModel> model) {
+  public PurgeDetailsPanel(String id, OnyxDataPurgeModel model) {
     super(id, model);
 
-    WebMarkupContainer purgeDetails = new WebMarkupContainer("PurgeDetails");
-    WebMarkupContainer noPurgeMessage = new WebMarkupContainer("NoPurgeMessage");
+    WebMarkupContainer purgeDetails = new WebMarkupContainer("PurgeDetails") {
+      @Override
+      public boolean isVisible() {
+        return getPurgeInfo().hasInterviewsToPurge();
+      }
+    };
+    WebMarkupContainer noPurgeMessage = new WebMarkupContainer("NoPurgeMessage") {
+      @Override
+      public boolean isVisible() {
+        return !getPurgeInfo().hasInterviewsToPurge();
+      }
+    };
 
     add(purgeDetails);
     add(noPurgeMessage);
 
     purgeDetails.add(new Label("configurablePurgeMessage", new SpringStringResourceModel("ConfigurablePurgeMessage", "ConfigurablePurgeMessage")));
-    purgeDetails.add(new Label("interviewToBeDeletedMessage", new StringResourceModel("NumberInterviewsToDelete", PurgeDetailsPanel.this, null, new Object[] { model.getObject().getTotalInterviewsToPurge(), model.getObject().getTotalInterviews() })));
+    purgeDetails.add(new Label("interviewToBeDeletedMessage", new StringResourceModel("NumberInterviewsToDelete", PurgeDetailsPanel.this, null, new Object[] { new PropertyModel<String>(this, "totalInterviewsToPurge"), new PropertyModel<String>(this, "totalInterviews") })));
+  }
 
-    if(model.getObject().getTotalInterviewsToPurge().equals("0")) {
-      purgeDetails.setVisible(false);
-      noPurgeMessage.setVisible(true);
-    } else {
-      purgeDetails.setVisible(true);
-      noPurgeMessage.setVisible(false);
-    }
+  private OnyxDataPurgeModel getPurgeInfo() {
+    return (OnyxDataPurgeModel) getDefaultModel();
+  }
 
+  public String getTotalInterviewsToPurge() {
+    return getPurgeInfo().getTotalInterviewsToPurge();
+  }
+
+  public String getTotalInterviews() {
+    return getPurgeInfo().getTotalInterviews();
   }
 }
