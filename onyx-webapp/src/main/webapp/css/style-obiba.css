@@ -1155,7 +1155,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
   -webkit-border-radius: 0.5em;	
 }
 
-.obiba-content-region > h1 {
+.obiba-content-region h1 {
   border-color: #C65F02;
   border-style: none none solid none;
   border-width: 0.0833em;
@@ -1166,7 +1166,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
   font-size:1em;
 }
 
-.obiba-content-region > h1.results-list {
+.obiba-content-region h1.results-list {
   margin-bottom:0em;
 }
 
