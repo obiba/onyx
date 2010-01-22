@@ -94,7 +94,7 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
 
   private AssociationCriteria createQuestionnaireParticipantCriteria(Class<?> entityType, String prefix) {
     String pref = (prefix != null ? prefix + "." : "");
-    return AssociationCriteria.create(entityType, getSession()).add(pref + "questionnaireParticipant.questionnaireName", Operation.eq, getQuestionnaire().getName()).add(pref + "questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant());
+    return AssociationCriteria.create(entityType, getSession()).add(pref + "questionnaireParticipant", Operation.eq, getQuestionnaireParticipant());
   }
 
 }
