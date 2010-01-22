@@ -181,7 +181,7 @@ div.wicket-modal div.onyx .experimental-condition-form p select, .experimental-c
 }
 
 div.wicket-modal div.onyx .manual-input-panel table {
-  width: 46.75em;
+  width: 100%;
 }
 
 div.wicket-modal div.onyx .manual-input-panel tbody {
@@ -202,8 +202,8 @@ div.wicket-modal div.onyx .printable-report-panel {
 }
 
 div.wicket-modal div.onyx .manual-input-panel {
-  height: 29.1667em;
-  width: 46.6667em;
+  height: 22em;
+  width: 97%;
   margin-left: 0.8333em;
 }
 
