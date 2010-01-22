@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.wicket.model.OnyxDataPurgeModel;
@@ -33,8 +32,8 @@ public class PurgeDialogPanel extends Panel {
   // Constructors
   //
 
-  public PurgeDialogPanel(String id) {
-    super(id);
+  public PurgeDialogPanel(String id, OnyxDataPurgeModel purgeInfoModel) {
+    super(id, purgeInfoModel);
 
     confirmationFragment = new ConfirmationFragment("contentFragment");
     progressFragment = new ProgressFragment("contentFragment", new ResourceModel("PurgeInProgress"));
@@ -78,6 +77,10 @@ public class PurgeDialogPanel extends Panel {
     }
   }
 
+  private OnyxDataPurgeModel getPurgeInfoModel() {
+    return (OnyxDataPurgeModel) getDefaultModel();
+  }
+
   //
   // Inner Classes
   //
@@ -88,8 +91,7 @@ public class PurgeDialogPanel extends Panel {
 
     public ConfirmationFragment(String id) {
       super(id, "confirmationFragment", PurgeDialogPanel.this);
-      IModel<OnyxDataPurgeModel> model = new Model<OnyxDataPurgeModel>(new OnyxDataPurgeModel());
-      add(new PurgeDetailsPanel("confirmMessage", model));
+      add(new PurgeDetailsPanel("confirmMessage", getPurgeInfoModel()));
     }
   }
 
