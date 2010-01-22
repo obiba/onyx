@@ -239,6 +239,19 @@ function styleParticipantSearchNavigationBar() {
 }
 
 //////////////////////////////////////////////////////////////////////
+// Workstation Instruments list navigation bar styling
+//////////////////////////////////////////////////////////////////////
+function styleWorkstationNavigationBar() {
+	$('#newNavigatorLabel').remove();
+	$('#newNavigator').remove();
+	$('.entityTable tr.navigation div.navigatorLabel > span').attr( 'id', 'newNavigatorLabel' );
+	$('.entityTable tr.navigation div.navigator > span').attr( 'id', 'newNavigator' );
+	$('.entityTable tr.navigation div.navigator > span').insertBefore('div#workstationInstrument h1.results-list');
+	$('.entityTable tr.navigation div.navigatorLabel > span').insertBefore('div#workstationInstrument h1.results-list');
+	$('.entityTable tr.navigation').empty();
+}
+
+//////////////////////////////////////////////////////////////////////
 // Experimental Condition and Instrument Calibration Table navigation bar styling. Moves the paging navigation from the
 // line below the table title to the far right of the table title.
 // parentId = id of parent container element. A div for example.

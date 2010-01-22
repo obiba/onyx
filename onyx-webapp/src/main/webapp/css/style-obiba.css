@@ -1114,7 +1114,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
 /******************* Login *********************************************************/
 
 #login {
-	width: 30em;
+	width: 47.9167em;
 }
 
 #loginHeader {
@@ -1133,7 +1133,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
 
 #loginFooter p {
 	font-family:verdana,arial,sans-serif;
-	font-size:0.7em;
+	font-size:0.9167em;
 	letter-spacing:0.0833em;
 	text-align:center;
 }
@@ -1155,7 +1155,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
   -webkit-border-radius: 0.5em;	
 }
 
-.obiba-content-region > h1 {
+.obiba-content-region h1 {
   border-color: #C65F02;
   border-style: none none solid none;
   border-width: 0.0833em;
@@ -1166,7 +1166,7 @@ background-position:100% -6.8333em; /*Shift background image up to start of 2nd 
   font-size:1em;
 }
 
-.obiba-content-region > h1.results-list {
+.obiba-content-region h1.results-list {
   margin-bottom:0em;
 }
 
@@ -1334,31 +1334,29 @@ span.interviewStatus.obiba-state-exported {
   background-image:url(../icons/exported.png);
 }
 
-div#participantPageSearchResults #newNavigatorLabel {
+#newNavigatorLabel {
   float: right; 
   position: relative;
   right: 0.8333em;
   top: 0.5em;
   color:#333333;
-  font-family:arial;
   font-size:0.9167em;
 }
 
-div#participantPageSearchResults #newNavigator {
+#newNavigator {
   float: right; 
   position: relative;
   right: 0em; 
   top: 0.5em;
   color:#333333;
-  font-family:arial;
   font-size:0.9167em;  
 }
 
-div#participantPageSearchResults #newNavigator a {
+#newNavigator a {
   color:#333333;
 }
 
-div#participantPageSearchResults #newNavigator em {
+#newNavigator em {
   font-style:normal;
   font-weight:bold;
 }
@@ -1414,6 +1412,28 @@ div#workstationInstrument #newNavigator em {
   font-weight:bold;
 }
 
+.experimental-condition-history-panel table.entityTable th,
+div#instrumentContent table.entityTable th {
+  border-top:0.0833em solid #C65F02;
+}
+
+.experimental-condition-history-panel tr.titleToolbar div.title,
+div#instrumentContent tr.titleToolbar div.title {
+  color: #C65F02;
+}
+
+.experimental-condition-instructions-title {
+  margin-left: 0.4167em;
+  margin-top: 0.8333em;
+  margin-bottom: 0.1667em;
+  font-weight: bold;
+}
+
+.experimental-condition-instructions {
+  margin-left: 1.4167em;
+  margin-bottom: 0.5em;
+}
+
 /******************* End WorkstationPage *******************************************/
 
 /******************* ParticipantReceptionPage **************************************/
@@ -1446,8 +1466,31 @@ div#workstationInstrument #newNavigator em {
 
 /******************* Global List Styling *******************************************/
 
+table.entityTable td .newNavigatorLabel {
+  right: 0.8333em;
+  top: 0.5em;
+  color:#333333;
+  font-weight:normal;
+}
+
+table.entityTable td .newNavigator {
+  right: 0em; 
+  top: 0.5em;
+  color:#333333;
+  font-weight:normal;
+}
+
+table.entityTable td .newNavigator a {
+  color:#333333;
+  padding-right: 0em;
+}
+
+table.entityTable td .newNavigator em {
+  font-style:normal;
+  font-weight:bold;
+}
+
 #participantPageSearchResults table.entityTable tr.titleToolbar,
-#instrumentContent table.entityTable tr.titleToolbar,
 #interviewPageStages table.entityTable tr.titleToolbar,
 #rubyPanel table.entityTable tr.titleToolbar {
   display: none;	
@@ -1570,26 +1613,6 @@ div#workstationInstrument #newNavigator em {
 
 .navigation {
   border-bottom:0.0833em solid #C65F02;
-}
-
-.experimental-condition-history-panel table.entityTable th {
-  border-top:0.0833em solid #C65F02;
-}
-
-.experimental-condition-history-panel tr.titleToolbar div.title {
-  color: #C65F02;
-}
-
-.experimental-condition-instructions-title {
-  margin-left: 0.4167em;
-  margin-top: 0.8333em;
-  margin-bottom: 0.1667em;
-  font-weight: bold;
-}
-
-.experimental-condition-instructions {
-  margin-left: 1.4167em;
-  margin-bottom: 0.5em;
 }
 
 ul#interviewMenuBar li {
