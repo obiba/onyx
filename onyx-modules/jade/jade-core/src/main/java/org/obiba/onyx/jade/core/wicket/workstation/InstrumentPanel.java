@@ -172,7 +172,7 @@ public class InstrumentPanel extends Panel {
           List<InstrumentType> instrumentTypes;
 
           // check if instrument is already persisted
-          if(getInstrument().getId() == null) {
+          if(getInstrument().getId() == null || !userSessionService.getWorkstation().equals(getInstrument().getWorkstation())) {
             instrumentTypes = new ArrayList<InstrumentType>(instrumentService.getInstrumentTypes().values());
           } else {
             instrumentTypes = new ArrayList<InstrumentType>();
@@ -263,7 +263,6 @@ public class InstrumentPanel extends Panel {
 
             // Set usage to RESERVED, so that clicking Register re-assigns instrument to current workstation.
             setDefaultModelObject(instrument);
-            setInstrumentUsage(InstrumentUsage.RESERVED);
 
             displayInstrument(instrument);
 
@@ -325,6 +324,7 @@ public class InstrumentPanel extends Panel {
       public void onClose(AjaxRequestTarget target, Status status) {
 
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
+          setInstrumentUsage(InstrumentUsage.RESERVED);
           instrumentService.updateInstrument(getInstrument());
 
           if(!editMode) {
