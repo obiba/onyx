@@ -349,9 +349,6 @@ public class InstrumentPanel extends Panel {
     instrumentFragment.getVendor().setDefaultModelObject(null);
     instrumentFragment.getModel().setDefaultModelObject(null);
     instrumentFragment.getSerialNumber().setDefaultModelObject(null);
-
-    getInstrument().setStatus(InstrumentStatus.ACTIVE);
-    getInstrument().setWorkstation(userSessionService.getWorkstation());
   }
 
   private void displayFeedback(AjaxRequestTarget target) {
