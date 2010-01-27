@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -16,7 +16,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
-
 /**
  * Returns the content for the Self Administered Health Questionnaire
  */
@@ -96,10 +95,18 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     builder.withSection("ALCOHOL").withPage("0").withQuestion("ARRAY_OPEN", true).withCategory("MONDAY").withOpenAnswerDefinition("MONDAY_QUANTITY", DataType.INTEGER).setRequired(false);
     builder.inQuestion("ARRAY_OPEN").withCategory("TUESDAY").withOpenAnswerDefinition("TUESDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withCategory("WEDNESDAY").withOpenAnswerDefinition("WEDNESDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withCategory("THURSDAY").withOpenAnswerDefinition("THURSDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withCategory("FRIDAY").withOpenAnswerDefinition("FRIDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withCategory("SATURDAY").withOpenAnswerDefinition("SATURDAY_QUANTITY", DataType.INTEGER).setRequired(false);
+    builder.inQuestion("ARRAY_OPEN").withCategory("SUNDAY").withOpenAnswerDefinition("SUNDAY_QUANTITY", DataType.INTEGER).setRequired(false);
     builder.inQuestion("ARRAY_OPEN").withSharedCategory(PNA).setEscape(true);
     builder.inQuestion("ARRAY_OPEN").withSharedCategory(DNK).setEscape(true);
     builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE", true);
     builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE", true);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("BEER", true);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("LIQUOR", true);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("OTHER_ALCOOL", true);
 
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
 
