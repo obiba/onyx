@@ -324,7 +324,10 @@ public class InstrumentPanel extends Panel {
       public void onClose(AjaxRequestTarget target, Status status) {
 
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
-          setInstrumentUsage(InstrumentUsage.RESERVED);
+          if(!editMode) {
+            setInstrumentUsage(InstrumentUsage.RESERVED);
+          }
+
           instrumentService.updateInstrument(getInstrument());
 
           if(!editMode) {
