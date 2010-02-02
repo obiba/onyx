@@ -12,7 +12,7 @@
   <parent>
     <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
