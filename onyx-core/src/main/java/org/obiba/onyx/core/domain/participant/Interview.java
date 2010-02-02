@@ -20,9 +20,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Interview extends AbstractEntity {
 
   private static final long serialVersionUID = -8786498940712113896L;

@@ -23,10 +23,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.core.util.HexUtil;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractEntity {
 
   private static final long serialVersionUID = -2200053643926715563L;
@@ -57,6 +60,7 @@ public class User extends AbstractEntity {
 
   @ManyToMany
   @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
   private Set<Role> roles;
 
   public String getLastName() {

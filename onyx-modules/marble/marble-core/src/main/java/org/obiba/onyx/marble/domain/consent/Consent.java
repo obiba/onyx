@@ -9,11 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.domain.consent;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +32,6 @@ import org.obiba.onyx.core.domain.participant.Interview;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
 
 @Entity
 @Table(appliesTo = "consent", indexes = { @Index(name = "deleted_index", columnNames = { "deleted" }) })
@@ -115,45 +112,21 @@ public class Consent extends AbstractEntity {
     this.pdfForm = pdfForm;
   }
 
-  /**
-   * Return a PDF form that all fields are converted to non editable
-   */
-  public byte[] getNonEditablePdfForm() {
-    try {
-      PdfReader pdfReader = new PdfReader(pdfForm);
-      ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-      PdfStamper stamper = new PdfStamper(pdfReader, output);
-      stamper.setFormFlattening(true);
-
-      stamper.close();
-      output.close();
-      pdfReader.close();
-
-      return output.toByteArray();
-
-    } catch(Exception e) {
-      return pdfForm;
-    }
-  }
-
   @SuppressWarnings("unchecked")
+  @Transient
   public Set<String> pdfFormFieldNames() {
     return getPdfReader().getAcroFields().getFields().keySet();
   }
 
-  @SuppressWarnings("unchecked")
   @Transient
   public Map<String, String> getPdfFormFields() {
     Map<String, String> pdfFormFields = new HashMap<String, String>();
 
     if(pdfForm != null) {
       PdfReader reader = getPdfReader();
-      Iterator<Map.Entry<String, AcroFields.Item>> acroFields = reader.getAcroFields().getFields().entrySet().iterator();
-
-      while(acroFields.hasNext()) {
-        Map.Entry<String, AcroFields.Item> entry = acroFields.next();
-        pdfFormFields.put(entry.getKey(), (entry.getValue() != null ? entry.getValue().toString() : null));
+      AcroFields pdfForm = reader.getAcroFields();
+      for(String fieldName : pdfFormFieldNames()) {
+        pdfFormFields.put(fieldName, pdfForm.getField(fieldName));
       }
     }
 
