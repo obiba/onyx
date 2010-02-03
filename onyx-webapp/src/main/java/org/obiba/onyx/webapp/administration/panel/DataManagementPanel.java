@@ -13,13 +13,13 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
@@ -35,24 +35,15 @@ public class DataManagementPanel extends Panel {
   @SpringBean
   private OnyxDataExport onyxDataExport;
 
-  private ConfirmationDialog confirmationDialog;
-
-  private PurgeDialog purgeDialog;
-
-  @SpringBean
-  private PurgeParticipantDataService purgeParticipantDataService;
-
   public DataManagementPanel(String id) {
     super(id);
-
-    createExportDialog();
-    add(purgeDialog = new PurgeDialog("purgeDialog"));
-
+    System.out.println("----------------------------------------------");
     AjaxLink exportLink = new AjaxLink("export") {
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        ConfirmationDialog confirmationDialog = createExportDialog();
         MultiLineLabel label = new MultiLineLabel("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
         label.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
         confirmationDialog.setContent(label);
@@ -80,22 +71,25 @@ public class DataManagementPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        PurgeDialog purgeDialog = new PurgeDialog("dialog");
+        DataManagementPanel.this.replace(purgeDialog);
         purgeDialog.showConfirmation();
         purgeDialog.show(target);
-        target.addComponent(purgeDialog.get("content"));
+        target.addComponent(purgeDialog);
       }
 
     };
 
+    add(new EmptyPanel("dialog").setOutputMarkupId(true));
     add(purgeLink);
   }
 
-  private void createExportDialog() {
-    confirmationDialog = new ConfirmationDialog("confirmExportModalWindow");
+  private ConfirmationDialog createExportDialog() {
+    ConfirmationDialog confirmationDialog = new ConfirmationDialog("dialog");
     confirmationDialog.setTitle(new ResourceModel("ConfirmExport"));
     confirmationDialog.setHeightUnit("em");
     confirmationDialog.setInitialHeight(15);
-    add(confirmationDialog);
-
+    replace(confirmationDialog);
+    return confirmationDialog;
   }
 }

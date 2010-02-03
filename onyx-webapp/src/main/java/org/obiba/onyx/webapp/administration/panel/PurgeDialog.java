@@ -22,7 +22,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.JobExecutionService;
-import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
 import org.obiba.onyx.wicket.model.OnyxDataPurgeModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.springframework.batch.core.Job;
@@ -43,16 +42,11 @@ public class PurgeDialog extends Dialog {
   @SpringBean
   private JobExecutionService jobExecutionService;
 
-  @SpringBean
-  private OnyxDataPurge onyxDataPurge;
-
   private PurgeDialogPanel content;
 
   private AjaxLink purgeSubmitLink;
 
   private int participantsDeleted;
-
-  private OnyxDataPurgeModel purgeInfoModel;
 
   public PurgeDialog(String id) {
     super(id);
@@ -63,7 +57,7 @@ public class PurgeDialog extends Dialog {
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setType(Type.PLAIN);
 
-    purgeInfoModel = new OnyxDataPurgeModel();
+    super.setDefaultModel(new OnyxDataPurgeModel());
 
     // Set submit button
     addOption("PurgeParticipants", OptionSide.RIGHT, purgeSubmitLink = new AjaxLink("submitPurge") {
@@ -85,12 +79,12 @@ public class PurgeDialog extends Dialog {
 
       @Override
       public boolean isVisible() {
-        return purgeInfoModel.hasInterviewsToPurge();
+        return getPurgeModel().hasInterviewsToPurge();
       }
 
     });
 
-    content = new PurgeDialogPanel(getContentId(), purgeInfoModel);
+    content = new PurgeDialogPanel(getContentId(), getPurgeModel());
     content.add(new AttributeModifier("class", true, new Model("obiba-content purge-panel-content")));
     content.setOutputMarkupId(true);
     setContent(content);
@@ -135,6 +129,10 @@ public class PurgeDialog extends Dialog {
   public void showResult(boolean purgeSucceeded) {
     setOptions(Option.CLOSE_OPTION);
     content.showResult(purgeSucceeded, participantsDeleted);
+  }
+
+  private OnyxDataPurgeModel getPurgeModel() {
+    return (OnyxDataPurgeModel) super.getDefaultModel();
   }
 
   private class PurgeBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
