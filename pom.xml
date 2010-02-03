@@ -911,6 +911,9 @@
                 <goals>
                   <goal>create</goal>
                 </goals>
+                <configuration>
+                  <useLastCommittedRevision>true</useLastCommittedRevision>
+                </configuration>
               </execution>
             </executions>
           </plugin>
