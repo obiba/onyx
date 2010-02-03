@@ -37,7 +37,7 @@ public class DataManagementPanel extends Panel {
 
   public DataManagementPanel(String id) {
     super(id);
-    System.out.println("----------------------------------------------");
+
     AjaxLink exportLink = new AjaxLink("export") {
       private static final long serialVersionUID = 1L;
 
