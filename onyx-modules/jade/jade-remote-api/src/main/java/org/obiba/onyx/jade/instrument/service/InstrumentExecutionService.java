@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -43,11 +44,12 @@ public interface InstrumentExecutionService {
   public Date getParticipantBirthDate();
 
   /**
-   * Returns the participants birth date as a String in the format "yyyy-MM-dd". This is useful to ensure the correct
-   * birthday will be returned regardless of the timezone.
-   * @return The participant's birthday as a String.
+   * Convert a date parameter to a String in the specified format.
+   * @param parameter The input parameter from which the date will be retrieved from.
+   * @param format The requested date format.
+   * @return The formatted date.
    */
-  public String getParticipantBirthDateAsString();
+  public String getDateAsString(String parameter, SimpleDateFormat dateFormat);
 
   public String getParticipantGender();
 

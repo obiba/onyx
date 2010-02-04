@@ -80,8 +80,12 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
     participantFirstName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME").getValue();
     participantLastName = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME").getValue();
     participantID = instrumentExecutionService.getParticipantID();
+
+    // Get the participant birth date as a String in the format "yyyy-MM-dd". This is necessary to ensure the
+    // correct birthday will be returned regardless of the timezone (regional settings) on the server. See ONYX-1119.
     SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-    participantBirthDate = birthDateFormatter.parse(instrumentExecutionService.getParticipantBirthDateAsString());
+    participantBirthDate = birthDateFormatter.parse(instrumentExecutionService.getDateAsString("INPUT_PARTICIPANT_DATE_BIRTH", birthDateFormatter));
+
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
   }
 

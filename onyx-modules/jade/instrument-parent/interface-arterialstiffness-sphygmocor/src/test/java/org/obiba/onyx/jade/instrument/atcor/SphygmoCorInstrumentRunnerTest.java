@@ -14,6 +14,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -89,7 +90,7 @@ public class SphygmoCorInstrumentRunnerTest {
 
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_LAST_NAME")).andReturn(DataBuilder.buildText(participantLastName));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_FIRST_NAME")).andReturn(DataBuilder.buildText(participantFirstName));
-    expect(instrumentExecutionServiceMock.getParticipantBirthDateAsString()).andReturn("1964-03-12");
+    expect(instrumentExecutionServiceMock.getDateAsString((String) org.easymock.EasyMock.anyObject(), (SimpleDateFormat) org.easymock.EasyMock.anyObject())).andReturn("1964-03-12");
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_GENDER")).andReturn(DataBuilder.buildText(participantGender));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_PARTICIPANT_BARCODE")).andReturn(DataBuilder.buildInteger(participantBarcode));
     expect(instrumentExecutionServiceMock.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE")).andReturn(DataBuilder.buildInteger(systolicPressure));
