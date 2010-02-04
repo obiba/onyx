@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -126,6 +127,8 @@ public class MiniSpirInstrumentRunnerTest {
 
     expect(instrumentExecutionServiceMock.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(inputData);
     expect(instrumentExecutionServiceMock.getInputParametersVendorNames("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(inputKeyTranslation);
+    SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    expect(instrumentExecutionServiceMock.getDateAsString("INPUT_PARTICIPANT_DATE_BIRTH", birthDateFormatter)).andReturn("1965-01-01");
     replay(instrumentExecutionServiceMock);
 
     // Generate the input file for WinSpiro.

@@ -73,9 +73,8 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return (getInstrumentRun().getParticipant().getBirthDate());
   }
 
-  public String getParticipantBirthDateAsString() {
-    SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-    return birthDateFormatter.format(getInstrumentRun().getParticipant().getBirthDate());
+  public String getDateAsString(String parameter, SimpleDateFormat dateFormat) {
+    return dateFormat.format(getInputParameterValue(parameter).getValue());
   }
 
   public String getParticipantGender() {

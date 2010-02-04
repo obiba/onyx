@@ -164,6 +164,13 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     try {
       String[] inputParameterCodes = new String[] { "INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH" };
       Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue(inputParameterCodes);
+
+      // Get the participant birth date as a String in the format "yyyy-MM-dd". This is necessary to ensure the
+      // correct birthday will be returned regardless of the timezone (regional settings) on the server. See ONYX-1119.
+      SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+      java.util.Date birthDate = birthDateFormatter.parse(instrumentExecutionService.getDateAsString("INPUT_PARTICIPANT_DATE_BIRTH", birthDateFormatter));
+      inputData.put("INPUT_PARTICIPANT_DATE_BIRTH", DataBuilder.buildDate(birthDate));
+
       Map<String, String> inputKeyTranslation = instrumentExecutionService.getInputParametersVendorNames(inputParameterCodes);
 
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
