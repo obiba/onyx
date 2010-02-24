@@ -42,9 +42,9 @@ public class WorkstationBeanResolver extends ExperimentalConditionBeanResolver {
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
     if(ExperimentalCondition.class.equals(type)) {
-      resolveExperimentalCondition(valueSet, variable);
+      return resolveExperimentalCondition(valueSet, variable);
     } else if(ExperimentalConditionValue.class.equals(type)) {
-      resolveExperimentalConditionValue(valueSet, variable);
+      return resolveExperimentalConditionValue(valueSet, variable);
     } else if(ExportLog.class.equals(type)) {
       return resolveExportLog(valueSet, variable);
     }
