@@ -53,11 +53,20 @@ public class AppointmentUpdateLog implements Serializable {
   //
   // Static methods
   //
+
+  /**
+   * Adds {@link AppointmentUpdateLog}s with the level {@link AppointmentUpdateLog.Level}=ERROR to the Spring Batch
+   * {@link ExecutionContext}. {@code AppointmentUpdateLog}s that are not of the ERROR level will be ignored.
+   * @param context Spring Batch ExecutionContext.
+   * @param appointmentUpdateLog A single appointment update log entry.
+   */
   @SuppressWarnings("unchecked")
-  public static void addLog(ExecutionContext context, AppointmentUpdateLog appointmentUpdateLog) {
+  public static void addErrorLog(ExecutionContext context, AppointmentUpdateLog appointmentUpdateLog) {
     if(context == null) return;
     if(context.get("logList") == null) context.put("logList", new ArrayList<AppointmentUpdateLog>());
-    ((ArrayList<AppointmentUpdateLog>) context.get("logList")).add(appointmentUpdateLog);
+    if(appointmentUpdateLog != null && appointmentUpdateLog.getLevel() == Level.ERROR) {
+      ((ArrayList<AppointmentUpdateLog>) context.get("logList")).add(appointmentUpdateLog);
+    }
   }
 
   //

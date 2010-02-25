@@ -53,7 +53,7 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
 
         File outputDir = getOutputDirectory().getFile();
         String message = "Moving file " + file.getName() + " to output directory " + outputDir.getAbsolutePath();
-        AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, message));
+        AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, message));
 
         // Re-create output directory, in case it was deleted at runtime.
         if(!outputDir.exists()) {
@@ -63,7 +63,7 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
         FileUtil.moveFile(file, outputDir);
       } catch(IOException e) {
         String message = "Abort updating appointments: Archiving file error " + file.getName() + " - " + e.getMessage();
-        AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, message));
+        AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, message));
 
         ValidationRuntimeException vex = new ValidationRuntimeException();
         vex.reject("ParticipantsListFileArchivingError", new String[] { e.getMessage() }, "Archiving file error: " + e.getMessage());
