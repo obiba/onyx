@@ -262,7 +262,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   public ExitStatus afterStep(StepExecution stepExecution) {
     for(AppointmentUpdateLog appointmentUpdateLog : log) {
-      AppointmentUpdateLog.addLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
+      AppointmentUpdateLog.addErrorLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
     }
     return null;
   }

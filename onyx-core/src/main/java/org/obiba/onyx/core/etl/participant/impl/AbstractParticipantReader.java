@@ -82,21 +82,21 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
     try {
       if(getInputDirectory() == null || getInputDirectory().getFile() == null) return;
 
-      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Start updating appointments"));
+      AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Start updating appointments"));
       File[] appointmentFiles = getInputDirectory().getFile().listFiles(this.getFilter());
 
-      if(appointmentFiles.length > 1) AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Found " + appointmentFiles.length + " appointment lists. Will process the most recent one only and archive the others."));
+      if(appointmentFiles.length > 1) AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Found " + appointmentFiles.length + " appointment lists. Will process the most recent one only and archive the others."));
       sortFilesOnDateAsc(appointmentFiles);
 
       currentFile = appointmentFiles[appointmentFiles.length - 1];
-      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Processing appointment list file " + currentFile.getName()));
+      AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "Processing appointment list file " + currentFile.getName()));
 
       context.put("fileName", currentFile.getName());
       fileInputStream = new FileInputStream(currentFile);
 
     } catch(IOException e) {
       String message = "Abort updating appointments: Reading file error: " + ((currentFile == null) ? "unknown file" : currentFile.getName()) + " - " + e.getMessage();
-      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, message));
+      AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, message));
 
       ValidationRuntimeException vex = new ValidationRuntimeException();
       vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());

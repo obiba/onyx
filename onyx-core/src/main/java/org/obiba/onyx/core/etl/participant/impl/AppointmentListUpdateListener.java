@@ -98,7 +98,7 @@ public class AppointmentListUpdateListener {
       appointmentManagementService.saveAppointmentUpdateStats(appointmentUpdateStats);
     }
 
-    AppointmentUpdateLog.addLog(stepExecution.getExecutionContext(), new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "End updating appointments"));
+    AppointmentUpdateLog.addErrorLog(stepExecution.getExecutionContext(), new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.INFO, "End updating appointments"));
 
     return status;
   }
