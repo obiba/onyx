@@ -34,6 +34,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.ContextImage;
@@ -61,6 +62,7 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
@@ -68,7 +70,9 @@ import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.DisplayTooltipBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
@@ -76,6 +80,8 @@ import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
@@ -119,6 +125,8 @@ public class ParticipantSearchPage extends BasePage {
   private static final int DEFAULT_PARTICIPANT_WIDTH = 40;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
+
+  private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
 
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
@@ -476,6 +484,9 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
+    @SpringBean
+    private OnyxDataExport onyxDataExport;
+
     public ActionFragment(String id) {
       super(id, "actionFragment", ParticipantSearchPage.this);
 
@@ -507,7 +518,46 @@ public class ParticipantSearchPage extends BasePage {
       };
       updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
       add(updateParticipantsLink);
+
+      final ConfirmationDialog confirmationDialog = createExportDialog();
+
+      AjaxLink exportLink = new AjaxLink("export") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          MultiLineLabel label = new MultiLineLabel("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
+          label.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
+          confirmationDialog.setContent(label);
+
+          confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+            private static final long serialVersionUID = 1L;
+
+            public void onYesButtonClicked(AjaxRequestTarget target) {
+              try {
+                onyxDataExport.exportInterviews();
+              } catch(Exception e) {
+                log.error("Error on data export.", e);
+              }
+            }
+          });
+          confirmationDialog.show(target);
+        }
+
+      };
+      add(confirmationDialog);
+      add(exportLink);
+
     }
+
+    private ConfirmationDialog createExportDialog() {
+      ConfirmationDialog confirmationDialog = new ConfirmationDialog("dialog");
+      confirmationDialog.setTitle(new ResourceModel("ConfirmExport"));
+      confirmationDialog.setHeightUnit("em");
+      confirmationDialog.setInitialHeight(15);
+      return confirmationDialog;
+    }
+
   }
 
   private class InterviewStatusFragment extends Fragment {
