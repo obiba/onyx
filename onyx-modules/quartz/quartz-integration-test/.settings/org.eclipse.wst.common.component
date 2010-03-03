@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="onyx-example">
+    <wb-module deploy-name="quartz-integration-test">
         <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
@@ -12,19 +12,13 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/onyx-util/onyx-util">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/marble-core/marble-core">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/onyx-core/onyx-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/quartz-core/quartz-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ruby-core/ruby-core">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <property name="context-root" value="onyx-example"/>
+        <property name="context-root" value="quartz-integration-test"/>
         <property name="java-output-path"/>
     </wb-module>
 </project-modules>
