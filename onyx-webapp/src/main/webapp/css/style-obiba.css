@@ -1301,6 +1301,11 @@ div .button-vertical-list{
   margin-bottom: 0em !important;
 }
 
+#participantPageActions #enrollAndUpdateActions > div#updateList, #participantPageActions #enrollAndUpdateActions > div#export {
+  float:right;
+  margin-right: 3em;
+}
+
 #participantPageActions #exportAction {
   float: right;
   margin-top: 0.4167em;
