@@ -20,6 +20,7 @@ import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.springframework.util.Assert;
 
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
 
@@ -64,6 +65,11 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
   public void updateMeasureStatus(Measure measure, MeasureStatus status) {
     measure.setStatus(status);
     getPersistenceManager().save(measure);
+  }
+
+  public int countInstrumentRuns(InstrumentRun instrumentRun) {
+    Assert.notNull(instrumentRun, "An InstrumentRun is required.");
+    return getPersistenceManager().count(instrumentRun);
   }
 
 }

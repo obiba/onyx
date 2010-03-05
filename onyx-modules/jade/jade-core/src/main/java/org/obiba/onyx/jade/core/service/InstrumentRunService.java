@@ -67,4 +67,11 @@ public interface InstrumentRunService {
    */
   public void updateMeasureStatus(Measure measure, MeasureStatus status);
 
+  /**
+   * Get the count of {@list InstrumentRun}s that match the provided InstrumentRun template.
+   * @param instrumentRun The InstrumentRun template to match.
+   * @return The InstrumentRun count.
+   */
+  public int countInstrumentRuns(InstrumentRun instrumentRun);
+
 }
