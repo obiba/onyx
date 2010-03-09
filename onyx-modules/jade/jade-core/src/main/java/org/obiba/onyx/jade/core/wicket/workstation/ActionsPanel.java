@@ -224,7 +224,7 @@ public class ActionsPanel extends Panel {
       InstrumentRun template = new InstrumentRun();
       template.setInstrument(instrument);
       template.setInstrumentType(getInstrumentMeasurementType().getType());
-      return instrumentRunService.countInstrumentRuns(template) > 0;
+      return instrumentRunService.countInstrumentRuns(template) == 0;
     }
 
     @Override
