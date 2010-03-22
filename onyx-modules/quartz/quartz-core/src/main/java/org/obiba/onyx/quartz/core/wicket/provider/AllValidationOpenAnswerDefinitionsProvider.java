@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.provider;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
@@ -29,19 +30,18 @@ public class AllValidationOpenAnswerDefinitionsProvider extends AbstractQuestion
     List<OpenAnswerDefinition> openAnswerDefinitions = new ArrayList<OpenAnswerDefinition>();
 
     if(getProviderElement().getOpenAnswerDefinition() != null) {
-      OpenAnswerDefinition openAnswerDefinition = getChildOpenAnswerDefininition(getProviderElement().getOpenAnswerDefinition());
-      if(openAnswerDefinition.getDataValidators().size() > 0) {
-        openAnswerDefinitions.add(openAnswerDefinition);
-      }
+      openAnswerDefinitions.addAll(getChildOpenAnswerDefinition(getProviderElement().getOpenAnswerDefinition()));
     }
 
     return openAnswerDefinitions;
   }
 
-  private OpenAnswerDefinition getChildOpenAnswerDefininition(OpenAnswerDefinition parentOpenAnswerdefinition) {
-    for(OpenAnswerDefinition child : parentOpenAnswerdefinition.getOpenAnswerDefinitions()) {
-      return getChildOpenAnswerDefininition(child);
+  private List<OpenAnswerDefinition> getChildOpenAnswerDefinition(OpenAnswerDefinition parentOpenAnswerdefinition) {
+    if(parentOpenAnswerdefinition.getOpenAnswerDefinitions().isEmpty()) {
+      return Arrays.asList(new OpenAnswerDefinition[] { parentOpenAnswerdefinition });
+    } else {
+      return parentOpenAnswerdefinition.getOpenAnswerDefinitions();
     }
-    return parentOpenAnswerdefinition;
+
   }
 }
