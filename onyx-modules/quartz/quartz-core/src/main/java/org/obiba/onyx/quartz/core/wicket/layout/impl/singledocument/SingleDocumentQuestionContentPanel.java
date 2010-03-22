@@ -110,7 +110,12 @@ public class SingleDocumentQuestionContentPanel extends Panel {
             @Override
             protected void populateItem(Item<OpenAnswerDefinition> itemOp) {
               OpenAnswerDefinition openAnswerDefinition = itemOp.getModelObject();
-              itemOp.add(new Label("label", new Model<String>(questionCategoryName + "." + itemOp.getModelObject().getName())));
+              OpenAnswerDefinition parentOpenAnswerDefinition = openAnswerDefinition.getParentOpenAnswerDefinition();
+              if(parentOpenAnswerDefinition == null) {
+                itemOp.add(new Label("label", new Model<String>(questionCategoryName + "." + openAnswerDefinition.getName())));
+              } else {
+                itemOp.add(new Label("label", new Model<String>(questionCategoryName + "." + parentOpenAnswerDefinition.getName() + "." + openAnswerDefinition.getName())));
+              }
               itemOp.add(new Label("validation", new Model<String>(getValidationString(openAnswerDefinition.getDataValidators()))));
             }
           };
