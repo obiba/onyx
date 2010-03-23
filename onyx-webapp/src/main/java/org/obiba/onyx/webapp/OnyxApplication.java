@@ -30,7 +30,6 @@ import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
-import org.obiba.onyx.runtime.management.CheesrRequestCycle;
 import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
 import org.obiba.onyx.webapp.config.page.ApplicationConfigurationPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
@@ -260,7 +259,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   @Override
   public RequestCycle newRequestCycle(final Request request, final Response response) {
-    return new CheesrRequestCycle(this, (WebRequest) request, (WebResponse) response);
+    return new OnyxRequestCycle(this, (WebRequest) request, (WebResponse) response);
   }
 
 }

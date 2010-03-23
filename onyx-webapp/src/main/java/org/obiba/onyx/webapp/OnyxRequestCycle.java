@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.runtime.management;
+package org.obiba.onyx.webapp;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.Response;
@@ -21,14 +21,14 @@ import org.obiba.onyx.webapp.home.page.ErrorPage;
 /**
  * implements an alternative way of managing the runtimeExceptions
  */
-public class CheesrRequestCycle extends WebRequestCycle {
+class OnyxRequestCycle extends WebRequestCycle {
 
   /**
    * @param application
    * @param request
    * @param response
    */
-  public CheesrRequestCycle(WebApplication application, WebRequest request, Response response) {
+  OnyxRequestCycle(WebApplication application, WebRequest request, Response response) {
     super(application, request, response);
   }
 
