@@ -87,9 +87,10 @@
     <property name="methodName" value="updateDatabaseSchema" />
   </bean>
 
-  <bean id="upgrade-to-1.3.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+  <bean id="upgrade-to-1.3.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="script" value="classpath:/upgrade-script/upgrade-1.3.0.sql" />
+    <property name="scriptPath" value="classpath:/upgrade-script/" />
+    <property name="scriptBasename" value="upgrade-1.3.0" />
     <property name="description" value="Upgrade Onyx to 1.3.0" />
     <property name="appliesTo" value="1.3.0" />
   </bean>
@@ -116,9 +117,10 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
-  <bean id="schemaUpgrade-1.4.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+  <bean id="schemaUpgrade-1.4.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.4.0.sql" />
+    <property name="scriptPath" value="classpath:/upgrade-script/" />
+    <property name="scriptBasename" value="schemaUpgrade-1.4.0" />
     <property name="description" value="Add uniqueness constraints to Onyx 1.4.0 schema." />
     <property name="appliesTo" value="1.4.0" />
   </bean>
@@ -129,9 +131,10 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
-  <bean id="schemaUpgrade-1.5.1" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+  <bean id="schemaUpgrade-1.5.1" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="script" value="classpath:/upgrade-script/schemaUpgrade-1.5.1.sql" />
+    <property name="scriptPath" value="classpath:/upgrade-script/" />
+    <property name="scriptBasename" value="schemaUpgrade-1.5.1" />
     <property name="description" value="Add indexes to various tables." />
     <property name="appliesTo" value="1.5.1" />
   </bean>
@@ -154,17 +157,13 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
-  <bean id="batchSchema-1.6.0" class="org.obiba.runtime.upgrade.support.DialectAwareSqlScriptUpgradeStep">
-    <property name="description" value="Create Spring Batch Schema." />
+  <bean id="batchSchema-1.6.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="scriptDialect" value="${org.obiba.onyx.datasource.dialect}" />
-    <property name="dialectMapper" ref="defaultDialectMapper" />
+    <property name="scriptPath" value="classpath:/META-INF/install-scripts/spring-batch/" />
     <property name="scriptBasename" value="schema" />
-    <property name="scriptLocation" value="classpath:/upgrade-script/batch/" />
+    <property name="description" value="Installs the Spring Batch Schema" />
     <property name="appliesTo" value="1.6.0" />
   </bean>
-
-  <bean id="defaultDialectMapper" class="org.obiba.runtime.upgrade.support.DefaultDialectMapper" />
 
   <bean id="onyx-constraints-1.6.0" class="org.obiba.onyx.runtime.upgrade.Constraints_1_6_0">
     <property name="description" value="Onyx Constraints Upgrade 1.6.0" />
@@ -172,9 +171,10 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
-  <bean id="onyx-dataUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+  <bean id="onyx-dataUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="script" value="classpath:/upgrade-script/onyx-dataUpgrade-1.6.0.sql" />
+    <property name="scriptPath" value="classpath:/upgrade-script/" />
+    <property name="scriptBasename" value="onyx-dataUpgrade-1.6.0" />
     <property name="description" value="Onyx Core Data Upgrade 1.6.0" />
     <property name="appliesTo" value="1.6.0" />
   </bean>
@@ -191,9 +191,10 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
-  <bean id="onyx-dataUpgrade-1.6.1" class="org.obiba.runtime.upgrade.support.SqlScriptUpgradeStep">
+  <bean id="onyx-dataUpgrade-1.6.1" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="script" value="classpath:/upgrade-script/onyx-dataUpgrade-1.6.1.sql" />
+    <property name="scriptPath" value="classpath:/upgrade-script/" />
+    <property name="scriptBasename" value="onyx-dataUpgrade-1.6.1" />
     <property name="description" value="Onyx Core Data Upgrade 1.6.1" />
     <property name="appliesTo" value="1.6.1" />
   </bean>
