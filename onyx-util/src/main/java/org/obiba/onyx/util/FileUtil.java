@@ -19,7 +19,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FileUtil {
+
+  private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 
   /**
    * Reads a stream as a string.
@@ -71,7 +76,9 @@ public class FileUtil {
   public static void copyDirectory(File sourceDir, File destDir) throws IOException {
 
     if(!destDir.exists()) {
-      destDir.mkdir();
+      if(destDir.mkdir() == false) {
+        throw new IOException("Cannot create destination directory " + destDir.getAbsolutePath());
+      }
     }
 
     File[] children = sourceDir.listFiles();
@@ -101,7 +108,9 @@ public class FileUtil {
     }
 
     if(!dest.exists()) {
-      dest.createNewFile();
+      if(dest.createNewFile() == false) {
+        throw new IOException("Cannot create destination file " + dest.getAbsolutePath());
+      }
     }
 
     InputStream in = null;
@@ -110,15 +119,24 @@ public class FileUtil {
     try {
       in = new FileInputStream(source);
       out = new FileOutputStream(dest);
-      byte[] buf = new byte[1024];
+
+      byte[] buf = new byte[4096];
       int len;
 
       while((len = in.read(buf)) > 0) {
         out.write(buf, 0, len);
       }
     } finally {
-      in.close();
-      out.close();
+      try {
+        if(in != null) in.close();
+      } catch(IOException e) {
+        // ignore
+      }
+      try {
+        if(out != null) out.close();
+      } catch(IOException e) {
+        // ignore
+      }
     }
   }
 
@@ -135,7 +153,9 @@ public class FileUtil {
 
     if(!source.renameTo(dest)) {
       copyFile(source, dest);
-      source.delete();
+      if(source.delete() == false) {
+        log.warn("Cannot delete source file after copy {}", source.getAbsolutePath());
+      }
     }
   }
 
