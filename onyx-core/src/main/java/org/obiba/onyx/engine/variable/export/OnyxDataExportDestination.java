@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
-import org.obiba.magma.crypt.PublicKeyProvider;
+import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
 import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
 import org.obiba.magma.filter.CollectionFilterChain;
@@ -38,9 +38,10 @@ public class OnyxDataExportDestination {
     this.name = name;
   }
 
-  public DatasourceEncryptionStrategy getEncryptionStrategy(PublicKeyProvider provider) {
+  public DatasourceEncryptionStrategy getEncryptionStrategy(KeyProvider provider) {
     if(encrypt != null) {
-      GeneratedSecretKeyDatasourceEncryptionStrategy strategy = new GeneratedSecretKeyDatasourceEncryptionStrategy(provider);
+      GeneratedSecretKeyDatasourceEncryptionStrategy strategy = new GeneratedSecretKeyDatasourceEncryptionStrategy();
+      strategy.setKeyProvider(provider);
       encrypt.configureStrategy(strategy);
       return strategy;
     }

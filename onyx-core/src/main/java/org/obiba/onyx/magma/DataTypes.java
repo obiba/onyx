@@ -12,7 +12,7 @@ package org.obiba.onyx.magma;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.type.BinaryType;
 import org.obiba.magma.type.BooleanType;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
@@ -26,7 +26,7 @@ public class DataTypes {
     case BOOLEAN:
       return BooleanType.get();
     case DATE:
-      return DateType.get();
+      return DateTimeType.get();
     case DATA:
       return BinaryType.get();
     case DECIMAL:

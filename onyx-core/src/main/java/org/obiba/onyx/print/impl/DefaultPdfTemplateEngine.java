@@ -32,7 +32,7 @@ import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.support.VariableEntityBean;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -195,7 +195,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
         valueString += " " + getValueAsString(variable, v);
       }
     }
-    if(value.getValueType() == DateType.get()) {
+    if(value.getValueType() == DateTimeType.get()) {
       valueString = dateFormat.format(value.getValue());
     } else {
       valueString = value.toString();

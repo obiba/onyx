@@ -25,7 +25,7 @@ import org.obiba.magma.Value;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.type.BinaryType;
 import org.obiba.magma.type.BooleanType;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
@@ -73,7 +73,7 @@ public class DataValueConverterTest {
     Date date = new Date();
     Data data = new Data(DataType.DATE, date);
     Value value = DataValueConverter.dataToValue(data);
-    assertThat(value.getValueType(), equalTo((ValueType) DateType.get()));
+    assertThat(value.getValueType(), equalTo((ValueType) DateTimeType.get()));
     assertThat((Date) value.getValue(), is(date));
   }
 
@@ -121,7 +121,7 @@ public class DataValueConverterTest {
   @Test
   public void testValueToDataDate() throws Exception {
     Date date = new Date();
-    Value value = ValueType.Factory.newValue(DateType.get(), date);
+    Value value = ValueType.Factory.newValue(DateTimeType.get(), date);
     Data data = DataValueConverter.valueToData(value);
     assertThat(data.getType(), equalTo(DataType.DATE));
     assertThat((Date) data.getValue(), is(date));

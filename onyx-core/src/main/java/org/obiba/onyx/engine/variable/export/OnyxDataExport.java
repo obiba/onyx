@@ -10,6 +10,7 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
+import java.security.KeyPair;
 import java.security.PublicKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,12 +25,13 @@ import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
+import org.obiba.magma.crypt.KeyProvider;
+import org.obiba.magma.crypt.KeyProviderSecurityException;
 import org.obiba.magma.crypt.NoSuchKeyException;
-import org.obiba.magma.crypt.PublicKeyProvider;
-import org.obiba.magma.datasource.fs.DatasourceCopier;
 import org.obiba.magma.datasource.fs.FsDatasource;
-import org.obiba.magma.datasource.fs.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.magma.filter.FilteredValueTable;
+import org.obiba.magma.support.DatasourceCopier;
+import org.obiba.magma.support.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -115,7 +117,15 @@ public class OnyxDataExport {
    * Private method for performing the complete export process
    */
   private void internalExport() throws Exception {
-    PublicKeyProvider pkProvider = new PublicKeyProvider() {
+    KeyProvider pkProvider = new KeyProvider() {
+      public KeyPair getKeyPair(PublicKey publicKey) throws NoSuchKeyException, KeyProviderSecurityException {
+        throw new NoSuchKeyException("No KeyPair for publicKey.");
+      }
+
+      public KeyPair getKeyPair(String alias) throws NoSuchKeyException, KeyProviderSecurityException {
+        throw new NoSuchKeyException("No KeyPair for alias '" + alias + "'");
+      }
+
       public PublicKey getPublicKey(Datasource datasource) throws NoSuchKeyException {
         PublicKey key = publicKeyFactory.getPublicKey(datasource.getName());
         if(key == null) {

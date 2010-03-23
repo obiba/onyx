@@ -15,7 +15,7 @@ import org.obiba.magma.Value;
 import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.type.BinaryType;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -35,7 +35,7 @@ public class DataValueConverter {
     ValueType valueType;
     switch(data.getType()) {
     case DATE:
-      valueType = DateType.get();
+      valueType = DateTimeType.get();
       break;
     case DATA:
       valueType = BinaryType.get();
@@ -62,7 +62,7 @@ public class DataValueConverter {
     String dataTypeName = valueType.getName();
     if(valueType == BinaryType.get()) {
       dataTypeName = DataType.DATA.name();
-    } else if(valueType == DateType.get()) {
+    } else if(valueType == DateTimeType.get()) {
       dataTypeName = DataType.DATE.name();
     }
 

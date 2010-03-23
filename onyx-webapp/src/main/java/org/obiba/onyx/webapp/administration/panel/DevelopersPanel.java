@@ -25,9 +25,9 @@ import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
-import org.obiba.magma.datasource.fs.DatasourceCopier;
 import org.obiba.magma.datasource.fs.FsDatasource;
-import org.obiba.magma.datasource.fs.DatasourceCopier.DatasourceCopyEventListener;
+import org.obiba.magma.support.DatasourceCopier;
+import org.obiba.magma.support.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class DevelopersPanel extends Panel {
 
   private static final long serialVersionUID = 8577685399815703632L;
 
-  private static final Logger log = LoggerFactory.getLogger(DatasourceCopier.class);
+  private static final Logger log = LoggerFactory.getLogger(DevelopersPanel.class);
 
   @SpringBean
   private SessionFactory factory;

@@ -22,7 +22,7 @@ import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -158,7 +158,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       }
 
       public ValueType getValueType() {
-        return DateType.get();
+        return DateTimeType.get();
       }
     });
 
@@ -174,7 +174,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       }
 
       public ValueType getValueType() {
-        return DateType.get();
+        return DateTimeType.get();
       }
     });
 

@@ -23,7 +23,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.obiba.magma.js.GlobalMethodProvider;
 import org.obiba.magma.js.ScriptableValue;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
@@ -66,6 +66,10 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
     }
   }
 
+  public String getJavaScriptMethodName(Method method) {
+    return method.getName();
+  }
+
   /**
    * Allows access to the onyx configuration variables. Returns a {@code ScriptableValue}. Accessed as 'onyx' in
    * javascript.
@@ -93,10 +97,10 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
   private static Scriptable getLastExportDate(Scriptable thisObj) {
     List<ExportLog> logs = exportLogService.getExportLogs("Participant", null, false);
     if(logs.size() > 0) {
-      return new ScriptableValue(thisObj, DateType.get().valueOf(logs.get(0).getExportDate()));
+      return new ScriptableValue(thisObj, DateTimeType.get().valueOf(logs.get(0).getExportDate()));
     } else {
       // No export has occurred. Will return the beginning of (unix) time.
-      return new ScriptableValue(thisObj, DateType.get().valueOf(new Date(0L)));
+      return new ScriptableValue(thisObj, DateTimeType.get().valueOf(new Date(0L)));
     }
   }
 
@@ -121,4 +125,5 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
 
     return Lists.newArrayList(methods);
   }
+
 }

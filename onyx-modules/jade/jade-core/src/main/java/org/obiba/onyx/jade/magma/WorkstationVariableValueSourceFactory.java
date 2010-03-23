@@ -19,7 +19,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
@@ -138,7 +138,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public ValueType getValueType() {
-        return DateType.get();
+        return DateTimeType.get();
       }
     };
   }
@@ -156,7 +156,7 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       }
 
       public ValueType getValueType() {
-        return DateType.get();
+        return DateTimeType.get();
       }
     };
   }

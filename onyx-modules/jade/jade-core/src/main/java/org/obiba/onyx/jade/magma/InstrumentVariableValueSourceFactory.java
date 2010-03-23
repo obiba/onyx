@@ -27,7 +27,7 @@ import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
-import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
@@ -168,7 +168,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public ValueType getValueType() {
-        return DateType.get();
+        return DateTimeType.get();
       }
     };
   }
@@ -186,7 +186,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       }
 
       public ValueType getValueType() {
-        return DateType.get();
+        return DateTimeType.get();
       }
     };
   }
