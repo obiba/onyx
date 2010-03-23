@@ -15,21 +15,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </bean>
     </property>
     <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
-    <property name="tubeToVariableMappingStrategy" ref="tubeToVariableMappingStrategy" />
     <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
-    <property name="variableRoot" ref="rubyVariableRoot" />
-  </bean>
-
-  <bean id="rubyVariableRoot" class="java.lang.String">
-    <constructor-arg type="java.lang.String" value="SamplesCollection" />
   </bean>
   
-  <bean id="tubeToVariableMappingStrategy" class="org.obiba.onyx.ruby.engine.variable.impl.DefaultTubeToVariableMappingStrategy">
-    <property name="queryService" ref="persistenceManager" />
-    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
-    <property name="variableRoot" ref="rubyVariableRoot" />
-  </bean>
-
   <bean id="baseRubyStageState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.AbstractRubyStageState"
     abstract="true">
     <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
@@ -62,7 +50,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="tubeValueSetBeanResolver" class="org.obiba.onyx.ruby.magma.TubeValueSetBeanResolver">
     <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
-    <property name="variableRoot" ref="rubyVariableRoot" />
   </bean>
 
 </beans>

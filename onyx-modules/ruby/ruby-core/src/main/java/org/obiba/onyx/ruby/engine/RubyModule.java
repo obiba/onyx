@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +27,9 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
-import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
 import org.obiba.onyx.ruby.magma.TubeVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +40,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import com.google.common.collect.ImmutableSet;
 
-public class RubyModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
+public class RubyModule implements Module, VariableValueSourceFactory, ApplicationContextAware {
   //
   // Constants
   //
@@ -79,13 +73,9 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
 
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
-  private ITubeToVariableMappingStrategy tubeToVariableMappingStrategy;
-
   private List<Stage> stages;
 
   private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
-
-  private String variableRoot;
 
   @Autowired(required = true)
   private OnyxAttributeHelper attributeHelper;
@@ -96,10 +86,6 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
 
   public void setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap) {
     this.tubeRegistrationConfigurationMap = tubeRegistrationConfigurationMap;
-  }
-
-  public void setVariableRoot(String variableRoot) {
-    this.variableRoot = variableRoot;
   }
 
   public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
@@ -172,10 +158,6 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
-  }
-
-  public void setTubeToVariableMappingStrategy(ITubeToVariableMappingStrategy tubeToVariableMappingStrategy) {
-    this.tubeToVariableMappingStrategy = tubeToVariableMappingStrategy;
   }
 
   private void initTransitionsFromWaiting(StageExecutionContext exec, Map<String, AbstractStageState> states) {
@@ -306,66 +288,6 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
     }
   }
 
-  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-
-    Stage stage = getVariableStage(variable);
-    varData = tubeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData, stage.getName());
-
-    return varData;
-  }
-
-  public List<Variable> getVariables() {
-    List<Variable> variables = new ArrayList<Variable>();
-
-    Variable variableRoot = null;
-    if(tubeToVariableMappingStrategy.getVariableRoot() != null) {
-      variableRoot = new Variable(tubeToVariableMappingStrategy.getVariableRoot());
-      variables.add(variableRoot);
-    }
-
-    for(Stage stage : stages) {
-      Variable entity = new Variable(stage.getName());
-
-      if(variableRoot != null) {
-        variableRoot.addVariable(entity);
-      } else {
-        variables.add(entity);
-      }
-
-      entity.addVariable(tubeToVariableMappingStrategy.getParticipantTubeRegistrationVariable());
-      entity.addVariable(tubeToVariableMappingStrategy.getRegisteredParticipantTubeVariable(stage.getName()));
-    }
-
-    return variables;
-  }
-
-  /**
-   * Returns the stage associated with the specified variable.
-   * 
-   * @param variable the variable
-   * @return the associated stage
-   */
-  private Stage getVariableStage(Variable variable) {
-    for(Stage stage : stages) {
-      Variable sameOrAncestor = variable;
-
-      while(sameOrAncestor != null) {
-        if(sameOrAncestor.getName().equals(stage.getName())) {
-          return stage;
-        }
-
-        sameOrAncestor = sameOrAncestor.getParent();
-      }
-    }
-
-    return null;
-  }
-
-  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    return null;
-  }
-
   public Component getWidget(String id) {
     return null;
   }
@@ -391,7 +313,6 @@ public class RubyModule implements Module, IVariableProvider, VariableValueSourc
       TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stage.getName());
       TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
       factory.setAttributeHelper(attributeHelper);
-      factory.setVariableRoot(variableRoot);
       sources.addAll(factory.createSources());
     }
     return sources.build();

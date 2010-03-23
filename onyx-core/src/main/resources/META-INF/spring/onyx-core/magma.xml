@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
 
-  <bean id="metaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
+  <bean id="magmaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
     <property name="extensions">
       <set>
         <!-- Add the JavaScript extension -->

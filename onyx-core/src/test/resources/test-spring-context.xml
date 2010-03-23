@@ -63,10 +63,6 @@
     <property name="stageOrdering" value="" />
   </bean>
 
-  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
-    <property name="rootName" value="STUDY_NAME" />
-  </bean>
-  
   <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl"/>
     
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">

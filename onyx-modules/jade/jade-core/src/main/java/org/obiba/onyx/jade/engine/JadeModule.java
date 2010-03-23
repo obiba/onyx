@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.engine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.Component;
@@ -23,23 +22,15 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.engine.variable.VariableHelper;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
-import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module, IVariableProvider, ApplicationContextAware {
+public class JadeModule implements Module, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
@@ -47,13 +38,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   private ActiveInterviewService activeInterviewService;
 
-  private InstrumentService instrumentService;
-
   private InstrumentRunService instrumentRunService;
-
-  private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
-
-  // private DatabaseSeed databaseSeed;
 
   private List<Stage> stages;
 
@@ -148,43 +133,12 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.activeInterviewService = activeInterviewService;
   }
 
-  public void setInstrumentService(InstrumentService instrumentService) {
-    this.instrumentService = instrumentService;
-  }
-
   public InstrumentRunService getInstrumentRunService() {
     return instrumentRunService;
   }
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
-  }
-
-  public void setInstrumentTypeToVariableMappingStrategy(IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy) {
-    this.instrumentTypeToVariableMappingStrategy = instrumentTypeToVariableMappingStrategy;
-  }
-
-  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-    varData = instrumentTypeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData);
-
-    return varData;
-  }
-
-  public List<Variable> getVariables() {
-    List<Variable> entities = new ArrayList<Variable>();
-
-    instrumentTypeToVariableMappingStrategy.setVariableHelper(new VariableHelper(applicationContext));
-
-    for(InstrumentType type : instrumentService.getInstrumentTypes().values()) {
-      entities.add(instrumentTypeToVariableMappingStrategy.getVariable(type));
-    }
-
-    return entities;
-  }
-
-  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    return null;
   }
 
   public Component getWidget(String id) {

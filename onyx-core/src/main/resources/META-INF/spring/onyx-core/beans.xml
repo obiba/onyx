@@ -71,11 +71,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="moduleRegistrationListener" class="org.obiba.onyx.engine.ModuleRegistrationListener">
     <property name="moduleRegistry" ref="moduleRegistry" />
-    <property name="variableDirectory" ref="variableDirectory" />
-  </bean>
-
-  <bean id="variableDirectory" class="org.obiba.onyx.engine.variable.VariableDirectory">
-    <property name="variablePathNamingStrategy" ref="variablePathNamingStrategy" />
   </bean>
 
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
@@ -93,17 +88,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="printerName" value="${org.obiba.onyx.pdfPrinterName}" />
   </bean>
 
-  <bean id="onyxVariableProvider" class="org.obiba.onyx.engine.variable.OnyxVariableProvider">
-    <property name="participantMetadata" ref="participantMetadata" />
-    <property name="participantService" ref="participantService" />
-    <property name="applicationConfigurationService" ref="appConfigService" />
-    <property name="version" ref="version" />
-    <property name="variableHelper" ref="variableHelper" />
-    <property name="moduleRegistry" ref="moduleRegistry" />
-    <property name="interviewService" ref="interviewService" />
-    <property name="stageInstanceAlgorithm" ref="stageInstanceAlgorithm" />
-  </bean>
-
   <bean id="onyxKeyStore" class="org.obiba.onyx.crypt.OnyxKeyStore" init-method="open" destroy-method="close">
     <property name="keyStoreResource" value="${org.obiba.onyx.keystore.file}" />
     <property name="keyStorePassword" value="${org.obiba.onyx.keystore.password}" />
@@ -112,10 +96,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="onyxDataExportDestinations" class="org.obiba.onyx.engine.variable.export.OnyxDataExportFactoryBean">
     <property name="destinationsResource" value="${org.obiba.onyx.config.path}/export-destinations.xml" />
   </bean>
-  
+
   <bean id="onyxDataPurgeConfiguration" class="org.obiba.onyx.engine.variable.export.OnyxDataPurgeFactoryBean">
     <property name="destinationsResource" value="${org.obiba.onyx.config.path}/purge.xml" />
-  </bean>  
+  </bean>
 
   <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
   </bean>
@@ -146,30 +130,18 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
   </bean>
 
-  <bean id="variableHelper" class="org.obiba.onyx.engine.variable.VariableHelper">
-  </bean>
-
-  <bean id="configurableVariableProviderFactory" class="org.obiba.onyx.engine.variable.configurable.ConfigurableVariableFactoryBean"
-    scope="singleton">
-    <property name="resourcePatterns">
-      <list>
-        <value>${org.obiba.onyx.config.path}/configurable-variables.xml</value>
-      </list>
-    </property>
-  </bean>
-
   <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
 
   <bean id="purgeParticipantDataService" class="org.obiba.onyx.core.service.impl.PurgeParticipantDataServiceImpl">
     <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />
   </bean>
-  
+
   <bean id="exportLogService" class="org.obiba.onyx.core.service.impl.DefaultExportLogServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
-  
+
   <bean id="captureAndExportStrategyMap" class="org.obiba.onyx.engine.variable.impl.CaptureAndExportStrategyMapFactoryBean" />
-  
+
   <bean id="participantCaptureAndExportStrategy" class="org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy" />
-  
+
 </beans>

@@ -6,17 +6,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
-  
-  <bean id="instrumentTypeToVariableMappingStrategy" class="org.obiba.onyx.jade.engine.variable.impl.DefaultInstrumentTypeToVariableMappingStrategy">
-    <property name="instrumentRunService" ref="instrumentRunService" />
-    <property name="instrumentService" ref="instrumentService" />
-  </bean>
 
   <bean id="jadeModule" class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="instrumentService" ref="instrumentService" />
-    <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />
     <property name="stages">
       <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />

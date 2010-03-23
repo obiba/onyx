@@ -9,14 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine;
 
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,9 +36,6 @@ import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.state.RubyCompletedState;
 import org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState;
@@ -52,9 +45,6 @@ import org.obiba.onyx.ruby.engine.state.RubyNotApplicableState;
 import org.obiba.onyx.ruby.engine.state.RubyReadyState;
 import org.obiba.onyx.ruby.engine.state.RubySkippedState;
 import org.obiba.onyx.ruby.engine.state.RubyWaitingState;
-import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 
 public class RubyModuleTest {
   //
@@ -112,16 +102,6 @@ public class RubyModuleTest {
   private Stage firstStage;
 
   private Stage secondStage;
-
-  private ITubeToVariableMappingStrategy tubeToVariableMappingStrategyMock;
-
-  private IVariablePathNamingStrategy variablePathNamingStrategyMock;
-
-  private Variable participantTubeRegistrationVariable;
-
-  private Variable firstStageRegisteredParticipantTubeVariable;
-
-  private Variable secondStageRegisteredParticipantTubeVariable;
 
   //
   // Fixture Methods
@@ -194,15 +174,6 @@ public class RubyModuleTest {
     stages.add(firstStage);
     stages.add(secondStage);
     rubyModule.setStages(stages);
-
-    tubeToVariableMappingStrategyMock = createMock(ITubeToVariableMappingStrategy.class);
-    rubyModule.setTubeToVariableMappingStrategy(tubeToVariableMappingStrategyMock);
-
-    participantTubeRegistrationVariable = createParticipantTubeRegistrationVariable();
-    firstStageRegisteredParticipantTubeVariable = createRegisteredParticipantTubeVariable(FIRST_RUBY_STAGE_NAME);
-    secondStageRegisteredParticipantTubeVariable = createRegisteredParticipantTubeVariable(SECOND_RUBY_STAGE_NAME);
-
-    variablePathNamingStrategyMock = createMock(IVariablePathNamingStrategy.class);
 
     moduleRegistry = new ModuleRegistry();
     moduleRegistry.registerModule(rubyModule);
@@ -512,80 +483,6 @@ public class RubyModuleTest {
     Assert.assertEquals(RubyWaitingState.class.getSimpleName(), memento.getState());
   }
 
-  @Test
-  public void testGetVariablesWithVariableRoot() {
-    expect(tubeToVariableMappingStrategyMock.getVariableRoot()).andReturn("SamplesCollection").anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getParticipantTubeRegistrationVariable()).andReturn(participantTubeRegistrationVariable).anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(FIRST_RUBY_STAGE_NAME)).andReturn(firstStageRegisteredParticipantTubeVariable);
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(SECOND_RUBY_STAGE_NAME)).andReturn(secondStageRegisteredParticipantTubeVariable);
-
-    replay(tubeToVariableMappingStrategyMock);
-
-    List<Variable> variables = rubyModule.getVariables();
-
-    verify(tubeToVariableMappingStrategyMock);
-
-    assertNotNull(variables);
-    assertEquals(1, variables.size());
-
-    Variable variableRoot = variables.get(0);
-    assertEquals("SamplesCollection", variableRoot.getName());
-
-    List<Variable> childVariables = variableRoot.getVariables();
-    assertNotNull(variables);
-    assertEquals(2, childVariables.size());
-    assertEquals(FIRST_RUBY_STAGE_NAME, childVariables.get(0).getName());
-    assertEquals(SECOND_RUBY_STAGE_NAME, childVariables.get(1).getName());
-  }
-
-  @Test
-  public void testGetVariablesWithNoVariableRoot() {
-    expect(tubeToVariableMappingStrategyMock.getVariableRoot()).andReturn(null).anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getParticipantTubeRegistrationVariable()).andReturn(participantTubeRegistrationVariable).anyTimes();
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(FIRST_RUBY_STAGE_NAME)).andReturn(firstStageRegisteredParticipantTubeVariable);
-    expect(tubeToVariableMappingStrategyMock.getRegisteredParticipantTubeVariable(SECOND_RUBY_STAGE_NAME)).andReturn(secondStageRegisteredParticipantTubeVariable);
-
-    replay(tubeToVariableMappingStrategyMock);
-
-    List<Variable> variables = rubyModule.getVariables();
-
-    verify(tubeToVariableMappingStrategyMock);
-
-    assertNotNull(variables);
-    assertEquals(2, variables.size());
-    assertEquals(FIRST_RUBY_STAGE_NAME, variables.get(0).getName());
-    assertEquals(SECOND_RUBY_STAGE_NAME, variables.get(1).getName());
-  }
-
-  @Test
-  public void testGetVariableData() {
-    String variablePath = "Onyx.SamplesCollection." + FIRST_RUBY_STAGE_NAME + "." + PARTICIPANT_TUBE_REGISTRATION;
-    Variable variable = createVariable(variablePath);
-    VariableData variableData = new VariableData(variablePath);
-
-    expect(tubeToVariableMappingStrategyMock.getVariableData((Participant) anyObject(), (Variable) anyObject(), (IVariablePathNamingStrategy) anyObject(), (VariableData) anyObject(), (String) anyObject())).andReturn(variableData);
-    expect(variablePathNamingStrategyMock.getPath(variable)).andReturn(variablePath);
-
-    replay(tubeToVariableMappingStrategyMock);
-    replay(variablePathNamingStrategyMock);
-
-    variableData = rubyModule.getVariableData(participant, variable, variablePathNamingStrategyMock);
-
-    verify(tubeToVariableMappingStrategyMock);
-    verify(variablePathNamingStrategyMock);
-
-    assertNotNull(variableData);
-    assertEquals(variablePath, variableData.getVariablePath());
-
-    List<Data> dataList = variableData.getDatas();
-    assertNotNull(dataList);
-    assertTrue(dataList.isEmpty());
-
-    List<VariableData> childDataList = variableData.getVariableDatas();
-    assertNotNull(childDataList);
-    assertTrue(childDataList.isEmpty());
-  }
-
   //
   // Helper Methods
   //
@@ -645,31 +542,6 @@ public class RubyModuleTest {
     memento.setStage(firstStage.getName());
     memento.setState(stateName);
     return memento;
-  }
-
-  private Variable createParticipantTubeRegistrationVariable() {
-    Variable runVariable = new Variable(PARTICIPANT_TUBE_REGISTRATION);
-    return runVariable;
-  }
-
-  private Variable createRegisteredParticipantTubeVariable(String stageName) {
-    Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE).setDataType(DataType.TEXT).setRepeatable(true);
-    return tubeVariable;
-  }
-
-  private Variable createVariable(String variablePath) {
-    String[] pathElements = variablePath.split("\\.");
-
-    Variable variable = new Variable(pathElements[0]);
-
-    Variable parent = variable;
-    for(int i = 1; i < pathElements.length; i++) {
-      variable = new Variable(pathElements[i]);
-      parent.addVariable(variable);
-      parent = variable;
-    }
-
-    return variable;
   }
 
   //

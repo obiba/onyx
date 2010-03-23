@@ -9,15 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.Map;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.VariableDirectory;
-import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +34,6 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
   private ApplicationContext applicationContext;
 
   private ModuleRegistry registry;
-
-  private VariableDirectory variableDirectory;
 
   @SuppressWarnings("unchecked")
   public void shutdown(WebApplication application) {
@@ -117,24 +109,6 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
       if(existsDependenciesOnConclusion(modules, conclusionStage)) throw new IllegalArgumentException("A StageDependencyCondition based on the conclusion was found on another stage. Please remove the StageDependencyCondition: no stage should depend on the conclusion");
     }
 
-    // get the variables after module registration
-    Map<String, IVariableProvider> providers = applicationContext.getBeansOfType(IVariableProvider.class);
-    if(providers != null) {
-      for(IVariableProvider provider : providers.values()) {
-        variableDirectory.registerVariables(provider);
-      }
-    }
-
-    // dump the variables description when in development mode
-    if(Application.DEVELOPMENT.equalsIgnoreCase(application.getConfigurationType())) {
-      try {
-        VariableStreamer.toXLS(variableDirectory.getVariableRoot(), new FileOutputStream("variables.xls"), variableDirectory.getVariablePathNamingStrategy());
-        VariableStreamer.toXLSAttributes(variableDirectory.getVariableRoot(), new FileOutputStream("variables-attributes.xls"), variableDirectory.getVariablePathNamingStrategy());
-        VariableStreamer.toXML(variableDirectory.getVariableRoot(), new FileOutputStream("variables.xml"));
-      } catch(FileNotFoundException e) {
-        e.printStackTrace();
-      }
-    }
   }
 
   // check if any stage depends on conclusion
@@ -150,10 +124,6 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
 
   public void setModuleRegistry(ModuleRegistry registry) {
     this.registry = registry;
-  }
-
-  public void setVariableDirectory(VariableDirectory variableDirectory) {
-    this.variableDirectory = variableDirectory;
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

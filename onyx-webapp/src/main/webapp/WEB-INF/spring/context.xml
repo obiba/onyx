@@ -36,9 +36,6 @@
     <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
   </bean>
 
-  <!-- Converts a variable to a path representing its unique identification -->
-  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy"/>
-
   <!-- Implementation of UserService. Should not need to be overriden. -->
   <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl" init-method="initialize" scope="session">
     <aop:scoped-proxy />

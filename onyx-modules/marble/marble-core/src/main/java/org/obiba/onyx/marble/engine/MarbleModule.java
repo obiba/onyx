@@ -9,9 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,16 +28,10 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.magma.ConsentVariableValueSourceFactory;
-import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -50,21 +42,9 @@ import com.google.common.collect.ImmutableSet;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 
-public class MarbleModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
+public class MarbleModule implements Module, VariableValueSourceFactory, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleModule.class);
-
-  private static final String MODE_ATTRIBUTE = "mode";
-
-  private static final String ACCEPTED_ATTRIBUTE = "accepted";
-
-  private static final String LOCALE_ATTRIBUTE = "locale";
-
-  private static final String PDF_ATTRIBUTE = "pdfForm";
-
-  private static final String TIME_START_ATTRIBUTE = "timeStart";
-
-  private static final String TIME_END_ATTRIBUTE = "timeEnd";
 
   private ApplicationContext applicationContext;
 
@@ -121,36 +101,6 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
     this.consentService = consentService;
   }
 
-  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-
-    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-
-    // get participant's consent
-    Consent consent = consentService.getConsent(participant.getInterview());
-
-    if(consent != null) {
-      String varName = variable.getName();
-      if(varName.equals(ACCEPTED_ATTRIBUTE) && consent.isAccepted() != null) {
-        varData.addData(DataBuilder.buildBoolean(consent.isAccepted()));
-      } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
-        varData.addData(DataBuilder.buildText(consent.getLocale().toString()));
-      } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
-        varData.addData(DataBuilder.buildText(consent.getMode().toString()));
-      } else if(varName.equals(PDF_ATTRIBUTE) && consent.getPdfForm() != null) {
-        varData.addData(DataBuilder.buildBinary(new ByteArrayInputStream(consent.getPdfForm())));
-      } else if(varName.equals(TIME_START_ATTRIBUTE) && consent.getTimeStart() != null) {
-        varData.addData(DataBuilder.buildDate(consent.getTimeStart()));
-      } else if(varName.equals(TIME_END_ATTRIBUTE) && consent.getTimeEnd() != null) {
-        varData.addData(DataBuilder.buildDate(consent.getTimeEnd()));
-      } else if(consent.getPdfForm() != null) {
-        String key = variableToFieldMap.get(varName);
-        if(key != null && getConsentField(consent, key) != null) varData.addData(DataBuilder.buildText(getConsentField(consent, key)));
-      }
-    }
-
-    return varData;
-  }
-
   public String getConsentField(Consent consent, String fieldName) {
 
     byte[] pdfForm = consent.getPdfForm();
@@ -167,29 +117,6 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
     return form.getField(fieldName);
   }
 
-  public List<Variable> getVariables() {
-    List<Variable> variables = new ArrayList<Variable>();
-
-    for(Stage stage : stages) {
-      Variable stageVariable = new Variable(stage.getName());
-      variables.add(stageVariable);
-
-      stageVariable.addVariable(new Variable(MODE_ATTRIBUTE).setDataType(DataType.TEXT));
-      stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
-      stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
-      stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA).setMimeType("application/pdf"));
-      stageVariable.addVariable(new Variable(TIME_START_ATTRIBUTE).setDataType(DataType.DATE));
-      stageVariable.addVariable(new Variable(TIME_END_ATTRIBUTE).setDataType(DataType.DATE));
-
-      for(String key : variableToFieldMap.keySet()) {
-        stageVariable.addVariable(new Variable(key).setDataType(DataType.TEXT));
-      }
-
-    }
-
-    return variables;
-  }
-
   public void setVariableToFieldMap(String keyValuePairs) {
     variableToFieldMap.clear();
     // Get list of strings separated by the delimiter
@@ -203,10 +130,6 @@ public class MarbleModule implements Module, IVariableProvider, VariableValueSou
         log.error("Could not identify PDF field name to variable path mapping: " + token);
       }
     }
-  }
-
-  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    return null;
   }
 
   public Component getWidget(String id) {

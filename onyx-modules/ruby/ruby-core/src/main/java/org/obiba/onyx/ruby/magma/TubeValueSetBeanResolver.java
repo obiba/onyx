@@ -41,8 +41,6 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
   @Autowired
   private EntityQueryService queryService;
 
-  private String variableRoot;
-
   //
   // AbstractOnyxBeanResolver Methods
   //
@@ -77,10 +75,6 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
-  }
-
-  public void setVariableRoot(String variableRoot) {
-    this.variableRoot = variableRoot;
   }
 
   protected ParticipantTubeRegistration resolveParticipantTubeRegistration(ValueSet valueSet, Variable variable) {
@@ -165,13 +159,7 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
   private String extractStageName(String variableName) {
     String[] elements = variableName.split("\\.");
     if(elements.length != 0) {
-      if(variableRoot != null) {
-        if(elements.length > 1) {
-          return elements[1];
-        }
-      } else {
-        return elements[0];
-      }
+      return elements[0];
     }
 
     return null;

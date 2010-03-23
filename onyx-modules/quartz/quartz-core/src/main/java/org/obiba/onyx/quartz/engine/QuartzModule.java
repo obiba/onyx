@@ -8,7 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.engine;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -26,17 +25,9 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
-import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
-import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.obiba.onyx.quartz.magma.QuestionnaireStageVariableSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +37,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import com.google.common.collect.ImmutableSet;
 
-public class QuartzModule implements Module, IVariableProvider, VariableValueSourceFactory, ApplicationContextAware {
+public class QuartzModule implements Module, VariableValueSourceFactory, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzModule.class);
 
@@ -59,8 +50,6 @@ public class QuartzModule implements Module, IVariableProvider, VariableValueSou
   private List<Stage> stages;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
-
-  private IQuestionToVariableMappingStrategy questionToVariableMappingStrategy;
 
   public String getName() {
     return "quartz";
@@ -103,10 +92,6 @@ public class QuartzModule implements Module, IVariableProvider, VariableValueSou
 
   public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
     this.questionnaireBundleManager = questionnaireBundleManager;
-  }
-
-  public void setQuestionToVariableMappingStrategy(IQuestionToVariableMappingStrategy questionToVariableMappingStrategy) {
-    this.questionToVariableMappingStrategy = questionToVariableMappingStrategy;
   }
 
   public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
@@ -171,48 +156,6 @@ public class QuartzModule implements Module, IVariableProvider, VariableValueSou
     exec.setInitialState(initialState);
 
     return exec;
-  }
-
-  public List<Variable> getVariables() {
-    List<Variable> entities = new ArrayList<Variable>();
-
-    for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
-      Stage stage = iter.next();
-      QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(stage.getName());
-      if(bundle != null) {
-        questionToVariableMappingStrategy.setQuestionnaireBundle(bundle);
-        Questionnaire questionnaire = bundle.getQuestionnaire();
-        log.info("getVariables from questionnaire {}", questionnaire.getName());
-        Variable questionnaireVariable = questionToVariableMappingStrategy.getVariable(questionnaire);
-        entities.add(questionnaireVariable);
-        for(Page page : questionnaire.getPages()) {
-          for(Question question : page.getQuestions()) {
-            questionnaireVariable.addVariable(questionToVariableMappingStrategy.getVariable(question));
-          }
-        }
-      }
-    }
-
-    return entities;
-  }
-
-  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-
-    // get the questionnaire
-    Variable questionnaireVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
-    QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaireVariable.getName());
-    if(bundle != null) {
-      questionToVariableMappingStrategy.setQuestionnaireBundle(bundle);
-      Questionnaire questionnaire = bundle.getQuestionnaire();
-      varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
-    }
-
-    return varData;
-  }
-
-  public List<Variable> getContributedVariables(Variable root, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    return null;
   }
 
   public Component getWidget(String id) {

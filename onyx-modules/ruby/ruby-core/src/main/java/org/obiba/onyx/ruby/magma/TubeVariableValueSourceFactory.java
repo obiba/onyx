@@ -56,8 +56,6 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
 
   private TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
-  private String variableRoot;
-
   //
   // Constructors
   //
@@ -74,7 +72,7 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
   public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
-    String prefix = (variableRoot != null) ? variableRoot + '.' + stageName : stageName;
+    String prefix = stageName;
     Variable.BuilderVisitor stageAttributeVisitor = new StageAttributeVisitor(stageName);
 
     sources.addAll(createParticipantTubeRegistrationSources(prefix, stageAttributeVisitor));
@@ -89,10 +87,6 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
-  }
-
-  public void setVariableRoot(String variableRoot) {
-    this.variableRoot = variableRoot;
   }
 
   private Set<VariableValueSource> createParticipantTubeRegistrationSources(String prefix, Variable.BuilderVisitor stageAttributeVisitor) {
