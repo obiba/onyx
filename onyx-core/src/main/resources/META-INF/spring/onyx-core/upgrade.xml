@@ -15,7 +15,6 @@
     <property name="currentVersionProvider">
       <bean class="org.obiba.runtime.upgrade.support.JdbcVersionModifier">
         <property name="datasource" ref="dataSource" />
-        <property name="versionBeingInstalled" ref="version" />
       </bean>
     </property>
     <property name="runtimeVersionProvider">
