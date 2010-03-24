@@ -256,7 +256,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         BeanVariableValueSourceFactory<QuestionAnswer> factory = new BeanVariableValueSourceFactory<QuestionAnswer>("Participant", QuestionAnswer.class);
         factory.setProperties(properties);
         factory.setPrefix(variableName(question));
-        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionNameBuilderVisitor(question)));
+        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionAttributesBuilderVisitor(question)));
         builder.addAll(factory.createSources());
       }
 
@@ -264,7 +264,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     private void buildParentPlaceholderVariable() {
       Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), "Participant");
-      questionVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
+      questionVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
       builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
     }
 
@@ -275,7 +275,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         questionVariable.repeatable();
       }
 
-      questionVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
+      questionVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
 
       for(QuestionCategory c : categories) {
         org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
@@ -296,7 +296,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // Build a derived variable from the Question variable using javascript
       // The script test whether the Question variable has this category amongst its answers
       Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), "Participant").extend(JavascriptVariableBuilder.class).setScript("$('" + variableName(question) + "').any('" + questionCategory.getCategory().getName() + "')");
-      categoryVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
+      categoryVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
       builder.add(new JavascriptVariableValueSource(categoryVariable.build()));
 
       // Build variable(s) from the open answer(s) of this category
@@ -312,7 +312,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     protected void buildOpenAnswerVariable(final QuestionCategory questionCategory, final OpenAnswerDefinition oad) {
       Variable.Builder openAnswerVariable = Variable.Builder.newVariable(variableName(question, questionCategory, oad), DataTypes.valueTypeFor(oad.getDataType()), "Participant");
-      openAnswerVariable.accept(new QuestionNameBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
+      openAnswerVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
       BeanPropertyVariableValueSource valueSource = new BeanPropertyVariableValueSource(openAnswerVariable.build(), OpenAnswer.class, "data.value");
       builder.add(valueSource);
     }
@@ -332,20 +332,41 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   }
 
   /**
-   * Visitor for setting the question name
+   * Visitor for setting the question attributes
    */
-  private class QuestionNameBuilderVisitor extends BaseQuartzBuilderVisitor {
+  private class QuestionAttributesBuilderVisitor extends BaseQuartzBuilderVisitor {
 
     private Question question;
 
-    public QuestionNameBuilderVisitor(Question question) {
+    public QuestionAttributesBuilderVisitor(Question question) {
       this.question = question;
     }
 
     public void visit(Builder builder) {
       super.visit(builder);
-      // Question name for resolving the bean
+
+      // Sections : AncestorSection/ParentSection/QuestionSection
+      StringBuilder sectionAttribute = new StringBuilder();
+      Section s = question.getPage().getSection();
+      while(s != null) {
+        sectionAttribute.insert(0, s.getName());
+        s = s.getParentSection();
+        if(s != null) {
+          sectionAttribute.insert(0, '/');
+        }
+      }
+      builder.addAttribute("section", sectionAttribute.toString());
+
+      // Page name
+      builder.addAttribute("page", question.getPage().getName());
+
+      // Question name
       builder.addAttribute("questionName", question.getName());
+
+      if(question.getNumber() != null) {
+        // Question number
+        builder.addAttribute("questionNumber", question.getNumber());
+      }
     }
 
   }
@@ -400,25 +421,6 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     protected void visitAttributes(AttributeAwareBuilder<?> builder) {
       super.visitAttributes(builder);
 
-      // Page name
-      builder.addAttribute("page", question.getPage().getName());
-      if(question.getNumber() != null) {
-        // Question number
-        builder.addAttribute("questionNumber", question.getNumber());
-      }
-
-      // Sections : AncestorSection/ParentSection/QuestionSection
-      StringBuilder sectionAttribute = new StringBuilder();
-      Section s = question.getPage().getSection();
-      while(s != null) {
-        sectionAttribute.insert(0, s.getName());
-        s = s.getParentSection();
-        if(s != null) {
-          sectionAttribute.insert(0, '/');
-        }
-      }
-      builder.addAttribute("section", sectionAttribute.toString());
-
       OnyxAttributeHelper.addConditionAttribute(builder, question.getCondition());
 
       // get the min/max settings : for questions having a parent question, if no settings is found parent settings is
@@ -454,6 +456,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     protected void visitAttributes(AttributeAwareBuilder<?> builder) {
       super.visitAttributes(builder);
+
       // Provide the category name to the resolver
       builder.addAttribute("categoryName", questionCategory.getCategory().getName());
       if(this.questionCategory.getQuestion().isMultiple() == false) {
@@ -508,9 +511,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
           builder.addCategory(cb.build());
         }
       }
-      builder.unit(oad.getUnit())
+      builder.unit(oad.getUnit());
+
       // Provide the category name to the resolver
-      .addAttribute("categoryName", questionCategory.getCategory().getName())
+      builder.addAttribute("categoryName", questionCategory.getCategory().getName())
       // Provide the openAnswer name to the resolver
       .addAttribute("openAnswerName", oad.getName());
 
