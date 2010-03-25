@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
@@ -490,7 +491,9 @@ public class ParticipantSearchPage extends BasePage {
     public ActionFragment(String id) {
       super(id, "actionFragment", ParticipantSearchPage.this);
 
-      AjaxLink volunteerLink = new AjaxLink("volunteer") {
+      RepeatingView view = new RepeatingView("link");
+
+      AjaxLink volunteerLink = new AjaxLink(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
@@ -504,9 +507,10 @@ public class ParticipantSearchPage extends BasePage {
           return participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.VOLUNTEER);
         }
       };
-      add(volunteerLink);
+      volunteerLink.add(new Label("label", new ResourceModel("EnrollVolunteer")));
+      view.add(volunteerLink);
 
-      AjaxLink updateParticipantsLink = new AjaxLink("update") {
+      AjaxLink updateParticipantsLink = new AjaxLink(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
@@ -515,19 +519,24 @@ public class ParticipantSearchPage extends BasePage {
 
           target.addComponent(updateParticipantListWindow.get("content"));
         }
+
+        @Override
+        public boolean isVisible() {
+          return participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED);
+        }
       };
-      updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
-      add(updateParticipantsLink);
+      updateParticipantsLink.add(new Label("label", new ResourceModel("UpdateParticipantsList")));
+      view.add(updateParticipantsLink);
 
-      final ConfirmationDialog confirmationDialog = createExportDialog();
-
-      AjaxLink exportLink = new AjaxLink("export") {
+      AjaxLink exportLink = new AjaxLink(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {
           MultiLineLabel label = new MultiLineLabel("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
           label.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
+
+          ConfirmationDialog confirmationDialog = createExportDialog();
           confirmationDialog.setContent(label);
 
           confirmationDialog.setYesButtonCallback(new OnYesCallback() {
@@ -541,19 +550,22 @@ public class ParticipantSearchPage extends BasePage {
               }
             }
           });
+
+          ActionFragment.this.replace(confirmationDialog);
           confirmationDialog.show(target);
         }
 
       };
-      add(confirmationDialog);
-      add(exportLink);
+      exportLink.add(new Label("label", new ResourceModel("Export")));
+      view.add(exportLink);
 
+      add(new EmptyPanel("dialog").setOutputMarkupId(true));
+      add(view);
     }
 
     private ConfirmationDialog createExportDialog() {
       ConfirmationDialog confirmationDialog = new ConfirmationDialog("dialog");
       confirmationDialog.setTitle(new ResourceModel("ConfirmExport"));
-      confirmationDialog.setHeightUnit("em");
       confirmationDialog.setInitialHeight(15);
       return confirmationDialog;
     }

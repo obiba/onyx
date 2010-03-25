@@ -6,13 +6,11 @@
       <div wicket:id="unlockInterview" />
       <div wicket:id="editParticipantDetailsModalWindow" />
       <div wicket:id="updateParticipantListWindow" />
-
       <table>
         <tr>
           <td style="width: 67%">
             <div id="participantPageSearch" class="obiba-content-region">
               <h1><wicket:message key="ParticipantSearch" /></h1>
-
               <form wicket:id="searchForm" autocomplete="off">
                 <table style="border-spacing: 0em">
                   <tr>
@@ -23,9 +21,9 @@
                       <input type="submit" class="obiba-button" value="" wicket:id="searchByInputField" />
                     </td>
                     <td>
-                      <input type="submit" class="obiba-button" wicket:message="value:Search" wicket:id="submit" />
-                      <input type="submit" class="obiba-button" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments" />
-                      <input type="submit" class="obiba-button" wicket:message="value:CurrentInterviews" wicket:id="interviews" />
+                      <button class="obiba-button" wicket:id="submit"><wicket:message key="Search"/></button>
+                      <button class="obiba-button" wicket:id="appointments"><wicket:message key="AppointmentsOfTheDay"/></button>
+                      <button class="obiba-button" wicket:id="interviews"><wicket:message key="CurrentInterviews"/></button>
                     </td>
                   </tr>
                 </table>
@@ -50,12 +48,7 @@
         <div wicket:id="dialog" />
         <div id="participantPageActions" class="obiba-content-region">
           <h1><wicket:message key="Action" /></h1>
-
-          <div id="enrollAndUpdateActions">
-            <div><a wicket:id="volunteer" class="obiba-button"><wicket:message key="EnrollVolunteer" /></a></div>
-			<div id="export"><a wicket:id="export" class="obiba-button"><wicket:message key="Export"/></a></div>                        
-            <div id="updateList"><a wicket:id="update" class="obiba-button"><wicket:message key="UpdateParticipantsList" /></a></div>
-          </div>
+          <button wicket:id="link" class="obiba-button"><span wicket:id="label"/></button>
         </div>
       </wicket:fragment>
 
@@ -64,15 +57,15 @@
           <span wicket:id="label" />
         </a>
       </wicket:fragment>
-      
+
       <wicket:fragment wicket:id="lockedInterview">
       	<img src="" wicket:id="lock"/>
       </wicket:fragment>   
-      
+
       <wicket:fragment wicket:id="interviewStatus">
       	<span class="interviewStatus" wicket:id="status"/>
       </wicket:fragment>          
-         
+
 	  </div>
     </wicket:extend>
   </body>

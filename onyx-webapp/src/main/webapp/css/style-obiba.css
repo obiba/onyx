@@ -1288,27 +1288,10 @@ div .button-vertical-list{
   border: none;	
 }
 
-#participantPageActions #enrollAndUpdateActions {
+#participantPageActions button {
   float: left;
-  margin-top: 0.4167em;
-}
-
-#participantPageActions #enrollAndUpdateActions > div:first-child {
-  margin-bottom: 1.2500em;
-}
-
-#participantPageActions #enrollAndUpdateActions > div:empty {
-  margin-bottom: 0em !important;
-}
-
-#participantPageActions #enrollAndUpdateActions > div#updateList, #participantPageActions #enrollAndUpdateActions > div#export {
-  float:right;
-  margin-right: 3em;
-}
-
-#participantPageActions #exportAction {
-  float: right;
-  margin-top: 0.4167em;
+  margin-right: 0.5em;
+  margin-bottom: 1.0em;
 }
 
 span.interviewStatus {
