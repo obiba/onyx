@@ -367,7 +367,7 @@
       <!-- Use commons-logging over slf4j in order to remove it completely from the runtime classpath -->
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>jcl104-over-slf4j</artifactId>
+        <artifactId>jcl-over-slf4j</artifactId>
         <version>${slf4j.version}</version>
         <scope>runtime</scope>
       </dependency>
@@ -564,7 +564,7 @@
     <!-- We've excluded commons-logging from our transitive dependencies. We replace it here. -->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>jcl104-over-slf4j</artifactId>
+      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <!-- Internally, we'll use log4j when unit-testing (scope is defined above) -->
     <dependency>
@@ -807,11 +807,11 @@
   </scm>
 
   <properties>
-    <wicket.version>1.4.5</wicket.version>
+    <wicket.version>1.4.7</wicket.version>
     <spring.version>2.5.6</spring.version>
     <spring-batch.version>2.0.3.RELEASE</spring-batch.version>
     <opensymphony-quartz.version>1.6.1</opensymphony-quartz.version>
-    <slf4j.version>1.4.3</slf4j.version>
+    <slf4j.version>1.5.8</slf4j.version>
     <obiba.commons.version>1.1.1</obiba.commons.version>
     <jta.version>1.0.1B</jta.version>
     <jasypt.version>1.5</jasypt.version>
