@@ -9,9 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz;
 
-import org.springframework.beans.factory.config.Scope;
 import org.springframework.beans.factory.ObjectFactory;
-
+import org.springframework.beans.factory.config.Scope;
 
 public class MockSessionScope implements Scope {
 
@@ -19,7 +18,7 @@ public class MockSessionScope implements Scope {
     return null;
   }
 
-  public Object get(String name, ObjectFactory objectFactory) {
+  public Object get(String name, ObjectFactory<?> objectFactory) {
     return objectFactory.getObject();
   }
 
@@ -28,6 +27,10 @@ public class MockSessionScope implements Scope {
   }
 
   public void registerDestructionCallback(String name, Runnable callback) {
+  }
+
+  public Object resolveContextualObject(String key) {
+    return null;
   }
 
 }

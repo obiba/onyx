@@ -54,9 +54,9 @@
           <variablePath>VAR2</variablePath>
         </variableCondition>
         <inverseCondition>
-          <stageCondition>
+          <stageDependencyCondition class="stageCondition">
             <stageName>Stage3</stageName>
-          </stageCondition>
+          </stageDependencyCondition>
         </inverseCondition>
         <moduleCondition>
           <moduleName>Module1</moduleName>

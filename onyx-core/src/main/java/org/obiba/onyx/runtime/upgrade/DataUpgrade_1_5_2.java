@@ -39,7 +39,7 @@ public class DataUpgrade_1_5_2 extends AbstractUpgradeStep {
     int numberOfUpdates = 0;
     Map<String, Long> map = new HashMap<String, Long>();
 
-    List<Map<String, Long>> actionIdsWithNullType = jdbcTemplate.queryForList(IDS_WITH_NULL_TYPE, map);
+    List<Map<String, Object>> actionIdsWithNullType = jdbcTemplate.queryForList(IDS_WITH_NULL_TYPE, map);
     numberOfUpdates += runSqlOnId(UPDATE_TYPE_TO_COMMENT, actionIdsWithNullType);
     log.info("[{}] records updated.", numberOfUpdates);
   }
@@ -48,9 +48,9 @@ public class DataUpgrade_1_5_2 extends AbstractUpgradeStep {
     jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
   }
 
-  private int runSqlOnId(String sqlCommand, List<Map<String, Long>> idMaps) {
+  private int runSqlOnId(String sqlCommand, List<Map<String, Object>> idMaps) {
     int numberOfUpdates = 0;
-    for(Map<String, Long> idMap : idMaps) {
+    for(Map<String, Object> idMap : idMaps) {
       numberOfUpdates += jdbcTemplate.update(sqlCommand, idMap);
     }
     return numberOfUpdates;

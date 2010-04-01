@@ -30,6 +30,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import com.google.common.collect.Maps;
+
 /**
  * A {@code FactoryBean} that creates a special {@code MessageSource} compatible with Onyx's module structure.
  * <p>
@@ -41,9 +43,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
  * 
  * <p>
  * Another {@code MessageSource} is created by finding all the bundles named "META-INF/messages" on the classpath. This
- * allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's
- * {@code parent}. This allows overriding the default messages by re-defining the same kay in the bundles in the
- * configuration files.
+ * allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's {@code
+ * parent}. This allows overriding the default messages by re-defining the same kay in the bundles in the configuration
+ * files.
  * <p>
  * Extra bundles may be configured using the {@code extraBasenames} property.
  */
@@ -181,7 +183,7 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
 
       Properties props = new Properties();
       props.load(resource.getInputStream());
-      sms.addMessages(props, locale);
+      sms.addMessages(Maps.fromProperties(props), locale);
     }
     return sms;
   }

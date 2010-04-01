@@ -54,8 +54,8 @@ public class DataUpgrade_1_4_0 extends AbstractUpgradeStep {
     map.put("", "");
     List<Map<String, Object>> distinceInstrumentRuns = jdbcTemplate.queryForList(SELECT_DISTINCT_INSTRUMENT_RUNS, map);
 
-    List<Map<String, Long>> instrumentRunIdsToDelete = getInstrumentRunIdsToDelete(distinceInstrumentRuns);
-    List<Map<String, Long>> measureIdsToDelete = getInstrumentRunValueIdsToDelete(instrumentRunIdsToDelete);
+    List<Map<String, Object>> instrumentRunIdsToDelete = getInstrumentRunIdsToDelete(distinceInstrumentRuns);
+    List<Map<String, Object>> measureIdsToDelete = getInstrumentRunValueIdsToDelete(instrumentRunIdsToDelete);
 
     numberOfUpdates += runSqlOnId(DELETE_FROM_INSTRUMENT_RUN_VALUE, instrumentRunIdsToDelete);
     numberOfUpdates += runSqlOnId(DELETE_MEASURE_FROM_INSTRUMENT_RUN_VALUE, measureIdsToDelete);
@@ -65,39 +65,39 @@ public class DataUpgrade_1_4_0 extends AbstractUpgradeStep {
     log.info("[{}] records updated.", numberOfUpdates);
   }
 
-  private int runSqlOnId(String sqlCommand, List<Map<String, Long>> idMaps) {
+  private int runSqlOnId(String sqlCommand, List<Map<String, Object>> idMaps) {
     int numberOfUpdates = 0;
-    for(Map<String, Long> idMap : idMaps) {
+    for(Map<String, Object> idMap : idMaps) {
       numberOfUpdates += jdbcTemplate.update(sqlCommand, idMap);
     }
     return numberOfUpdates;
   }
 
   @SuppressWarnings("unchecked")
-  private List<Map<String, Long>> getInstrumentRunIdsToDelete(List<Map<String, Object>> distinceInstrumentRuns) {
-    List<Map<String, Long>> result = new ArrayList<Map<String, Long>>();
+  private List<Map<String, Object>> getInstrumentRunIdsToDelete(List<Map<String, Object>> distinceInstrumentRuns) {
+    List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
     for(Map<String, Object> distinctInstrumentRunMap : distinceInstrumentRuns) {
-      List<Map<String, Long>> idsToDelete = jdbcTemplate.queryForList(IDS_TO_DELETE, distinctInstrumentRunMap);
+      List<Map<String, Object>> idsToDelete = jdbcTemplate.queryForList(IDS_TO_DELETE, distinctInstrumentRunMap);
       result.addAll(idsToDelete);
     }
     return result;
   }
 
   @SuppressWarnings("unchecked")
-  private List<Map<String, Long>> getInstrumentRunValueIdsToDelete(List<Map<String, Long>> instrumentRunIdsToDelete) {
-    List<Map<String, Long>> result = new ArrayList<Map<String, Long>>();
-    for(Map<String, Long> instrumentRunIdToDelete : instrumentRunIdsToDelete) {
-      List<Map<String, Long>> idsToDelete = jdbcTemplate.queryForList(MEASURE_IDS_TO_DELETE_FROM_INSTRUMENT_RUN_VALUE, instrumentRunIdToDelete);
+  private List<Map<String, Object>> getInstrumentRunValueIdsToDelete(List<Map<String, Object>> instrumentRunIdsToDelete) {
+    List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+    for(Map<String, Object> instrumentRunIdToDelete : instrumentRunIdsToDelete) {
+      List<Map<String, Object>> idsToDelete = jdbcTemplate.queryForList(MEASURE_IDS_TO_DELETE_FROM_INSTRUMENT_RUN_VALUE, instrumentRunIdToDelete);
       result.addAll(idsToDelete);
     }
     return result;
   }
 
   @SuppressWarnings("unused")
-  private void printListOfMaps(List<Map<String, Long>> listOfMaps) {
+  private void printListOfMaps(List<Map<String, Object>> listOfMaps) {
     int index = 0;
-    for(Map<String, Long> m : listOfMaps) {
-      for(Map.Entry<String, Long> entry : m.entrySet()) {
+    for(Map<String, Object> m : listOfMaps) {
+      for(Map.Entry<String, Object> entry : m.entrySet()) {
         System.out.println(index++ + ". [" + entry.getKey() + " : " + entry.getValue() + "]");
       }
     }

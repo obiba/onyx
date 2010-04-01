@@ -40,7 +40,7 @@ public class PostDataUpgrade_1_5_2 extends AbstractUpgradeStep {
   public void execute(Version currentVersion) {
     int numberOfUpdates = 0;
     Map<String, Long> map = new HashMap<String, Long>();
-    List<Map<String, Long>> actionIdsWithNullActionDefinitionCode = jdbcTemplate.queryForList(IDS_WITH_NULL_ACTION_DEFINITION_CODE, map);
+    List<Map<String, Object>> actionIdsWithNullActionDefinitionCode = jdbcTemplate.queryForList(IDS_WITH_NULL_ACTION_DEFINITION_CODE, map);
     numberOfUpdates += runSqlOnId(UPDATE_ACTION_DEFINITION_CODE, actionIdsWithNullActionDefinitionCode);
     log.info("[{}] records updated.", numberOfUpdates);
   }
@@ -49,9 +49,9 @@ public class PostDataUpgrade_1_5_2 extends AbstractUpgradeStep {
     jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
   }
 
-  private int runSqlOnId(String sqlCommand, List<Map<String, Long>> idMaps) {
+  private int runSqlOnId(String sqlCommand, List<Map<String, Object>> idMaps) {
     int numberOfUpdates = 0;
-    for(Map<String, Long> idMap : idMaps) {
+    for(Map<String, Object> idMap : idMaps) {
       numberOfUpdates += jdbcTemplate.update(sqlCommand, idMap);
     }
     return numberOfUpdates;
