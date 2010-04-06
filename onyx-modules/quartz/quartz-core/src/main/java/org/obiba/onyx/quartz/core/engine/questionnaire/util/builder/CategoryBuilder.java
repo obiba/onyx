@@ -110,6 +110,15 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
+   * Explicitly set the {@link Category} variable name.
+   */
+  public CategoryBuilder setVariableName(String variableName) {
+    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
+    element.setVariableName(variableName);
+    return this;
+  }
+
+  /**
    * Add a set of {@link Category} to the current {@link Question}.
    * @param names
    * @return
@@ -121,7 +130,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return this;
   }
 
-  /**
+/**
    * Look for a {@link Category} with the same name and given export name in the
    * {@link QuestionnaireBuilder. Create it if not found.
    * @param name
@@ -132,7 +141,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return this;
   }
 
-  /**
+/**
    * Look for a {@link Category} with the same name in the {@link QuestionnaireBuilder. Create it if not found.
    * @param name
    * @return
@@ -151,8 +160,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
-   * Add a set of {@link Category} by looking them from the name in the {@link Questionnaire}. Create them if not
-   * found.
+   * Add a set of {@link Category} by looking them from the name in the {@link Questionnaire}. Create them if not found.
    * @param names
    * @return
    */

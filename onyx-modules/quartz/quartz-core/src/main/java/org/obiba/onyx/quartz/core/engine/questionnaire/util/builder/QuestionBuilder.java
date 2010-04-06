@@ -203,6 +203,15 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Explicitly set the {@link Question} variable name.
+   */
+  public QuestionBuilder setVariableName(String variableName) {
+    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
+    element.setVariableName(variableName);
+    return this;
+  }
+
+  /**
    * Set the range of answer count for current {@link Question}.
    * @param minCount no limit if null
    * @param maxCount no limit if null

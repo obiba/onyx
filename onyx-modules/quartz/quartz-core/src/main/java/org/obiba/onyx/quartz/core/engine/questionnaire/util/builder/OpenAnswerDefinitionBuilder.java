@@ -345,6 +345,39 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
+   * Explicitly set the {@link OpenAnswerDefinition} variable name for the {@link OpenAnswerDefinition} with the given
+   * questionName, provided that questionName is the current {@link OpenAnswerDefinition}, the parent of the current
+   * {@link OpenAnswerDefinition}, or a child of the current {@link OpenAnswerDefinition}.
+   */
+  public OpenAnswerDefinitionBuilder setVariableName(String questionName, String variableName) {
+    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
+    if(element.getName().equals(questionName)) {
+      element.addVariableName(questionName, variableName);
+      return this;
+    }
+    if(element.getParentOpenAnswerDefinition() != null && element.getParentOpenAnswerDefinition().getName().equals(questionName)) {
+      element.getParentOpenAnswerDefinition().addVariableName(questionName, variableName);
+      return this;
+    }
+    for(OpenAnswerDefinition oad : element.getOpenAnswerDefinitions()) {
+      if(oad.getName().equals(questionName)) {
+        oad.addVariableName(questionName, variableName);
+        return this;
+      }
+    }
+    throw new IllegalArgumentException("The questionnaire element name '" + questionName + "' does not match the name of the current questionnaire element '" + element.getName() + "', it's parent or it's children.");
+  }
+
+  /**
+   * Explicitly set the {@link OpenAnswerDefinition} variable name.
+   */
+  public OpenAnswerDefinitionBuilder setVariableName(String variableName) {
+    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
+    element.addVariableName(element.getName(), variableName);
+    return this;
+  }
+
+  /**
    * Set the given {@link OpenAnswerDefinition} as the current one.
    * @param questionnaire
    * @param condition

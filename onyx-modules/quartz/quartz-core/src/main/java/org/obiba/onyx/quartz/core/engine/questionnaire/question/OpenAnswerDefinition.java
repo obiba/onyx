@@ -11,7 +11,9 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -23,6 +25,8 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
+
+import com.google.common.collect.ImmutableMap;
 
 public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider {
 
@@ -49,6 +53,8 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   private OpenAnswerDefinition parentOpenAnswerDefinition;
 
   private List<OpenAnswerDefinition> openAnswerDefinitions;
+
+  private Map<String, String> variableNames = new HashMap<String, String>();
 
   public OpenAnswerDefinition(String name, DataType dataType) {
     this.name = name;
@@ -85,6 +91,18 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   public void setUnit(String unit) {
     this.unit = unit;
+  }
+
+  public void addVariableName(String questionName, String variableName) {
+    variableNames.put(questionName, variableName);
+  }
+
+  public String getVariableName(String questionName) {
+    return variableNames.get(questionName);
+  }
+
+  public Map<String, String> getVariableNames() {
+    return ImmutableMap.copyOf(variableNames);
   }
 
   public ValueMap getUIArgumentsValueMap() {

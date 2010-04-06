@@ -49,6 +49,8 @@ public class Question implements Serializable, IQuestionnaireElement {
 
   private List<Question> questions;
 
+  private String variableName;
+
   public Question(String name) {
     this.name = name;
   }
@@ -252,6 +254,14 @@ public class Question implements Serializable, IQuestionnaireElement {
 
   public void setMaxCount(Integer maxCount) {
     this.maxCount = maxCount;
+  }
+
+  public String getVariableName() {
+    return variableName;
+  }
+
+  public void setVariableName(String variableName) {
+    this.variableName = variableName;
   }
 
   //
