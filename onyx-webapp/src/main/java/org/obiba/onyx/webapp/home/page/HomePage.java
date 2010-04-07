@@ -21,6 +21,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.service.InterviewManager;
@@ -28,10 +29,12 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
+import org.obiba.onyx.webapp.participant.page.ParticipantReceptionPage;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class HomePage extends BasePage {
@@ -44,6 +47,9 @@ public class HomePage extends BasePage {
 
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
+
+  @SpringBean
+  private EntityQueryService queryService;
 
   private Dialog unlockInterviewWindow;
 
@@ -87,15 +93,17 @@ public class HomePage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
+    private String participantIdentifier;
+
     public ParticipantSearchForm(String id) {
       super(id);
 
       setModel(new Model(new Participant()));
 
-      TextField barCode = new TextField("barCode", new PropertyModel(getModel(), "barcode"));
-      barCode.add(new RequiredFormFieldBehavior());
-      barCode.setLabel(new StringResourceModel("ParticipantCode", HomePage.this, null));
-      add(barCode);
+      final TextField participantIdentifier = new TextField("participantIdentifier", new PropertyModel(ParticipantSearchForm.this, "participantIdentifier"));
+      participantIdentifier.add(new RequiredFormFieldBehavior());
+      participantIdentifier.setLabel(new StringResourceModel("ParticipantCode", HomePage.this, null));
+      add(participantIdentifier);
 
       add(new AjaxButton("submit") {
 
@@ -103,28 +111,38 @@ public class HomePage extends BasePage {
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form form) {
-          Participant participant = getParticipant();
-          // Participant found, display interview page.
-          if(participant != null) {
-            if(interviewManager.isInterviewAvailable(participant)) {
-              interviewManager.obtainInterview(participant);
-              setResponsePage(InterviewPage.class);
-            }
-            content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant"));
-            content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
-            unlockInterviewWindow.setContent(content);
-            target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
 
-            if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
-              unlockInterviewWindow.show(target);
+          Participant participant = participantService.getParticipant(participantIdentifier.getModel().getObject().toString());
+
+          // Participant found.
+          if(participant != null) {
+
+            // Redirect to the reception page if the matched Participant has not been received yet (no barcode)
+            if(participant.getBarcode() == null) {
+              setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, participant), HomePage.this));
+
+              // If the Participant has been received (barcode exist), attempt to display the interview page
             } else {
-              error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
-              getFeedbackWindow().setContent(new FeedbackPanel("content"));
-              getFeedbackWindow().show(target);
+              if(interviewManager.isInterviewAvailable(participant)) {
+                interviewManager.obtainInterview(participant);
+                setResponsePage(InterviewPage.class);
+              }
+              content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant"));
+              content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
+              unlockInterviewWindow.setContent(content);
+              target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
+
+              if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+                unlockInterviewWindow.show(target);
+              } else {
+                error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
+                getFeedbackWindow().setContent(new FeedbackPanel("content"));
+                getFeedbackWindow().show(target);
+              }
             }
           } else {
             // Not found, display error message in feedback panel.
-            error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
+            error((new StringResourceModel("ParticipantNotFound", this, new Model(ParticipantSearchForm.this))).getString());
             getFeedbackWindow().setContent(new FeedbackPanel("content"));
             getFeedbackWindow().show(target);
           }
@@ -133,10 +151,14 @@ public class HomePage extends BasePage {
 
     }
 
-    public Participant getParticipant() {
-      Participant template = (Participant) ParticipantSearchForm.this.getModelObject();
-      return participantService.getParticipant(template);
+    public String getParticipantIdentifier() {
+      return participantIdentifier;
     }
+
+    public void setParticipantIdentifier(String participantIdentifier) {
+      this.participantIdentifier = participantIdentifier;
+    }
+
   }
 
 }

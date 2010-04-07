@@ -22,6 +22,7 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.exception.NonUniqueParticipantException;
 import org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,6 +142,19 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
 
   protected List<Participant> getNotReceivedParticipants() {
     return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
+  }
+
+  @SuppressWarnings("unchecked")
+  public Participant getParticipant(String participantIdentifier) throws NonUniqueParticipantException {
+    Query participantQuery = getSession().createQuery("from Participant p where p.barcode = :identifier or p.enrollmentId = :identifier");
+    participantQuery.setString("identifier", participantIdentifier);
+    List<Participant> results = participantQuery.list();
+    if(results.size() > 1) {
+      throw new NonUniqueParticipantException("More than one participant was found for the specified identifier.");
+    } else if(results.size() == 1) {
+      return results.get(0);
+    }
+    return null;
   }
 
 }

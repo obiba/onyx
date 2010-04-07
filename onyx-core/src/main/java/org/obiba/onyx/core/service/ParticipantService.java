@@ -17,6 +17,7 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.exception.NonUniqueParticipantException;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.util.data.Data;
 
@@ -116,6 +117,16 @@ public interface ParticipantService {
    * @return
    */
   public Participant getParticipant(Participant participant);
+
+  /**
+   * Lookup for a Participant based on both of its unique identifiers (barcode and enrollmentId).
+   * 
+   * @param participantIdentifier The Participant identifier to look for.
+   * @return A Participant matching the specified identifier.
+   * @throws NonUniqueParticipantException If multiple Participant are found for the specified identifier (this is the
+   * case where ParticipantA.barcode == PArticipantB.enrollmentId) an exception is thrown.
+   */
+  public Participant getParticipant(String participantIdentifier) throws NonUniqueParticipantException;
 
   /**
    * Delete all appointments that have not been received

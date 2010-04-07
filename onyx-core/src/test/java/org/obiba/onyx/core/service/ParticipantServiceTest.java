@@ -31,6 +31,7 @@ import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.stage.StageTransition;
 import org.obiba.onyx.core.domain.statistics.InterviewDeletionLog;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.exception.NonUniqueParticipantException;
 import org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -301,6 +302,33 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
     Assert.assertNotNull(persistenceManager.get(InterviewDeletionLog.class, 1l));
 
+  }
+
+  @Test
+  @Dataset
+  public void testGetParticipantByIdentifier() {
+
+    // Lookup with enrollmentId
+    Participant participant = participantService.getParticipant("100005");
+    Assert.assertEquals(participant.getId(), (long) 5);
+
+    participant = participantService.getParticipant("100008");
+    Assert.assertEquals(participant.getId(), (long) 8);
+
+    participant = participantService.getParticipant("100003");
+    Assert.assertEquals(participant.getId(), (long) 3);
+
+    // Lookup with barCode
+    participant = participantService.getParticipant("1");
+    Assert.assertEquals(participant.getId(), (long) 1);
+
+  }
+
+  @Test(expected = NonUniqueParticipantException.class)
+  @Dataset
+  public void testGetParticipantByIdentifierMultipleResults() {
+    // case where ParticipantA.barcode == PArticipantB.enrollmentId
+    participantService.getParticipant("100002");
   }
 
 }

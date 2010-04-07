@@ -59,6 +59,9 @@ public class Participant extends AbstractEntity {
   @Temporal(TemporalType.DATE)
   private Date birthDate;
 
+  // ONYX-672:
+  // Removed uniqueness constraints on nullable columns (barcode, enrollmentId), for portability. Different databases
+  // (even different MySQL storage engines) treat null values differently, when enforcing these types of constraints.
   @Column(length = 250)
   private String barcode;
 
