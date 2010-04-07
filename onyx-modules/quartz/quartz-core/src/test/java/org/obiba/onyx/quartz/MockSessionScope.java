@@ -18,7 +18,7 @@ public class MockSessionScope implements Scope {
     return null;
   }
 
-  public Object get(String name, ObjectFactory<?> objectFactory) {
+  public Object get(String name, ObjectFactory objectFactory) {
     return objectFactory.getObject();
   }
 
