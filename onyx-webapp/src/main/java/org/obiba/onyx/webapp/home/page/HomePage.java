@@ -127,24 +127,9 @@ public class HomePage extends BasePage {
                 setParticipantIdentifier(null);
                 setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, participant), HomePage.this));
 
-                // If the Participant has been received (barcode exist), attempt to display the interview page.
+                // If the Participant has been received (barcode exist), display the interview page.
               } else {
-                if(interviewManager.isInterviewAvailable(participant)) {
-                  interviewManager.obtainInterview(participant);
-                  setResponsePage(InterviewPage.class);
-                }
-                content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant"));
-                content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
-                unlockInterviewWindow.setContent(content);
-                target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
-
-                if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
-                  unlockInterviewWindow.show(target);
-                } else {
-                  error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
-                  getFeedbackWindow().setContent(new FeedbackPanel("content"));
-                  getFeedbackWindow().show(target);
-                }
+                displayInterviewPage(target, participant);
               }
 
               // No Participant was found for the specified identifier, display error message in feedback panel.
@@ -161,6 +146,26 @@ public class HomePage extends BasePage {
             error((new StringResourceModel("MultipleParticipantWereFound", this, new Model(ParticipantSearchForm.this))).getString());
             getFeedbackWindow().setContent(new FeedbackPanel("content"));
             getFeedbackWindow().show(target);
+          }
+        }
+
+        private void displayInterviewPage(AjaxRequestTarget target, Participant participant) {
+          if(interviewManager.isInterviewAvailable(participant)) {
+            interviewManager.obtainInterview(participant);
+            setResponsePage(InterviewPage.class);
+          } else {
+            content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new DetachableEntityModel(queryService, participant));
+            content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
+            unlockInterviewWindow.setContent(content);
+            target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
+
+            if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+              unlockInterviewWindow.show(target);
+            } else {
+              error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
+              getFeedbackWindow().setContent(new FeedbackPanel("content"));
+              getFeedbackWindow().show(target);
+            }
           }
         }
       });
