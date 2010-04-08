@@ -24,6 +24,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.exception.NonUniqueParticipantException;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -112,37 +113,52 @@ public class HomePage extends BasePage {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form form) {
 
-          Participant participant = participantService.getParticipant(participantIdentifier.getModel().getObject().toString());
+          Participant participant = null;
+          try {
 
-          // Participant found.
-          if(participant != null) {
+            // Lookup for a Participant matching the identifier.
+            participant = participantService.getParticipant(getParticipantIdentifier());
 
-            // Redirect to the reception page if the matched Participant has not been received yet (no barcode)
-            if(participant.getBarcode() == null) {
-              setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, participant), HomePage.this));
+            // One Participant was found.
+            if(participant != null) {
 
-              // If the Participant has been received (barcode exist), attempt to display the interview page
-            } else {
-              if(interviewManager.isInterviewAvailable(participant)) {
-                interviewManager.obtainInterview(participant);
-                setResponsePage(InterviewPage.class);
-              }
-              content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant"));
-              content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
-              unlockInterviewWindow.setContent(content);
-              target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
+              // Redirect to the reception page if the matched Participant has not been received yet (no barcode).
+              if(participant.getBarcode() == null) {
+                setParticipantIdentifier(null);
+                setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, participant), HomePage.this));
 
-              if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
-                unlockInterviewWindow.show(target);
+                // If the Participant has been received (barcode exist), attempt to display the interview page.
               } else {
-                error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
-                getFeedbackWindow().setContent(new FeedbackPanel("content"));
-                getFeedbackWindow().show(target);
+                if(interviewManager.isInterviewAvailable(participant)) {
+                  interviewManager.obtainInterview(participant);
+                  setResponsePage(InterviewPage.class);
+                }
+                content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant"));
+                content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
+                unlockInterviewWindow.setContent(content);
+                target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
+
+                if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+                  unlockInterviewWindow.show(target);
+                } else {
+                  error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
+                  getFeedbackWindow().setContent(new FeedbackPanel("content"));
+                  getFeedbackWindow().show(target);
+                }
               }
+
+              // No Participant was found for the specified identifier, display error message in feedback panel.
+            } else {
+              error((new StringResourceModel("ParticipantNotFound", this, new Model(ParticipantSearchForm.this))).getString());
+              getFeedbackWindow().setContent(new FeedbackPanel("content"));
+              getFeedbackWindow().show(target);
             }
-          } else {
-            // Not found, display error message in feedback panel.
-            error((new StringResourceModel("ParticipantNotFound", this, new Model(ParticipantSearchForm.this))).getString());
+
+            // Multiple participants were found for the specified identifier
+            // (case where ParticipantA.barcode == PArticipantB.enrollmentId).
+            // Display an error message informing the user of that particular situation.
+          } catch(NonUniqueParticipantException e) {
+            error((new StringResourceModel("MultipleParticipantWereFound", this, new Model(ParticipantSearchForm.this))).getString());
             getFeedbackWindow().setContent(new FeedbackPanel("content"));
             getFeedbackWindow().show(target);
           }
