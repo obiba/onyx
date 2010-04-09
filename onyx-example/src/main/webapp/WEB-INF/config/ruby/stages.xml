@@ -16,7 +16,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
+          <variablePath>BSC_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -43,7 +43,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BSC_CI.active</variablePath>
+          <variablePath>BSC_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>

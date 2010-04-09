@@ -24,7 +24,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.SH_CI.active</variablePath>
+          <variablePath>SH_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -65,7 +65,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.WH_CI.active</variablePath>
+          <variablePath>WH_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -92,7 +92,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.GS_CI.active</variablePath>
+          <variablePath>GS_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -119,7 +119,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BP_CI.active</variablePath>
+          <variablePath>BP_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -146,7 +146,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BI_CI.active</variablePath>
+          <variablePath>BI_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -177,7 +177,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.WT_CI.active</variablePath>
+          <variablePath>WT_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -210,7 +210,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.SP_CI.active</variablePath>
+          <variablePath>SP_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -263,7 +263,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.BD_CI.active</variablePath>
+          <variablePath>BD_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -290,7 +290,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.STAGE_STATUS.AS_CI.active</variablePath>
+          <variablePath>AS_CI</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
