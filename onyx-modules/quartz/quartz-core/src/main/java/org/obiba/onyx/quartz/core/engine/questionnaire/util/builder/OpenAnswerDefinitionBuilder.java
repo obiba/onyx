@@ -10,8 +10,6 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
@@ -31,7 +29,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.CategoryFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
@@ -45,8 +42,6 @@ import org.obiba.onyx.wicket.data.IDataValidator;
  * 
  */
 public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBuilder<OpenAnswerDefinition> {
-
-  private CategoryBuilder categoryBuilder;
 
   /**
    * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
@@ -66,7 +61,6 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   private OpenAnswerDefinitionBuilder(CategoryBuilder parent, String name, DataType dataType) {
     super(parent);
-    this.categoryBuilder = parent;
     if(!checkUniqueOpenAnswerDefinitionName(name)) {
       throw invalidNameUnicityException(OpenAnswerDefinition.class, name);
     }
@@ -357,32 +351,21 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder setVariableName(String questionName, String variableName) {
     if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
-    String oadName = element.getName();
-
-    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion(questionName);
-    if(question != null) {
-      if(question.hasCategories()) {
-        for(Category cat : question.getCategories()) {
-          if(cat.findOpenAnswerDefinition(oadName) != null) {
-            element.addVariableName(questionName, variableName);
-            return this;
-          }
-        }
-        throw new IllegalArgumentException(oadName + " is not an open answer definition of question " + questionName);
-      } else if(question.getParentQuestion() != null && question.getParentQuestion().hasCategories()) {
-        for(Category cat : question.getParentQuestion().getCategories()) {
-          if(cat.findOpenAnswerDefinition(oadName) != null) {
-            element.addVariableName(questionName, variableName);
-            return this;
-          }
-        }
-        throw new IllegalArgumentException(oadName + " is not an open answer definition attached to question " + questionName + " via parent question " + question.getParentQuestion().getName());
-      } else {
-        throw new IllegalArgumentException("Question " + questionName + " does not have any categories.");
-      }
-    } else {
-      throw new IllegalArgumentException("No question can be found with name " + questionName);
+    if(element.getName().equals(questionName)) {
+      element.addVariableName(questionName, variableName);
+      return this;
     }
+    if(element.getParentOpenAnswerDefinition() != null && element.getParentOpenAnswerDefinition().getName().equals(questionName)) {
+      element.getParentOpenAnswerDefinition().addVariableName(questionName, variableName);
+      return this;
+    }
+    for(OpenAnswerDefinition oad : element.getOpenAnswerDefinitions()) {
+      if(oad.getName().equals(questionName)) {
+        oad.addVariableName(questionName, variableName);
+        return this;
+      }
+    }
+    throw new IllegalArgumentException("The questionnaire element name '" + questionName + "' does not match the name of the current questionnaire element '" + element.getName() + "', it's parent or it's children.");
   }
 
   /**
@@ -390,15 +373,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder setVariableName(String variableName) {
     if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
-    CategoryFinder categoryFinder = new CategoryFinder();
-    for(Entry<Category, List<Question>> entry : categoryFinder.getQuestionCategories().entrySet()) {
-      if(entry.getKey().getOpenAnswerDefinition().equals(this)) {
-        for(Question q : entry.getValue()) {
-          element.addVariableName(q.getName(), variableName);
-        }
-      }
-    }
-    if(categoryBuilder != null) element.addVariableName(categoryBuilder.getQuestionName(), variableName);
+    element.addVariableName(element.getName(), variableName);
     return this;
   }
 

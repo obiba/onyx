@@ -22,6 +22,8 @@ public class Category implements Serializable, IQuestionnaireElement {
 
   private boolean escape;
 
+  private String variableName;
+
   private OpenAnswerDefinition openAnswerDefinition;
 
   public Category(String name) {
@@ -42,6 +44,14 @@ public class Category implements Serializable, IQuestionnaireElement {
 
   public void setEscape(boolean escape) {
     this.escape = escape;
+  }
+
+  public String getVariableName() {
+    return variableName;
+  }
+
+  public void setVariableName(String variableName) {
+    this.variableName = variableName;
   }
 
   public OpenAnswerDefinition getOpenAnswerDefinition() {

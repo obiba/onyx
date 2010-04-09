@@ -24,8 +24,6 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
 
   private String exportName;
 
-  private String variableName;
-
   public QuestionCategory() {
   }
 
@@ -35,14 +33,6 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
 
   public void setQuestion(Question question) {
     this.question = question;
-  }
-
-  public String getVariableName() {
-    return variableName;
-  }
-
-  public void setVariableName(String variableName) {
-    this.variableName = variableName;
   }
 
   public Category getCategory() {

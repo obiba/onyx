@@ -114,7 +114,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    */
   public CategoryBuilder setVariableName(String variableName) {
     if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
-    questionCategory.setVariableName(variableName);
+    element.setVariableName(variableName);
     return this;
   }
 
@@ -191,10 +191,6 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
 
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
     return new IllegalArgumentException("There are several categories with name: " + name);
-  }
-
-  public String getQuestionName() {
-    return questionCategory.getQuestion().getName();
   }
 
 }

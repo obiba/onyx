@@ -45,7 +45,6 @@ import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -55,7 +54,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireWalker;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
@@ -74,7 +72,7 @@ import com.google.common.collect.Sets;
 /**
  * Builds the {@code VariableValueSource} instances for a specific {@code Questionnaire}
  */
-public class QuestionnaireStageVariableSourceFactory implements VariableValueSourceFactory, QuestionnaireVariableNameResolver {
+public class QuestionnaireStageVariableSourceFactory implements VariableValueSourceFactory {
 
   private QuestionnaireBundle bundle;
 
@@ -86,13 +84,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   private ImmutableSet.Builder<VariableValueSource> builder;
 
-  private final QuestionnaireVariableNameResolver questionnaireVariableNameResolver;
-
   public QuestionnaireStageVariableSourceFactory(Stage stage, QuestionnaireBundle bundle) {
     this.bundle = bundle;
     this.stage = stage;
     this.questionnaire = bundle.getQuestionnaire();
-    this.questionnaireVariableNameResolver = new QuestionnaireUniqueVariableNameResolver(this.questionnaire);
   }
 
   public Set<VariableValueSource> createSources() {
@@ -182,33 +177,45 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     builder.addAll(factory.createSources());
   }
 
-  public String variableName(Question question) {
-    return questionnaireVariableNameResolver.variableName(question);
+  /**
+   * Returns the name of a Question variable: QuestionnaireName.QuestionName
+   * @param question
+   * @return
+   */
+  protected String variableName(Question question) {
+    String prefix = question.getParentQuestion() != null ? variableName(question.getParentQuestion()) : questionnaire.getName();
+    return prefix + '.' + question.getName();
   }
 
-  public String variableName(Question question, QuestionCategory questionCategory) {
-    return questionnaireVariableNameResolver.variableName(question, questionCategory);
+  /**
+   * Returns the name of QuestionCategory varaible: ${questionVarName}.CategoryName
+   * @param questionCategory
+   * @return
+   */
+  protected String variableName(Question question, QuestionCategory questionCategory) {
+    return variableName(question) + '.' + questionCategory.getCategory().getName();
   }
 
-  public String variableName(Question question, QuestionCategory questionCategory, OpenAnswerDefinition oad) {
-    return questionnaireVariableNameResolver.variableName(question, questionCategory, oad);
+  /**
+   * Returns the name of an OpenAnswerDefinition variable: ${categoryVarName}.OpenAnswerDefinitionName
+   * @param questionCategory
+   * @param oad
+   * @return
+   */
+  protected String variableName(Question question, QuestionCategory questionCategory, OpenAnswerDefinition oad) {
+    return variableName(question, questionCategory) + '.' + oad.getName();
   }
 
   private class QuestionVariableBuilder {
 
     private Question question;
 
-    private Set<String> properties = Sets.newHashSet("active", "comment");
+    private Set<String> properties = Sets.newHashSet("comment");
 
     private List<QuestionCategory> categories;
 
     public QuestionVariableBuilder(Question question) {
       this.question = question;
-    }
-
-    public QuestionVariableBuilder withoutActive() {
-      properties.remove("active");
-      return this;
     }
 
     public QuestionVariableBuilder withoutComment() {
@@ -253,7 +260,6 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     private void buildParentPlaceholderVariable() {
       Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), "Participant");
       questionVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
-      builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
     }
 
     private void buildCategoricalVariable() {
