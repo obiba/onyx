@@ -45,6 +45,7 @@ import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -54,6 +55,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireWalker;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
@@ -84,6 +86,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   private ImmutableSet.Builder<VariableValueSource> builder;
 
+  private QuestionnaireVariableNameResolver variableNameResolver;
+
   public QuestionnaireStageVariableSourceFactory(Stage stage, QuestionnaireBundle bundle) {
     this.bundle = bundle;
     this.stage = stage;
@@ -93,9 +97,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   public Set<VariableValueSource> createSources() {
     if(builder == null) {
       builder = new ImmutableSet.Builder<VariableValueSource>();
+      variableNameResolver = new QuestionnaireUniqueVariableNameResolver(questionnaire);
       buildQuestionnaireRun();
       buildQuestionnaireMetric();
       buildQuestionnaireVariables();
+      variableNameResolver = null;
     }
     return builder.build();
   }
@@ -183,8 +189,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
    * @return
    */
   protected String variableName(Question question) {
-    String prefix = question.getParentQuestion() != null ? variableName(question.getParentQuestion()) : questionnaire.getName();
-    return prefix + '.' + question.getName();
+    return variableNameResolver.variableName(question);
   }
 
   /**
@@ -193,7 +198,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
    * @return
    */
   protected String variableName(Question question, QuestionCategory questionCategory) {
-    return variableName(question) + '.' + questionCategory.getCategory().getName();
+    return variableNameResolver.variableName(question, questionCategory);
   }
 
   /**
@@ -203,7 +208,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
    * @return
    */
   protected String variableName(Question question, QuestionCategory questionCategory, OpenAnswerDefinition oad) {
-    return variableName(question, questionCategory) + '.' + oad.getName();
+    return variableNameResolver.variableName(question, questionCategory, oad);
   }
 
   private class QuestionVariableBuilder {

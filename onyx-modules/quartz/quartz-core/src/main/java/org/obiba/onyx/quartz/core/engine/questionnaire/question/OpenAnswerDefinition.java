@@ -26,8 +26,6 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
 
-import com.google.common.collect.ImmutableMap;
-
 public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider {
 
   private static final long serialVersionUID = -7756577128502621726L;
@@ -54,7 +52,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   private List<OpenAnswerDefinition> openAnswerDefinitions;
 
-  private Map<String, String> variableNames = new HashMap<String, String>();
+  private Map<String, String> variableNames;
 
   public OpenAnswerDefinition(String name, DataType dataType) {
     this.name = name;
@@ -94,15 +92,15 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   }
 
   public void addVariableName(String questionName, String variableName) {
-    variableNames.put(questionName, variableName);
+    getVariableNames().put(questionName, variableName);
   }
 
   public String getVariableName(String questionName) {
-    return variableNames.get(questionName);
+    return getVariableNames().get(questionName);
   }
 
   public Map<String, String> getVariableNames() {
-    return ImmutableMap.copyOf(variableNames);
+    return variableNames != null ? variableNames : (variableNames = new HashMap<String, String>());
   }
 
   public ValueMap getUIArgumentsValueMap() {

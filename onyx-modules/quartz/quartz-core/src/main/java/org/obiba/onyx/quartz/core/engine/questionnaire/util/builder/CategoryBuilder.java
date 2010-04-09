@@ -193,4 +193,8 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return new IllegalArgumentException("There are several categories with name: " + name);
   }
 
+  public String getQuestionName() {
+    return questionCategory.getQuestion().getName();
+  }
+
 }
