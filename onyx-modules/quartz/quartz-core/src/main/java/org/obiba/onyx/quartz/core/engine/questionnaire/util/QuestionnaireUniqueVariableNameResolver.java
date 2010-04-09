@@ -36,7 +36,8 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
       String prefix = question.getParentQuestion() != null ? variableName(question.getParentQuestion()) : questionnaire.getName();
       variableName = prefix + '.' + question.getName();
     }
-    if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, question, variableNames.get(variableName));
+    // if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName,
+    // question, variableNames.get(variableName));
     variableNames.put(variableName, question);
     return variableName;
   }
@@ -46,7 +47,8 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
     if(variableName == null) {
       variableName = variableName(question) + '.' + questionCategory.getCategory().getName();
     }
-    if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, questionCategory, variableNames.get(variableName));
+    // if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName,
+    // questionCategory, variableNames.get(variableName));
     variableNames.put(variableName, questionCategory);
     return variableName;
   }
@@ -56,7 +58,8 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
     if(variableName == null) {
       variableName = variableName(question, questionCategory) + '.' + oad.getName();
     }
-    if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, oad, variableNames.get(variableName));
+    // if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName,
+    // oad, variableNames.get(variableName));
     variableNames.put(variableName, oad);
     return variableName;
   }
