@@ -163,6 +163,10 @@ public class MenuBuilder {
   }
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    initialiseModuleRegistry(moduleRegistry);
+  }
+
+  private static void initialiseModuleRegistry(ModuleRegistry moduleRegistry) {
     MenuBuilder.moduleRegistry = moduleRegistry;
   }
 }

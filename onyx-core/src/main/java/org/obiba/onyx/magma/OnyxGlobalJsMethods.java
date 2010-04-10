@@ -55,15 +55,23 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
   }
 
   public void setExportLogService(ExportLogService exportLogService) {
+    initialiseLogService(exportLogService);
+  }
+
+  private static void initialiseLogService(ExportLogService exportLogService) {
     OnyxGlobalJsMethods.exportLogService = exportLogService;
   }
 
   public void init() {
     try {
-      onyxProperties = PropertiesLoaderUtils.loadProperties(onyxPropertyResource);
+      setOnyxProperties(PropertiesLoaderUtils.loadProperties(onyxPropertyResource));
     } catch(IOException e) {
       throw new IllegalArgumentException("Could not read in the Resource [" + onyxPropertyResource + "]. ", e);
     }
+  }
+
+  private static void setOnyxProperties(Properties properties) {
+    OnyxGlobalJsMethods.onyxProperties = properties;
   }
 
   public String getJavaScriptMethodName(Method method) {
