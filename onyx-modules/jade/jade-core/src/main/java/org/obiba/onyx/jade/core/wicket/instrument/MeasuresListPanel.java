@@ -188,7 +188,7 @@ public abstract class MeasuresListPanel extends Panel {
       }
 
       private AjaxLink getErrorDetailsLink(final Measure measure, final int measureNo) {
-        return new AjaxLink("errorDetails") {
+        return new AjaxLink<Object>("errorDetails") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
@@ -205,7 +205,7 @@ public abstract class MeasuresListPanel extends Panel {
 
             };
             invalidMeasureDetailsFragment.add(repeater);
-            invalidMeasureDetailsFragment.add(new AttributeModifier("class", true, new Model("obiba-content invalid-measure-details-content")));
+            invalidMeasureDetailsFragment.add(new AttributeModifier("class", true, new Model<String>("obiba-content invalid-measure-details-content")));
             invalidMeasureDetailsDialog.setContent(invalidMeasureDetailsFragment);
             invalidMeasureDetailsDialog.setTitle(new StringResourceModel("ErrorDetailsForMeasure", null, null, new Object[] { measureNo }));
 
@@ -214,6 +214,7 @@ public abstract class MeasuresListPanel extends Panel {
           }
 
           @SuppressWarnings("unused")
+          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS", justification = "Referenced by PropertyModel")
           public List<String> getInvalidMeasureMessages() {
             List<InstrumentOutputParameter> outputParams = getMeasureOutputParams(measure);
 
