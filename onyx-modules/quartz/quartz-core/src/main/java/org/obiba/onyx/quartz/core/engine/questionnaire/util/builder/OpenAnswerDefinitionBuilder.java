@@ -394,7 +394,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
     if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
     CategoryFinder categoryFinder = new CategoryFinder();
     for(Entry<Category, List<Question>> entry : categoryFinder.getQuestionCategories().entrySet()) {
-      if(entry.getKey().getOpenAnswerDefinition().equals(this)) {
+      if(entry.getKey().getOpenAnswerDefinition().equals(this.getElement())) {
         for(Question q : entry.getValue()) {
           element.addVariableName(q.getName(), variableName);
         }
