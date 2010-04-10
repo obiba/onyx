@@ -17,7 +17,6 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -34,7 +33,6 @@ import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
@@ -84,8 +82,6 @@ public class ConsentWizardForm extends WizardForm {
     add(startStep);
 
     createModalAdministrationPanel();
-
-    final IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
 
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {
