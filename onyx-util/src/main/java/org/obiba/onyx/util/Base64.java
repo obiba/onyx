@@ -43,7 +43,7 @@ package org.obiba.onyx.util;
  * preserves lexical ordering as described in http://www.faqs.org/qa/rfcc-1940.html</li>
  * </ol>
  * Special thanks to Jim Kellerman at <a href="http://www.powerset.com/">http://www.powerset.com/</a> for contributing
- * the new Base64 dialects. </li>
+ * the new Base64 dialects.</li>
  * 
  * <li>v2.1 - Cleaned up javadoc comments and unused variables and methods. Added some convenience methods for reading
  * and writing to and from files.</li>
@@ -55,11 +55,11 @@ package org.obiba.onyx.util;
  * Generally things are cleaner. You'll probably have to change some method calls that you were making to support the
  * new options format (<tt>int</tt>s that you "OR" together).</li>
  * <li>v1.5.1 - Fixed bug when decompressing and decoding to a byte[] using
- * <tt>decode( String s, boolean gzipCompressed )</tt>. Added the ability to "suspend" encoding in the Output Stream
- * so you can turn on and off the encoding if you need to embed base64 data in an otherwise "normal" stream (like an XML
+ * <tt>decode( String s, boolean gzipCompressed )</tt>. Added the ability to "suspend" encoding in the Output Stream so
+ * you can turn on and off the encoding if you need to embed base64 data in an otherwise "normal" stream (like an XML
  * file).</li>
- * <li>v1.5 - Output stream pases on flush() command but doesn't do anything itself. This helps when using GZIP
- * streams. Added the ability to GZip-compress objects before encoding them.</li>
+ * <li>v1.5 - Output stream pases on flush() command but doesn't do anything itself. This helps when using GZIP streams.
+ * Added the ability to GZip-compress objects before encoding them.</li>
  * <li>v1.4 - Added helper methods to read/write files.</li>
  * <li>v1.3.6 - Fixed OutputStream.flush() so that 'position' is reset.</li>
  * <li>v1.3.5 - Added flag to turn on and off line breaks. Fixed bug in input stream where last buffer being read, if
@@ -81,7 +81,7 @@ package org.obiba.onyx.util;
  */
 public class Base64 {
 
-  /* ******** P U B L I C F I E L D S ******** */
+  /*  ******** P U B L I C F I E L D S ******** */
 
   /** No options specified. Value is zero. */
   public final static int NO_OPTIONS = 0;
@@ -112,7 +112,7 @@ public class Base64 {
    */
   public final static int ORDERED = 32;
 
-  /* ******** P R I V A T E F I E L D S ******** */
+  /*  ******** P R I V A T E F I E L D S ******** */
 
   /** Maximum line length (76) of Base64 output. */
   private final static int MAX_LINE_LENGTH = 76;
@@ -132,7 +132,7 @@ public class Base64 {
 
   private final static byte EQUALS_SIGN_ENC = -1; // Indicates equals sign in encoding
 
-  /* ******** S T A N D A R D B A S E 6 4 A L P H A B E T ******** */
+  /*  ******** S T A N D A R D B A S E 6 4 A L P H A B E T ******** */
 
   /** The 64 valid Base64 values. */
   // private final static byte[] ALPHABET;
@@ -168,13 +168,13 @@ public class Base64 {
    * ,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 127 - 139 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
    * 140 - 152 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 153 - 165 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
    * Decimal 166 - 178 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 179 - 191
-   * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 205 -
-   * 217 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 218 - 230 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
-   * 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
+   * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 205
+   * - 217 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 218 - 230 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
+   * Decimal 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
    */
   };
 
-  /* ******** U R L S A F E B A S E 6 4 A L P H A B E T ******** */
+  /*  ******** U R L S A F E B A S E 6 4 A L P H A B E T ******** */
 
   /**
    * Used in the URL- and Filename-safe dialect described in Section 4 of RFC3548: <a
@@ -215,13 +215,13 @@ public class Base64 {
    * ,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 127 - 139 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
    * 140 - 152 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 153 - 165 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
    * Decimal 166 - 178 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 179 - 191
-   * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 205 -
-   * 217 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 218 - 230 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
-   * 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
+   * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 205
+   * - 217 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 218 - 230 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
+   * Decimal 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
    */
   };
 
-  /* ******** O R D E R E D B A S E 6 4 A L P H A B E T ******** */
+  /*  ******** O R D E R E D B A S E 6 4 A L P H A B E T ******** */
 
   /**
    * I don't get the point of this technique, but it is described here: <a
@@ -261,13 +261,13 @@ public class Base64 {
    * ,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 127 - 139 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
    * 140 - 152 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 153 - 165 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
    * Decimal 166 - 178 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 179 - 191
-   * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 205 -
-   * 217 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 218 - 230 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal
-   * 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
+   * -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 192 - 204 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 205
+   * - 217 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, // Decimal 218 - 230 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9, //
+   * Decimal 231 - 243 -9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9 // Decimal 244 - 255
    */
   };
 
-  /* ******** D E T E R M I N E W H I C H A L H A B E T ******** */
+  /*  ******** D E T E R M I N E W H I C H A L H A B E T ******** */
 
   /**
    * Returns one of the _SOMETHING_ALPHABET byte arrays depending on the options specified. It's possible, though silly,
@@ -333,7 +333,7 @@ public class Base64 {
     System.err.println("Usage: java Base64 -e|-d inputfile outputfile");
   } // end usage
 
-  /* ******** E N C O D I N G M E T H O D S ******** */
+  /*  ******** E N C O D I N G M E T H O D S ******** */
 
   /**
    * Encodes up to the first three bytes of array <var>threeBytes</var> and returns a four-byte array in Base64
@@ -356,9 +356,9 @@ public class Base64 {
    * <p>
    * Encodes up to three bytes of the array <var>source</var> and writes the resulting four Base64 bytes to
    * <var>destination</var>. The source and destination arrays can be manipulated anywhere along their length by
-   * specifying <var>srcOffset</var> and <var>destOffset</var>. This method does not check to make sure your arrays
-   * are large enough to accomodate <var>srcOffset</var> + 3 for the <var>source</var> array or <var>destOffset</var> +
-   * 4 for the <var>destination</var> array. The actual number of significant bytes in your array is given by
+   * specifying <var>srcOffset</var> and <var>destOffset</var>. This method does not check to make sure your arrays are
+   * large enough to accomodate <var>srcOffset</var> + 3 for the <var>source</var> array or <var>destOffset</var> + 4
+   * for the <var>destination</var> array. The actual number of significant bytes in your array is given by
    * <var>numSigBytes</var>.
    * </p>
    * <p>
@@ -676,15 +676,15 @@ public class Base64 {
 
   } // end encodeBytes
 
-  /* ******** D E C O D I N G M E T H O D S ******** */
+  /*  ******** D E C O D I N G M E T H O D S ******** */
 
   /**
    * Decodes four bytes from array <var>source</var> and writes the resulting bytes (up to three of them) to
    * <var>destination</var>. The source and destination arrays can be manipulated anywhere along their length by
-   * specifying <var>srcOffset</var> and <var>destOffset</var>. This method does not check to make sure your arrays
-   * are large enough to accomodate <var>srcOffset</var> + 4 for the <var>source</var> array or <var>destOffset</var> +
-   * 3 for the <var>destination</var> array. This method returns the actual number of bytes that were converted from
-   * the Base64 encoding.
+   * specifying <var>srcOffset</var> and <var>destOffset</var>. This method does not check to make sure your arrays are
+   * large enough to accomodate <var>srcOffset</var> + 4 for the <var>source</var> array or <var>destOffset</var> + 3
+   * for the <var>destination</var> array. This method returns the actual number of bytes that were converted from the
+   * Base64 encoding.
    * <p>
    * This is the lowest level of the decoding methods with all possible parameters.
    * </p>
@@ -1029,7 +1029,7 @@ public class Base64 {
     } // end catch: IOException
     finally {
       try {
-        bis.close();
+        if(bis != null) bis.close();
       } catch(Exception e) {
       }
     } // end finally
@@ -1154,7 +1154,7 @@ public class Base64 {
     return success;
   } // end decodeFileToFile
 
-  /* ******** I N N E R C L A S S I N P U T S T R E A M ******** */
+  /*  ******** I N N E R C L A S S I N P U T S T R E A M ******** */
 
   /**
    * A {@link Base64.InputStream} will read data from another <tt>java.io.InputStream</tt>, given in the constructor,
@@ -1360,11 +1360,11 @@ public class Base64 {
 
   } // end inner class InputStream
 
-  /* ******** I N N E R C L A S S O U T P U T S T R E A M ******** */
+  /*  ******** I N N E R C L A S S O U T P U T S T R E A M ******** */
 
   /**
-   * A {@link Base64.OutputStream} will write data to another <tt>java.io.OutputStream</tt>, given in the
-   * constructor, and encode/decode to/from Base64 notation on the fly.
+   * A {@link Base64.OutputStream} will write data to another <tt>java.io.OutputStream</tt>, given in the constructor,
+   * and encode/decode to/from Base64 notation on the fly.
    * 
    * @see Base64
    * @since 1.3
