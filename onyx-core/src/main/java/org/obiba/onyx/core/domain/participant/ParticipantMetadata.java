@@ -30,6 +30,10 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private static final long serialVersionUID = 1L;
 
+  private static final Boolean updateAppointmentListEnabledDefault = Boolean.TRUE;
+
+  private static final Boolean participantRegistryEnabledDefault = Boolean.FALSE;
+
   //
   // Constants
   //
@@ -51,6 +55,12 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   private List<RecruitmentType> supportedRecruitmentTypes;
 
   private String participantIdPattern;
+
+  /** Controls availability of "Update Appointment List" Button in UI along with the supportedRecruitmentType ENROLLED */
+  private Boolean updateAppointmentListEnabled;
+
+  /** Controls availability of "Participant Registry" Button in UI. */
+  private Boolean participantRegistryEnabled;
 
   //
   // Constructors
@@ -255,5 +265,23 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   public void setParticipantIdPattern(String participantIdPattern) {
     this.participantIdPattern = participantIdPattern;
+  }
+
+  public Boolean getUpdateAppointmentListEnabled() {
+    if(updateAppointmentListEnabled == null) return updateAppointmentListEnabledDefault;
+    return updateAppointmentListEnabled;
+  }
+
+  public void setUpdateAppointmentListEnabled(Boolean updateAppointmentListEnabled) {
+    this.updateAppointmentListEnabled = updateAppointmentListEnabled;
+  }
+
+  public Boolean getParticipantRegistryEnabled() {
+    if(participantRegistryEnabled == null) return participantRegistryEnabledDefault;
+    return participantRegistryEnabled;
+  }
+
+  public void setParticipantRegistryEnabled(Boolean participantRegistryEnabled) {
+    this.participantRegistryEnabled = participantRegistryEnabled;
   }
 }

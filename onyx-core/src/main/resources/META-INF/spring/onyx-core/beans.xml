@@ -82,6 +82,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="participantIdPattern" value="${org.obiba.onyx.participantId.pattern}" />
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
+    <property name="updateAppointmentListEnabled"  value="${org.obiba.onyx.appointments.enabled}" />
+    <property name="participantRegistryEnabled"  value="${org.obiba.onyx.participant.registry.enabled}" />
   </bean>
 
   <bean id="pdfPrintingService" class="org.obiba.onyx.print.PdfPrintingService">

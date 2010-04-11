@@ -522,11 +522,27 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public boolean isVisible() {
-          return participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED);
+          return participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED) && participantMetadata.getUpdateAppointmentListEnabled();
         }
       };
       updateParticipantsLink.add(new Label("label", new ResourceModel("UpdateParticipantsList")));
       view.add(updateParticipantsLink);
+
+      AjaxLink registryLink = new AjaxLink(view.newChildId()) {
+        private static final long serialVersionUID = 1L;
+
+        public void onClick(AjaxRequestTarget target) {
+          log.error("Participant Registry button clicked. Not implemented.");
+          // TODO: Open Participant Registry Window
+        }
+
+        @Override
+        public boolean isVisible() {
+          return participantMetadata.getParticipantRegistryEnabled();
+        }
+      };
+      registryLink.add(new Label("label", new ResourceModel("ParticipantRegistry")));
+      view.add(registryLink);
 
       AjaxLink exportLink = new AjaxLink(view.newChildId()) {
         private static final long serialVersionUID = 1L;
