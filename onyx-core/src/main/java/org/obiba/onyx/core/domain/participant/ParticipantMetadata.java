@@ -40,6 +40,8 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private static final String PARTICIPANT_ATTRIBUTES_FILENAME = "participant-attributes.xml";
 
+  private static final String ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME = "essential-participant-attributes.xml";
+
   //
   // Instance Variables
   //
@@ -191,14 +193,20 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   public void initConfig() throws IOException {
     ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
     Resource[] resources = null;
+    Resource configPath = resolver.getResource(onyxConfigPath);
 
     // Load essential participant attributes.
-    resources = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + PARTICIPANT_ATTRIBUTES_FILENAME);
+    if(configPath != null && configPath.exists()) {
+      // Load from a user/admin configured file, if it exists...
+      resources = resolver.getResources(onyxConfigPath + "/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
+    }
+    if(!resources[0].exists()) {
+      // ...if not load from within the onyx-core.jar file.
+      resources = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
+    }
     initEssentialAttributes(resources);
 
     // Load configured participant attributes.
-    Resource configPath = resolver.getResource(onyxConfigPath);
-
     if(configPath != null && configPath.exists()) {
       resources = resolver.getResources(onyxConfigPath + "/" + PARTICIPANT_ATTRIBUTES_FILENAME);
       initConfiguredAttributes(resources);

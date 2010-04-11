@@ -1,0 +1,85 @@
+<participantAttributes>
+  <attribute>
+    <name>Enrollment ID</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>TEXT</type>
+  </attribute>
+  <attribute>
+    <name>Participant ID</name>
+    <assignableAtEnrollment>false</assignableAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>TEXT</type>
+  </attribute>
+  <attribute>
+    <name>First Name</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>TEXT</type>
+  </attribute>
+  <attribute>
+    <name>Last Name</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>TEXT</type>
+  </attribute>
+  <attribute>
+    <name>Birth Date</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>true</editableAfterReception>
+    <type>DATE</type>
+    <validators>
+      <dataValidator dataType="DATE">
+        <rangeValidator>
+          <minimum>1900-01-01</minimum>       
+        </rangeValidator>
+      </dataValidator>
+    </validators>       
+  </attribute>
+  <attribute>
+    <name>Gender</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>true</editableAfterReception>
+    <type>TEXT</type>
+    <allowedValues>
+      <string>FEMALE</string>
+      <string>MALE</string>
+    </allowedValues>
+  </attribute>
+  <attribute>
+    <name>Assessment Center ID</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>TEXT</type>
+  </attribute>
+  <attribute>
+    <name>Appointment Time</name>
+    <assignableAtEnrollment>true</assignableAtEnrollment>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>DATE</type>
+  </attribute>
+</participantAttributes>
