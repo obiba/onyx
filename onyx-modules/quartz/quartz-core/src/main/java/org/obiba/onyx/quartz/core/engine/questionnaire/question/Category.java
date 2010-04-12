@@ -10,6 +10,8 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
@@ -22,9 +24,9 @@ public class Category implements Serializable, IQuestionnaireElement {
 
   private boolean escape;
 
-  private String variableName;
-
   private OpenAnswerDefinition openAnswerDefinition;
+
+  private Map<String, String> variableNames;
 
   public Category(String name) {
     this.name = name;
@@ -44,14 +46,6 @@ public class Category implements Serializable, IQuestionnaireElement {
 
   public void setEscape(boolean escape) {
     this.escape = escape;
-  }
-
-  public String getVariableName() {
-    return variableName;
-  }
-
-  public void setVariableName(String variableName) {
-    this.variableName = variableName;
   }
 
   public OpenAnswerDefinition getOpenAnswerDefinition() {
@@ -85,5 +79,17 @@ public class Category implements Serializable, IQuestionnaireElement {
     if(getOpenAnswerDefinition().getName().equals(name)) return getOpenAnswerDefinition();
 
     return getOpenAnswerDefinition().findOpenAnswerDefinition(name);
+  }
+
+  public void addVariableName(String questionName, String variableName) {
+    getVariableNames().put(questionName, variableName);
+  }
+
+  public String getVariableName(String questionName) {
+    return getVariableNames().get(questionName);
+  }
+
+  public Map<String, String> getVariableNames() {
+    return variableNames != null ? variableNames : (variableNames = new HashMap<String, String>());
   }
 }

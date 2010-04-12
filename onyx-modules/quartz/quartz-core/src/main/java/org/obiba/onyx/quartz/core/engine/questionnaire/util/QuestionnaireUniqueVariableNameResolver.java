@@ -43,7 +43,7 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
   }
 
   public String variableName(Question question, QuestionCategory questionCategory) {
-    String variableName = questionCategory.getVariableName();
+    String variableName = questionCategory.getVariableName(question.getName());
     if(variableName == null) {
       variableName = variableName(question) + '.' + questionCategory.getCategory().getName();
     }

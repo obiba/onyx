@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.engine.questionnaire.util;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.After;
@@ -18,11 +19,14 @@ import org.junit.Test;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireVariableNameNotUniqueException;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.CategoryBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * Test that only unique questionnaire names are resolved.
@@ -72,12 +76,48 @@ public class QuestionnaireUniqueVariableNameResolverTest {
     QuestionCategory qc = new QuestionCategory();
     qc.setQuestion(q1.getElement());
     qc.setCategory(c1.getElement());
-    qc.setVariableName("NonsenseName");
+    qc.getCategory().addVariableName(q1.getElement().getName(), "NonsenseName");
 
     QuestionBuilder q2 = QuestionBuilder.inQuestion(builder, new Question("BINGE_DRINKING_MALE")).setVariableName("NonsenseName");
 
     questionnaireUniqueVariableNameResolver.variableName(q1.getElement(), qc);
     questionnaireUniqueVariableNameResolver.variableName(q2.getElement());
+  }
+
+  @Test
+  public void testOpenAnswerBuilderSpecifyInContextOfAGivenQuestion() throws Exception {
+    builder.withSection("a").withPage("p").withQuestion("DATE_OF_BIRTH").withCategory("YEAR_OF_BIRTH").withOpenAnswerDefinition("YEAR", DataType.INTEGER);
+    builder.inOpenAnswerDefinition("YEAR").setVariableName("DATE_OF_BIRTH", "dob_year");
+    Questionnaire questionnaire = builder.getQuestionnaire();
+
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("YEAR").getVariableName("DATE_OF_BIRTH"), is("dob_year"));
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("YEAR").getVariableName("FAKE_NAME"), is(nullValue()));
+  }
+
+  @Test
+  public void testOpenAnswerBuilderImplicitlyRelatedToCurrentQuestion() throws Exception {
+    // the open answer definition is implicitly related to the current question which is NUMBER_SIBLINGS
+    builder.withSection("a").withPage("p").withQuestion("NUMBER_SIBLINGS");
+    builder.inQuestion("NUMBER_SIBLINGS").withCategory("BROTHER").withOpenAnswerDefinition("BROTHER_OPEN", DataType.INTEGER).setVariableName("brother_number");
+    Questionnaire questionnaire = builder.getQuestionnaire();
+
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("BROTHER_OPEN").getVariableName("NUMBER_SIBLINGS"), is("brother_number"));
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("BROTHER_OPEN").getVariableName("FAKE_NAME"), is(nullValue()));
+  }
+
+  @Test
+  public void testOpenAnswerBuilderJoinedCategoryArray() throws Exception {
+    builder.withSection("a").withPage("P1").withQuestion("ARRAY_OPEN", true).withCategory("WEEK").withOpenAnswerDefinition("WEEK_QUANTITY", DataType.INTEGER);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE", true);
+    builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE", true);
+    // specify the open answer variable names for each of the sub questions
+    builder.inOpenAnswerDefinition("WEEK_QUANTITY").setVariableName("RED_WINE", "red_wine_week_quantity");
+    builder.inOpenAnswerDefinition("WEEK_QUANTITY").setVariableName("WHITE_WINE", "white_wine_week_quantity");
+    Questionnaire questionnaire = builder.getQuestionnaire();
+
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("WEEK_QUANTITY").getVariableName("RED_WINE"), is("red_wine_week_quantity"));
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("WEEK_QUANTITY").getVariableName("WHITE_WINE"), is("white_wine_week_quantity"));
+    assertThat(QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("WEEK_QUANTITY").getVariableName("FAKE_NAME"), is(nullValue()));
   }
 
 }
