@@ -28,6 +28,16 @@ public class Category implements Serializable, IQuestionnaireElement {
 
   private Map<String, String> variableNames;
 
+  private boolean noAnswer;
+
+  public boolean isNoAnswer() {
+    return noAnswer;
+  }
+
+  public void setNoAnswer(boolean noAnswer) {
+    this.noAnswer = noAnswer;
+  }
+
   public Category(String name) {
     this.name = name;
   }

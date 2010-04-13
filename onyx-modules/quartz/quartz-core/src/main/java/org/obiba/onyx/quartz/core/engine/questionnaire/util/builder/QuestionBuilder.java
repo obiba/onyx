@@ -225,6 +225,16 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Make the current {@link Question} optional.
+   * @return The QuestionBuilder.
+   */
+  public QuestionBuilder optional() {
+    element.setMinCount(0);
+    element.setMaxCount(1);
+    return this;
+  }
+
+  /**
    * Set the exact answer count (min and max count are equals).
    * @param count
    * @return

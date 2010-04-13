@@ -197,4 +197,22 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return questionCategory.getQuestion().getName();
   }
 
+  /**
+   * Set the type of the {@link Category} to "no-answer". A Category of this type is not displayed on the UI and is set
+   * as the default answer of an optional {@link Question}.
+   * @return
+   */
+  public CategoryBuilder noAnswer() {
+    Question question = questionCategory.getQuestion();
+    if(question.hasNoAnswerCategory()) {
+      throw new IllegalArgumentException("You cannot have more than one category of type 'no-answer' in a question: " + question.getName());
+    }
+    Category category = questionCategory.getCategory();
+    category.setNoAnswer(true);
+
+    // This category is necessarily a missing category: escape property is to be true.
+    category.setEscape(true);
+    return this;
+  }
+
 }

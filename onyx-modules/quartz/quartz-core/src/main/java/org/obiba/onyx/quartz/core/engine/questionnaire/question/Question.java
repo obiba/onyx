@@ -323,4 +323,13 @@ public class Question implements Serializable, IQuestionnaireElement {
 
     return null;
   }
+
+  public boolean hasNoAnswerCategory() {
+    for(QuestionCategory questionCategory : getQuestionCategories()) {
+      if(questionCategory.getCategory().isNoAnswer()) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
