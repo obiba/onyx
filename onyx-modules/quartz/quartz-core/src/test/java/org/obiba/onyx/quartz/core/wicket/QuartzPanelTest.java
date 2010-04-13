@@ -107,8 +107,8 @@ public class QuartzPanelTest {
     // calls for the label and description properties in LanguageSelectorPanel
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(4);
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).anyTimes();
-    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
-    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(3);
+    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn("propertyValue").atLeastOnce();
+    expect(messageSourceMock.getMessage("propertyValue", null, Locale.FRENCH)).andReturn("localizedPropertyValue").atLeastOnce();
 
     expect(activeQuestionnaireAdministrationServiceMock.start((Participant) (EasyMock.anyObject()), (Locale) (EasyMock.anyObject()))).andReturn(new QuestionnaireParticipant());
     expect(activeQuestionnaireAdministrationServiceMock.startPage()).andReturn(questionnaire.getPages().get(0));

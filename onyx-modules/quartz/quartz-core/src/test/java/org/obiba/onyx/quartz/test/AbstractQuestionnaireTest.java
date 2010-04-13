@@ -295,8 +295,8 @@ public abstract class AbstractQuestionnaireTest {
    * 
    * @param answerProvider answer provider
    * @param toQuestion question to stop at
-   * @param inclusive if <code>true</code>, the specified question is the last question answered; if
-   * <code>false</code>, the last question answered is the one before that question
+   * @param inclusive if <code>true</code>, the specified question is the last question answered; if <code>false</code>,
+   * the last question answered is the one before that question
    */
   public void answerQuestionsUpTo(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
     Page currentPage = null;
@@ -337,8 +337,8 @@ public abstract class AbstractQuestionnaireTest {
    * 
    * @param answerProvider
    * @param toQuestion
-   * @param inclusive if <code>true</code>, the specified question is the last question answered; if
-   * <code>false</code>, the last question answered is the one before that question
+   * @param inclusive if <code>true</code>, the specified question is the last question answered; if <code>false</code>,
+   * the last question answered is the one before that question
    */
   public void answerQuestionsOnCurrentPage(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
     Page currentPage = activeQuestionnaireAdministrationService.getCurrentPage();
@@ -460,14 +460,6 @@ public abstract class AbstractQuestionnaireTest {
         return (quartzPanel);
       }
     });
-
-    // We are currently at the language selection step. Select a language (1st available).
-    FormTester formTester = wicketTester.newFormTester("panel:content:form");
-    formTester.select("step:panel:localeSelect", 0);
-
-    // Now advance to the next page, which is the first page of the questionnaire.
-    nextPage();
-
   }
 
   /**
