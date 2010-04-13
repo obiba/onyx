@@ -27,9 +27,11 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
@@ -44,6 +46,7 @@ import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.NoSuchMessageException;
 
 /**
  * WizardForm for the questionnaire Contains Language Selection Step, Conclusion Step and Interrupt link
@@ -71,8 +74,6 @@ public class QuestionnaireWizardForm extends WizardForm {
   private WizardStepPanel languageSelectionStep;
 
   private WizardStepPanel conclusionStep;
-
-  private WizardStepPanel confirmResumeStep;
 
   private StageModel stageModel;
 
@@ -294,16 +295,9 @@ public class QuestionnaireWizardForm extends WizardForm {
   public void initStartStep(boolean resuming) {
     this.resuming = resuming;
 
-    WizardStepPanel startStep = null;
-
-    if(resuming) {
-      confirmResumeStep = new ConfirmResumeStep(getStepId(), getModel());
-      startStep = confirmResumeStep;
-    } else {
-      startStep = languageSelectionStep;
-    }
-
+    WizardStepPanel startStep = resuming ? getResumeStep() : getStartStep();
     add(startStep);
+
     startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
   }
@@ -333,6 +327,34 @@ public class QuestionnaireWizardForm extends WizardForm {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", QuestionnaireWizardForm.this, null)));
 
     return link;
+  }
+
+  private WizardStepPanel getStartStep() {
+    WizardStepPanel startStep;
+    if(showLanguageSelectionStep()) {
+      startStep = languageSelectionStep;
+    } else {
+      activeQuestionnaireAdministrationService.start(activeInterviewService.getParticipant(), activeQuestionnaireAdministrationService.getLanguage());
+      startStep = getFirstPageStep();
+    }
+    return startStep;
+  }
+
+  private boolean showLanguageSelectionStep() {
+    Questionnaire questionnaire = activeQuestionnaireAdministrationService.getQuestionnaire();
+    String description = getQuestionnaireDescription(questionnaire);
+
+    return (questionnaire.getLocales().size() > 1) && (description != null && description.trim().length() != 0);
+  }
+
+  private String getQuestionnaireDescription(Questionnaire questionnaire) {
+    String description = null;
+    try {
+      description = new QuestionnaireStringResourceModel(questionnaire, "description").getString();
+    } catch(NoSuchMessageException ex) {
+      ; // nothing to do
+    }
+    return description;
   }
 
   public Component getInterruptLink() {

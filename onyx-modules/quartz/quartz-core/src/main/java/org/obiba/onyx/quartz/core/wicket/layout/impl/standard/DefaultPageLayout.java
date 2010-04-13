@@ -146,6 +146,8 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
    * @param target
    */
   private void setFocus(final AjaxRequestTarget target) {
+    if(target == null) return;
+
     // must do that after rendering, otherwise there is nothing populated in the views.
     target.addListener(new AjaxRequestTarget.IListener() {
 
