@@ -105,6 +105,14 @@ public class ApplicationConfigurationPage extends BasePage {
       siteNo.add(new RequiredFormFieldBehavior());
       add(siteNo.add(StringValidator.maximumLength(30)));
 
+      TextField identifierPrefix = new TextField("identifierPrefix", new PropertyModel(model, "config.identifierPrefix"));
+      identifierPrefix.add(new RequiredFormFieldBehavior());
+      add(identifierPrefix);
+
+      TextField firstIdentifier = new TextField("firstIdentifier", new PropertyModel(model, "config.firstIdentifier"));
+      firstIdentifier.add(new RequiredFormFieldBehavior());
+      add(firstIdentifier);
+
       TextField administratorName = new TextField("lastName", new PropertyModel(model, "user.lastName"));
       administratorName.add(new RequiredFormFieldBehavior());
       add(administratorName.add(StringValidator.maximumLength(30)));
