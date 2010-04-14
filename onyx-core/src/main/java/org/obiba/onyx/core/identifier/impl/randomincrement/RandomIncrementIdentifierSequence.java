@@ -44,7 +44,7 @@ public class RandomIncrementIdentifierSequence implements IdentifierSequence {
     createSequenceState(prefix, lastIdentifier);
   }
 
-  public String nextIdentifier() {
+  public synchronized String nextIdentifier() {
     int increment = random.nextInt(maxIncrement) + 1;
 
     IdentifierSequenceState state = loadSequenceState();
