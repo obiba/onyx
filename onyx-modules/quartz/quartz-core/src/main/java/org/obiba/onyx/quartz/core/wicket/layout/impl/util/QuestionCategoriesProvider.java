@@ -117,6 +117,12 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
    * @return
    */
   private boolean accept(QuestionCategory item) {
+
+    // Filter out the "no-answer" categories. These will not be displayed.
+    if(item.getCategory().isNoAnswer()) {
+      return false;
+    }
+
     if(filter != null) {
       return filter.accept(item);
     }

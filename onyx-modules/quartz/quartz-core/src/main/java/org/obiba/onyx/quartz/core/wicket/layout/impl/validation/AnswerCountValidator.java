@@ -63,8 +63,15 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
 
   public void validate(IValidatable validatable, Question question) {
     List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
-    int count = categoryAnswers.size();
 
+    int count = 0;
+    for(CategoryAnswer categoryAnswer : categoryAnswers) {
+
+      // Exclude "no-answer" categories, these should not be included in the count.
+      if(!question.findCategory(categoryAnswer.getCategoryName()).isNoAnswer()) {
+        count++;
+      }
+    }
     if(count == 0 && question.isRequired()) {
       ValidationError error = newValidationError(question);
       error.addMessageKey(KEY_PREFIX + ".Required");

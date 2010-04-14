@@ -324,11 +324,27 @@ public class Question implements Serializable, IQuestionnaireElement {
     return null;
   }
 
-  public boolean hasNoAnswerCategory() {
+  public QuestionCategory getNoAnswerQuestionCategory() {
     for(QuestionCategory questionCategory : getQuestionCategories()) {
       if(questionCategory.getCategory().isNoAnswer()) {
-        return true;
+        return questionCategory;
       }
+    }
+    return null;
+  }
+
+  public Category getNoAnswerCategory() {
+    for(Category category : getCategories()) {
+      if(category.isNoAnswer()) {
+        return category;
+      }
+    }
+    return null;
+  }
+
+  public boolean hasNoAnswerCategory() {
+    if(getNoAnswerCategory() != null) {
+      return true;
     }
     return false;
   }

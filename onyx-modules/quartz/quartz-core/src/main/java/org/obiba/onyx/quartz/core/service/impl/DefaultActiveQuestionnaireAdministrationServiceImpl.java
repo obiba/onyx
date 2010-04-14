@@ -19,6 +19,7 @@ import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireMetric;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -277,6 +278,9 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
 
+    // A "no-answer" category answer is no longer required, since a "real answer" to the question is provided.
+    deleteNoAnswerCategoryAnswer(question);
+
     QuestionAnswer questionAnswer = findAnswer(question);
 
     CategoryAnswer categoryTemplate = new CategoryAnswer();
@@ -343,6 +347,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       deleteAnswers(categoryAnswer);
     }
 
+    addNoAnswerCategoryAnswerIfRequired(question);
+
     // TODO deal with category answer parent
   }
 
@@ -362,6 +368,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       if(questionAnswer == null) questionAnswer = categoryAnswer.getQuestionAnswer();
       deleteAnswers(categoryAnswer);
     }
+
+    addNoAnswerCategoryAnswerIfRequired(question);
 
     // TODO deal with category answer parent
   }
@@ -394,7 +402,11 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     questionAnswer.setActive(active);
     getPersistenceManager().save(questionAnswer);
 
-    // category answers are made active
+    if(active) {
+      addNoAnswerCategoryAnswerIfRequired(question);
+    }
+
+    // each CategoryAnswers is made active.
     for(CategoryAnswer categoryAnswer : findAnswers(question)) {
       categoryAnswer.setActive(active);
       getPersistenceManager().save(categoryAnswer);
@@ -433,6 +445,33 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     if(currentQuestionnaireParticipant != null) {
       currentQuestionnaireParticipant.setResumePage(resumePage.getName());
       getPersistenceManager().save(currentQuestionnaireParticipant);
+    }
+  }
+
+  /**
+   * If a "no-answer" category exist for the specified question and no answer is provided, answer the question with the
+   * "no-answer" category.
+   * @param question The question.
+   */
+  private void addNoAnswerCategoryAnswerIfRequired(Question question) {
+    if(question.hasNoAnswerCategory()) {
+      if(findAnswers(question).isEmpty()) {
+        answer(question, question.getNoAnswerQuestionCategory());
+      }
+    }
+  }
+
+  /**
+   * Delete any existing CategoryAnswer corresponding to a "no-answer" category for the specified question.
+   * @param question The question.
+   */
+  private void deleteNoAnswerCategoryAnswer(Question question) {
+    Category category;
+    for(CategoryAnswer answer : findAnswers(question)) {
+      category = question.findCategory(answer.getCategoryName());
+      if(category.isNoAnswer()) {
+        deleteAnswers(answer);
+      }
     }
   }
 }
