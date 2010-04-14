@@ -146,4 +146,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="participantCaptureAndExportStrategy" class="org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy" />
 
+  <bean id="identifierSequenceProvider" class="org.obiba.onyx.spring.identifier.RandomIncrementIdentifierSequenceProviderFactoryBean">
+    <property name="useSequence" value="${org.obiba.onyx.participantId.generated}"/>
+    <property name="maxIncrement" value="${org.obiba.onyx.participantId.maxIncrement}"/>
+  </bean>
+
 </beans>

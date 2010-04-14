@@ -28,6 +28,12 @@ public class ApplicationConfiguration extends AbstractEntity {
   @Column(nullable = false)
   private String siteNo;
 
+  @Column(nullable = false)
+  private String identifierPrefix;
+
+  @Column(nullable = false)
+  private long firstIdentifier;
+
   /**
    * Session timeout (in minutes).
    */
@@ -55,6 +61,22 @@ public class ApplicationConfiguration extends AbstractEntity {
 
   public void setSiteNo(String siteNo) {
     this.siteNo = siteNo;
+  }
+
+  public String getIdentifierPrefix() {
+    return identifierPrefix;
+  }
+
+  public void setIdentifierPrefix(String identifierPrefix) {
+    this.identifierPrefix = identifierPrefix;
+  }
+
+  public long getFirstIdentifier() {
+    return firstIdentifier;
+  }
+
+  public void setFirstIdentifier(long firstIdentifier) {
+    this.firstIdentifier = firstIdentifier;
   }
 
   /**
