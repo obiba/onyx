@@ -36,6 +36,16 @@ public class RandomIncrementIdentifierSequence implements IdentifierSequence {
   private int maxIncrement;
 
   //
+  // Constructors
+  //
+
+  public RandomIncrementIdentifierSequence() {
+    random = new SecureRandom();
+    byte bytes[] = new byte[20];
+    random.nextBytes(bytes);
+  }
+
+  //
   // IdentifierSequence Methods
   //
 
