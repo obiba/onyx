@@ -9,10 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.spring.identifier;
 
+import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.identifier.IdentifierSequenceProvider;
 import org.obiba.onyx.core.identifier.NullIdentifierSequenceProvider;
 import org.obiba.onyx.core.identifier.impl.randomincrement.RandomIncrementIdentifierSequenceProvider;
+import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Factory bean for creating a {@link RandomIncrementIdentifierSequenceProvider}.
@@ -29,6 +32,12 @@ public class RandomIncrementIdentifierSequenceProviderFactoryBean implements Fac
   private boolean useSequence;
 
   private int maxIncrement;
+
+  @Autowired
+  private PersistenceManager persistenceManager;
+
+  @Autowired
+  private ApplicationConfigurationService applicationConfigurationService;
 
   //
   // FactoryBean Methods
@@ -64,6 +73,13 @@ public class RandomIncrementIdentifierSequenceProviderFactoryBean implements Fac
   }
 
   private IdentifierSequenceProvider createSequenceProvider() {
-    return useSequence ? new RandomIncrementIdentifierSequenceProvider(maxIncrement) : new NullIdentifierSequenceProvider();
+    if(useSequence) {
+      RandomIncrementIdentifierSequenceProvider sequenceProvider = new RandomIncrementIdentifierSequenceProvider(maxIncrement);
+      sequenceProvider.setPersistenceManager(persistenceManager);
+      sequenceProvider.setApplicationConfigurationService(applicationConfigurationService);
+      return sequenceProvider;
+    } else {
+      return new NullIdentifierSequenceProvider();
+    }
   }
 }

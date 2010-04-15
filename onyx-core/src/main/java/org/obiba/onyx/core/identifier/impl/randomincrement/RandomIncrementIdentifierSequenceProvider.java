@@ -15,7 +15,6 @@ import org.obiba.onyx.core.domain.identifier.IdentifierSequenceState;
 import org.obiba.onyx.core.identifier.IdentifierSequence;
 import org.obiba.onyx.core.identifier.IdentifierSequenceProvider;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 /**
@@ -28,10 +27,8 @@ public class RandomIncrementIdentifierSequenceProvider implements IdentifierSequ
 
   private RandomIncrementIdentifierSequence sequence;
 
-  @Autowired
   private PersistenceManager persistenceManager;
 
-  @Autowired
   private ApplicationConfigurationService applicationConfigurationService;
 
   private int maxIncrement;
@@ -76,6 +73,7 @@ public class RandomIncrementIdentifierSequenceProvider implements IdentifierSequ
 
   private RandomIncrementIdentifierSequence createSequence() {
     RandomIncrementIdentifierSequence sequence = new RandomIncrementIdentifierSequence();
+    sequence.setPersistenceManager(persistenceManager);
     sequence.setMaxIncrement(maxIncrement);
 
     // Initialize the sequence only if a sequence state does not already exist.

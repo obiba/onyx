@@ -12,6 +12,10 @@ package org.obiba.onyx.webapp.participant.panel;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -19,6 +23,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -31,6 +36,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.identifier.IdentifierSequenceProvider;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -46,6 +52,9 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private IdentifierSequenceProvider identifierSequenceProvider;
 
   private final Model receptionCommentModel = new Model();
 
@@ -78,6 +87,7 @@ public class AssignCodeToParticipantPanel extends Panel {
       super(id, participantModel);
 
       TextField participantCode = new TextField("participantCode", new PropertyModel(getModel(), "barcode"));
+      participantCode.setOutputMarkupId(true);
       participantCode.add(new RequiredFormFieldBehavior());
       participantCode.add(new StringValidator.MaximumLengthValidator(250));
       participantCode.add(new IValidator() {
@@ -105,7 +115,14 @@ public class AssignCodeToParticipantPanel extends Panel {
         participantCode.add(dataValidator.getValidator());
       }
 
+      // Make the participantCode TextField read-only if using generated IDs.
+      if(identifierSequenceProvider.hasSequence()) {
+        participantCode.add(new AttributeModifier("readonly", true, new Model<String>("readonly")));
+      }
+
       add(participantCode);
+
+      addGenerateIdButton(participantCode);
 
       TextArea comment = new TextArea("comment", receptionCommentModel);
       comment.add(new StringValidator.MaximumLengthValidator(2000));
@@ -114,6 +131,23 @@ public class AssignCodeToParticipantPanel extends Panel {
 
     public void onSubmit(Participant participant) {
       participantService.assignCodeToParticipant(participant, participant.getBarcode(), (String) receptionCommentModel.getObject(), userSessionService.getUser());
+    }
+
+    private void addGenerateIdButton(final TextField participantCode) {
+      AjaxLink generateId = new AjaxLink("generateId") {
+
+        public void onClick(AjaxRequestTarget target) {
+          participantCode.setModelObject(identifierSequenceProvider.getSequence().nextIdentifier());
+          target.addComponent(participantCode);
+        }
+
+        public boolean isVisible() {
+          return identifierSequenceProvider.hasSequence();
+        }
+      };
+      generateId.add(new Label("generateIdLabel", new ResourceModel("generateId")));
+
+      add(generateId);
     }
   }
 
