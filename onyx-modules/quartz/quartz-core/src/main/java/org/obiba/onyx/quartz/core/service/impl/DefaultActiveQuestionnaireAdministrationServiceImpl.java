@@ -362,10 +362,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void deleteAnswers(Question question) {
-    QuestionAnswer questionAnswer = null;
-
     for(CategoryAnswer categoryAnswer : findAnswers(question)) {
-      if(questionAnswer == null) questionAnswer = categoryAnswer.getQuestionAnswer();
       deleteAnswers(categoryAnswer);
     }
 
