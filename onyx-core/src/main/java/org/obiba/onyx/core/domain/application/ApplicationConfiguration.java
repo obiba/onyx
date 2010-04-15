@@ -32,7 +32,7 @@ public class ApplicationConfiguration extends AbstractEntity {
   private String identifierPrefix;
 
   @Column(nullable = false)
-  private long firstIdentifier;
+  private Long firstIdentifier;
 
   /**
    * Session timeout (in minutes).
@@ -71,11 +71,11 @@ public class ApplicationConfiguration extends AbstractEntity {
     this.identifierPrefix = identifierPrefix;
   }
 
-  public long getFirstIdentifier() {
+  public Long getFirstIdentifier() {
     return firstIdentifier;
   }
 
-  public void setFirstIdentifier(long firstIdentifier) {
+  public void setFirstIdentifier(Long firstIdentifier) {
     this.firstIdentifier = firstIdentifier;
   }
 
