@@ -148,21 +148,12 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
    */
   private int getAnswerCount(Question question, List<CategoryAnswer> categoryAnswers) {
     int count = 0;
-    String categoryName;
     Category category;
 
     for(CategoryAnswer categoryAnswer : categoryAnswers) {
+      category = activeQuestionnaireAdministrationService.getCategory(question, categoryAnswer);
 
       // Exclude "no-answer" categories, these should not be included in the count.
-      categoryName = categoryAnswer.getCategoryName();
-      if(question.hasCategories()) {
-        category = question.findCategory(categoryName);
-      } else if(question.getParentQuestion().hasCategories()) {
-        category = question.getParentQuestion().findCategory(categoryName);
-      } else {
-        category = null;
-      }
-
       if(category != null && !category.isNoAnswer()) {
         count++;
       }

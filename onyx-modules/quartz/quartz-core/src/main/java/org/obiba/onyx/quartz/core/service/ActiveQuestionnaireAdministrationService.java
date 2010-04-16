@@ -347,4 +347,13 @@ public interface ActiveQuestionnaireAdministrationService {
    * @param seconds increment (in seconds)
    */
   public void incrementTimeOnPage(int seconds);
+
+  /**
+   * Gets the corresponding Category for a specified CategoryAnswer.
+   * 
+   * @param question The question to which belongs the CategoryAnswer.
+   * @param answer The CategoryAnswer.
+   * @return
+   */
+  public Category getCategory(Question question, CategoryAnswer answer);
 }

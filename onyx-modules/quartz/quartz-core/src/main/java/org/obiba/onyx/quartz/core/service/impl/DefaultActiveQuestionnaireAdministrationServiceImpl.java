@@ -465,10 +465,24 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   private void deleteNoAnswerCategoryAnswer(Question question) {
     Category category;
     for(CategoryAnswer answer : findAnswers(question)) {
-      category = question.findCategory(answer.getCategoryName());
-      if(category.isNoAnswer()) {
+      category = getCategory(question, answer);
+      if(category != null && category.isNoAnswer()) {
         deleteAnswers(answer);
       }
     }
+  }
+
+  public Category getCategory(Question question, CategoryAnswer answer) {
+    Category category;
+    String categoryName;
+    categoryName = answer.getCategoryName();
+    if(question.hasCategories()) {
+      category = question.findCategory(categoryName);
+    } else if(question.getParentQuestion().hasCategories()) {
+      category = question.getParentQuestion().findCategory(categoryName);
+    } else {
+      category = null;
+    }
+    return category;
   }
 }
