@@ -204,7 +204,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    */
   public CategoryBuilder noAnswer() {
     Question question = questionCategory.getQuestion();
-    if(question.hasNoAnswerCategory()) {
+    if(question.hasNoAnswerCategory() && question.getNoAnswerCategory() != getElement()) {
       throw new IllegalArgumentException("You cannot have more than one category of type 'no-answer' in a question: " + question.getName());
     }
     Category category = questionCategory.getCategory();
