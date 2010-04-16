@@ -27,6 +27,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeActi
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -63,19 +64,25 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.core.service.impl.NoSuchParticipantException;
+import org.obiba.onyx.core.service.impl.ParticipantRegistryLookupException;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
+import org.obiba.onyx.webapp.participant.panel.ParticipantRegistryPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.DisplayTooltipBehaviour;
+import org.obiba.onyx.wicket.behavior.ExecuteJavaScriptBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
+import org.obiba.onyx.wicket.reusable.Dialog.OptionSide;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -126,6 +133,8 @@ public class ParticipantSearchPage extends BasePage {
   private static final int DEFAULT_PARTICIPANT_WIDTH = 40;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
+
+  private ParticipantRegistryPanel participantRegistryPanel;
 
   private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
 
@@ -528,12 +537,69 @@ public class ParticipantSearchPage extends BasePage {
       updateParticipantsLink.add(new Label("label", new ResourceModel("UpdateParticipantsList")));
       view.add(updateParticipantsLink);
 
+      final Dialog participantRegistryDialog = DialogBuilder.buildDialog("participant-registry-dialog", new ResourceModel("ParticipantRegistryDialogTitle"), participantRegistryPanel = new ParticipantRegistryPanel("content")).setOptions(Option.CANCEL_OPTION).getDialog();
+
+      final IBehavior disableRegisterLinkButtonBehaviour = new ExecuteJavaScriptBehaviour("$('[name=registerLink]').attr('disabled','true');$('[name=registerLink]').css('color','rgba(0, 0, 0, 0.2)');$('[name=registerLink]').css('border-color','rgba(0, 0, 0, 0.2)');", true);
+
+      final AjaxButton registerLink;
+      participantRegistryDialog.addSubmitOption("RegisterLink", OptionSide.RIGHT, registerLink = new AjaxButton("registerLink") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+          participantRegistryDialog.close(target);
+        }
+      }, "registerLink");
+      registerLink.setOutputMarkupId(true);
+      registerLink.add(disableRegisterLinkButtonBehaviour);
+
+      final AjaxButton lookUpLink;
+      participantRegistryDialog.addSubmitOption("Lookup", OptionSide.LEFT, lookUpLink = new AjaxButton("lookUpLink") {
+
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+          try {
+            participantRegistryPanel.lookUpParticipant();
+            registerLink.setEnabled(true);
+            participantRegistryPanel.setMessage("");
+          } catch(NoSuchParticipantException e) {
+            participantRegistryPanel.setMessage(new ResourceModel("NoParticipantFound").getObject());
+            registerLink.setEnabled(false);
+            registerLink.add(disableRegisterLinkButtonBehaviour);
+          } catch(ParticipantRegistryLookupException e) {
+            log.error("Participant registry lookup failed.", e);
+            participantRegistryPanel.setMessage(new ResourceModel("ParticipantLookupFailed").getObject());
+            registerLink.setEnabled(false);
+            registerLink.add(disableRegisterLinkButtonBehaviour);
+          } finally {
+            target.addComponent(participantRegistryPanel);
+            target.addComponent(registerLink);
+          }
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form) {
+          registerLink.setEnabled(false);
+          registerLink.add(disableRegisterLinkButtonBehaviour);
+          target.addComponent(registerLink);
+        }
+
+      }, "lookUpLink");
+      participantRegistryDialog.getForm().setDefaultButton(lookUpLink);
+
+      add(participantRegistryDialog);
+
       AjaxLink registryLink = new AjaxLink(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
-          log.error("Participant Registry button clicked. Not implemented.");
-          // TODO: Open Participant Registry Window
+          participantRegistryPanel.reset();
+          target.addComponent(participantRegistryDialog);
+          participantRegistryDialog.show(target);
+          registerLink.setEnabled(false);
+          registerLink.add(disableRegisterLinkButtonBehaviour);
+          target.addComponent(registerLink);
         }
 
         @Override

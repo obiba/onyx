@@ -132,6 +132,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
   </bean>
 
+  <bean id="participantRegistry" class="org.obiba.onyx.core.service.impl.FixedParticipantRegistry" scope="session">
+  </bean>
+
   <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
 
   <bean id="purgeParticipantDataService" class="org.obiba.onyx.core.service.impl.PurgeParticipantDataServiceImpl">

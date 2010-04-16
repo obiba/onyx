@@ -45,26 +45,26 @@ public class ParticipantPanel extends Panel {
 
   private static final long serialVersionUID = -5722864134344016349L;
 
-  public ParticipantPanel(String id, IModel participantModel) {
+  public ParticipantPanel(String id, IModel<Participant> participantModel) {
     this(id, participantModel, false);
   }
 
-  public ParticipantPanel(String id, IModel participantModel, boolean shortList) {
-    super(id);
-    setDefaultModel(participantModel);
+  public ParticipantPanel(String id, IModel<Participant> participantModel, boolean shortList) {
+    super(id, participantModel);
+
     setOutputMarkupId(true);
 
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("participant");
 
     Participant participant = (Participant) participantModel.getObject();
 
-    if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) kvPanel.addRow(new StringResourceModel("EnrollmentId", this, null), new PropertyModel(getDefaultModel(), "enrollmentId"));
-    if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(getDefaultModel(), "barcode"));
-    kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(getDefaultModel(), "fullName"));
+    if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) kvPanel.addRow(new StringResourceModel("EnrollmentId", this, null), new PropertyModel<Participant>(getDefaultModel(), "enrollmentId"));
+    if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel<Participant>(getDefaultModel(), "barcode"));
+    kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel<Participant>(getDefaultModel(), "fullName"));
 
     if(!shortList) {
-      kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
-      kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new PropertyModel(getDefaultModel(), "birthDate")));
+      kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel<ParticipantPanel>(this, "localizedGender"));
+      kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel<ParticipantPanel>(this, "dateFormat"), new PropertyModel<Participant>(getDefaultModel(), "birthDate")));
       add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel()));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));

@@ -197,6 +197,17 @@ div.wicket-modal div.onyx .printable-report-panel {
   margin-left: 0.8333em;
 }
 
+div.wicket-modal div.onyx .participant-registry-search-panel {
+  height: 29.2em;
+  width: 43.6667em;
+  margin-left: 0.8333em;
+}
+
+#participant-registry-search-panel {
+	margin-top: 0.8em;
+	margin-bottom: 0.8em;
+}
+
 .checkboxColumn {
   width: 3em;
 }
