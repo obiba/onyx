@@ -288,13 +288,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(currentStatus == InterviewStatus.CLOSED) {
       reinstatedStatus = InterviewStatus.IN_PROGRESS;
     } else if(currentStatus == InterviewStatus.CANCELLED) {
-      reinstatedStatus = interviewHasStageInFinalState() ? InterviewStatus.COMPLETED : InterviewStatus.IN_PROGRESS;
+      reinstatedStatus = interviewHadBeenCompleted() ? InterviewStatus.COMPLETED : InterviewStatus.IN_PROGRESS;
     }
 
     return reinstatedStatus;
   }
 
-  private boolean interviewHasStageInFinalState() {
+  private boolean interviewHadBeenCompleted() {
     for(StageExecutionContext sec : getStageContexts().values()) {
       if(sec.isFinal()) return true;
     }

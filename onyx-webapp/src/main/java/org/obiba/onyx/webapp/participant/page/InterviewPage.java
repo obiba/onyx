@@ -261,7 +261,7 @@ public class InterviewPage extends BasePage {
         @Override
         public boolean isVisible() {
           InterviewStatus status = activeInterviewService.getInterview().getStatus();
-          return !(status == InterviewStatus.CANCELLED);
+          return (status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED);
         }
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
@@ -314,6 +314,9 @@ public class InterviewPage extends BasePage {
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
       add(closeLink);
+
+      // Reinstate interview link
+      add(createReinstateInterviewLink());
 
       // Print report link
       class ReportLink extends AjaxLink {
@@ -396,6 +399,65 @@ public class InterviewPage extends BasePage {
   public void updateCommentsCount() {
     viewComments.addOrReplace(commentsCount = new Label("commentsCount", String.valueOf(activeInterviewService.getInterviewComments().size())));
     commentsCount.setOutputMarkupId(true);
+  }
+
+  private AjaxLink createReinstateInterviewLink() {
+    String stateName = null;
+    if(activeInterviewService.getInterview().getStatus() == InterviewStatus.CANCELLED) {
+      stateName = "Cancelled";
+    } else if(activeInterviewService.getInterview().getStatus() == InterviewStatus.CLOSED) {
+      stateName = "Closed";
+    }
+
+    final ActionDefinition reinstateInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.EXECUTE, stateName, null, null);
+
+    final ActionWindow reinstateInterviewActionWindow = new ActionWindow("reinstateModal") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
+        activeInterviewService.reinstateInterview();
+        setResponsePage(InterviewPage.class);
+      }
+
+    };
+    add(reinstateInterviewActionWindow);
+
+    AjaxLink reinstateLink = new AjaxLink("reinstateInterview") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        Label label = new Label("content", new StringResourceModel("ConfirmReinstatementOfInterview", InterviewPage.this, null));
+        label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+        ConfirmationDialog confirmationDialog = getConfirmationDialog();
+
+        confirmationDialog.setContent(label);
+        confirmationDialog.setTitle(new StringResourceModel("ConfirmReinstatementOfInterviewTitle", this, null));
+        confirmationDialog.setYesButtonCallback(new OnYesCallback() {
+
+          private static final long serialVersionUID = -6691702933562884991L;
+
+          public void onYesButtonClicked(AjaxRequestTarget target) {
+            reinstateInterviewActionWindow.show(target, null, reinstateInterviewDef);
+          }
+
+        });
+        confirmationDialog.show(target);
+      }
+
+      @Override
+      public boolean isVisible() {
+        InterviewStatus status = activeInterviewService.getInterview().getStatus();
+        return (status == InterviewStatus.CANCELLED || status == InterviewStatus.CLOSED);
+      }
+    };
+
+    MetaDataRoleAuthorizationStrategy.authorize(reinstateLink, RENDER, "PARTICIPANT_MANAGER");
+
+    return reinstateLink;
   }
 
   private AddCommentWindow createAddCommentDialog() {
