@@ -106,6 +106,7 @@ public class Dialog extends ModalWindow {
     setResizable(false);
 
     form = new Form("form");
+    form.setOutputMarkupId(true);
     form.add(new WebMarkupContainer(getContentId()));
 
     AjaxButton okButton = new AjaxButton("ok", form) {

@@ -44,6 +44,7 @@ import org.obiba.onyx.core.etl.participant.impl.ParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.InterviewManager;
+import org.obiba.onyx.core.service.ParticipantRegistry;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
@@ -81,6 +82,8 @@ public class ParticipantSearchPageTest {
 
   private ExportLogService mockExportLogService;
 
+  private ParticipantRegistry mockParticipantRegistry;
+
   private List<Participant> participants;
 
   @Before
@@ -95,6 +98,7 @@ public class ParticipantSearchPageTest {
     mockOnyxDataExport = new OnyxDataExportMock();
     mockPrintableReportsRegistery = createMock(PrintableReportsRegistry.class);
     mockExportLogService = createMock(ExportLogService.class);
+    mockParticipantRegistry = createMock(ParticipantRegistry.class);
 
     mockCtx.putBean("participantService", mockParticipantService);
     mockCtx.putBean("entityQueryService", mockEntityQueryService);
@@ -104,6 +108,7 @@ public class ParticipantSearchPageTest {
     mockCtx.putBean("onyxDataExport", mockOnyxDataExport);
     mockCtx.putBean("printableReportsRegistry", mockPrintableReportsRegistery);
     mockCtx.putBean("exportLogService", mockExportLogService);
+    mockCtx.putBean("participantRegistry", mockParticipantRegistry);
 
     ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy = new ParticipantCaptureAndExportStrategy();
     participantCaptureAndExportStrategy.setParticipantService(mockParticipantService);

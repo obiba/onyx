@@ -57,9 +57,17 @@ public class ParticipantRegistryPanel extends Panel {
     participantRegistrySearchPanel.setMessage(string);
   }
 
+  public void clearMessage() {
+    participantRegistrySearchPanel.clearMessage();
+  }
+
   public void reset() {
+    resetResults();
+    participantRegistrySearchPanel.reset();
+  }
+
+  public void resetResults() {
     participantPanel = new ParticipantPanel("participant-view-panel", emptyParticipantModel());
     addOrReplace(participantPanel);
-    participantRegistrySearchPanel.reset();
   }
 }

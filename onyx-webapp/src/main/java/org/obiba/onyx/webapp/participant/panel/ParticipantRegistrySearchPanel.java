@@ -63,13 +63,17 @@ public class ParticipantRegistrySearchPanel extends Panel {
   }
 
   public void setMessage(String string) {
-    messageLabel.setDefaultModelObject(string);
+    messageLabel.setDefaultModel(new ResourceModel(string));
     messageLabel.add(new ExecuteJavaScriptBehaviour("$('#" + messageLabel.getMarkupId() + "').show();setTimeout(\"$('#" + messageLabel.getMarkupId() + "').fadeOut(4000)\", \"3000\");"));
+  }
+
+  public void clearMessage() {
+    messageLabel.setDefaultModel(new Model<String>(""));
   }
 
   public void reset() {
     uniqueIdSearchField.clearInput();
     uniqueIdSearchField.setDefaultModelObject("");
-    messageLabel.setDefaultModelObject("");
+    messageLabel.setDefaultModel(new Model<String>(""));
   }
 }

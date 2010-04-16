@@ -562,14 +562,16 @@ public class ParticipantSearchPage extends BasePage {
           try {
             participantRegistryPanel.lookUpParticipant();
             registerLink.setEnabled(true);
-            participantRegistryPanel.setMessage("");
+            participantRegistryPanel.clearMessage();
           } catch(NoSuchParticipantException e) {
-            participantRegistryPanel.setMessage(new ResourceModel("NoParticipantFound").getObject());
+            participantRegistryPanel.reset();
+            participantRegistryPanel.setMessage("NoParticipantFound");
             registerLink.setEnabled(false);
             registerLink.add(disableRegisterLinkButtonBehaviour);
           } catch(ParticipantRegistryLookupException e) {
             log.error("Participant registry lookup failed.", e);
-            participantRegistryPanel.setMessage(new ResourceModel("ParticipantLookupFailed").getObject());
+            participantRegistryPanel.reset();
+            participantRegistryPanel.setMessage("ParticipantLookupFailed");
             registerLink.setEnabled(false);
             registerLink.add(disableRegisterLinkButtonBehaviour);
           } finally {
