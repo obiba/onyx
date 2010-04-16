@@ -20,12 +20,15 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.ValidationError;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Validates the question choices minimum/maximum count of answers. It uses the settings of the question by default, and
@@ -34,6 +37,8 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelH
 public class AnswerCountValidator implements INullAcceptingValidator, IClusterable {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(AnswerCountValidator.class);
 
   private static final String KEY_PREFIX = AnswerCountValidator.class.getSimpleName();
 
@@ -64,14 +69,8 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
   public void validate(IValidatable validatable, Question question) {
     List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
 
-    int count = 0;
-    for(CategoryAnswer categoryAnswer : categoryAnswers) {
+    int count = getAnswerCount(question, categoryAnswers);
 
-      // Exclude "no-answer" categories, these should not be included in the count.
-      if(!question.findCategory(categoryAnswer.getCategoryName()).isNoAnswer()) {
-        count++;
-      }
-    }
     if(count == 0 && question.isRequired()) {
       ValidationError error = newValidationError(question);
       error.addMessageKey(KEY_PREFIX + ".Required");
@@ -138,6 +137,37 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
         }
       }
     }
+  }
+
+  /**
+   * Get the current answer count for a specific question, skip any "no-answer".
+   * 
+   * @param question The question to get the answer count.
+   * @param categoryAnswers The list of categoryAnswers.
+   * @return
+   */
+  private int getAnswerCount(Question question, List<CategoryAnswer> categoryAnswers) {
+    int count = 0;
+    String categoryName;
+    Category category;
+
+    for(CategoryAnswer categoryAnswer : categoryAnswers) {
+
+      // Exclude "no-answer" categories, these should not be included in the count.
+      categoryName = categoryAnswer.getCategoryName();
+      if(question.hasCategories()) {
+        category = question.findCategory(categoryName);
+      } else if(question.getParentQuestion().hasCategories()) {
+        category = question.getParentQuestion().findCategory(categoryName);
+      } else {
+        category = null;
+      }
+
+      if(category != null && !category.isNoAnswer()) {
+        count++;
+      }
+    }
+    return count;
   }
 
   private ValidationError newValidationError(Question question) {
