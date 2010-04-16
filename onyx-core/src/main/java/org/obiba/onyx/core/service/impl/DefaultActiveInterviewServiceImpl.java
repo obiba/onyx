@@ -255,8 +255,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       return null;
   }
 
-  private Map<String, StageExecutionContext> getStageContexts() {
-    return interviewManager.getStageContexts();
+  public void reinstateInterview() {
+    InterviewStatus newStatus = getReinstatedStatus();
+    if(newStatus == null) {
+      throw new RuntimeException("cannot reinstate an interview that is neither completed nor cancelled");
+    }
+
+    setStatus(newStatus);
   }
 
   public void storeStageExecutionContext(Participant participant, StageExecutionContext exec) {
@@ -269,5 +274,30 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant) {
     return Collections.unmodifiableCollection(getStageContexts().values());
+  }
+
+  private Map<String, StageExecutionContext> getStageContexts() {
+    return interviewManager.getStageContexts();
+  }
+
+  private InterviewStatus getReinstatedStatus() {
+    InterviewStatus reinstatedStatus = null;
+
+    InterviewStatus currentStatus = getInterview().getStatus();
+
+    if(currentStatus == InterviewStatus.CLOSED) {
+      reinstatedStatus = InterviewStatus.IN_PROGRESS;
+    } else if(currentStatus == InterviewStatus.CANCELLED) {
+      reinstatedStatus = interviewHasStageInFinalState() ? InterviewStatus.COMPLETED : InterviewStatus.IN_PROGRESS;
+    }
+
+    return reinstatedStatus;
+  }
+
+  private boolean interviewHasStageInFinalState() {
+    for(StageExecutionContext sec : getStageContexts().values()) {
+      if(sec.isFinal()) return true;
+    }
+    return false;
   }
 }

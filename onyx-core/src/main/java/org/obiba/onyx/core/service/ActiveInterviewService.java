@@ -121,4 +121,8 @@ public interface ActiveInterviewService {
    */
   public Action getStatusAction();
 
+  /**
+   * Reinstates a closed or cancelled interview.
+   */
+  public void reinstateInterview();
 }
