@@ -40,6 +40,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.identifier.NullIdentifierSequenceProvider;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -72,6 +73,7 @@ public class EditParticipantPanelTest implements Serializable {
     mockCtx.putBean("participantService", mockParticipantService);
     mockCtx.putBean("entityQueryService", mockQueryService);
     mockCtx.putBean("userSessionService", mockUserSessionService);
+    mockCtx.putBean("identifierSequenceProvider", new NullIdentifierSequenceProvider());
 
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
     participantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
