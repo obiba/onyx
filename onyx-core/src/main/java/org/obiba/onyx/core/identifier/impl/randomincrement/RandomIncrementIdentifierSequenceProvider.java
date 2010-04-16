@@ -71,6 +71,10 @@ public class RandomIncrementIdentifierSequenceProvider implements IdentifierSequ
     this.applicationConfigurationService = applicationConfigurationService;
   }
 
+  public int getMaxIncrement() {
+    return maxIncrement;
+  }
+
   private RandomIncrementIdentifierSequence createSequence() {
     RandomIncrementIdentifierSequence sequence = new RandomIncrementIdentifierSequence();
     sequence.setPersistenceManager(persistenceManager);
@@ -90,7 +94,7 @@ public class RandomIncrementIdentifierSequenceProvider implements IdentifierSequ
 
   private String getIdentifierPrefix() {
     ApplicationConfiguration appConfig = applicationConfigurationService.getApplicationConfiguration();
-    return appConfig.getIdentifierPrefix() != null ? appConfig.getIdentifierPrefix() : "TEST";
+    return appConfig.getIdentifierPrefix();
   }
 
   private long getFirstIdentifier() {
