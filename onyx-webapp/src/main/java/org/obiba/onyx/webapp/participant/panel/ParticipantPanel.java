@@ -59,7 +59,7 @@ public class ParticipantPanel extends Panel {
       add(new AttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList)));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));
-      add(new EmptyPanel("essentialAttributeGroups"));
+      add(new EmptyPanel("essentialAttributeGroup"));
     }
   }
 
