@@ -61,13 +61,12 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     Set<Variable.BuilderVisitor> visitors = visitorSetBuilder.build();
 
     // Create the non-PDF form sources.
-    setPrefix(stageName);
     setProperties(ImmutableSet.of("mode", "locale", "accepted", "pdfForm", "timeStart", "timeEnd"));
     setVariableBuilderVisitors(visitors);
     sources = super.createSources();
 
     // Create the PDF form sources.
-    sources.addAll(createPdfFormFieldSources(stageName, visitors));
+    sources.addAll(createPdfFormFieldSources(visitors));
 
     return sources;
   }
@@ -80,7 +79,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     this.variableToFieldMap = variableToFieldMap;
   }
 
-  private Set<VariableValueSource> createPdfFormFieldSources(String prefix, Set<Variable.BuilderVisitor> visitors) {
+  private Set<VariableValueSource> createPdfFormFieldSources(Set<Variable.BuilderVisitor> visitors) {
     ImmutableSet.Builder<String> propertySetBuilder = new ImmutableSet.Builder<String>();
     ImmutableMap.Builder<String, String> propertyNameToVariableNameMapBuilder = new ImmutableMap.Builder<String, String>();
 
@@ -91,7 +90,6 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     }
 
     BeanVariableValueSourceFactory<Consent> factory = new BeanVariableValueSourceFactory<Consent>(PARTICIPANT, Consent.class);
-    factory.setPrefix(prefix);
     factory.setProperties(propertySetBuilder.build());
     factory.setPropertyNameToVariableName(propertyNameToVariableNameMapBuilder.build());
     factory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("pdfFormFields", String.class).build());

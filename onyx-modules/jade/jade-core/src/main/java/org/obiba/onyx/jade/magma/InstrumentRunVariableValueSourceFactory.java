@@ -80,28 +80,27 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
 
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
       InstrumentType instrumentType = entry.getValue();
-      String instrumentTypePrefix = instrumentType.getName();
 
       // Call superclass method to create the sources for InstrumentRun variables.
-      String instrumentRunPrefix = instrumentTypePrefix + '.' + INSTRUMENT_RUN;
+      String instrumentRunPrefix = INSTRUMENT_RUN;
       sources.addAll(createTimeAndContraindication(instrumentRunPrefix, instrumentType));
 
       // For non-repeatable instrument types, add source for instrument barcode variable.
       if(!instrumentType.isRepeatable()) {
         sources.add(createBarcodeSource(instrumentRunPrefix, instrumentType));
       } else {
-        sources.addAll(createMeasureSources(instrumentTypePrefix + '.' + MEASURE, instrumentType));
+        sources.addAll(createMeasureSources(MEASURE, instrumentType));
       }
 
       // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
-      String ciVariablePrefix = instrumentType.getName() + '.' + INSTRUMENT_RUN + '.' + CONTRAINDICATION;
+      String ciVariablePrefix = INSTRUMENT_RUN + '.' + CONTRAINDICATION;
       sources.add(createContraindicationCode(ciVariablePrefix, instrumentType));
 
       // Add source for InstrumentRun.Contraindication.type variable.
       sources.add(createContraindicationTypeSource(ciVariablePrefix, instrumentType));
 
       // Add sources for instrument parameter variables.
-      sources.addAll(createInstrumentParameterSources(instrumentTypePrefix, instrumentType));
+      sources.addAll(createInstrumentParameterSources(instrumentType));
 
     }
 
@@ -159,17 +158,17 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
     return delegateFactory.createSources().iterator().next();
   }
 
-  private Set<VariableValueSource> createInstrumentParameterSources(String instrumentTypePrefix, InstrumentType instrumentType) {
+  private Set<VariableValueSource> createInstrumentParameterSources(InstrumentType instrumentType) {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     List<InstrumentParameter> instrumentParameters = instrumentType.getInstrumentParameters();
     if(instrumentParameters.size() > 0) {
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
-        String name = instrumentTypePrefix + '.' + instrumentParameter.getCode();
+        String name = instrumentParameter.getCode();
 
         // Test whether this parameter is part of the "Measure"
         if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
-          name = instrumentTypePrefix + '.' + MEASURE + '.' + instrumentParameter.getCode();
+          name = MEASURE + '.' + instrumentParameter.getCode();
         }
 
         Variable.Builder builder = Variable.Builder.newVariable(name, DataTypes.valueTypeFor(instrumentParameter.getDataType()), "Participant");

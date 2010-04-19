@@ -4,7 +4,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Consent.accepted</variablePath>
+      <variablePath>accepted</variablePath>
     </stageDependencyCondition>
   </stage>
   
@@ -16,11 +16,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -40,7 +40,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Consent.accepted</variablePath>
+      <variablePath>accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -49,7 +49,7 @@
     <module>jade</module>
     <!-- <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Consent.accepted</variablePath>
+      <variablePath>accepted</variablePath>
     </stageDependencyCondition> -->
     <!-- PL: this is not working since question HW_CI_BP is a boilerplate and does no produce a variable. -->
     <stageDependencyCondition class="multipleCondition">
@@ -57,11 +57,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -84,11 +84,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -111,11 +111,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -138,11 +138,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -155,7 +155,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>StandingHeight.CALC_AVG_HEIGHT</variablePath>
+          <variablePath>CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
@@ -169,11 +169,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -187,7 +187,7 @@
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
             <stageName>Impedance310</stageName>
-            <variablePath>Impedance310.CALC_AVG_WEIGHT</variablePath>
+            <variablePath>CALC_AVG_WEIGHT</variablePath>
           </stageDependencyCondition>
         </inverseCondition>
       </conditions>
@@ -202,11 +202,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -219,18 +219,18 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>StandingHeight.CALC_AVG_HEIGHT</variablePath>
+          <variablePath>CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedance310</stageName>
-              <variablePath>Impedance310.CALC_AVG_WEIGHT</variablePath>
+              <variablePath>CALC_AVG_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>Weight.RES_WEIGHT</variablePath>
+              <variablePath>RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -243,7 +243,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>Consent.accepted</variablePath>
+      <variablePath>accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -255,11 +255,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -282,11 +282,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -299,11 +299,11 @@
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>BloodPressure.CALC_AVG_SYSTOLIC_BP</variablePath>
+          <variablePath>CALC_AVG_SYSTOLIC_BP</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>BloodPressure.CALC_AVG_DIASTOLIC_BP</variablePath>
+          <variablePath>CALC_AVG_DIASTOLIC_BP</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>

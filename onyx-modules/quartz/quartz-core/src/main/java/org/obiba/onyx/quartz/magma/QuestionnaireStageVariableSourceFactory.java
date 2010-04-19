@@ -167,7 +167,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   protected void buildQuestionnaireRun() {
     BeanVariableValueSourceFactory<QuestionnaireParticipant> factory = new BeanVariableValueSourceFactory<QuestionnaireParticipant>("Participant", QuestionnaireParticipant.class);
-    factory.setPrefix(questionnaire.getName() + ".QuestionnaireRun");
+    factory.setPrefix("QuestionnaireRun");
     factory.setProperties(ImmutableSet.of("questionnaireVersion", "locale", "timeStart", "timeEnd", "user.login"));
     factory.setPropertyNameToVariableName(ImmutableMap.of("questionnaireVersion", "version", "user.login", "user"));
     factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new LocalizableBuilderVisitor(questionnaire)));
@@ -176,7 +176,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   protected void buildQuestionnaireMetric() {
     BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm> factory = new BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm>("Participant", QuestionnairePageMetricAlgorithm.class);
-    factory.setPrefix(questionnaire.getName() + ".QuestionnaireMetric");
+    factory.setPrefix("QuestionnaireMetric");
     factory.setProperties(ImmutableSet.of("section", "page", "duration", "questionCount", "missingCount"));
     factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new VariableUnitBuilderVisitor(ImmutableMap.of("duration", "s"))));
     factory.setOccurrenceGroup("QuestionnaireMetric");

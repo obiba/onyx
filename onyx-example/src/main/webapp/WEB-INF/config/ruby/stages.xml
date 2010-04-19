@@ -8,11 +8,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -35,11 +35,11 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>Consent.accepted</variablePath>
+          <variablePath>accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>CIPreliminaryQuestionnaire.QuestionnaireRun.timeEnd</variablePath>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>

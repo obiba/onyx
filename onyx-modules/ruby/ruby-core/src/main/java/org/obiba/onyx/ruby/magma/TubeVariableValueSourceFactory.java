@@ -75,8 +75,8 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     String prefix = stageName;
     Variable.BuilderVisitor stageAttributeVisitor = new StageAttributeVisitor(stageName);
 
-    sources.addAll(createParticipantTubeRegistrationSources(prefix, stageAttributeVisitor));
-    sources.addAll(createRegisteredParticipantTubeSources(prefix, stageName, stageAttributeVisitor));
+    sources.addAll(createParticipantTubeRegistrationSources(stageAttributeVisitor));
+    sources.addAll(createRegisteredParticipantTubeSources(stageAttributeVisitor));
 
     return sources;
   }
@@ -89,8 +89,8 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     this.attributeHelper = attributeHelper;
   }
 
-  private Set<VariableValueSource> createParticipantTubeRegistrationSources(String prefix, Variable.BuilderVisitor stageAttributeVisitor) {
-    String tubeRegistrationPrefix = prefix + '.' + PARTICIPANT_TUBE_REGISTRATION;
+  private Set<VariableValueSource> createParticipantTubeRegistrationSources(Variable.BuilderVisitor stageAttributeVisitor) {
+    String tubeRegistrationPrefix = PARTICIPANT_TUBE_REGISTRATION;
 
     // Create sources for participant tube registration variables.
     BeanVariableValueSourceFactory<ParticipantTubeRegistration> delegateFactory = new BeanVariableValueSourceFactory<ParticipantTubeRegistration>("Participant", ParticipantTubeRegistration.class);
@@ -112,8 +112,8 @@ public class TubeVariableValueSourceFactory implements VariableValueSourceFactor
     return sources;
   }
 
-  private Set<VariableValueSource> createRegisteredParticipantTubeSources(String prefix, String stageName, Variable.BuilderVisitor stageAttributeVisitor) {
-    String tubePrefix = prefix + '.' + REGISTERED_PARTICIPANT_TUBE;
+  private Set<VariableValueSource> createRegisteredParticipantTubeSources(Variable.BuilderVisitor stageAttributeVisitor) {
+    String tubePrefix = REGISTERED_PARTICIPANT_TUBE;
 
     // Create sources for registered participant tube variables.
     BeanVariableValueSourceFactory<RegisteredParticipantTube> delegateFactory = new BeanVariableValueSourceFactory<RegisteredParticipantTube>("Participant", RegisteredParticipantTube.class);

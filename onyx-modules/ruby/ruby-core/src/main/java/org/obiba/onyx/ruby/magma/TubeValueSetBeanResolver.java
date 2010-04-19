@@ -80,7 +80,7 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
   protected ParticipantTubeRegistration resolveParticipantTubeRegistration(ValueSet valueSet, Variable variable) {
     ParticipantTubeRegistration tubeRegistration = null;
 
-    String stageName = extractStageName(variable.getName());
+    String stageName = valueSet.getValueTable().getName();
     if(stageName != null) {
       Participant participant = getParticipant(valueSet);
       if(participant != null) {
@@ -113,7 +113,7 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
   protected List<BarcodePart> resolveBarcodeParts(ValueSet valueSet, Variable variable) {
     List<BarcodePart> barcodeParts = null;
 
-    String stageName = extractStageName(variable.getName());
+    String stageName = valueSet.getValueTable().getName();
     if(stageName != null) {
       String barcodePartName = extractBarcodePartName(variable.getName());
       if(barcodePartName != null) {
@@ -145,7 +145,7 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
   }
 
   protected Contraindication resolveContraindication(ValueSet valueSet, Variable variable) {
-    String stageName = extractStageName(variable.getName());
+    String stageName = valueSet.getValueTable().getName();
     if(stageName != null) {
       ParticipantTubeRegistration tubeRegistration = resolveParticipantTubeRegistration(valueSet, variable);
       if(tubeRegistration != null) {
@@ -153,15 +153,6 @@ public class TubeValueSetBeanResolver extends AbstractOnyxBeanResolver {
         return tubeRegistration.getContraindication();
       }
     }
-    return null;
-  }
-
-  private String extractStageName(String variableName) {
-    String[] elements = variableName.split("\\.");
-    if(elements.length != 0) {
-      return elements[0];
-    }
-
     return null;
   }
 

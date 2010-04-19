@@ -34,8 +34,8 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
   public String variableName(Question question) {
     String variableName = question.getVariableName();
     if(variableName == null) {
-      String prefix = question.getParentQuestion() != null ? variableName(question.getParentQuestion()) : questionnaire.getName();
-      variableName = prefix + '.' + question.getName();
+      String prefix = question.getParentQuestion() != null ? variableName(question.getParentQuestion()) + '.' : "";
+      variableName = prefix + question.getName();
     }
     if(variableNames.containsKey(variableName) && question != variableNames.get(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, question, variableNames.get(variableName));
     variableNames.put(variableName, question);
