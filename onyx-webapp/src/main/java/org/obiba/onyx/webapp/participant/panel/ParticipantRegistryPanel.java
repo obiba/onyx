@@ -24,6 +24,8 @@ public class ParticipantRegistryPanel extends Panel {
 
   private ParticipantPanel participantPanel;
 
+  private Participant lastedLookedUpParticipant;
+
   public ParticipantRegistryPanel(String id) {
     this(id, emptyParticipantModel());
   }
@@ -47,8 +49,8 @@ public class ParticipantRegistryPanel extends Panel {
   }
 
   public Participant lookUpParticipant() {
-    Participant p = participantRegistrySearchPanel.lookupParticipant();
-    participantPanel = new ParticipantPanel("participant-view-panel", new Model<Participant>(p));
+    lastedLookedUpParticipant = participantRegistrySearchPanel.lookupParticipant();
+    participantPanel = new ParticipantPanel("participant-view-panel", new Model<Participant>(lastedLookedUpParticipant));
     addOrReplace(participantPanel);
     return null;
   }
@@ -69,5 +71,9 @@ public class ParticipantRegistryPanel extends Panel {
   public void resetResults() {
     participantPanel = new ParticipantPanel("participant-view-panel", emptyParticipantModel());
     addOrReplace(participantPanel);
+  }
+
+  public Participant getLastLookedUpParticipant() {
+    return lastedLookedUpParticipant;
   }
 }

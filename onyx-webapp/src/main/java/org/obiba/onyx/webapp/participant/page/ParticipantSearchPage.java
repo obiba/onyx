@@ -55,12 +55,14 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -86,6 +88,7 @@ import org.obiba.onyx.wicket.reusable.Dialog.OptionSide;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.wicket.util.DateModelUtils;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 import org.slf4j.Logger;
@@ -111,6 +114,9 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy;
+
+  @SpringBean
+  private ApplicationConfigurationService applicationConfigurationService;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -539,23 +545,46 @@ public class ParticipantSearchPage extends BasePage {
 
       final Dialog participantRegistryDialog = DialogBuilder.buildDialog("participant-registry-dialog", new ResourceModel("ParticipantRegistryDialogTitle"), participantRegistryPanel = new ParticipantRegistryPanel("content")).setOptions(Option.CANCEL_OPTION).getDialog();
 
+      participantRegistryDialog.setWindowClosedCallback(new WindowClosedCallback() {
+
+        public void onClose(AjaxRequestTarget target, Status status) {
+          System.out.println("window close status: " + status);
+          if(status.equals(Status.SUCCESS)) {
+            Participant participant = participantRegistryPanel.getLastLookedUpParticipant();
+            participant.setSiteNo(applicationConfigurationService.getApplicationConfiguration().getSiteNo());
+            participant.setAppointment(new Appointment(participant, new Date()));
+            try {
+              participantService.updateParticipant(participant);
+              setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel<Participant>(queryService, participant), ParticipantSearchPage.this));
+            } catch(RuntimeException e) {
+              StringResourceModel errorMessage = new StringResourceModel("UnableToSaveParticipant", ParticipantSearchPage.this, null);
+              error(errorMessage.getString());
+              getFeedbackWindow().setContent(new FeedbackPanel("content"));
+              getFeedbackWindow().show(target);
+            }
+          }
+        }
+      });
+
       final IBehavior disableRegisterLinkButtonBehaviour = new ExecuteJavaScriptBehaviour("$('[name=registerLink]').attr('disabled','true');$('[name=registerLink]').css('color','rgba(0, 0, 0, 0.2)');$('[name=registerLink]').css('border-color','rgba(0, 0, 0, 0.2)');", true);
 
       final AjaxButton registerLink;
       participantRegistryDialog.addSubmitOption("RegisterLink", OptionSide.RIGHT, registerLink = new AjaxButton("registerLink") {
-
         private static final long serialVersionUID = 1L;
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
           participantRegistryDialog.close(target);
+          participantRegistryDialog.setStatus(Status.SUCCESS);
         }
+
       }, "registerLink");
       registerLink.setOutputMarkupId(true);
       registerLink.add(disableRegisterLinkButtonBehaviour);
 
       final AjaxButton lookUpLink;
       participantRegistryDialog.addSubmitOption("Lookup", OptionSide.LEFT, lookUpLink = new AjaxButton("lookUpLink") {
+        private static final long serialVersionUID = 1L;
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
