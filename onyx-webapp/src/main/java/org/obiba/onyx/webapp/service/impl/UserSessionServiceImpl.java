@@ -64,12 +64,24 @@ public class UserSessionServiceImpl implements UserSessionService {
     this.datePattern = pattern;
   }
 
+  public String getDatePattern() {
+    return datePattern;
+  }
+
   public void setTimePattern(String pattern) {
     this.timePattern = pattern;
   }
 
+  public String getTimePattern() {
+    return this.timePattern;
+  }
+
   public void setDateTimePattern(String pattern) {
     this.dateTimePattern = pattern;
+  }
+
+  public String getDateTimePattern() {
+    return dateTimePattern;
   }
 
   public Locale getLocale() {

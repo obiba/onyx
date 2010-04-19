@@ -41,6 +41,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -289,7 +290,7 @@ public class EditParticipantPanel extends Panel {
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.YEAR, -130);
     birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
-    add(new DateFragment(BIRTH_DATE, getDefaultModel(), "BirthDate*", birthDate));
+    add(new DateFragment(BIRTH_DATE, new StringResourceModel("BirthDate*", null, new Object[] { userSessionService.getDatePattern() }), birthDate));
 
     add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel()));
 
@@ -378,9 +379,9 @@ public class EditParticipantPanel extends Panel {
   private class DateFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public DateFragment(String id, IModel participantModel, String label, FormComponent component) {
+    public DateFragment(String id, IModel<String> labelModel, FormComponent component) {
       super(id, "dateFragment", EditParticipantPanel.this);
-      add(new Label("label", new ResourceModel(label)));
+      add(new Label("label", labelModel));
       add(component);
 
       addNoFocusCssClassInReceptionMode(component);
@@ -388,16 +389,21 @@ public class EditParticipantPanel extends Panel {
   }
 
   private DateTextField createBirthDateField() {
-    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getDefaultModel(), BIRTH_DATE), new PatternDateConverter("yyyy-MM-dd", true));
+    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getDefaultModel(), BIRTH_DATE), new PatternDateConverter(userSessionService.getDatePattern(), true));
 
     birthDateField.setRequired(true);
-    birthDateField.setLabel(new ResourceModel("BirthDateWithFormat"));
+    birthDateField.setLabel(new StringResourceModel("BirthDate*", null, new Object[] { userSessionService.getDatePattern() }));
 
     birthDateField.add(new DatePicker() {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public boolean enableMonthYearSelection() {
+      protected String getDatePattern() {
+        return userSessionService.getDatePattern();
+      }
+
+      @Override
+      protected boolean enableMonthYearSelection() {
         return true;
       }
     });

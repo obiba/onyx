@@ -39,9 +39,15 @@ public interface UserSessionService {
 
   public DateFormat getDateFormat();
 
+  public String getDatePattern();
+
   public DateFormat getTimeFormat();
 
+  public String getTimePattern();
+
   public DateFormat getDateTimeFormat();
+
+  public String getDateTimePattern();
 
   public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService);
 

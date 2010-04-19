@@ -82,12 +82,24 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
     return new SimpleDateFormat(datePattern, getLocale());
   }
 
+  public String getDatePattern() {
+    return datePattern;
+  }
+
   public DateFormat getTimeFormat() {
     return new SimpleDateFormat(timePattern, getLocale());
   }
 
+  public String getTimePattern() {
+    return timePattern;
+  }
+
   public DateFormat getDateTimeFormat() {
     return new SimpleDateFormat(dateTimePattern, getLocale());
+  }
+
+  public String getDateTimePattern() {
+    return dateTimePattern;
   }
 
   public String getWorkstation() {
@@ -101,4 +113,5 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
   public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
     this.applicationConfigurationService = applicationConfigurationService;
   }
+
 }

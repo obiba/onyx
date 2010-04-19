@@ -826,7 +826,7 @@
   </scm>
 
   <properties>
-    <wicket.version>1.4.7</wicket.version>
+    <wicket.version>1.4.6</wicket.version>
     <spring.version>3.0.1.RELEASE</spring.version>
     <spring-batch.version>2.0.3.RELEASE</spring-batch.version>
     <opensymphony-quartz.version>1.6.1</opensymphony-quartz.version>
