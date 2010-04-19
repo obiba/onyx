@@ -44,23 +44,6 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
   private static final Logger log = LoggerFactory.getLogger(AbstractParticipantReader.class);
 
   //  
-  // Constant variables
-  //  
-  protected static final String ENROLLMENT_ID_ATTRIBUTE_NAME = "Enrollment ID";
-
-  protected static final String ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME = "Assessment Center ID";
-
-  protected static final String FIRST_NAME_ATTRIBUTE_NAME = "First Name";
-
-  protected static final String LAST_NAME_ATTRIBUTE_NAME = "Last Name";
-
-  protected static final String BIRTH_DATE_ATTRIBUTE_NAME = "Birth Date";
-
-  protected static final String GENDER_ATTRIBUTE_NAME = "Gender";
-
-  protected static final String APPOINTMENT_TIME_ATTRIBUTE_NAME = "Appointment Time";
-
-  //  
   // Instance variables
   //
   private Resource inputDirectory;
@@ -230,7 +213,8 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
   /**
    * Set the column name to attribute name map with a configuration string.
    * 
-   * @param keyValuePairs list of key/value pairs separated by a comma. For example, "<code>param1=foo,param2=bar</code>".
+   * @param keyValuePairs list of key/value pairs separated by a comma. For example, "<code>param1=foo,param2=bar</code>
+   * ".
    */
   public void setColumnToAttribute(String keyValuePairs) {
     if(columnNameToAttributeNameMap != null) {

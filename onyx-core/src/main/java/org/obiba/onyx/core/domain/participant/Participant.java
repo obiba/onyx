@@ -33,6 +33,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -275,6 +276,32 @@ public class Participant extends AbstractEntity {
       }
     }
 
+    return null;
+  }
+
+  /**
+   * Returns the value of an essential participant attribute.
+   * @param attributeName The attribute name.
+   * @return The value of the specified attribute (or <code>null</code> if none assigned).
+   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>  
+   */
+  public Data getEssentialAttributeValue(String attributeName) {
+    if(attributeName == null) {
+      throw new IllegalArgumentException("Null attribute name");
+    }    
+    
+    if(attributeName.equals(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)) return DataBuilder.buildText(getEnrollmentId());
+    if(attributeName.equals(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)) return DataBuilder.buildText(getSiteNo());
+    if(attributeName.equals(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME)) return DataBuilder.buildText(getFirstName());
+    if(attributeName.equals(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME)) return DataBuilder.buildText(getLastName());
+    if(attributeName.equals(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)) return DataBuilder.buildDate(getBirthDate());
+    if(attributeName.equals(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)) return DataBuilder.buildText(String.valueOf(getGender()));
+    if(attributeName.equals(ParticipantMetadata.PARTICIPANT_ID)) return DataBuilder.buildText(String.valueOf(getBarcode()));
+    if(attributeName.equals(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME)) {
+      if(getAppointment() != null) {
+        return DataBuilder.buildDate(getAppointment().getDate());
+      }
+    }
     return null;
   }
 

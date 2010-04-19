@@ -22,7 +22,6 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Group;
@@ -31,9 +30,8 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.onyx.wicket.util.DateModelUtils;
-import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public class ParticipantPanel extends Panel {
 
@@ -54,23 +52,31 @@ public class ParticipantPanel extends Panel {
 
     setOutputMarkupId(true);
 
-    KeyValueDataPanel kvPanel = new KeyValueDataPanel("participant");
-
     Participant participant = (Participant) participantModel.getObject();
 
-    if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) kvPanel.addRow(new StringResourceModel("EnrollmentId", this, null), new PropertyModel<Participant>(getDefaultModel(), "enrollmentId"));
-    if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel<Participant>(getDefaultModel(), "barcode"));
-    kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel<Participant>(getDefaultModel(), "fullName"));
-
     if(!shortList) {
-      kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel<ParticipantPanel>(this, "localizedGender"));
-      kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel<ParticipantPanel>(this, "dateFormat"), new PropertyModel<Participant>(getDefaultModel(), "birthDate")));
-      add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel()));
+      add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes()));
+      add(new AttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList)));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));
+      add(new EmptyPanel("essentialAttributeGroups"));
+    }
+  }
+
+  public List<ParticipantAttribute> getEssentialAttributesToDisplay(Participant participant, boolean shortList) {
+    List<ParticipantAttribute> attributesToDisplay = new ArrayList<ParticipantAttribute>();
+
+    if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME));
+    if(participant.getBarcode() != null) attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.PARTICIPANT_ID));
+    attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME));
+    attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME));
+
+    if(!shortList) {
+      attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.GENDER_ATTRIBUTE_NAME));
+      attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME));
     }
 
-    add(kvPanel);
+    return attributesToDisplay;
   }
 
   public String getLocalizedGender() {
@@ -86,13 +92,13 @@ public class ParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public AttributeGroupsFragment(String id, IModel participantModel) {
+    public AttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes) {
       super(id, "attributeGroupsFragment", ParticipantPanel.this);
 
       RepeatingView repeater = new RepeatingView("groupRepeater");
       add(repeater);
 
-      List<Group> groups = getGroups();
+      List<Group> groups = getGroups(attributes);
 
       for(int i = 0; i < groups.size(); i++) {
         Group group = groups.get(i);
@@ -104,17 +110,17 @@ public class ParticipantPanel extends Panel {
         String groupName = !group.isDefaultGroup() ? (new SpringStringResourceModel(groupNameKey, groupNameKey)).getString() : null;
 
         item.add(new Label("groupName", groupName).setVisible(groupName != null));
-        item.add(new AttributeGroupFragment("group", participantModel, group));
+        item.add(new AttributeGroupFragment("group", participantModel, group, attributes));
       }
     }
 
-    private List<Group> getGroups() {
+    private List<Group> getGroups(List<ParticipantAttribute> attributes) {
       List<Group> groups = new ArrayList<Group>();
 
-      if(participantMetadata.getConfiguredAttributes().size() != 0) {
+      if(attributes.size() != 0) {
         Group currentGroup = null;
 
-        for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
+        for(ParticipantAttribute attribute : attributes) {
           Group group = attribute.getGroup();
 
           if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) || (group.getName() != null && currentGroup.getName() == null) || (group.getName() != null && currentGroup.getName() != null && !group.getName().equals(currentGroup.getName()))) {
@@ -132,7 +138,7 @@ public class ParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public AttributeGroupFragment(String id, IModel participantModel, Group group) {
+    public AttributeGroupFragment(String id, IModel participantModel, Group group, List<ParticipantAttribute> attributesToDisplay) {
       super(id, "attributeGroupFragment", ParticipantPanel.this);
 
       RepeatingView repeat = new RepeatingView("attributeRepeater");
@@ -141,12 +147,26 @@ public class ParticipantPanel extends Panel {
       Participant participant = (Participant) participantModel.getObject();
 
       for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
-        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-        repeat.add(item);
-        item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
-        String value = (participant.getConfiguredAttributeValue(attribute.getName()) != null) ? participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString() : null;
-        item.add(new Label("field", new Model(value)));
+        if(attributesToDisplay.contains(attribute)) {
+          WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+          repeat.add(item);
+          item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
+          String value = getAttributeValueAsString(participant, attribute.getName());
+          item.add(new Label("field", new Model(value)));
+        }
       }
     }
   }
+
+  private String getAttributeValueAsString(Participant participant, String attributeName) {
+    Data attributeValue = participant.getEssentialAttributeValue(attributeName);
+    if(attributeValue == null) {
+      attributeValue = participant.getConfiguredAttributeValue(attributeName);
+    }
+    if(attributeValue != null) {
+      return attributeValue.getValueAsString();
+    }
+    return null;
+  }
+
 }

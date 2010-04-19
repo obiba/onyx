@@ -21,6 +21,7 @@ import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
+import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.etl.participant.util.XmlParticipantInput;
 import org.obiba.onyx.util.data.Data;
@@ -134,11 +135,11 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     Appointment appointment = new Appointment();
     Data data = null;
 
-    data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     appointment.setAppointmentCode(enrollmentId);
 
-    data = getEssentialAttributeValue(APPOINTMENT_TIME_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())));
     Date appointmentTime = (data != null) ? (Date) data.getValue() : null;
     appointment.setDate(appointmentTime);
 
@@ -151,30 +152,30 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     Data data = null;
 
     Map<String, String> attributes = participantInput.getAttributesMap();
-    data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     participant.setEnrollmentId(enrollmentId);
 
-    data = getEssentialAttributeValue(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())));
     String assessmentCenterId = (String) ((data != null) ? data.getValue() : null);
     participant.setSiteNo(assessmentCenterId);
 
-    data = getEssentialAttributeValue(FIRST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())));
     String firstName = (String) ((data != null) ? data.getValue() : null);
     participant.setFirstName(firstName);
 
-    data = getEssentialAttributeValue(LAST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(LAST_NAME_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME.toUpperCase())));
     String lastName = (String) ((data != null) ? data.getValue() : null);
     participant.setLastName(lastName);
 
-    if(attributeNameToTagMap.containsKey(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(BIRTH_DATE_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())));
+    if(attributeNameToTagMap.containsKey(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
+      data = getEssentialAttributeValue(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())));
       Date birthDate = (data != null) ? (Date) data.getValue() : null;
       participant.setBirthDate(birthDate);
     }
 
-    if(attributeNameToTagMap.containsKey(GENDER_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(GENDER_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())));
+    if(attributeNameToTagMap.containsKey(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())) {
+      data = getEssentialAttributeValue(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())));
       String gender = (data != null) ? data.getValueAsString() : "";
       if(gender.equals("M")) {
         participant.setGender(Gender.MALE);

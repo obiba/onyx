@@ -90,21 +90,23 @@
 	    </validators>     
 	  </attribute>
   </group>
-  <attribute>
-    <name>Phone</name>
-    <assignableAtEnrollment>true</assignableAtEnrollment>
-    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
-    <mandatoryAtReception>false</mandatoryAtReception>
-    <editableAtReception>true</editableAtReception>
-    <editableAfterReception>true</editableAfterReception>
-    <type>TEXT</type>
-    <validators>
-      <dataValidator dataType="TEXT">
-        <rangeValidator>
-          <minimum>1</minimum>      
-          <maximum>50</maximum>
-        </rangeValidator>
-      </dataValidator>
-    </validators>
-  </attribute>
+  <group name="">
+      <attribute>
+        <name>Phone</name>
+    	<assignableAtEnrollment>true</assignableAtEnrollment>
+    	<mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    	<mandatoryAtReception>false</mandatoryAtReception>
+    	<editableAtReception>true</editableAtReception>
+    	<editableAfterReception>true</editableAfterReception>
+    	<type>TEXT</type>
+    	<validators>
+      		<dataValidator dataType="TEXT">
+        		<rangeValidator>
+          			<minimum>1</minimum>      
+          			<maximum>50</maximum>
+        		</rangeValidator>
+      		</dataValidator>
+    	</validators>
+	  </attribute>
+  </group>
 </participantAttributes>

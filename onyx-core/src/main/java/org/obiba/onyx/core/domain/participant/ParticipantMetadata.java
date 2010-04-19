@@ -42,6 +42,22 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private static final String ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME = "essential-participant-attributes.xml";
 
+  public static final String ENROLLMENT_ID_ATTRIBUTE_NAME = "Enrollment ID";
+
+  public static final String ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME = "Assessment Center ID";
+
+  public static final String FIRST_NAME_ATTRIBUTE_NAME = "First Name";
+
+  public static final String LAST_NAME_ATTRIBUTE_NAME = "Last Name";
+
+  public static final String BIRTH_DATE_ATTRIBUTE_NAME = "Birth Date";
+
+  public static final String GENDER_ATTRIBUTE_NAME = "Gender";
+
+  public static final String APPOINTMENT_TIME_ATTRIBUTE_NAME = "Appointment Time";
+
+  public static final String PARTICIPANT_ID = "Participant ID";
+
   //
   // Instance Variables
   //

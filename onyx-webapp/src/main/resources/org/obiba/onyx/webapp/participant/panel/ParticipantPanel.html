@@ -1,11 +1,13 @@
 <wicket:panel>
-	<span wicket:id="participant" />
+	<span wicket:id="essentialAttributeGroup" />		
 	<span wicket:id="configuredAttributeGroups" />
 </wicket:panel>
 
 <wicket:fragment wicket:id="attributeGroupsFragment">
   <div wicket:id="groupRepeater">
-  <h2 class="h2-short"><span wicket:id="groupName" /></h2>
+  <wicket:enclosure child="groupName">
+  	<h2 class="h2-short"><span wicket:id="groupName" /></h2>
+  </wicket:enclosure>
     
 	<table>
 	  <tbody>

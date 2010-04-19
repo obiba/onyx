@@ -28,7 +28,6 @@ import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -58,13 +57,13 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // check enrollment id is unique in submitted participants list
     if(!checkUniqueEnrollmentId(participantItem)) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Duplicate " + AbstractParticipantReader.ENROLLMENT_ID_ATTRIBUTE_NAME + " " + participantId));
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Duplicate " + ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME + " " + participantId));
       return null;
     }
 
     // validation loop for essential attributes
     for(ParticipantAttribute attribute : participantMetadata.getEssentialAttributes()) {
-      Data dataToValidate = getDataToValidate(attribute, participantItem);
+      Data dataToValidate = participantItem.getEssentialAttributeValue(attribute.getName());
       if(!validateData(attribute, dataToValidate)) return null;
     }
 
@@ -129,26 +128,6 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     }
 
     return participant;
-  }
-
-  /**
-   * Gets the essential attributes and transform them to Data so the validation can be done
-   * @param attribute
-   * @param participant
-   * @return
-   */
-  private Data getDataToValidate(ParticipantAttribute attribute, Participant participant) {
-    Data data = null;
-
-    if(attribute.getName().equals(AbstractParticipantReader.ENROLLMENT_ID_ATTRIBUTE_NAME)) data = DataBuilder.buildText(participant.getEnrollmentId());
-    if(attribute.getName().equals(AbstractParticipantReader.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)) return DataBuilder.buildText(participant.getSiteNo());
-    if(attribute.getName().equals(AbstractParticipantReader.FIRST_NAME_ATTRIBUTE_NAME)) return DataBuilder.buildText(participant.getFirstName());
-    if(attribute.getName().equals(AbstractParticipantReader.LAST_NAME_ATTRIBUTE_NAME)) return DataBuilder.buildText(participant.getLastName());
-    if(attribute.getName().equals(AbstractParticipantReader.BIRTH_DATE_ATTRIBUTE_NAME)) return DataBuilder.buildDate(participant.getBirthDate());
-    if(attribute.getName().equals(AbstractParticipantReader.GENDER_ATTRIBUTE_NAME)) return DataBuilder.buildText(String.valueOf(participant.getGender()));
-    if(attribute.getName().equals(AbstractParticipantReader.APPOINTMENT_TIME_ATTRIBUTE_NAME)) return DataBuilder.buildDate(participant.getAppointment().getDate());
-
-    return data;
   }
 
   private boolean validateData(ParticipantAttribute attribute, Data data) {

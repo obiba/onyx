@@ -24,6 +24,7 @@ import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
+import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.io.support.ExcelReaderSupport;
@@ -203,11 +204,11 @@ public class ParticipantReader extends AbstractParticipantReader {
     Appointment appointment = new Appointment();
     Data data = null;
 
-    data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     appointment.setAppointmentCode(enrollmentId);
 
-    data = getEssentialAttributeValue(APPOINTMENT_TIME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     Date appointmentTime = (data != null) ? (Date) data.getValue() : null;
     appointment.setDate(appointmentTime);
 
@@ -219,30 +220,30 @@ public class ParticipantReader extends AbstractParticipantReader {
 
     Data data = null;
 
-    data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     participant.setEnrollmentId(enrollmentId);
 
-    data = getEssentialAttributeValue(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String assessmentCenterId = (String) ((data != null) ? data.getValue() : null);
     participant.setSiteNo(assessmentCenterId);
 
-    data = getEssentialAttributeValue(FIRST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String firstName = (String) ((data != null) ? data.getValue() : null);
     participant.setFirstName(firstName);
 
-    data = getEssentialAttributeValue(LAST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(LAST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String lastName = (String) ((data != null) ? data.getValue() : null);
     participant.setLastName(lastName);
 
-    if(attributeNameToColumnIndexMap.containsKey(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    if(attributeNameToColumnIndexMap.containsKey(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
+      data = getEssentialAttributeValue(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
       Date birthDate = (data != null) ? (Date) data.getValue() : null;
       participant.setBirthDate(birthDate);
     }
 
-    if(attributeNameToColumnIndexMap.containsKey(GENDER_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    if(attributeNameToColumnIndexMap.containsKey(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())) {
+      data = getEssentialAttributeValue(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
       String gender = (data != null) ? data.getValueAsString() : "";
       if(gender.equals("M")) {
         participant.setGender(Gender.MALE);
