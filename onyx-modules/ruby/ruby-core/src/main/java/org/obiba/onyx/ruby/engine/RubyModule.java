@@ -16,8 +16,10 @@ import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.VariableValueSourceFactory;
+import org.obiba.magma.spring.BeanValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBeanProvider;
+import org.obiba.magma.support.VariableEntityProvider;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -30,6 +32,7 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.ruby.magma.TubeValueSetBeanResolver;
 import org.obiba.onyx.ruby.magma.TubeVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
-public class RubyModule implements Module, VariableValueSourceFactory, ApplicationContextAware {
+public class RubyModule implements Module, ValueTableFactoryBeanProvider, ApplicationContextAware {
   //
   // Constants
   //
@@ -77,8 +80,12 @@ public class RubyModule implements Module, VariableValueSourceFactory, Applicati
 
   private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
-  @Autowired(required = true)
+  @Autowired
   private OnyxAttributeHelper attributeHelper;
+
+  private TubeValueSetBeanResolver beanResolver;
+
+  private VariableEntityProvider variableEntityProvider;
 
   //
   // Module Methods
@@ -305,16 +312,39 @@ public class RubyModule implements Module, VariableValueSourceFactory, Applicati
   }
 
   //
-  // VariableValueSourceFactory Methods
+  // ValueTableFactoryBeanProvider Methods
   //
-  public Set<VariableValueSource> createSources() {
-    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
+
+  @Override
+  public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
+    Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
+
     for(Stage stage : stages) {
+      BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
+      b.setValueTableName(stage.getName());
+      b.setValueSetBeanResolver(beanResolver);
+      b.setVariableEntityProvider(variableEntityProvider);
+
       TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stage.getName());
       TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
       factory.setAttributeHelper(attributeHelper);
-      sources.addAll(factory.createSources());
+      b.setVariableValueSourceFactory(factory);
+
+      tableFactoryBeans.add(b);
     }
-    return sources.build();
+
+    return tableFactoryBeans;
+  }
+
+  //
+  // Methods
+  //
+
+  public void setBeanResolver(TubeValueSetBeanResolver beanResolver) {
+    this.beanResolver = beanResolver;
+  }
+
+  public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
+    this.variableEntityProvider = variableEntityProvider;
   }
 }

@@ -8,6 +8,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <tx:annotation-driven transaction-manager="transactionManager" />
 
   <bean id="jadeModule" class="org.obiba.onyx.jade.engine.JadeModule">
+    <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
@@ -15,6 +16,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />
       </bean>
     </property>
+    <property name="beanResolver" ref="instrumentRunBeanResolver" />
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
+        <constructor-arg index="0" value="Participant" />
+        <constructor-arg index="1" value="participant.barcode" />
+        <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
+      </bean>
+    </property>
+    <property name="attributeHelper" ref="onyxAttributeHelper" />
   </bean>
 
   <bean id="participantReport" class="org.obiba.onyx.print.impl.PdfTemplateReport" scope="session">
@@ -123,8 +133,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="instrumentCaptureAndExportStrategy" class="org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureAndExportStrategy" />
   <bean id="workstationCaptureAndExportStrategy" class="org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureAndExportStrategy" />
 
-  <bean class="org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory" />
-
-  <bean class="org.obiba.onyx.jade.magma.InstrumentRunBeanResolver" />
+  <bean id="instrumentRunBeanResolver" class="org.obiba.onyx.jade.magma.InstrumentRunBeanResolver" />
 
 </beans>

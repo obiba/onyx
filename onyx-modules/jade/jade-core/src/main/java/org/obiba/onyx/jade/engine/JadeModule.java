@@ -10,9 +10,14 @@
 package org.obiba.onyx.jade.engine;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.spring.BeanValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBeanProvider;
+import org.obiba.magma.support.VariableEntityProvider;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -22,15 +27,22 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
+import org.obiba.onyx.jade.magma.InstrumentRunBeanResolver;
+import org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory;
+import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module, ApplicationContextAware {
+import com.google.common.collect.Sets;
+
+public class JadeModule implements Module, ValueTableFactoryBeanProvider, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
@@ -38,9 +50,17 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   private ActiveInterviewService activeInterviewService;
 
+  private InstrumentService instrumentService;
+
   private InstrumentRunService instrumentRunService;
 
   private List<Stage> stages;
+
+  private InstrumentRunBeanResolver beanResolver;
+
+  private VariableEntityProvider variableEntityProvider;
+
+  private OnyxAttributeHelper attributeHelper;
 
   public String getName() {
     return "jade";
@@ -133,6 +153,10 @@ public class JadeModule implements Module, ApplicationContextAware {
     this.activeInterviewService = activeInterviewService;
   }
 
+  public void setInstrumentService(InstrumentService instrumentService) {
+    this.instrumentService = instrumentService;
+  }
+
   public InstrumentRunService getInstrumentRunService() {
     return instrumentRunService;
   }
@@ -153,4 +177,42 @@ public class JadeModule implements Module, ApplicationContextAware {
     instrumentRunService.deleteAllInstrumentRuns(participant);
   }
 
+  //
+  // ValueTableFactoryBeanProvider Methods
+  //
+
+  public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
+    Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
+
+    for(InstrumentType instrumentType : instrumentService.getInstrumentTypes().values()) {
+      BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
+      b.setValueTableName(instrumentType.getName());
+      b.setValueSetBeanResolver(beanResolver);
+      b.setVariableEntityProvider(variableEntityProvider);
+
+      InstrumentRunVariableValueSourceFactory factory = new InstrumentRunVariableValueSourceFactory(instrumentType);
+      factory.setAttributeHelper(attributeHelper);
+      b.setVariableValueSourceFactory(factory);
+
+      tableFactoryBeans.add(b);
+    }
+
+    return tableFactoryBeans;
+  }
+
+  //
+  // Methods
+  //
+
+  public void setBeanResolver(InstrumentRunBeanResolver beanResolver) {
+    this.beanResolver = beanResolver;
+  }
+
+  public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
+    this.variableEntityProvider = variableEntityProvider;
+  }
+
+  public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
+    this.attributeHelper = attributeHelper;
+  }
 }

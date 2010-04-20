@@ -26,6 +26,7 @@ import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
+import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.util.StringUtil;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +114,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   }
 
   protected InstrumentRun resolveInstrumentRun(ValueSet valueSet, Variable variable) {
-    String instrumentTypeName = extractInstrumentTypeName(variable.getName());
+    String instrumentTypeName = variable.getAttributeStringValue(StageAttributeVisitor.STAGE_ATTRIBUTE);
     if(instrumentTypeName != null) {
       Participant participant = getParticipant(valueSet);
       if(participant != null) {
@@ -226,7 +227,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   }
 
   protected Object resolveContraindication(ValueSet valueSet, Variable variable) {
-    String instrumentTypeName = extractInstrumentTypeName(variable.getName());
+    String instrumentTypeName = variable.getAttributeStringValue(StageAttributeVisitor.STAGE_ATTRIBUTE);
     if(instrumentTypeName != null) {
       InstrumentType instrumentType = instrumentService.getInstrumentType(instrumentTypeName);
       if(instrumentType != null) {
@@ -239,22 +240,4 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     return null;
   }
 
-  private String extractInstrumentTypeName(String variableName) {
-    String[] elements = variableName.split("\\.");
-    if(elements.length != 0) {
-      return elements[0];
-    }
-    return null;
-  }
-
-  private String extractInstrumentParameterCode(String variableName, String instrumentTypeName) {
-    String[] elements = variableName.split("\\.");
-    for(int i = 0; i < elements.length - 1; i++) {
-      if(elements[i].equals(instrumentTypeName)) {
-        return elements[i + 1];
-      }
-    }
-
-    return null;
-  }
 }

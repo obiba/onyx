@@ -12,7 +12,6 @@ package org.obiba.onyx.jade.magma;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.obiba.magma.Category;
@@ -32,7 +31,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
@@ -40,7 +38,6 @@ import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -65,11 +62,17 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
   // Instance Variables
   //
 
-  @Autowired
-  private InstrumentService instrumentService;
+  private InstrumentType instrumentType;
 
-  @Autowired
   private OnyxAttributeHelper attributeHelper;
+
+  //
+  // Constructors
+  //
+
+  public InstrumentRunVariableValueSourceFactory(InstrumentType instrumentType) {
+    this.instrumentType = instrumentType;
+  }
 
   //
   // BeanVariableValueSourceFactory Methods
@@ -78,31 +81,26 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
   public Set<VariableValueSource> createSources() {
     Set<VariableValueSource> sources = new LinkedHashSet<VariableValueSource>();
 
-    for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
-      InstrumentType instrumentType = entry.getValue();
+    // Call superclass method to create the sources for InstrumentRun variables.
+    String instrumentRunPrefix = INSTRUMENT_RUN;
+    sources.addAll(createTimeAndContraindication(instrumentRunPrefix, instrumentType));
 
-      // Call superclass method to create the sources for InstrumentRun variables.
-      String instrumentRunPrefix = INSTRUMENT_RUN;
-      sources.addAll(createTimeAndContraindication(instrumentRunPrefix, instrumentType));
-
-      // For non-repeatable instrument types, add source for instrument barcode variable.
-      if(!instrumentType.isRepeatable()) {
-        sources.add(createBarcodeSource(instrumentRunPrefix, instrumentType));
-      } else {
-        sources.addAll(createMeasureSources(MEASURE, instrumentType));
-      }
-
-      // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
-      String ciVariablePrefix = INSTRUMENT_RUN + '.' + CONTRAINDICATION;
-      sources.add(createContraindicationCode(ciVariablePrefix, instrumentType));
-
-      // Add source for InstrumentRun.Contraindication.type variable.
-      sources.add(createContraindicationTypeSource(ciVariablePrefix, instrumentType));
-
-      // Add sources for instrument parameter variables.
-      sources.addAll(createInstrumentParameterSources(instrumentType));
-
+    // For non-repeatable instrument types, add source for instrument barcode variable.
+    if(!instrumentType.isRepeatable()) {
+      sources.add(createBarcodeSource(instrumentRunPrefix, instrumentType));
+    } else {
+      sources.addAll(createMeasureSources(MEASURE, instrumentType));
     }
+
+    // Call superclass method again to create the source the InstrumentRun.Contraindication.code variable.
+    String ciVariablePrefix = INSTRUMENT_RUN + '.' + CONTRAINDICATION;
+    sources.add(createContraindicationCode(ciVariablePrefix, instrumentType));
+
+    // Add source for InstrumentRun.Contraindication.type variable.
+    sources.add(createContraindicationTypeSource(ciVariablePrefix, instrumentType));
+
+    // Add sources for instrument parameter variables.
+    sources.addAll(createInstrumentParameterSources(instrumentType));
 
     return sources;
   }
@@ -110,10 +108,6 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
   //
   // Methods
   //
-
-  public void setInstrumentService(InstrumentService instrumentService) {
-    this.instrumentService = instrumentService;
-  }
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;

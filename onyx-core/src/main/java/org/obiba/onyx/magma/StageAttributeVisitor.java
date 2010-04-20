@@ -17,6 +17,12 @@ import org.obiba.magma.Variable.Builder;
  */
 public class StageAttributeVisitor implements Variable.BuilderVisitor {
   //
+  // Constants
+  //
+
+  public static final String STAGE_ATTRIBUTE = "stage";
+
+  //
   // Instance Variables
   //
 
@@ -35,7 +41,7 @@ public class StageAttributeVisitor implements Variable.BuilderVisitor {
   //
 
   public void visit(Builder builder) {
-    builder.addAttribute("stage", stageName);
+    builder.addAttribute(STAGE_ATTRIBUTE, stageName);
   }
 
 }

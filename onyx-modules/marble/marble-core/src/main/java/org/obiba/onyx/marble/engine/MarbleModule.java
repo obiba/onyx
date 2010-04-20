@@ -18,8 +18,10 @@ import java.util.StringTokenizer;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.VariableValueSourceFactory;
+import org.obiba.magma.spring.BeanValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBeanProvider;
+import org.obiba.magma.support.VariableEntityProvider;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Module;
@@ -31,6 +33,7 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.magma.ConsentBeanResolver;
 import org.obiba.onyx.marble.magma.ConsentVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +41,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 
-public class MarbleModule implements Module, VariableValueSourceFactory, ApplicationContextAware {
+public class MarbleModule implements Module, ValueTableFactoryBeanProvider, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleModule.class);
 
@@ -53,6 +56,14 @@ public class MarbleModule implements Module, VariableValueSourceFactory, Applica
   private List<Stage> stages;
 
   private Map<String, String> variableToFieldMap = new HashMap<String, String>();
+
+  private ConsentBeanResolver beanResolver;
+
+  private VariableEntityProvider variableEntityProvider;
+
+  //
+  // Module Methods
+  //
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
@@ -89,16 +100,63 @@ public class MarbleModule implements Module, VariableValueSourceFactory, Applica
     return stages;
   }
 
-  public void setStages(List<Stage> stages) {
-    this.stages = stages;
-  }
-
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
 
+  public Component getWidget(String id) {
+    return null;
+  }
+
+  public boolean isInteractive() {
+    return false;
+  }
+
+  public void delete(Participant participant) {
+    consentService.purgeConsent(participant.getInterview());
+  }
+
+  //
+  // ValueTableFactoryBeanProvider Methods
+  //
+
+  public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
+    Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
+
+    for(Stage stage : stages) {
+      BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
+      b.setValueTableName(stage.getName());
+      b.setValueSetBeanResolver(beanResolver);
+      b.setVariableEntityProvider(variableEntityProvider);
+
+      ConsentVariableValueSourceFactory factory = new ConsentVariableValueSourceFactory(stage.getName());
+      factory.setVariableToFieldMap(variableToFieldMap);
+      b.setVariableValueSourceFactory(factory);
+
+      tableFactoryBeans.add(b);
+    }
+
+    return tableFactoryBeans;
+  }
+
+  //
+  // Methods
+  //
+
+  public void setStages(List<Stage> stages) {
+    this.stages = stages;
+  }
+
   public void setConsentService(ConsentService consentService) {
     this.consentService = consentService;
+  }
+
+  public void setBeanResolver(ConsentBeanResolver beanResolver) {
+    this.beanResolver = beanResolver;
+  }
+
+  public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
+    this.variableEntityProvider = variableEntityProvider;
   }
 
   public String getConsentField(Consent consent, String fieldName) {
@@ -130,31 +188,5 @@ public class MarbleModule implements Module, VariableValueSourceFactory, Applica
         log.error("Could not identify PDF field name to variable path mapping: " + token);
       }
     }
-  }
-
-  public Component getWidget(String id) {
-    return null;
-  }
-
-  public boolean isInteractive() {
-    return false;
-  }
-
-  public void delete(Participant participant) {
-    consentService.purgeConsent(participant.getInterview());
-  }
-
-  //
-  // VariableValueSourceFactory Methods
-  //
-
-  public Set<VariableValueSource> createSources() {
-    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
-    for(Stage stage : stages) {
-      ConsentVariableValueSourceFactory factory = new ConsentVariableValueSourceFactory(stage.getName());
-      factory.setVariableToFieldMap(variableToFieldMap);
-      sources.addAll(factory.createSources());
-    }
-    return sources.build();
   }
 }

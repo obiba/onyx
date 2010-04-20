@@ -9,17 +9,17 @@
       <attribute name="label" valueType="text" locale="en">Postal Code Prefix</attribute>
       <attribute name="label" valueType="text" locale="fr">Préfixe du code postal</attribute>
       <attribute name="script" valueType="text">
-        $('Admin.Participant.Postal Code').replace(/^\s*([a-zA-Z]\d[a-zA-Z]).*$/, '$1')
+        $('Participants:Admin.Participant.Postal Code').replace(/^\s*([a-zA-Z]\d[a-zA-Z]).*$/, '$1')
       </attribute>
     </attributes>
   </variable>
-  
+
   <variable name="BP_CI" valueType="boolean" entityType="Participant">
     <attributes>
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.BLOOD_PRESSURE_MEASURE_SAFE').any('Y').not()
+      	$('CIPreliminaryQuestionnaire:BLOOD_PRESSURE_MEASURE_SAFE').any('Y').not()
       </attribute>
     </attributes>
   </variable>  
@@ -29,7 +29,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.ISOPROPYL_ALCOHOL_ALLERGY').any('N').not()      
+      	$('CIPreliminaryQuestionnaire:ISOPROPYL_ALCOHOL_ALLERGY').any('N').not()      
       </attribute>
     </attributes>
   </variable>   
@@ -39,7 +39,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.GS_PAIN_BOTH_HANDS').any('N').not()    
+      	$('CIPreliminaryQuestionnaire:GS_PAIN_BOTH_HANDS').any('N').not()    
       </attribute>
     </attributes>
   </variable> 
@@ -49,7 +49,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.SH_OBS_CI').any('NC').not()      
+      	$('CIPreliminaryQuestionnaire:SH_OBS_CI').any('NC').not()      
       </attribute>
     </attributes>
   </variable> 
@@ -59,7 +59,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.WH_OBS_CI').any('NC').not()
+      	$('CIPreliminaryQuestionnaire:WH_OBS_CI').any('NC').not()
       </attribute>
     </attributes>
   </variable> 
@@ -69,7 +69,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.SP_CI_EVER_HAD.SP_COLLAPSED_LUNG').any('N').not().and($('CIPreliminaryQuestionnaire.SP_CI_EVER_HAD.SP_DETACHED_RETINA').any('N').not())
+      	$('CIPreliminaryQuestionnaire:SP_CI_EVER_HAD.SP_COLLAPSED_LUNG').any('N').not().and($('CIPreliminaryQuestionnaire:SP_CI_EVER_HAD.SP_DETACHED_RETINA').any('N').not())
       </attribute>
     </attributes>
   </variable>
@@ -79,7 +79,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.BW_OBS_CI_BIOIMPEDANCE').any('NC').not()
+      	$('CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE').any('NC').not()
       </attribute>
     </attributes>
   </variable> 
@@ -89,7 +89,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.BW_OBS_CI_WEIGHT').any('YES_SPECIFY').or($('CIPreliminaryQuestionnaire.ABLE_TO_STAND').any('N'))
+      	$('CIPreliminaryQuestionnaire:BW_OBS_CI_WEIGHT').any('YES_SPECIFY').or($('CIPreliminaryQuestionnaire:ABLE_TO_STAND').any('N'))
       </attribute>
     </attributes>
   </variable> 
@@ -99,7 +99,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.AS_STENOSIS_CI').any('N').not()
+      	$('CIPreliminaryQuestionnaire:AS_STENOSIS_CI').any('N').not()
       </attribute>
     </attributes>
   </variable> 
@@ -109,7 +109,7 @@
       <attribute name="label" valueType="text" locale="en"></attribute>
       <attribute name="label" valueType="text" locale="fr"></attribute>
       <attribute name="script" valueType="text">
-      	$('CIPreliminaryQuestionnaire.BLOOD_COLLECTION_SAFE').any('Y').not()
+      	$('CIPreliminaryQuestionnaire:BLOOD_COLLECTION_SAFE').any('Y').not()
       </attribute>
     </attributes>
   </variable>

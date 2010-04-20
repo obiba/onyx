@@ -14,6 +14,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     </property>
     <property name="consentService" ref="consentService" />
     <property name="variableToFieldMap" value="${org.obiba.onyx.marble.consent.variableToField}" />
+    <property name="beanResolver" ref="consentBeanResolver" />
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
+        <constructor-arg index="0" value="Participant" />
+        <constructor-arg index="1" value="participant.barcode" />
+        <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
+      </bean>
+    </property>
   </bean>
 
   <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState"
@@ -61,8 +69,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="resourceExtension" value=".pdf" />
   </bean>
 
-  <bean id="consentBeanResolver" class="org.obiba.onyx.marble.magma.ConsentBeanResolver">
-  </bean>
+  <bean id="consentBeanResolver" class="org.obiba.onyx.marble.magma.ConsentBeanResolver" />
 
   <bean id="consentForm" class="org.obiba.onyx.print.impl.PdfVariableReport" scope="session">
     <property name="name" value="${org.obiba.onyx.marble.consent.basename}" />

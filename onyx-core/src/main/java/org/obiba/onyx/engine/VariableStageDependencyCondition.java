@@ -78,13 +78,19 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
     }
 
+    // Get the stage's ValueTable.
+    ValueTable stageTable = null;
+    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+      stageTable = datasource.getValueTable(stageName);
+    }
+
     // Get the currently interviewed participant's ValueSet.
     VariableEntity entity = new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, activeInterviewService.getParticipant().getBarcode());
     ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
 
     // Get the condition value.
     String magmaVariableName = variablePath.replaceFirst("Onyx.", "");
-    VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
+    VariableValueSource variableValueSource = stageTable.getVariableValueSource(magmaVariableName);
     Value conditionValue = variableValueSource.getValue(valueSet);
     Boolean rval = null;
 

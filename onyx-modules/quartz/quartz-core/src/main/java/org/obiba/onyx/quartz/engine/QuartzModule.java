@@ -15,7 +15,10 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.VariableValueSourceFactory;
+import org.obiba.magma.spring.BeanValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBean;
+import org.obiba.magma.spring.ValueTableFactoryBeanProvider;
+import org.obiba.magma.support.VariableEntityProvider;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -28,6 +31,7 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
+import org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver;
 import org.obiba.onyx.quartz.magma.QuestionnaireStageVariableSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +40,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
-public class QuartzModule implements Module, VariableValueSourceFactory, ApplicationContextAware {
+public class QuartzModule implements Module, ValueTableFactoryBeanProvider, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzModule.class);
 
@@ -50,6 +55,10 @@ public class QuartzModule implements Module, VariableValueSourceFactory, Applica
   private List<Stage> stages;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
+
+  private QuestionnaireBeanResolver beanResolver;
+
+  private VariableEntityProvider variableEntityProvider;
 
   public String getName() {
     return "quartz";
@@ -178,5 +187,41 @@ public class QuartzModule implements Module, VariableValueSourceFactory, Applica
       sources.addAll(factory.createSources());
     }
     return sources.build();
+  }
+
+  //
+  // ValueTableFactoryBeanProvider Methods
+  //
+
+  @Override
+  public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
+    Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
+
+    for(Stage stage : stages) {
+      BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
+      b.setValueTableName(stage.getName());
+      b.setValueSetBeanResolver(beanResolver);
+      b.setVariableEntityProvider(variableEntityProvider);
+
+      QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
+      QuestionnaireStageVariableSourceFactory factory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
+      b.setVariableValueSourceFactory(factory);
+
+      tableFactoryBeans.add(b);
+    }
+
+    return tableFactoryBeans;
+  }
+
+  //
+  // Methods
+  //
+
+  public void setBeanResolver(QuestionnaireBeanResolver beanResolver) {
+    this.beanResolver = beanResolver;
+  }
+
+  public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
+    this.variableEntityProvider = variableEntityProvider;
   }
 }

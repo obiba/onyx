@@ -16,6 +16,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </bean>
     </property>
     <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
+    <property name="beanResolver" ref="questionnaireBeanResolver" />
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
+        <constructor-arg index="0" value="Participant" />
+        <constructor-arg index="1" value="participant.barcode" />
+        <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
+      </bean>
+    </property>
   </bean>
 
   <bean id="propertyKeyNamingStrategy"
@@ -80,6 +88,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="questionPanelFactoryRegistry" ref="questionPanelFactoryRegistry" />
   </bean>
 
-  <bean class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver" />
+  <bean id="questionnaireBeanResolver" class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver" />
 
 </beans>
