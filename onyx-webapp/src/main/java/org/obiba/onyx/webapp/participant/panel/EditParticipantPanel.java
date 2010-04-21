@@ -51,6 +51,7 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Group;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
+import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
@@ -484,18 +485,26 @@ public class EditParticipantPanel extends Panel {
       }
 
       IModel attributeValueModel;
-      if(participant.getParticipantAttributeValue(attribute.getName()) == null) {
+      ParticipantAttributeValue configuredAttributeValue = participant.getParticipantAttributeValue(attribute.getName());
+
+      Data essentialAttributeValue = participant.getEssentialAttributeValue(attribute.getName());
+      if(essentialAttributeValue != null) {
+        // participant.setEssentialAttributeValue(attribute.getName(), essentialAttributeValue);
+        // participantService.updateParticipant(participant);
+        attributeValueModel = new Model(essentialAttributeValue);
+      } else if(configuredAttributeValue == null) {
         participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
 
         // ONYX-186
         if(participant.getId() != null) {
           participantService.updateParticipant(participant);
-          attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
+          attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, configuredAttributeValue), "data");
         } else {
-          attributeValueModel = new Model(participant.getParticipantAttributeValue(attribute.getName()));
+          attributeValueModel = new PropertyModel(configuredAttributeValue, "data");
         }
+
       } else {
-        attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
+        attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, configuredAttributeValue), "data");
       }
 
       // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
@@ -515,7 +524,7 @@ public class EditParticipantPanel extends Panel {
             allowedValues.add(new Data(attribute.getType(), value));
           }
 
-          field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType(), allowedValues, new IChoiceRenderer() {
+          field = new DataField("field", attributeValueModel, attribute.getType(), allowedValues, new IChoiceRenderer() {
 
             private static final long serialVersionUID = 1L;
 
@@ -533,7 +542,7 @@ public class EditParticipantPanel extends Panel {
 
           if(!attribute.isMandatoryAtReception()) ((DropDownChoice) field.getField()).setNullValid(true);
         } else {
-          field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
+          field = new DataField("field", attributeValueModel, attribute.getType());
 
           // Add any validator defined by the current ParticipantAttribute.
           List<IDataValidator> validators = attribute.getValidators();
