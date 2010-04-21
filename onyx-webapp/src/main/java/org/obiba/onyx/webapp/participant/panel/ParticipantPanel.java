@@ -16,7 +16,6 @@ import java.util.List;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
@@ -30,7 +29,6 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
 public class ParticipantPanel extends Panel {
@@ -55,8 +53,8 @@ public class ParticipantPanel extends Panel {
     Participant participant = (Participant) participantModel.getObject();
 
     if(!shortList) {
-      add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes()));
-      add(new AttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList)));
+      add(new ParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, this));
+      add(new ParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList), participantMetadata, this));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));
       add(new EmptyPanel("essentialAttributeGroup"));
@@ -88,85 +86,40 @@ public class ParticipantPanel extends Panel {
     return userSessionService.getDateFormat();
   }
 
-  private class AttributeGroupsFragment extends Fragment {
+  private class ParticipantPanelAttributeGroupsFragment extends ParticipantAttributeGroupsFragment {
+
+    protected ParticipantPanelAttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
+      super(id, participantModel, attributes, participantMetadata, parentPanel);
+    }
+
+    @Override
+    protected ParticipantAttributeGroupFragment newAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+      return new ParticipantPanelAttributeGroupFragment(id, participantModel, group, attributes);
+    }
+
+  }
+
+  private class ParticipantPanelAttributeGroupFragment extends ParticipantAttributeGroupFragment {
 
     private static final long serialVersionUID = 1L;
 
-    public AttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes) {
-      super(id, "attributeGroupsFragment", ParticipantPanel.this);
+    private List<ParticipantAttribute> attributesToDisplay;
 
-      RepeatingView repeater = new RepeatingView("groupRepeater");
-      add(repeater);
+    public ParticipantPanelAttributeGroupFragment(String id, IModel participantModel, Group group, List<ParticipantAttribute> attributes) {
+      super(id, participantModel, group, ParticipantPanel.this, attributes);
+    }
 
-      List<Group> groups = getGroups(attributes);
-
-      for(int i = 0; i < groups.size(); i++) {
-        Group group = groups.get(i);
-
-        WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
-        repeater.add(item);
-
-        String groupNameKey = group.getName();
-        String groupName = !group.isDefaultGroup() ? (new SpringStringResourceModel(groupNameKey, groupNameKey)).getString() : null;
-
-        item.add(new Label("groupName", groupName).setVisible(groupName != null));
-        item.add(new AttributeGroupFragment("group", participantModel, group, attributes));
+    @Override
+    protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant, List<ParticipantAttribute> attributesToDisplay) {
+      if(attributesToDisplay.contains(attribute)) {
+        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+        repeat.add(item);
+        item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
+        String value = getAttributeValueAsString(participant, attribute.getName());
+        item.add(new Label("field", new Model(value)));
       }
     }
 
-    private List<Group> getGroups(List<ParticipantAttribute> attributes) {
-      List<Group> groups = new ArrayList<Group>();
-
-      if(attributes.size() != 0) {
-        Group currentGroup = null;
-
-        for(ParticipantAttribute attribute : attributes) {
-          Group group = attribute.getGroup();
-
-          if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) || (group.getName() != null && currentGroup.getName() == null) || (group.getName() != null && currentGroup.getName() != null && !group.getName().equals(currentGroup.getName()))) {
-            groups.add(group);
-            currentGroup = group;
-          }
-        }
-      }
-
-      return groups;
-    }
-  }
-
-  private class AttributeGroupFragment extends Fragment {
-
-    private static final long serialVersionUID = 1L;
-
-    public AttributeGroupFragment(String id, IModel participantModel, Group group, List<ParticipantAttribute> attributesToDisplay) {
-      super(id, "attributeGroupFragment", ParticipantPanel.this);
-
-      RepeatingView repeat = new RepeatingView("attributeRepeater");
-      add(repeat);
-
-      Participant participant = (Participant) participantModel.getObject();
-
-      for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
-        if(attributesToDisplay.contains(attribute)) {
-          WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-          repeat.add(item);
-          item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
-          String value = getAttributeValueAsString(participant, attribute.getName());
-          item.add(new Label("field", new Model(value)));
-        }
-      }
-    }
-  }
-
-  private String getAttributeValueAsString(Participant participant, String attributeName) {
-    Data attributeValue = participant.getEssentialAttributeValue(attributeName);
-    if(attributeValue == null) {
-      attributeValue = participant.getConfiguredAttributeValue(attributeName);
-    }
-    if(attributeValue != null) {
-      return attributeValue.getValueAsString();
-    }
-    return null;
   }
 
 }

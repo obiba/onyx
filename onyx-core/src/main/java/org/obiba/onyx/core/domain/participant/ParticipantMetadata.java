@@ -308,4 +308,23 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   public void setParticipantRegistryEnabled(Boolean participantRegistryEnabled) {
     this.participantRegistryEnabled = participantRegistryEnabled;
   }
+
+  public List<Group> getGroups(List<ParticipantAttribute> attributes) {
+    List<Group> groups = new ArrayList<Group>();
+
+    if(attributes.size() != 0) {
+      Group currentGroup = null;
+
+      for(ParticipantAttribute attribute : attributes) {
+        Group group = attribute.getGroup();
+
+        if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) || (group.getName() != null && currentGroup.getName() == null) || (group.getName() != null && currentGroup.getName() != null && !group.getName().equals(currentGroup.getName()))) {
+          groups.add(group);
+          currentGroup = group;
+        }
+      }
+    }
+
+    return groups;
+  }
 }

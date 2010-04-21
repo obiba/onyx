@@ -292,7 +292,9 @@ public class EditParticipantPanel extends Panel {
     birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
     add(new DateFragment(BIRTH_DATE, new StringResourceModel("BirthDate*", null, new Object[] { userSessionService.getDatePattern() }), birthDate));
 
-    add(new AttributeGroupsFragment("configuredAttributeGroups", getDefaultModel()));
+    // add(new EditParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(),
+    // getEssentialAttributesToDisplay(participant), participantMetadata, EditParticipantPanel.this));
+    add(new EditParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, EditParticipantPanel.this));
 
     add(assignCodePanel = new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
 
@@ -445,157 +447,134 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  private class AttributeGroupsFragment extends Fragment {
+  public List<ParticipantAttribute> getEssentialAttributesToDisplay(Participant participant) {
+    List<ParticipantAttribute> attributesToDisplay = new ArrayList<ParticipantAttribute>();
 
-    private static final long serialVersionUID = 1L;
+    attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME));
+    attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME));
 
-    public AttributeGroupsFragment(String id, IModel participantModel) {
-      super(id, "attributeGroupsFragment", EditParticipantPanel.this);
+    attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.GENDER_ATTRIBUTE_NAME));
+    attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME));
 
-      RepeatingView repeater = new RepeatingView("groupRepeater");
-      add(repeater);
-
-      List<Group> groups = getGroups();
-
-      for(int i = 0; i < groups.size(); i++) {
-        Group group = groups.get(i);
-
-        WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
-        repeater.add(item);
-
-        String groupNameKey = group.getName();
-        String groupName = !group.isDefaultGroup() ? (new SpringStringResourceModel(groupNameKey, groupNameKey)).getString() : null;
-
-        item.add(new Label("groupName", groupName).setVisible(groupName != null));
-        item.add(new AttributeGroupFragment("group", participantModel, group));
-      }
-    }
-
-    private List<Group> getGroups() {
-      List<Group> groups = new ArrayList<Group>();
-
-      if(participantMetadata.getConfiguredAttributes().size() != 0) {
-        Group currentGroup = null;
-
-        for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-          Group group = attribute.getGroup();
-
-          if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) || (group.getName() != null && currentGroup.getName() == null) || (group.getName() != null && currentGroup.getName() != null && !group.getName().equals(currentGroup.getName()))) {
-            groups.add(group);
-            currentGroup = group;
-          }
-        }
-      }
-
-      return groups;
-    }
+    return attributesToDisplay;
   }
 
-  private class AttributeGroupFragment extends Fragment {
+  private class EditParticipantPanelAttributeGroupsFragment extends ParticipantAttributeGroupsFragment {
+
+    protected EditParticipantPanelAttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
+      super(id, participantModel, attributes, participantMetadata, parentPanel);
+    }
+
+    @Override
+    protected ParticipantAttributeGroupFragment newAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+      return new EditParticipantPanelAttributeGroupFragment(id, participantModel, group, parentPanel, attributes);
+    }
+
+  }
+
+  private class EditParticipantPanelAttributeGroupFragment extends ParticipantAttributeGroupFragment {
 
     private static final long serialVersionUID = 1L;
 
-    public AttributeGroupFragment(String id, IModel participantModel, Group group) {
-      super(id, "attributeGroupFragment", EditParticipantPanel.this);
+    public EditParticipantPanelAttributeGroupFragment(String id, IModel participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+      super(id, participantModel, group, parentPanel, attributes);
+    }
 
-      RepeatingView repeat = new RepeatingView("attributeRepeater");
-      add(repeat);
+    @Override
+    protected void processParticipantAttribute(final ParticipantAttribute attribute, RepeatingView repeat, final Participant participant, List<ParticipantAttribute> attributes) {
 
-      Participant participant = (Participant) participantModel.getObject();
+      WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+      repeat.add(item);
 
-      for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
-        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-        repeat.add(item);
+      Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name")));
+      item.add(label);
 
-        Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name")));
-        item.add(label);
-
-        if(attribute.isMandatoryAtReception()) {
-          item.add(new Label("mandatory", " *"));
-        } else {
-          item.add(new Label("mandatory", ""));
-        }
-
-        IModel attributeValueModel;
-        if(participant.getParticipantAttributeValue(attribute.getName()) == null) {
-          participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
-
-          // ONYX-186
-          if(participant.getId() != null) {
-            participantService.updateParticipant(participant);
-            attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
-          } else {
-            attributeValueModel = new Model(participant.getParticipantAttributeValue(attribute.getName()));
-          }
-        } else {
-          attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
-        }
-
-        // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
-        // OR the panel's mode is NOT EDIT and the attribute allows edition AT reception.
-        boolean editable = false;
-        if(mode == PanelMode.EDIT) {
-          editable = attribute.isEditableAfterReception();
-        } else if(mode == PanelMode.RECEPTION || mode == PanelMode.ENROLLMENT) {
-          editable = attribute.isEditableAtReception();
-        }
-
-        if(editable) {
-          final DataField field;
-          if(attribute.getAllowedValues() != null && attribute.getAllowedValues().size() > 0) {
-            List<Data> allowedValues = new ArrayList<Data>();
-            for(String value : attribute.getAllowedValues()) {
-              allowedValues.add(new Data(attribute.getType(), value));
-            }
-
-            field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType(), allowedValues, new IChoiceRenderer() {
-
-              private static final long serialVersionUID = 1L;
-
-              public Object getDisplayValue(Object object) {
-                Data data = (Data) object;
-                return (new SpringStringResourceModel(data.getValueAsString())).getString();
-              }
-
-              public String getIdValue(Object object, int index) {
-                Data data = (Data) object;
-                return data.getValueAsString();
-              }
-
-            }, null);
-
-            if(!attribute.isMandatoryAtReception()) ((DropDownChoice) field.getField()).setNullValid(true);
-          } else {
-            field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
-
-            // Add any validator defined by the current ParticipantAttribute.
-            List<IDataValidator> validators = attribute.getValidators();
-            for(IValidator validator : validators) {
-              field.add(validator);
-            }
-
-            if(field.getField() instanceof TextField) {
-              // ONYX-203: Although participant metadata do not currently indicate the maximum length
-              // of configured text attributes, for now impose a maximum (250 characters should be safe)
-              // to avoid persistence errors when the values are longer than the data source permits.
-              if(validators.size() > 0) {
-                field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
-              }
-
-              field.getField().add(new AttributeModifier("size", true, new Model(TEXTFIELD_SIZE)));
-            }
-          }
-
-          if(attribute.isMandatoryAtReception()) field.setRequired(true);
-          field.setLabel(new SpringStringResourceModel(new PropertyModel(attribute, "name")));
-          field.getField().add(new AttributeAppender("class", true, new Model("nofocus"), " "));
-
-          item.add(field);
-        } else {
-          String value = (participant.getConfiguredAttributeValue(attribute.getName()) != null) ? participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString() : null;
-          item.add(new Label("field", new Model(value)));
-        }
+      if(attribute.isMandatoryAtReception()) {
+        item.add(new Label("mandatory", " *"));
+      } else {
+        item.add(new Label("mandatory", ""));
       }
+
+      IModel attributeValueModel;
+      if(participant.getParticipantAttributeValue(attribute.getName()) == null) {
+        participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
+
+        // ONYX-186
+        if(participant.getId() != null) {
+          participantService.updateParticipant(participant);
+          attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
+        } else {
+          attributeValueModel = new Model(participant.getParticipantAttributeValue(attribute.getName()));
+        }
+      } else {
+        attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
+      }
+
+      // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
+      // OR the panel's mode is NOT EDIT and the attribute allows edition AT reception.
+      boolean editable = false;
+      if(mode == PanelMode.EDIT) {
+        editable = attribute.isEditableAfterReception();
+      } else if(mode == PanelMode.RECEPTION || mode == PanelMode.ENROLLMENT) {
+        editable = attribute.isEditableAtReception();
+      }
+
+      if(editable) {
+        final DataField field;
+        if(attribute.getAllowedValues() != null && attribute.getAllowedValues().size() > 0) {
+          List<Data> allowedValues = new ArrayList<Data>();
+          for(String value : attribute.getAllowedValues()) {
+            allowedValues.add(new Data(attribute.getType(), value));
+          }
+
+          field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType(), allowedValues, new IChoiceRenderer() {
+
+            private static final long serialVersionUID = 1L;
+
+            public Object getDisplayValue(Object object) {
+              Data data = (Data) object;
+              return (new SpringStringResourceModel(data.getValueAsString())).getString();
+            }
+
+            public String getIdValue(Object object, int index) {
+              Data data = (Data) object;
+              return data.getValueAsString();
+            }
+
+          }, null);
+
+          if(!attribute.isMandatoryAtReception()) ((DropDownChoice) field.getField()).setNullValid(true);
+        } else {
+          field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
+
+          // Add any validator defined by the current ParticipantAttribute.
+          List<IDataValidator> validators = attribute.getValidators();
+          for(IValidator validator : validators) {
+            field.add(validator);
+          }
+
+          if(field.getField() instanceof TextField) {
+            // ONYX-203: Although participant metadata do not currently indicate the maximum length
+            // of configured text attributes, for now impose a maximum (250 characters should be safe)
+            // to avoid persistence errors when the values are longer than the data source permits.
+            if(validators.size() > 0) {
+              field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
+            }
+
+            field.getField().add(new AttributeModifier("size", true, new Model(TEXTFIELD_SIZE)));
+          }
+        }
+
+        if(attribute.isMandatoryAtReception()) field.setRequired(true);
+        field.setLabel(new SpringStringResourceModel(new PropertyModel(attribute, "name")));
+        field.getField().add(new AttributeAppender("class", true, new Model("nofocus"), " "));
+
+        item.add(field);
+      } else {
+        String value = getAttributeValueAsString(participant, attribute.getName());
+        item.add(new Label("field", new Model(value)));
+      }
+
     }
   }
 
