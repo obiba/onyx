@@ -119,6 +119,18 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
+   * Explicitly set the {@link Category} variable name for the current {@link Question}.
+   */
+  public CategoryBuilder setVariableName(String variableName) {
+    if(questionCategory == null) {
+      throw new IllegalArgumentException("The category variable name '" + variableName + "' cannot be set as it is not possible to determine which question it will apply to.");
+    }
+    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
+    element.addVariableName(questionCategory.getQuestion().getName(), variableName);
+    return this;
+  }
+
+  /**
    * Add a set of {@link Category} to the current {@link Question}.
    * @param names
    * @return
