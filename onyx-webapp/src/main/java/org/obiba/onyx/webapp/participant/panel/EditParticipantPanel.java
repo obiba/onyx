@@ -12,7 +12,6 @@ package org.obiba.onyx.webapp.participant.panel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +43,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -269,8 +267,8 @@ public class EditParticipantPanel extends Panel {
 
     if(mode == PanelMode.EDIT) {
       add(new RowFragment(BARCODE, getDefaultModel(), "ParticipantCode", BARCODE));
-      add(new RowFragment(FIRST_NAME, getDefaultModel(), "FirstName", FIRST_NAME));
-      add(new RowFragment(LAST_NAME, getDefaultModel(), "LastName", LAST_NAME));
+      add(new EmptyPanel(FIRST_NAME));
+      add(new EmptyPanel(LAST_NAME));
     } else {
       add(new EmptyPanel(BARCODE));
 
@@ -283,17 +281,7 @@ public class EditParticipantPanel extends Panel {
       add(new TextFieldFragment(LAST_NAME, getDefaultModel(), "LastName*", lastName));
     }
 
-    add(new DropDownFragment(GENDER, getDefaultModel(), "Gender*", createGenderDropDown()));
-
-    // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
-    FormComponent birthDate = createBirthDateField();
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.YEAR, -130);
-    birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
-    add(new DateFragment(BIRTH_DATE, new StringResourceModel("BirthDate*", null, new Object[] { userSessionService.getDatePattern() }), birthDate));
-
-    // add(new EditParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(),
-    // getEssentialAttributesToDisplay(participant), participantMetadata, EditParticipantPanel.this));
+    add(new EditParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant), participantMetadata, EditParticipantPanel.this));
     add(new EditParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, EditParticipantPanel.this));
 
     add(assignCodePanel = new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
@@ -481,7 +469,7 @@ public class EditParticipantPanel extends Panel {
     }
 
     @Override
-    protected void processParticipantAttribute(final ParticipantAttribute attribute, RepeatingView repeat, final Participant participant, List<ParticipantAttribute> attributes) {
+    protected void processParticipantAttribute(final ParticipantAttribute attribute, RepeatingView repeat, final Participant participant) {
 
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);

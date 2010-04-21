@@ -110,14 +110,12 @@ public class ParticipantPanel extends Panel {
     }
 
     @Override
-    protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant, List<ParticipantAttribute> attributesToDisplay) {
-      if(attributesToDisplay.contains(attribute)) {
-        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-        repeat.add(item);
-        item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
-        String value = getAttributeValueAsString(participant, attribute.getName());
-        item.add(new Label("field", new Model(value)));
-      }
+    protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
+      WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+      repeat.add(item);
+      item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
+      String value = getAttributeValueAsString(participant, attribute.getName());
+      item.add(new Label("field", new Model(value)));
     }
 
   }

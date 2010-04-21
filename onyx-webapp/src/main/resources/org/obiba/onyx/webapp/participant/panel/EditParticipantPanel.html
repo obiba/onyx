@@ -8,12 +8,10 @@
 		    <span wicket:id="barcode"/>
 		    <span wicket:id="firstName" />
 		    <span wicket:id="lastName" />
-		    <span wicket:id="gender" />
-		    <span wicket:id="birthDate" />
 		  </tbody>
 		</table>
 		
-		<!--<span wicket:id="essentialAttributeGroup" />-->		
+		<span wicket:id="essentialAttributeGroup" />
 		<span wicket:id="configuredAttributeGroups" />
       </div>
     
@@ -56,8 +54,9 @@
 
 <wicket:fragment wicket:id="attributeGroupsFragment">
   <div wicket:id="groupRepeater">
-  <h2 class="h2-short"><span wicket:id="groupName" /></h2>
-    
+    <wicket:enclosure child="groupName">
+  		<h2 class="h2-short"><span wicket:id="groupName" /></h2>
+    </wicket:enclosure>
 	<table>
 	  <tbody>
 	    <span wicket:id="group" />

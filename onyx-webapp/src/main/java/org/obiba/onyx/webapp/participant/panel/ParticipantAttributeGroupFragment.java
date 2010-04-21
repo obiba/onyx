@@ -15,7 +15,7 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
 
   private static final long serialVersionUID = 1L;
 
-  public ParticipantAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+  public ParticipantAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributesToDisplay) {
     super(id, "attributeGroupFragment", parentPanel);
 
     RepeatingView repeat = new RepeatingView("attributeRepeater");
@@ -24,7 +24,9 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
     Participant participant = (Participant) participantModel.getObject();
 
     for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
-      processParticipantAttribute(attribute, repeat, participant, attributes);
+      if(attributesToDisplay.contains(attribute)) {
+        processParticipantAttribute(attribute, repeat, participant);
+      }
     }
   }
 
@@ -50,6 +52,6 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
     return null;
   }
 
-  abstract protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant, List<ParticipantAttribute> attributes);
+  abstract protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant);
 
 }
