@@ -97,7 +97,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   public Set<VariableValueSource> createSources() {
     if(builder == null) {
       builder = new ImmutableSet.Builder<VariableValueSource>();
-      variableNameResolver = new QuestionnaireUniqueVariableNameResolver(questionnaire);
+      variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
       buildQuestionnaireRun();
       buildQuestionnaireMetric();
       buildQuestionnaireVariables();

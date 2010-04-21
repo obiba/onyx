@@ -17,17 +17,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableName
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.springframework.util.Assert;
 
 public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVariableNameResolver {
 
-  private final Questionnaire questionnaire;
-
   private final Map<String, IQuestionnaireElement> variableNames;
 
-  public QuestionnaireUniqueVariableNameResolver(Questionnaire questionnaire) {
-    this.questionnaire = questionnaire;
+  public QuestionnaireUniqueVariableNameResolver() {
     this.variableNames = new HashMap<String, IQuestionnaireElement>();
   }
 

@@ -40,7 +40,7 @@ public class QuestionnaireUniqueVariableNameResolverTest {
   @Before
   public void setUp() {
     builder = QuestionnaireBuilder.createQuestionnaire("UniqueVariableTestQuestionnaire", "6.0");
-    questionnaireUniqueVariableNameResolver = new QuestionnaireUniqueVariableNameResolver(builder.getQuestionnaire());
+    questionnaireUniqueVariableNameResolver = new QuestionnaireUniqueVariableNameResolver();
   }
 
   @After
