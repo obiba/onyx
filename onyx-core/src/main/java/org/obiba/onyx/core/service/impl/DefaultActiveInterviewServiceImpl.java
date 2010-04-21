@@ -49,6 +49,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private ModuleRegistry moduleRegistry;
 
+  @SuppressWarnings("unused")
+  // Bean provides clean up by releasing the interview destroyed.
+  private ActiveInterviewReleaseBean activeInterviewReleaseBean;
+
   public void setInterviewManager(InterviewManager interviewManager) {
     this.interviewManager = interviewManager;
   }
@@ -59,6 +63,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
     this.moduleRegistry = moduleRegistry;
+  }
+
+  public void setActiveInterviewReleaseBean(ActiveInterviewReleaseBean activeInterviewReleaseBean) {
+    this.activeInterviewReleaseBean = activeInterviewReleaseBean;
   }
 
   public Participant getParticipant() {
@@ -166,10 +174,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   public void updateAction(Action action) {
     getPersistenceManager().save(action);
-  }
-
-  public void shutdown() {
-    interviewManager.releaseInterview(userSessionService.getSessionId());
   }
 
   public void setStatus(InterviewStatus status) {

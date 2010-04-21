@@ -61,12 +61,19 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
-    scope="session" destroy-method="shutdown">
+    scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="interviewManager" ref="interviewManager" />
     <property name="userSessionService" ref="userSessionService" />
     <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="activeInterviewReleaseBean" ref="activeInterviewReleaseBean" />
     <aop:scoped-proxy proxy-target-class="false" />
+  </bean>
+  
+  <bean id="activeInterviewReleaseBean" class="org.obiba.onyx.core.service.impl.ActiveInterviewReleaseBean"
+    scope="session" destroy-method="shutdown">
+    <property name="interviewManager" ref="interviewManager" />
+    <constructor-arg index="0" ref="userSessionService"/>
   </bean>
 
   <bean id="moduleRegistrationListener" class="org.obiba.onyx.engine.ModuleRegistrationListener">
