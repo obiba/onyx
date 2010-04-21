@@ -10,8 +10,6 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
@@ -31,7 +29,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.CategoryFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
@@ -388,19 +385,14 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
-   * Explicitly set the {@link OpenAnswerDefinition} variable name.
+   * Explicitly set the {@link OpenAnswerDefinition} variable name for the current {@link Question}.
    */
   public OpenAnswerDefinitionBuilder setVariableName(String variableName) {
-    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
-    CategoryFinder categoryFinder = new CategoryFinder();
-    for(Entry<Category, List<Question>> entry : categoryFinder.getQuestionCategories().entrySet()) {
-      if(entry.getKey().getOpenAnswerDefinition().equals(this.getElement())) {
-        for(Question q : entry.getValue()) {
-          element.addVariableName(q.getName(), variableName);
-        }
-      }
+    if(categoryBuilder == null) {
+      throw new IllegalArgumentException("The open answer variable name '" + variableName + "' cannot be set as it is not possible to determine which question it will apply to.");
     }
-    if(categoryBuilder != null) element.addVariableName(categoryBuilder.getQuestionName(), variableName);
+    if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
+    element.addVariableName(categoryBuilder.getQuestionName(), variableName);
     return this;
   }
 
