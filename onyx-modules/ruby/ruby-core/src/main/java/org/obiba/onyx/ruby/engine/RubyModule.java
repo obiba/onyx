@@ -29,7 +29,10 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.magma.CompositeVariableValueSourceFactory;
+import org.obiba.onyx.magma.CustomVariablesRegistry;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.magma.TubeValueSetBeanResolver;
@@ -86,6 +89,8 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
   private TubeValueSetBeanResolver beanResolver;
 
   private VariableEntityProvider variableEntityProvider;
+
+  private CustomVariablesRegistry customVariablesRegistry;
 
   //
   // Module Methods
@@ -326,9 +331,15 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
       b.setVariableEntityProvider(variableEntityProvider);
 
       TubeRegistrationConfiguration tubeRegistrationConfiguration = tubeRegistrationConfigurationMap.get(stage.getName());
-      TubeVariableValueSourceFactory factory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
-      factory.setAttributeHelper(attributeHelper);
-      b.setVariableValueSourceFactory(factory);
+      TubeVariableValueSourceFactory tubeVariableFactory = new TubeVariableValueSourceFactory(stage.getName(), tubeRegistrationConfiguration);
+      tubeVariableFactory.setAttributeHelper(attributeHelper);
+
+      PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
+      customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
+
+      CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
+      compositeFactory.addFactory(tubeVariableFactory).addFactory(customVariableFactory);
+      b.setVariableValueSourceFactory(compositeFactory);
 
       tableFactoryBeans.add(b);
     }
@@ -346,5 +357,9 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
 
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
+  }
+
+  public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
+    this.customVariablesRegistry = customVariablesRegistry;
   }
 }

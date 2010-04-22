@@ -30,6 +30,9 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.magma.CompositeVariableValueSourceFactory;
+import org.obiba.onyx.magma.CustomVariablesRegistry;
+import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
@@ -60,6 +63,8 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
   private ConsentBeanResolver beanResolver;
 
   private VariableEntityProvider variableEntityProvider;
+
+  private CustomVariablesRegistry customVariablesRegistry;
 
   //
   // Module Methods
@@ -129,9 +134,15 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
       b.setValueSetBeanResolver(beanResolver);
       b.setVariableEntityProvider(variableEntityProvider);
 
-      ConsentVariableValueSourceFactory factory = new ConsentVariableValueSourceFactory(stage.getName());
-      factory.setVariableToFieldMap(variableToFieldMap);
-      b.setVariableValueSourceFactory(factory);
+      ConsentVariableValueSourceFactory consentVariableFactory = new ConsentVariableValueSourceFactory(stage.getName());
+      consentVariableFactory.setVariableToFieldMap(variableToFieldMap);
+
+      PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
+      customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
+
+      CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
+      compositeFactory.addFactory(consentVariableFactory).addFactory(customVariableFactory);
+      b.setVariableValueSourceFactory(compositeFactory);
 
       tableFactoryBeans.add(b);
     }
@@ -157,6 +168,10 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
+  }
+
+  public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
+    this.customVariablesRegistry = customVariablesRegistry;
   }
 
   public String getConsentField(Consent consent, String fieldName) {

@@ -28,6 +28,9 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.magma.CompositeVariableValueSourceFactory;
+import org.obiba.onyx.magma.CustomVariablesRegistry;
+import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
@@ -59,6 +62,8 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
   private QuestionnaireBeanResolver beanResolver;
 
   private VariableEntityProvider variableEntityProvider;
+
+  private CustomVariablesRegistry customVariablesRegistry;
 
   public String getName() {
     return "quartz";
@@ -204,8 +209,14 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
       b.setVariableEntityProvider(variableEntityProvider);
 
       QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
-      QuestionnaireStageVariableSourceFactory factory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
-      b.setVariableValueSourceFactory(factory);
+      QuestionnaireStageVariableSourceFactory questionnaireVariableFactory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
+
+      PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
+      customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
+
+      CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
+      compositeFactory.addFactory(questionnaireVariableFactory).addFactory(customVariableFactory);
+      b.setVariableValueSourceFactory(compositeFactory);
 
       tableFactoryBeans.add(b);
     }
@@ -223,5 +234,9 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
+  }
+
+  public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
+    this.customVariablesRegistry = customVariablesRegistry;
   }
 }

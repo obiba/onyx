@@ -52,7 +52,7 @@
   <bean class="org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory" />
   <bean class="org.obiba.onyx.magma.OnyxAdminValueSetBeanResolver" />
 
-  <bean class="org.obiba.onyx.magma.ScriptedVariableValueSourceFactory">
+  <bean id="customVariablesRegistry" class="org.obiba.onyx.magma.DefaultCustomVariablesRegistry">
     <property name="resource" value="${org.obiba.onyx.config.path}/custom-variables.xml" />
   </bean>
 

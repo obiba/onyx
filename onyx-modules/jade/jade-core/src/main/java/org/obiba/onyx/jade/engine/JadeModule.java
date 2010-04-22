@@ -33,7 +33,10 @@ import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.workstation.WorkstationPanel;
 import org.obiba.onyx.jade.magma.InstrumentRunBeanResolver;
 import org.obiba.onyx.jade.magma.InstrumentRunVariableValueSourceFactory;
+import org.obiba.onyx.magma.CompositeVariableValueSourceFactory;
+import org.obiba.onyx.magma.CustomVariablesRegistry;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -61,6 +64,8 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
   private VariableEntityProvider variableEntityProvider;
 
   private OnyxAttributeHelper attributeHelper;
+
+  private CustomVariablesRegistry customVariablesRegistry;
 
   public String getName() {
     return "jade";
@@ -190,9 +195,15 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
       b.setValueSetBeanResolver(beanResolver);
       b.setVariableEntityProvider(variableEntityProvider);
 
-      InstrumentRunVariableValueSourceFactory factory = new InstrumentRunVariableValueSourceFactory(instrumentType);
-      factory.setAttributeHelper(attributeHelper);
-      b.setVariableValueSourceFactory(factory);
+      InstrumentRunVariableValueSourceFactory instrumentRunVariableFactory = new InstrumentRunVariableValueSourceFactory(instrumentType);
+      instrumentRunVariableFactory.setAttributeHelper(attributeHelper);
+
+      PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
+      customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
+
+      CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
+      compositeFactory.addFactory(instrumentRunVariableFactory).addFactory(customVariableFactory);
+      b.setVariableValueSourceFactory(compositeFactory);
 
       tableFactoryBeans.add(b);
     }
@@ -215,4 +226,9 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
   }
+
+  public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
+    this.customVariablesRegistry = customVariablesRegistry;
+  }
+
 }

@@ -25,6 +25,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </bean>
     </property>
     <property name="attributeHelper" ref="onyxAttributeHelper" />
+    <property name="customVariablesRegistry" ref="customVariablesRegistry" />
   </bean>
 
   <bean id="participantReport" class="org.obiba.onyx.print.impl.PdfTemplateReport" scope="session">

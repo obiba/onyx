@@ -24,6 +24,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
       </bean>
     </property>
+    <property name="customVariablesRegistry" ref="customVariablesRegistry" />
   </bean>
 
   <bean id="propertyKeyNamingStrategy"

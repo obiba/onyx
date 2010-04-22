@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.obiba.magma.Datasource;
@@ -35,6 +36,9 @@ public class OnyxParticipantValueTableFactoryBean implements ValueTableFactoryBe
   @Autowired
   private Set<ValueSetBeanResolver> resolvers;
 
+  @Autowired
+  private CustomVariablesRegistry customVariablesRegistry;
+
   public void setValueTableName(String valueTableName) {
     this.valueTableName = valueTableName;
   }
@@ -52,7 +56,14 @@ public class OnyxParticipantValueTableFactoryBean implements ValueTableFactoryBe
     for(ValueSetBeanResolver resolver : resolvers) {
       bvt.addResolver(resolver);
     }
-    for(VariableValueSourceFactory factory : factories) {
+
+    // Construct a set including all factories AND an additional factory holding
+    // custom variables in the "Participants" table.
+    Set<VariableValueSourceFactory> factoriesWithCustomParticipantVariables = new HashSet<VariableValueSourceFactory>();
+    factoriesWithCustomParticipantVariables.addAll(factories);
+    factoriesWithCustomParticipantVariables.add((new PrebuiltVariableValueSourceFactory()).addVariableValueSources(customVariablesRegistry.getVariables("Participants")));
+
+    for(VariableValueSourceFactory factory : factoriesWithCustomParticipantVariables) {
       bvt.addVariableValueSources(factory);
     }
     return bvt;
