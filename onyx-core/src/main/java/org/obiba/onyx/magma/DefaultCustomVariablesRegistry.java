@@ -72,7 +72,7 @@ public class DefaultCustomVariablesRegistry implements CustomVariablesRegistry {
     return MagmaEngine.get().getExtension(MagmaXStreamExtension.class).getXStreamFactory().createXStream();
   }
 
-  private void initSourceMap() {
+  void initSourceMap() {
     sourceMap = new HashMap<String, Set<VariableValueSource>>();
 
     if(resource.exists()) {
