@@ -11,7 +11,6 @@ package org.obiba.onyx.webapp.participant.panel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,9 +20,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.datetime.PatternDateConverter;
-import org.apache.wicket.datetime.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -40,14 +36,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
-import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Group;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
@@ -85,10 +79,6 @@ public class EditParticipantPanel extends Panel {
 
   private static String LAST_NAME = "lastName";
 
-  private static String GENDER = "gender";
-
-  private static String BIRTH_DATE = "birthDate";
-
   private static final int TEXTFIELD_SIZE = 40;
 
   @SpringBean
@@ -111,7 +101,7 @@ public class EditParticipantPanel extends Panel {
 
   AssignCodeToParticipantPanel assignCodePanel;
 
-  IModel participantModel;
+  IModel<Participant> participantModel;
 
   Dialog modalWindow;
 
@@ -119,7 +109,7 @@ public class EditParticipantPanel extends Panel {
     RECEPTION, ENROLLMENT, EDIT
   }
 
-  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage) {
+  public EditParticipantPanel(String id, IModel<Participant> participantModel, Page sourcePage) {
     super(id, participantModel);
     this.sourcePage = sourcePage;
     this.participantModel = participantModel;
@@ -140,7 +130,7 @@ public class EditParticipantPanel extends Panel {
    * @param sourcePage
    * @param editParticipantForm
    */
-  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage, Form editParticipantForm) {
+  public EditParticipantPanel(String id, IModel<Participant> participantModel, Page sourcePage, Form editParticipantForm) {
     this(id, participantModel, sourcePage);
     addActionButtons(null, editParticipantForm);
   }
@@ -153,7 +143,7 @@ public class EditParticipantPanel extends Panel {
    * @param sourcePage
    * @param modalWindow
    */
-  public EditParticipantPanel(String id, final IModel participantModel, final Page sourcePage, final Dialog modalWindow) {
+  public EditParticipantPanel(String id, final IModel<Participant> participantModel, final Page sourcePage, final Dialog modalWindow) {
     this(id, participantModel, sourcePage);
     this.modalWindow = modalWindow;
     addDialogActionButtons(modalWindow, participantModel);
@@ -185,7 +175,7 @@ public class EditParticipantPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private void addDialogActionButtons(final Dialog modalWindow, final IModel participantModel) {
+  private void addDialogActionButtons(final Dialog modalWindow, final IModel<Participant> participantModel) {
     modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
@@ -355,100 +345,18 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  private class DropDownFragment extends Fragment {
-    private static final long serialVersionUID = 1L;
-
-    public DropDownFragment(String id, IModel participantModel, String label, FormComponent component) {
-      super(id, "genderFragment", EditParticipantPanel.this);
-      add(new Label("label", new ResourceModel(label)));
-      add(component);
-
-      addNoFocusCssClassInReceptionMode(component);
-    }
-  }
-
-  private class DateFragment extends Fragment {
-    private static final long serialVersionUID = 1L;
-
-    public DateFragment(String id, IModel<String> labelModel, FormComponent component) {
-      super(id, "dateFragment", EditParticipantPanel.this);
-      add(new Label("label", labelModel));
-      add(component);
-
-      addNoFocusCssClassInReceptionMode(component);
-    }
-  }
-
-  private DateTextField createBirthDateField() {
-    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getDefaultModel(), BIRTH_DATE), new PatternDateConverter(userSessionService.getDatePattern(), true));
-
-    birthDateField.setRequired(true);
-    birthDateField.setLabel(new StringResourceModel("BirthDate*", null, new Object[] { userSessionService.getDatePattern() }));
-
-    birthDateField.add(new DatePicker() {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected String getDatePattern() {
-        return userSessionService.getDatePattern();
-      }
-
-      @Override
-      protected boolean enableMonthYearSelection() {
-        return true;
-      }
-    });
-
-    return birthDateField;
-  }
-
-  private DropDownChoice createGenderDropDown() {
-    DropDownChoice genderDropDown = new DropDownChoice(GENDER, new PropertyModel(getDefaultModel(), GENDER), Arrays.asList(Gender.values()), new GenderRenderer()) {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected boolean localizeDisplayValues() {
-        // Returning true will make the parent class lookup the value returned by the call
-        // to GenderRenderer.getDisplayValue() as a key in the localizer
-        // (ie: localizer.getString(renderer.getDisplayValue())
-        return true;
-      }
-    };
-    genderDropDown.setRequired(true);
-    genderDropDown.setLabel(new ResourceModel("Gender"));
-    genderDropDown.setOutputMarkupId(true);
-
-    return genderDropDown;
-  }
-
-  private static class GenderRenderer implements IChoiceRenderer {
-
-    private static final long serialVersionUID = 1L;
-
-    public Object getDisplayValue(Object object) {
-      // Prepend "Gender." to generate the proper resource bundle key
-      return (object != null) ? "Gender." + object.toString() : null;
-    }
-
-    public String getIdValue(Object object, int index) {
-      return object.toString();
-    }
-  }
-
   public List<ParticipantAttribute> getEssentialAttributesToDisplay(Participant participant) {
     List<ParticipantAttribute> attributesToDisplay = new ArrayList<ParticipantAttribute>();
-
     attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME));
     attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME));
-
     attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.GENDER_ATTRIBUTE_NAME));
     attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME));
-
     return attributesToDisplay;
   }
 
   private class EditParticipantPanelAttributeGroupsFragment extends ParticipantAttributeGroupsFragment {
+
+    private static final long serialVersionUID = 1L;
 
     protected EditParticipantPanelAttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
       super(id, participantModel, attributes, participantMetadata, parentPanel);
@@ -465,7 +373,7 @@ public class EditParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public EditParticipantPanelAttributeGroupFragment(String id, IModel participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+    public EditParticipantPanelAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
       super(id, participantModel, group, parentPanel, attributes);
     }
 
@@ -563,6 +471,8 @@ public class EditParticipantPanel extends Panel {
         field.setLabel(new SpringStringResourceModel(new PropertyModel(attribute, "name")));
         field.getField().add(new AttributeAppender("class", true, new Model("nofocus"), " "));
 
+        addNoFocusCssClassInReceptionMode(field.getField());
+
         item.add(field);
       } else {
         String value = getAttributeValueAsString(participant, attribute.getName());
@@ -570,6 +480,7 @@ public class EditParticipantPanel extends Panel {
       }
 
     }
+
   }
 
   /**
@@ -583,4 +494,5 @@ public class EditParticipantPanel extends Panel {
       component.add(new AttributeAppender("class", true, new Model("nofocus"), " "));
     }
   }
+
 }

@@ -29,9 +29,11 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -48,6 +50,9 @@ public class DataField extends Panel {
   private FieldFragment input;
 
   private boolean required = false;
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   public DataField(String id, IModel model, final DataType dataType) {
     this(id, model, dataType, "");
@@ -326,6 +331,11 @@ public class DataField extends Panel {
           @Override
           protected boolean enableMonthYearSelection() {
             return true;
+          }
+
+          @Override
+          protected String getDatePattern() {
+            return userSessionService.getDatePattern();
           }
         });
         break;

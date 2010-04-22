@@ -34,6 +34,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.util.Assert;
 
 @Entity
@@ -44,6 +46,19 @@ public class Participant extends AbstractEntity {
   //
 
   private static final long serialVersionUID = 7720576329990574921L;
+
+  public static final Map<String, String> essentialAttributeToFieldNameMap = new HashMap<String, String>() {
+    {
+      put(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, "enrollmentId");
+      put(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, "siteNo");
+      put(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, "firstName");
+      put(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, "lastName");
+      put(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, "birthDate");
+      put(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, "gender");
+      put(ParticipantMetadata.PARTICIPANT_ID, "barcode");
+      put(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, "appointmentTime");
+    }
+  };
 
   //
   // Instance Variables
@@ -358,34 +373,16 @@ public class Participant extends AbstractEntity {
   public Data getEssentialAttributeValue(String attributeName) {
     Assert.notNull("Null attribute name", attributeName);
 
-    /*
-     * try { return (Data) this.getClass().getMethod(getEssentialAttributeDataFieldName(attributeName)).invoke(this); }
-     * catch(Exception e) { throw new RuntimeException(e); }
-     */
-
-    if(attributeName.equals(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)) return getEnrollmentIdAsData();
-    if(attributeName.equals(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)) return getSiteNoAsData();
-    if(attributeName.equals(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME)) return getFirstNameAsData();
-    if(attributeName.equals(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME)) return getLastNameAsData();
-    if(attributeName.equals(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)) return getBirthDateAsData();
-    if(attributeName.equals(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)) return getGenderAsData();
-    if(attributeName.equals(ParticipantMetadata.PARTICIPANT_ID)) return getBarcodeAsData();
-    if(attributeName.equals(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME)) return getAppointmentTimeAsData();
+    BeanWrapper participantBean = new BeanWrapperImpl(this);
+    String essentialAttributeFieldName = getEssentialAttributeDataFieldName(attributeName);
+    if(essentialAttributeFieldName != null) {
+      return (Data) participantBean.getPropertyValue(essentialAttributeFieldName);
+    }
     return null;
 
   }
 
   public String getEssentialAttributeDataFieldName(String attributeName) {
-    Map<String, String> essentialAttributeToFieldNameMap = new HashMap<String, String>();
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, "enrollmentId");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, "siteNo");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, "firstName");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, "lastName");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, "birthDate");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, "gender");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.PARTICIPANT_ID, "barcode");
-    essentialAttributeToFieldNameMap.put(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, "appointmentTime");
-
     String fieldName = essentialAttributeToFieldNameMap.get(attributeName);
     if(fieldName != null) {
       fieldName = fieldName + "AsData";
