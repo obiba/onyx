@@ -65,9 +65,9 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     if(type.equals(InstrumentRun.class)) {
       return resolveInstrumentRun(valueSet, variable);
     } else if(type.equals(InstrumentRunValue.class)) {
-      String secondToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
-      if(secondToken != null) {
-        if(secondToken.equals("MEASURE")) {
+      String firstToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
+      if(firstToken != null) {
+        if(firstToken.equals("MEASURE")) {
           return resolveInstrumentRunValues(valueSet, variable);
         } else {
           return resolveInstrumentRunValue(valueSet, variable);
@@ -76,9 +76,9 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     } else if(type.equals(Measure.class)) {
       return resolveMeasure(valueSet, variable);
     } else if(type.equals(Data.class)) {
-      String secondToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
-      if(secondToken != null) {
-        if(secondToken.equals("MEASURE")) {
+      String firstToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
+      if(firstToken != null) {
+        if(firstToken.equals("MEASURE")) {
           return resolveDatas(valueSet, variable);
         } else {
           return resolveData(valueSet, variable);
@@ -127,7 +127,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   protected InstrumentRunValue resolveInstrumentRunValue(ValueSet valueSet, Variable variable) {
     InstrumentRun instrumentRun = resolveInstrumentRun(valueSet, variable);
     if(instrumentRun != null) {
-      String parameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
+      String parameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
       if(parameterCode != null) {
         for(InstrumentRunValue runValue : instrumentRun.getInstrumentRunValues()) {
           if(runValue.getInstrumentParameter().equals(parameterCode)) {
@@ -142,7 +142,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   protected List<InstrumentRunValue> resolveInstrumentRunValues(ValueSet valueSet, Variable variable) {
     InstrumentRun instrumentRun = resolveInstrumentRun(valueSet, variable);
     if(instrumentRun != null) {
-      String parameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
+      String parameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
       if(parameterCode != null) {
         List<InstrumentRunValue> values = new ArrayList<InstrumentRunValue>();
         for(Measure measure : instrumentRun.getMeasures()) {
@@ -175,8 +175,8 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   }
 
   protected Data resolveData(ValueSet valueSet, Variable variable) {
-    String instrumentTypeName = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
-    String instrumentParameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
+    String instrumentTypeName = variable.getAttributeStringValue(StageAttributeVisitor.STAGE_ATTRIBUTE);
+    String instrumentParameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
 
     if(instrumentTypeName != null && instrumentParameterCode != null) {
       InstrumentRunValue instrumentRunValue = resolveInstrumentRunValue(valueSet, variable);
@@ -198,8 +198,8 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   }
 
   protected List<Data> resolveDatas(ValueSet valueSet, Variable variable) {
-    String instrumentTypeName = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
-    String instrumentParameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 2);
+    String instrumentTypeName = variable.getAttributeStringValue(StageAttributeVisitor.STAGE_ATTRIBUTE);
+    String instrumentParameterCode = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
 
     if(instrumentTypeName != null && instrumentParameterCode != null) {
       List<InstrumentRunValue> instrumentRunValues = resolveInstrumentRunValues(valueSet, variable);
