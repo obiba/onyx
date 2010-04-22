@@ -41,6 +41,7 @@ import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.impl.InstrumentCaptureAndExportStrategy;
 import org.obiba.onyx.magma.CategoryLocalizedAttributeVisitor;
+import org.obiba.onyx.magma.CustomVariablesRegistry;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,9 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   @Autowired
   private InstrumentCaptureAndExportStrategy instrumentCaptureAndExportStrategy;
 
+  @Autowired
+  private CustomVariablesRegistry customVariablesRegistry;
+
   //
   // Constructors
   //
@@ -110,6 +114,9 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     // Create sources for export logs.
     sources.addAll(createExportLogSources());
 
+    // Create sources for custom variables.
+    sources.addAll(customVariablesRegistry.getVariables("Instruments"));
+
     return sources;
   }
 
@@ -131,6 +138,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
   public void setInstrumentCaptureAndExportStrategy(InstrumentCaptureAndExportStrategy instrumentCaptureAndExportStrategy) {
     this.instrumentCaptureAndExportStrategy = instrumentCaptureAndExportStrategy;
+  }
+
+  public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
+    this.customVariablesRegistry = customVariablesRegistry;
   }
 
   private VariableValueSource createInstrumentTypesSource() {

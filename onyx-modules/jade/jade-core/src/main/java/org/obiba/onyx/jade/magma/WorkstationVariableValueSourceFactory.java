@@ -29,6 +29,7 @@ import org.obiba.onyx.jade.core.domain.workstation.ExperimentalConditionValue;
 import org.obiba.onyx.jade.core.domain.workstation.InstrumentCalibration;
 import org.obiba.onyx.jade.core.service.ExperimentalConditionService;
 import org.obiba.onyx.jade.engine.variable.impl.WorkstationCaptureAndExportStrategy;
+import org.obiba.onyx.magma.CustomVariablesRegistry;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.VariableLocalizedAttributeVisitor;
@@ -53,14 +54,17 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   // Instances
   //
 
-  @Autowired(required = true)
+  @Autowired
   private ExperimentalConditionService experimentalConditionService;
 
-  @Autowired(required = true)
+  @Autowired
   private OnyxAttributeHelper attributeHelper;
 
-  @Autowired(required = true)
+  @Autowired
   private WorkstationCaptureAndExportStrategy workstationCaptureAndExportStrategy;
+
+  @Autowired
+  private CustomVariablesRegistry customVariablesRegistry;
 
   //
   // VariableValueSourceFactory Methods
@@ -77,6 +81,9 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
     // Create sources for export logs.
     sources.addAll(createExportLogSources());
+
+    // Create sources for custom variables.
+    sources.addAll(customVariablesRegistry.getVariables("Workstations"));
 
     return sources;
   }
@@ -95,6 +102,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
   public void setWorkstationCaptureAndExportStrategy(WorkstationCaptureAndExportStrategy workstationCaptureAndExportStrategy) {
     this.workstationCaptureAndExportStrategy = workstationCaptureAndExportStrategy;
+  }
+
+  public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
+    this.customVariablesRegistry = customVariablesRegistry;
   }
 
   private Set<VariableValueSource> createWorkstationSources() {
