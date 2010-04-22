@@ -28,6 +28,15 @@
   </stage>
 
   <stage>
+    <name>VariableRenamingDemoQuestionnaire</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
     <name>ConclusionQuestionnaire</name>
     <module>quartz</module>
     <interviewConclusion>true</interviewConclusion>
