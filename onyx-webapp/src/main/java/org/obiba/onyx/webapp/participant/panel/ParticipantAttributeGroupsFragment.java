@@ -45,10 +45,10 @@ abstract public class ParticipantAttributeGroupsFragment extends Fragment {
       String groupName = !group.isDefaultGroup() ? (new SpringStringResourceModel(groupNameKey, groupNameKey)).getString() : null;
 
       item.add(new Label("groupName", groupName).setVisible(groupName != null));
-      item.add(newAttributeGroupFragment("group", participantModel, group, parentPanel, attributes));
+      item.add(addAttributeGroupFragment("group", participantModel, group, parentPanel, attributes));
     }
   }
 
-  abstract protected ParticipantAttributeGroupFragment newAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes);
+  abstract protected ParticipantAttributeGroupFragment addAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes);
 
 }

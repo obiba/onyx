@@ -93,7 +93,7 @@ public class ParticipantPanel extends Panel {
     }
 
     @Override
-    protected ParticipantAttributeGroupFragment newAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+    protected ParticipantAttributeGroupFragment addAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
       return new ParticipantPanelAttributeGroupFragment(id, participantModel, group, attributes);
     }
 
@@ -110,7 +110,7 @@ public class ParticipantPanel extends Panel {
     }
 
     @Override
-    protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
+    protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
       item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));

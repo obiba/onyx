@@ -455,7 +455,7 @@ public class EditParticipantPanel extends Panel {
     }
 
     @Override
-    protected ParticipantAttributeGroupFragment newAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+    protected ParticipantAttributeGroupFragment addAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
       return new EditParticipantPanelAttributeGroupFragment(id, participantModel, group, parentPanel, attributes);
     }
 
@@ -470,7 +470,7 @@ public class EditParticipantPanel extends Panel {
     }
 
     @Override
-    protected void processParticipantAttribute(final ParticipantAttribute attribute, RepeatingView repeat, final Participant participant) {
+    protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
 
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
@@ -486,12 +486,9 @@ public class EditParticipantPanel extends Panel {
 
       IModel attributeValueModel;
       ParticipantAttributeValue configuredAttributeValue = participant.getParticipantAttributeValue(attribute.getName());
-
-      Data essentialAttributeValue = participant.getEssentialAttributeValue(attribute.getName());
-      if(essentialAttributeValue != null) {
-        // participant.setEssentialAttributeValue(attribute.getName(), essentialAttributeValue);
-        // participantService.updateParticipant(participant);
-        attributeValueModel = new Model(essentialAttributeValue);
+      String essentialAttributeFieldName = participant.getEssentialAttributeDataFieldName(attribute.getName());
+      if(essentialAttributeFieldName != null) {
+        attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, participant), essentialAttributeFieldName);
       } else if(configuredAttributeValue == null) {
         participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
 

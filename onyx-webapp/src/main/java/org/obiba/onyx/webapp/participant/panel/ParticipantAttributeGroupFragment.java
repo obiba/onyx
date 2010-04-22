@@ -25,7 +25,7 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
 
     for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
       if(attributesToDisplay.contains(attribute)) {
-        processParticipantAttribute(attribute, repeat, participant);
+        addParticipantAttribute(attribute, repeat, participant);
       }
     }
   }
@@ -52,6 +52,6 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
     return null;
   }
 
-  abstract protected void processParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant);
+  abstract protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant);
 
 }

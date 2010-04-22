@@ -34,6 +34,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
+import org.springframework.util.Assert;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -99,12 +100,28 @@ public class Participant extends AbstractEntity {
     this.firstName = firstName;
   }
 
+  public Data getFirstNameAsData() {
+    return DataBuilder.buildText(getFirstName());
+  }
+
+  public void setFirstNameAsData(Data firstName) {
+    setFirstName(firstName != null ? (String) firstName.getValue() : null);
+  }
+
   public String getLastName() {
     return lastName;
   }
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public Data getLastNameAsData() {
+    return DataBuilder.buildText(getLastName());
+  }
+
+  public void setLastNameAsData(Data lastName) {
+    setLastName(lastName != null ? (String) lastName.getValue() : null);
   }
 
   public String getFullName() {
@@ -119,12 +136,28 @@ public class Participant extends AbstractEntity {
     this.gender = gender;
   }
 
+  public Data getGenderAsData() {
+    return DataBuilder.buildText(getGender() != null ? getGender().name() : null);
+  }
+
+  public void setGenderAsData(Data gender) {
+    setGender(gender.getValue() != null ? Gender.valueOf((String) gender.getValue()) : null);
+  }
+
   public Date getBirthDate() {
     return birthDate;
   }
 
   public void setBirthDate(Date birthDate) {
     this.birthDate = birthDate;
+  }
+
+  public Data getBirthDateAsData() {
+    return DataBuilder.buildDate(getBirthDate());
+  }
+
+  public void setBirthDateAsData(Data birthDate) {
+    setBirthDate(birthDate != null ? (Date) birthDate.getValue() : null);
   }
 
   @Transient
@@ -170,6 +203,14 @@ public class Participant extends AbstractEntity {
     this.barcode = barcode;
   }
 
+  public Data getBarcodeAsData() {
+    return DataBuilder.buildText(getBarcode());
+  }
+
+  public void setBarcodeAsData(Data barcode) {
+    setBarcode(barcode != null ? (String) barcode.getValue() : null);
+  }
+
   public String getEnrollmentId() {
     return enrollmentId;
   }
@@ -178,8 +219,28 @@ public class Participant extends AbstractEntity {
     this.enrollmentId = enrollmentId;
   }
 
+  public Data getEnrollmentIdAsData() {
+    return DataBuilder.buildText(getEnrollmentId());
+  }
+
+  public void setEnrollmentIdAsData(Data enrollmentId) {
+    setEnrollmentId(enrollmentId != null ? (String) enrollmentId.getValue() : null);
+  }
+
   public String getSiteNo() {
     return siteNo;
+  }
+
+  public void setSiteNo(String siteNo) {
+    this.siteNo = siteNo;
+  }
+
+  public Data getSiteNoAsData() {
+    return DataBuilder.buildText(getSiteNo());
+  }
+
+  public void setSiteNoAsData(Data siteNo) {
+    setSiteNo(siteNo != null ? (String) siteNo.getValue() : null);
   }
 
   public Appointment getAppointment() {
@@ -189,6 +250,21 @@ public class Participant extends AbstractEntity {
   public void setAppointment(Appointment appointment) {
     this.appointment = appointment;
     this.appointment.setParticipant(this);
+  }
+
+  public Data getAppointmentTimeAsData() {
+    if(getAppointment() != null) {
+      return DataBuilder.buildDate(getAppointment().getDate());
+    }
+    return null;
+  }
+
+  public void setAppointmentTimeAsData(Data date) {
+    if(getAppointment() != null) {
+      getAppointment().setDate(date != null ? ((Date) date.getValue()) : null);
+    } else {
+      throw new RuntimeException("Cannot set the Appointment time because no Appointment exist for the Participant");
+    }
   }
 
   public Interview getInterview() {
@@ -201,10 +277,6 @@ public class Participant extends AbstractEntity {
     if(interview != null) {
       this.interview.setParticipant(this);
     }
-  }
-
-  public void setSiteNo(String siteNo) {
-    this.siteNo = siteNo;
   }
 
   public RecruitmentType getRecruitmentType() {
@@ -266,9 +338,7 @@ public class Participant extends AbstractEntity {
    * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>
    */
   public ParticipantAttributeValue getParticipantAttributeValue(String attributeName) {
-    if(attributeName == null) {
-      throw new IllegalArgumentException("Null attribute name");
-    }
+    Assert.notNull("Null attribute name", attributeName);
 
     for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
       if(attributeValue.getAttributeName().equals(attributeName)) {
@@ -283,26 +353,45 @@ public class Participant extends AbstractEntity {
    * Returns the value of an essential participant attribute.
    * @param attributeName The attribute name.
    * @return The value of the specified attribute (or <code>null</code> if none assigned).
-   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>  
+   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>
    */
   public Data getEssentialAttributeValue(String attributeName) {
-    if(attributeName == null) {
-      throw new IllegalArgumentException("Null attribute name");
-    }    
-    
-    if(attributeName.equals(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)) return DataBuilder.buildText(getEnrollmentId());
-    if(attributeName.equals(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)) return DataBuilder.buildText(getSiteNo());
-    if(attributeName.equals(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME)) return DataBuilder.buildText(getFirstName());
-    if(attributeName.equals(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME)) return DataBuilder.buildText(getLastName());
-    if(attributeName.equals(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)) return DataBuilder.buildDate(getBirthDate());
-    if(attributeName.equals(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)) return DataBuilder.buildText(String.valueOf(getGender()));
-    if(attributeName.equals(ParticipantMetadata.PARTICIPANT_ID)) return DataBuilder.buildText(String.valueOf(getBarcode()));
-    if(attributeName.equals(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME)) {
-      if(getAppointment() != null) {
-        return DataBuilder.buildDate(getAppointment().getDate());
-      }
-    }
+    Assert.notNull("Null attribute name", attributeName);
+
+    /*
+     * try { return (Data) this.getClass().getMethod(getEssentialAttributeDataFieldName(attributeName)).invoke(this); }
+     * catch(Exception e) { throw new RuntimeException(e); }
+     */
+
+    if(attributeName.equals(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)) return getEnrollmentIdAsData();
+    if(attributeName.equals(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)) return getSiteNoAsData();
+    if(attributeName.equals(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME)) return getFirstNameAsData();
+    if(attributeName.equals(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME)) return getLastNameAsData();
+    if(attributeName.equals(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)) return getBirthDateAsData();
+    if(attributeName.equals(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)) return getGenderAsData();
+    if(attributeName.equals(ParticipantMetadata.PARTICIPANT_ID)) return getBarcodeAsData();
+    if(attributeName.equals(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME)) return getAppointmentTimeAsData();
     return null;
+
+  }
+
+  public String getEssentialAttributeDataFieldName(String attributeName) {
+    Map<String, String> essentialAttributeToFieldNameMap = new HashMap<String, String>();
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, "enrollmentId");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, "siteNo");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, "firstName");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, "lastName");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, "birthDate");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, "gender");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.PARTICIPANT_ID, "barcode");
+    essentialAttributeToFieldNameMap.put(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, "appointmentTime");
+
+    String fieldName = essentialAttributeToFieldNameMap.get(attributeName);
+    if(fieldName != null) {
+      fieldName = fieldName + "AsData";
+    }
+
+    return fieldName;
   }
 
   /**
@@ -313,9 +402,7 @@ public class Participant extends AbstractEntity {
    * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>
    */
   public Data getConfiguredAttributeValue(String attributeName) {
-    if(attributeName == null) {
-      throw new IllegalArgumentException("Null attribute name");
-    }
+    Assert.notNull("Null attribute name", attributeName);
 
     for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
       if(attributeValue.getAttributeName().equals(attributeName)) {
@@ -335,9 +422,7 @@ public class Participant extends AbstractEntity {
    * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code> that name is configured
    */
   public void setConfiguredAttributeValue(String attributeName, Data data) {
-    if(attributeName == null) {
-      throw new IllegalArgumentException("Null attribute name");
-    }
+    Assert.notNull("Null attribute name", attributeName);
 
     // If the list of configured attribute values contains a value for the specified
     // attribute, update that value.
