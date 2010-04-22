@@ -548,7 +548,6 @@ public class ParticipantSearchPage extends BasePage {
       participantRegistryDialog.setWindowClosedCallback(new WindowClosedCallback() {
 
         public void onClose(AjaxRequestTarget target, Status status) {
-          System.out.println("window close status: " + status);
           if(status.equals(Status.SUCCESS)) {
             Participant participant = participantRegistryPanel.getLastLookedUpParticipant();
             participant.setSiteNo(applicationConfigurationService.getApplicationConfiguration().getSiteNo());
