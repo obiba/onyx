@@ -15,9 +15,17 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.core.util.FileUtil;
+import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
@@ -65,8 +73,10 @@ public class QuestionnaireCreator {
     ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
     // Create the bundle questionnaire.
+    Questionnaire questionnaire = builder.getQuestionnaire();
+    ensureQuestionnaireVariableNamesAreUnique(questionnaire);
     try {
-      bundle = bundleManager.createBundle(builder.getQuestionnaire());
+      bundle = bundleManager.createBundle(questionnaire);
       if(locales != null) {
         for(Locale locale : locales) {
           Properties properties = bundle.getLanguage(locale);
@@ -81,6 +91,49 @@ public class QuestionnaireCreator {
     } catch(Exception e) {
       e.printStackTrace();
     }
+  }
 
+  private void ensureQuestionnaireVariableNamesAreUnique(Questionnaire questionnaire) {
+    System.out.println("--------- " + questionnaire.getName());
+
+    final QuestionnaireVariableNameResolver questionnaireVariableNameResolver = new QuestionnaireUniqueVariableNameResolver();
+
+    QuestionnaireWalker walker = new QuestionnaireWalker(new IWalkerVisitor() {
+
+      Question question;
+
+      QuestionCategory questionCategory;
+
+      public void visit(OpenAnswerDefinition openAnswerDefinition) {
+        System.out.println("*OAD: " + questionnaireVariableNameResolver.variableName(this.question, this.questionCategory, openAnswerDefinition));
+      }
+
+      public void visit(Category category) {
+      }
+
+      public void visit(QuestionCategory questionCategory) {
+        this.questionCategory = questionCategory;
+        System.out.println("*QC: " + questionnaireVariableNameResolver.variableName(this.question, questionCategory));
+      }
+
+      public void visit(Question question) {
+        this.question = question;
+        System.out.println("*Q: " + questionnaireVariableNameResolver.variableName(question));
+      }
+
+      public void visit(Page page) {
+      }
+
+      public void visit(Section section) {
+      }
+
+      public void visit(Questionnaire questionnaire) {
+      }
+
+      public boolean visiteMore() {
+        return true;
+      }
+    });
+    walker.walk(questionnaire);
   }
 }
