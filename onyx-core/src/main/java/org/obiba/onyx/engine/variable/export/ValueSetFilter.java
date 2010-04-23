@@ -23,6 +23,10 @@ class ValueSetFilter {
   @XStreamAsAttribute
   private final String entityTypeName;
 
+  @XStreamAlias("valueTable")
+  @XStreamAsAttribute
+  private String valueTableName;
+
   @XStreamAlias("entities")
   private CollectionFilterChain<ValueSet> entityFilterChain;
 
@@ -31,6 +35,11 @@ class ValueSetFilter {
 
   ValueSetFilter(String entityTypeName) {
     this.entityTypeName = entityTypeName;
+  }
+
+  ValueSetFilter(String entityTypeName, String valueTableName) {
+    this.entityTypeName = entityTypeName;
+    this.valueTableName = valueTableName;
   }
 
   CollectionFilterChain<ValueSet> getEntityFilterChain() {
@@ -55,6 +64,10 @@ class ValueSetFilter {
 
   public String getEntityTypeName() {
     return entityTypeName;
+  }
+
+  public String getValueTableName() {
+    return valueTableName;
   }
 
 }

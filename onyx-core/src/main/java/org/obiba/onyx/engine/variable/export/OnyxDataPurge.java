@@ -53,7 +53,7 @@ public class OnyxDataPurge {
       for(OnyxDataExportDestination purge : purgeConfiguration) {
         for(ValueTable table : datasource.getValueTables()) {
           if(table.getEntityType().equalsIgnoreCase("Participant")) {
-            ValueTable filteredCollection = new FilteredValueTable(table, purge.getVariableFilterChainForEntityName(table.getEntityType()), purge.getEntityFilterChainForEntityName(table.getEntityType()));
+            ValueTable filteredCollection = new FilteredValueTable(table, purge.getVariableFilterChainForEntityName(table), purge.getEntityFilterChainForEntityName(table));
             for(ValueSet valueSet : filteredCollection.getValueSets()) {
               Participant template = new Participant();
               template.setBarcode(valueSet.getVariableEntity().getIdentifier());

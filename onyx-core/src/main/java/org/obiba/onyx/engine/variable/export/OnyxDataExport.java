@@ -151,7 +151,7 @@ public class OnyxDataExport {
               long exportStartTime = System.currentTimeMillis();
 
               // Apply all filters to ValueTable for current OnyxDestination.
-              ValueTable filteredTable = new FilteredValueTable(table, destination.getVariableFilterChainForEntityName(table.getEntityType()), destination.getEntityFilterChainForEntityName(table.getEntityType()));
+              ValueTable filteredTable = new FilteredValueTable(table, destination.getVariableFilterChainForEntityName(table), destination.getEntityFilterChainForEntityName(table));
 
               ExportListener listener = new ExportListener(destination);
               DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener).build();

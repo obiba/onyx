@@ -9,9 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
 import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
@@ -56,6 +58,16 @@ public class OnyxDataExportDestination {
     return valueSetFilters;
   }
 
+  public List<ValueSetFilter> getValueSetFilters(final ValueTable valueTable) {
+    List<ValueSetFilter> valueSetFiltersForTable = new ArrayList<ValueSetFilter>();
+    for(ValueSetFilter filter : getValueSetFilters()) {
+      if(filter.getValueTableName() == null || filter.getValueTableName().equals(valueTable.getName())) {
+        valueSetFiltersForTable.add(filter);
+      }
+    }
+    return valueSetFiltersForTable;
+  }
+
   public void setValueSetFilters(List<ValueSetFilter> valueSetFilters) {
     this.valueSetFilters = valueSetFilters;
   }
@@ -69,22 +81,22 @@ public class OnyxDataExportDestination {
     return false;
   }
 
-  FilterChain<Variable> getVariableFilterChainForEntityName(String entityName) {
-    for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
-      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityName)) {
+  FilterChain<Variable> getVariableFilterChainForEntityName(ValueTable valueTable) {
+    for(ValueSetFilter valueSetFilter : getValueSetFilters(valueTable)) {
+      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(valueTable.getEntityType())) {
         return valueSetFilter.getVariableFilterChain();
       }
     }
-    return new CollectionFilterChain<Variable>(entityName);
+    return new CollectionFilterChain<Variable>(valueTable.getEntityType());
   }
 
-  FilterChain<ValueSet> getEntityFilterChainForEntityName(String entityName) {
-    for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
-      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(entityName)) {
+  FilterChain<ValueSet> getEntityFilterChainForEntityName(ValueTable valueTable) {
+    for(ValueSetFilter valueSetFilter : getValueSetFilters(valueTable)) {
+      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(valueTable.getEntityType())) {
         return valueSetFilter.getEntityFilterChain();
       }
     }
-    return new CollectionFilterChain<ValueSet>(entityName);
+    return new CollectionFilterChain<ValueSet>(valueTable.getEntityType());
   }
 
   public static class EncryptionOptions {
