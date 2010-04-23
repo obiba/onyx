@@ -33,8 +33,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Group;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.User;
@@ -93,6 +95,7 @@ public class CommentsModalPanelTest implements Serializable {
     applicationContextMock.putBean("userSessionService", userSessionServiceMock);
 
     participantMetadata = new ParticipantMetadata();
+    participantMetadata.setEssentialAttributes(getEssentialAttributes());
     applicationContextMock.putBean("participantMetadata", participantMetadata);
 
     MockSpringApplication application = new MockSpringApplication();
@@ -250,5 +253,23 @@ public class CommentsModalPanelTest implements Serializable {
     commentAction.setComment(comment);
 
     return commentAction;
+  }
+
+  private List<ParticipantAttribute> getEssentialAttributes() {
+    List<ParticipantAttribute> attributes = new ArrayList<ParticipantAttribute>();
+    ParticipantAttribute attribute = new ParticipantAttribute();
+    Group group = new Group("group");
+    attribute.setName(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME);
+    attribute.setGroup(group);
+    attributes.add(attribute);
+    attribute = new ParticipantAttribute();
+    attribute.setName(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME);
+    attribute.setGroup(group);
+    attributes.add(attribute);
+    attribute = new ParticipantAttribute();
+    attribute.setName(ParticipantMetadata.PARTICIPANT_ID);
+    attribute.setGroup(group);
+    attributes.add(attribute);
+    return attributes;
   }
 }

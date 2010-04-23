@@ -52,12 +52,11 @@ public class ParticipantPanel extends Panel {
 
     Participant participant = (Participant) participantModel.getObject();
 
+    add(new ParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList), participantMetadata, this));
     if(!shortList) {
       add(new ParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, this));
-      add(new ParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList), participantMetadata, this));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));
-      add(new EmptyPanel("essentialAttributeGroup"));
     }
   }
 
