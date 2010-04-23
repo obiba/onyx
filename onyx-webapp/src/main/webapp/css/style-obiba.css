@@ -1875,3 +1875,7 @@ div.interviewMenuBar {
   margin-top: 18px;
 }
 
+div#essentialAttributes td.keyValueTableKey, div#configuredAttributeGroups td.keyValueTableKey, div.participant-panel-content td.keyValueTableKey {
+  width:9.25em;
+}
+
