@@ -83,7 +83,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="pdfVariablePath" value="Consent.pdfForm" />
     <property name="dataCollectionMode">
       <bean class="org.obiba.onyx.core.data.VariableDataSource">
-        <constructor-arg value="Onyx.Consent.mode" />
+        <constructor-arg value="Consent:mode" />
       </bean>
     </property>
   </bean>

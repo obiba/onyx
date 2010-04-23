@@ -31,6 +31,7 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.type.DateTimeType;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -50,7 +51,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
   private static final Logger log = LoggerFactory.getLogger(PdfTemplateReport.class);
 
-  private static final String PARTICIPANT_TABLE_NAME = "Participants";
+  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   private static final Pattern onyxPattern = Pattern.compile("^Onyx\\.");
 
@@ -120,9 +121,6 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
     HashMap<String, String> fieldList = form.getFields();
 
-    ValueTable participantValueTable = getOnyxParticipantTable();
-    ValueSet valueSet = getCurrentParticipantValueSet(participantValueTable);
-
     try {
       // Iterate on each field of pdf template
       for(Entry<String, String> field : fieldList.entrySet()) {
@@ -138,8 +136,15 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
         // instruments)
         for(String variableKey : keys) {
           String variablePath = fieldToVariableMap.get(variableKey);
+
           if(variablePath != null) {
-            String valueString = getStringValue(participantValueTable, valueSet, field.getKey(), variablePath);
+            String[] pathElements = extractPathElements(variablePath);
+
+            ValueTable tableForVariable = resolveTable(pathElements[0], pathElements[1]);
+            ValueSet valueSetInTable = getParticipantValueSet(tableForVariable);
+            String variableName = pathElements[2];
+
+            String valueString = getStringValue(tableForVariable, valueSetInTable, field.getKey(), variableName);
             if(valueString != null && valueString.length() != 0) {
               form.setField(field.getKey(), valueString);
               break;
@@ -152,9 +157,9 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     }
   }
 
-  private String getStringValue(ValueTable participantValueTable, ValueSet valueSet, String fieldName, String variablePath) {
+  private String getStringValue(ValueTable valueTable, ValueSet valueSet, String fieldName, String variablePath) {
     try {
-      VariableValueSource variableValueSource = participantValueTable.getVariableValueSource(stripOnyxPrefix(variablePath));
+      VariableValueSource variableValueSource = valueTable.getVariableValueSource(stripOnyxPrefix(variablePath));
       Value value = variableValueSource.getValue(valueSet);
       return getValueAsString(variableValueSource.getVariable(), value);
     } catch(NoSuchVariableException e) {
@@ -164,19 +169,9 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     }
   }
 
-  private ValueTable getOnyxParticipantTable() {
-    ValueTable onyxParticipantTable = null;
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
-    }
-    return onyxParticipantTable;
-  }
-
-  private ValueSet getCurrentParticipantValueSet(ValueTable onyxParticipantTable) {
-    Assert.notNull(onyxParticipantTable, "onyxParticipantTable must not be null.");
-    // Get the currently interviewed participant's ValueSet.
+  private ValueSet getParticipantValueSet(ValueTable valueTable) {
     VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
-    return onyxParticipantTable.getValueSet(entity);
+    return valueTable.getValueSet(entity);
   }
 
   private String stripOnyxPrefix(String variablePath) {
@@ -224,4 +219,32 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     this.dateFormat = new SimpleDateFormat(dateFormat);
   }
 
+  private ValueTable resolveTable(String datasourceName, String tableName) {
+    if(tableName != null) {
+      for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+        if(datasourceName == null || datasource.getName().equals(datasourceName)) {
+          for(ValueTable table : datasource.getValueTables()) {
+            if(table.isForEntityType(PARTICIPANT_ENTITY_TYPE) && table.getName().equals(tableName)) {
+              return table;
+            }
+          }
+        }
+      }
+      throw new IllegalStateException("Could not resolve ValueTable (name: " + tableName + ")");
+    } else {
+      throw new IllegalStateException("Could not resolve ValueTable (tableName is null)");
+    }
+  }
+
+  private String[] extractPathElements(String variablePath) {
+    String[] pathElements = new String[3];
+
+    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
+
+    pathElements[0] = resolver.getDatasourceName();
+    pathElements[1] = resolver.getTableName();
+    pathElements[2] = resolver.getVariableName();
+
+    return pathElements;
+  }
 }

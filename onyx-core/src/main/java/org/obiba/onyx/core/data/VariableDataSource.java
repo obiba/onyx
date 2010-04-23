@@ -17,6 +17,7 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.DataValueConverter;
@@ -37,6 +38,26 @@ public class VariableDataSource implements IDataSource {
 
   private String path;
 
+  /**
+   * Cached datasource name.
+   */
+  private String datasourceName;
+
+  /**
+   * Cached table name.
+   */
+  private String tableName;
+
+  /**
+   * Cached variable name.
+   */
+  private String variableName;
+
+  /**
+   * Flag indicating whether path elements have been extracted (only want to do this once).
+   */
+  private boolean pathElementsExtracted;
+
   public VariableDataSource(String path) {
     this.path = path;
   }
@@ -52,14 +73,14 @@ public class VariableDataSource implements IDataSource {
 
   private Value getValue(Participant participant) {
     VariableEntity entity = new VariableEntityBean("Participant", participant.getBarcode());
-    ValueTable table = getParticipantValueTable();
+    ValueTable table = resolveTable();
     ValueSet valueSet = table.getValueSet(entity);
 
     return getVariableValueSource(table).getValue(valueSet);
   }
 
   public String getUnit() {
-    ValueTable table = getParticipantValueTable();
+    ValueTable table = resolveTable();
     String magmaVariableUnit = getVariableValueSource(table).getVariable().getUnit();
 
     return magmaVariableUnit;
@@ -70,25 +91,43 @@ public class VariableDataSource implements IDataSource {
     return "Variable[" + path + "]";
   }
 
-  private ValueTable getParticipantValueTable() {
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      for(ValueTable table : datasource.getValueTables()) {
-        if(table.isForEntityType(PARTICIPANT_ENTITY_TYPE)) {
-          return table;
+  private ValueTable resolveTable() {
+    extractPathElements();
+
+    if(tableName != null) {
+      for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+        if(datasourceName == null || datasource.getName().equals(datasourceName)) {
+          for(ValueTable table : datasource.getValueTables()) {
+            if(table.isForEntityType(PARTICIPANT_ENTITY_TYPE) && table.getName().equals(tableName)) {
+              return table;
+            }
+          }
         }
       }
+      throw new IllegalStateException("Could not resolve ValueTable (name: " + tableName + ")");
+    } else {
+      throw new IllegalStateException("Could not resolve ValueTable (path does not contain a table name)");
     }
-    throw new IllegalStateException("No ValueTable for entityType " + PARTICIPANT_ENTITY_TYPE);
+  }
+
+  private void extractPathElements() {
+    if(!pathElementsExtracted) {
+      MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(path);
+
+      datasourceName = resolver.getDatasourceName();
+      tableName = resolver.getTableName();
+      variableName = resolver.getVariableName();
+
+      pathElementsExtracted = true;
+    }
   }
 
   private VariableValueSource getVariableValueSource(ValueTable table) {
-    String magmaVariableName = path.replaceFirst("Onyx.", "");
-
-    log.debug("Retrieving Magma variable {}:{}", table.getName(), magmaVariableName);
+    log.debug("Retrieving Magma variable {}:{}", table.getName(), variableName);
     try {
-      return table.getVariableValueSource(magmaVariableName);
+      return table.getVariableValueSource(variableName);
     } catch(NoSuchVariableException e) {
-      log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", magmaVariableName);
+      log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", variableName);
       throw e;
     }
   }
