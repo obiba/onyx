@@ -258,18 +258,8 @@ public class EditParticipantPanel extends Panel {
 
     if(mode == PanelMode.EDIT) {
       add(new RowFragment(BARCODE, getDefaultModel(), "ParticipantCode", BARCODE));
-      add(new EmptyPanel(FIRST_NAME));
-      add(new EmptyPanel(LAST_NAME));
     } else {
       add(new EmptyPanel(BARCODE));
-
-      FormComponent firstName = new TextField("value", new PropertyModel(getDefaultModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
-      firstName.add(new StringValidator.MaximumLengthValidator(250));
-      add(new TextFieldFragment(FIRST_NAME, getDefaultModel(), "FirstName*", firstName));
-
-      FormComponent lastName = new TextField("value", new PropertyModel(getDefaultModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
-      lastName.add(new StringValidator.MaximumLengthValidator(250));
-      add(new TextFieldFragment(LAST_NAME, getDefaultModel(), "LastName*", lastName));
     }
 
     add(new EditParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant), participantMetadata, EditParticipantPanel.this));
