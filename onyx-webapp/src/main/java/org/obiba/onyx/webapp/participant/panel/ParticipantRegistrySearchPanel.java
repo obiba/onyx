@@ -9,8 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -28,6 +30,8 @@ import org.obiba.onyx.wicket.behavior.ExecuteJavaScriptBehaviour;
 public class ParticipantRegistrySearchPanel extends Panel {
   private static final long serialVersionUID = 1L;
 
+  private static final String PARTICIPANT_SEARCH_MESSAGES = "participant-search-messages";
+
   @SpringBean
   private ParticipantRegistry participantRegistry;
 
@@ -35,7 +39,7 @@ public class ParticipantRegistrySearchPanel extends Panel {
 
   private Label label;
 
-  private Label messageLabel;
+  private Component messageLabel;
 
   ParticipantRegistrySearchPanel(String id) {
     super(id);
@@ -44,7 +48,7 @@ public class ParticipantRegistrySearchPanel extends Panel {
     label.setOutputMarkupId(true);
     add(label);
     addForm();
-    messageLabel = new Label("search-messages", "              ");
+    messageLabel = new EmptyPanel(PARTICIPANT_SEARCH_MESSAGES);
     messageLabel.setOutputMarkupId(true);
     add(messageLabel);
   }
@@ -63,17 +67,21 @@ public class ParticipantRegistrySearchPanel extends Panel {
   }
 
   public void setMessage(String string) {
-    messageLabel.setDefaultModel(new ResourceModel(string));
+    messageLabel = new Label(PARTICIPANT_SEARCH_MESSAGES, new ResourceModel(string));
+    messageLabel.setOutputMarkupId(true);
+    replace(messageLabel);
     messageLabel.add(new ExecuteJavaScriptBehaviour("$('#" + messageLabel.getMarkupId() + "').show();setTimeout(\"$('#" + messageLabel.getMarkupId() + "').fadeOut(4000)\", \"3000\");"));
   }
 
   public void clearMessage() {
-    messageLabel.setDefaultModel(new Model<String>(""));
+    messageLabel = new EmptyPanel(PARTICIPANT_SEARCH_MESSAGES);
+    messageLabel.setOutputMarkupId(true);
+    replace(messageLabel);
   }
 
   public void reset() {
     uniqueIdSearchField.clearInput();
     uniqueIdSearchField.setDefaultModelObject("");
-    messageLabel.setDefaultModel(new Model<String>(""));
+    clearMessage();
   }
 }

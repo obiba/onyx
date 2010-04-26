@@ -208,6 +208,12 @@ div.wicket-modal div.onyx .participant-registry-search-panel {
 	margin-bottom: 0.8em;
 }
 
+#participant-registry-search-panel #participant-search-messages-container{
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    height: 0.5em;
+}
+
 .checkboxColumn {
   width: 3em;
 }
