@@ -56,7 +56,7 @@ public class FixedParticipantRegistry implements ParticipantRegistry {
     try {
       return Integer.valueOf(uniqueId).intValue();
     } catch(NumberFormatException e) {
-      throw new ParticipantRegistryLookupException(e);
+      throw new NoSuchParticipantException(uniqueId);
     }
   }
 
