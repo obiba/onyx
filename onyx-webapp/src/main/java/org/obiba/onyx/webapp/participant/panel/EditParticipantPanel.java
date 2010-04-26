@@ -383,23 +383,26 @@ public class EditParticipantPanel extends Panel {
       }
 
       IModel attributeValueModel;
-      ParticipantAttributeValue configuredAttributeValue = participant.getParticipantAttributeValue(attribute.getName());
       String essentialAttributeFieldName = participant.getEssentialAttributeDataFieldName(attribute.getName());
       if(essentialAttributeFieldName != null) {
-        attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, participant), essentialAttributeFieldName);
-      } else if(configuredAttributeValue == null) {
+        if(participant.getId() != null) {
+          attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, participant), essentialAttributeFieldName);
+        } else {
+          attributeValueModel = new PropertyModel(participant, essentialAttributeFieldName);
+        }
+      } else if(getConfiguredAttributeValue(attribute, participant) == null) {
         participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
 
         // ONYX-186
         if(participant.getId() != null) {
           participantService.updateParticipant(participant);
-          attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, configuredAttributeValue), "data");
+          attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
         } else {
-          attributeValueModel = new PropertyModel(configuredAttributeValue, "data");
+          attributeValueModel = new PropertyModel(getConfiguredAttributeValue(attribute, participant), "data");
         }
 
       } else {
-        attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, configuredAttributeValue), "data");
+        attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
       }
 
       // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
@@ -469,6 +472,16 @@ public class EditParticipantPanel extends Panel {
         item.add(new Label("field", new Model(value)));
       }
 
+    }
+
+    /**
+     * @param attribute
+     * @param participant
+     * @return
+     */
+    private ParticipantAttributeValue getConfiguredAttributeValue(ParticipantAttribute attribute, Participant participant) {
+      ParticipantAttributeValue configuredAttributeValue = participant.getParticipantAttributeValue(attribute.getName());
+      return configuredAttributeValue;
     }
 
   }
