@@ -18,7 +18,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
 import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
-import org.obiba.magma.filter.CollectionFilterChain;
+import org.obiba.magma.filter.CompositeFilterChain;
 import org.obiba.magma.filter.FilterChain;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -61,7 +61,7 @@ public class OnyxDataExportDestination {
   public List<ValueSetFilter> getValueSetFilters(final ValueTable valueTable) {
     List<ValueSetFilter> valueSetFiltersForTable = new ArrayList<ValueSetFilter>();
     for(ValueSetFilter filter : getValueSetFilters()) {
-      if(filter.getValueTableName() == null || filter.getValueTableName().equals(valueTable.getName())) {
+      if(filter.getEntityTypeName().equals(valueTable.getEntityType()) && (filter.getValueTableName() == null || filter.getValueTableName().equals(valueTable.getName()))) {
         valueSetFiltersForTable.add(filter);
       }
     }
@@ -81,22 +81,20 @@ public class OnyxDataExportDestination {
     return false;
   }
 
-  FilterChain<Variable> getVariableFilterChainForEntityName(ValueTable valueTable) {
+  FilterChain<Variable> getVariableFilterChainForTable(ValueTable valueTable) {
+    CompositeFilterChain<Variable> compositeFilterChain = new CompositeFilterChain<Variable>(valueTable.getEntityType());
     for(ValueSetFilter valueSetFilter : getValueSetFilters(valueTable)) {
-      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(valueTable.getEntityType())) {
-        return valueSetFilter.getVariableFilterChain();
-      }
+      compositeFilterChain.addFilterChain(valueSetFilter.getVariableFilterChain());
     }
-    return new CollectionFilterChain<Variable>(valueTable.getEntityType());
+    return compositeFilterChain;
   }
 
-  FilterChain<ValueSet> getEntityFilterChainForEntityName(ValueTable valueTable) {
+  FilterChain<ValueSet> getEntityFilterChainForTable(ValueTable valueTable) {
+    CompositeFilterChain<ValueSet> compositeFilterChain = new CompositeFilterChain<ValueSet>(valueTable.getEntityType());
     for(ValueSetFilter valueSetFilter : getValueSetFilters(valueTable)) {
-      if(valueSetFilter.getEntityTypeName().equalsIgnoreCase(valueTable.getEntityType())) {
-        return valueSetFilter.getEntityFilterChain();
-      }
+      compositeFilterChain.addFilterChain(valueSetFilter.getEntityFilterChain());
     }
-    return new CollectionFilterChain<ValueSet>(valueTable.getEntityType());
+    return compositeFilterChain;
   }
 
   public static class EncryptionOptions {
