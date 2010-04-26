@@ -568,7 +568,7 @@ public class ParticipantSearchPage extends BasePage {
       final IBehavior disableRegisterLinkButtonBehaviour = new ExecuteJavaScriptBehaviour("$('[name=registerLink]').attr('disabled','true');$('[name=registerLink]').css('color','rgba(0, 0, 0, 0.2)');$('[name=registerLink]').css('border-color','rgba(0, 0, 0, 0.2)');", true);
 
       final AjaxButton registerLink;
-      participantRegistryDialog.addSubmitOption("RegisterLink", OptionSide.RIGHT, registerLink = new AjaxButton("registerLink") {
+      participantRegistryDialog.addSubmitOption("RegisterLink", OptionSide.RIGHT, registerLink = new AjaxButton(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -582,7 +582,7 @@ public class ParticipantSearchPage extends BasePage {
       registerLink.add(disableRegisterLinkButtonBehaviour);
 
       final AjaxButton lookUpLink;
-      participantRegistryDialog.addSubmitOption("Lookup", OptionSide.LEFT, lookUpLink = new AjaxButton("lookUpLink") {
+      participantRegistryDialog.addSubmitOption("Lookup", OptionSide.LEFT, lookUpLink = new AjaxButton(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         @Override
