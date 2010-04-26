@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -28,6 +29,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Utility class for creating and updating questionnaires on file system.
  */
@@ -36,6 +39,8 @@ public class QuestionnaireCreator {
   private File bundleRootDirectory = new File("target", "questionnaires");
 
   private File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
+
+  private QuestionnaireVariableNameResolver variableNameResolver;
 
   public QuestionnaireCreator() throws IOException {
     super();
@@ -64,6 +69,9 @@ public class QuestionnaireCreator {
     }
   }
 
+  /**
+   * @throws QuestionnaireVariableNameNotUniqueException when non unique variable names are encountered.
+   */
   public void createQuestionnaire(QuestionnaireBuilder builder, Locale... locales) {
     QuestionnaireBundle bundle;
 
@@ -93,32 +101,48 @@ public class QuestionnaireCreator {
     }
   }
 
+  /**
+   * @throws QuestionnaireVariableNameNotUniqueException when non unique variable names are encountered.
+   * @throws UnsupportedOperationException when joined categories are encountered.
+   */
   private void ensureQuestionnaireVariableNamesAreUnique(Questionnaire questionnaire) {
-    System.out.println("--------- " + questionnaire.getName());
 
-    final QuestionnaireVariableNameResolver questionnaireVariableNameResolver = new QuestionnaireUniqueVariableNameResolver();
+    variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
 
     QuestionnaireWalker walker = new QuestionnaireWalker(new IWalkerVisitor() {
 
-      Question question;
-
-      QuestionCategory questionCategory;
-
       public void visit(OpenAnswerDefinition openAnswerDefinition) {
-        System.out.println("*OAD: " + questionnaireVariableNameResolver.variableName(this.question, this.questionCategory, openAnswerDefinition));
       }
 
       public void visit(Category category) {
       }
 
       public void visit(QuestionCategory questionCategory) {
-        this.questionCategory = questionCategory;
-        System.out.println("*QC: " + questionnaireVariableNameResolver.variableName(this.question, questionCategory));
       }
 
       public void visit(Question question) {
-        this.question = question;
-        System.out.println("*Q: " + questionnaireVariableNameResolver.variableName(question));
+        if(question.getParentQuestion() != null) {
+          // We've already visited this question since we handle child questions when visiting the parent question
+          return;
+        }
+        // Sub question and category, but sub questions do not have categories
+        if(question.isArrayOfSharedCategories()) {
+          new UniqueQuestionnaireElementNameBuilder(question).build();
+          for(Question subQuestion : question.getQuestions()) {
+            // Build a variable for each child question, but without comment and using their parent's categories.
+            new UniqueQuestionnaireElementNameBuilder(subQuestion).withParentCategories().build();
+            // variable names of question and category variable name of parent.
+          }
+        } else if(question.isArrayOfJoinedCategories()) {
+          throw new UnsupportedOperationException("Variables for joined categories is not supported.");
+        } else if(question.hasSubQuestions()) {
+          new UniqueQuestionnaireElementNameBuilder(question).build();
+          for(Question subQuestion : question.getQuestions()) {
+            new UniqueQuestionnaireElementNameBuilder(subQuestion).withCategories().build();
+          }
+        } else {
+          new UniqueQuestionnaireElementNameBuilder(question).withCategories().build();
+        }
       }
 
       public void visit(Page page) {
@@ -133,7 +157,72 @@ public class QuestionnaireCreator {
       public boolean visiteMore() {
         return true;
       }
+
     });
     walker.walk(questionnaire);
   }
+
+  /**
+   * This builder ensures that Questionnaire Element names are unique. If they are not unique a
+   * {@link QuestionnaireVariableNameNotUniqueException} is thrown -- nothing is actually built.
+   * @see QuestionnaireUniqueVariableNameResolver
+   */
+  private class UniqueQuestionnaireElementNameBuilder {
+
+    private Question question;
+
+    private List<QuestionCategory> categories;
+
+    public UniqueQuestionnaireElementNameBuilder(Question question) {
+      this.question = question;
+    }
+
+    public UniqueQuestionnaireElementNameBuilder withParentCategories() {
+      categories = question.getParentQuestion().getQuestionCategories();
+      return this;
+    }
+
+    public UniqueQuestionnaireElementNameBuilder withCategories() {
+      categories = question.getQuestionCategories();
+      return this;
+    }
+
+    public void build() {
+      if(categories != null) {
+        buildCategoricalVariable();
+      } else {
+        buildParentPlaceholderVariable();
+      }
+    }
+
+    private void buildParentPlaceholderVariable() {
+      variableNameResolver.variableName(question);
+    }
+
+    private void buildCategoricalVariable() {
+      variableNameResolver.variableName(question);
+
+      for(QuestionCategory questionCategory : categories) {
+        buildCategoryVariable(questionCategory);
+      }
+    }
+
+    private void buildCategoryVariable(final QuestionCategory questionCategory) {
+      variableNameResolver.variableName(question, questionCategory);
+
+      if(questionCategory.hasOpenAnswerDefinition()) {
+        OpenAnswerDefinition parent = questionCategory.getOpenAnswerDefinition();
+        // Make an iterable on its children. If no child present, make an iterable with a single value.
+        Iterable<OpenAnswerDefinition> oads = parent.hasChildOpenAnswerDefinitions() ? parent.getOpenAnswerDefinitions() : ImmutableSet.of(parent);
+        for(OpenAnswerDefinition oad : oads) {
+          buildOpenAnswerVariable(questionCategory, oad);
+        }
+      }
+    }
+
+    protected void buildOpenAnswerVariable(final QuestionCategory questionCategory, final OpenAnswerDefinition oad) {
+      variableNameResolver.variableName(question, questionCategory, oad);
+    }
+  }
+
 }
