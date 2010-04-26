@@ -16,6 +16,7 @@ import java.util.Locale;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -27,13 +28,14 @@ public class DataConverter implements IConverter {
 
   private static final Logger log = LoggerFactory.getLogger(DataConverter.class);
 
-  public static final String DATE_FORMAT = "yyyy-MM-dd";
-
   private DataType type;
 
-  public DataConverter(DataType type) {
+  private UserSessionService userSessionService;
+
+  public DataConverter(DataType type, UserSessionService userSessionService) {
     if(type == null) throw new IllegalArgumentException("DataType cannot be null.");
     this.type = type;
+    this.userSessionService = userSessionService;
   }
 
   public Object convertToObject(String value, Locale locale) {
@@ -92,7 +94,7 @@ public class DataConverter implements IConverter {
   }
 
   public IConverter getDateConverter() {
-    return new PatternDateConverter(DATE_FORMAT, true);
+    return new PatternDateConverter(userSessionService.getDatePattern(), true);
   }
 
 }

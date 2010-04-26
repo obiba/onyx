@@ -276,7 +276,7 @@ public class DataField extends Panel {
           @SuppressWarnings("unchecked")
           @Override
           public IConverter getConverter(Class type) {
-            return new DataConverter(dataType);
+            return new DataConverter(dataType, userSessionService);
           }
 
           @Override
@@ -305,12 +305,12 @@ public class DataField extends Panel {
           @SuppressWarnings("unchecked")
           @Override
           public IConverter getConverter(Class type) {
-            return new DataConverter(dataType);
+            return new DataConverter(dataType, userSessionService);
           }
 
           @Override
           public String getTextFormat() {
-            return DataConverter.DATE_FORMAT;
+            return userSessionService.getDatePattern();
           }
 
           @Override
@@ -344,7 +344,7 @@ public class DataField extends Panel {
           @SuppressWarnings("unchecked")
           @Override
           public IConverter getConverter(Class type) {
-            return new DataConverter(dataType);
+            return new DataConverter(dataType, userSessionService);
           }
 
           @Override
@@ -358,7 +358,7 @@ public class DataField extends Panel {
           @SuppressWarnings("unchecked")
           @Override
           public IConverter getConverter(Class type) {
-            return new DataConverter(dataType);
+            return new DataConverter(dataType, userSessionService);
           }
 
           @Override
