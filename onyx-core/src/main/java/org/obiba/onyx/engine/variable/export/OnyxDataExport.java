@@ -24,14 +24,13 @@ import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
-import org.obiba.magma.Variable;
 import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.magma.crypt.KeyProviderSecurityException;
 import org.obiba.magma.crypt.NoSuchKeyException;
 import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.magma.filter.FilteredValueTable;
 import org.obiba.magma.support.DatasourceCopier;
-import org.obiba.magma.support.DatasourceCopier.DatasourceCopyEventListener;
+import org.obiba.magma.support.DatasourceCopier.DatasourceCopyValueSetEventListener;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -160,7 +159,7 @@ public class OnyxDataExport {
               copier.copy(filteredTable, outputDatasource);
 
               long exportEndTime = System.currentTimeMillis();
-              log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName() });
+              log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
             }
           }
         } catch(Exception e) {
@@ -209,7 +208,7 @@ public class OnyxDataExport {
     return df.format(new Date());
   }
 
-  private class ExportListener implements DatasourceCopyEventListener {
+  private class ExportListener implements DatasourceCopyValueSetEventListener {
     long valueSetCount = 0;
 
     OnyxDataExportDestination destination;
@@ -222,16 +221,10 @@ public class OnyxDataExport {
       return valueSetCount;
     }
 
-    public void onVariableCopy(Variable variable) {
+    public void onValueSetCopy(ValueTable source, ValueSet valueSet) {
     }
 
-    public void onVariableCopied(Variable variable) {
-    }
-
-    public void onValueSetCopy(ValueSet valueSet) {
-    }
-
-    public void onValueSetCopied(ValueSet valueSet) {
+    public void onValueSetCopied(ValueTable source, ValueSet valueSet, String... tables) {
       valueSetCount++;
 
       // Clear the session: this empties the first-level cache which is currently filled with the entity's data.
