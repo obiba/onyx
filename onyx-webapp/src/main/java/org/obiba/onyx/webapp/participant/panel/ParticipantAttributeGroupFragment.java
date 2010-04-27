@@ -31,25 +31,19 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
   }
 
   public String getAttributeValueAsString(Participant participant, String attributeName) {
-    Data attributeValue = participant.getEssentialAttributeValue(attributeName);
-    if(attributeValue == null) {
-      attributeValue = participant.getConfiguredAttributeValue(attributeName);
-    }
+    Data attributeValue = getAttributeValue(participant, attributeName);
     if(attributeValue != null) {
       return attributeValue.getValueAsString();
     }
     return null;
   }
 
-  public String getAttributeValue(Participant participant, String attributeName) {
+  public Data getAttributeValue(Participant participant, String attributeName) {
     Data attributeValue = participant.getEssentialAttributeValue(attributeName);
     if(attributeValue == null) {
       attributeValue = participant.getConfiguredAttributeValue(attributeName);
     }
-    if(attributeValue != null) {
-      return attributeValue.getValueAsString();
-    }
-    return null;
+    return attributeValue;
   }
 
   abstract protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant);

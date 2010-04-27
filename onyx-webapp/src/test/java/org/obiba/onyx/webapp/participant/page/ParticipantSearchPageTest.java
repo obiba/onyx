@@ -147,8 +147,8 @@ public class ParticipantSearchPageTest {
 
     expect(mockEntityQueryService.refresh(EasyMock.anyObject())).andReturn(participants.get(0));
     expect(mockEntityQueryService.refresh(EasyMock.anyObject())).andReturn(participants.get(1));
-    expect(mockUserSessionService.getDateFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)).anyTimes();
     expect(mockUserSessionService.getDateTimeFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)).anyTimes();
+    expect(mockUserSessionService.getDatePattern()).andReturn("");
 
     expect(mockInterviewManager.isInterviewAvailable((Participant) EasyMock.anyObject())).andReturn(true).anyTimes();
     expect(mockPrintableReportsRegistery.availableReports()).andReturn(Collections.<IPrintableReport> emptySet()).anyTimes();

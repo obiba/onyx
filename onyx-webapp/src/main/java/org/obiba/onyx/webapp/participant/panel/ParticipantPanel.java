@@ -11,8 +11,10 @@ package org.obiba.onyx.webapp.participant.panel;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -29,6 +31,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
 public class ParticipantPanel extends Panel {
@@ -113,8 +116,11 @@ public class ParticipantPanel extends Panel {
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
       item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
-      String value = getAttributeValueAsString(participant, attribute.getName());
-      item.add(new Label("field", new Model(value)));
+      if(attribute.getType() == DataType.DATE) {
+        item.add(DateLabel.forDatePattern("field", new Model<Date>((Date) getAttributeValue(participant, attribute.getName()).getValue()), userSessionService.getDatePattern()));
+      } else {
+        item.add(new Label("field", new Model(getAttributeValueAsString(participant, attribute.getName()))));
+      }
     }
 
   }
