@@ -81,6 +81,15 @@ public class OnyxDataExportDestination {
     return false;
   }
 
+  public boolean wantsTable(ValueTable valueTable) {
+    for(ValueSetFilter valueSetFilter : getValueSetFilters()) {
+      if(valueSetFilter.getValueTableName() != null && valueSetFilter.getValueTableName().equalsIgnoreCase(valueTable.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   FilterChain<Variable> getVariableFilterChainForTable(ValueTable valueTable) {
     CompositeFilterChain<Variable> compositeFilterChain = new CompositeFilterChain<Variable>(valueTable.getEntityType());
     for(ValueSetFilter valueSetFilter : getValueSetFilters(valueTable)) {

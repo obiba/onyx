@@ -18,7 +18,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.Participants')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -36,7 +36,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.ArtStiffness')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -49,7 +49,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.BloodPressure')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -62,7 +62,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.BloodUrineSamplesCollection')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -75,7 +75,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.BoneDensity')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -88,7 +88,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.CIPreliminaryQuestionnaire')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -101,7 +101,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.CognitiveTest')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -114,7 +114,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.ConclusionQuestionnaire')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -127,7 +127,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.Consent')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -143,7 +143,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.ECG')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -156,7 +156,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.GripStrength')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -169,7 +169,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.HealthQuestionnaireSelfAdministered')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -182,7 +182,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.HipsWaist')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -195,7 +195,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.Impedance310')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -208,7 +208,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.Impedance418')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -221,7 +221,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.QuartzDemoQuestionnaire')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -234,7 +234,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.SittingHeight')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -247,7 +247,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.Spirometry')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -260,7 +260,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.StandingHeight')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -273,7 +273,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.UrineSamplesCollection')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -286,7 +286,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.VariableRenamingDemoQuestionnaire')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -299,7 +299,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCC.Weight')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -334,7 +334,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit.Participants')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -351,7 +351,7 @@
           $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit.Consent')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -371,7 +371,7 @@
           $('Participants:Admin.Interview.status').any('CANCELLED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit - Cancelled interviews')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit - Cancelled interviews.Participants')]]></javascript>
         </script>
       </entities>
       <variables>
@@ -388,7 +388,7 @@
           $('Participants:Admin.Interview.status').any('CANCELLED')]]></javascript>
         </script>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit - Cancelled interviews')]]></javascript>
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('Appointment Unit - Cancelled interviews.Consent')]]></javascript>
         </script>
       </entities>
       <variables>

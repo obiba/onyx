@@ -145,7 +145,7 @@ public class OnyxDataExport {
         try {
           for(ValueTable table : datasource.getValueTables()) {
             // Check whether the destination wants this type of entity
-            if(destination.wantsEntityType(table.getEntityType())) {
+            if(destination.wantsTable(table)) {
               // Export interviews for each destination
               long exportStartTime = System.currentTimeMillis();
 
@@ -181,7 +181,7 @@ public class OnyxDataExport {
    * @param valueSet
    * @param destination
    */
-  private void markAsExported(ValueSet valueSet, OnyxDataExportDestination destination) {
+  private void markAsExported(ValueSet valueSet, OnyxDataExportDestination destination, String destinationTableName) {
 
     Date exportDate = new Date();
 
@@ -199,7 +199,7 @@ public class OnyxDataExport {
     captureEndDate = (captureEndDate != null) ? captureEndDate : exportDate;
 
     // Write an entry in ExportLog to flag the set of entities as exported.
-    ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName()).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
+    ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
     exportLogService.save(log);
   }
 
@@ -235,7 +235,10 @@ public class OnyxDataExport {
       sessionFactory.getCurrentSession().clear();
 
       // Create the export log
-      markAsExported(valueSet, destination);
+      for(String destinationTableName : tables) {
+        markAsExported(valueSet, destination, destinationTableName);
+      }
+
       // Flush the export log (this executes the underlying INSERT statement for the ExportLog within the transaction)
       sessionFactory.getCurrentSession().flush();
     }
