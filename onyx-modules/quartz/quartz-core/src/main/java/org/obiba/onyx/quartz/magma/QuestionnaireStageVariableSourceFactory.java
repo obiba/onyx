@@ -256,7 +256,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         BeanVariableValueSourceFactory<QuestionAnswer> factory = new BeanVariableValueSourceFactory<QuestionAnswer>("Participant", QuestionAnswer.class);
         factory.setProperties(properties);
         factory.setPrefix(variableName(question));
-        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionAttributesBuilderVisitor(question)));
+        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionCommentAttributesBuilderVisitor(question)));
         builder.addAll(factory.createSources());
       }
 
@@ -344,6 +344,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       this.question = question;
     }
 
+    protected Question getQuestion() {
+      return question;
+    }
+
+    @Override
     public void visit(Builder builder) {
       super.visit(builder);
 
@@ -369,6 +374,22 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         // Question number
         builder.addAttribute("questionNumber", question.getNumber());
       }
+
+    }
+
+  }
+
+  private class QuestionCommentAttributesBuilderVisitor extends QuestionAttributesBuilderVisitor {
+
+    public QuestionCommentAttributesBuilderVisitor(Question question) {
+      super(question);
+    }
+
+    @Override
+    public void visit(Builder builder) {
+      super.visit(builder);
+      // Flag this variable as a comment for another variable.
+      builder.addAttribute("commentFor", getQuestion().getName());
     }
 
   }
