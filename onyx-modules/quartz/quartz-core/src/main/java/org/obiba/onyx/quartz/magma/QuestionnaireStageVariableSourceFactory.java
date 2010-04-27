@@ -282,9 +282,12 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         questionVariable.addCategory(cb.build());
       }
 
-      // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
-      // List<CategoryAnswer> when the variable is repeatable.
-      builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
+      // Boiler plate questions are ignored. They have no answers so there is no value in exporting them.
+      if(!question.isBoilerPlate()) {
+        // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
+        // List<CategoryAnswer> when the variable is repeatable.
+        builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
+      }
 
       for(QuestionCategory questionCategory : categories) {
         buildCategoryVariable(questionCategory);
