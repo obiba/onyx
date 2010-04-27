@@ -18,9 +18,33 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.obiba.jade</groupId>
+      <artifactId>jade-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.jade</groupId>
+      <artifactId>jade-remote-server</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.obiba.quartz</groupId>
       <artifactId>quartz-core</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.marble</groupId>
+      <artifactId>marble-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.ruby</groupId>
+      <artifactId>ruby-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 

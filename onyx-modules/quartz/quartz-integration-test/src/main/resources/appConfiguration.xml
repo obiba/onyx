@@ -6,6 +6,8 @@
     <siteNo>onyx001</siteNo>
     <studyName>Onyx</studyName>
     <sessionTimeout>60</sessionTimeout>
+    <identifierPrefix>TEST</identifierPrefix>
+    <firstIdentifier>1000</firstIdentifier>    
   </config>
 
   <users>
