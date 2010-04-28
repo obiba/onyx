@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.type.TextType;
@@ -21,6 +22,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
+import org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser;
 
 /**
  * Factory for creating VariableValueSources for tube barcode part variables.
@@ -31,6 +33,8 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
   //
 
   private TubeRegistrationConfiguration tubeRegistrationConfiguration;
+
+  private IBarcodePartParser partParser;
 
   //
   // Constructors
@@ -52,6 +56,7 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
     BarcodeStructure barcodeStructure = tubeRegistrationConfiguration.getBarcodeStructure();
 
     for(IBarcodePartParser partParser : barcodeStructure.getParsers()) {
+      this.partParser = partParser;
       String barcodePartVariableName = partParser.getVariableName();
       if(barcodePartVariableName != null) {
         String variableName = lookupVariableName(barcodePartVariableName);
@@ -59,13 +64,26 @@ public class TubeBarcodePartVariableValueSourceFactory extends BeanVariableValue
         sources.add(new BeanPropertyVariableValueSource(variable, BarcodePart.class, "partValue"));
       }
     }
-
     return sources;
   }
 
   //
   // Methods
   //
+
+  /**
+   * If the {@link IBarcodePartParser} is of type {@link AcceptableValuesBarcodePartParser} then add the acceptable
+   * values as categories to the tube barcode part variable.
+   */
+  @Override
+  protected Builder buildVariable(Builder builder) {
+    if(partParser instanceof AcceptableValuesBarcodePartParser) {
+      AcceptableValuesBarcodePartParser acceptableValuesBarcodePartParser = (AcceptableValuesBarcodePartParser) partParser;
+      String[] partNames = acceptableValuesBarcodePartParser.getAcceptableValues().toArray(new String[0]);
+      builder.addCategories(partNames);
+    }
+    return super.buildVariable(builder);
+  }
 
   /**
    * Returns the names of barcode part variables that are keys/identifiers.
