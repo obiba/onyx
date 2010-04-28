@@ -214,12 +214,13 @@ div.page div.question div.categories div.category {
 }
 
 .obiba-quartz-checkbox-category:first-child {
-	padding-left: 1.7500em;
+	padding-left: 1.6667em;
 }
 
 .obiba-quartz-checkbox-category {
-	width: 14.1667em;
+	min-width:13.3333em;
 	padding-bottom: 0.2500em;
+	padding-right: 0.2500em;
 }
 
 .categories .even:first-child > td.obiba-quartz-checkbox-category{
