@@ -222,17 +222,16 @@ public class OnyxDataExport {
     }
 
     public void onValueSetCopy(ValueTable source, ValueSet valueSet) {
+      // Clear the session: this empties the first-level cache which is currently filled with the entity's data.
+      // Clearing the session also clears any pending write operations (INSERT or UPDATE). This is safe because
+      // the copy operation is read-only.
+      // We clear the session before we create the export log. It helps the flush call below (in onValueSetCopied)
+      // run faster since the session will only contain the new export log.
+      sessionFactory.getCurrentSession().clear();
     }
 
     public void onValueSetCopied(ValueTable source, ValueSet valueSet, String... tables) {
       valueSetCount++;
-
-      // Clear the session: this empties the first-level cache which is currently filled with the entity's data.
-      // Clearing the session also clears any pending write operations (INSERT or UPDATE). This is safe because
-      // the copy operation is read-only.
-      // We clear the session before we create the export log. It helps the flush call below run faster since the
-      // session will only contain the new export log.
-      sessionFactory.getCurrentSession().clear();
 
       // Create the export log
       for(String destinationTableName : tables) {
