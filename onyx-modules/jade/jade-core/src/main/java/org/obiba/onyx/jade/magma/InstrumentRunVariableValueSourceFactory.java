@@ -267,6 +267,10 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
         }
       }
 
+      if(instrumentParameter.getVendorName() != null) {
+        OnyxAttributeHelper.addVendorNameAttribute(builder, instrumentParameter.getVendorName());
+      }
+
       // For parameters that are part of a repeatable measure, add occurrence count attribute.
       if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
         OnyxAttributeHelper.addOccurrenceCountAttribute(builder, instrumentType.getExpectedMeasureCount().toString());

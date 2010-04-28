@@ -49,6 +49,8 @@ public class OnyxAttributeHelper implements ApplicationContextAware {
 
   public static final String GROUP = "group";
 
+  public static final String VENDORNAME = "vendorName";
+
   private ApplicationContext applicationContext;
 
   public OnyxAttributeHelper() {
@@ -142,6 +144,10 @@ public class OnyxAttributeHelper implements ApplicationContextAware {
 
   public static void addDefaultCaptureMethodAttribute(AttributeAwareBuilder<?> builder, Object source) {
     addAttribute(builder, CAPTUREMETHOD, source);
+  }
+
+  public static void addVendorNameAttribute(AttributeAwareBuilder<?> builder, Object source) {
+    addAttribute(builder, VENDORNAME, source);
   }
 
   public static void addConditionAttribute(AttributeAwareBuilder<?> builder, Object source) {
