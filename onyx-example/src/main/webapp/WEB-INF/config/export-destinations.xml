@@ -304,7 +304,7 @@
       </entities>
     </valueset>
     
-    <valueset entityType="Workstation">
+    <valueset entityType="Workstation" valueTable="Workstations">
       <entities>
         <script type="EXCLUDE">
           <javascript><![CDATA[$('Workstation.exportLog.destination').any('DCC')]]></javascript>
@@ -312,7 +312,7 @@
       </entities>
     </valueset>
 
-    <valueset entityType="Instrument">
+    <valueset entityType="Instrument" valueTable="Instruments">
       <entities>
         <script type="EXCLUDE">
           <javascript><![CDATA[$('Instrument.exportLog.destination').any('DCC')]]></javascript>
