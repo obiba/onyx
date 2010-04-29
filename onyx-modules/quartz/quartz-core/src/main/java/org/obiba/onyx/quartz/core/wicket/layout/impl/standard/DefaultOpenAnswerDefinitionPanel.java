@@ -11,11 +11,9 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -44,6 +42,8 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   private static final Logger log = LoggerFactory.getLogger(DefaultOpenAnswerDefinitionPanel.class);
 
   public static final String INPUT_SIZE_KEY = "size";
+
+  public static final String INPUT_NB_ROWS = "rows";
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -81,6 +81,8 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
     add(new Label("label", openLabel));
 
+    // UI arguments as attributes
+    ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
     if(getOpenAnswerDefinition().getDefaultValues().size() > 1) {
       openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), getOpenAnswerDefinition().getDefaultValues(), new IChoiceRenderer() {
 
@@ -95,11 +97,17 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         }
 
       }, unitLabel.getString());
-    } else if(getOpenAnswerDefinition().getDefaultValues().size() > 0) {
-      setData(getOpenAnswerDefinition().getDefaultValues().get(0));
-      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString());
     } else {
-      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString());
+      if(getOpenAnswerDefinition().getDefaultValues().size() == 1) {
+        setData(getOpenAnswerDefinition().getDefaultValues().get(0));
+      }
+      Integer rows = null;
+      Integer columns = null;
+      if(arguments != null) {
+        rows = arguments.get(INPUT_NB_ROWS) != null ? arguments.getInt(INPUT_NB_ROWS) : null;
+        columns = arguments.get(INPUT_SIZE_KEY) != null ? arguments.getInt(INPUT_SIZE_KEY) : null;
+      }
+      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString(), columns, rows);
     }
     openField.getField().setOutputMarkupId(true);
     add(openField);
@@ -113,15 +121,6 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT) && getOpenAnswerDefinition().getDefaultValues().size() == 0) {
       // see OpenAnswer.textValue column length
       openField.add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), DataType.TEXT));
-    }
-
-    // UI arguments as attributes
-    ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
-    if(arguments != null) {
-      int size = arguments.getInt(INPUT_SIZE_KEY, -1);
-      if(size > 0) {
-        openField.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
-      }
     }
 
     // behaviors

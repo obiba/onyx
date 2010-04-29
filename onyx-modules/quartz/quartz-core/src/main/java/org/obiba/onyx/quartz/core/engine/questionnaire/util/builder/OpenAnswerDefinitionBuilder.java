@@ -35,6 +35,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
+import org.springframework.util.Assert;
 
 /**
  * {@link OpenAnswerDefinition} builder, given a {@link Questionnaire} and a current {@link Category}.
@@ -104,7 +105,13 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setSize(int size) {
+    Assert.isTrue(size > 0, "The size of an OpenAnswer field can not be less than one.");
     return addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY, Integer.toString(size));
+  }
+
+  public OpenAnswerDefinitionBuilder setRows(int nbOfRows) {
+    Assert.isTrue(nbOfRows > 0, "The number of an OpenAnswer area can not be less than one.");
+    return addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS, Integer.toString(nbOfRows));
   }
 
   /**

@@ -15,6 +15,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
@@ -24,6 +25,7 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -55,7 +57,31 @@ public class DataField extends Panel {
   private UserSessionService userSessionService;
 
   public DataField(String id, IModel model, final DataType dataType) {
-    this(id, model, dataType, "");
+    this(id, model, dataType, "", null, null);
+  }
+
+  /**
+   * Creates a DataField component.
+   * 
+   * @param id Wicket Id the of the component.
+   * @param model The model for this component.
+   * @param dataType The type of the Data object.
+   * @param unit The unit for the Data object.
+   * @param size The width of the component on the UI.
+   * @param rows The number rows displayed by the component (if rows == 1 an html input field is used, if rows > 1 an
+   * html textarea will be displayed).
+   */
+  public DataField(String id, IModel model, DataType dataType, String unit, Integer size, Integer rows) {
+    super(id, model);
+
+    if(rows != null && rows > 1 && dataType.equals(DataType.TEXT)) {
+      input = new TextAreaFragment("input", model, dataType, size, rows);
+    } else {
+      input = new InputFragment("input", model, dataType, size == null ? -1 : size);
+    }
+    add(input);
+    addUnitLabel(unit);
+
   }
 
   /**
@@ -66,12 +92,7 @@ public class DataField extends Panel {
    * @param unit the representation of the unit for the value
    */
   public DataField(String id, IModel<Data> model, final DataType dataType, String unit) {
-    super(id, model);
-
-    input = new InputFragment("input", model, dataType);
-    add(input);
-
-    addUnitLabel(unit);
+    this(id, model, dataType, unit, null, null);
   }
 
   /**
@@ -261,29 +282,26 @@ public class DataField extends Panel {
     }
   }
 
+  private class TextAreaFragment extends FieldFragment {
+
+    public TextAreaFragment(String id, IModel model, final DataType dataType, Integer columns, Integer rows) {
+      super(id, "textAreaFragment", DataField.this);
+      add(field = createTextArea(model, dataType, columns, rows));
+    }
+  }
+
   private class InputFragment extends FieldFragment {
 
     private static final long serialVersionUID = 7003783791888047073L;
 
     @SuppressWarnings("serial")
-    public InputFragment(String id, IModel model, final DataType dataType) {
+    public InputFragment(String id, IModel model, final DataType dataType, Integer size) {
       super(id, "inputFragment", DataField.this);
 
       switch(dataType) {
       case TEXT:
       case DATA:
-        field = new TextField("field", model, String.class) {
-          @SuppressWarnings("unchecked")
-          @Override
-          public IConverter getConverter(Class type) {
-            return new DataConverter(dataType, userSessionService);
-          }
-
-          @Override
-          public boolean isRequired() {
-            return DataField.this.isRequired();
-          }
-        };
+        field = createTextField(model, dataType);
         break;
       case BOOLEAN:
         field = new CheckBox("field", model) {
@@ -368,8 +386,50 @@ public class DataField extends Panel {
         };
         break;
       }
+      field.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
       add(field);
     }
+
+  }
+
+  @SuppressWarnings("serial")
+  private FormComponent createTextArea(IModel<String> model, final DataType dataType, Integer columns, Integer rows) {
+    FormComponent field = new TextArea<String>("field", model) {
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public IConverter getConverter(Class type) {
+        return new DataConverter(dataType, userSessionService);
+      }
+
+      @Override
+      public boolean isRequired() {
+        return DataField.this.isRequired();
+      }
+    };
+    if(columns != null) {
+      field.add(new AttributeAppender("cols", new Model<Integer>(columns), ""));
+    }
+    field.add(new AttributeAppender("rows", new Model<Integer>(rows), ""));
+    return field;
+  }
+
+  @SuppressWarnings("serial")
+  private FormComponent createTextField(IModel<String> model, final DataType dataType) {
+    FormComponent field = new TextField<String>("field", model) {
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public IConverter getConverter(Class type) {
+        return new DataConverter(dataType, userSessionService);
+      }
+
+      @Override
+      public boolean isRequired() {
+        return DataField.this.isRequired();
+      }
+    };
+    return field;
   }
 
   private class SelectFragment extends FieldFragment {
