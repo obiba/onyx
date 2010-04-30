@@ -42,7 +42,7 @@ public class ParticipantHttpMessageConverter implements HttpMessageConverter<Par
 
   public Participant read(Class<? extends Participant> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
     XStream xstream = new XStream();
-    return (Participant) xstream.fromXML(inputMessage.getBody().toString());
+    return (Participant) xstream.fromXML(inputMessage.getBody());
   }
 
   public void write(Participant t, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
