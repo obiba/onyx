@@ -106,6 +106,7 @@ public class AssignCodeToParticipantPanel extends Panel {
         }
 
       });
+      add(new Label("participantCodeLabel", new ResourceModel(identifierSequenceProvider.hasSequence() ? "participantCodeGenerated" : "participantCode")));
 
       // Adding validation to Participant Id.
       ParticipantAttribute participantAttributeId = participantMetadata.getEssentialAttribute("Participant ID");
