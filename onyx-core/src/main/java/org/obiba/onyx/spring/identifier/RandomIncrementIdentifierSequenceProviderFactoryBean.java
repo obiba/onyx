@@ -15,14 +15,16 @@ import org.obiba.onyx.core.identifier.NullIdentifierSequenceProvider;
 import org.obiba.onyx.core.identifier.impl.randomincrement.RandomIncrementIdentifierSequenceProvider;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 /**
  * Factory bean for creating a {@link RandomIncrementIdentifierSequenceProvider}.
  * 
  * If <code>useSequence</code> is <code>false</code>, creates a {@link NullIdentifierSequenceProvider} instead.
  */
-public class RandomIncrementIdentifierSequenceProviderFactoryBean implements FactoryBean {
+public class RandomIncrementIdentifierSequenceProviderFactoryBean implements FactoryBean, InitializingBean {
   //
   // Instance Variables
   //
@@ -58,6 +60,15 @@ public class RandomIncrementIdentifierSequenceProviderFactoryBean implements Fac
     }
 
     return sequenceProvider;
+  }
+
+  //
+  // InitializingBean Methods
+  //
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    Assert.isTrue(maxIncrement >= 1, "maxIncrement must be at least 1");
   }
 
   //
