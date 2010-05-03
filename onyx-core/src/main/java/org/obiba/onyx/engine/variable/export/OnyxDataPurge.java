@@ -52,7 +52,7 @@ public class OnyxDataPurge {
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(OnyxDataExportDestination purge : purgeConfiguration) {
         for(ValueTable table : datasource.getValueTables()) {
-          if(table.getEntityType().equalsIgnoreCase("Participant")) {
+          if(table.getEntityType().equalsIgnoreCase("Participant") && purge.wantsTable(table)) {
             ValueTable filteredCollection = new FilteredValueTable(table, purge.getVariableFilterChainForTable(table), purge.getEntityFilterChainForTable(table));
             for(ValueSet valueSet : filteredCollection.getValueSets()) {
               Participant template = new Participant();

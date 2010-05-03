@@ -1,6 +1,6 @@
 <list>
   <purge>
-    <valueset entityType="Participant">
+    <valueset entityType="Participant" valueTable="Participants">
       <entities>
       
         <excludeAll />
