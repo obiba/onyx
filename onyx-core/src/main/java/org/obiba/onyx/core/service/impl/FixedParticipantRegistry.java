@@ -9,10 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -28,19 +26,10 @@ import org.obiba.onyx.util.data.DataBuilder;
  */
 public class FixedParticipantRegistry implements ParticipantRegistry {
 
-  private final List<Participant> participants = new ArrayList<Participant>(4);
-
-  public FixedParticipantRegistry() {
-    participants.add(participantOne());
-    participants.add(participantTwo());
-    participants.add(participantThree());
-    participants.add(participantFour());
-  }
-
   public Participant lookupParticipant(String uniqueId) throws NoSuchParticipantException, ParticipantRegistryLookupException {
     int id = getUniqueIdAsInteger(uniqueId);
     if(id >= 1 && id <= 4) {
-      return participants.get(id - 1);
+      return getParticipant(id);
     } else if(id == 5) {
       throw new ParticipantRegistryLookupException();
     } else {
@@ -57,6 +46,21 @@ public class FixedParticipantRegistry implements ParticipantRegistry {
       return Integer.valueOf(uniqueId).intValue();
     } catch(NumberFormatException e) {
       throw new NoSuchParticipantException(uniqueId);
+    }
+  }
+
+  private Participant getParticipant(int id) {
+    switch(id) {
+    case 1:
+      return participantOne();
+    case 2:
+      return participantTwo();
+    case 3:
+      return participantThree();
+    case 4:
+      return participantFour();
+    default:
+      throw new NoSuchParticipantException(Integer.toString(id));
     }
   }
 
