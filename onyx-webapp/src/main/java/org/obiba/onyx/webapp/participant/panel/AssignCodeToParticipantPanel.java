@@ -93,9 +93,8 @@ public class AssignCodeToParticipantPanel extends Panel {
       participantCode.add(new IValidator() {
 
         public void validate(final IValidatable validatable) {
-
           Participant participant = (Participant) getModel().getObject();
-          if(participant.getBarcode() != null) {
+          if(participant.getId() != null && participant.getBarcode() != null) {
             validatable.error(new ParticipantAlreadyReceivedError());
           } else {
             Participant template = new Participant();
