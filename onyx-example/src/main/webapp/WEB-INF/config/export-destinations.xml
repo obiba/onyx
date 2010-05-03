@@ -2,7 +2,7 @@
 
   <destination>
     <name>DCC</name>
-
+ 
     <encrypt>
       <algorithm>DESede</algorithm>
       <mode>CBC</mode>
@@ -307,7 +307,7 @@
     <valueset entityType="Workstation" valueTable="Workstations">
       <entities>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Workstation.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Workstation.exportLog.destination').any('DCC.Workstations')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -315,7 +315,7 @@
     <valueset entityType="Instrument" valueTable="Instruments">
       <entities>
         <script type="EXCLUDE">
-          <javascript><![CDATA[$('Instrument.exportLog.destination').any('DCC')]]></javascript>
+          <javascript><![CDATA[$('Instrument.exportLog.destination').any('DCC.Instruments')]]></javascript>
         </script>
       </entities>
     </valueset>
@@ -323,7 +323,7 @@
 
   <destination>
     <name>Appointment Unit</name>
- 
+  
     <encrypt />
          
     <valueset entityType="Participant" valueTable="Participants">
