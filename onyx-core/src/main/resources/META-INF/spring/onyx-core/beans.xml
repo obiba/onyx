@@ -138,10 +138,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
   </bean>
-
+ 
   <bean id="participantRegistry" class="org.obiba.onyx.core.service.impl.FixedParticipantRegistry" scope="session"/>
-  
-<!-- 
+   
+  <!--
   <bean id="participantRegistry" class="org.obiba.onyx.core.service.impl.RestfulParticipantRegistry" scope="session">
     <property name="urlTemplate" value="${org.obiba.onyx.participant.registry.uriTemplate}" />
     <property name="restTemplate">
@@ -157,7 +157,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </bean>
     </property>
   </bean>
--->
+  -->
   
   <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
 
@@ -173,7 +173,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="participantCaptureAndExportStrategy" class="org.obiba.onyx.engine.variable.impl.ParticipantCaptureAndExportStrategy" />
 
-  <bean id="identifierSequenceProvider" class="org.obiba.onyx.spring.identifier.RandomIncrementIdentifierSequenceProviderFactoryBean">
+  <bean id="identifierSequenceProvider" class="org.obiba.onyx.spring.identifier.RandomIncrementIdentifierSequenceProviderFactoryBean" init-method="validateArgs">
     <property name="useSequence" value="${org.obiba.onyx.participantId.generated}"/>
     <property name="maxIncrement" value="${org.obiba.onyx.participantId.maxIncrement}"/>
   </bean>
