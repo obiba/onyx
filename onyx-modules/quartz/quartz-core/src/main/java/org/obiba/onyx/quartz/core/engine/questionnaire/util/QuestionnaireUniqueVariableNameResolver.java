@@ -56,7 +56,7 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
     if(variableName == null) {
       variableName = variableName(question, questionCategory) + '.' + oad.getName();
     }
-    if(variableNames.containsKey(variableName) && oad != variableNames.get(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, oad, variableNames.get(variableName));
+    if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, oad, variableNames.get(variableName));
     variableNames.put(variableName, oad);
     return variableName;
   }
