@@ -11,7 +11,6 @@ package org.obiba.onyx.jade.core.service.impl;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
@@ -58,15 +57,9 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
 
   }
 
-  @Test
-  @Ignore
-  public void instrumentNameTypeIsNullTest() {
-    defaultInstrumentRunService.getInstrumentRun(null, null);
-  }
-
   @Test(expected = IllegalArgumentException.class)
   @Dataset
-  public void getInstrumentRuninstrumentNameTypeIsNullTest() {
+  public void getInstrumentRun_ThrowsExceptionWhenInstrumentTypeNameIsNull() {
     Participant participant = persistenceManager.get(Participant.class, 1l);
     defaultInstrumentRunService.getInstrumentRun(participant, null);
   }
@@ -76,13 +69,13 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
    */
   @Test(expected = IllegalArgumentException.class)
   @Dataset
-  public void getInstrumentRuninstrumentTypeIsNullTest() {
+  public void getInstrumentRun_ThrowsExceptionWhenInstrumentTypeNameDoesNotExist() {
     Participant participant = persistenceManager.get(Participant.class, 1l);
     defaultInstrumentRunService.getInstrumentRun(participant, "FakeInstrument");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void getInstrumentRunParticipantIsNullTest() {
+  public void getInstrumentRun_ThrowsExceptionWhenParticipantIsNull() {
     defaultInstrumentRunService.getInstrumentRun(null, "StandingHeight");
   }
 
