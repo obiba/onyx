@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 
 public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
@@ -23,9 +24,10 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
     super(id, questionModel);
 
     Question question = (Question) getDefaultModelObject();
-    String questionName = (question.getParentQuestion() != null) ? question.getParentQuestion().getName() + "." + question.getName() : question.getName();
+    QuestionnaireUniqueVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
+    String variableName = variableNameResolver.variableName(question);
     Label questionLabel;
-    add(questionLabel = new Label("label", new Model<String>(questionName)));
+    add(questionLabel = new Label("label", new Model<String>(variableName)));
 
     if(question.hasSubQuestions() && !question.isArrayOfSharedCategories()) {
       questionLabel.setVisible(false);

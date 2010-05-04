@@ -24,6 +24,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.obiba.core.util.StreamUtil;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -53,6 +54,8 @@ public class QuestionnaireRenderer {
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
 
+  private UserSessionService userSessionServiceMock;
+
   /**
    * Constructs a renderer with the specified questionnaire bundle directory and output directory
    * @param bundles the directory where the questionnaire bundles are located
@@ -71,8 +74,12 @@ public class QuestionnaireRenderer {
     bundleManager = mgr;
 
     activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
+    userSessionServiceMock = createMock(UserSessionService.class);
+
     mockCtx.putBean(activeQuestionnaireAdministrationServiceMock);
     mockCtx.putBean(mgr);
+    mockCtx.putBean("userSessionService", userSessionServiceMock);
+
   }
 
   private void renderAllBundles() {
@@ -126,7 +133,9 @@ public class QuestionnaireRenderer {
       EasyMock.expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((QuestionCategory) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(null).anyTimes();
       EasyMock.expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(null).anyTimes();
       EasyMock.expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn(null).anyTimes();
+      EasyMock.expect(userSessionServiceMock.getDatePattern()).andReturn(userSessionServiceMock.DEFAULT_DATE_FORMAT_PATTERN).anyTimes();
       EasyMock.replay(activeQuestionnaireAdministrationServiceMock);
+      EasyMock.replay(userSessionServiceMock);
 
       MockSpringApplication mockApp = new MockSpringApplication() {
         @Override
@@ -152,6 +161,7 @@ public class QuestionnaireRenderer {
       }
       StreamUtil.silentSafeClose(fos);
 
+      EasyMock.reset(userSessionServiceMock);
       EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
     }
   }

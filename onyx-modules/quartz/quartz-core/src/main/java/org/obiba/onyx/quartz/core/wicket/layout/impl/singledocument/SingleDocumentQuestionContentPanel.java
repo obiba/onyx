@@ -26,6 +26,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringModifierModel;
 import org.obiba.onyx.quartz.core.wicket.provider.AllChildQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.provider.AllQuestionCategoriesProvider;
@@ -101,9 +102,9 @@ public class SingleDocumentQuestionContentPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        protected void populateItem(Item<QuestionCategory> item) {
+        protected void populateItem(final Item<QuestionCategory> item) {
 
-          final String questionCategoryName = item.getModelObject().getName();
+          final QuestionCategory questionCategory = item.getModelObject();
           DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("validations", new AllValidationOpenAnswerDefinitionsProvider(item.getModel())) {
             private static final long serialVersionUID = 1L;
 
@@ -111,10 +112,11 @@ public class SingleDocumentQuestionContentPanel extends Panel {
             protected void populateItem(Item<OpenAnswerDefinition> itemOp) {
               OpenAnswerDefinition openAnswerDefinition = itemOp.getModelObject();
               OpenAnswerDefinition parentOpenAnswerDefinition = openAnswerDefinition.getParentOpenAnswerDefinition();
+              QuestionnaireUniqueVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
               if(parentOpenAnswerDefinition == null) {
-                itemOp.add(new Label("label", new Model<String>(questionCategoryName + "." + openAnswerDefinition.getName())));
+                itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionCategory.getQuestion(), questionCategory, openAnswerDefinition))));
               } else {
-                itemOp.add(new Label("label", new Model<String>(questionCategoryName + "." + parentOpenAnswerDefinition.getName() + "." + openAnswerDefinition.getName())));
+                itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionCategory.getQuestion(), questionCategory, parentOpenAnswerDefinition))));
               }
               itemOp.add(new Label("validation", new Model<String>(getValidationString(openAnswerDefinition.getDataValidators()))));
             }
