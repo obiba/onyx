@@ -179,16 +179,67 @@
                 </question>
               </questions>
             </page>
+            <page id="69" name="5" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="8"/>
+              <questions id="70">
+                <question id="71" name="ARRAY_OPEN_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="69"/>
+                  <questionCategories id="72">
+                    <questionCategory id="73">
+                      <question reference="71"/>
+                      <category id="74" name="WEEK_DS" escape="false">
+                        <openAnswerDefinition id="75" name="WEEK_QUANTITY" dataType="INTEGER" required="true">
+                          <openAnswerDefinitions id="76"/>
+                          <variableNames id="77">
+                            <entry>
+                              <string>WHITE_WINE_DS</string>
+                              <string>white_wine_week_quantity</string>
+                            </entry>
+                            <entry>
+                              <string>RED_WINE_DS</string>
+                              <string>red_wine_week_quantity</string>
+                            </entry>
+                          </variableNames>
+                        </openAnswerDefinition>
+                        <variableNames id="78"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="79">
+                      <question reference="71"/>
+                      <category reference="29"/>
+                    </questionCategory>
+                    <questionCategory id="80">
+                      <question reference="71"/>
+                      <category reference="32"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="81">
+                    <question id="82" name="RED_WINE_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <questionCategories id="83"/>
+                      <parentQuestion reference="71"/>
+                      <questions id="84"/>
+                    </question>
+                    <question id="85" name="WHITE_WINE_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <questionCategories id="86"/>
+                      <parentQuestion reference="71"/>
+                      <questions id="87"/>
+                    </question>
+                  </questions>
+                </question>
+              </questions>
+            </page>
           </pages>
-          <sections id="69"/>
+          <sections id="88"/>
         </section>
       </sections>
     </section>
   </sections>
-  <pages id="70">
+  <pages id="89">
     <page reference="10"/>
     <page reference="21"/>
     <page reference="41"/>
     <page reference="55"/>
+    <page reference="69"/>
   </pages>
 </questionnaire>

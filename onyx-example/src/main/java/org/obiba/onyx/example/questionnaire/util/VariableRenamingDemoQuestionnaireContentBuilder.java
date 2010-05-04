@@ -57,6 +57,15 @@ public class VariableRenamingDemoQuestionnaireContentBuilder {
     builder.inSection("PARTICIPANT").withPage("4").withQuestion("WAIST_HIPS_CI");
     builder.inQuestion("WAIST_HIPS_CI").withSharedCategory(NC);
     builder.inQuestion("WAIST_HIPS_CI").withSharedCategory(YES_SPECIFY).withOpenAnswerDefinition(YES_SPECIFY, DataType.TEXT).setVariableName("waist_hips_ci_reason").setSize(60);
+
+    // Specify the open answer variable names for each of the sub questions. (Joined Categories Question Array)
+    builder.inSection("PARTICIPANT").withPage("5").withQuestion("ARRAY_OPEN_DS", true).withCategory("WEEK_DS").withOpenAnswerDefinition("WEEK_QUANTITY", DataType.INTEGER);
+    builder.inQuestion("ARRAY_OPEN_DS").withQuestion("RED_WINE_DS", true);
+    builder.inQuestion("ARRAY_OPEN_DS").withQuestion("WHITE_WINE_DS", true);
+    builder.inQuestion("ARRAY_OPEN_DS").withSharedCategory(PNA);
+    builder.inQuestion("ARRAY_OPEN_DS").withSharedCategory(DNK);
+    builder.inOpenAnswerDefinition("WEEK_QUANTITY").setVariableName("RED_WINE_DS", "red_wine_week_quantity");
+    builder.inOpenAnswerDefinition("WEEK_QUANTITY").setVariableName("WHITE_WINE_DS", "white_wine_week_quantity");
     return builder;
   }
 }
