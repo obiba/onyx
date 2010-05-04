@@ -14,6 +14,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -29,14 +30,13 @@ import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
-import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
@@ -301,60 +301,35 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals("100002", processedParticipants.get(1).getEnrollmentId());
   }
 
-  @Ignore
   @Test
-  @Dataset
-  public void testProcessParticipantAlreadyExist() {
+  public void testProcess_OnlyAppointmentDateUpdatedWhenParticipantExistsAlready() throws Exception {
+    // Setup
     ParticipantProcessor.initProcessor();
-    expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
-    expectLastCall().times(3);
+    expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config).atLeastOnce();
 
-    Participant p = new Participant();
-    p.setEnrollmentId("100001");
-    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(persistenceManager.matchOne(p));
-    Assert.assertEquals(1l, persistenceManager.matchOne(p).getId());
-    Assert.assertEquals("Suzan", persistenceManager.matchOne(p).getFirstName());
-    Assert.assertEquals("2008-09-01", getDateFormat().format(persistenceManager.matchOne(p).getAppointment().getDate()));
+    Participant participantWithInProgressInterview = getParticipantWithInProgressInterview();
+    String firstName = participantWithInProgressInterview.getFirstName();
+    String lastName = participantWithInProgressInterview.getLastName();
+    Gender gender = participantWithInProgressInterview.getGender();
+    Date birthDate = participantWithInProgressInterview.getBirthDate();
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(participantWithInProgressInterview).atLeastOnce();
 
-    p.setEnrollmentId("100002");
-    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(persistenceManager.matchOne(p));
-    p.setEnrollmentId("100003");
-    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(persistenceManager.matchOne(p));
+    replay(applicationConfigurationServiceMock, participantServiceMock);
 
-    List<Participant> processedParticipants = new ArrayList<Participant>();
+    // Exercise
+    Participant participantFromAppointmentList = getParticipantFromAppointmentList("100001");
+    Participant participant = processor.process(participantFromAppointmentList);
+    Assert.assertNotNull(participant);
 
-    replay(applicationConfigurationServiceMock);
-    replay(participantServiceMock);
+    // Verify behaviour
+    verify(applicationConfigurationServiceMock, participantServiceMock);
 
-    int i = 1;
-
-    try {
-      for(Participant participantItem : getParticipants()) {
-        Participant participant = processor.process(participantItem);
-        if(participant != null) processedParticipants.add(participant);
-        i++;
-      }
-    } catch(Exception e) {
-      throw new RuntimeException(e);
-    }
-
-    verify(applicationConfigurationServiceMock);
-    verify(participantServiceMock);
-
-    // Appointment date is the only data that is allowed to change here
-    Assert.assertEquals(2, processedParticipants.size());
-    Assert.assertEquals(1l, processedParticipants.get(0).getId());
-    Assert.assertEquals("Suzan", processedParticipants.get(0).getFirstName());
-    Assert.assertEquals("2010-09-01", getDateFormat().format(processedParticipants.get(0).getAppointment().getDate()));
-
-    // Participant 100002 is ignored because his interview is completed
-    p = new Participant();
-    p.setEnrollmentId("100002");
-    p = persistenceManager.matchOne(p);
-    Assert.assertNotNull("Cannot find participant", p);
-    Assert.assertNotNull("Cannot find participant interview", p.getInterview());
-    Assert.assertEquals("Cannot find participant completed interview", InterviewStatus.COMPLETED, p.getInterview().getStatus());
-    Assert.assertEquals("100003", processedParticipants.get(1).getEnrollmentId());
+    // Verify state (participant should be unchanged, except for appointment date).
+    assertEquals(participantFromAppointmentList.getAppointment().getDate(), participantWithInProgressInterview.getAppointment().getDate());
+    assertEquals(firstName, participantWithInProgressInterview.getFirstName()); // unchanged
+    assertEquals(lastName, participantWithInProgressInterview.getLastName()); // unchanged
+    assertEquals(gender, participantWithInProgressInterview.getGender()); // unchanged
+    assertEquals(birthDate, participantWithInProgressInterview.getBirthDate()); // unchanged
   }
 
   //
@@ -468,6 +443,36 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     map.put("p3-PHONE", "514-343-9898 ext 9496");
 
     return map;
+  }
+
+  private Participant getParticipantWithInProgressInterview() {
+    Participant p = new Participant();
+    p.setBirthDate(getDate(1964, 10, 1, 0, 0));
+    p.setEnrollmentId("100001");
+    p.setFirstName("Chantal");
+    p.setGender(Gender.FEMALE);
+    p.setLastName("Tremblay");
+    p.setSiteNo("cag001");
+
+    Appointment a = new Appointment(p, getDate(2008, 9, 1, 9, 0));
+    a.setAppointmentCode("100001");
+    p.setAppointment(a);
+
+    Interview interview = new Interview();
+    interview.setParticipant(p);
+    interview.setStatus(InterviewStatus.IN_PROGRESS);
+    p.setInterview(interview);
+
+    return p;
+  }
+
+  private Participant getParticipantFromAppointmentList(String enrollmentId) {
+    for(Participant participant : getParticipants()) {
+      if(participant.getEnrollmentId().equals(enrollmentId)) {
+        return participant;
+      }
+    }
+    return null;
   }
 
   private Date getDate(int year, int month, int day, int hour, int minute) {
