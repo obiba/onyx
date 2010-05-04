@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -227,6 +228,11 @@ public class EditParticipantPanel extends Panel {
     }
 
     if(mode == PanelMode.EDIT && modalWindow != null) {
+      Component participantList = sourcePage.get("participant-list");
+      if(participantList != null) {
+        target.addComponent(participantList);
+      }
+
       modalWindow.close(target);
     } else {
       setResponsePage(sourcePage);
