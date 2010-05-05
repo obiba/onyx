@@ -11,31 +11,32 @@ package org.obiba.onyx.core.io.support;
 
 import java.util.Date;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 
 public class ExcelReaderSupport {
-  public static Boolean getBooleanValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
+  public static Boolean getBooleanValue(HSSFFormulaEvaluator evaluator, Cell cell) {
     Boolean rvalue = false;
 
-    if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+    if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
       evaluator.evaluate(cell);
-      HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
+      CellValue cellValue = evaluator.evaluate(cell);
 
       switch(cellValue.getCellType()) {
-      case HSSFCell.CELL_TYPE_BOOLEAN:
+      case Cell.CELL_TYPE_BOOLEAN:
         rvalue = cellValue.getBooleanValue();
         break;
-      case HSSFCell.CELL_TYPE_STRING:
+      case Cell.CELL_TYPE_STRING:
         rvalue = Boolean.parseBoolean(cellValue.getStringValue());
         break;
       }
     } else {
       switch(cell.getCellType()) {
-      case HSSFCell.CELL_TYPE_BOOLEAN:
+      case Cell.CELL_TYPE_BOOLEAN:
         rvalue = cell.getBooleanCellValue();
         break;
-      case HSSFCell.CELL_TYPE_STRING:
+      case Cell.CELL_TYPE_STRING:
         rvalue = Boolean.parseBoolean(cell.getRichStringCellValue().getString());
         break;
       }
@@ -48,17 +49,17 @@ public class ExcelReaderSupport {
     return rvalue;
   }
 
-  public static Date getDateValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
+  public static Date getDateValue(HSSFFormulaEvaluator evaluator, Cell cell) {
     Date rvalue = null;
 
-    if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
+    if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+      CellValue cellValue = evaluator.evaluate(cell);
 
-      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+      if(cellValue.getCellType() == Cell.CELL_TYPE_NUMERIC) {
         rvalue = cell.getDateCellValue();
       }
     } else {
-      if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+      if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
         rvalue = cell.getDateCellValue();
       }
     }
@@ -70,17 +71,17 @@ public class ExcelReaderSupport {
     return rvalue;
   }
 
-  public static Double getNumericValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
+  public static Double getNumericValue(HSSFFormulaEvaluator evaluator, Cell cell) {
     Double rvalue = null;
 
-    if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
+    if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+      CellValue cellValue = evaluator.evaluate(cell);
 
-      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+      if(cellValue.getCellType() == Cell.CELL_TYPE_NUMERIC) {
         rvalue = cellValue.getNumberValue();
       }
     } else {
-      if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+      if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
         rvalue = cell.getNumericCellValue();
       }
     }
@@ -92,25 +93,25 @@ public class ExcelReaderSupport {
     return rvalue;
   }
 
-  public static String getTextValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
+  public static String getTextValue(HSSFFormulaEvaluator evaluator, Cell cell) {
     String rvalue = null;
 
-    if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
+    if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+      CellValue cellValue = evaluator.evaluate(cell);
 
-      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+      if(cellValue.getCellType() == Cell.CELL_TYPE_STRING) {
         rvalue = cellValue.getStringValue();
       }
     } else {
       switch(cell.getCellType()) {
-      case HSSFCell.CELL_TYPE_STRING:
+      case Cell.CELL_TYPE_STRING:
         rvalue = cell.getRichStringCellValue().getString();
         break;
-      case HSSFCell.CELL_TYPE_NUMERIC:
+      case Cell.CELL_TYPE_NUMERIC:
         // If the cell type is NUMERIC, cast the value as a long and return it as a String.
         rvalue = (Long.valueOf((long) cell.getNumericCellValue())).toString();
         break;
-      case HSSFCell.CELL_TYPE_BLANK:
+      case Cell.CELL_TYPE_BLANK:
         rvalue = "";
       }
     }
@@ -122,18 +123,18 @@ public class ExcelReaderSupport {
     return rvalue;
   }
 
-  public static boolean containsWhitespace(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
+  public static boolean containsWhitespace(HSSFFormulaEvaluator evaluator, Cell cell) {
     boolean containsWhitespace = false;
 
     String textValue = null;
 
-    if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
+    if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+      CellValue cellValue = evaluator.evaluate(cell);
 
-      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+      if(cellValue.getCellType() == Cell.CELL_TYPE_STRING) {
         textValue = cellValue.getStringValue();
       }
-    } else if(cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+    } else if(cell.getCellType() == Cell.CELL_TYPE_STRING) {
       textValue = cell.getRichStringCellValue().getString();
     }
 

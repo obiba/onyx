@@ -16,15 +16,19 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.resource.FileResourceStream;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.Variable;
+import org.obiba.magma.datasource.excel.ExcelDatasource;
 import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.magma.support.DatasourceCopier;
 import org.obiba.magma.support.DatasourceCopier.DatasourceCopyEventListener;
@@ -69,6 +73,46 @@ public class DevelopersPanel extends Panel {
     };
     add(dumpLink);
     add(new Label("dumpFilename", new PropertyModel<String>(this, "dumpFile.absolutePath")));
+
+    Link catalogueLink = new Link("catalogueLink") {
+      @Override
+      public void onClick() {
+
+        try {
+          File catalogueFile = getCatalogueFile();
+          if(catalogueFile.exists()) {
+            catalogueFile.delete();
+          }
+
+          ExcelDatasource target;
+          MagmaEngine.get().addDatasource(target = new ExcelDatasource("onyx-catalogue", catalogueFile));
+          try {
+            DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyValues().build();
+            for(Datasource ds : MagmaEngine.get().getDatasources()) {
+              if(ds != target) { // Don't copy target datasource on target datasource
+                copier.copy(ds, target);
+              }
+            }
+          } finally {
+            try {
+              MagmaEngine.get().removeDatasource(target);
+            } catch(RuntimeException e) {
+              log.warn("Exception thrown while removing datasource. May be caused by ", e);
+            }
+          }
+
+          getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(new TmpFileResourceStream(catalogueFile) {
+            public String getContentType() {
+              return "application/vnd.ms-excel";
+            }
+          }, catalogueFile.getName()));
+        } catch(Exception e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+    };
+    add(catalogueLink);
 
     AjaxLink clearCacheLink = new AjaxLink("clearCacheLink") {
 
@@ -119,6 +163,10 @@ public class DevelopersPanel extends Panel {
     return new File(System.getProperty("java.io.tmpdir"), "magma-dump.zip");
   }
 
+  public File getCatalogueFile() {
+    return new File(System.getProperty("java.io.tmpdir"), "onyx-catalogue.xlsx");
+  }
+
   private class SessionClearingListener implements DatasourceCopyEventListener {
 
     public void onValueSetCopied(ValueSet valueSet) {
@@ -135,4 +183,23 @@ public class DevelopersPanel extends Panel {
     }
 
   }
+
+  private class TmpFileResourceStream extends FileResourceStream {
+
+    private File tmpFile;
+
+    public TmpFileResourceStream(File tmpFile) {
+      super(tmpFile);
+      this.tmpFile = tmpFile;
+    }
+
+    @Override
+    public void close() throws IOException {
+      super.close();
+      if(tmpFile != null) {
+        tmpFile.delete();
+      }
+    }
+  }
+
 }

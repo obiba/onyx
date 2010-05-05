@@ -16,9 +16,10 @@ import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
@@ -58,11 +59,11 @@ public class ParticipantReader extends AbstractParticipantReader {
   //
   // HSSF instance variables.
   //   
-  private Iterator<HSSFRow> rowIter;
+  private Iterator<Row> rowIter;
 
   private HSSFFormulaEvaluator evaluator;
 
-  private HSSFRow row;
+  private Row row;
 
   @SuppressWarnings("unchecked")
   @Override
@@ -76,7 +77,7 @@ public class ParticipantReader extends AbstractParticipantReader {
 
       initAttributeNameToColumnIndexMap(context, sheet.getRow(headerRowNumber - 1));
 
-      rowIter = (Iterator<HSSFRow>) sheet.rowIterator();
+      rowIter = sheet.rowIterator();
 
       // Skip ahead to the first data row.
       row = skipToFirstDataRow(rowIter);
@@ -120,7 +121,7 @@ public class ParticipantReader extends AbstractParticipantReader {
   // Local methods
   //
   @SuppressWarnings("unchecked")
-  private void initAttributeNameToColumnIndexMap(ExecutionContext context, HSSFRow headerRow) {
+  private void initAttributeNameToColumnIndexMap(ExecutionContext context, Row headerRow) {
     if(headerRow == null) {
       AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Null headerRow"));
       throw new IllegalArgumentException("Null headerRow");
@@ -128,10 +129,10 @@ public class ParticipantReader extends AbstractParticipantReader {
 
     attributeNameToColumnIndexMap = new HashMap<String, Integer>();
 
-    Iterator cellIter = headerRow.cellIterator();
+    Iterator<Cell> cellIter = headerRow.cellIterator();
 
     while(cellIter.hasNext()) {
-      HSSFCell cell = (HSSFCell) cellIter.next();
+      Cell cell = cellIter.next();
 
       if(cell != null) {
         if(cell.getCellType() != HSSFCell.CELL_TYPE_STRING) {
@@ -159,8 +160,8 @@ public class ParticipantReader extends AbstractParticipantReader {
     checkColumnsForMandatoryAttributesPresent();
   }
 
-  private HSSFRow skipToFirstDataRow(Iterator<HSSFRow> rowIter) {
-    HSSFRow row = null;
+  private Row skipToFirstDataRow(Iterator<Row> rowIter) {
+    Row row = null;
 
     while(true) {
       row = rowIter.next();
@@ -174,7 +175,7 @@ public class ParticipantReader extends AbstractParticipantReader {
   }
 
   @SuppressWarnings("unchecked")
-  private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, HSSFRow row) {
+  private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, Row row) {
     boolean rowContainsWhitespaceOnly = true;
 
     Iterator cellIter = row.cellIterator();
@@ -191,7 +192,7 @@ public class ParticipantReader extends AbstractParticipantReader {
     return rowContainsWhitespaceOnly;
   }
 
-  private Participant processParticipant(HSSFRow row, HSSFFormulaEvaluator evaluator) {
+  private Participant processParticipant(Row row, HSSFFormulaEvaluator evaluator) {
     Participant participant = new Participant();
 
     setParticipantEssentialAttributes(participant, row, evaluator);
@@ -200,7 +201,7 @@ public class ParticipantReader extends AbstractParticipantReader {
     return participant;
   }
 
-  private Appointment processAppointment(HSSFRow row, HSSFFormulaEvaluator evaluator) {
+  private Appointment processAppointment(Row row, HSSFFormulaEvaluator evaluator) {
     Appointment appointment = new Appointment();
     Data data = null;
 
@@ -215,7 +216,7 @@ public class ParticipantReader extends AbstractParticipantReader {
     return appointment;
   }
 
-  protected void setParticipantEssentialAttributes(Participant participant, HSSFRow row, HSSFFormulaEvaluator evaluator) {
+  protected void setParticipantEssentialAttributes(Participant participant, Row row, HSSFFormulaEvaluator evaluator) {
     participant.setRecruitmentType(RecruitmentType.ENROLLED);
 
     Data data = null;
@@ -255,21 +256,21 @@ public class ParticipantReader extends AbstractParticipantReader {
     }
   }
 
-  protected void setParticipantConfiguredAttributes(Participant participant, HSSFRow row, HSSFFormulaEvaluator evaluator) {
+  protected void setParticipantConfiguredAttributes(Participant participant, Row row, HSSFFormulaEvaluator evaluator) {
     for(ParticipantAttribute configuredAttribute : getParticipantMetadata().getConfiguredAttributes()) {
       if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToColumnIndexMap.containsKey(configuredAttribute.getName().toUpperCase())) {
-        HSSFCell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName().toUpperCase()));
+        Cell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName().toUpperCase()));
         setConfiguredAttribute(participant, configuredAttribute, cell, evaluator);
       }
     }
   }
 
-  private void setConfiguredAttribute(Participant participant, ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
+  private void setConfiguredAttribute(Participant participant, ParticipantAttribute attribute, Cell cell, HSSFFormulaEvaluator evaluator) {
     Data data = getAttributeValue(attribute, cell, evaluator);
     participant.setConfiguredAttributeValue(attribute.getName(), data);
   }
 
-  private Data getEssentialAttributeValue(String attributeName, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
+  private Data getEssentialAttributeValue(String attributeName, Cell cell, HSSFFormulaEvaluator evaluator) {
     ParticipantAttribute attribute = getParticipantMetadata().getEssentialAttribute(attributeName);
     Data data = getAttributeValue(attribute, cell, evaluator);
 
@@ -285,7 +286,7 @@ public class ParticipantReader extends AbstractParticipantReader {
    * @return attribute value (or <code>null</code> if none)
    * @throws IllegalArgumentException if the cell type is not compatible with the attribute type
    */
-  private Data getAttributeValue(ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
+  private Data getAttributeValue(ParticipantAttribute attribute, Cell cell, HSSFFormulaEvaluator evaluator) {
 
     if(cell == null || cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) return null;
     Data data = null;
@@ -340,7 +341,7 @@ public class ParticipantReader extends AbstractParticipantReader {
     return firstDataRowNumber;
   }
 
-  public HSSFRow getRow() {
+  public Row getRow() {
     return row;
   }
 }
