@@ -226,7 +226,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
   }
 
   /**
-   * Get the count of question to be answered, resolving conditions (does not check conditions on sub questions).
+   * Get the count of question to be answered, resolving conditions.
    * @return
    */
   private int getQuestionToBeAnsweredCount() {
@@ -236,6 +236,14 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     for(Question question : page.getQuestions()) {
       if(!question.hasDataSource() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
         count++;
+      }
+
+      if(question.hasSubQuestions()) {
+        for(Question subQuestion : question.getQuestions()) {
+          if(!subQuestion.hasDataSource() && subQuestion.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+            count++;
+          }
+        }
       }
     }
 
