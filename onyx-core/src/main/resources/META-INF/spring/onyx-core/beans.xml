@@ -139,26 +139,30 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
   </bean>
  
-  <bean id="participantRegistry" class="org.obiba.onyx.core.service.impl.FixedParticipantRegistry" scope="session"/>
-   
-  <!--
-  <bean id="participantRegistry" class="org.obiba.onyx.core.service.impl.RestfulParticipantRegistry" scope="session">
-    <property name="urlTemplate" value="${org.obiba.onyx.participant.registry.uriTemplate}" />
-    <property name="restTemplate">
-      <bean  class="org.springframework.web.client.RestTemplate">
-        <property name="messageConverters">
-          <list>
-            <bean class="org.obiba.onyx.core.service.impl.ParticipantHttpMessageConverter"/>
-          </list>
-        </property>
-        <property name="errorHandler">
-          <bean class="org.obiba.onyx.core.service.impl.RestfulParticipantRegistryErrorHandler"/>
+  <bean id="participantRegistry" class="org.obiba.onyx.spring.ParticipantRegistryFactoryBean" init-method="validateArgs">
+    <property name="participantRegistryType" value="${org.obiba.onyx.participant.registry.type}"/>
+    <property name="fixedBean">
+      <bean class="org.obiba.onyx.core.service.impl.FixedParticipantRegistry" />
+    </property>
+    <property name="restfulBean">
+      <bean class="org.obiba.onyx.core.service.impl.RestfulParticipantRegistry">
+        <property name="urlTemplate" value="${org.obiba.onyx.participant.registry.uriTemplate}" />
+        <property name="restTemplate">
+          <bean  class="org.springframework.web.client.RestTemplate">
+            <property name="messageConverters">
+              <list>
+                <bean class="org.obiba.onyx.core.service.impl.ParticipantHttpMessageConverter"/>
+              </list>
+            </property>
+            <property name="errorHandler">
+              <bean class="org.obiba.onyx.core.service.impl.RestfulParticipantRegistryErrorHandler"/>
+            </property>
+          </bean>
         </property>
       </bean>
     </property>
   </bean>
-  -->
-  
+   
   <bean id="stageInstanceAlgorithm" class="org.obiba.onyx.core.domain.stage.DefaultStageInstanceAlgorithm" />
 
   <bean id="purgeParticipantDataService" class="org.obiba.onyx.core.service.impl.PurgeParticipantDataServiceImpl">
