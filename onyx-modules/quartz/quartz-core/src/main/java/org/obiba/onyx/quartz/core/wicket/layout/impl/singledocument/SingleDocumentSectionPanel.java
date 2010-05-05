@@ -34,15 +34,12 @@ public class SingleDocumentSectionPanel extends Panel {
   public SingleDocumentSectionPanel(String id, IModel<Section> model) {
     super(id, model);
 
-    // Adding section label and variable name.
-    StringBuilder sectionVariableNameAndLabel = new StringBuilder();
+    // Adding section label or section name
     String sectionLabel = new QuestionnaireStringResourceModel(model.getObject(), "label").getString();
-    if(!sectionLabel.trim().equals("")) {
-      sectionVariableNameAndLabel.append(sectionLabel + " - ");
+    if(sectionLabel.trim().equals("")) {
+      sectionLabel = model.getObject().getName();
     }
-    sectionVariableNameAndLabel.append(model.getObject().getName());
-
-    add(new Label("sectionLabel", sectionVariableNameAndLabel.toString()).setEscapeModelStrings(false));
+    add(new Label("sectionLabel", sectionLabel).setEscapeModelStrings(false));
 
     add(new SingleDocumentPageView("pages", new AllPagesProvider(model)));
 

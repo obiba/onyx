@@ -29,9 +29,8 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
     Label questionLabel;
     add(questionLabel = new Label("label", new Model<String>(variableName)));
 
-    if(question.hasSubQuestions() && !question.isArrayOfSharedCategories()) {
-      questionLabel.setVisible(false);
-    }
+    // there is no variable on the parent question whether it is a shared category one or not
+    questionLabel.setVisible(!question.hasSubQuestions());
 
     add(new SingleDocumentQuestionContentPanel("content", questionModel));
   }

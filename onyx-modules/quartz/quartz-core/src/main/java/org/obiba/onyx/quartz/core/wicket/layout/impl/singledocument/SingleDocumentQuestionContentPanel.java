@@ -23,14 +23,15 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringModifierModel;
 import org.obiba.onyx.quartz.core.wicket.provider.AllChildQuestionsProvider;
+import org.obiba.onyx.quartz.core.wicket.provider.AllOpenAnswerDefinitionsProvider;
 import org.obiba.onyx.quartz.core.wicket.provider.AllQuestionCategoriesProvider;
-import org.obiba.onyx.quartz.core.wicket.provider.AllValidationOpenAnswerDefinitionsProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
 
 /**
@@ -78,8 +79,8 @@ public class SingleDocumentQuestionContentPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public CategoryFragment(String id, IModel<Question> questionModel) {
-      super(id, "categoryFragment", SingleDocumentQuestionContentPanel.this);
+    public CategoryFragment(String id, final IModel<Question> questionModel) {
+      super(id, "categoryFragment", SingleDocumentQuestionContentPanel.this, questionModel);
 
       IDataProvider<QuestionCategory> questionCategoryProvider;
       questionCategoryProvider = new AllQuestionCategoriesProvider(questionModel);
@@ -105,19 +106,14 @@ public class SingleDocumentQuestionContentPanel extends Panel {
         protected void populateItem(final Item<QuestionCategory> item) {
 
           final QuestionCategory questionCategory = item.getModelObject();
-          DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("validations", new AllValidationOpenAnswerDefinitionsProvider(item.getModel())) {
+          DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("validations", new AllOpenAnswerDefinitionsProvider(item.getModel())) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(Item<OpenAnswerDefinition> itemOp) {
               OpenAnswerDefinition openAnswerDefinition = itemOp.getModelObject();
-              OpenAnswerDefinition parentOpenAnswerDefinition = openAnswerDefinition.getParentOpenAnswerDefinition();
-              QuestionnaireUniqueVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
-              if(parentOpenAnswerDefinition == null) {
-                itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionCategory.getQuestion(), questionCategory, openAnswerDefinition))));
-              } else {
-                itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionCategory.getQuestion(), questionCategory, parentOpenAnswerDefinition))));
-              }
+              QuestionnaireVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
+              itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionModel.getObject(), questionCategory, openAnswerDefinition))));
               itemOp.add(new Label("validation", new Model<String>(getValidationString(openAnswerDefinition.getDataValidators()))));
             }
           };
@@ -172,51 +168,6 @@ public class SingleDocumentQuestionContentPanel extends Panel {
     public SharedCategoryFragment(String id, IModel<Question> questionModel) {
       super(id, "sharedCategoryFragment", SingleDocumentQuestionContentPanel.this);
 
-      IDataProvider<QuestionCategory> questionCategoryProvider;
-      questionCategoryProvider = new AllQuestionCategoriesProvider(questionModel);
-
-      DataView<QuestionCategory> repeater = new DataView<QuestionCategory>("categories", questionCategoryProvider) {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void populateItem(Item<QuestionCategory> item) {
-          item.add(new Label("code", new PropertyModel<String>(item.getModel(), "exportName")));
-          item.add(new Label("name", new PropertyModel<String>(item.getModel(), "category.name")));
-          item.add(new Label("escape", new Model<String>((item.getModelObject().getCategory().isEscape()) ? "x" : "")));
-        }
-
-      };
-      add(repeater);
-
-      DataView<QuestionCategory> questionCategories = new DataView<QuestionCategory>("questionCategories", questionCategoryProvider) {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void populateItem(Item<QuestionCategory> item) {
-
-          final String questionCategoryName = item.getModelObject().getName();
-          DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("validations", new AllValidationOpenAnswerDefinitionsProvider(item.getModel())) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void populateItem(Item<OpenAnswerDefinition> itemOp) {
-              OpenAnswerDefinition openAnswerDefinition = itemOp.getModelObject();
-              itemOp.add(new Label("label", new Model<String>(questionCategoryName + "." + itemOp.getModelObject().getName())));
-              itemOp.add(new Label("validation", new Model<String>(getValidationString(openAnswerDefinition.getDataValidators()))));
-            }
-          };
-          item.add(validations);
-        }
-      };
-      add(questionCategories);
-
-      if(questionCategoryProvider.size() > 0) {
-        this.setVisible(true);
-      } else {
-        this.setVisible(false);
-      }
-
       DataView<Question> subQuestions = new DataView<Question>("subQuestions", new AllChildQuestionsProvider(questionModel)) {
 
         private static final long serialVersionUID = 1L;
@@ -235,14 +186,14 @@ public class SingleDocumentQuestionContentPanel extends Panel {
     String validation = "";
 
     for(IDataValidator validator : validators) {
-      validation = "- validation: ";
+      validation = "- Validation: ";
       String classPath = validator.getValidator().getClass().getName();
       if(validator.getValidator() instanceof MinimumValidator) {
-        validation += "[" + classPath.substring(classPath.lastIndexOf(".") + 1) + "[" + ((MinimumValidator) validator.getValidator()).getMinimum() + "]]";
+        validation += ">= " + ((MinimumValidator) validator.getValidator()).getMinimum();
       } else if(validator.getValidator() instanceof MaximumValidator) {
-        validation += "[" + classPath.substring(classPath.lastIndexOf(".") + 1) + "[" + ((MaximumValidator) validator.getValidator()).getMaximum() + "]]";
+        validation += "<= " + ((MaximumValidator) validator.getValidator()).getMaximum();
       } else if(validator.getValidator() instanceof RangeValidator) {
-        validation += "[" + classPath.substring(classPath.lastIndexOf(".") + 1) + "[" + ((RangeValidator) validator.getValidator()).getMinimum() + ", " + ((RangeValidator) validator.getValidator()).getMaximum() + "]]";
+        validation += ">= " + ((RangeValidator) validator.getValidator()).getMinimum() + "; <= " + ((RangeValidator) validator.getValidator()).getMaximum();
       } else {
         validation += validator.getValidator().toString();
       }

@@ -17,11 +17,11 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
-public class AllValidationOpenAnswerDefinitionsProvider extends AbstractQuestionnaireElementProvider<OpenAnswerDefinition, QuestionCategory> {
+public class AllOpenAnswerDefinitionsProvider extends AbstractQuestionnaireElementProvider<OpenAnswerDefinition, QuestionCategory> {
 
   private static final long serialVersionUID = 929587284672308157L;
 
-  public AllValidationOpenAnswerDefinitionsProvider(IModel<QuestionCategory> model) {
+  public AllOpenAnswerDefinitionsProvider(IModel<QuestionCategory> model) {
     super(model);
   }
 

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
@@ -28,6 +29,17 @@ public class AllQuestionCategoriesProvider extends AbstractQuestionnaireElementP
 
   @Override
   protected List<QuestionCategory> getElementList() {
-    return getProviderElement().getQuestionCategories();
+    Question question = getProviderElement();
+    List<QuestionCategory> categories;
+
+    if(question.isArrayOfSharedCategories()) {
+      categories = new ArrayList<QuestionCategory>();
+    } else if(question.getParentQuestion() != null && question.getParentQuestion().isArrayOfSharedCategories()) {
+      categories = question.getParentQuestion().getQuestionCategories();
+    } else
+      categories = question.getQuestionCategories();
+
+    return categories;
   }
+
 }

@@ -7,6 +7,7 @@
     
     	body {
     		width: 900px;
+    		font-family:arial,FreeSans,Helvetica,sans-serif;
     	}
     	
   		div.title {
@@ -52,6 +53,16 @@
   		div.page > div.label:before {
 	    	content: "Page: ";
 	    }
+	    
+  		div.question > div.label{
+  			border-top: dotted 1px;
+  			padding-bottom:5px;
+  			padding-top:5px;
+  		}
+  		
+  		div.question > div.instructions{
+  			font-size: smaller;
+  		}
   		
   		div.question > div.question-details {
   			border: solid 2px;
@@ -62,7 +73,7 @@
   		}
   		
   		div.question-details > div.title {
-  			font-size:1.1667em;
+  			font-size:1em;
   			margin-left: 5px;
   			margin-right: 20px;
   			font-weight: bold;
@@ -73,7 +84,7 @@
   		}
   		
   		div.validation > div.title {
-  			font-size:1.1667em;
+  			font-size:1em;
   			margin-left: 5px;
   			font-weight: bold;
   		}
