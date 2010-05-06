@@ -4,15 +4,17 @@
       <div class="obiba-content-region">
         <h1>Developer Tools</h1>
         <div>
-          <button class="obiba-button ui-corner-all" wicket:id="dumpLink">Dump Variables & ValueSets</button> Dump variables and valuesets to <span wicket:id="dumpFilename"></span>. If the file already exists, it will be overwritten.
-        </div>
-        <br/>
-        <div>
-          <button class="obiba-button ui-corner-all" wicket:id="catalogueLink">Download Variables</button> Download the variables catalogue in a Excel file.
+          <form wicket:id="dumpForm">
+            <p>Download the variables and values in the selected format:</p>
+            Format: <select wicket:id="format"></select>
+            <label><input type="checkbox" wicket:id="values" />with values</label>
+            &nbsp;<button class="obiba-button ui-corner-all" wicket:id="dumpLink">Download</button><span wicket:id="feedback"></span>  
+          </form>
         </div>
         <br />
         <div>
-          <button class="obiba-button ui-corner-all" wicket:id="clearCacheLink">Clear Hibernate Query Cache</button> Empties the Hibernate query result cache.
+          <p>Hibernate query result:</p>
+          <button class="obiba-button ui-corner-all" wicket:id="refreshStatsLink">Refresh Stats</button>&nbsp;<button class="obiba-button ui-corner-all" wicket:id="clearCacheLink">Clear Cache</button>
         </div>
         <br />
         <div wicket:id="hibernateStats" />

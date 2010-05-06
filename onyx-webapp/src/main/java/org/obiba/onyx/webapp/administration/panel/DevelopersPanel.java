@@ -11,13 +11,19 @@ package org.obiba.onyx.webapp.administration.panel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
+import org.apache.wicket.IClusterable;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -56,63 +62,52 @@ public class DevelopersPanel extends Panel {
   public DevelopersPanel(String id) {
     super(id);
 
-    AjaxLink dumpLink = new AjaxLink("dumpLink") {
+    final DumpInput dumpInput = new DumpInput();
+    setDefaultModel(new CompoundPropertyModel<DumpInput>(dumpInput));
+
+    Form<?> dumpForm = new Form("dumpForm");
+    add(dumpForm);
+
+    dumpForm.add(new DropDownChoice<String>("format", Arrays.asList(new String[] { "XML", "Excel" })));
+    dumpForm.add(new CheckBox("values"));
+    dumpForm.add(new FeedbackPanel("feedback"));
+
+    SubmitLink dumpLink = new SubmitLink("dumpLink", dumpForm) {
+
+      private static final long serialVersionUID = 109761762415267865L;
+
+      @Override
+      public void onSubmit() {
+        try {
+          File dumpFile = dump(dumpInput);
+          getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(new TmpFileResourceStream(dumpFile) {
+            public String getContentType() {
+              if(dumpInput.format.equals("XML")) {
+                return "application/zip";
+              }
+              return "application/vnd.ms-excel";
+            }
+          }, dumpFile.getName()));
+        } catch(Exception e) {
+          log.error("Magma dump failed.", e);
+          error(e.getMessage());
+        }
+      }
+
+    };
+    dumpForm.add(dumpLink);
+
+    AjaxLink refreshStatsLink = new AjaxLink("refreshStatsLink") {
 
       private static final long serialVersionUID = 109761762415267865L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        try {
-          dump();
-        } catch(IOException e) {
-          throw new RuntimeException(e);
-        }
         target.addComponent(DevelopersPanel.this.get("hibernateStats"));
       }
 
     };
-    add(dumpLink);
-    add(new Label("dumpFilename", new PropertyModel<String>(this, "dumpFile.absolutePath")));
-
-    Link catalogueLink = new Link("catalogueLink") {
-      @Override
-      public void onClick() {
-
-        try {
-          File catalogueFile = getCatalogueFile();
-          if(catalogueFile.exists()) {
-            catalogueFile.delete();
-          }
-
-          ExcelDatasource target;
-          MagmaEngine.get().addDatasource(target = new ExcelDatasource("onyx-catalogue", catalogueFile));
-          try {
-            DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyValues().build();
-            for(Datasource ds : MagmaEngine.get().getDatasources()) {
-              if(ds != target) { // Don't copy target datasource on target datasource
-                copier.copy(ds, target);
-              }
-            }
-          } finally {
-            try {
-              MagmaEngine.get().removeDatasource(target);
-            } catch(RuntimeException e) {
-              log.warn("Exception thrown while removing datasource. May be caused by ", e);
-            }
-          }
-
-          getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(new TmpFileResourceStream(catalogueFile) {
-            public String getContentType() {
-              return "application/vnd.ms-excel";
-            }
-          }, catalogueFile.getName()));
-        } catch(Exception e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-    };
-    add(catalogueLink);
+    add(refreshStatsLink);
 
     AjaxLink clearCacheLink = new AjaxLink("clearCacheLink") {
 
@@ -134,17 +129,29 @@ public class DevelopersPanel extends Panel {
     return ((OnyxApplication) OnyxApplication.get()).isDevelopmentMode();
   }
 
-  private void dump() throws IOException {
+  private File dump(DumpInput dumpInput) throws IOException {
 
-    File dumpFile = getDumpFile();
+    File dumpFile;
+    Datasource target;
+
+    if(dumpInput.format.equals("XML")) {
+      dumpFile = getDumpXMLFile();
+      target = new FsDatasource("magma-dump", dumpFile);
+    } else {
+      dumpFile = getDumpExcelFile();
+      target = new ExcelDatasource("magma-dump", dumpFile);
+    }
     if(dumpFile.exists()) {
       dumpFile.delete();
     }
 
-    FsDatasource target;
-    MagmaEngine.get().addDatasource(target = new FsDatasource("magma-dump", dumpFile));
+    MagmaEngine.get().addDatasource(target);
     try {
-      DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withThroughtputListener().withListener(new SessionClearingListener()).build();
+      DatasourceCopier.Builder builder = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withThroughtputListener().withListener(new SessionClearingListener());
+      if(!dumpInput.values) {
+        builder.dontCopyValues();
+      }
+      DatasourceCopier copier = builder.build();
       for(Datasource ds : MagmaEngine.get().getDatasources()) {
         if(ds != target) { // Don't copy target datasource on target datasource
           copier.copy(ds, target);
@@ -157,14 +164,16 @@ public class DevelopersPanel extends Panel {
         log.warn("Exception thrown while removing datasource. May be caused by ", e);
       }
     }
+
+    return dumpFile;
   }
 
-  public File getDumpFile() {
-    return new File(System.getProperty("java.io.tmpdir"), "magma-dump.zip");
+  public File getDumpXMLFile() {
+    return new File(System.getProperty("java.io.tmpdir"), "onyx.zip");
   }
 
-  public File getCatalogueFile() {
-    return new File(System.getProperty("java.io.tmpdir"), "onyx-catalogue.xlsx");
+  public File getDumpExcelFile() {
+    return new File(System.getProperty("java.io.tmpdir"), "onyx.xlsx");
   }
 
   private class SessionClearingListener implements DatasourceCopyEventListener {
@@ -182,6 +191,12 @@ public class DevelopersPanel extends Panel {
     public void onVariableCopy(Variable variable) {
     }
 
+  }
+
+  private static class DumpInput implements IClusterable {
+    public Boolean values = Boolean.FALSE;
+
+    public String format = "Excel";
   }
 
   private class TmpFileResourceStream extends FileResourceStream {
