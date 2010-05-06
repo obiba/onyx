@@ -14,6 +14,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.obiba.magma.MagmaEngine;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.wicket.provider.AllSectionsProvider;
@@ -27,6 +28,7 @@ public class SingleDocumentQuestionnairePage extends WebPage {
   @SuppressWarnings("serial")
   public SingleDocumentQuestionnairePage(IModel<Questionnaire> model) {
     super(model);
+    new MagmaEngine();
 
     add(new Label("title", new PropertyModel<String>(model, "name")));
 

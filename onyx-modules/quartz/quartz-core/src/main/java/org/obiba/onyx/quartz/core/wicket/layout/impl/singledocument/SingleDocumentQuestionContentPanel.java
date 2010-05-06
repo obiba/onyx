@@ -23,6 +23,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
+import org.obiba.magma.type.BooleanType;
+import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -104,17 +106,25 @@ public class SingleDocumentQuestionContentPanel extends Panel {
 
         @Override
         protected void populateItem(final Item<QuestionCategory> item) {
-
           final QuestionCategory questionCategory = item.getModelObject();
-          DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("validations", new AllOpenAnswerDefinitionsProvider(item.getModel())) {
+          QuestionnaireVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
+
+          Label label;
+          item.add(label = new Label("category", new Model<String>(variableNameResolver.variableName(questionModel.getObject(), questionCategory))));
+          label.setVisible(questionModel.getObject().isMultiple());
+          item.add(label = new Label("type", "[" + BooleanType.get().getName() + "]"));
+          label.setVisible(questionModel.getObject().isMultiple());
+
+          DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("opens", new AllOpenAnswerDefinitionsProvider(item.getModel())) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(Item<OpenAnswerDefinition> itemOp) {
-              OpenAnswerDefinition openAnswerDefinition = itemOp.getModelObject();
+              OpenAnswerDefinition oad = itemOp.getModelObject();
               QuestionnaireVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
-              itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionModel.getObject(), questionCategory, openAnswerDefinition))));
-              itemOp.add(new Label("validation", new Model<String>(getValidationString(openAnswerDefinition.getDataValidators()))));
+              itemOp.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionModel.getObject(), questionCategory, oad))));
+              itemOp.add(new Label("type", "[" + DataTypes.valueTypeFor(oad.getDataType()).getName() + "]"));
+              itemOp.add(new Label("validation", new Model<String>(getValidationString(oad.getDataValidators()))));
             }
           };
           item.add(validations);
