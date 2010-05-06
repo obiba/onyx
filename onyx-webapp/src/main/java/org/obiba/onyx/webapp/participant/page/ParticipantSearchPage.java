@@ -544,6 +544,8 @@ public class ParticipantSearchPage extends BasePage {
       view.add(updateParticipantsLink);
 
       final Dialog participantRegistryDialog = DialogBuilder.buildDialog("participant-registry-dialog", new ResourceModel("ParticipantRegistryDialogTitle"), participantRegistryPanel = new ParticipantRegistryPanel("content")).setOptions(Option.CANCEL_OPTION).getDialog();
+      participantRegistryDialog.setInitialHeight(36);
+      participantRegistryDialog.setHeightUnit("em");
 
       participantRegistryDialog.setWindowClosedCallback(new WindowClosedCallback() {
 

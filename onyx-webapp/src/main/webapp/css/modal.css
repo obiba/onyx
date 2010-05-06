@@ -198,7 +198,7 @@ div.wicket-modal div.onyx .printable-report-panel {
 }
 
 div.wicket-modal div.onyx .participant-registry-search-panel {
-  height: 29.2em;
+  height: 31.7em;
   width: 43.6667em;
   margin-left: 0.8333em;
 }
@@ -212,6 +212,13 @@ div.wicket-modal div.onyx .participant-registry-search-panel {
     margin-top: 0.4em;
     margin-bottom: 0.4em;
     height: 0.5em;
+}
+
+.participant-view-panel {
+  height: 26.2em;
+  width: 46.7em;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .checkboxColumn {

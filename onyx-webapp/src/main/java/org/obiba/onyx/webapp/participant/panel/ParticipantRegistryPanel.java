@@ -37,6 +37,7 @@ public class ParticipantRegistryPanel extends Panel {
     participantRegistrySearchPanel = new ParticipantRegistrySearchPanel("participant-registry-search-panel");
     add(participantRegistrySearchPanel);
     participantPanel = new ParticipantPanel("participant-view-panel", model);
+    participantPanel.add(new AttributeModifier("class", true, new Model<String>("participant-view-panel")));
     add(participantPanel);
   }
 
@@ -51,6 +52,7 @@ public class ParticipantRegistryPanel extends Panel {
   public Participant lookUpParticipant() {
     lastedLookedUpParticipant = participantRegistrySearchPanel.lookupParticipant();
     participantPanel = new ParticipantPanel("participant-view-panel", new Model<Participant>(lastedLookedUpParticipant));
+    participantPanel.add(new AttributeModifier("class", true, new Model<String>("participant-view-panel")));
     addOrReplace(participantPanel);
     return null;
   }
@@ -70,6 +72,7 @@ public class ParticipantRegistryPanel extends Panel {
 
   public void resetResults() {
     participantPanel = new ParticipantPanel("participant-view-panel", emptyParticipantModel());
+    participantPanel.add(new AttributeModifier("class", true, new Model<String>("participant-view-panel")));
     addOrReplace(participantPanel);
   }
 
