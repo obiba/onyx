@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
 import java.util.List;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -109,11 +110,11 @@ public class SingleDocumentQuestionContentPanel extends Panel {
           final QuestionCategory questionCategory = item.getModelObject();
           QuestionnaireVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
 
-          Label label;
-          item.add(label = new Label("category", new Model<String>(variableNameResolver.variableName(questionModel.getObject(), questionCategory))));
-          label.setVisible(questionModel.getObject().isMultiple());
-          item.add(label = new Label("type", "[" + BooleanType.get().getName() + "]"));
-          label.setVisible(questionModel.getObject().isMultiple());
+          WebMarkupContainer category = new WebMarkupContainer("category");
+          item.add(category);
+          category.setVisible(questionModel.getObject().isMultiple());
+          category.add(new Label("label", new Model<String>(variableNameResolver.variableName(questionModel.getObject(), questionCategory))));
+          category.add(new Label("type", "[" + BooleanType.get().getName() + "]"));
 
           DataView<OpenAnswerDefinition> validations = new DataView<OpenAnswerDefinition>("opens", new AllOpenAnswerDefinitionsProvider(item.getModel())) {
             private static final long serialVersionUID = 1L;
