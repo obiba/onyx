@@ -197,7 +197,7 @@ public class ExperimentalConditionForm extends Panel {
 
       SpringStringResourceModel fieldNameModel = new SpringStringResourceModel(attribute.getName(), attribute.getName());
 
-      DataField formComponent = new DataField("value", new PropertyModel<ExperimentalConditionValue>(experimentalConditionValueModel, "data"), attribute.getType());
+      DataField formComponent = new DataField("value", new PropertyModel<Data>(experimentalConditionValueModel, "data"), attribute.getType());
       formComponent.setRequired(true);
       formComponent.setLabel(fieldNameModel);
       if(attribute.getType().equals(DataType.TEXT)) {
@@ -242,7 +242,7 @@ public class ExperimentalConditionForm extends Panel {
 
       SpringStringResourceModel fieldNameModel = new SpringStringResourceModel(attribute.getName(), attribute.getName());
 
-      DataField formComponent = new DataField("value", new PropertyModel<ExperimentalConditionValue>(experimentalConditionValueModel, "data"), attribute.getType(), allowedDataList, new ChoiceRenderer<Data>() {
+      DataField formComponent = new DataField("value", new PropertyModel<Data>(experimentalConditionValueModel, "data"), attribute.getType(), allowedDataList, new ChoiceRenderer<Data>() {
         private static final long serialVersionUID = 1L;
 
         @Override

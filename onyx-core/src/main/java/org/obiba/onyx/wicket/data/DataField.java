@@ -56,7 +56,7 @@ public class DataField extends Panel {
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
-  public DataField(String id, IModel model, final DataType dataType) {
+  public DataField(String id, IModel<Data> model, final DataType dataType) {
     this(id, model, dataType, "", null, null);
   }
 
@@ -71,7 +71,7 @@ public class DataField extends Panel {
    * @param rows The number rows displayed by the component (if rows == 1 an html input field is used, if rows > 1 an
    * html textarea will be displayed).
    */
-  public DataField(String id, IModel model, DataType dataType, String unit, Integer size, Integer rows) {
+  public DataField(String id, IModel<Data> model, DataType dataType, String unit, Integer size, Integer rows) {
     super(id, model);
 
     if(rows != null && rows > 1 && dataType.equals(DataType.TEXT)) {
@@ -103,7 +103,7 @@ public class DataField extends Panel {
    * @param choices
    * @param unit
    */
-  public DataField(String id, IModel model, final DataType dataType, IModel choices, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, IModel choices, String unit) {
     this(id, model, dataType, choices, null, unit);
   }
 
@@ -116,7 +116,7 @@ public class DataField extends Panel {
    * @param renderer
    * @param unit
    */
-  public DataField(String id, IModel model, final DataType dataType, IModel choices, IChoiceRenderer renderer, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, IModel choices, IChoiceRenderer renderer, String unit) {
     super(id);
 
     input = new SelectFragment("input", model, dataType, choices, renderer);
@@ -133,8 +133,7 @@ public class DataField extends Panel {
    * @param choices
    * @param unit
    */
-  @SuppressWarnings("unchecked")
-  public DataField(String id, IModel model, final DataType dataType, List choices, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, List choices, String unit) {
     this(id, model, dataType, choices, null, unit);
   }
 
@@ -147,8 +146,7 @@ public class DataField extends Panel {
    * @param renderer
    * @param unit
    */
-  @SuppressWarnings("unchecked")
-  public DataField(String id, IModel model, final DataType dataType, List choices, IChoiceRenderer renderer, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, List choices, IChoiceRenderer renderer, String unit) {
     super(id);
 
     input = new SelectFragment("input", model, dataType, choices, renderer);
@@ -189,7 +187,7 @@ public class DataField extends Panel {
    * Set the model of the underlying field.
    * @param data
    */
-  public void setFieldModel(IModel model) {
+  public void setFieldModel(IModel<Data> model) {
     input.getField().setModel(model);
   }
 
@@ -393,8 +391,8 @@ public class DataField extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private FormComponent createTextArea(IModel<String> model, final DataType dataType, Integer columns, Integer rows) {
-    FormComponent field = new TextArea<String>("field", model) {
+  private FormComponent createTextArea(IModel model, final DataType dataType, Integer columns, Integer rows) {
+    FormComponent field = new TextArea("field", model) {
 
       @SuppressWarnings("unchecked")
       @Override
@@ -415,8 +413,8 @@ public class DataField extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private FormComponent createTextField(IModel<String> model, final DataType dataType) {
-    FormComponent field = new TextField<String>("field", model) {
+  private FormComponent createTextField(IModel model, final DataType dataType) {
+    FormComponent field = new TextField("field", model, String.class) {
 
       @SuppressWarnings("unchecked")
       @Override
