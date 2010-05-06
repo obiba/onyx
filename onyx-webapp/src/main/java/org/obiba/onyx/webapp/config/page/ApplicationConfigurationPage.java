@@ -106,11 +106,9 @@ public class ApplicationConfigurationPage extends BasePage {
       add(siteNo.add(StringValidator.maximumLength(30)));
 
       TextField identifierPrefix = new TextField("identifierPrefix", new PropertyModel(model, "config.identifierPrefix"));
-      identifierPrefix.add(new RequiredFormFieldBehavior());
       add(identifierPrefix);
 
       TextField firstIdentifier = new TextField("firstIdentifier", new PropertyModel(model, "config.firstIdentifier"));
-      firstIdentifier.add(new RequiredFormFieldBehavior());
       add(firstIdentifier);
 
       TextField administratorName = new TextField("lastName", new PropertyModel(model, "user.lastName"));

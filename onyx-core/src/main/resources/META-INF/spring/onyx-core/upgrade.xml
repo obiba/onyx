@@ -62,6 +62,9 @@
           <property name="appliesTo" value="1.6.1" />
         </bean>
         <ref bean="onyx-dataUpgrade-1.6.1" />
+        <bean id="onyx-schemaUpgrade-1.7.0" parent="updateOnyxSchema">
+          <property name="appliesTo" value="1.7.0" />
+        </bean>
       </list>
     </property>
     <property name="stepListeners">

@@ -28,10 +28,8 @@ public class ApplicationConfiguration extends AbstractEntity {
   @Column(nullable = false)
   private String siteNo;
 
-  @Column(nullable = false)
   private String identifierPrefix;
 
-  @Column(nullable = false)
   private Long firstIdentifier;
 
   /**
