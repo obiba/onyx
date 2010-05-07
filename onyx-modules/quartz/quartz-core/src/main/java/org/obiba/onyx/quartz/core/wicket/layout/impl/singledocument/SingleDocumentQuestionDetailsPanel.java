@@ -27,7 +27,7 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
     Question question = (Question) getDefaultModelObject();
     QuestionnaireUniqueVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
     add(new Label("label", variableNameResolver.variableName(question)));
-    if(question.isBoilerPlate() || question.hasSubQuestions()) {
+    if(question.hasSubQuestions()) {
       add(new Label("type", "[" + BooleanType.get().getName() + "]"));
     } else {
       add(new Label("type", "[" + TextType.get().getName() + "]"));
