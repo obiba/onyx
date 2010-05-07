@@ -67,7 +67,11 @@ public class SingleDocumentSectionPanel extends Panel {
 
     @Override
     protected void populateItem(Item<Page> item) {
-      item.add(new Label("pageLabel", item.getModelObject().getName()));
+      String label = new QuestionnaireStringResourceModel(item.getModelObject(), "label").getString();
+      if(label.trim().equals("")) {
+        label = item.getModelObject().getName();
+      }
+      item.add(new Label("pageLabel", label));
       item.add(new DataView<Question>("questions", new AllQuestionsProvider(item.getModel())) {
 
         private static final long serialVersionUID = 1601751763143168458L;
