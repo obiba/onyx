@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
+import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
@@ -26,7 +27,11 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
     Question question = (Question) getDefaultModelObject();
     QuestionnaireUniqueVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
     add(new Label("label", variableNameResolver.variableName(question)));
-    add(new Label("type", "[" + TextType.get().getName() + "]"));
+    if(question.isBoilerPlate() || question.hasSubQuestions()) {
+      add(new Label("type", "[" + BooleanType.get().getName() + "]"));
+    } else {
+      add(new Label("type", "[" + TextType.get().getName() + "]"));
+    }
 
     add(new SingleDocumentQuestionContentPanel("content", questionModel));
   }
