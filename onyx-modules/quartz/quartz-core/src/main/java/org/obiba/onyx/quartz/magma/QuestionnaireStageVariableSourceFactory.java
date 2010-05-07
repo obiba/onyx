@@ -264,7 +264,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     private void buildParentPlaceholderVariable() {
       Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), "Participant");
-      questionVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
+      questionVariable.accept(new QuestionAttributesBuilderVisitor(question, true, false)).accept(new QuestionBuilderVisitor(question));
+      builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
     }
 
     private void buildCategoricalVariable() {
@@ -274,7 +275,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         questionVariable.repeatable();
       }
 
-      questionVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionBuilderVisitor(question));
+      questionVariable.accept(new QuestionAttributesBuilderVisitor(question, false, question.isBoilerPlate())).accept(new QuestionBuilderVisitor(question));
 
       for(QuestionCategory c : categories) {
         org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
@@ -282,11 +283,12 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         questionVariable.addCategory(cb.build());
       }
 
-      // Boiler plate questions are ignored. They have no answers so there is no value in exporting them.
-      if(!question.isBoilerPlate()) {
-        // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
-        // List<CategoryAnswer> when the variable is repeatable.
+      // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
+      // List<CategoryAnswer> when the variable is repeatable.
+      if(question.isBoilerPlate() == false) {
         builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
+      } else {
+        builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
       }
 
       for(QuestionCategory questionCategory : categories) {
@@ -340,8 +342,18 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     private Question question;
 
-    public QuestionAttributesBuilderVisitor(Question question) {
+    private boolean parentPlaceholder;
+
+    private boolean boilerplate;
+
+    public QuestionAttributesBuilderVisitor(Question question, boolean parentPlaceholder, boolean boilerplate) {
       this.question = question;
+      this.parentPlaceholder = parentPlaceholder;
+      this.boilerplate = boilerplate;
+    }
+
+    public QuestionAttributesBuilderVisitor(Question question) {
+      this(question, false, false);
     }
 
     protected Question getQuestion() {
@@ -375,6 +387,15 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         builder.addAttribute("questionNumber", question.getNumber());
       }
 
+      if(parentPlaceholder) {
+        Attribute parentQuestionAttribute = Attribute.Builder.newAttribute("parentQuestion").withValue(BooleanType.get().trueValue()).build();
+        builder.addAttribute(parentQuestionAttribute);
+      }
+
+      if(boilerplate) {
+        Attribute boilerplateAttribute = Attribute.Builder.newAttribute("boilerplate").withValue(BooleanType.get().trueValue()).build();
+        builder.addAttribute(boilerplateAttribute);
+      }
     }
 
   }
