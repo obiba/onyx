@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
@@ -26,13 +25,8 @@ public class SingleDocumentQuestionDetailsPanel extends QuestionPanel {
 
     Question question = (Question) getDefaultModelObject();
     QuestionnaireUniqueVariableNameResolver variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
-    String variableName = variableNameResolver.variableName(question);
-    Label label;
-    add(label = new Label("label", new Model<String>(variableName)));
-    // there is no variable on the parent question whether it is a shared category one or not
-    label.setVisible(!question.hasSubQuestions());
-    add(label = new Label("type", "[" + TextType.get().getName() + "]"));
-    label.setVisible(!question.hasSubQuestions());
+    add(new Label("label", variableNameResolver.variableName(question)));
+    add(new Label("type", "[" + TextType.get().getName() + "]"));
 
     add(new SingleDocumentQuestionContentPanel("content", questionModel));
   }
