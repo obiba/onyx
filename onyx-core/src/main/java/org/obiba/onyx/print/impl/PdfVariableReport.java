@@ -15,12 +15,15 @@ import java.util.Locale;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchValueTableException;
 import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.MagmaEngineReferenceResolver;
+import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.magma.DataValueConverter;
@@ -38,8 +41,6 @@ public class PdfVariableReport extends PdfReport {
 
   private static final Logger log = LoggerFactory.getLogger(VariableDataSource.class);
 
-  private static final String PARTICIPANT_TABLE_NAME = "Participants";
-
   //
   // Instance Variables
   //
@@ -52,32 +53,28 @@ public class PdfVariableReport extends PdfReport {
 
   @Override
   protected InputStream getReport(Locale locale) {
-    // Get the Participant ValueTable.
-    ValueTable onyxParticipantTable = null;
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
-    }
+    MagmaEngineReferenceResolver resolver = MagmaEngineVariableResolver.valueOf(pdfVariablePath);
+    Datasource datasource = MagmaEngine.get().getDatasources().iterator().next();
 
-    if(onyxParticipantTable != null) {
-      String magmaVariableName = pdfVariablePath.replaceFirst("Onyx.", "");
-      try {
-        // Get the currently interviewed participant's ValueSet.
-        VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
-        ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
+    try {
+      ValueTable table = datasource.getValueTable(resolver.getTableName());
+      VariableValueSource variableValueSource = table.getVariableValueSource(resolver.getVariableName());
 
-        // Get the PDF data.
-        VariableValueSource variableValueSource = onyxParticipantTable.getVariableValueSource(magmaVariableName);
-        Value pdfValue = variableValueSource.getValue(valueSet);
-        if(!pdfValue.isNull()) {
-          Data pdfData = DataValueConverter.valueToData(pdfValue);
-          return new ByteArrayInputStream((byte[]) pdfData.getValue());
-        }
+      // Get the currently interviewed participant's ValueSet.
+      VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
+      ValueSet valueSet = table.getValueSet(entity);
 
-      } catch(NoSuchVariableException noSuchVariableEx) {
-        log.error("No Magma variable found for the following name: {}", magmaVariableName);
+      // Get the PDF data.
+      Value pdfValue = variableValueSource.getValue(valueSet);
+      if(!pdfValue.isNull()) {
+        Data pdfData = DataValueConverter.valueToData(pdfValue);
+        return new ByteArrayInputStream((byte[]) pdfData.getValue());
       }
-    } else {
-      log.error("No Magma ValueTable found for the following name: {}", PARTICIPANT_TABLE_NAME);
+
+    } catch(NoSuchVariableException e) {
+      log.error("No variable found for the following name: {}", e.getName());
+    } catch(NoSuchValueTableException e) {
+      log.error("No ValueTable found for the following name: {}", resolver.getTableName());
     }
 
     return null;
