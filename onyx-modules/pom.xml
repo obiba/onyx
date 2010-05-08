@@ -12,7 +12,7 @@
   <parent>
     <artifactId>onyx</artifactId>
     <groupId>org.obiba.onyx</groupId>
-    <version>1.7.0</version>
+    <version>1.7-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
