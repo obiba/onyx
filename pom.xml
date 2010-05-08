@@ -827,8 +827,8 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/trunk</developerConnection>
+    <connection>scm:svn:http://svn.obiba.org/onyx/branches/onyx-1.7.x</connection>
+    <developerConnection>scm:svn:https://svn.obiba.org/onyx/branches/onyx-1.7.x</developerConnection>
   </scm>
 
   <properties>
