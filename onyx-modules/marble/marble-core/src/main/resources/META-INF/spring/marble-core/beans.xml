@@ -80,7 +80,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
       </bean>
     </property>
     <property name="readyConditionConfigPath" value="${org.obiba.onyx.marble.path}" />
-    <property name="pdfVariablePath" value="Consent.pdfForm" />
+    <property name="pdfVariablePath" value="Consent:pdfForm" />
     <property name="dataCollectionMode">
       <bean class="org.obiba.onyx.core.data.VariableDataSource">
         <constructor-arg value="Consent:mode" />
