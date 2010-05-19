@@ -68,7 +68,7 @@ public class HashedDataSource implements IDataSource {
     md.update(dataBytes);
     byte[] digest = md.digest();
 
-    return HexUtil.bytesToHex(digest);
+    return HexUtil.bytesToHex(digest).toUpperCase();
   }
 
   public String getUnit() {
