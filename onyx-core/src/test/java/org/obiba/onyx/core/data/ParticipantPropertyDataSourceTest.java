@@ -55,6 +55,17 @@ public class ParticipantPropertyDataSourceTest {
     Assert.assertEquals("years", unit);
   }
 
+  @Test
+  public void testParticipantPropertyDataSourceWithNullValue() {
+    Participant participant = createParticipant();
+    participant.setBirthDate(null);
+    ParticipantPropertyDataSource participantPropertyDataSource = new ParticipantPropertyDataSource("birthDate");
+    Data data = participantPropertyDataSource.getData(participant);
+
+    Assert.assertEquals(DataType.DATE, data.getType());
+    Assert.assertEquals(participant.getBirthDate(), data.getValue());
+  }
+
   private Participant createParticipant() {
     Participant p = new Participant();
     p.setBarcode("1187432");

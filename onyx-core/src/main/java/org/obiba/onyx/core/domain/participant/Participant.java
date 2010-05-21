@@ -177,10 +177,11 @@ public class Participant extends AbstractEntity {
 
   @Transient
   public Long getAge() {
+    if(birthDate == null) return 0l;
     Calendar todayCal = Calendar.getInstance();
     Calendar birthCal = Calendar.getInstance();
 
-    birthCal.setTime((Date) getBirthDate());
+    birthCal.setTime(birthDate);
     Long age = todayCal.getTimeInMillis() - birthCal.getTimeInMillis();
     Double ageDouble = SI.MILLI(SI.SECOND).getConverterTo(NonSI.YEAR).convert(Double.valueOf(age.toString()));
     ageDouble = Math.floor(ageDouble);
@@ -191,6 +192,7 @@ public class Participant extends AbstractEntity {
 
   @Transient
   public long getBirthYear() {
+    if(birthDate == null) return 0;
     Calendar cal = Calendar.getInstance();
     cal.setTime(birthDate);
     return (long) cal.get(Calendar.YEAR);
@@ -198,6 +200,7 @@ public class Participant extends AbstractEntity {
 
   @Transient
   public long getBirthMonth() {
+    if(birthDate == null) return 0;
     Calendar cal = Calendar.getInstance();
     cal.setTime(birthDate);
     return (long) cal.get(Calendar.MONTH);
@@ -205,6 +208,7 @@ public class Participant extends AbstractEntity {
 
   @Transient
   public long getBirthDay() {
+    if(birthDate == null) return 0;
     Calendar cal = Calendar.getInstance();
     cal.setTime(birthDate);
     return (long) cal.get(Calendar.DAY_OF_MONTH);

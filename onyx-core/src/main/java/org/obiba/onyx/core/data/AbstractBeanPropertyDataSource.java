@@ -12,6 +12,7 @@ package org.obiba.onyx.core.data;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.util.Date;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
@@ -34,23 +35,39 @@ public abstract class AbstractBeanPropertyDataSource implements IDataSource {
 
     if(object == null) return null;
 
+    Data data = null;
     try {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(object.getClass()).getPropertyDescriptors()) {
         if(property.equals(pd.getName())) {
           Object propertyValue = pd.getReadMethod().invoke(object);
 
-          if(propertyValue.getClass().isEnum()) {
+          if(propertyValue != null && propertyValue.getClass().isEnum()) {
             propertyValue = propertyValue.toString();
           }
 
-          return DataBuilder.build((Serializable) propertyValue);
+          if(propertyValue != null) {
+            data = DataBuilder.build((Serializable) propertyValue);
+          } else {
+            Class<?> valueClass = pd.getReadMethod().getReturnType();
+            if(valueClass.isAssignableFrom(Boolean.class)) {
+              data = DataBuilder.buildBoolean((Boolean) null);
+            } else if(valueClass.isAssignableFrom(Date.class) || valueClass.isAssignableFrom(java.sql.Date.class)) {
+              data = DataBuilder.buildDate((Date) null);
+            } else if(valueClass.isAssignableFrom(Double.class) || valueClass.isAssignableFrom(Float.class)) {
+              data = DataBuilder.buildDecimal((Double) null);
+            } else if(valueClass.isAssignableFrom(Integer.class) || valueClass.isAssignableFrom(Long.class)) {
+              data = DataBuilder.buildInteger((Integer) null);
+            } else if(valueClass.isAssignableFrom(String.class)) {
+              data = DataBuilder.buildText((String) null);
+            }
+          }
         }
       }
     } catch(Exception e) {
-      throw new IllegalArgumentException("Could not resolve participant property " + property);
+      throw new IllegalArgumentException("Could not resolve " + object.getClass().getSimpleName() + " property " + property, e);
     }
 
-    return null;
+    return data;
   }
 
   public String getUnit() {
