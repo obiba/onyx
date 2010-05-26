@@ -43,7 +43,7 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
-import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.ruby.core.service.ParticipantTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.state.RubyCompletedState;
 import org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState;
 import org.obiba.onyx.ruby.engine.state.RubyInProgressState;
@@ -97,7 +97,7 @@ public class RubyModuleTest {
 
   private ActiveInterviewService activeInterviewServiceMock;
 
-  private ActiveTubeRegistrationService activeTubeRegistrationServiceMock;
+  private ParticipantTubeRegistrationService participantTubeRegistrationServiceMock;
 
   private PersistenceManager persistenceManagerMock;
 
@@ -162,8 +162,8 @@ public class RubyModuleTest {
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
     applicationContextMock.putBean("activeInterviewService", activeInterviewServiceMock);
 
-    activeTubeRegistrationServiceMock = createMock(ActiveTubeRegistrationService.class);
-    applicationContextMock.putBean("activeTubeRegistrationService", activeTubeRegistrationServiceMock);
+    participantTubeRegistrationServiceMock = createMock(ParticipantTubeRegistrationService.class);
+    applicationContextMock.putBean("participantTubeRegistrationService", participantTubeRegistrationServiceMock);
 
     persistenceManagerMock = createMock(PersistenceManager.class);
 
@@ -181,7 +181,7 @@ public class RubyModuleTest {
     applicationContextMock.putBean("rubyContraIndicatedState", rubyContraIndicatedState);
     RubyInProgressState rubyInProgressState = new RubyInProgressState();
     rubyInProgressState.setActiveInterviewService(activeInterviewServiceMock);
-    rubyInProgressState.setActiveTubeRegistrationService(activeTubeRegistrationServiceMock);
+    rubyInProgressState.setParticipantTubeRegistrationService(participantTubeRegistrationServiceMock);
     applicationContextMock.putBean("rubyInProgressState", rubyInProgressState);
     AbstractStageState rubyInterruptedState = new RubyInterruptedState();
     applicationContextMock.putBean("rubyInterruptedState", rubyInterruptedState);
