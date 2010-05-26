@@ -12,7 +12,6 @@ package org.obiba.onyx.ruby.core.service;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.Remark;
 import org.springframework.context.MessageSourceResolvable;
@@ -86,13 +85,6 @@ public interface ActiveTubeRegistrationService {
   public boolean hasContraindications(Contraindication.Type type);
 
   /**
-   * 
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
-   * @return
-   */
-  public ParticipantTubeRegistration getParticipantTubeRegistration(String tubeSetName);
-
-  /**
    * Finds the current ParticipantTubeRegistration and return it, it will create a new one if there is no
    * TubeRegistration for current Interview.
    * 
@@ -111,38 +103,4 @@ public interface ActiveTubeRegistrationService {
    */
   public Contraindication getContraindication();
 
-  /**
-   * Create the current {@link ParticipantTubeRegistration} and persist it.
-   * @param participant
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
-   * @return
-   */
-  public ParticipantTubeRegistration start(Participant participant, String tubeSetName);
-
-  /**
-   * Resume an interrupted participant tube registration.
-   * 
-   * @param participant participant
-   * @param tubeSetName the associated tube set (i.e., Ruby stage name)
-   */
-  public void resume(Participant participant, String tubeSetName);
-
-  /**
-   * Set the end date to the current {@link ParticipantTubeRegistration}.
-   */
-  public void end();
-
-  /**
-   * Deletes the current {@link ParticipantTubeRegistration} and all associated objects, of the specified Ruby stage.
-   * 
-   * @param stageName the associated Ruby stage
-   */
-  public void deleteParticipantTubeRegistration(String stageName);
-
-  /**
-   * Deletes the {@link ParticipantTubeRegistration}s and associated objects of a specific {@link Participant}.
-   * 
-   * @param participant The participant.
-   */
-  public void deleteAllParticipantTubeRegistrations(Participant participant);
 }

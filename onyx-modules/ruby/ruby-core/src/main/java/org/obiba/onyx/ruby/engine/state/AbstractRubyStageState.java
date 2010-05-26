@@ -10,10 +10,7 @@
 package org.obiba.onyx.ruby.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
-import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.engine.state.StageState;
-import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.ruby.core.service.ParticipantTubeRegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,37 +25,18 @@ public abstract class AbstractRubyStageState extends AbstractStageState {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractRubyStageState.class);
 
-  //
-  // Instance Variables
-  //
+  private ParticipantTubeRegistrationService participantTubeRegistrationService;
 
-  protected ActiveTubeRegistrationService activeTubeRegistrationService;
-
-  //
-  // AbstractStageState Methods
-  //
-
-  @Override
-  public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
-    Boolean var = areDependenciesCompleted();
-
-    if(var == null) {
-      // ONYX-428
-      if(!execution.isInteractive() && wantTransitionEvent(TransitionEvent.INVALID)) {
-        castEvent(TransitionEvent.INVALID);
-      }
-    } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) {
-      castEvent(TransitionEvent.VALID);
-    } else if(var == false && wantTransitionEvent(TransitionEvent.NOTAPPLICABLE)) {
-      castEvent(TransitionEvent.NOTAPPLICABLE);
-    }
+  public void setParticipantTubeRegistrationService(ParticipantTubeRegistrationService participantTubeRegistrationService) {
+    this.participantTubeRegistrationService = participantTubeRegistrationService;
   }
 
-  //
-  // Methods
-  //
-
-  public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
-    this.activeTubeRegistrationService = activeTubeRegistrationService;
+  protected void deleteParticipantTubeRegistration() {
+    getParticipantTubeRegistrationService().deleteParticipantTubeRegistration(activeInterviewService.getParticipant(), getStage().getName());
   }
+
+  protected ParticipantTubeRegistrationService getParticipantTubeRegistrationService() {
+    return participantTubeRegistrationService;
+  }
+
 }

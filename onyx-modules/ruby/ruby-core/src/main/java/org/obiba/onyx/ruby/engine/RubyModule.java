@@ -34,7 +34,7 @@ import org.obiba.onyx.magma.CustomVariablesRegistry;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
-import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.ruby.core.service.ParticipantTubeRegistrationService;
 import org.obiba.onyx.ruby.magma.TubeValueSetBeanResolver;
 import org.obiba.onyx.ruby.magma.TubeVariableValueSourceFactory;
 import org.slf4j.Logger;
@@ -77,7 +77,7 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
 
   private ActiveInterviewService activeInterviewService;
 
-  private ActiveTubeRegistrationService activeTubeRegistrationService;
+  private ParticipantTubeRegistrationService participantTubeRegistrationService;
 
   private List<Stage> stages;
 
@@ -100,8 +100,8 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
     this.tubeRegistrationConfigurationMap = tubeRegistrationConfigurationMap;
   }
 
-  public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
-    this.activeTubeRegistrationService = activeTubeRegistrationService;
+  public void setParticipantTubeRegistrationService(ParticipantTubeRegistrationService participantTubeRegistrationService) {
+    this.participantTubeRegistrationService = participantTubeRegistrationService;
   }
 
   public String getName() {
@@ -309,7 +309,7 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
   }
 
   public void delete(Participant participant) {
-    activeTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
+    participantTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
   }
 
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
