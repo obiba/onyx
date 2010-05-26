@@ -7,6 +7,19 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
+  <bean id="participantTubeRegistrationService" class="org.obiba.onyx.ruby.core.service.impl.ParticipantTubeRegistrationServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
+  </bean>
+
+  <bean id="activeTubeRegistrationService" class="org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl"
+    scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
+    <aop:scoped-proxy />
+  </bean>
+
   <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
@@ -15,7 +28,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </bean>
     </property>
     <property name="tubeRegistrationConfigurationMap" ref="tubeRegistrationConfigurationMap" />
-    <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
+    <property name="participantTubeRegistrationService" ref="participantTubeRegistrationService" />
     <property name="beanResolver" ref="tubeValueSetBeanResolver" />
     <property name="variableEntityProvider">
       <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
@@ -26,10 +39,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
     <property name="customVariablesRegistry" ref="customVariablesRegistry" />
   </bean>
-  
+
   <bean id="baseRubyStageState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.AbstractRubyStageState"
     abstract="true">
-    <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
+    <property name="participantTubeRegistrationService" ref="participantTubeRegistrationService" />
   </bean>
 
   <bean id="rubyWaitingState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyWaitingState"

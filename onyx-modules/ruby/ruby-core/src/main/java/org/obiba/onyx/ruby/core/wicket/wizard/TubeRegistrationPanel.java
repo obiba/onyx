@@ -18,7 +18,6 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.ConditionalMessage;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
@@ -39,9 +38,6 @@ public class TubeRegistrationPanel extends Panel {
   //
   // Instance Variables
   //
-
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
 
   @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;

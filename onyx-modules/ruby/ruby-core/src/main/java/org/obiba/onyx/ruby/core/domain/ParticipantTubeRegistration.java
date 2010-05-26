@@ -19,9 +19,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -33,6 +35,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
  * 
  */
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "interview_id", "tubeSetName" }) })
 public class ParticipantTubeRegistration extends AbstractEntity implements IContraindicatable {
 
   private static final long serialVersionUID = 591980050842524784L;
@@ -55,6 +58,7 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
   @Column(length = 2000)
   private String otherContraindication;
 
+  @Column(nullable = false)
   private String tubeSetName;
 
   @Transient
