@@ -66,16 +66,19 @@ public interface Module {
    */
   public List<Stage> getStages();
 
+  // TODO: find a better solution to manage module widgets and maybe merge these 2 methods
   /**
    * Get the {@link Component} to be displayed.
    * @see #isInteractive()
    * @param id
    * @return
    */
-  public Component getWidget(String id);
+  public Component getWorkstationPanel(String id);
+
+  public Component getEditorPanel(String id);
 
   /**
-   * Say if {@link #getWidget(String)} will return a non null value. This decides if the module is part of the
+   * Say if {@link #getWorkstationPanel(String)} will return a non null value. This decides if the module is part of the
    * configurable ones.
    * @return
    */

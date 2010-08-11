@@ -32,6 +32,7 @@ import org.obiba.core.util.StringUtil;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.webapp.editor.EditorPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.workstation.page.WorkstationPage;
 import org.slf4j.Logger;
@@ -66,7 +67,12 @@ public class MenuBuilder {
     if(OnyxAuthenticatedSession.get().isSignedIn()) {
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
       menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
-      if(hasWorkstationContent()) menuItems.add(new MenuItem(WorkstationPage.class, "Workstation"));
+      if(hasWorkstationWidget(WorkstationPage.WORKSTATION_CONTENT)) {
+        menuItems.add(new MenuItem(WorkstationPage.class, "Workstation"));
+      }
+      if(hasEditorWidget(EditorPage.EDITOR_COMPONENT)) {
+        menuItems.add(new MenuItem(EditorPage.class, "Editor"));
+      }
     }
 
     // Creating the DataView containing the whole menu
@@ -155,9 +161,16 @@ public class MenuBuilder {
     }
   }
 
-  private static boolean hasWorkstationContent() {
+  public static boolean hasWorkstationWidget(String widgetName) {
     for(Module module : moduleRegistry.getModules()) {
-      if(module.getWidget("workstationContent") != null) return true;
+      if(module.getWorkstationPanel(widgetName) != null) return true;
+    }
+    return false;
+  }
+
+  public static boolean hasEditorWidget(String widgetName) {
+    for(Module module : moduleRegistry.getModules()) {
+      if(module.getEditorPanel(widgetName) != null) return true;
     }
     return false;
   }

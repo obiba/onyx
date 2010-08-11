@@ -300,7 +300,11 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
     }
   }
 
-  public Component getWidget(String id) {
+  public Component getWorkstationPanel(String id) {
+    return null;
+  }
+
+  public Component getEditorPanel(String id) {
     return null;
   }
 

@@ -170,8 +170,12 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
     this.instrumentRunService = instrumentRunService;
   }
 
-  public Component getWidget(String id) {
+  public Component getWorkstationPanel(String id) {
     return new WorkstationPanel(id);
+  }
+
+  public Component getEditorPanel(String id) {
+    return null;
   }
 
   public boolean isInteractive() {

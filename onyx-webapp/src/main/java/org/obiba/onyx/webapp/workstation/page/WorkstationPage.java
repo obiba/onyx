@@ -18,8 +18,10 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.base.page.BasePage;
 
-@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class WorkstationPage extends BasePage {
+
+  public static final String WORKSTATION_CONTENT = "workstationContent";
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
@@ -30,14 +32,17 @@ public class WorkstationPage extends BasePage {
   }
 
   private class WorkstationFragment extends Fragment {
+
     private static final long serialVersionUID = 1L;
 
     public WorkstationFragment(String id) {
       super(id, "workstationFragment", WorkstationPage.this);
-      RepeatingView repeater = new RepeatingView("workstationContent");
+      RepeatingView repeater = new RepeatingView(WORKSTATION_CONTENT);
 
       for(Module module : moduleRegistry.getModules()) {
-        if(module.getWidget("workstationContent") != null) repeater.add(module.getWidget("workstationContent"));
+        if(module.getWorkstationPanel(WORKSTATION_CONTENT) != null) {
+          repeater.add(module.getWorkstationPanel(WORKSTATION_CONTENT));
+        }
       }
 
       add(repeater);
@@ -49,4 +54,5 @@ public class WorkstationPage extends BasePage {
     super.renderHead(response);
     response.renderOnLoadJavascript("styleWorkstationNavigationBar();");
   }
+
 }

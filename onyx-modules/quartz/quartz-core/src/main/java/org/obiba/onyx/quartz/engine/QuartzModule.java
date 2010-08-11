@@ -34,6 +34,7 @@ import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver;
 import org.obiba.onyx.quartz.magma.QuestionnaireStageVariableSourceFactory;
 import org.slf4j.Logger;
@@ -172,8 +173,12 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     return exec;
   }
 
-  public Component getWidget(String id) {
+  public Component getWorkstationPanel(String id) {
     return null;
+  }
+
+  public Component getEditorPanel(String id) {
+    return new QuartzEditorPanel(id);
   }
 
   public boolean isInteractive() {

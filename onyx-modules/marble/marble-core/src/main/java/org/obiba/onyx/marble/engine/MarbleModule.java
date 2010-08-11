@@ -109,7 +109,11 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
     this.applicationContext = applicationContext;
   }
 
-  public Component getWidget(String id) {
+  public Component getWorkstationPanel(String id) {
+    return null;
+  }
+
+  public Component getEditorPanel(String id) {
     return null;
   }
 
