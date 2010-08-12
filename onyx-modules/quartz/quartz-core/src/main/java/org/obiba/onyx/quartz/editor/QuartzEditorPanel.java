@@ -31,12 +31,9 @@ public class QuartzEditorPanel extends Panel {
 
     modalWindow = new ModalWindow("modalWindow");
     modalWindow.setCssClassName("onyx");
-    modalWindow.setHeightUnit("em");
-    modalWindow.setWidthUnit("em");
-    modalWindow.setInitialWidth(50);
-    modalWindow.setInitialHeight(30);
+    modalWindow.setInitialWidth(500);
+    modalWindow.setInitialHeight(300);
     modalWindow.setResizable(true);
-
     modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
@@ -48,15 +45,23 @@ public class QuartzEditorPanel extends Panel {
 
     add(new QuestionnaireListPanel("questionnaire-list"));
 
-    add(new AjaxLink("addQuestion") {
-
+    add(new AjaxLink("questionnaireProps") {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("EditQuestion", this, null));
+        modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
+        // modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Question>(new
+        // Question("defaultName")), modalWindow));
+        modalWindow.show(target);
+      }
+    });
+
+    add(new AjaxLink("questionProps") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modalWindow.setTitle(new StringResourceModel("Question", this, null));
         modalWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question("defaultName")), modalWindow));
         modalWindow.show(target);
       }
-
     });
 
   }

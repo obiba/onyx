@@ -40,9 +40,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 
-/**
- * @author cedric.thiebault
- */
 public class QuestionnaireListPanel extends Panel {
 
   private static final long serialVersionUID = 1L;

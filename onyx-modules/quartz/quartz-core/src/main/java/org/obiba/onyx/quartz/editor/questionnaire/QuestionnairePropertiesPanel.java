@@ -13,9 +13,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 
-/**
- * @author Cedric Thiebault
- */
 public class QuestionnairePropertiesPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
