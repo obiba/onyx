@@ -66,7 +66,7 @@ public interface Module {
    */
   public List<Stage> getStages();
 
-  // TODO: find a better solution to manage module widgets and maybe merge these 2 methods
+  // TODO ONYX-1326: find a better solution to manage module widgets and maybe merge these 2 methods
   /**
    * Get the {@link Component} to be displayed.
    * @see #isInteractive()
