@@ -9,16 +9,56 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
 
 public class QuartzEditorPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
+  private ModalWindow modalWindow;
+
+  @SuppressWarnings({ "rawtypes", "serial" })
   public QuartzEditorPanel(String id) {
     super(id);
 
+    modalWindow = new ModalWindow("modalWindow");
+    modalWindow.setCssClassName("onyx");
+    modalWindow.setHeightUnit("em");
+    modalWindow.setWidthUnit("em");
+    modalWindow.setInitialWidth(50);
+    modalWindow.setInitialHeight(30);
+    modalWindow.setResizable(true);
+
+    modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+      @Override
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        return true; // same as cancel
+      }
+    });
+
+    add(modalWindow);
+
     add(new QuestionnaireListPanel("questionnaire-list"));
+
+    add(new AjaxLink("addQuestion") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modalWindow.setTitle(new StringResourceModel("EditQuestion", this, null));
+        modalWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question("defaultName")), modalWindow));
+        modalWindow.show(target);
+      }
+
+    });
+
   }
 
 }

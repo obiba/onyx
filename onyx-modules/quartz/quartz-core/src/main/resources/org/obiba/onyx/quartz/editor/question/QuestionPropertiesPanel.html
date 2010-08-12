@@ -1,0 +1,26 @@
+<wicket:panel>
+	
+	<span wicket:id="feedback" />
+	
+	<form wicket:id="questionForm" autocomplete="off" class="obiba-content">
+		
+	 	<table class="keyValueTable">
+			<tr>
+	    	<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
+	    	<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
+	    </tr>	    	
+			<tr>
+	    	<td valign="top" class="keyValueTableKey"><label for="variableName"><wicket:message key="VariableName" /></label></td>
+	    	<td class="keyValueTableValueOdd"><input wicket:id="variableName" type="text" size="20" /></td>
+	    </tr>	  	    
+			<tr>
+	    	<td valign="top" class="keyValueTableKey"><label for="multiple"><wicket:message key="Multiple" /></label></td>
+	    	<td class="keyValueTableValueOdd"><input wicket:id="multiple" type="checkbox" /></td>
+	    </tr>	  	    
+		</table>
+		<div class="modal-footer">
+	    <button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save"/></button> 		
+        <button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel"/></button>
+        </div>    
+	</form>
+</wicket:panel>
