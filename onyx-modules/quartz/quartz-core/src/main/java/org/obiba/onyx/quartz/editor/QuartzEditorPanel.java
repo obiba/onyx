@@ -16,8 +16,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePropertiesPanel;
 
 public class QuartzEditorPanel extends Panel {
 
@@ -49,8 +51,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        // modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Question>(new
-        // Question("defaultName")), modalWindow));
+        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire("defaultName", "1.0")), modalWindow));
         modalWindow.show(target);
       }
     });
@@ -65,5 +66,4 @@ public class QuartzEditorPanel extends Panel {
     });
 
   }
-
 }

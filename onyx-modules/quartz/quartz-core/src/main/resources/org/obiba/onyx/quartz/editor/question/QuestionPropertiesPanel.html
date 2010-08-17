@@ -16,9 +16,29 @@
 			<tr>
 	    	<td valign="top" class="keyValueTableKey"><label for="multiple"><wicket:message key="Multiple" /></label></td>
 	    	<td class="keyValueTableValueOdd"><input wicket:id="multiple" type="checkbox" /></td>
-	    </tr>	  	    
+	    </tr>	  	 
+	    	<tr>
+	    	<td valign="top" class="keyValueTableKey"><label for="radioGroup"><wicket:message key="Layout" /></label></td>
+	    	<td class="keyValueTableKey">	
+	    		<span wicket:id="radioGroup">
+	    		<wicket:container wicket:id="radioItem">
+	    				<input type="radio" wicket:id="radio" /><label wicket:id="radioLabel">Radio Label</label>
+	    		</wicket:container>
+	    		</span>
+	    		</td>
+	    </tr>
 		</table>
+		
+		<fieldset style="width: 33.3333em;">
+          <legend>
+            <wicket:message key="Labels" />
+          </legend>
+          <span wicket:id="labelsTabs"></span>
+        </fieldset>
+        
+	    		
 		<div class="modal-footer">
+		<a wicket:id="previewLink">Preview</a>
 	    <button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save"/></button> 		
         <button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel"/></button>
         </div>    

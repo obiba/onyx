@@ -9,20 +9,46 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import static org.easymock.EasyMock.createMock;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
+import org.obiba.wicket.test.MockSpringApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QuestionPropertiesPanel extends Panel {
 
@@ -34,16 +60,42 @@ public class QuestionPropertiesPanel extends Panel {
 
   private final FeedbackPanel feedbackPanel;
 
+  private static final String SINGLE_COLUMN = "LayoutSingle";
+
+  private static final String GRID = "LayoutGrid";
+
+  protected final Logger log = LoggerFactory.getLogger(getClass());
+
+  private RadioGroup<?> radioGroup;
+
+  private ApplicationContextMock applicationContextMock;
+
+  private QuestionnaireBundleManager questionnaireBundleManagerMock;
+
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
+
+  // private IPropertyKeyProvider propertyKeyProvider;
+
   public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow modalWindow) {
     super(id, model);
-
     this.modalWindow = modalWindow;
+
+    applicationContextMock = new ApplicationContextMock();
+
+    questionnaireBundleManagerMock = createMock(QuestionnaireBundleManager.class);
+    applicationContextMock.putBean("questionnaireBundleManager", questionnaireBundleManagerMock);
+
+    activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
+    applicationContextMock.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
+
+    MockSpringApplication application = new MockSpringApplication();
+    application.setApplicationContext(applicationContextMock);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
-    add(feedbackWindow);
 
+    add(feedbackWindow);
     add(new QuestionForm("questionForm", model));
   }
 
@@ -51,8 +103,28 @@ public class QuestionPropertiesPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public QuestionForm(String id, IModel<Question> model) {
+    @SuppressWarnings({ "rawtypes", "unchecked", "serial" })
+    public QuestionForm(String id, final IModel<Question> model) {
       super(id, model);
+
+      final IModel qLabelModel = new MessageSourceResolvableStringModel(getModel());
+      add(new Link("previewLink") {
+
+        @Override
+        public void onClick() {
+          // TODO Auto-generated method stub
+          Question q = model.getObject();
+          log.info("name: " + q.getName() + ", varName: " + q.getVariableName() + ", multiple: " + q.isMultiple());
+          //
+          // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
+          // "1.0").withSection("SECTION_1").withPage("PAGE_1");
+          // QuestionBuilder qBuilder = pBuilder.withQuestion(q.getName(), "1", q.isMultiple()); //
+          //
+          // SingleDocumentQuestionnairePage preview = new SingleDocumentQuestionnairePage(new
+          // Model(qBuilder.getQuestionnaire()));
+          // setResponsePage(preview);
+        }
+      });
 
       TextField<String> name = new TextField<String>("name", new PropertyModel<String>(getModel(), "name"));
       name.add(new RequiredFormFieldBehavior());
@@ -65,6 +137,52 @@ public class QuestionPropertiesPanel extends Panel {
 
       add(new CheckBox("multiple", new PropertyModel<Boolean>(getModel(), "multiple")));
 
+      // radio group without default selection
+      radioGroup = new RadioGroup("radioGroup", new Model());
+      radioGroup.setLabel(qLabelModel);
+      add(radioGroup);
+
+      ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { SINGLE_COLUMN, GRID })) {
+
+        @Override
+        protected void populateItem(ListItem listItem) {
+          final String key = (String) listItem.getModelObject();
+          final LayoutSelection selection = new LayoutSelection();
+          selection.setSelectionKey(key);
+
+          Model selectModel = new Model(selection);
+
+          Radio radio = new Radio("radio", selectModel);
+          radio.setLabel(new StringResourceModel(key, QuestionPropertiesPanel.this, null));
+
+          // // set default selection
+          // // cannot decide if yes/no/dontknow was selected, so only deal with case the default ci is not null
+          // // and it was because yes was selected
+          // if(key == YES && getContraindicatable().isContraindicated() &&
+          // getContraindicatable().getContraindication().equals(ci)) {
+          // radioGroup.setModel(selectModel);
+          // }
+          listItem.add(radio);
+
+          FormComponentLabel radioLabel = new SimpleFormComponentLabel("radioLabel", radio);
+          listItem.add(radioLabel);
+        }
+
+      }.setReuseItems(true);
+      radioGroup.add(radioList);
+
+      // Labels tab panel
+      List tabs = new ArrayList();
+      tabs.add(new AbstractTab(new Model("labelName")) {
+        private static final long serialVersionUID = 0L;
+
+        @Override
+        public Panel getPanel(String panelId) {
+          return new LabelsTab(panelId, (Question) getDefaultModelObject(), QuestionForm.this, feedbackPanel, qLabelModel);
+        }
+      });
+      add(new TabbedPanel("labelsTabs", tabs));
+
       add(new AjaxButton("save", this) {
 
         private static final long serialVersionUID = 1L;
@@ -72,9 +190,57 @@ public class QuestionPropertiesPanel extends Panel {
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           super.onSubmit();
-          // Question question = QuestionForm.this.getModelObject();
+          Question question = model.getObject();
+
+          // Layout single or grid
+          // Make sure that the categories are added before this...
+          LayoutSelection layoutSelection = (LayoutSelection) radioGroup.getModelObject();
+          if(layoutSelection.isSingleSelected()) {
+            question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, Integer.toString(question.getCategories().size()));
+          }
+
+          log.info("name: " + question.getName() + ", varName: " + question.getVariableName() + ", multiple: " + question.isMultiple());
+          log.info(question.getUIArgumentsValueMap().toString());
+
+          // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
+          // "1.0").withSection("SECTION_1").withPage("PAGE_1");
+          // QuestionBuilder qBuilder = pBuilder.withQuestion(question.getName(), "1", question.isMultiple()); //
+          // PropertiesPropertyKeyWriterImpl
+          //
+          // SingleDocumentQuestionnairePage preview = new SingleDocumentQuestionnairePage(new
+          // Model(qBuilder.getQuestionnaire()));
+          // modalWindow.getId()
+          // modalWindow.getCsetContent(preview);
+          // modalWindow.repreview.setVisible(true);
+          //
+          // PopupSettings popupSettings = new PopupSettings(PageMap.forName("popuppagemap")).setHeight(
+          // 500).setWidth(500);
+          // BookmarkablePageLink link = new BookmarkablePageLink("popupLink",
+          // Popup.class).setPopupSettings(popupSettings))
+          // DefaultQuestionPanel qPanel = new DefaultQuestionPanel("1", new Model(qBuilder.getElement()));
+          //
+          // ModalWindow modal = new Window("modalWindow");
+          // modal.setCssClassName("onyx");
+          // modal.setInitialWidth(500);
+          // modal.setInitialHeight(300);
+          // modal.setResizable(true);
+          // modal.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+          // @Override
+          // public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+          // return true; // same as cancel
+          // }
+          // });
+          // modal.setContent(preview.render());
+          // modal.show(target);
+
+          // QuestionnaireRenderer qBuilder.getElement();
+          // propWriter = new
+          // PropertiesPropertyKeyWriterImpl();
+          // propWriter.write(key, "");
+
           // TODO process this question
-          modalWindow.close(target);
+          // DefaultPropertyKeyProviderImpl
+          // modalWindow.close(target);
         }
 
         @Override
@@ -96,7 +262,30 @@ public class QuestionPropertiesPanel extends Panel {
         }
       }.setDefaultFormProcessing(false));
     }
-
   }
 
+  @SuppressWarnings("serial")
+  private class LayoutSelection implements Serializable {
+
+    private String selectionKey;
+
+    @SuppressWarnings("unused")
+    public String getSelectionKey() {
+      return selectionKey;
+    }
+
+    public void setSelectionKey(String selectionKey) {
+      this.selectionKey = selectionKey;
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isSelected() {
+      return selectionKey.equals(SINGLE_COLUMN) || selectionKey.equals(GRID);
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isSingleSelected() {
+      return selectionKey.equals(SINGLE_COLUMN);
+    }
+  }
 }
