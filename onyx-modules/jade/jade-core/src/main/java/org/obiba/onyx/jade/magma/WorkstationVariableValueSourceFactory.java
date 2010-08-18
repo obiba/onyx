@@ -18,6 +18,7 @@ import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
+import org.obiba.magma.VectorSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.TextType;
@@ -133,6 +134,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       public ValueType getValueType() {
         return TextType.get();
       }
+
+      public VectorSource asVectorSource() {
+        return null;
+      }
     };
   }
 
@@ -151,6 +156,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       public ValueType getValueType() {
         return DateTimeType.get();
       }
+
+      public VectorSource asVectorSource() {
+        return null;
+      }
     };
   }
 
@@ -168,6 +177,10 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
 
       public ValueType getValueType() {
         return DateTimeType.get();
+      }
+
+      public VectorSource asVectorSource() {
+        return null;
       }
     };
   }

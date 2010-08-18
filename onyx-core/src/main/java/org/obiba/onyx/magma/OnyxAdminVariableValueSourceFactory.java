@@ -19,6 +19,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.Variable.Builder;
+import org.obiba.magma.VectorSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
@@ -140,6 +141,10 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       public ValueType getValueType() {
         return type;
       }
+
+      public VectorSource asVectorSource() {
+        return null;
+      }
     };
   }
 
@@ -160,6 +165,10 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
       public ValueType getValueType() {
         return DateTimeType.get();
       }
+
+      public VectorSource asVectorSource() {
+        return null;
+      }
     });
 
     // Create captureEndDate source.
@@ -175,6 +184,10 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
       public ValueType getValueType() {
         return DateTimeType.get();
+      }
+
+      public VectorSource asVectorSource() {
+        return null;
       }
     });
 

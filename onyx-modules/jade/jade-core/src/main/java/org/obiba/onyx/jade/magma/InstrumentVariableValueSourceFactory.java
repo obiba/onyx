@@ -25,6 +25,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
+import org.obiba.magma.VectorSource;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.type.DateTimeType;
@@ -181,6 +182,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       public ValueType getValueType() {
         return DateTimeType.get();
       }
+
+      public VectorSource asVectorSource() {
+        return null;
+      }
     };
   }
 
@@ -198,6 +203,10 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
       public ValueType getValueType() {
         return DateTimeType.get();
+      }
+
+      public VectorSource asVectorSource() {
+        return null;
       }
     };
   }
@@ -254,6 +263,9 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         return TextType.get();
       }
 
+      public VectorSource asVectorSource() {
+        return null;
+      }
     };
   }
 
