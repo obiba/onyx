@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 import org.obiba.core.util.FileUtil;
@@ -94,6 +95,34 @@ public class QuestionnaireCreator {
           } else {
             bundle.setLanguage(locale, new Properties());
           }
+        }
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * FIXME (not final) build a questionnaire and values for properties files
+   * @param builder
+   * @param mapLocaleProperties
+   */
+  public void createQuestionnaire(QuestionnaireBuilder builder, Map<Locale, Properties> mapLocaleProperties) {
+    QuestionnaireBundle bundle;
+
+    // Create the bundle manager.
+    QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
+    ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
+    ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
+
+    // Create the bundle questionnaire.
+    Questionnaire questionnaire = builder.getQuestionnaire();
+    ensureQuestionnaireVariableNamesAreUnique(questionnaire);
+    try {
+      bundle = bundleManager.createBundle(questionnaire);
+      if(mapLocaleProperties != null) {
+        for(Map.Entry<Locale, Properties> entry : mapLocaleProperties.entrySet()) {
+          bundle.setLanguage(entry.getKey(), entry.getValue());
         }
       }
     } catch(Exception e) {

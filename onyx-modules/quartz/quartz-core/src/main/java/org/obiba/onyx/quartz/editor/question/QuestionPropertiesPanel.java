@@ -43,6 +43,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -178,7 +179,7 @@ public class QuestionPropertiesPanel extends Panel {
 
         @Override
         public Panel getPanel(String panelId) {
-          return new LabelsTab(panelId, (Question) getDefaultModelObject(), QuestionForm.this, feedbackPanel, qLabelModel);
+          return new LocalePropertiesPanel(panelId);
         }
       });
       add(new TabbedPanel("labelsTabs", tabs));

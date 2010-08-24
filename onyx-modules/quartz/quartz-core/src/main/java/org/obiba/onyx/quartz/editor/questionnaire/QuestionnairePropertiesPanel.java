@@ -9,32 +9,50 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.editor.input.LocaleChoiceRenderer;
-import org.obiba.onyx.quartz.editor.input.LocaleListModel;
-import org.obiba.onyx.quartz.editor.input.palette.InputPalette;
+import org.obiba.onyx.quartz.editor.locale.LocaleChoiceRenderer;
+import org.obiba.onyx.quartz.editor.locale.LocaleListModel;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 
 public class QuestionnairePropertiesPanel extends Panel {
 
@@ -43,7 +61,10 @@ public class QuestionnairePropertiesPanel extends Panel {
   private final ModalWindow modalWindow;
 
   @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
+  private QuestionnaireBundleManager questionnaireBundleManager;
+
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private FeedbackPanel feedbackPanel;
 
@@ -64,9 +85,8 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   }
 
+  @SuppressWarnings("serial")
   public class QuestionnaireForm extends Form<Questionnaire> {
-
-    private static final long serialVersionUID = 1L;
 
     /**
      * @param id
@@ -75,40 +95,102 @@ public class QuestionnairePropertiesPanel extends Panel {
     public QuestionnaireForm(String id, final IModel<Questionnaire> model) {
       super(id, model);
 
-      TextField<String> name = new TextField<String>("name", new PropertyModel<String>(getModel(), "name"));
-      name.add(new RequiredFormFieldBehavior());
-      name.add(new StringValidator.MaximumLengthValidator(20));
-      add(name);
+      // -------------------- Name --------------------
+      TextField<String> nameTextField = new TextField<String>("name", new PropertyModel<String>(getModel(), "name"));
+      nameTextField.add(new RequiredFormFieldBehavior());
+      nameTextField.add(new StringValidator.MaximumLengthValidator(20));
+      nameTextField.add(new AbstractValidator<String>() {
 
-      TextField<String> version = new TextField<String>("version", new PropertyModel<String>(getModel(), "version"));
-      version.add(new RequiredFormFieldBehavior());
-      version.add(new StringValidator.MaximumLengthValidator(20));
-      add(version);
+        @Override
+        protected void onValidate(final IValidatable<String> validatable) {
+          boolean isNewName = Iterables.all(questionnaireBundleManager.bundles(), new Predicate<QuestionnaireBundle>() {
 
-      // Locale.getAvailableLocales()[0].getDisplayName()
-      WebMarkupContainer localesContainer = new WebMarkupContainer("localesContainer");
-      localesContainer.setVisible(true);
-      localesContainer.add(new InputPalette<Locale>("locales", getDefaultModel(), "locales", "locales", new LocaleListModel<Locale>(), new LocaleChoiceRenderer()));
+            @Override
+            public boolean apply(QuestionnaireBundle input) {
+              return !input.getName().equals(validatable.getValue());
+            }
+          });
+          if(!isNewName) {
+            error(validatable);
+          }
+        }
 
-      add(localesContainer);
+        @Override
+        protected String resourceKey() {
+          return "NameNotAlreadyExistValidator";
+        }
+      });
 
-      add(new AjaxButton("save", this) {
+      // -------------------- Version --------------------
 
-        private static final long serialVersionUID = 1L;
+      TextField<String> versionTextField = new TextField<String>("version", new PropertyModel<String>(getModel(), "version"));
+      versionTextField.add(new RequiredFormFieldBehavior());
+      versionTextField.add(new StringValidator.MaximumLengthValidator(20));
+
+      // -------------------- Locales and Locales labels --------------------
+
+      // TODO add palette modele to AjaxTabbedPanel instead of this
+      final AjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new AjaxTabbedPanel("localesPropertiesTabs", new ArrayList<ITab>());
+      Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(getModel(), "locales"), new LocaleListModel(), new LocaleChoiceRenderer(), 7, false) {
+        @Override
+        protected Recorder<Locale> newRecorderComponent() {
+          final Recorder<Locale> recorder = super.newRecorderComponent();
+          recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+              int tabbedPanelTabsSize = localesPropertiesAjaxTabbedPanel.getTabs().size();
+              int selectedChoicesSize = Iterators.size(recorder.getSelectedChoices());
+
+              if(tabbedPanelTabsSize < selectedChoicesSize) {
+                Locale locale = Iterators.getLast(recorder.getSelectedChoices());
+                localesPropertiesAjaxTabbedPanel.getTabs().add(new AbstractTab(new Model<String>(locale.getDisplayLanguage(Session.get().getLocale()))) {
+                  private static final long serialVersionUID = 0L;
+
+                  @Override
+                  public Panel getPanel(String panelId) {
+                    return new LocalePropertiesPanel(panelId);
+                  }
+                });
+              } else if(tabbedPanelTabsSize > selectedChoicesSize) {
+                // ArrayList<Locale> copy = new ArrayList<Locale>();
+                // Collections.copy(copy, getModelObject().getLocales());
+                // Collections.Iterables.removeAll(copy.iterator(), selectedChoices);
+              }
+              target.addComponent(localesPropertiesAjaxTabbedPanel);
+            }
+          });
+          return recorder;
+        }
+      };
+
+      // -------------------- Save --------------------
+      AjaxButton saveButton = new AjaxButton("save", this) {
 
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           super.onSubmit();
           Questionnaire questionnaire = model.getObject();
-          log.info(questionnaire.getName() + " " + questionnaire.getVersion());
+          log.info(questionnaire.getName() + " " + questionnaire.getVersion() + " " + questionnaire.getLocales().size());
 
+          List<Locale> locales = questionnaire.getLocales();
+
+          // FIXME to have same working directory (for QuestionnaireCreator and QuestionnaireBundleManager)
+          File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
+          File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
           try {
-            QuestionnaireCreator qCreator = new QuestionnaireCreator();
-            qCreator.createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()));
+            // FIXME call twice otherwise locales in questionnaire.xml are not setted (only language_xxx.properties is
+            // created)
+            new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), locales.toArray(new Locale[0]));
+            new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), locales.toArray(new Locale[0]));
           } catch(IOException e) {
             e.printStackTrace();
           }
-          QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion());
+
+          // FIXME to create question and have an active questionnaire (don't seems to be a good way to do this) use
+          // only to debug and test for the moment
+          // activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+
         }
 
         @Override
@@ -116,11 +198,10 @@ public class QuestionnairePropertiesPanel extends Panel {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
-      });
+      };
 
-      // A cancel button: use an AjaxButton and disable the "defaultFormProcessing". Seems that this is the best
-      // practice for this type of behavior
-      add(new AjaxButton("cancel", this) {
+      // -------------------- Cancel --------------------
+      AjaxButton cancelButton = new AjaxButton("cancel", this) {
 
         private static final long serialVersionUID = 1L;
 
@@ -128,7 +209,16 @@ public class QuestionnairePropertiesPanel extends Panel {
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           modalWindow.close(target);
         }
-      }.setDefaultFormProcessing(false));
+      };
+      cancelButton.setDefaultFormProcessing(false);
+
+      // add to UI
+      add(nameTextField);
+      add(versionTextField);
+      add(localesPalette);
+      add(localesPropertiesAjaxTabbedPanel);
+      add(saveButton);
+      add(cancelButton);
     }
   }
 }

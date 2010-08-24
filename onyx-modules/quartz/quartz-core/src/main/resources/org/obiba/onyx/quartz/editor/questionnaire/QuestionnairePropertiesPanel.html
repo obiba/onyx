@@ -12,15 +12,18 @@
 			<tr>
 		    	<td valign="top" class="keyValueTableKey"><label for="version"><wicket:message key="Version" /></label></td>
 		    	<td class="keyValueTableValueOdd"><input wicket:id="version" type="text" size="20" /></td>
-		    </tr>	
+		    </tr>			    
+		    <tr>
+		    	<td valign="top" class="keyValueTableKey"><label for="languages"><wicket:message key="Languages" /></label></td>
+		    	<td class="keyValueTableValueOdd"><div wicket:id="languages"></div></td>
+		    </tr>
+		    <tr>
+		    	<td valign="top" class="keyValueTableKey"><label for="localesPropertiesTabs"><wicket:message key="LanguagesProperties" /></label></td>
+		    	<td class="keyValueTableValueOdd"><div wicket:id="localesPropertiesTabs"></div></td>		    	
+		    </tr>
 		</table>
-	    		
-	    <fieldset wicket:id="localesContainer">
-			<legend>
-				LOCALES
-			</legend>
-			<div wicket:id="locales"></div>
-		</fieldset>
+		 
+		
 		
 		<div class="modal-footer">
 			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save"/></button> 		
