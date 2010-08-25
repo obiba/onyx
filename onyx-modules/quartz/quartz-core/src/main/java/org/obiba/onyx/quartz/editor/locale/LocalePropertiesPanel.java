@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.locale;
 
+import java.util.Locale;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.slf4j.Logger;
@@ -20,13 +22,20 @@ public class LocalePropertiesPanel extends Panel {
 
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
-  public LocalePropertiesPanel(String id) {
+  private LocalePropertiesModel localePropertiesModel = new LocalePropertiesModel();
+
+  private Locale locale;
+
+  public LocalePropertiesPanel(String id, Locale locale) {
     super(id);
+    this.locale = locale;
+    localePropertiesModel.setLocale(locale);
     createComponent();
   }
 
   private void createComponent() {
     add(new Label("test", "testtest"));
+
     // final DefaultPropertyKeyProviderImpl propProvider = new DefaultPropertyKeyProviderImpl();
     // ListView<TextField<String>> labels = new ListView<TextField<String>>("labelsItem") {
     //

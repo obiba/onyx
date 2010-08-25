@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -179,7 +180,7 @@ public class QuestionPropertiesPanel extends Panel {
 
         @Override
         public Panel getPanel(String panelId) {
-          return new LocalePropertiesPanel(panelId);
+          return new LocalePropertiesPanel(panelId, Locale.ENGLISH);
         }
       });
       add(new TabbedPanel("labelsTabs", tabs));

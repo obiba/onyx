@@ -11,26 +11,21 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
@@ -44,7 +39,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.editor.locale.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.LocaleListModel;
-import org.obiba.onyx.quartz.editor.locale.LocalePropertiesPanel;
+import org.obiba.onyx.quartz.editor.locale.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -52,7 +47,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
 
 public class QuestionnairePropertiesPanel extends Panel {
 
@@ -129,8 +123,15 @@ public class QuestionnairePropertiesPanel extends Panel {
 
       // -------------------- Locales and Locales labels --------------------
 
-      // TODO add palette modele to AjaxTabbedPanel instead of this
-      final AjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new AjaxTabbedPanel("localesPropertiesTabs", new ArrayList<ITab>());
+      final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new AbstractReadOnlyModel<List<Locale>>() {
+
+        @Override
+        public List<Locale> getObject() {
+          return getModelObject().getLocales();
+        }
+
+      });
+
       Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(getModel(), "locales"), new LocaleListModel(), new LocaleChoiceRenderer(), 7, false) {
         @Override
         protected Recorder<Locale> newRecorderComponent() {
@@ -139,24 +140,7 @@ public class QuestionnairePropertiesPanel extends Panel {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-              int tabbedPanelTabsSize = localesPropertiesAjaxTabbedPanel.getTabs().size();
-              int selectedChoicesSize = Iterators.size(recorder.getSelectedChoices());
-
-              if(tabbedPanelTabsSize < selectedChoicesSize) {
-                Locale locale = Iterators.getLast(recorder.getSelectedChoices());
-                localesPropertiesAjaxTabbedPanel.getTabs().add(new AbstractTab(new Model<String>(locale.getDisplayLanguage(Session.get().getLocale()))) {
-                  private static final long serialVersionUID = 0L;
-
-                  @Override
-                  public Panel getPanel(String panelId) {
-                    return new LocalePropertiesPanel(panelId);
-                  }
-                });
-              } else if(tabbedPanelTabsSize > selectedChoicesSize) {
-                // ArrayList<Locale> copy = new ArrayList<Locale>();
-                // Collections.copy(copy, getModelObject().getLocales());
-                // Collections.Iterables.removeAll(copy.iterator(), selectedChoices);
-              }
+              localesPropertiesAjaxTabbedPanel.fireModelChanged();
               target.addComponent(localesPropertiesAjaxTabbedPanel);
             }
           });
