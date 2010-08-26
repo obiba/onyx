@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -44,7 +43,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
-import org.obiba.onyx.quartz.editor.locale.LocalePropertiesPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -180,7 +178,7 @@ public class QuestionPropertiesPanel extends Panel {
 
         @Override
         public Panel getPanel(String panelId) {
-          return new LocalePropertiesPanel(panelId, Locale.ENGLISH);
+          return new Panel("");
         }
       });
       add(new TabbedPanel("labelsTabs", tabs));

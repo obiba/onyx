@@ -1,11 +1,14 @@
 <html xmlns:wicket>
-	<wicket:panel>	
-	<div wicket:id="test"></div>
-<!--		<table class="keyValueTable">			-->
-<!--			<tr wicket:id="labelsItem">-->
-<!--				<td valign="top" class="keyValueTableKey"><label for="labelValue"><wicket:message key="label" /></label></td>-->
-<!--				<td class="keyValueTableValueOdd"><input wicket:id="labelValue" type="text" size="20" /></td>-->
-<!--			</tr>-->
-<!--		</table>-->
+	<wicket:panel>		
+		<form wicket:id="labelsForm" autocomplete="off" class="obiba-content">
+		<table class="keyValueTable">		    				
+				<wicket:container wicket:id="labelsItem">
+					<tr>
+						<td valign="top" class="keyValueTableKey"><label for="labelsInput"><div wicket:id="labelsLabel" /></label></td>
+						<td class="keyValueTableValueOdd"><input wicket:id="labelsInput" type="text" /></td>
+					</tr>
+			</wicket:container>
+		</table>
+		</form>
 	</wicket:panel>
 </html>

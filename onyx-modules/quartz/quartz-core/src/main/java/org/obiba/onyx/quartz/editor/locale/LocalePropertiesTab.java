@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.locale;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.Session;
@@ -17,30 +18,34 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 /**
- *
+ * Contains a {@link LocalePropertiesPanel}
  */
 public class LocalePropertiesTab extends AbstractTab {
 
   private static final long serialVersionUID = 1L;
 
-  private Locale locale;
+  private LocaleProperties localeProperties;
 
   private LocalePropertiesPanel localePropertiesPanel;
 
-  public LocalePropertiesTab(Locale locale) {
-    super(new Model<String>(locale.getDisplayLanguage(Session.get().getLocale())));
-    this.locale = locale;
+  private List<LocaleProperties> listLocaleProperties;
+
+  public LocalePropertiesTab(LocaleProperties localeProperties, List<LocaleProperties> listLocaleProperties) {
+    super(new Model<String>(localeProperties.getLocale().getDisplayLanguage(Session.get().getLocale())));
+    this.localeProperties = localeProperties;
+    this.listLocaleProperties = listLocaleProperties;
   }
 
   @Override
   public Panel getPanel(String panelId) {
     if(localePropertiesPanel == null) {
-      localePropertiesPanel = new LocalePropertiesPanel(panelId, locale);
+      localePropertiesPanel = new LocalePropertiesPanel(panelId, localeProperties, listLocaleProperties);
     }
     return localePropertiesPanel;
   }
 
   public Locale getLocale() {
-    return locale;
+    return localeProperties.getLocale();
   }
+
 }

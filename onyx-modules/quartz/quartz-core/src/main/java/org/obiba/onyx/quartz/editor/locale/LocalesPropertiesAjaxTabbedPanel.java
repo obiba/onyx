@@ -11,55 +11,62 @@ package org.obiba.onyx.quartz.editor.locale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 /**
- *
+ * Tabs of Locales and Labels Locales
  */
 public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private AbstractReadOnlyModel<List<Locale>> readOnlyModel;
+  private AbstractReadOnlyModel<List<Locale>> dependantModel;
 
-  private Map<Locale, Properties> mapLocaleProperties;
+  private IQuestionnaireElement questionnaireElement;
+
+  private List<LocaleProperties> listLocaleProperties;
 
   /**
    * @param abstractReadOnlyModel
    * @param id
    * @param tabs
    */
-  public LocalesPropertiesAjaxTabbedPanel(String id, AbstractReadOnlyModel<List<Locale>> readOnlyModel) {
+  public LocalesPropertiesAjaxTabbedPanel(String id, AbstractReadOnlyModel<List<Locale>> dependantModel, IQuestionnaireElement questionnaireElement, List<LocaleProperties> listLocaleProperties) {
     super(id, new ArrayList<ITab>());
-    mapLocaleProperties = new HashMap<Locale, Properties>();
-    this.readOnlyModel = readOnlyModel;
+    this.questionnaireElement = questionnaireElement;
+    this.dependantModel = dependantModel;
+    this.listLocaleProperties = listLocaleProperties;
   }
 
-  public void fireModelChanged() {
-    final List<Locale> listSelectedLocale = readOnlyModel.getObject();
+  /**
+   * Called when palette model changes to apply labels locales tabs (LocalesPropertiesAjaxTabbedPanel is based on
+   * Palette model)
+   */
+  public void dependantModelChanged() {
+    final List<Locale> listSelectedLocale = dependantModel.getObject();
     int readOnlyModelSize = listSelectedLocale.size();
-    int mapSize = mapLocaleProperties.size();
+    int mapSize = listLocaleProperties.size();
 
     if(readOnlyModelSize < mapSize) {
-      int nbDeleted = 0;
-      for(ITab tab : getTabs()) {
-        LocalePropertiesTab localePropertiesTab = (LocalePropertiesTab) tab;
-        if(!listSelectedLocale.contains(localePropertiesTab.getLocale())) {
-          mapLocaleProperties.remove(localePropertiesTab.getLocale());
-          nbDeleted++;
+      Iterable<LocaleProperties> localePropertiesToRemove = Iterables.filter(listLocaleProperties, new Predicate<LocaleProperties>() {
+
+        @Override
+        public boolean apply(LocaleProperties input) {
+          return !listSelectedLocale.contains(input.getLocale());
         }
-      }
+
+      });
+
+      listLocaleProperties.removeAll(Arrays.asList(Iterables.toArray(localePropertiesToRemove, LocaleProperties.class)));
 
       Iterable<ITab> tabToDelete = Iterables.filter(getTabs(), new Predicate<ITab>() {
 
@@ -76,12 +83,9 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     } else if(readOnlyModelSize > mapSize) {
       for(int start = mapSize; start < readOnlyModelSize; start++) {
         final Locale locale = listSelectedLocale.get(start);
-        if(!mapLocaleProperties.containsKey(locale)) {
-          mapLocaleProperties.put(locale, new Properties());
-          LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(locale);
-          getTabs().add(localePropertiesTab);
-          setSelectedTab(getTabs().size() - 1);
-        }
+        LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(new LocaleProperties(locale, questionnaireElement), listLocaleProperties);
+        getTabs().add(localePropertiesTab);
+        setSelectedTab(getTabs().size() - 1);
       }
     }
   }

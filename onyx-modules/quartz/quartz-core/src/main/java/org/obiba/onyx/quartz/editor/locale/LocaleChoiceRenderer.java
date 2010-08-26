@@ -5,6 +5,9 @@ import java.util.Locale;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 
+/**
+ * IChoiceRenderer for Locale
+ */
 public class LocaleChoiceRenderer implements IChoiceRenderer<Locale> {
 
   private static final long serialVersionUID = -6827298756927987879L;

@@ -9,6 +9,9 @@ import java.util.Locale;
 import org.apache.wicket.Session;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
 
+/**
+ * Model for List of Locale sorted by locale name (for locale of current user)
+ */
 public class LocaleListModel extends SpringDetachableModel<List<Locale>> {
 
   private static final long serialVersionUID = 1L;
