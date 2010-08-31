@@ -28,7 +28,7 @@ import com.google.common.collect.Iterables;
 /**
  * Tabs of Locales and Labels Locales
  * 
- * see https://issues.apache.org/jira/browse/WICKET-2828 when last tabs is deleted
+ * see https://issues.apache.org/jira/browse/WICKET-2828 when last tab is deleted
  */
 public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
 

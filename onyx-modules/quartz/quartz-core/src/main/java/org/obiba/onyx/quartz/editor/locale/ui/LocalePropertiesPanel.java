@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Locale panel witch contains textboxes of locale labels
+ * Locale panel which contains textboxes of locale labels
  */
 public class LocalePropertiesPanel extends Panel {
 
