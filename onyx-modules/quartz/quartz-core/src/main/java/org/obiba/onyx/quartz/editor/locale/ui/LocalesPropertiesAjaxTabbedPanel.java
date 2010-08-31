@@ -50,6 +50,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     this.dependantModel = dependantModel;
     this.questionnaireElement = questionnaireElement;
     this.localePropertiesModel = modelLocaleProperties;
+    initUI();
   }
 
   public LocalesPropertiesAjaxTabbedPanel(String id, IQuestionnaireElement questionnaireElement, SetModel<LocaleProperties> listModelLocaleProperties) {
@@ -58,15 +59,17 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
   }
 
   private void initUI() {
-    for(Iterator<LocaleProperties> iterator = localePropertiesModel.getObject().iterator(); iterator.hasNext();) {
-      LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(iterator.next());
-      getTabs().add(localePropertiesTab);
+    if(localePropertiesModel.getObject().size() != 0) {
+      for(Iterator<LocaleProperties> iterator = localePropertiesModel.getObject().iterator(); iterator.hasNext();) {
+        LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(iterator.next());
+        getTabs().add(localePropertiesTab);
+      }
+      setSelectedTab(getTabs().size() - 1);
     }
-    setSelectedTab(getTabs().size() - 1);
   }
 
   /**
-   * Called to update UI (only for questionnaire)
+   * Called to update UI (only for questionnaire) (maybe create 2 different classes for this)
    */
   public void dependantModelChanged() {
     final List<Locale> listSelectedLocale = dependantModel.getObject();

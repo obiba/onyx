@@ -104,8 +104,14 @@ public class QuestionnairePropertiesPanel extends Panel {
 
       // -------------------- Locales and Locales labels --------------------
 
+      Questionnaire questionnaireElement = new Questionnaire("e", "1.1");
+
+      HashSet<LocaleProperties> set = new HashSet<LocaleProperties>();
+      for(Locale l : this.getModelObject().getLocales()) {
+        set.add(new LocaleProperties(l, questionnaireElement));
+      }
       // maybe this must be a spring loadable detachable model
-      final SetModel<LocaleProperties> localePropertiesModel = new SetModel<LocaleProperties>(new HashSet<LocaleProperties>());
+      final SetModel<LocaleProperties> localePropertiesModel = new SetModel<LocaleProperties>(set);
 
       // see 3rd question here http://wiki.obiba.org/confluence/display/ONYX/Onyx+-+Quartz+Editor+-+P3G+team about new
       // Questionnaire("e", "1.1")
@@ -115,7 +121,7 @@ public class QuestionnairePropertiesPanel extends Panel {
         public List<Locale> getObject() {
           return QuestionnaireForm.this.getModelObject().getLocales();
         }
-      }, new Questionnaire("e", "1.1"), localePropertiesModel);
+      }, questionnaireElement, localePropertiesModel);
 
       Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(getModel(), "locales"), LocaleListModel.getInstance(), LocaleChoiceRenderer.getInstance(), 7, false) {
         @Override

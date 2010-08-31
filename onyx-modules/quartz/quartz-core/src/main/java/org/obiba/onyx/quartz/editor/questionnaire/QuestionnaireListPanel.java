@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
@@ -47,9 +48,11 @@ public class QuestionnaireListPanel extends Panel {
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public QuestionnaireListPanel(String id) {
-    super(id);
+  private ModalWindow modalWindow;
 
+  public QuestionnaireListPanel(String id, ModalWindow modalWindow) {
+    super(id);
+    this.modalWindow = modalWindow;
     add(new OnyxEntityList<User>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
   }
 
@@ -149,8 +152,9 @@ public class QuestionnaireListPanel extends Panel {
       add(new AjaxLink<Questionnaire>("editLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          // userDetailsModalWindow.setContent(new UserPanel("content", rowModel, userDetailsModalWindow));
-          // userDetailsModalWindow.show(target);
+          modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
+          modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(rowModel.getObject()), modalWindow));
+          modalWindow.show(target);
         }
       });
     }

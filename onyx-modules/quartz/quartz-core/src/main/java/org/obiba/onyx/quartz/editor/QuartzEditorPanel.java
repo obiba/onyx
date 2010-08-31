@@ -47,7 +47,7 @@ public class QuartzEditorPanel extends Panel {
 
     add(modalWindow);
 
-    add(new QuestionnaireListPanel("questionnaire-list"));
+    add(new QuestionnaireListPanel("questionnaire-list", modalWindow));
 
     add(new AjaxLink("questionnaireProps") {
       @Override

@@ -37,7 +37,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.SetModel;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
@@ -145,7 +144,7 @@ public class QuestionPropertiesPanel extends Panel {
       radioGroup.add(radioList);
 
       // Labels tab panel
-      Questionnaire questionnaireElement = new Questionnaire("e", "1.1");
+      Question questionnaireElement = new Question("question");
       Set<LocaleProperties> set = new HashSet<LocaleProperties>();
       LocaleProperties lp = new LocaleProperties(Locale.ENGLISH, questionnaireElement);
       lp.getValues()[0] = "eeeee";
