@@ -11,8 +11,8 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.util.SetModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -40,11 +41,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.editor.locale.LocaleChoiceRenderer;
-import org.obiba.onyx.quartz.editor.locale.LocaleListModel;
-import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
-import org.obiba.onyx.quartz.editor.locale.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -102,19 +104,20 @@ public class QuestionnairePropertiesPanel extends Panel {
 
       // -------------------- Locales and Locales labels --------------------
 
-      // maybe this must be a model
-      final ArrayList<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+      // maybe this must be a spring loadable detachable model
+      final SetModel<LocaleProperties> localePropertiesModel = new SetModel<LocaleProperties>(new HashSet<LocaleProperties>());
 
+      // see 3rd question here http://wiki.obiba.org/confluence/display/ONYX/Onyx+-+Quartz+Editor+-+P3G+team about new
+      // Questionnaire("e", "1.1")
       final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new AbstractReadOnlyModel<List<Locale>>() {
 
         @Override
         public List<Locale> getObject() {
           return QuestionnaireForm.this.getModelObject().getLocales();
         }
+      }, new Questionnaire("e", "1.1"), localePropertiesModel);
 
-      }, new Questionnaire("e", "1.1"), listLocaleProperties);
-
-      Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(getModel(), "locales"), new LocaleListModel(), new LocaleChoiceRenderer(), 7, false) {
+      Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(getModel(), "locales"), LocaleListModel.getInstance(), LocaleChoiceRenderer.getInstance(), 7, false) {
         @Override
         protected Recorder<Locale> newRecorderComponent() {
           final Recorder<Locale> recorder = super.newRecorderComponent();
@@ -145,7 +148,7 @@ public class QuestionnairePropertiesPanel extends Panel {
           try {
             // FIXME call twice otherwise locales in questionnaire.xml are not setted (only language_xxx.properties is
             // created)
-            Map<Locale, Properties> extractedLocaleProperties = extractedLocaleProperties();
+            Map<Locale, Properties> extractedLocaleProperties = extractedLocaleProperties(questionnaire);
             new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), extractedLocaleProperties);
             new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), extractedLocaleProperties);
           } catch(IOException e) {
@@ -158,14 +161,16 @@ public class QuestionnairePropertiesPanel extends Panel {
 
         }
 
-        // TODO change (for example) "label" to "Questionnaire.${name}.label"
-        private Map<Locale, Properties> extractedLocaleProperties() {
+        private Map<Locale, Properties> extractedLocaleProperties(Questionnaire affectedQuestionnaire) {
+          DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
           Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
-          for(LocaleProperties localeProperties : listLocaleProperties) {
+          for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
             Properties properties = new Properties();
-            for(int i = 0; i < localeProperties.getListKeys().length; i++) {
-              String value = localeProperties.getListValues()[i];
-              properties.setProperty(localeProperties.getListKeys()[i], value != null ? value : "");
+            for(int i = 0; i < localeProperties.getKeys().length; i++) {
+              String key = localeProperties.getKeys()[i];
+              String value = localeProperties.getValues()[i];
+              String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(affectedQuestionnaire, key);
+              properties.setProperty(fullKey, value != null ? value : "");
             }
             mapLocaleProperties.put(localeProperties.getLocale(), properties);
           }

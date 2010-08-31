@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.locale;
+package org.obiba.onyx.quartz.editor.locale.model;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,9 +25,9 @@ public class LocaleProperties implements IClusterable {
 
   private Locale locale;
 
-  private String[] listKeys;
+  private String[] keys;
 
-  private String[] listValues;
+  private String[] values;
 
   /**
    * 
@@ -37,8 +37,8 @@ public class LocaleProperties implements IClusterable {
   public LocaleProperties(Locale locale, IQuestionnaireElement questionnaireElement) {
     this.locale = locale;
     List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaireElement);
-    listValues = new String[listSourceKeys.size()];
-    listKeys = listSourceKeys.toArray(new String[0]);
+    values = new String[listSourceKeys.size()];
+    keys = listSourceKeys.toArray(new String[0]);
   }
 
   public Locale getLocale() {
@@ -49,20 +49,11 @@ public class LocaleProperties implements IClusterable {
     this.locale = locale;
   }
 
-  public String[] getListKeys() {
-    return listKeys;
+  public String[] getKeys() {
+    return keys;
   }
 
-  public void setListKeys(String[] listKeys) {
-    this.listKeys = listKeys;
+  public String[] getValues() {
+    return values;
   }
-
-  public String[] getListValues() {
-    return listValues;
-  }
-
-  public void setListValues(String[] listValues) {
-    this.listValues = listValues;
-  }
-
 }

@@ -9,18 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
-import static org.easymock.EasyMock.createMock;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
@@ -37,16 +34,16 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.test.ApplicationContextMock;
+import org.apache.wicket.model.util.SetModel;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
-import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,28 +65,11 @@ public class QuestionPropertiesPanel extends Panel {
 
   private RadioGroup<?> radioGroup;
 
-  private ApplicationContextMock applicationContextMock;
-
-  private QuestionnaireBundleManager questionnaireBundleManagerMock;
-
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
-
   // private IPropertyKeyProvider propertyKeyProvider;
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow modalWindow) {
     super(id, model);
     this.modalWindow = modalWindow;
-
-    applicationContextMock = new ApplicationContextMock();
-
-    questionnaireBundleManagerMock = createMock(QuestionnaireBundleManager.class);
-    applicationContextMock.putBean("questionnaireBundleManager", questionnaireBundleManagerMock);
-
-    activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
-    applicationContextMock.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
-
-    MockSpringApplication application = new MockSpringApplication();
-    application.setApplicationContext(applicationContextMock);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -155,13 +135,6 @@ public class QuestionPropertiesPanel extends Panel {
           Radio radio = new Radio("radio", selectModel);
           radio.setLabel(new StringResourceModel(key, QuestionPropertiesPanel.this, null));
 
-          // // set default selection
-          // // cannot decide if yes/no/dontknow was selected, so only deal with case the default ci is not null
-          // // and it was because yes was selected
-          // if(key == YES && getContraindicatable().isContraindicated() &&
-          // getContraindicatable().getContraindication().equals(ci)) {
-          // radioGroup.setModel(selectModel);
-          // }
           listItem.add(radio);
 
           FormComponentLabel radioLabel = new SimpleFormComponentLabel("radioLabel", radio);
@@ -172,16 +145,19 @@ public class QuestionPropertiesPanel extends Panel {
       radioGroup.add(radioList);
 
       // Labels tab panel
-      List tabs = new ArrayList();
-      tabs.add(new AbstractTab(new Model("labelName")) {
-        private static final long serialVersionUID = 0L;
+      Questionnaire questionnaireElement = new Questionnaire("e", "1.1");
+      Set<LocaleProperties> set = new HashSet<LocaleProperties>();
+      LocaleProperties lp = new LocaleProperties(Locale.ENGLISH, questionnaireElement);
+      lp.getValues()[0] = "eeeee";
+      LocaleProperties lp2 = new LocaleProperties(Locale.FRENCH, questionnaireElement);
+      lp2.getValues()[0] = "eefrfrfreee";
+      set.add(lp);
+      set.add(lp2);
 
-        @Override
-        public Panel getPanel(String panelId) {
-          return new Panel("");
-        }
-      });
-      add(new TabbedPanel("labelsTabs", tabs));
+      SetModel<LocaleProperties> setModelLocaleProperties = new SetModel<LocaleProperties>(set);
+      LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", questionnaireElement, setModelLocaleProperties);
+
+      add(localesPropertiesAjaxTabbedPanel);
 
       add(new AjaxButton("save", this) {
 
@@ -250,8 +226,6 @@ public class QuestionPropertiesPanel extends Panel {
         }
       });
 
-      // A cancel button: use an AjaxButton and disable the "defaultFormProcessing". Seems that this is the best
-      // practice for this type of behavior
       add(new AjaxButton("cancel", this) {
 
         private static final long serialVersionUID = 1L;
@@ -264,8 +238,9 @@ public class QuestionPropertiesPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private class LayoutSelection implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String selectionKey;
 

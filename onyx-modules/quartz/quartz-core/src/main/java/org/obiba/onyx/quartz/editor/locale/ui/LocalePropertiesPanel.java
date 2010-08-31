@@ -7,9 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.locale;
-
-import java.util.List;
+package org.obiba.onyx.quartz.editor.locale.ui;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -21,6 +19,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +32,8 @@ public class LocalePropertiesPanel extends Panel {
 
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
-  public LocalePropertiesPanel(String id, LocaleProperties localeProperties, List<LocaleProperties> listLocaleProperties) {
+  public LocalePropertiesPanel(String id, LocaleProperties localeProperties) {
     super(id);
-    listLocaleProperties.add(localeProperties);
     add(new LocalePropertiesForm("labelsForm", localeProperties));
   }
 
@@ -46,14 +44,14 @@ public class LocalePropertiesPanel extends Panel {
     public LocalePropertiesForm(String id, final LocaleProperties localeProperties) {
       super(id, new Model<LocaleProperties>(localeProperties));
 
-      Loop labels = new Loop("labelsItem", localeProperties.getListKeys().length) {
+      Loop labels = new Loop("labelsItem", localeProperties.getKeys().length) {
 
         private static final long serialVersionUID = 1L;
 
         @Override
         protected void populateItem(LoopItem item) {
-          TextField<String> labelInput = new TextField<String>("labelsInput", new PropertyModel<String>(getModelObject(), "listValues[" + item.getIteration() + "]"));
-          Label labelLabel = new Label("labelsLabel", getModelObject().getListKeys()[item.getIteration()]);
+          TextField<String> labelInput = new TextField<String>("labelsInput", new PropertyModel<String>(getModelObject(), "values[" + item.getIteration() + "]"));
+          Label labelLabel = new Label("labelsLabel", getModelObject().getKeys()[item.getIteration()]);
           labelInput.add(new StringValidator.MaximumLengthValidator(20));
           labelInput.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
@@ -64,7 +62,6 @@ public class LocalePropertiesPanel extends Panel {
               // null, because submitting compoment is a javascript event : "onblur"
               delegateSubmit(null);
             }
-
           });
           item.add(labelLabel);
           item.add(labelInput);

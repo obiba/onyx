@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.editor.locale;
+package org.obiba.onyx.quartz.editor.locale.model;
 
 import java.util.Locale;
 
@@ -12,6 +12,12 @@ public class LocaleChoiceRenderer implements IChoiceRenderer<Locale> {
 
   private static final long serialVersionUID = -6827298756927987879L;
 
+  private static LocaleChoiceRenderer INSTANCE;
+
+  private LocaleChoiceRenderer() {
+
+  }
+
   @Override
   public String getIdValue(Locale locale, int index) {
     return locale.toString();
@@ -20,5 +26,10 @@ public class LocaleChoiceRenderer implements IChoiceRenderer<Locale> {
   @Override
   public Object getDisplayValue(Locale locale) {
     return locale.getDisplayLanguage(Session.get().getLocale());
+  }
+
+  public static LocaleChoiceRenderer getInstance() {
+    if(INSTANCE == null) INSTANCE = new LocaleChoiceRenderer();
+    return INSTANCE;
   }
 }

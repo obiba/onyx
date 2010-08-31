@@ -1,40 +1,36 @@
-<wicket:panel>
-	
-	<span wicket:id="feedback" />
-	
-	<form wicket:id="questionForm" autocomplete="off" class="obiba-content">
-		
+<wicket:panel>	
+	<span wicket:id="feedback" />	
+	<form wicket:id="questionForm" autocomplete="off" class="obiba-content">		
 	 	<table class="keyValueTable">
 			<tr>
-	    	<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
-	    	<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
-	    </tr>	    	
+		    	<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
+		    	<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
+		    </tr>	    	
 			<tr>
-	    	<td valign="top" class="keyValueTableKey"><label for="variableName"><wicket:message key="VariableName" /></label></td>
-	    	<td class="keyValueTableValueOdd"><input wicket:id="variableName" type="text" size="20" /></td>
-	    </tr>	  	    
+		    	<td valign="top" class="keyValueTableKey"><label for="variableName"><wicket:message key="VariableName" /></label></td>
+		    	<td class="keyValueTableValueOdd"><input wicket:id="variableName" type="text" size="20" /></td>
+		    </tr>	  	    
 			<tr>
-	    	<td valign="top" class="keyValueTableKey"><label for="multiple"><wicket:message key="Multiple" /></label></td>
-	    	<td class="keyValueTableValueOdd"><input wicket:id="multiple" type="checkbox" /></td>
-	    </tr>	  	 
-	    	<tr>
-	    	<td valign="top" class="keyValueTableKey"><label for="radioGroup"><wicket:message key="Layout" /></label></td>
-	    	<td class="keyValueTableKey">	
-	    		<span wicket:id="radioGroup">
-	    		<wicket:container wicket:id="radioItem">
-	    				<input type="radio" wicket:id="radio" /><label wicket:id="radioLabel">Radio Label</label>
-	    		</wicket:container>
-	    		</span>
-	    		</td>
-	    </tr>
+		    	<td valign="top" class="keyValueTableKey"><label for="multiple"><wicket:message key="Multiple" /></label></td>
+		    	<td class="keyValueTableValueOdd"><input wicket:id="multiple" type="checkbox" /></td>
+		    </tr>	  	 
+		    <tr>
+		    	<td valign="top" class="keyValueTableKey"><label for="radioGroup"><wicket:message key="Layout" /></label></td>
+		    	<td class="keyValueTableKey">	
+		    		<span wicket:id="radioGroup">
+			    		<wicket:container wicket:id="radioItem">
+			    				<input type="radio" wicket:id="radio" /><label wicket:id="radioLabel"></label>
+			    		</wicket:container>
+		    		</span>
+		    	</td>
+		    </tr>
+		    <tr>
+		    	<td valign="top" class="keyValueTableKey"><label for="localesPropertiesTabs"><wicket:message key="LanguagesProperties" /></label></td>
+		    	<td class="keyValueTableValueOdd"><div wicket:id="localesPropertiesTabs"></div></td>		    	
+		    </tr>
 		</table>
 		
-		<fieldset style="width: 33.3333em;">
-          <legend>
-            <wicket:message key="Labels" />
-          </legend>
-          <span wicket:id="labelsTabs"></span>
-        </fieldset>
+	
         
 	    		
 		<div class="modal-footer">
