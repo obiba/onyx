@@ -29,11 +29,6 @@ public class LocaleProperties implements IClusterable {
 
   private String[] values;
 
-  /**
-   * 
-   * @param locale
-   * @param questionnaireElement
-   */
   public LocaleProperties(Locale locale, IQuestionnaireElement questionnaireElement) {
     this.locale = locale;
     List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaireElement);
@@ -56,4 +51,9 @@ public class LocaleProperties implements IClusterable {
   public String[] getValues() {
     return values;
   }
+
+  public void setValues(String[] values) {
+    this.values = values;
+  }
+
 }

@@ -17,8 +17,7 @@ import java.util.Locale;
 
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.util.SetModel;
+import org.apache.wicket.model.util.ListModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.predicate.LocalePredicateFactory;
@@ -34,27 +33,30 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private AbstractReadOnlyModel<List<Locale>> dependantModel;
+  // this model must only be read
+  private ListModel<Locale> dependantModel;
 
   private IQuestionnaireElement questionnaireElement;
 
-  private SetModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties> localePropertiesModel;
 
   /**
    * @param abstractReadOnlyModel
    * @param id
    * @param tabs
    */
-  public LocalesPropertiesAjaxTabbedPanel(String id, AbstractReadOnlyModel<List<Locale>> dependantModel, IQuestionnaireElement questionnaireElement, SetModel<LocaleProperties> modelLocaleProperties) {
+  public LocalesPropertiesAjaxTabbedPanel(String id, ListModel<Locale> dependantModel, IQuestionnaireElement questionnaireElement, ListModel<LocaleProperties> localePropertiesModel) {
     super(id, new ArrayList<ITab>());
     this.dependantModel = dependantModel;
+    this.localePropertiesModel = localePropertiesModel;
     this.questionnaireElement = questionnaireElement;
-    this.localePropertiesModel = modelLocaleProperties;
     initUI();
   }
 
-  public LocalesPropertiesAjaxTabbedPanel(String id, IQuestionnaireElement questionnaireElement, SetModel<LocaleProperties> listModelLocaleProperties) {
-    this(id, null, questionnaireElement, listModelLocaleProperties);
+  public LocalesPropertiesAjaxTabbedPanel(String id, IQuestionnaireElement questionnaireElement, ListModel<LocaleProperties> localePropertiesModel) {
+    super(id, new ArrayList<ITab>());
+    this.questionnaireElement = questionnaireElement;
+    this.localePropertiesModel = localePropertiesModel;
     initUI();
   }
 

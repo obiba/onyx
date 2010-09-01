@@ -10,10 +10,10 @@
 package org.obiba.onyx.quartz.editor.question;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -34,7 +34,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.model.util.SetModel;
+import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
@@ -144,17 +144,16 @@ public class QuestionPropertiesPanel extends Panel {
       radioGroup.add(radioList);
 
       // Labels tab panel
-      Question questionnaireElement = new Question("question");
-      Set<LocaleProperties> set = new HashSet<LocaleProperties>();
-      LocaleProperties lp = new LocaleProperties(Locale.ENGLISH, questionnaireElement);
+      List<LocaleProperties> list = new ArrayList<LocaleProperties>();
+      LocaleProperties lp = new LocaleProperties(Locale.ENGLISH, getModelObject());
       lp.getValues()[0] = "eeeee";
-      LocaleProperties lp2 = new LocaleProperties(Locale.FRENCH, questionnaireElement);
+      LocaleProperties lp2 = new LocaleProperties(Locale.FRENCH, getModelObject());
       lp2.getValues()[0] = "eefrfrfreee";
-      set.add(lp);
-      set.add(lp2);
+      list.add(lp);
+      list.add(lp2);
 
-      SetModel<LocaleProperties> setModelLocaleProperties = new SetModel<LocaleProperties>(set);
-      LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", questionnaireElement, setModelLocaleProperties);
+      ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(list);
+      LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", getModelObject(), localePropertiesModel);
 
       add(localesPropertiesAjaxTabbedPanel);
 

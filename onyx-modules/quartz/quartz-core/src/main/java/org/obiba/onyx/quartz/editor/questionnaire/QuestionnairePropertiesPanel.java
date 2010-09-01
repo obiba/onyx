@@ -11,8 +11,9 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,10 +29,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.util.SetModel;
+import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -42,7 +42,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -59,35 +59,33 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  private final ModalWindow modalWindow;
+  protected final ModalWindow modalWindow;
 
   @SpringBean
-  private QuestionnaireBundleManager questionnaireBundleManager;
+  protected QuestionnaireBundleManager questionnaireBundleManager;
 
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  // @SpringBean
+  // private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private FeedbackPanel feedbackPanel;
+  protected FeedbackPanel feedbackPanel;
 
-  private FeedbackWindow feedbackWindow;
+  protected FeedbackWindow feedbackWindow;
 
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
     super(id, model);
     this.modalWindow = modalWindow;
-
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
-
     add(feedbackWindow);
     add(new QuestionnaireForm("questionnaireForm", model));
-
   }
 
-  @SuppressWarnings("serial")
   public class QuestionnaireForm extends Form<Questionnaire> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * @param id
@@ -104,30 +102,23 @@ public class QuestionnairePropertiesPanel extends Panel {
 
       // -------------------- Locales and Locales labels --------------------
 
-      Questionnaire questionnaireElement = new Questionnaire("e", "1.1");
+      final ListModel<LocaleProperties> localePropertiesModel = createLocalePropertiesModel();
 
-      HashSet<LocaleProperties> set = new HashSet<LocaleProperties>();
-      for(Locale l : this.getModelObject().getLocales()) {
-        set.add(new LocaleProperties(l, questionnaireElement));
-      }
-      // maybe this must be a spring loadable detachable model
-      final SetModel<LocaleProperties> localePropertiesModel = new SetModel<LocaleProperties>(set);
+      // make a copy of locales list because we don't want affect model when we manipulate Palette
+      final ListModel<Locale> listLocaleModel = new ListModel<Locale>(new ArrayList<Locale>(getModelObject().getLocales()));
 
-      // see 3rd question here http://wiki.obiba.org/confluence/display/ONYX/Onyx+-+Quartz+Editor+-+P3G+team about new
-      // Questionnaire("e", "1.1")
-      final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new AbstractReadOnlyModel<List<Locale>>() {
+      final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", listLocaleModel, getModelObject(), localePropertiesModel);
 
-        @Override
-        public List<Locale> getObject() {
-          return QuestionnaireForm.this.getModelObject().getLocales();
-        }
-      }, questionnaireElement, localePropertiesModel);
+      Palette<Locale> localesPalette = new Palette<Locale>("languages", listLocaleModel, LocaleListModel.getInstance(), LocaleChoiceRenderer.getInstance(), 7, false) {
 
-      Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(getModel(), "locales"), LocaleListModel.getInstance(), LocaleChoiceRenderer.getInstance(), 7, false) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         protected Recorder<Locale> newRecorderComponent() {
           final Recorder<Locale> recorder = super.newRecorderComponent();
           recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+            private static final long serialVersionUID = 1L;
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -142,6 +133,11 @@ public class QuestionnairePropertiesPanel extends Panel {
       // -------------------- Save --------------------
       AjaxButton saveButton = new AjaxButton("save", this) {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           super.onSubmit();
@@ -152,9 +148,16 @@ public class QuestionnairePropertiesPanel extends Panel {
           File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
           File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
           try {
+
+            questionnaire.getLocales().clear();
+            for(Iterator<Locale> iterator = listLocaleModel.getObject().iterator(); iterator.hasNext();) {
+              questionnaire.addLocale(iterator.next());
+            }
+
+            Map<Locale, Properties> extractedLocaleProperties = extractedLocaleProperties(questionnaire);
+
             // FIXME call twice otherwise locales in questionnaire.xml are not setted (only language_xxx.properties is
             // created)
-            Map<Locale, Properties> extractedLocaleProperties = extractedLocaleProperties(questionnaire);
             new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), extractedLocaleProperties);
             new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), extractedLocaleProperties);
           } catch(IOException e) {
@@ -164,9 +167,13 @@ public class QuestionnairePropertiesPanel extends Panel {
           // FIXME to create question and have an active questionnaire (don't seems to be a good way to do this) use
           // only to debug and test for the moment
           // activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
-
         }
 
+        /**
+         * Create a Map<Locale, Properties> with localePropertiesModel object
+         * @param affectedQuestionnaire
+         * @return
+         */
         private Map<Locale, Properties> extractedLocaleProperties(Questionnaire affectedQuestionnaire) {
           DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
           Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
@@ -211,6 +218,26 @@ public class QuestionnairePropertiesPanel extends Panel {
       add(cancelButton);
     }
 
+    /**
+     * Create model of LocaleProperties list using locale of questionnaire model and labels resources
+     * @return
+     */
+    private ListModel<LocaleProperties> createLocalePropertiesModel() {
+      List<LocaleProperties> list = new ArrayList<LocaleProperties>();
+      for(Locale locale : getModelObject().getLocales()) {
+        LocaleProperties localeProperties = new LocaleProperties(locale, getModelObject());
+        List<String> values = new ArrayList<String>();
+        for(String property : localeProperties.getKeys()) {
+          QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(getModelObject().getName());
+          values.add(QuestionnaireStringResourceModelHelper.getMessage(bundle, getModelObject(), property, new Object[0], locale));
+        }
+        localeProperties.setValues(values.toArray(new String[0]));
+        list.add(localeProperties);
+      }
+      ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(list);
+      return localePropertiesModel;
+    }
+
     private TextField<String> createVersionField() {
       TextField<String> versionTextField = new TextField<String>("version", new PropertyModel<String>(getModel(), "version"));
       versionTextField.add(new RequiredFormFieldBehavior());
@@ -221,8 +248,10 @@ public class QuestionnairePropertiesPanel extends Panel {
     private TextField<String> createNameField() {
       TextField<String> nameTextField = new TextField<String>("name", new PropertyModel<String>(getModel(), "name"));
       nameTextField.add(new RequiredFormFieldBehavior());
-      nameTextField.add(new StringValidator.MaximumLengthValidator(20));
+      nameTextField.add(new StringValidator.MaximumLengthValidator(100));
       nameTextField.add(new AbstractValidator<String>() {
+
+        private static final long serialVersionUID = 1L;
 
         @Override
         protected void onValidate(final IValidatable<String> validatable) {
@@ -233,7 +262,7 @@ public class QuestionnairePropertiesPanel extends Panel {
               return !input.getName().equals(validatable.getValue());
             }
           });
-          if(!isNewName) {
+          if(!isNewName && !validatable.getValue().equals(getModelObject().getName())) {
             error(validatable);
           }
         }
