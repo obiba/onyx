@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
@@ -31,12 +33,17 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
@@ -64,7 +71,8 @@ public class QuestionPropertiesPanel extends Panel {
 
   private RadioGroup<?> radioGroup;
 
-  // private IPropertyKeyProvider propertyKeyProvider;
+  @SpringBean
+  protected QuestionnaireBundleManager questionnaireBundleManager;
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow modalWindow) {
     super(id, model);
@@ -143,17 +151,35 @@ public class QuestionPropertiesPanel extends Panel {
       }.setReuseItems(true);
       radioGroup.add(radioList);
 
-      // Labels tab panel
-      List<LocaleProperties> list = new ArrayList<LocaleProperties>();
-      LocaleProperties lp = new LocaleProperties(Locale.ENGLISH, getModelObject());
-      lp.getValues()[0] = "eeeee";
-      LocaleProperties lp2 = new LocaleProperties(Locale.FRENCH, getModelObject());
-      lp2.getValues()[0] = "eefrfrfreee";
-      list.add(lp);
-      list.add(lp2);
+      final ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
+      final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", getModelObject(), localePropertiesModel);
 
-      ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(list);
-      LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", getModelObject(), localePropertiesModel);
+      final DropDownChoice<Questionnaire> dropDownChoice = new DropDownChoice<Questionnaire>("questionnaireDropDownChoice", new Model<Questionnaire>(), new LoadableDetachableModel<List<Questionnaire>>() {
+
+        @Override
+        protected List<Questionnaire> load() {
+          List<Questionnaire> questionnaires = new ArrayList<Questionnaire>();
+          for(QuestionnaireBundle questionnaireBundle : questionnaireBundleManager.bundles()) {
+            questionnaires.add(questionnaireBundle.getQuestionnaire());
+          }
+          return questionnaires;
+        }
+      });
+
+      dropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+        @Override
+        protected void onUpdate(AjaxRequestTarget target) {
+          List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+          for(Locale locale : dropDownChoice.getModelObject().getLocales()) {
+            listLocaleProperties.add(new LocaleProperties(locale, QuestionForm.this.getModelObject()));
+          }
+          localePropertiesModel.setObject(listLocaleProperties);
+          localesPropertiesAjaxTabbedPanel.initUI();
+          target.addComponent(localesPropertiesAjaxTabbedPanel);
+        }
+      });
+      add(dropDownChoice);
 
       add(localesPropertiesAjaxTabbedPanel);
 

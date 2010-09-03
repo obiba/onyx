@@ -39,10 +39,12 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.quartz.editor.QuestionnaireElementListPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -130,6 +132,10 @@ public class QuestionnairePropertiesPanel extends Panel {
         }
       };
 
+      // -------------------- Section --------------------
+
+      QuestionnaireElementListPanel<Section> sectionListPanel = new QuestionnaireElementListPanel<Section>("sectionListPanel", new ListModel<Section>(getModelObject().getSections()), Section.class);
+
       // -------------------- Save --------------------
       AjaxButton saveButton = new AjaxButton("save", this) {
 
@@ -154,7 +160,7 @@ public class QuestionnairePropertiesPanel extends Panel {
               questionnaire.addLocale(iterator.next());
             }
 
-            Map<Locale, Properties> extractedLocaleProperties = extractedLocaleProperties(questionnaire);
+            Map<Locale, Properties> extractedLocaleProperties = extractLocalePropertiesToMap(questionnaire);
 
             // FIXME call twice otherwise locales in questionnaire.xml are not setted (only language_xxx.properties is
             // created)
@@ -174,7 +180,7 @@ public class QuestionnairePropertiesPanel extends Panel {
          * @param affectedQuestionnaire
          * @return
          */
-        private Map<Locale, Properties> extractedLocaleProperties(Questionnaire affectedQuestionnaire) {
+        private Map<Locale, Properties> extractLocalePropertiesToMap(Questionnaire affectedQuestionnaire) {
           DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
           Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
           for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
@@ -182,8 +188,8 @@ public class QuestionnairePropertiesPanel extends Panel {
             for(int i = 0; i < localeProperties.getKeys().length; i++) {
               String key = localeProperties.getKeys()[i];
               String value = localeProperties.getValues()[i];
-              String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(affectedQuestionnaire, key);
-              properties.setProperty(fullKey, value != null ? value : "");
+              String keyWithNamingStrategy = defaultPropertyKeyProviderImpl.getPropertyKey(affectedQuestionnaire, key);
+              properties.setProperty(keyWithNamingStrategy, value != null ? value : "");
             }
             mapLocaleProperties.put(localeProperties.getLocale(), properties);
           }
@@ -214,6 +220,7 @@ public class QuestionnairePropertiesPanel extends Panel {
       add(versionTextField);
       add(localesPalette);
       add(localesPropertiesAjaxTabbedPanel);
+      add(sectionListPanel);
       add(saveButton);
       add(cancelButton);
     }

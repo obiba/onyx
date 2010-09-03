@@ -60,7 +60,8 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     initUI();
   }
 
-  private void initUI() {
+  public void initUI() {
+    getTabs().clear();
     if(localePropertiesModel.getObject().size() != 0) {
       for(Iterator<LocaleProperties> iterator = localePropertiesModel.getObject().iterator(); iterator.hasNext();) {
         LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(iterator.next());

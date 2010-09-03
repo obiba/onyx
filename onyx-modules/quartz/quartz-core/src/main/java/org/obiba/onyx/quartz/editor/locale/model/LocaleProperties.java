@@ -17,7 +17,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 
 /**
- * Class representing a locale and his list of properties (listKeys and listValues)
+ * Class representing a locale and his list of properties (keys and values)
  */
 public class LocaleProperties implements IClusterable {
 

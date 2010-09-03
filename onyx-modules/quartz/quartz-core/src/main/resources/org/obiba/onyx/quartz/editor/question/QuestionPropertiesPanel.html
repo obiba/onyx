@@ -2,6 +2,10 @@
 	<span wicket:id="feedback" />	
 	<form wicket:id="questionForm" autocomplete="off" class="obiba-content">		
 	 	<table class="keyValueTable">
+	 		<tr>
+		    	<td valign="top" class="keyValueTableKey"><label for="questionnaireDropDownChoice"><wicket:message key="Questionnaire" /></label></td>
+		    	<td class="keyValueTableValueOdd"><select wicket:id="questionnaireDropDownChoice"></select></td>
+		    </tr>
 			<tr>
 		    	<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
 		    	<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
