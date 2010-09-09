@@ -9,11 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -65,9 +63,6 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   @SpringBean
   protected QuestionnaireBundleManager questionnaireBundleManager;
-
-  // @SpringBean
-  // private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   protected FeedbackPanel feedbackPanel;
 
@@ -139,40 +134,25 @@ public class QuestionnairePropertiesPanel extends Panel {
       // -------------------- Save --------------------
       AjaxButton saveButton = new AjaxButton("save", this) {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           super.onSubmit();
           Questionnaire questionnaire = model.getObject();
-          log.info(questionnaire.getName() + " " + questionnaire.getVersion() + " " + questionnaire.getLocales().size());
 
-          // FIXME to have same working directory (for QuestionnaireCreator and QuestionnaireBundleManager)
-          File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
-          File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
           try {
-
             questionnaire.getLocales().clear();
-            for(Iterator<Locale> iterator = listLocaleModel.getObject().iterator(); iterator.hasNext();) {
-              questionnaire.addLocale(iterator.next());
+            for(Locale locale : listLocaleModel.getObject()) {
+              questionnaire.addLocale(locale);
             }
 
+            log.info(questionnaire.getName() + " " + questionnaire.getVersion() + " " + questionnaire.getLocales().size());
             Map<Locale, Properties> extractedLocaleProperties = extractLocalePropertiesToMap(questionnaire);
-
-            // FIXME call twice otherwise locales in questionnaire.xml are not setted (only language_xxx.properties is
-            // created)
-            new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), extractedLocaleProperties);
-            new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.createQuestionnaire(questionnaire.getName(), questionnaire.getVersion()), extractedLocaleProperties);
+            new QuestionnaireCreator().createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), extractedLocaleProperties);
           } catch(IOException e) {
             e.printStackTrace();
           }
-
-          // FIXME to create question and have an active questionnaire (don't seems to be a good way to do this) use
-          // only to debug and test for the moment
-          // activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
         }
 
         /**
@@ -235,7 +215,7 @@ public class QuestionnairePropertiesPanel extends Panel {
         LocaleProperties localeProperties = new LocaleProperties(locale, getModelObject());
         List<String> values = new ArrayList<String>();
         for(String property : localeProperties.getKeys()) {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(getModelObject().getName());
+          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(getModelObject().getName());
           values.add(QuestionnaireStringResourceModelHelper.getMessage(bundle, getModelObject(), property, new Object[0], locale));
         }
         localeProperties.setValues(values.toArray(new String[0]));

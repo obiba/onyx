@@ -104,9 +104,15 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
     this.messageSource = messageSource;
 
-    for(Locale locale : getAvailableLanguages()) {
-      if(!this.questionnaire.getLocales().contains(locale)) this.questionnaire.addLocale(locale);
-    }
+    // Don't use Available Languages to add locales
+    // for(Locale locale : getAvailableLanguages()) {
+    // if(!this.questionnaire.getLocales().contains(locale)) this.questionnaire.addLocale(locale);
+    // }
+  }
+
+  @Override
+  public void clearMessageSourceCache() {
+    ((ReloadableResourceBundleMessageSource) messageSource).clearCache();
   }
 
   //

@@ -17,7 +17,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 public interface QuestionnaireBundleManager {
   /**
    * Creates a bundle for the given questionnaire.
-   *  
+   * 
    * @param questionnaire questionnaire
    * @return questionnaire bundle created
    * @throws IOException on any I/O-related error
@@ -26,7 +26,7 @@ public interface QuestionnaireBundleManager {
 
   /**
    * Returns the latest version of the specified questionnaire bundle.
-   *  
+   * 
    * @param name questionnaire bundle name
    * @return questionnaire bundle (or <code>null</code> if no bundle with the specified name was found)
    */
@@ -38,4 +38,10 @@ public interface QuestionnaireBundleManager {
    * @return managed questionnaire bundles
    */
   public Set<QuestionnaireBundle> bundles();
+
+  /**
+   * @param name
+   * @return
+   */
+  public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name);
 }

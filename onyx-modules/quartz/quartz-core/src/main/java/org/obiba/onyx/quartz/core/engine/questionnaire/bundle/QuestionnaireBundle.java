@@ -102,4 +102,9 @@ public interface QuestionnaireBundle {
    * @return property key
    */
   public String getPropertyKey(IQuestionnaireElement localizable, String property);
+
+  /**
+   * {@link org.springframework.context.support.ReloadableResourceBundleMessageSource#clearCache}
+   */
+  void clearMessageSourceCache();
 }

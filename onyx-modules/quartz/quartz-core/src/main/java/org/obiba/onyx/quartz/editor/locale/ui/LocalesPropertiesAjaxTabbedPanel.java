@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.editor.locale.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,8 +62,8 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
   public void initUI() {
     getTabs().clear();
     if(localePropertiesModel.getObject().size() != 0) {
-      for(Iterator<LocaleProperties> iterator = localePropertiesModel.getObject().iterator(); iterator.hasNext();) {
-        LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(iterator.next());
+      for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
+        LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(localeProperties);
         getTabs().add(localePropertiesTab);
       }
       setSelectedTab(getTabs().size() - 1);

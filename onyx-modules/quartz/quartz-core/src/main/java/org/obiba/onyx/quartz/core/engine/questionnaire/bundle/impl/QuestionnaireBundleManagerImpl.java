@@ -14,7 +14,9 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -53,7 +55,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   private File rootDir;
 
-  private Set<QuestionnaireBundle> bundleCache;
+  private Map<String, QuestionnaireBundle> bundleCache;
 
   private ResourceLoader resourceLoader;
 
@@ -76,13 +78,14 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     // after properties are set (see afterPropertiesSet() method).
     this.rootDir = rootDir;
 
-    bundleCache = new HashSet<QuestionnaireBundle>();
+    bundleCache = new HashMap<String, QuestionnaireBundle>();
   }
 
   //
   // ResourceLoaderAware Methods
   //
 
+  @Override
   public void setResourceLoader(ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
   }
@@ -91,6 +94,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   // InitializingBean Methods
   //
 
+  @Override
   public void afterPropertiesSet() throws Exception {
     String resourcePath = rootDir.isAbsolute() ? "file:" + rootDir.getPath() : rootDir.getPath();
 
@@ -112,6 +116,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     this.propertyKeyProvider = propertyKeyProvider;
   }
 
+  @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
@@ -120,6 +125,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   // QuestionnaireBundleManager Methods
   //
 
+  @Override
   public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException {
     File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
 
@@ -132,16 +138,10 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     return bundle;
   }
 
+  @Override
   public QuestionnaireBundle getBundle(String name) {
-    QuestionnaireBundle bundle = null;
-
     // Look for the bundle in the cache.
-    for(QuestionnaireBundle aBundle : bundleCache) {
-      if(aBundle.getName().equals(name)) {
-        bundle = aBundle;
-        break;
-      }
-    }
+    QuestionnaireBundle bundle = bundleCache.get(name);
 
     // If not found, load the latest version of the bundle from the file system.
     if(bundle == null) {
@@ -151,15 +151,23 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
         log.error("Failed to load questionnaire bundle " + name);
       }
     }
-
     return bundle;
   }
 
+  @Override
+  public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name) {
+    QuestionnaireBundle bundle = getBundle(name);
+    bundle.clearMessageSourceCache();
+    return bundle;
+  }
+
+  @Override
   public Set<QuestionnaireBundle> bundles() {
     final Set<QuestionnaireBundle> bundles = new HashSet<QuestionnaireBundle>();
 
     // Iterate over all bundle directories.
     rootDir.listFiles(new FileFilter() {
+      @Override
       public boolean accept(File file) {
         if(file.isDirectory() && file.getName().charAt(0) != '.') {
           bundles.add(getBundle(file.getName()));
@@ -300,7 +308,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   }
 
   private void cacheBundle(QuestionnaireBundle bundle) {
-    bundleCache.add(bundle);
+    bundleCache.put(bundle.getQuestionnaire().getName(), bundle);
     log.debug("Added bundle " + bundle.getName() + " to the cache");
   }
 
@@ -322,6 +330,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
     private String latestVersionFilename;
 
+    @Override
     public boolean accept(File file) {
       if(file.isDirectory() && file.getName().charAt(0) != '.') {
         Version version = new Version(file.getName());
