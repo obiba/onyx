@@ -40,6 +40,7 @@ public interface QuestionnaireBundleManager {
   public Set<QuestionnaireBundle> bundles();
 
   /**
+   * Returns a questionnaire with cache of message source cleared (used to have properties updated)
    * @param name
    * @return
    */

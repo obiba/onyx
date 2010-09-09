@@ -107,4 +107,10 @@ public interface QuestionnaireBundle {
    * {@link org.springframework.context.support.ReloadableResourceBundleMessageSource#clearCache}
    */
   void clearMessageSourceCache();
+
+  /**
+   * Delete language file associated to given locale
+   * @param locale
+   */
+  void deleteLanguage(Locale locale);
 }

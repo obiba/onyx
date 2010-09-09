@@ -90,19 +90,19 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     this.messageBundleLoader.setResourceLoader(resourceLoader);
 
     // Initialize the message source.
-    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource() {
+    ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource = new ReloadableResourceBundleMessageSource() {
       @Override
       protected MessageFormat createMessageFormat(String msg, Locale locale) {
         return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale);
       }
     };
-    messageSource.setBasename(this.messageBundleLoader.getResourceBasename());
+    reloadableResourceBundleMessageSource.setBasename(this.messageBundleLoader.getResourceBasename());
 
     if(resourceLoader != null) {
-      messageSource.setResourceLoader(resourceLoader);
+      reloadableResourceBundleMessageSource.setResourceLoader(resourceLoader);
     }
 
-    this.messageSource = messageSource;
+    this.messageSource = reloadableResourceBundleMessageSource;
 
     // Don't use Available Languages to add locales
     // for(Locale locale : getAvailableLanguages()) {
@@ -119,19 +119,23 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   // QuestionnaireBundle Methods
   //
 
+  @Override
   public String getName() {
     return questionnaire.getName();
   }
 
+  @Override
   public Questionnaire getQuestionnaire() {
     return questionnaire;
   }
 
+  @Override
   public Resource getImageResource(String imageId) {
     File imageDir = new File(bundleVersionDir, "images");
     return new FileSystemResource(new File(imageDir, imageId));
   }
 
+  @Override
   public void setLanguage(Locale locale, Properties language) {
     FileOutputStream fos = null;
 
@@ -150,6 +154,14 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     }
   }
 
+  @Override
+  public void deleteLanguage(Locale locale) {
+    if(!new File(bundleVersionDir, LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION).delete()) {
+      log.error("Failed to delete language file");
+    }
+  }
+
+  @Override
   public Properties getLanguage(Locale locale) {
 
     Properties language = null;
@@ -182,14 +194,17 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     return language;
   }
 
+  @Override
   public List<Locale> getAvailableLanguages() {
     return messageBundleLoader.getAvailableLocales();
   }
 
+  @Override
   public MessageSource getMessageSource() {
     return messageSource;
   }
 
+  @Override
   public String getPropertyKey(IQuestionnaireElement localizable, String property) {
     return propertyKeyProvider.getPropertyKey(localizable, property);
   }

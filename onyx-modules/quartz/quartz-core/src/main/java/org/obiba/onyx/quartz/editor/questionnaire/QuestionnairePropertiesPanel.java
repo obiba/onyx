@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +150,12 @@ public class QuestionnairePropertiesPanel extends Panel {
 
             log.info(questionnaire.getName() + " " + questionnaire.getVersion() + " " + questionnaire.getLocales().size());
             Map<Locale, Properties> extractedLocaleProperties = extractLocalePropertiesToMap(questionnaire);
-            new QuestionnaireCreator().createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), extractedLocaleProperties);
+
+            // FIXME to have same working directory (for QuestionnaireCreator and QuestionnaireBundleManager)
+            File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
+            File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
+
+            new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), extractedLocaleProperties);
           } catch(IOException e) {
             e.printStackTrace();
           }

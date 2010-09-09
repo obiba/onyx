@@ -30,7 +30,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * Utility class for creating and updating questionnaires on file system.
@@ -116,11 +118,22 @@ public class QuestionnaireCreator {
     ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
     // Create the bundle questionnaire.
-    Questionnaire questionnaire = builder.getQuestionnaire();
+    final Questionnaire questionnaire = builder.getQuestionnaire();
     ensureQuestionnaireVariableNamesAreUnique(questionnaire);
     try {
       bundle = bundleManager.createBundle(questionnaire);
       if(mapLocaleProperties != null) {
+        Iterable<Locale> localesToDelete = Iterables.filter(bundle.getAvailableLanguages(), new Predicate<Locale>() {
+
+          @Override
+          public boolean apply(Locale input) {
+            return !questionnaire.getLocales().contains(input);
+          }
+        });
+        for(Locale localeToDelete : localesToDelete) {
+          bundle.deleteLanguage(localeToDelete);
+        }
+
         for(Map.Entry<Locale, Properties> entry : mapLocaleProperties.entrySet()) {
           bundle.setLanguage(entry.getKey(), entry.getValue());
         }
