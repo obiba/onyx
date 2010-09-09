@@ -41,9 +41,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 
+@SuppressWarnings("serial")
 public class QuestionnaireListPanel extends Panel {
-
-  private static final long serialVersionUID = 1L;
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
@@ -56,7 +55,6 @@ public class QuestionnaireListPanel extends Panel {
     add(new OnyxEntityList<User>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
   }
 
-  @SuppressWarnings("serial")
   private class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
 
     @Override
@@ -87,13 +85,10 @@ public class QuestionnaireListPanel extends Panel {
 
   private class QuestionnaireListColumnProvider implements IColumnProvider<Questionnaire>, Serializable {
 
-    private static final long serialVersionUID = 1141339694945247910L;
-
     private final List<IColumn<Questionnaire>> columns = new ArrayList<IColumn<Questionnaire>>();
 
     private final List<IColumn<Questionnaire>> additional = new ArrayList<IColumn<Questionnaire>>();
 
-    @SuppressWarnings("serial")
     public QuestionnaireListColumnProvider() {
       columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Name", QuestionnaireListPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Version", QuestionnaireListPanel.this, null), "version", "version"));
@@ -143,9 +138,6 @@ public class QuestionnaireListPanel extends Panel {
 
   public class LinkFragment extends Fragment {
 
-    private static final long serialVersionUID = 1L;
-
-    @SuppressWarnings("serial")
     public LinkFragment(String id, final IModel<Questionnaire> rowModel) {
       super(id, "linkFragment", QuestionnaireListPanel.this, rowModel);
 

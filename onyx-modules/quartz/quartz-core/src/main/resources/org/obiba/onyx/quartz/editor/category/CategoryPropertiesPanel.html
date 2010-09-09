@@ -1,38 +1,30 @@
 <wicket:panel>
 
-<span wicket:id="feedback" />
-	
+	<span wicket:id="feedback" />
+
 	<form wicket:id="categoryForm" autocomplete="off" class="obiba-content">
-		
-	 	<table class="keyValueTable">
+
+		<table class="keyValueTable">
 			<tr>
-		    	<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
-		    	<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
-		    </tr>
-		    <tr>
-		    	<td valign="top" class="keyValueTableKey"><label for="escape"><wicket:message key="Escape" /></label></td>
-		    	<td class="keyValueTableValueOdd"><input wicket:id="escape" type="checkbox" /></td>
-	   		 </tr>	
-	   		 <tr>
-		    	<td valign="top" class="keyValueTableKey"><label for="noAnswer"><wicket:message key="NoAnswer" /></label></td>
-		    	<td class="keyValueTableValueOdd"> <input wicket:id="noAnswer" type="checkbox" /></td>
-	   		 </tr>	
-	   		 
-		</table>	 
-		
-		<fieldset style="width: 33.3333em;">
-          <legend>
-            <wicket:message key="OpenAnswerCategory" />
-          </legend>
-         <input wicket:id="escape" type="checkbox" />
-        
-        </fieldset>   		
-	   		
+				<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
+			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label for="escape"><wicket:message key="Escape" /></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="escape" type="checkbox" /></td>
+			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label for="noAnswer"><wicket:message key="NoAnswer" /></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="noAnswer" type="checkbox" /></td>
+			</tr>
+		</table>
+	
 		<div class="modal-footer">
-			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save"/></button> 		
-	        <button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel"/></button>
-        </div>    
+			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
+			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
+		</div>
+	
 	</form>
-	 
+
 
 </wicket:panel>

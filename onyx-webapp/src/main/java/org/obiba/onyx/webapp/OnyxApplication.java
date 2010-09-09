@@ -37,6 +37,7 @@ import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.runtime.Version;
 import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
+import org.odlabs.wiquery.core.commons.WiQueryInstantiationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -66,6 +67,11 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
   private UserService userService;
 
   private OnyxApplicationConfiguration onyxApplicationConfiguration;
+
+  /**
+   * The wiquery listener used to manage WiQuery components
+   */
+  private WiQueryInstantiationListener wiqueryPluginInstantiationListener;
 
   public UserService getUserService() {
     return userService;
@@ -201,6 +207,11 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
+
+    // Adds WiQuery's instantiation listener to this application:
+    // we add a component instantiation listener to create plugin managers each time a plugin is created
+    wiqueryPluginInstantiationListener = new WiQueryInstantiationListener();
+    addComponentInstantiationListener(wiqueryPluginInstantiationListener);
 
     log.info("Onyx Web Application [{}] v{} has started", getServletContext().getContextPath(), this.getVersion());
   }

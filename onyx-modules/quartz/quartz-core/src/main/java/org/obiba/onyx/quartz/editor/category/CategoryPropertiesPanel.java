@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.category;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -22,9 +24,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-/**
- *
- */
+@SuppressWarnings("serial")
 public class CategoryPropertiesPanel extends Panel {
 
   private FeedbackPanel feedbackPanel;
@@ -33,11 +33,6 @@ public class CategoryPropertiesPanel extends Panel {
 
   private final ModalWindow modalWindow;
 
-  /**
-   * @param string
-   * @param model
-   * @param modalWindow
-   */
   public CategoryPropertiesPanel(String id, Model<Category> model, ModalWindow modalWindow) {
     super(id, model);
     this.modalWindow = modalWindow;
@@ -52,12 +47,6 @@ public class CategoryPropertiesPanel extends Panel {
 
   public class CategoryForm extends Form<Category> {
 
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * @param id
-     * @param model
-     */
     public CategoryForm(String id, Model<Category> model) {
       super(id, model);
 
@@ -65,12 +54,41 @@ public class CategoryPropertiesPanel extends Panel {
       name.add(new RequiredFormFieldBehavior());
       name.add(new StringValidator.MaximumLengthValidator(20));
       add(name);
-
       add(new CheckBox("escape", new PropertyModel<Boolean>(getModel(), "escape")));
-
       add(new CheckBox("noAnswer", new PropertyModel<Boolean>(getModel(), "noAnswer")));
 
+      add(new AjaxButton("save", this) {
+
+        @Override
+        public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+          modalWindow.close(target);
+          onSave(target, (Category) form.getModelObject());
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form) {
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
+        }
+      });
+
+      add(new AjaxButton("cancel", this) {
+
+        @Override
+        public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+          modalWindow.close(target);
+        }
+      }.setDefaultFormProcessing(false));
     }
+
+  }
+
+  /**
+   * 
+   * @param target
+   * @param category
+   */
+  public void onSave(AjaxRequestTarget target, Category category) {
 
   }
 

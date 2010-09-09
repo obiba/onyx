@@ -1,0 +1,17 @@
+<wicket:panel>
+
+	<a class="obiba-button" wicket:id="addItem"><wicket:message key="Add" /></a>
+	
+	<ul wicket:id="listContainer" class="sortable">
+		<li wicket:id="listView" class="ui-state-default">
+			<table class="item">
+				<tr>
+					<td class="name"><span wicket:id="item"></span></td>
+					<td class="action"><a wicket:id="editItem"><wicket:message key="Edit" /></a></td>
+					<td class="action"><a wicket:id="deleteItem"><wicket:message key="Delete" /></a></td>
+				</tr>
+			</table>
+		</li>
+	</ul>  
+
+</wicket:panel>

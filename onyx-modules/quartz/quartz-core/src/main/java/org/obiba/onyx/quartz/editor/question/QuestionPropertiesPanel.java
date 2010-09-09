@@ -9,12 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
-import java.io.Serializable;
+import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -22,14 +23,11 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -39,79 +37,109 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
+import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 public class QuestionPropertiesPanel extends Panel {
 
-  private static final long serialVersionUID = 1L;
+  private static final String SINGLE_COLUMN_LAYOUT = "singleColumnLayout";
 
-  private final ModalWindow modalWindow;
+  private static final String GRID_LAYOUT = "gridLayout";
+
+  protected final Logger log = LoggerFactory.getLogger(getClass());
+
+  private final ModalWindow questionWindow;
 
   private final FeedbackWindow feedbackWindow;
 
   private final FeedbackPanel feedbackPanel;
 
-  private static final String SINGLE_COLUMN = "LayoutSingle";
-
-  private static final String GRID = "LayoutGrid";
-
-  protected final Logger log = LoggerFactory.getLogger(getClass());
-
-  private RadioGroup<?> radioGroup;
+  private ModalWindow categoryWindow;
 
   @SpringBean
   protected QuestionnaireBundleManager questionnaireBundleManager;
 
-  public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow modalWindow) {
+  public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow questionWindow) {
     super(id, model);
-    this.modalWindow = modalWindow;
+    this.questionWindow = questionWindow;
+
+    // TODO for test only
+    QuestionCategory questionCategory1 = new QuestionCategory();
+    questionCategory1.setCategory(new Category("Cat 1"));
+    model.getObject().addQuestionCategory(questionCategory1);
+
+    QuestionCategory questionCategory2 = new QuestionCategory();
+    questionCategory2.setCategory(new Category("Cat 2"));
+    model.getObject().addQuestionCategory(questionCategory2);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
 
     add(feedbackWindow);
+
+    categoryWindow = new ModalWindow("categoryWindow");
+    categoryWindow.setCssClassName("onyx");
+    categoryWindow.setInitialWidth(1000);
+    categoryWindow.setInitialHeight(600);
+    categoryWindow.setResizable(true);
+    add(categoryWindow);
+
     add(new QuestionForm("questionForm", model));
   }
 
   private class QuestionForm extends Form<Question> {
 
-    private static final long serialVersionUID = 1L;
+    private TextField<Integer> nbRowsField;
 
-    @SuppressWarnings({ "rawtypes", "unchecked", "serial" })
     public QuestionForm(String id, final IModel<Question> model) {
       super(id, model);
 
-      final IModel qLabelModel = new MessageSourceResolvableStringModel(getModel());
-      add(new Link("previewLink") {
+      final ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
+      final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", getModelObject(), localePropertiesModel);
+
+      final DropDownChoice<Questionnaire> questionnaireDropDownChoice = new DropDownChoice<Questionnaire>("questionnaireDropDownChoice", new Model<Questionnaire>(), new LoadableDetachableModel<List<Questionnaire>>() {
 
         @Override
-        public void onClick() {
-          // TODO Auto-generated method stub
-          Question q = model.getObject();
-          log.info("name: " + q.getName() + ", varName: " + q.getVariableName() + ", multiple: " + q.isMultiple());
-          //
-          // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
-          // "1.0").withSection("SECTION_1").withPage("PAGE_1");
-          // QuestionBuilder qBuilder = pBuilder.withQuestion(q.getName(), "1", q.isMultiple()); //
-          //
-          // SingleDocumentQuestionnairePage preview = new SingleDocumentQuestionnairePage(new
-          // Model(qBuilder.getQuestionnaire()));
-          // setResponsePage(preview);
+        protected List<Questionnaire> load() {
+          List<Questionnaire> questionnaires = new ArrayList<Questionnaire>();
+          for(QuestionnaireBundle questionnaireBundle : questionnaireBundleManager.bundles()) {
+            questionnaires.add(questionnaireBundle.getQuestionnaire());
+          }
+          return questionnaires;
         }
       });
+
+      questionnaireDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+        @Override
+        protected void onUpdate(AjaxRequestTarget target) {
+          List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+          for(Locale locale : questionnaireDropDownChoice.getModelObject().getLocales()) {
+            listLocaleProperties.add(new LocaleProperties(locale, QuestionForm.this.getModelObject()));
+          }
+          localePropertiesModel.setObject(listLocaleProperties);
+          localesPropertiesAjaxTabbedPanel.initUI();
+          target.addComponent(localesPropertiesAjaxTabbedPanel);
+        }
+      });
+      add(questionnaireDropDownChoice);
 
       TextField<String> name = new TextField<String>("name", new PropertyModel<String>(getModel(), "name"));
       name.add(new RequiredFormFieldBehavior());
@@ -125,67 +153,79 @@ public class QuestionPropertiesPanel extends Panel {
       add(new CheckBox("multiple", new PropertyModel<Boolean>(getModel(), "multiple")));
 
       // radio group without default selection
-      radioGroup = new RadioGroup("radioGroup", new Model());
-      radioGroup.setLabel(qLabelModel);
-      add(radioGroup);
+      final RadioGroup<String> layoutRadioGroup = new RadioGroup<String>("layoutRadioGroup");
+      add(layoutRadioGroup);
 
-      ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { SINGLE_COLUMN, GRID })) {
+      Radio<String> singleColumnLayout = new Radio<String>(SINGLE_COLUMN_LAYOUT, new Model<String>(SINGLE_COLUMN_LAYOUT));
+      singleColumnLayout.setLabel(new StringResourceModel("LayoutSingle", QuestionPropertiesPanel.this, null));
+      layoutRadioGroup.add(singleColumnLayout);
+      layoutRadioGroup.add(new SimpleFormComponentLabel("singleColumnLayoutLabel", singleColumnLayout));
 
-        @Override
-        protected void populateItem(ListItem listItem) {
-          final String key = (String) listItem.getModelObject();
-          final LayoutSelection selection = new LayoutSelection();
-          selection.setSelectionKey(key);
+      Radio<String> gridLayout = new Radio<String>(GRID_LAYOUT, new Model<String>(GRID_LAYOUT));
+      gridLayout.setLabel(new StringResourceModel("LayoutGrid", QuestionPropertiesPanel.this, null));
+      layoutRadioGroup.add(gridLayout);
+      layoutRadioGroup.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
 
-          Model selectModel = new Model(selection);
-
-          Radio radio = new Radio("radio", selectModel);
-          radio.setLabel(new StringResourceModel(key, QuestionPropertiesPanel.this, null));
-
-          listItem.add(radio);
-
-          FormComponentLabel radioLabel = new SimpleFormComponentLabel("radioLabel", radio);
-          listItem.add(radioLabel);
-        }
-
-      }.setReuseItems(true);
-      radioGroup.add(radioList);
-
-      final ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
-      final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", getModelObject(), localePropertiesModel);
-
-      final DropDownChoice<Questionnaire> dropDownChoice = new DropDownChoice<Questionnaire>("questionnaireDropDownChoice", new Model<Questionnaire>(), new LoadableDetachableModel<List<Questionnaire>>() {
-
-        @Override
-        protected List<Questionnaire> load() {
-          List<Questionnaire> questionnaires = new ArrayList<Questionnaire>();
-          for(QuestionnaireBundle questionnaireBundle : questionnaireBundleManager.bundles()) {
-            questionnaires.add(questionnaireBundle.getQuestionnaire());
-          }
-          return questionnaires;
-        }
-      });
-
-      dropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
-        @Override
-        protected void onUpdate(AjaxRequestTarget target) {
-          List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-          for(Locale locale : dropDownChoice.getModelObject().getLocales()) {
-            listLocaleProperties.add(new LocaleProperties(locale, QuestionForm.this.getModelObject()));
-          }
-          localePropertiesModel.setObject(listLocaleProperties);
-          localesPropertiesAjaxTabbedPanel.initUI();
-          target.addComponent(localesPropertiesAjaxTabbedPanel);
-        }
-      });
-      add(dropDownChoice);
+      Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
+      ValueMap uiArguments = getModelObject().getUIArgumentsValueMap();
+      if(uiArguments != null && uiArguments.containsKey(ROW_COUNT_KEY)) {
+        nbRows = uiArguments.getInt(ROW_COUNT_KEY);
+      }
+      add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows)));
 
       add(localesPropertiesAjaxTabbedPanel);
 
-      add(new AjaxButton("save", this) {
+      final SortableList<Category> categoryList = new SortableList<Category>("categoryList", getModelObject().getCategories()) {
+        @Override
+        public String getItemLabel(Category category) {
+          return category.getName();
+        }
 
-        private static final long serialVersionUID = 1L;
+        @Override
+        public void onUpdate(Component sortedComponent, int index, AjaxRequestTarget ajaxRequestTarget) {
+          ajaxRequestTarget.appendJavascript("alert('updated  : " + sortedComponent.getMarkupId() + " - " + sortedComponent.getDefaultModelObject().toString() + " - index : " + index + "')");
+        }
+
+        @Override
+        public void addItem(AjaxRequestTarget target) {
+          categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), categoryWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target1, Category category) {
+              Question question = QuestionForm.this.getModelObject();
+              QuestionCategory questionCategory = new QuestionCategory();
+              questionCategory.setCategory(category);
+              // questionCategory.setExportName(exportName); TODO set exportName
+              question.addQuestionCategory(questionCategory);
+              refreshList(target1);
+            }
+          });
+          categoryWindow.show(target);
+        }
+
+        @Override
+        public void editItem(Category category, AjaxRequestTarget target) {
+          target.appendJavascript("alert('TODO')");
+          // categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(category),
+          // categoryWindow) {
+          // @Override
+          // public void onSave(AjaxRequestTarget target1, Category category1) {
+          // // TODO replace edited category
+          // refreshList(target1);
+          // }
+          // });
+          // categoryWindow.show(target);
+        }
+
+        @Override
+        public void deleteItem(Category category, AjaxRequestTarget target) {
+          // TODO remove category
+          target.appendJavascript("alert('TODO')");
+        }
+
+      };
+      add(categoryList);
+
+      add(new AjaxButton("save", this) {
 
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -194,9 +234,11 @@ public class QuestionPropertiesPanel extends Panel {
 
           // Layout single or grid
           // Make sure that the categories are added before this...
-          LayoutSelection layoutSelection = (LayoutSelection) radioGroup.getModelObject();
-          if(layoutSelection.isSingleSelected()) {
-            question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, Integer.toString(question.getCategories().size()));
+          String layoutSelection = layoutRadioGroup.getModelObject();
+          if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+            question.addUIArgument(ROW_COUNT_KEY, Integer.toString(question.getCategories().size()));
+          } else if(GRID_LAYOUT.equals(layoutSelection)) {
+            question.addUIArgument(ROW_COUNT_KEY, Integer.toString(nbRowsField.getModelObject()));
           }
 
           log.info("name: " + question.getName() + ", varName: " + question.getVariableName() + ", multiple: " + question.isMultiple());
@@ -252,39 +294,29 @@ public class QuestionPropertiesPanel extends Panel {
 
       add(new AjaxButton("cancel", this) {
 
-        private static final long serialVersionUID = 1L;
-
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-          modalWindow.close(target);
+          questionWindow.close(target);
         }
       }.setDefaultFormProcessing(false));
+
+      add(new Link<Void>("previewLink") {
+
+        @Override
+        public void onClick() {
+          Question q = model.getObject();
+          log.info("name: " + q.getName() + ", varName: " + q.getVariableName() + ", multiple: " + q.isMultiple());
+          //
+          // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
+          // "1.0").withSection("SECTION_1").withPage("PAGE_1");
+          // QuestionBuilder qBuilder = pBuilder.withQuestion(q.getName(), "1", q.isMultiple()); //
+          //
+          // SingleDocumentQuestionnairePage preview = new SingleDocumentQuestionnairePage(new
+          // Model(qBuilder.getQuestionnaire()));
+          // setResponsePage(preview);
+        }
+      });
     }
   }
 
-  private class LayoutSelection implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String selectionKey;
-
-    @SuppressWarnings("unused")
-    public String getSelectionKey() {
-      return selectionKey;
-    }
-
-    public void setSelectionKey(String selectionKey) {
-      this.selectionKey = selectionKey;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isSelected() {
-      return selectionKey.equals(SINGLE_COLUMN) || selectionKey.equals(GRID);
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isSingleSelected() {
-      return selectionKey.equals(SINGLE_COLUMN);
-    }
-  }
 }

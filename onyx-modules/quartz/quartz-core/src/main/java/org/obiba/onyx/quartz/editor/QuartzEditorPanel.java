@@ -23,13 +23,11 @@ import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePropertiesPanel;
 
+@SuppressWarnings("serial")
 public class QuartzEditorPanel extends Panel {
-
-  private static final long serialVersionUID = 1L;
 
   private ModalWindow modalWindow;
 
-  @SuppressWarnings({ "rawtypes", "serial" })
   public QuartzEditorPanel(String id) {
     super(id);
 
@@ -49,7 +47,7 @@ public class QuartzEditorPanel extends Panel {
 
     add(new QuestionnaireListPanel("questionnaire-list", modalWindow));
 
-    add(new AjaxLink("questionnaireProps") {
+    add(new AjaxLink<Void>("questionnaireProps") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
@@ -58,7 +56,7 @@ public class QuartzEditorPanel extends Panel {
       }
     });
 
-    add(new AjaxLink("questionProps") {
+    add(new AjaxLink<Void>("questionProps") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Question", this, null));
@@ -67,7 +65,7 @@ public class QuartzEditorPanel extends Panel {
       }
     });
 
-    add(new AjaxLink("categoryProps") {
+    add(new AjaxLink<Void>("categoryProps") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Category", this, null));

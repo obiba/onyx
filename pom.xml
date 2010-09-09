@@ -318,6 +318,12 @@
         <version>${wicket.version}</version>
       </dependency>
 
+	  <dependency>
+		<groupId>org.odlabs.wiquery</groupId>
+		<artifactId>wiquery</artifactId>
+		<version>${wiquery.version}</version>
+	  </dependency>
+
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
@@ -710,6 +716,7 @@
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.4</version>
       </plugin>
+
     </plugins>
 
     <resources>
@@ -782,6 +789,12 @@
       </snapshots>
     </repository>
 
+	<repository>
+		<id>wiquery repository</id>
+		<name>wiQuery repository</name>
+		<url>http://wiquery.googlecode.com/svn/repo/</url>
+	</repository>
+
   </repositories>
 
   <pluginRepositories>
@@ -833,6 +846,7 @@
 
   <properties>
     <wicket.version>1.4.6</wicket.version>
+	<wiquery.version>1.0.1</wiquery.version>
     <spring.version>3.0.1.RELEASE</spring.version>
     <spring-batch.version>2.0.3.RELEASE</spring-batch.version>
     <opensymphony-quartz.version>1.6.1</opensymphony-quartz.version>

@@ -56,9 +56,10 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
+@SuppressWarnings("serial")
 public class QuestionnairePropertiesPanel extends Panel {
 
-  private static final long serialVersionUID = 1L;
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
   protected final ModalWindow modalWindow;
 
@@ -68,8 +69,6 @@ public class QuestionnairePropertiesPanel extends Panel {
   protected FeedbackPanel feedbackPanel;
 
   protected FeedbackWindow feedbackWindow;
-
-  protected final Logger log = LoggerFactory.getLogger(getClass());
 
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
     super(id, model);
@@ -134,8 +133,6 @@ public class QuestionnairePropertiesPanel extends Panel {
 
       // -------------------- Save --------------------
       AjaxButton saveButton = new AjaxButton("save", this) {
-
-        private static final long serialVersionUID = 1L;
 
         @Override
         public void onSubmit(AjaxRequestTarget target, Form<?> form) {

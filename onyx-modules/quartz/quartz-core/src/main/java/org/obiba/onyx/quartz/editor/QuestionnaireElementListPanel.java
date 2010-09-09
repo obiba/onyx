@@ -18,9 +18,8 @@ import org.apache.wicket.model.util.ListModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.springframework.util.ClassUtils;
 
+@SuppressWarnings("serial")
 public class QuestionnaireElementListPanel<T extends IQuestionnaireElement> extends Panel {
-
-  private static final long serialVersionUID = 1L;
 
   public QuestionnaireElementListPanel(String id, ListModel<T> model, Class<T> clazz) {
     super(id, model);
@@ -32,8 +31,6 @@ public class QuestionnaireElementListPanel<T extends IQuestionnaireElement> exte
     add(new Label("labelTitle", ClassUtils.getShortName(clazz)));
 
     ListView<T> listView = new ListView<T>("listQuestionnaireElement", model) {
-
-      private static final long serialVersionUID = 1L;
 
       @Override
       protected ListItem<T> newItem(int index) {
