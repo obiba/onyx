@@ -317,7 +317,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     replay(applicationConfigurationServiceMock, participantServiceMock);
 
     // Exercise
-    Participant participantFromAppointmentList = getParticipantFromAppointmentList("100001");
+    Participant participantFromAppointmentList = getParticipantFromAppointmentList("100002");
     Participant participant = processor.process(participantFromAppointmentList);
     Assert.assertNotNull(participant);
 
