@@ -1,0 +1,27 @@
+<wicket:panel>		
+<span wicket:id="feedback" />
+	<form wicket:id="variableNamesForm" autocomplete="off" class="obiba-content">
+		<div wicket:id="itemsContainer">
+			<table>
+				<wicket:container wicket:id="items"> 
+					<div class="item">						
+						<tr>					
+							<td><input type="text" wicket:id="keyInput" /></td>
+							<td><input type="text" wicket:id="valueInput" /></td>	
+							<td>
+							<button wicket:id="removeButton" class="obiba-button ui-corner-all ">
+								<img wicket:id="removeImg" />
+								<span wicket:id="removeLabel" />			
+							</button>
+							</td>					
+						</tr>
+					</div>
+				</wicket:container>	
+			</table>					
+			<button wicket:id="addButton" class="obiba-button ui-corner-all">
+				<img wicket:id="addImg" />
+				<span wicket:id="addLabel" />
+			</button>						
+		</div>	
+	</form>		
+</wicket:panel>

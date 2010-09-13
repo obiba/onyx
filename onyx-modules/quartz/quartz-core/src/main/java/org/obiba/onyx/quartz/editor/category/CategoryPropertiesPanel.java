@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.category;
 
+import java.util.HashMap;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -47,6 +49,8 @@ public class CategoryPropertiesPanel extends Panel {
 
   public class CategoryForm extends Form<Category> {
 
+    private VariableNamesPanel variableNamesPanel;
+
     public CategoryForm(String id, Model<Category> model) {
       super(id, model);
 
@@ -56,6 +60,9 @@ public class CategoryPropertiesPanel extends Panel {
       add(name);
       add(new CheckBox("escape", new PropertyModel<Boolean>(getModel(), "escape")));
       add(new CheckBox("noAnswer", new PropertyModel<Boolean>(getModel(), "noAnswer")));
+
+      variableNamesPanel = new VariableNamesPanel("variableNamesPanel", new HashMap<String, String>());
+      add(variableNamesPanel);
 
       add(new AjaxButton("save", this) {
 

@@ -17,8 +17,12 @@
 				<td valign="top" class="keyValueTableKey"><label for="noAnswer"><wicket:message key="NoAnswer" /></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="noAnswer" type="checkbox" /></td>
 			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey"><wicket:message key="VariableNames" /></td>
+				<td class="keyValueTableValueOdd"><div wicket:id="variableNamesPanel" /></td>
+			</tr>
 		</table>
-	
+		
 		<div class="modal-footer">
 			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
 			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>

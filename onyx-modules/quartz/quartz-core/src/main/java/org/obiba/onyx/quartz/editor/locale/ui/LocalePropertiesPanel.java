@@ -61,7 +61,7 @@ public class LocalePropertiesPanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
               // null, because submitting compoment is a javascript event : "onblur"
-              delegateSubmit(null);
+              LocalePropertiesForm.this.delegateSubmit(null);
             }
           });
           item.add(labelLabel);
