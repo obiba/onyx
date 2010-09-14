@@ -165,16 +165,12 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
     List<InstrumentParameter> instrumentParameters = instrumentType.getInstrumentParameters();
     if(instrumentParameters.size() > 0) {
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
-        String name = instrumentTypePrefix + '.' + instrumentParameter.getCode();
-
-        // Test whether this parameter is part of the "Measure"
-        if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
-          name = instrumentTypePrefix + '.' + MEASURE + '.' + instrumentParameter.getCode();
-        }
+        boolean isMeasure = instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED);
+        String name = instrumentTypePrefix + (isMeasure ? '.' + MEASURE + '.' : '.') + instrumentParameter.getCode();
 
         Variable.Builder builder = Variable.Builder.newVariable(name, DataTypes.valueTypeFor(instrumentParameter.getDataType()), "Participant");
 
-        if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+        if(isMeasure) {
           builder.repeatable().occurrenceGroup(MEASURE);
         }
 
@@ -183,7 +179,7 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
         sources.add(new BeanPropertyVariableValueSource(builder.build(), Data.class, "value"));
 
         // Add source for the instrument parameter's capture method.
-        sources.add(createCaptureMethodSource(name, instrumentType, instrumentParameter));
+        sources.add(createCaptureMethodSource(name, instrumentType, instrumentParameter, isMeasure));
       }
     }
 
@@ -201,10 +197,13 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
     return delegateFactory.createSources();
   }
 
-  private VariableValueSource createCaptureMethodSource(String captureMethodPrefix, InstrumentType instrumentType, InstrumentParameter instrumentParameter) {
+  private VariableValueSource createCaptureMethodSource(String captureMethodPrefix, InstrumentType instrumentType, InstrumentParameter instrumentParameter, boolean isMeasure) {
     BeanVariableValueSourceFactory<InstrumentRunValue> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRunValue>("Participant", InstrumentRunValue.class);
     delegateFactory.setPrefix(captureMethodPrefix);
     delegateFactory.setProperties(ImmutableSet.of("captureMethod"));
+    if(isMeasure) {
+      delegateFactory.setOccurrenceGroup(MEASURE);
+    }
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources().iterator().next();
