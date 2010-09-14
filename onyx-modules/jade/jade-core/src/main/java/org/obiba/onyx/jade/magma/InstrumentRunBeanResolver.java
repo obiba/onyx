@@ -38,10 +38,6 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
   // Constants
   //
 
-  // TODO: This constant is also defined in InstrumentRunVariableValueSourceFactory.
-  // Should define it once somewhere.
-  public static final String INSTRUMENT_RUN = "InstrumentRun";
-
   //
   // Instance Variables
   //
@@ -66,7 +62,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     } else if(type.equals(InstrumentRunValue.class)) {
       String secondToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
       if(secondToken != null) {
-        if(secondToken.equals("MEASURE")) {
+        if(secondToken.equals(InstrumentRunVariableValueSourceFactory.MEASURE)) {
           return resolveInstrumentRunValues(valueSet, variable);
         } else {
           return resolveInstrumentRunValue(valueSet, variable);
@@ -77,7 +73,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     } else if(type.equals(Data.class)) {
       String secondToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 1);
       if(secondToken != null) {
-        if(secondToken.equals("MEASURE")) {
+        if(secondToken.equals(InstrumentRunVariableValueSourceFactory.MEASURE)) {
           return resolveDatas(valueSet, variable);
         } else {
           return resolveData(valueSet, variable);
