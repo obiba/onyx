@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -40,18 +41,38 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class QuestionnaireListPanel extends Panel {
+
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   private ModalWindow modalWindow;
 
+  private ModalWindow layoutWindow;
+
   public QuestionnaireListPanel(String id, ModalWindow modalWindow) {
     super(id);
     this.modalWindow = modalWindow;
+
+    layoutWindow = new ModalWindow("layoutWindow");
+    layoutWindow.setCssClassName("onyx");
+    layoutWindow.setInitialWidth(1000);
+    layoutWindow.setInitialHeight(600);
+    layoutWindow.setResizable(true);
+    layoutWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+      @Override
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        return true; // same as cancel
+      }
+    });
+    add(layoutWindow);
+
     add(new OnyxEntityList<User>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
   }
 
@@ -147,6 +168,19 @@ public class QuestionnaireListPanel extends Panel {
           modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
           modalWindow.setContent(new QuestionnairePropertiesPanel("content", rowModel, modalWindow));
           modalWindow.show(target);
+        }
+      });
+      add(new AjaxLink<Questionnaire>("layoutLink", rowModel) {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          layoutWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
+          layoutWindow.setPageCreator(new ModalWindow.PageCreator() {
+            @Override
+            public Page createPage() {
+              return new QuestionnaireLayoutPage(rowModel);
+            }
+          });
+          layoutWindow.show(target);
         }
       });
     }

@@ -54,7 +54,7 @@ public abstract class SortableList<T> extends Panel {
     sortableAjaxBehavior.getSortableBehavior().setPlaceholder("ui-state-highlight");
     listContainer.add(sortableAjaxBehavior);
 
-    ListView<T> listAjaxView = new ListView<T>("listView", items) {
+    ListView<T> listView = new ListView<T>("listView", items) {
       @Override
       protected void populateItem(ListItem<T> item) {
         item.setOutputMarkupId(true);
@@ -74,7 +74,7 @@ public abstract class SortableList<T> extends Panel {
         });
       }
     };
-    listContainer.add(listAjaxView);
+    listContainer.add(listView);
     add(listContainer);
 
     add(new AjaxLink<Void>("addItem") {

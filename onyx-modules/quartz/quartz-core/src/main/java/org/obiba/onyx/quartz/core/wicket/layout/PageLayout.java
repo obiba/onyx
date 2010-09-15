@@ -19,6 +19,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionnaireStyle
  * @author Yannick Marcon
  * 
  */
+@SuppressWarnings("serial")
 public abstract class PageLayout extends Panel {
 
   public PageLayout(String id, IModel pageModel) {

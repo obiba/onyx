@@ -1,0 +1,21 @@
+<wicket:panel>
+
+	<span wicket:id="treeContainer">
+		<ul wicket:id="tree">	
+		</ul>
+	</span>
+	
+	<script type="text/javascript" wicket:id="moveCallback">
+		Wicket.QTree.moveCallback = function(nodeId, newParentId, newPosition) {
+			var wcall = wicketAjaxGet('$url$' + '$args$', function() { alert("SUCCESS"); }, function() { alert("ERROR"); }); 
+		}	
+	</script>	
+
+	<wicket:fragment wicket:id="listFragment">
+			<li wicket:id="item">
+				<a href="#" wicket:id="itemTitle"></a>
+				<ul wicket:id="children"></ul>
+			</li>
+	</wicket:fragment>  
+
+</wicket:panel>
