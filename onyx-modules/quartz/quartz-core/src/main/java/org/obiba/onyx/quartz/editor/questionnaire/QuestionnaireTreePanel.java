@@ -19,6 +19,7 @@ import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.IHeaderResponse;
@@ -53,9 +54,25 @@ public class QuestionnaireTreePanel extends Panel {
 
   private int elementCounter;
 
+  private AbstractDefaultAjaxBehavior moveBehavior;
+
   private Label moveCallback;
 
-  private AbstractDefaultAjaxBehavior ajaxBehavior;
+  private AbstractDefaultAjaxBehavior editBehavior;
+
+  private Label editCallback;
+
+  private AbstractDefaultAjaxBehavior deleteBehavior;
+
+  private Label deleteCallback;
+
+  private AbstractDefaultAjaxBehavior addChildBehavior;
+
+  private Label addChildCallback;
+
+  private String treeId;
+
+  private WebMarkupContainer treeContainer;
 
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
     super(id, model);
@@ -63,9 +80,9 @@ public class QuestionnaireTreePanel extends Panel {
     add(JavascriptPackageResource.getHeaderContribution(QuestionnaireTreePanel.class, "QuestionnaireTreePanel.js"));
 
     Questionnaire questionnaire = model.getObject();
-    final String treeId = "tree_" + questionnaire.getName();
+    treeId = "tree_" + questionnaire.getName();
 
-    WebMarkupContainer treeContainer = new WebMarkupContainer("treeContainer");
+    treeContainer = new WebMarkupContainer("treeContainer");
     treeContainer.setMarkupId(treeId);
     treeContainer.setOutputMarkupId(true);
 
@@ -77,13 +94,14 @@ public class QuestionnaireTreePanel extends Panel {
     listFragment.add(new JsTreeBehavior());
     treeContainer.add(listFragment);
 
-    ajaxBehavior = new AbstractDefaultAjaxBehavior() {
-
+    add(new AbstractBehavior() {
       @Override
       public void renderHead(IHeaderResponse response) {
         response.renderOnLoadJavascript("Wicket.QTree.buildTree('" + treeId + "')");
       }
+    });
 
+    add(moveBehavior = new AbstractDefaultAjaxBehavior() {
       @Override
       protected void respond(AjaxRequestTarget target) {
         Request request = RequestCycle.get().getRequest();
@@ -92,23 +110,82 @@ public class QuestionnaireTreePanel extends Panel {
         String newPosition = request.getParameter("newPosition");
         // TODO move node
       }
-
-    };
-    add(ajaxBehavior);
-
+    });
     moveCallback = new Label("moveCallback", "");
     moveCallback.setOutputMarkupId(true);
     moveCallback.setEscapeModelStrings(false);
     add(moveCallback);
+
+    add(editBehavior = new AbstractDefaultAjaxBehavior() {
+      @Override
+      protected void respond(AjaxRequestTarget target) {
+        String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
+        System.out.println("Edit " + nodeId);
+        // TODO edit node
+
+        // update node name in jsTree
+        String newName = "newName";
+        target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + newName + "');");
+      }
+    });
+    editCallback = new Label("editCallback", "");
+    editCallback.setOutputMarkupId(true);
+    editCallback.setEscapeModelStrings(false);
+    add(editCallback);
+
+    add(deleteBehavior = new AbstractDefaultAjaxBehavior() {
+      @Override
+      protected void respond(AjaxRequestTarget target) {
+        String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
+        System.out.println("Delete " + nodeId);
+        // TODO delete node
+
+        // remove node from jsTree
+        target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
+      }
+    });
+    deleteCallback = new Label("deleteCallback", "");
+    deleteCallback.setOutputMarkupId(true);
+    deleteCallback.setEscapeModelStrings(false);
+    add(deleteCallback);
+
+    add(addChildBehavior = new AbstractDefaultAjaxBehavior() {
+      @Override
+      protected void respond(AjaxRequestTarget target) {
+        Request request = RequestCycle.get().getRequest();
+        String nodeId = request.getParameter("nodeId");
+        String type = request.getParameter("type");
+        System.out.println("Add " + type + " to " + nodeId);
+        // TODO add child node
+
+        // easier to reload tree that creating new node in JS
+        target.addComponent(treeContainer);
+      }
+    });
+    addChildCallback = new Label("addChildCallback", "");
+    addChildCallback.setOutputMarkupId(true);
+    addChildCallback.setEscapeModelStrings(false);
+    add(addChildCallback);
   }
 
   @Override
   protected void onBeforeRender() {
     super.onBeforeRender();
-    String script = "Wicket.QTree.moveCallback = function(nodeId, newParentId, newPosition) {\n" + //
-    "  wicketAjaxGet('" + ajaxBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&newParentId='+ newParentId +'&newPosition='+ newPosition, function() { alert('success'); }, function() { alert('error'); });" + //
-    "\n}";
-    moveCallback.setDefaultModelObject(script);
+    moveCallback.setDefaultModelObject("Wicket.QTree.moveNode = function(nodeId, newParentId, newPosition) {\n" + //
+    "  wicketAjaxGet('" + moveBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&newParentId='+ newParentId +'&newPosition='+ newPosition, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    "\n}");
+
+    editCallback.setDefaultModelObject("Wicket.QTree.editElement = function(nodeId) {\n" + //
+    "  wicketAjaxGet('" + editBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    "\n}");
+
+    deleteCallback.setDefaultModelObject("Wicket.QTree.deleteElement = function(nodeId) {\n" + //
+    "  wicketAjaxGet('" + deleteBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    "\n}");
+
+    addChildCallback.setDefaultModelObject("Wicket.QTree.addChild = function(nodeId, type) {\n" + //
+    "  wicketAjaxGet('" + addChildBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&type='+ type, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    "\n}");
   }
 
   private String addElement(IQuestionnaireElement element) {

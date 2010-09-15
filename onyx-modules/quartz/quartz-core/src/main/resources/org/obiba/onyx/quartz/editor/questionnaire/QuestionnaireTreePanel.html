@@ -5,11 +5,10 @@
 		</ul>
 	</span>
 	
-	<script type="text/javascript" wicket:id="moveCallback">
-		Wicket.QTree.moveCallback = function(nodeId, newParentId, newPosition) {
-			var wcall = wicketAjaxGet('$url$' + '$args$', function() { alert("SUCCESS"); }, function() { alert("ERROR"); }); 
-		}	
-	</script>	
+	<script type="text/javascript" wicket:id="moveCallback"></script>	
+	<script type="text/javascript" wicket:id="addChildCallback"></script>	
+	<script type="text/javascript" wicket:id="editCallback"></script>	
+	<script type="text/javascript" wicket:id="deleteCallback"></script>	
 
 	<wicket:fragment wicket:id="listFragment">
 			<li wicket:id="item">
