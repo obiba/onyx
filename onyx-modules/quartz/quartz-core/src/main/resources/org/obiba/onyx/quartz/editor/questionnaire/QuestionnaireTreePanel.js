@@ -48,19 +48,19 @@ Wicket.QTree.buildTree = function(treeId) {
 					var elementType = node.attr("rel");
 					var obj = { 
 						"create_section": (elementType != "Questionnaire" && elementType != "Section") ? false : { 
-							label: "Create Section", 
+							label: "Add new Section", 
 							action: function (obj) { Wicket.QTree.addChild(elementId, 'section'); }, 
 							seperator_after : false, 
 							seperator_before : false 
 						}, 
 						"create_page": (elementType != "Questionnaire" && elementType != "Section") ? false : { 
-							label: "Create Page", 
+							label: "Add new Page", 
 							action: function (obj) { Wicket.QTree.addChild(elementId, 'page'); },
 							seperator_after : false, 
 							seperator_before : false 
 						}, 
 						"create_question": elementType != "Page" ? false :{ 
-							label: "Create Question", 
+							label: "Add new Question", 
 							action: function (obj) { Wicket.QTree.addChild(elementId, 'question'); },
 							seperator_after : false, 
 							seperator_before : false 

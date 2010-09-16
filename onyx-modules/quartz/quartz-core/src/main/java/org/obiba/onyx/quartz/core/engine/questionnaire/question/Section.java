@@ -45,9 +45,21 @@ public class Section implements Serializable, IQuestionnaireElement {
   }
 
   public void addPage(Page page) {
-    if(page != null) {
-      getPages().add(page);
+    if(page != null && getPages().add(page)) {
       page.setSection(this);
+    }
+  }
+
+  public void addPage(Page page, int index) {
+    if(page != null) {
+      getPages().add(index, page);
+      page.setSection(this);
+    }
+  }
+
+  public void removePage(Page page) {
+    if(page != null && getPages().remove(page)) {
+      page.setSection(null);
     }
   }
 
@@ -64,9 +76,21 @@ public class Section implements Serializable, IQuestionnaireElement {
   }
 
   public void addSection(Section section) {
-    if(section != null) {
-      getSections().add(section);
+    if(section != null && getSections().add(section)) {
       section.setParentSection(this);
+    }
+  }
+
+  public void addSection(Section section, int index) {
+    if(section != null) {
+      getSections().add(index, section);
+      section.setParentSection(this);
+    }
+  }
+
+  public void removeSection(Section section) {
+    if(section != null && getSections().remove(section)) {
+      section.setParentSection(null);
     }
   }
 

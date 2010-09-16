@@ -59,7 +59,6 @@ public class Question implements Serializable, IQuestionnaireElement {
     if(page != null) {
       return page;
     }
-
     return getPageRecursively(parentQuestion);
   }
 

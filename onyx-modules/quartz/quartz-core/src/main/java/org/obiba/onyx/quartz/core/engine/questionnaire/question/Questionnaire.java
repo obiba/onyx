@@ -52,6 +52,7 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
     return version;
   }
 
+  @SuppressWarnings("unused")
   public void setVersion(String version) {
     // throws a IllegalArgumentException if not valid format
     new Version(version);
@@ -78,6 +79,18 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
     }
   }
 
+  public void addSection(Section section, int index) {
+    if(section != null) {
+      getSections().add(index, section);
+    }
+  }
+
+  public void removeSection(Section section) {
+    if(section != null) {
+      getSections().remove(section);
+    }
+  }
+
   public List<Page> getPages() {
     return pages != null ? pages : (pages = new ArrayList<Page>());
   }
@@ -88,9 +101,21 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
     }
   }
 
+  public void addPage(Page page, int index) {
+    if(page != null) {
+      getPages().add(index, page);
+    }
+  }
+
+  public void removePage(Page page) {
+    if(page != null) {
+      getPages().remove(page);
+    }
+  }
+
   //
   // Cache
-  // 
+  //
 
   public QuestionnaireCache getQuestionnaireCache() {
     return questionnaireCache;

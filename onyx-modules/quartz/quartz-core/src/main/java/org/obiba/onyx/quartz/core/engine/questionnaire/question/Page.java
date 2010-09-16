@@ -61,9 +61,21 @@ public class Page implements Serializable, IQuestionnaireElement {
   }
 
   public void addQuestion(Question question) {
-    if(question != null) {
-      getQuestions().add(question);
+    if(question != null && getQuestions().add(question)) {
       question.setPage(this);
+    }
+  }
+
+  public void addQuestion(Question question, int index) {
+    if(question != null) {
+      getQuestions().add(index, question);
+      question.setPage(this);
+    }
+  }
+
+  public void removeQuestion(Question question) {
+    if(question != null && getQuestions().remove(question)) {
+      question.setPage(null);
     }
   }
 

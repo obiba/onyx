@@ -50,8 +50,8 @@ public class VariableNamesPanel extends Panel {
     List<String[]> listVariableName = new ArrayList<String[]>();
     for(Map.Entry<String, String> entry : map.entrySet()) {
       if(!StringUtils.isWhitespace(entry.getKey())) {
-        listVariableName.add(new String[] { entry.getKey(), entry.getValue() });
-      }
+      listVariableName.add(new String[] { entry.getKey(), entry.getValue() });
+    }
     }
     feedbackPanel = new FeedbackPanel("feedback");
     feedbackPanel.setOutputMarkupId(true);
@@ -135,13 +135,13 @@ public class VariableNamesPanel extends Panel {
 
       }.setReuseItems(true));
 
-    }
+        }
 
     protected void validateAndSubmit(AjaxRequestTarget target) {
-      VariableNamesForm.this.validateFormValidators();
-      VariableNamesForm.this.delegateSubmit(null);
-      target.addComponent(feedbackPanel);
-    }
+          VariableNamesForm.this.validateFormValidators();
+          VariableNamesForm.this.delegateSubmit(null);
+          target.addComponent(feedbackPanel);
+        }
 
     private class AddAjaxButton extends AjaxButton {
 
@@ -151,14 +151,15 @@ public class VariableNamesPanel extends Panel {
       }
 
       @Override
+      @SuppressWarnings("unchecked")
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         List<String[]> list = (List<String[]>) VariableNamesForm.this.getDefaultModelObject();
         list.add(new String[] { null, null });
-        addListView();
-        target.addComponent(itemsContainer);
+          addListView();
+          target.addComponent(itemsContainer);
         validateAndSubmit(target);
+        }
       }
-    }
 
     private class RemoveAjaxLink extends AjaxLink<Void> {
 
@@ -170,6 +171,7 @@ public class VariableNamesPanel extends Panel {
       }
 
       @Override
+      @SuppressWarnings("unchecked")
       public void onClick(AjaxRequestTarget target) {
         List<String[]> list = (List<String[]>) VariableNamesForm.this.getDefaultModelObject();
         list.remove(rowToDelete);

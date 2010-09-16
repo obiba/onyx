@@ -284,6 +284,7 @@ public class QuestionPropertiesPanel extends Panel {
           // TODO process this question
           // DefaultPropertyKeyProviderImpl
           // modalWindow.close(target);
+          onSave(target, question);
         }
 
         @Override
@@ -318,6 +319,15 @@ public class QuestionPropertiesPanel extends Panel {
         }
       });
     }
+  }
+
+  /**
+   * Success callback
+   * @param target
+   * @param question
+   */
+  public void onSave(AjaxRequestTarget target, Question question) {
+
   }
 
 }
