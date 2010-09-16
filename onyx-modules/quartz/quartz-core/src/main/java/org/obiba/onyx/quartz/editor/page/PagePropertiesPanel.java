@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @SuppressWarnings("serial")
-public abstract class PagePropertiesPanel extends AbstractQuestionnaireElementPanelForm<Page> {
+public class PagePropertiesPanel extends AbstractQuestionnaireElementPanelForm<Page> {
 
   public PagePropertiesPanel(String id, IModel<Page> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);

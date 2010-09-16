@@ -17,11 +17,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerDefinitionPropertiesPanel;
+import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePropertiesPanel;
@@ -65,6 +67,15 @@ public class QuartzEditorPanel extends Panel {
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Section", this, null));
         modalWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), modalWindow));
+        modalWindow.show(target);
+      }
+    });
+
+    add(new AjaxLink<Void>("pageProps") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modalWindow.setTitle(new StringResourceModel("Page", this, null));
+        modalWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), modalWindow));
         modalWindow.show(target);
       }
     });

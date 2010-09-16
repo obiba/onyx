@@ -37,9 +37,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
     feedbackWindow.setOutputMarkupId(true);
 
     add(feedbackWindow);
-    add(new FormT("form", model) {
-
-    });
+    add(new FormT("form", model));
   }
 
   public class FormT extends Form<T> {

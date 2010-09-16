@@ -1,6 +1,5 @@
 <wicket:panel>
-	<span wicket:id="feedback" />
-	<form wicket:id="openAnswerDefinitionForm" autocomplete="off" class="obiba-content">
+	<wicket:extend>
 		<table class="keyValueTable">
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
@@ -22,9 +21,5 @@
 				</td>
 			</tr>
 		</table>		
-		<div class="modal-footer">
-			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
-			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
-		</div>	
-	</form>
+	</wicket:extend>	
 </wicket:panel>

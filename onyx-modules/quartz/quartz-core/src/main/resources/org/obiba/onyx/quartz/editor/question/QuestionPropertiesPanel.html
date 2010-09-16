@@ -1,18 +1,12 @@
-<wicket:panel>	
-
-	<span wicket:id="feedback" />		
-	
-	<form wicket:id="questionForm" autocomplete="off" class="obiba-content">
-	
-		<div wicket:id="categoryWindow" />		
-	
+<wicket:panel>
+	<wicket:extend>		
+		<div wicket:id="categoryWindow" />			
 	 	<table class="keyValueTable">
 	 		<tr>
 		    <td valign="top" class="keyValueTableKey"><label for="questionnaireDropDownChoice"><wicket:message key="Questionnaire" /></label></td>
 		    <td class="keyValueTableValueOdd"><select wicket:id="questionnaireDropDownChoice"></select></td>
 		  </tr>
 		</table>		
-
 		<fieldset>
 			<legend><wicket:message key="Name" /></legend>
 		 	<table class="keyValueTable">
@@ -25,13 +19,11 @@
 			    <td class="keyValueTableValueOdd"><input wicket:id="variableName" type="text" size="20" /></td>
 			  </tr>	  	 
 			 </table>		
-		</fieldset>
-		
+		</fieldset>		
 		<fieldset>
 			<legend><wicket:message key="LanguagesProperties" /></legend>
 		 	<div wicket:id="localesPropertiesTabs"></div>
-		</fieldset>		
-		 
+		</fieldset>				 
 		<fieldset>
 			<legend><wicket:message key="Categories" /></legend>
 			<table>
@@ -50,18 +42,9 @@
 						<input wicket:id="nbRows" type="text" size="2" /> <wicket:message key="Rows" />
 			   	</td>
 			  </tr>
-			</table>		
-			
-			<div wicket:id="categoryList" />			
-			
-		</fieldset>			    
-	 
-		<div class="modal-footer">
-			<a wicket:id="previewLink">Preview</a>
-	    <button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save"/></button> 		
-	    <button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel"/></button>
-		</div>    
-		
-	</form>
-	
+			</table>					
+			<div wicket:id="categoryList" />				
+		</fieldset>	
+		<a wicket:id="previewLink">Preview</a>
+	</wicket:extend>		
 </wicket:panel>
