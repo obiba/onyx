@@ -10,14 +10,14 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -26,10 +26,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unchecked" })
 public class VariableNamesPanel extends Panel {
 
   protected WebMarkupContainer itemsContainer;
@@ -38,11 +35,23 @@ public class VariableNamesPanel extends Panel {
 
   private VariableNamesForm variableNamesForm;
 
+  /**
+   * Constructor of VariableNamesPanel <br/>
+   * The given map is not updated. Call getNewMapData() to have updated data
+   * @param id
+   * @param map
+   */
   public VariableNamesPanel(String id, Map<String, String> map) {
     super(id);
+
+    add(CSSPackageResource.getHeaderContribution(VariableNamesPanel.class, "VariableNamesPanel.css"));
+
+    // transform given map to a list
     List<String[]> listVariableName = new ArrayList<String[]>();
     for(Map.Entry<String, String> entry : map.entrySet()) {
-      listVariableName.add(new String[] { entry.getKey(), entry.getValue() });
+      if(!StringUtils.isWhitespace(entry.getKey())) {
+        listVariableName.add(new String[] { entry.getKey(), entry.getValue() });
+      }
     }
     feedbackPanel = new FeedbackPanel("feedback");
     feedbackPanel.setOutputMarkupId(true);
@@ -50,7 +59,11 @@ public class VariableNamesPanel extends Panel {
     add(variableNamesForm = new VariableNamesForm("variableNamesForm", new ListModel<String[]>(listVariableName)));
   }
 
-  public Map<String, String> getMap() {
+  /**
+   * Return map of data filled by UI
+   * @return
+   */
+  public Map<String, String> getNewMapData() {
     Map<String, String> map = new HashMap<String, String>();
     for(String[] strings : variableNamesForm.getModelObject()) {
       map.put(strings[0], strings[1]);
@@ -59,8 +72,6 @@ public class VariableNamesPanel extends Panel {
   }
 
   public class VariableNamesForm extends Form<List<String[]>> {
-
-    private static final String ONBLUR = "onblur";
 
     public VariableNamesForm(String id, ListModel<String[]> listModel) {
       super(id, listModel);
@@ -94,12 +105,11 @@ public class VariableNamesPanel extends Panel {
     void addListView() {
 
       itemsContainer.addOrReplace(new ListView<String[]>("items", getModel()) {
-        private static final long serialVersionUID = 0L;
 
         @Override
         protected void populateItem(ListItem<String[]> item) {
           final TextField<String> keyField = new TextField<String>("keyInput", new PropertyModel<String>(item.getModelObject(), "[0]"));
-          keyField.add(new AjaxFormComponentUpdatingBehavior(ONBLUR) {
+          keyField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -109,7 +119,7 @@ public class VariableNamesPanel extends Panel {
           });
 
           TextField<String> valueField = new TextField<String>("valueInput", new PropertyModel<String>(item.getModelObject(), "[1]"));
-          valueField.add(new AjaxFormComponentUpdatingBehavior(ONBLUR) {
+          valueField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -120,69 +130,52 @@ public class VariableNamesPanel extends Panel {
           item.add(keyField);
           item.add(valueField);
 
-          RemoveAjaxButton removeAjaxButton = new RemoveAjaxButton("removeButton", item.getIndex());
-          item.add(removeAjaxButton);
-        }
-
-        private void validateAndSubmit(AjaxRequestTarget target) {
-          VariableNamesForm.this.validateFormValidators();
-          VariableNamesForm.this.delegateSubmit(null);
-          target.addComponent(feedbackPanel);
+          item.add(new RemoveAjaxLink("removeLink", item.getIndex()));
         }
 
       }.setReuseItems(true));
 
     }
 
-    private class AddAjaxButton extends AjaxButton {
+    protected void validateAndSubmit(AjaxRequestTarget target) {
+      VariableNamesForm.this.validateFormValidators();
+      VariableNamesForm.this.delegateSubmit(null);
+      target.addComponent(feedbackPanel);
+    }
 
-      private static final long serialVersionUID = -4238963161016807826L;
+    private class AddAjaxButton extends AjaxButton {
 
       public AddAjaxButton(String id) {
         super(id, null, null);
         setDefaultFormProcessing(false);
-        add(new Image("addImg"));
-        add(new Label("addLabel", "+"));
       }
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         List<String[]> list = (List<String[]>) VariableNamesForm.this.getDefaultModelObject();
-        boolean notEmptys = Iterables.all(list, new Predicate<String[]>() {
-
-          @Override
-          public boolean apply(String[] input) {
-            return StringUtils.isNotBlank(input[0]);
-          }
-        });
-        if(notEmptys) {
-          list.add(new String[] { "", "" });
-          addListView();
-          target.addComponent(itemsContainer);
-        }
+        list.add(new String[] { null, null });
+        addListView();
+        target.addComponent(itemsContainer);
+        validateAndSubmit(target);
       }
     }
 
-    private class RemoveAjaxButton extends AjaxButton {
-
-      private static final long serialVersionUID = -4238963161016807826L;
+    private class RemoveAjaxLink extends AjaxLink<Void> {
 
       private int rowToDelete;
 
-      public RemoveAjaxButton(String id, int rowToDelete) {
-        super(id, null, null);
+      public RemoveAjaxLink(String id, int rowToDelete) {
+        super(id);
         this.rowToDelete = rowToDelete;
-        setDefaultFormProcessing(false);
-        add(new Image("removeImg"));
-        add(new Label("removeLabel", "x"));
       }
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+      public void onClick(AjaxRequestTarget target) {
         List<String[]> list = (List<String[]>) VariableNamesForm.this.getDefaultModelObject();
         list.remove(rowToDelete);
         addListView();
         target.addComponent(itemsContainer);
+        validateAndSubmit(target);
       }
     }
   }

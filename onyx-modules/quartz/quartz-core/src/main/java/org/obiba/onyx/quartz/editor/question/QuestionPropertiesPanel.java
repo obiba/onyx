@@ -94,13 +94,6 @@ public class QuestionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    categoryWindow = new ModalWindow("categoryWindow");
-    categoryWindow.setCssClassName("onyx");
-    categoryWindow.setInitialWidth(1000);
-    categoryWindow.setInitialHeight(600);
-    categoryWindow.setResizable(true);
-    add(categoryWindow);
-
     add(new QuestionForm("questionForm", model));
   }
 
@@ -110,6 +103,13 @@ public class QuestionPropertiesPanel extends Panel {
 
     public QuestionForm(String id, final IModel<Question> model) {
       super(id, model);
+
+      categoryWindow = new ModalWindow("categoryWindow");
+      categoryWindow.setCssClassName("onyx");
+      categoryWindow.setInitialWidth(1000);
+      categoryWindow.setInitialHeight(600);
+      categoryWindow.setResizable(true);
+      add(categoryWindow);
 
       final ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
       final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", getModelObject(), localePropertiesModel);
@@ -191,6 +191,7 @@ public class QuestionPropertiesPanel extends Panel {
           categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), categoryWindow) {
             @Override
             public void onSave(AjaxRequestTarget target1, Category category) {
+              super.onSave(target1, category);
               Question question = QuestionForm.this.getModelObject();
               QuestionCategory questionCategory = new QuestionCategory();
               questionCategory.setCategory(category);
