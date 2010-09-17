@@ -16,11 +16,11 @@ import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
@@ -33,10 +33,10 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    createComponent();
   }
 
-  @Override
-  public void onInit(Form<OpenAnswerDefinition> form) {
+  public void createComponent() {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));
@@ -51,7 +51,8 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
     final TextField<String> sizeTextFieldForUIArguments = new TextField<String>("size", new Model<String>());
     sizeTextFieldForUIArguments.setOutputMarkupPlaceholderTag(true);
     sizeTextFieldForUIArguments.setVisible(false);
-    AjaxCheckBox specifySize = new AjaxCheckBox("wantSpecifySize", new Model<Boolean>(form.getModelObject().getUIArgumentsValueMap().get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS) != null)) {
+    ValueMap uiArgumentsValueMap = form.getModelObject().getUIArgumentsValueMap();
+    AjaxCheckBox specifySize = new AjaxCheckBox("wantSpecifySize", new Model<Boolean>(uiArgumentsValueMap != null ? uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS) != null : false)) {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {

@@ -50,11 +50,11 @@ public class QuestionnaireListPanel extends Panel {
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private QuestionnaireBundleManager questionnaireBundleManager;
+  protected QuestionnaireBundleManager questionnaireBundleManager;
 
-  private ModalWindow modalWindow;
+  protected ModalWindow modalWindow;
 
-  private ModalWindow layoutWindow;
+  protected ModalWindow layoutWindow;
 
   public QuestionnaireListPanel(String id, ModalWindow modalWindow) {
     super(id);
@@ -76,7 +76,7 @@ public class QuestionnaireListPanel extends Panel {
     add(new OnyxEntityList<User>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
   }
 
-  private class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
+  protected class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
 
     @Override
     public Iterator<Questionnaire> iterator(int first, int count) {

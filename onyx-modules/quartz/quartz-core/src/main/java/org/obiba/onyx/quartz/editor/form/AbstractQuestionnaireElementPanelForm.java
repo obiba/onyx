@@ -27,6 +27,8 @@ public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
 
   protected final ModalWindow modalWindow;
 
+  protected Form<T> form;
+
   public AbstractQuestionnaireElementPanelForm(String id, IModel<T> model, ModalWindow modalWindow) {
     super(id, model);
 
@@ -37,46 +39,31 @@ public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
     feedbackWindow.setOutputMarkupId(true);
 
     add(feedbackWindow);
-    add(new FormT("form", model));
+    add(form = new Form<T>("form", model));
+    form.add(new AjaxButton("save", form) {
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        onSave(target, (T) form2.getModelObject());
+        AbstractQuestionnaireElementPanelForm.this.modalWindow.close(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+        feedbackWindow.setContent(feedbackPanel);
+        feedbackWindow.show(target);
+      }
+    });
+
+    form.add(new AjaxButton("cancel", form) {
+
+      @Override
+      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        AbstractQuestionnaireElementPanelForm.this.modalWindow.close(target);
+      }
+    }.setDefaultFormProcessing(false));
   }
-
-  public class FormT extends Form<T> {
-
-    public FormT(String id, IModel<T> model) {
-      super(id, model);
-      onInit(this);
-
-      add(new AjaxButton("save", this) {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-          onSave(target, (T) form.getModelObject());
-          modalWindow.close(target);
-        }
-
-        @Override
-        protected void onError(AjaxRequestTarget target, Form<?> form) {
-          feedbackWindow.setContent(feedbackPanel);
-          feedbackWindow.show(target);
-        }
-      });
-
-      add(new AjaxButton("cancel", this) {
-
-        @Override
-        public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-          modalWindow.close(target);
-        }
-      }.setDefaultFormProcessing(false));
-    }
-  }
-
-  /**
-   * Use to add new formComponents on form
-   * @param form
-   */
-  public abstract void onInit(Form<T> form);
 
   /**
    * 
@@ -86,4 +73,9 @@ public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
   public void onSave(AjaxRequestTarget target, T t) {
 
   }
+
+  public Form<T> getForm() {
+    return form;
+  }
+
 }

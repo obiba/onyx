@@ -21,7 +21,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -73,12 +72,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow questionWindow) {
     super(id, model, questionWindow);
-  }
 
-  @Override
-  public void onInit(final Form<Question> form) {
-
-    // TODO for test only
     QuestionCategory questionCategory1 = new QuestionCategory();
     questionCategory1.setCategory(new Category("Cat 1"));
     form.getModelObject().addQuestionCategory(questionCategory1);
@@ -86,6 +80,13 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     QuestionCategory questionCategory2 = new QuestionCategory();
     questionCategory2.setCategory(new Category("Cat 2"));
     form.getModelObject().addQuestionCategory(questionCategory2);
+
+    createComponent();
+  }
+
+  public void createComponent() {
+
+    // TODO for test only
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
@@ -115,7 +116,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
       protected void onUpdate(AjaxRequestTarget target) {
         List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
         for(Locale locale : questionnaireDropDownChoice.getModelObject().getLocales()) {
-          listLocaleProperties.add(new LocaleProperties(locale, form.getModelObject()));
+          listLocaleProperties.add(new LocaleProperties(locale, getForm().getModelObject()));
         }
         localePropertiesModel.setObject(listLocaleProperties);
         localesPropertiesAjaxTabbedPanel.initUI();
@@ -175,7 +176,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
           @Override
           public void onSave(AjaxRequestTarget target1, Category category) {
             super.onSave(target1, category);
-            Question question = form.getModelObject();
+            Question question = QuestionPropertiesPanel.this.getForm().getModelObject();
             QuestionCategory questionCategory = new QuestionCategory();
             questionCategory.setCategory(category);
             // questionCategory.setExportName(exportName); TODO set exportName
@@ -213,7 +214,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
       @Override
       public void onClick() {
-        Question q = form.getModelObject();
+        Question q = getForm().getModelObject();
         log.info("name: " + q.getName() + ", varName: " + q.getVariableName() + ", multiple: " + q.isMultiple());
         //
         // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",

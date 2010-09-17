@@ -23,7 +23,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -65,10 +64,10 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
 
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    createComponent();
   }
 
-  @Override
-  public void onInit(final Form<Questionnaire> form) {
+  public void createComponent() {
     // -------------------- Name --------------------
     TextField<String> nameTextField = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     nameTextField.add(new RequiredFormFieldBehavior());

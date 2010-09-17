@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -30,10 +29,10 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public CategoryPropertiesPanel(String id, Model<Category> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    createComponent();
   }
 
-  @Override
-  public void onInit(Form<Category> form) {
+  public void createComponent() {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));

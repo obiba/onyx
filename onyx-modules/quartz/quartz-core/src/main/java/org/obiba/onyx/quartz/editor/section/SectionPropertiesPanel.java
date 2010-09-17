@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.editor.section;
 
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -24,10 +23,10 @@ public class SectionPropertiesPanel extends AbstractQuestionnaireElementPanelFor
 
   public SectionPropertiesPanel(String id, IModel<Section> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    createComponent();
   }
 
-  @Override
-  public void onInit(Form<Section> form) {
+  public void createComponent() {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(super.getDefaultModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));
