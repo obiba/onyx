@@ -52,7 +52,7 @@ public class LocalePropertiesPanel extends Panel {
         protected void populateItem(LoopItem item) {
           TextArea<String> labelTextArea = new TextArea<String>("labelsTextArea", new PropertyModel<String>(getModelObject(), "values[" + item.getIteration() + "]"));
           labelTextArea.add(new AttributeModifier("rows", true, new Model<Integer>(3)));
-          labelTextArea.add(new AttributeModifier("cols", true, new Model<Integer>(80)));
+          labelTextArea.add(new AttributeModifier("cols", true, new Model<Integer>(50)));
           Label labelLabel = new Label("labelsLabel", getModelObject().getKeys()[item.getIteration()]);
           labelTextArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 

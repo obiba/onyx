@@ -43,6 +43,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
+import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,7 +180,16 @@ public class QuestionnaireTreePanel extends Panel {
         IQuestionnaireElement element = elements.get(nodeId);
         if(element instanceof Section) {
           elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-          // TODO show SectionPropertiesPanel
+          elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), elementWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target1, Section section) {
+              super.onSave(target, section);
+              // update node name in jsTree
+              target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
+            }
+          });
+          elementWindow.show(target);
+
         } else if(element instanceof Page) {
           elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
           // TODO show PagePropertiesPanel
@@ -188,6 +198,7 @@ public class QuestionnaireTreePanel extends Panel {
           elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), elementWindow) {
             @Override
             public void onSave(AjaxRequestTarget target1, Question question) {
+              super.onSave(target, question);
               // update node name in jsTree
               target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
             }

@@ -29,6 +29,8 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public CategoryPropertiesPanel(String id, Model<Category> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    modalWindow.setInitialWidth(500);
+    modalWindow.setInitialHeight(500);
     createComponent();
   }
 

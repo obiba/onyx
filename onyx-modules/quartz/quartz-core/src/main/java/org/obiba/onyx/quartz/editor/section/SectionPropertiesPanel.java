@@ -23,6 +23,8 @@ public class SectionPropertiesPanel extends AbstractQuestionnaireElementPanelFor
 
   public SectionPropertiesPanel(String id, IModel<Section> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    modalWindow.setInitialWidth(300);
+    modalWindow.setInitialHeight(100);
     createComponent();
   }
 

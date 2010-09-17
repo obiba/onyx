@@ -10,10 +10,12 @@
 package org.obiba.onyx.quartz.editor.openAnswerDefinition;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -24,12 +26,15 @@ import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
+import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @SuppressWarnings("serial")
 public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireElementPanelForm<OpenAnswerDefinition> {
+
+  private VariableNamesPanel variableNamesPanel;
 
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
@@ -44,8 +49,9 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
     form.add(new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>()));
 
+    form.add(new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "required")));
+
     TextField<String> unit = new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "unit"));
-    unit.add(new RequiredFormFieldBehavior());
     form.add(unit);
 
     final TextField<String> sizeTextFieldForUIArguments = new TextField<String>("size", new Model<String>());
@@ -62,5 +68,15 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
     };
     form.add(specifySize, sizeTextFieldForUIArguments);
 
+    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getVariableNames()));
+
+  }
+
+  @Override
+  public void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswerDefinition) {
+    super.onSave(target, openAnswerDefinition);
+    for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
+      openAnswerDefinition.addVariableName(entries.getKey(), entries.getValue());
+    }
   }
 }

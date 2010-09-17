@@ -64,6 +64,8 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
 
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
     super(id, model, modalWindow);
+    modalWindow.setInitialWidth(700);
+    modalWindow.setInitialHeight(500);
     createComponent();
   }
 
@@ -85,7 +87,7 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
             return !input.getName().equals(validatable.getValue());
           }
         });
-        if(!isNewName && !validatable.getValue().equals(form.getModelObject().getName())) {
+        if(!isNewName && !validatable.getValue().equals(getForm().getModelObject().getName())) {
           error(validatable);
         }
       }
