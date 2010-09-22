@@ -66,7 +66,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Section", this, null));
-        modalWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), modalWindow));
+        modalWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), null, modalWindow));
         modalWindow.show(target);
       }
     });
@@ -75,7 +75,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Page", this, null));
-        modalWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), modalWindow));
+        modalWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), null, modalWindow));
         modalWindow.show(target);
       }
     });
@@ -84,7 +84,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Question", this, null));
-        modalWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question(null)), modalWindow));
+        modalWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question(null)), null, modalWindow));
         modalWindow.show(target);
       }
     });
@@ -93,7 +93,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Category", this, null));
-        modalWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), modalWindow));
+        modalWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), null, modalWindow));
         modalWindow.show(target);
       }
     });
@@ -102,7 +102,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("OpenAnswerDefinition", this, null));
-        modalWindow.setContent(new OpenAnswerDefinitionPropertiesPanel("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition(null, null)), modalWindow));
+        modalWindow.setContent(new OpenAnswerDefinitionPropertiesPanel("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition(null, null)), null, modalWindow));
         modalWindow.show(target);
       }
     });

@@ -135,7 +135,9 @@ public class QuestionnaireCreator {
         }
 
         for(Map.Entry<Locale, Properties> entry : mapLocaleProperties.entrySet()) {
+          // if(!bundle.getAvailableLanguages().contains(entry.getKey())) {
           bundle.setLanguage(entry.getKey(), entry.getValue());
+          // }
         }
       }
     } catch(Exception e) {

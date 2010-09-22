@@ -15,24 +15,28 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @SuppressWarnings("serial")
 public class PagePropertiesPanel extends AbstractQuestionnaireElementPanelForm<Page> {
 
-  public PagePropertiesPanel(String id, IModel<Page> model, ModalWindow modalWindow) {
-    super(id, model, modalWindow);
+  public PagePropertiesPanel(String id, IModel<Page> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
+    super(id, model, questionnaireParent, modalWindow);
     modalWindow.setInitialWidth(300);
     modalWindow.setInitialHeight(100);
     createComponent();
   }
 
   public void createComponent() {
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(super.getDefaultModel(), "name"));
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(super.getDefaultModel(), "name"), String.class);
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));
     form.add(name);
+
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
   }
 
 }

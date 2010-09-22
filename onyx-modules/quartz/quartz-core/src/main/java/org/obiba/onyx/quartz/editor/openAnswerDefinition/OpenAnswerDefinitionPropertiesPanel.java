@@ -25,6 +25,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
@@ -36,8 +37,8 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
   private VariableNamesPanel variableNamesPanel;
 
-  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, ModalWindow modalWindow) {
-    super(id, model, modalWindow);
+  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
+    super(id, model, questionnaireParent, modalWindow);
     createComponent();
   }
 
@@ -51,8 +52,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
     form.add(new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "required")));
 
-    TextField<String> unit = new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "unit"));
-    form.add(unit);
+    form.add(new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "unit")));
 
     final TextField<String> sizeTextFieldForUIArguments = new TextField<String>("size", new Model<String>());
     sizeTextFieldForUIArguments.setOutputMarkupPlaceholderTag(true);

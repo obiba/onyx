@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 
 @SuppressWarnings({ "serial", "unchecked" })
@@ -96,7 +96,7 @@ public class VariableNamesPanel extends Panel {
             set.add(strings[0]);
           }
           if(getModel().getObject().size() != set.size()) {
-            form.error(new ResourceModel("DuplicatedKeys").getObject());
+            form.error(new StringResourceModel("DuplicatedKeys", VariableNamesPanel.this, null).getObject());
           }
         }
       });

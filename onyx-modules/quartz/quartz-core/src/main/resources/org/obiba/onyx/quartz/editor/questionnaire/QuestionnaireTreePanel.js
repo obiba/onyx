@@ -8,6 +8,11 @@ function buildQTree(id, options) {
 	Wicket.QTree[id] = this;
 }
 
+Wicket.QTree.refreshTree = function(treeId) {
+	alert('refresh');
+	$("#" + treeId).jstree('refresh', -1);	
+}
+
 Wicket.QTree.buildTree = function(treeId) {
 	$("#" + treeId).jstree({
 		"themes" : {
@@ -17,6 +22,7 @@ Wicket.QTree.buildTree = function(treeId) {
 			"icons" : true
 		},		
 		"types" : {
+			 "valid_children" : [ "Questionnaire" ],
 			"types" : {
 				"Questionnaire" : {
 					"valid_children" : [ "Section", "Page" ]

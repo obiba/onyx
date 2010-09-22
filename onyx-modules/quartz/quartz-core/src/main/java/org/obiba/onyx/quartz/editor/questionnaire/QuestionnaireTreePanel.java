@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ClassUtils;
@@ -42,15 +43,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.editor.form.QuestionnaireElementWebPage;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- */
 @SuppressWarnings("serial")
 public class QuestionnaireTreePanel extends Panel {
 
@@ -58,7 +59,7 @@ public class QuestionnaireTreePanel extends Panel {
 
   private static final String ID_PREFIX = "element_";
 
-  private Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
+  protected Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
 
   private int elementCounter;
 
@@ -78,24 +79,22 @@ public class QuestionnaireTreePanel extends Panel {
 
   private Label addChildCallback;
 
-  private String treeId;
+  protected String treeId;
 
-  private WebMarkupContainer treeContainer;
+  protected WebMarkupContainer treeContainer;
 
-  private ModalWindow elementWindow;
+  protected ModalWindow elementWindow;
 
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
     super(id, model);
 
     elementWindow = new ModalWindow("elementWindow");
     elementWindow.setCssClassName("onyx");
-    elementWindow.setInitialWidth(1000);
-    elementWindow.setInitialHeight(600);
     elementWindow.setResizable(true);
     elementWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        return true; // same as cancel
+        return true;
       }
     });
     add(elementWindow);
@@ -117,171 +116,32 @@ public class QuestionnaireTreePanel extends Panel {
     listFragment.add(new JsTreeBehavior());
     treeContainer.add(listFragment);
 
-    add(new AbstractBehavior() {
+    treeContainer.add(new AbstractBehavior() {
       @Override
       public void renderHead(IHeaderResponse response) {
         response.renderOnLoadJavascript("Wicket.QTree.buildTree('" + treeId + "')");
       }
     });
 
-    add(moveBehavior = new AbstractDefaultAjaxBehavior() {
-      @Override
-      protected void respond(AjaxRequestTarget target) {
-        Request request = RequestCycle.get().getRequest();
-        String nodeId = request.getParameter("nodeId");
-        String previousParentId = request.getParameter("previousParentId");
-        String newParentId = request.getParameter("newParentId");
-        int position = Integer.parseInt(request.getParameter("newPosition"));
-
-        IQuestionnaireElement element = elements.get(nodeId);
-        IQuestionnaireElement previousParent = elements.get(previousParentId);
-        IQuestionnaireElement newParent = elements.get(newParentId);
-        if(element instanceof Section) {
-          Section section = (Section) element;
-          if(previousParent instanceof Questionnaire) {
-            ((Questionnaire) previousParent).removeSection(section);
-          } else if(previousParent instanceof Section) {
-            ((Section) previousParent).removeSection(section);
-          }
-          if(newParent instanceof Questionnaire) {
-            ((Questionnaire) newParent).addSection(section, position);
-          } else if(newParent instanceof Section) {
-            ((Section) newParent).addSection(section, position);
-          }
-        } else if(element instanceof Page) {
-          Page page = (Page) element;
-          if(previousParent instanceof Questionnaire) {
-            ((Questionnaire) previousParent).removePage(page);
-          } else if(previousParent instanceof Section) {
-            ((Section) previousParent).removePage(page);
-          }
-          if(newParent instanceof Questionnaire) {
-            ((Questionnaire) newParent).addPage(page, position);
-          } else if(newParent instanceof Section) {
-            ((Section) newParent).addPage(page, position);
-          }
-        } else if(element instanceof Question) {
-          Question question = (Question) element;
-          ((Page) previousParent).removeQuestion(question);
-          ((Page) newParent).addQuestion(question, position);
-        }
-      }
-    });
+    add(moveBehavior = new MoveBehavior());
     moveCallback = new Label("moveCallback", "");
     moveCallback.setOutputMarkupId(true);
     moveCallback.setEscapeModelStrings(false);
     add(moveCallback);
 
-    add(editBehavior = new AbstractDefaultAjaxBehavior() {
-      @Override
-      protected void respond(final AjaxRequestTarget target) {
-        final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
-        log.info("Edit " + nodeId);
-        IQuestionnaireElement element = elements.get(nodeId);
-        if(element instanceof Section) {
-          elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-          elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), elementWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target1, Section section) {
-              super.onSave(target, section);
-              // update node name in jsTree
-              target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
-            }
-          });
-          elementWindow.show(target);
-
-        } else if(element instanceof Page) {
-          elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-          // TODO show PagePropertiesPanel
-        } else if(element instanceof Question) {
-          elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-          elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), elementWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target1, Question question) {
-              super.onSave(target, question);
-              // update node name in jsTree
-              target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
-            }
-          });
-          elementWindow.show(target);
-        }
-      }
-    });
+    add(editBehavior = new EditBehavior());
     editCallback = new Label("editCallback", "");
     editCallback.setOutputMarkupId(true);
     editCallback.setEscapeModelStrings(false);
     add(editCallback);
 
-    add(deleteBehavior = new AbstractDefaultAjaxBehavior() {
-      @Override
-      protected void respond(AjaxRequestTarget target) {
-        String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
-        log.info("Delete " + nodeId);
-        IQuestionnaireElement element = elements.get(nodeId);
-        if(element instanceof Section) {
-          Section section = (Section) element;
-          Section parentSection = section.getParentSection();
-          if(parentSection == null) {
-            // remove from questionnaire
-            ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removeSection(section);
-          } else {
-            // remove from parentSection
-            parentSection.removeSection(section);
-          }
-        } else if(element instanceof Page) {
-          Page page = (Page) element;
-          Section parentSection = page.getSection();
-          if(parentSection == null) {
-            // remove from questionnaire
-            ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removePage(page);
-          } else {
-            // remove from parentSection
-            parentSection.removePage(page);
-          }
-        } else if(element instanceof Question) {
-          Question question = (Question) element;
-          Page page = question.getPage();
-          if(page != null) {
-            page.removeQuestion(question);
-          }
-        }
-
-        // remove node from jsTree
-        target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
-      }
-    });
+    add(deleteBehavior = new DeleteBehavior());
     deleteCallback = new Label("deleteCallback", "");
     deleteCallback.setOutputMarkupId(true);
     deleteCallback.setEscapeModelStrings(false);
     add(deleteCallback);
 
-    add(addChildBehavior = new AbstractDefaultAjaxBehavior() {
-      @Override
-      protected void respond(final AjaxRequestTarget target) {
-        Request request = RequestCycle.get().getRequest();
-        String nodeId = request.getParameter("nodeId");
-        String type = request.getParameter("type");
-        log.info("Add " + type + " to " + nodeId);
-        final IQuestionnaireElement element = elements.get(nodeId);
-        if((element instanceof Questionnaire || element instanceof Section) && "section".equals(type)) {
-          elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-          // TODO show SectionPropertiesPanel
-        } else if((element instanceof Questionnaire || element instanceof Section) && "page".equals(type)) {
-          elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-          // TODO show PagePropertiesPanel
-        } else if(element instanceof Page && "question".equals(type)) {
-          elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-          elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question("")), elementWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target1, Question question) {
-              ((Page) element).addQuestion(question);
-              // easier to reload tree than creating new node in JS
-              target.addComponent(treeContainer);
-            }
-          });
-        }
-      }
-    });
+    add(addChildBehavior = new AddChildBehavior());
     addChildCallback = new Label("addChildCallback", "");
     addChildCallback.setOutputMarkupId(true);
     addChildCallback.setEscapeModelStrings(false);
@@ -308,7 +168,238 @@ public class QuestionnaireTreePanel extends Panel {
     "\n}");
   }
 
-  private String addElement(IQuestionnaireElement element) {
+  protected class MoveBehavior extends AbstractDefaultAjaxBehavior {
+    @Override
+    protected void respond(AjaxRequestTarget target) {
+      Request request = RequestCycle.get().getRequest();
+      String nodeId = request.getParameter("nodeId");
+      // String previousParentId = request.getParameter("previousParentId");
+      String newParentId = request.getParameter("newParentId");
+      int position = Integer.parseInt(request.getParameter("newPosition"));
+
+      IQuestionnaireElement element = elements.get(nodeId);
+      // IQuestionnaireElement previousParent = elements.get(previousParentId);
+      IQuestionnaireElement newParent = elements.get(newParentId);
+      if(element instanceof Section) {
+        Section section = (Section) element;
+        if(newParent instanceof Questionnaire) {
+          if(section.getParentSection() == null) {
+            ((Questionnaire) newParent).removeSection(section);
+          } else {
+            section.getParentSection().removeSection(section);
+          }
+          ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).addSection(section, position);
+
+        } else if(newParent instanceof Section) {
+          if(section.getParentSection() == null) {
+            ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removeSection(section);
+          } else {
+            section.getParentSection().removeSection(section);
+          }
+          ((Section) newParent).addSection(section, position);
+        }
+      } else if(element instanceof Page) {
+        Page page = (Page) element;
+        if(newParent instanceof Questionnaire) {
+          if(page.getSection() == null) {
+            ((Questionnaire) newParent).removePage(page);
+          } else {
+            page.getSection().removePage(page);
+          }
+          ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).addPage(page, position);
+
+        } else if(newParent instanceof Section) {
+          if(page.getSection() == null) {
+            ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removePage(page);
+          } else {
+            page.getSection().removePage(page);
+          }
+          ((Section) newParent).addPage(page, position);
+        }
+      } else if(element instanceof Question) {
+        Question question = (Question) element;
+        question.getPage().removeQuestion(question);
+        ((Page) newParent).addQuestion(question, position);
+      }
+    }
+  }
+
+  protected class EditBehavior extends AbstractDefaultAjaxBehavior {
+    @Override
+    protected void respond(final AjaxRequestTarget respondTarget) {
+      final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
+      log.info("Edit " + nodeId);
+      final IQuestionnaireElement element = elements.get(nodeId);
+      if(element instanceof Section) {
+        elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
+        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+          @Override
+          public org.apache.wicket.Page createPage() {
+            return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+
+              @Override
+              public void onSave(AjaxRequestTarget target, Section section) {
+                super.onSave(target, section);
+                // update node name in jsTree
+                target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() + "');");
+              }
+            });
+          }
+        });
+      } else if(element instanceof Page) {
+        elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
+        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+          @Override
+          public org.apache.wicket.Page createPage() {
+            return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>((Page) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+              @Override
+              public void onSave(AjaxRequestTarget target, Page page) {
+                super.onSave(target, page);
+                // update node name in jsTree
+                target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
+              }
+            });
+
+          }
+        });
+      } else if(element instanceof Question) {
+        elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
+        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+          @Override
+          public org.apache.wicket.Page createPage() {
+
+            return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+              @Override
+              public void onSave(AjaxRequestTarget target, Question question) {
+                super.onSave(target, question);
+                // update node name in jsTree
+                target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
+              }
+            });
+          }
+        });
+      }
+      elementWindow.show(respondTarget);
+    }
+  }
+
+  protected class DeleteBehavior extends AbstractDefaultAjaxBehavior {
+    @Override
+    protected void respond(AjaxRequestTarget target) {
+      String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
+      log.info("Delete " + nodeId);
+      IQuestionnaireElement element = elements.get(nodeId);
+      if(element instanceof Section) {
+        Section section = (Section) element;
+        Section parentSection = section.getParentSection();
+        if(parentSection == null) {
+          // remove from questionnaire
+          ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removeSection(section);
+        } else {
+          // remove from parentSection
+          parentSection.removeSection(section);
+        }
+      } else if(element instanceof Page) {
+        Page page = (Page) element;
+        Section parentSection = page.getSection();
+        if(parentSection == null) {
+          // remove from questionnaire
+          ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removePage(page);
+        } else {
+          // remove from parentSection
+          parentSection.removePage(page);
+        }
+      } else if(element instanceof Question) {
+        Question question = (Question) element;
+        Page page = question.getPage();
+        if(page != null) {
+          page.removeQuestion(question);
+        }
+      }
+      // remove node from jsTree
+      target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
+    }
+  }
+
+  protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
+    @Override
+    protected void respond(final AjaxRequestTarget respondTarget) {
+      Request request = RequestCycle.get().getRequest();
+      String nodeId = request.getParameter("nodeId");
+      String type = request.getParameter("type");
+      log.info("Add " + type + " to " + nodeId);
+      final IQuestionnaireElement element = elements.get(nodeId);
+      if((element instanceof Questionnaire || element instanceof Section) && "section".equals(type)) {
+        elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
+        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+          @Override
+          public org.apache.wicket.Page createPage() {
+            return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+              @Override
+              public void onSave(AjaxRequestTarget target, Section section) {
+                super.onSave(target, section);
+                if(element instanceof Questionnaire) {
+                  ((Questionnaire) element).addSection(section);
+                } else if(element instanceof Section) {
+                  ((Section) element).addSection(section);
+                }
+                target.addComponent(treeContainer);
+              }
+            });
+          }
+        });
+      } else if((element instanceof Questionnaire || element instanceof Section) && "page".equals(type)) {
+        elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
+        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+          @Override
+          public org.apache.wicket.Page createPage() {
+            return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+              @Override
+              public void onSave(AjaxRequestTarget target, Page page) {
+                super.onSave(target, page);
+                if(element instanceof Questionnaire) {
+                  ((Questionnaire) element).addPage(page);
+                } else if(element instanceof Section) {
+                  ((Section) element).addPage(page);
+                }
+                target.addComponent(treeContainer);
+              }
+            });
+          }
+        });
+      } else if(element instanceof Page && "question".equals(type)) {
+        elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
+        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+          @Override
+          public org.apache.wicket.Page createPage() {
+            Question newQuestion = new Question(null);
+            List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+            for(Locale locale : ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getLocales()) {
+              listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
+            }
+            return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+              @Override
+              public void onSave(AjaxRequestTarget target, Question question) {
+                super.onSave(target, question);
+                ((Page) element).addQuestion(question);
+                // easier to reload tree than creating new node in JS
+                target.addComponent(treeContainer);
+              }
+            });
+          }
+        });
+      }
+      elementWindow.show(respondTarget);
+    }
+  }
+
+  protected String addElement(IQuestionnaireElement element) {
     String id = ID_PREFIX + elementCounter++;
     elements.put(id, element);
     return id;

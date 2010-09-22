@@ -9,6 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.form;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -16,10 +21,21 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 @SuppressWarnings("serial")
-public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
+public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionnaireElement> extends Panel {
+
+  @SpringBean
+  protected QuestionnaireBundleManager questionnaireBundleManager;
 
   protected FeedbackPanel feedbackPanel;
 
@@ -29,9 +45,29 @@ public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
 
   protected Form<T> form;
 
-  public AbstractQuestionnaireElementPanelForm(String id, IModel<T> model, ModalWindow modalWindow) {
-    super(id, model);
+  protected ListModel<LocaleProperties> localePropertiesModel;
 
+  public AbstractQuestionnaireElementPanelForm(String id, IModel<T> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
+    super(id, model);
+    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+    if(questionnaireParent != null) {
+      for(Locale locale : questionnaireParent.getLocales()) {
+        LocaleProperties localeProperties = new LocaleProperties(locale, model.getObject());
+        List<String> values = new ArrayList<String>();
+        for(String property : localeProperties.getKeys()) {
+          if(StringUtils.isNotBlank(model.getObject().getName())) {
+            QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaireParent.getName());
+            if(bundle != null) {
+              String message = QuestionnaireStringResourceModelHelper.getMessage(bundle, model.getObject(), property, new Object[0], locale);
+              values.add(message);
+            }
+          }
+        }
+        localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
+        listLocaleProperties.add(localeProperties);
+      }
+    }
+    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
     this.modalWindow = modalWindow;
 
     feedbackPanel = new FeedbackPanel("content");
@@ -40,6 +76,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T> extends Panel {
 
     add(feedbackWindow);
     add(form = new Form<T>("form", model));
+
     form.add(new AjaxButton("save", form) {
 
       @SuppressWarnings("unchecked")

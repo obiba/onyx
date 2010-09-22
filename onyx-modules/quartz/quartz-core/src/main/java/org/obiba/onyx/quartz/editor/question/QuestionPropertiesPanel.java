@@ -11,16 +11,10 @@ package org.obiba.onyx.quartz.editor.question;
 
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -28,15 +22,12 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -45,7 +36,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -70,8 +60,8 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   private TextField<Integer> nbRowsField;
 
-  public QuestionPropertiesPanel(String id, IModel<Question> model, final ModalWindow questionWindow) {
-    super(id, model, questionWindow);
+  public QuestionPropertiesPanel(String id, IModel<Question> model, Questionnaire questionnaireParent, final ModalWindow questionWindow) {
+    super(id, model, questionnaireParent, questionWindow);
     modalWindow.setInitialWidth(700);
     modalWindow.setInitialHeight(500);
 
@@ -83,10 +73,10 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     questionCategory2.setCategory(new Category("Cat 2"));
     form.getModelObject().addQuestionCategory(questionCategory2);
 
-    createComponent();
+    createComponent(questionnaireParent);
   }
 
-  public void createComponent() {
+  public void createComponent(final Questionnaire questionnaireParent) {
 
     // TODO for test only
 
@@ -96,36 +86,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     categoryWindow.setInitialHeight(600);
     categoryWindow.setResizable(true);
     form.add(categoryWindow);
-
-    final ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
-    final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel);
-
-    final DropDownChoice<Questionnaire> questionnaireDropDownChoice = new DropDownChoice<Questionnaire>("questionnaireDropDownChoice", new Model<Questionnaire>(), new LoadableDetachableModel<List<Questionnaire>>() {
-
-      @Override
-      protected List<Questionnaire> load() {
-        List<Questionnaire> questionnaires = new ArrayList<Questionnaire>();
-        for(QuestionnaireBundle questionnaireBundle : questionnaireBundleManager.bundles()) {
-          questionnaires.add(questionnaireBundle.getQuestionnaire());
-        }
-        return questionnaires;
-      }
-    });
-
-    questionnaireDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-        for(Locale locale : questionnaireDropDownChoice.getModelObject().getLocales()) {
-          listLocaleProperties.add(new LocaleProperties(locale, getForm().getModelObject()));
-        }
-        localePropertiesModel.setObject(listLocaleProperties);
-        localesPropertiesAjaxTabbedPanel.initUI();
-        target.addComponent(localesPropertiesAjaxTabbedPanel);
-      }
-    });
-    form.add(questionnaireDropDownChoice);
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
@@ -139,7 +99,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     form.add(new CheckBox("multiple", new PropertyModel<Boolean>(form.getModel(), "multiple")));
 
     // radio group without default selection
-    layoutRadioGroup = new RadioGroup<String>("layoutRadioGroup");
+    layoutRadioGroup = new RadioGroup<String>("layoutRadioGroup", new Model<String>());
     form.add(layoutRadioGroup);
 
     Radio<String> singleColumnLayout = new Radio<String>(SINGLE_COLUMN_LAYOUT, new Model<String>(SINGLE_COLUMN_LAYOUT));
@@ -159,7 +119,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     }
     form.add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows)));
 
-    form.add(localesPropertiesAjaxTabbedPanel);
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
 
     final SortableList<Category> categoryList = new SortableList<Category>("categoryList", form.getModelObject().getCategories()) {
       @Override
@@ -174,7 +134,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
       @Override
       public void addItem(AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), categoryWindow) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), questionnaireParent, categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Category category) {
             super.onSave(target1, category);

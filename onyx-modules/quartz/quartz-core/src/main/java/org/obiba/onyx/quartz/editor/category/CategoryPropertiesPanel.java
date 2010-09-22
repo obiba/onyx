@@ -19,6 +19,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
@@ -27,8 +28,8 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   private VariableNamesPanel variableNamesPanel;
 
-  public CategoryPropertiesPanel(String id, Model<Category> model, ModalWindow modalWindow) {
-    super(id, model, modalWindow);
+  public CategoryPropertiesPanel(String id, Model<Category> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
+    super(id, model, questionnaireParent, modalWindow);
     modalWindow.setInitialWidth(500);
     modalWindow.setInitialHeight(500);
     createComponent();
@@ -39,6 +40,7 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));
     form.add(name);
+
     form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "escape")));
     form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "noAnswer")));
     form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getVariableNames()));

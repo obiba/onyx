@@ -157,7 +157,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   @Override
   public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name) {
     QuestionnaireBundle bundle = getBundle(name);
-    bundle.clearMessageSourceCache();
+    if(bundle != null) bundle.clearMessageSourceCache();
     return bundle;
   }
 
