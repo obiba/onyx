@@ -65,7 +65,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
     super(id, model, model.getObject(), modalWindow);
     modalWindow.setInitialWidth(700);
-    modalWindow.setInitialHeight(500);
     createComponent();
   }
 

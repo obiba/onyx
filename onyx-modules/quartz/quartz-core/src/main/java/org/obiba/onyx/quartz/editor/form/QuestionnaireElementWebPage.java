@@ -12,12 +12,10 @@ package org.obiba.onyx.quartz.editor.form;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.panel.Panel;
 
-@Deprecated
 /**
- * This class will be delete. use  setContent() insteadof Page Creator
+ * This class will be delete. use setContent() insteadof Page Creator
  */
 public class QuestionnaireElementWebPage extends WebPage {
-  @Deprecated
   public QuestionnaireElementWebPage(Panel panel) {
     add(panel);
   }

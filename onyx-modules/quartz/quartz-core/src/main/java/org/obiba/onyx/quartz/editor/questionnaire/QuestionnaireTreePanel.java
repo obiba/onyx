@@ -224,9 +224,10 @@ public class QuestionnaireTreePanel extends Panel {
     }
   }
 
+  @SuppressWarnings("hiding")
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
     @Override
-    protected void respond(final AjaxRequestTarget respondTarget) {
+    protected void respond(final AjaxRequestTarget target) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Edit " + nodeId);
       final IQuestionnaireElement element = elements.get(nodeId);
@@ -282,7 +283,7 @@ public class QuestionnaireTreePanel extends Panel {
           }
         });
       }
-      elementWindow.show(respondTarget);
+      elementWindow.show(target);
     }
   }
 
@@ -324,9 +325,10 @@ public class QuestionnaireTreePanel extends Panel {
     }
   }
 
+  @SuppressWarnings("hiding")
   protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
     @Override
-    protected void respond(final AjaxRequestTarget respondTarget) {
+    protected void respond(final AjaxRequestTarget target) {
       Request request = RequestCycle.get().getRequest();
       String nodeId = request.getParameter("nodeId");
       String type = request.getParameter("type");
@@ -384,6 +386,7 @@ public class QuestionnaireTreePanel extends Panel {
               listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
             }
             return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+
               @Override
               public void onSave(AjaxRequestTarget target, Question question) {
                 super.onSave(target, question);
@@ -395,7 +398,7 @@ public class QuestionnaireTreePanel extends Panel {
           }
         });
       }
-      elementWindow.show(respondTarget);
+      elementWindow.show(target);
     }
   }
 

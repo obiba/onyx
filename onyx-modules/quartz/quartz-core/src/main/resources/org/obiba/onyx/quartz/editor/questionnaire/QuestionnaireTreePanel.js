@@ -22,7 +22,7 @@ Wicket.QTree.buildTree = function(treeId) {
 			"icons" : true
 		},		
 		"types" : {
-			 "valid_children" : [ "Questionnaire" ],
+			"valid_children" : [ "Questionnaire" ],
 			"types" : {
 				"Questionnaire" : {
 					"valid_children" : [ "Section", "Page" ]
@@ -31,19 +31,19 @@ Wicket.QTree.buildTree = function(treeId) {
 					"valid_children" : [ "Section", "Page" ]
 				},
 				"Page" : {
-					"valid_children" : "Question"
+					"valid_children" : [ "Question" ]
 				},
 				"Question" : {
-					"valid_children" : "QuestionCategory"
+					"valid_children" : [ "QuestionCategory" ]
 				},
 				"QuestionCategory" : {
 					"valid_children" : [ "Category", "OpenAnswerDefinition" ]
 				},
 				"Category" : {
-					"valid_children" : "none"
+					"valid_children" : [ "none" ]
 				},
 				"OpenAnswerDefinition" : {
-					"valid_children" : "none"
+					"valid_children" : [ "none" ]
 				}
 			}
 		},

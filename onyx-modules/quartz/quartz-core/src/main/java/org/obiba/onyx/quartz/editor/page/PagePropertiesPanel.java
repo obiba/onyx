@@ -26,7 +26,6 @@ public class PagePropertiesPanel extends AbstractQuestionnaireElementPanelForm<P
   public PagePropertiesPanel(String id, IModel<Page> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
     modalWindow.setInitialWidth(300);
-    modalWindow.setInitialHeight(100);
     createComponent();
   }
 

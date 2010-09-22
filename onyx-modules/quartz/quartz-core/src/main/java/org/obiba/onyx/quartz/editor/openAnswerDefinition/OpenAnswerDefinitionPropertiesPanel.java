@@ -39,6 +39,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
+    modalWindow.setInitialWidth(500);
     createComponent();
   }
 

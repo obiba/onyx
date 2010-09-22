@@ -11,6 +11,8 @@ package org.obiba.onyx.quartz.editor.question;
 
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -63,7 +65,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
   public QuestionPropertiesPanel(String id, IModel<Question> model, Questionnaire questionnaireParent, final ModalWindow questionWindow) {
     super(id, model, questionnaireParent, questionWindow);
     modalWindow.setInitialWidth(700);
-    modalWindow.setInitialHeight(500);
 
     QuestionCategory questionCategory1 = new QuestionCategory();
     questionCategory1.setCategory(new Category("Cat 1"));
@@ -121,54 +122,56 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
 
-    final SortableList<Category> categoryList = new SortableList<Category>("categoryList", form.getModelObject().getCategories()) {
+    @SuppressWarnings("hiding")
+    final SortableList<QuestionCategory> categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getQuestionCategories()) {
       @Override
-      public String getItemLabel(Category category) {
-        return category.getName();
+      public String getItemLabel(QuestionCategory questionCategory) {
+        return questionCategory.getCategory().getName();
       }
 
       @Override
-      public void onUpdate(Component sortedComponent, int index, AjaxRequestTarget ajaxRequestTarget) {
-        ajaxRequestTarget.appendJavascript("alert('updated  : " + sortedComponent.getMarkupId() + " - " + sortedComponent.getDefaultModelObject().toString() + " - index : " + index + "')");
+      public void onUpdate(Component sortedComponent, int index, AjaxRequestTarget target) {
+        QuestionCategory questionCategory = (QuestionCategory) sortedComponent.getDefaultModelObject();
+        List<QuestionCategory> questionCategories = getForm().getModelObject().getQuestionCategories();
+        questionCategories.remove(questionCategory);
+        questionCategories.add(index, questionCategory);
       }
 
       @Override
       public void addItem(AjaxRequestTarget target) {
         categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), questionnaireParent, categoryWindow) {
+
           @Override
-          public void onSave(AjaxRequestTarget target1, Category category) {
-            super.onSave(target1, category);
+          public void onSave(AjaxRequestTarget target, Category category) {
+            super.onSave(target, category);
             Question question = QuestionPropertiesPanel.this.getForm().getModelObject();
             QuestionCategory questionCategory = new QuestionCategory();
             questionCategory.setCategory(category);
             // questionCategory.setExportName(exportName); TODO set exportName
             question.addQuestionCategory(questionCategory);
-            refreshList(target1);
+            refreshList(target);
           }
         });
         categoryWindow.show(target);
       }
 
       @Override
-      public void editItem(Category category, AjaxRequestTarget target) {
-        target.appendJavascript("alert('TODO')");
-        // categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(category),
-        // categoryWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target1, Category category1) {
-        // // TODO replace edited category
-        // refreshList(target1);
-        // }
-        // });
-        // categoryWindow.show(target);
+      public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), questionnaireParent, categoryWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target, Category category) {
+            super.onSave(target, category);
+            refreshList(target);
+          }
+        });
+        categoryWindow.show(target);
       }
 
       @Override
-      public void deleteItem(Category category, AjaxRequestTarget target) {
-        // TODO remove category
-        target.appendJavascript("alert('TODO')");
+      public void deleteItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
+        getForm().getModelObject().getQuestionCategories().remove(questionCategory);
+        refreshList(target);
       }
-
     };
     form.add(categoryList);
 
@@ -205,7 +208,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     }
 
     log.info("name: " + question.getName() + ", varName: " + question.getVariableName() + ", multiple: " + question.isMultiple());
-    log.info(question.getUIArgumentsValueMap().toString());
 
     // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
     // "1.0").withSection("SECTION_1").withPage("PAGE_1");
