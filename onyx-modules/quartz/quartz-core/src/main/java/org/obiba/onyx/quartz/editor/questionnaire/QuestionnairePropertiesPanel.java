@@ -126,7 +126,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
     for(Locale locale : listLocaleModel.getObject()) {
       questionnaire.addLocale(locale);
     }
-    saveToXml();
+    saveToFiles();
   }
-
 }

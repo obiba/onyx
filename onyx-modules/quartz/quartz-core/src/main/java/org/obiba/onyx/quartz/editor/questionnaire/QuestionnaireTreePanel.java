@@ -243,8 +243,8 @@ public class QuestionnaireTreePanel extends Panel {
               public void onSave(AjaxRequestTarget target, Section section) {
                 super.onSave(target, section);
                 // update node name in jsTree
+                saveToFiles();
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() + "');");
-                saveToXml();
               }
             });
           }
@@ -261,8 +261,8 @@ public class QuestionnaireTreePanel extends Panel {
               public void onSave(AjaxRequestTarget target, Page page) {
                 super.onSave(target, page);
                 // update node name in jsTree
+                saveToFiles();
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
-                saveToXml();
               }
             });
           }
@@ -280,8 +280,8 @@ public class QuestionnaireTreePanel extends Panel {
               public void onSave(AjaxRequestTarget target, Question question) {
                 super.onSave(target, question);
                 // update node name in jsTree
+                saveToFiles();
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
-                saveToXml();
               }
             });
           }
@@ -324,6 +324,8 @@ public class QuestionnaireTreePanel extends Panel {
           page.removeQuestion(question);
         }
       }
+      // TODO temporary
+      new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject())), elementWindow).saveToFiles();
       // remove node from jsTree
       target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
     }
@@ -353,7 +355,7 @@ public class QuestionnaireTreePanel extends Panel {
                 } else if(element instanceof Section) {
                   ((Section) element).addSection(section);
                 }
-                saveToXml();
+                saveToFiles();
                 target.addComponent(treeContainer);
               }
             });
@@ -375,7 +377,7 @@ public class QuestionnaireTreePanel extends Panel {
                 } else if(element instanceof Section) {
                   ((Section) element).addPage(page);
                 }
-                saveToXml();
+                saveToFiles();
                 target.addComponent(treeContainer);
               }
             });
@@ -400,8 +402,8 @@ public class QuestionnaireTreePanel extends Panel {
                 super.onSave(target, question);
                 ((Page) element).addQuestion(question);
                 // easier to reload tree than creating new node in JS
+                saveToFiles();
                 target.addComponent(treeContainer);
-                saveToXml();
               }
             });
           }

@@ -139,7 +139,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
     return mapLocaleProperties;
   }
 
-  protected void saveToXml() {
+  public void saveToFiles() {
     File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
     File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
 
