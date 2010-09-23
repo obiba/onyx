@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.form;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -119,7 +123,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
   }
 
   @SuppressWarnings("unchecked")
-  protected Map<Locale, Properties> getLocalePropertiesToMap() {
+  private Map<Locale, Properties> getLocalePropertiesToMap() {
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
     for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
@@ -133,6 +137,18 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
       mapLocaleProperties.put(localeProperties.getLocale(), properties);
     }
     return mapLocaleProperties;
+  }
+
+  protected void saveToXml() {
+    File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
+    File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
+
+    try {
+      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance((questionnaireParent != null ? questionnaireParent : (Questionnaire) getDefaultModelObject())), getLocalePropertiesToMap());
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public Form<T> getForm() {

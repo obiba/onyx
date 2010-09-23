@@ -845,7 +845,7 @@
   </scm>
 
   <properties>
-    <wicket.version>1.4.6</wicket.version>
+    <wicket.version>1.4.12</wicket.version>
 	<wiquery.version>1.0.1</wiquery.version>
     <spring.version>3.0.1.RELEASE</spring.version>
     <spring-batch.version>2.0.3.RELEASE</spring-batch.version>

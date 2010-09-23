@@ -244,6 +244,7 @@ public class QuestionnaireTreePanel extends Panel {
                 super.onSave(target, section);
                 // update node name in jsTree
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() + "');");
+                saveToXml();
               }
             });
           }
@@ -261,6 +262,7 @@ public class QuestionnaireTreePanel extends Panel {
                 super.onSave(target, page);
                 // update node name in jsTree
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
+                saveToXml();
               }
             });
           }
@@ -279,6 +281,7 @@ public class QuestionnaireTreePanel extends Panel {
                 super.onSave(target, question);
                 // update node name in jsTree
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
+                saveToXml();
               }
             });
           }
@@ -350,6 +353,7 @@ public class QuestionnaireTreePanel extends Panel {
                 } else if(element instanceof Section) {
                   ((Section) element).addSection(section);
                 }
+                saveToXml();
                 target.addComponent(treeContainer);
               }
             });
@@ -371,6 +375,7 @@ public class QuestionnaireTreePanel extends Panel {
                 } else if(element instanceof Section) {
                   ((Section) element).addPage(page);
                 }
+                saveToXml();
                 target.addComponent(treeContainer);
               }
             });
@@ -396,6 +401,7 @@ public class QuestionnaireTreePanel extends Panel {
                 ((Page) element).addQuestion(question);
                 // easier to reload tree than creating new node in JS
                 target.addComponent(treeContainer);
+                saveToXml();
               }
             });
           }

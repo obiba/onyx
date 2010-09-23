@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -30,8 +28,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
@@ -126,22 +122,11 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
   public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
     super.onSave(target, questionnaire);
 
-    try {
-      questionnaire.getLocales().clear();
-      for(Locale locale : listLocaleModel.getObject()) {
-        questionnaire.addLocale(locale);
-      }
-
-      log.info(questionnaire.getName() + " " + questionnaire.getVersion() + " " + questionnaire.getLocales().size());
-
-      // FIXME to have same working directory (for QuestionnaireCreator and QuestionnaireBundleManager)
-      File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
-      File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
-
-      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), getLocalePropertiesToMap());
-    } catch(IOException e) {
-      e.printStackTrace();
+    questionnaire.getLocales().clear();
+    for(Locale locale : listLocaleModel.getObject()) {
+      questionnaire.addLocale(locale);
     }
+    saveToXml();
   }
 
 }

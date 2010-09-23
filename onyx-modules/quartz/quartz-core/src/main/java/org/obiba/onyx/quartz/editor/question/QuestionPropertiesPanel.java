@@ -12,9 +12,6 @@ package org.obiba.onyx.quartz.editor.question;
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -198,8 +195,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     } else if(GRID_LAYOUT.equals(layoutSelection)) {
       question.addUIArgument(ROW_COUNT_KEY, Integer.toString(nbRowsField.getModelObject()));
     }
-
-    Map<Locale, Properties> localePropertiesToMap = getLocalePropertiesToMap();
 
     // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
     // "1.0").withSection("SECTION_1").withPage("PAGE_1");
