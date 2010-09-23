@@ -64,15 +64,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, Questionnaire questionnaireParent, final ModalWindow questionWindow) {
     super(id, model, questionnaireParent, questionWindow);
-
-    QuestionCategory questionCategory1 = new QuestionCategory();
-    questionCategory1.setCategory(new Category("Cat 1"));
-    form.getModelObject().addQuestionCategory(questionCategory1);
-
-    QuestionCategory questionCategory2 = new QuestionCategory();
-    questionCategory2.setCategory(new Category("Cat 2"));
-    form.getModelObject().addQuestionCategory(questionCategory2);
-
     createComponent(questionnaireParent);
   }
 

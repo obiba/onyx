@@ -283,6 +283,7 @@ public class QuestionnaireTreePanel extends Panel {
             });
           }
         });
+        elementWindow.show(target);
       }
     }
   }
