@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -96,7 +97,10 @@ public class QuestionnaireTreePanel extends Panel {
         return true;
       }
     });
-    add(elementWindow);
+
+    Form<Void> form = new Form<Void>("form");
+    form.add(elementWindow);
+    add(form);
 
     add(JavascriptPackageResource.getHeaderContribution(QuestionnaireTreePanel.class, "QuestionnaireTreePanel.js"));
 
@@ -238,7 +242,7 @@ public class QuestionnaireTreePanel extends Panel {
             super.onSave(target, section);
             // update node name in jsTree
             saveToFiles();
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
           }
         });
         // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
@@ -266,7 +270,7 @@ public class QuestionnaireTreePanel extends Panel {
             super.onSave(target, page);
             // update node name in jsTree
             saveToFiles();
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + page.getName() + "');");
           }
         });
         // elementWindow.setPageCreator(new ModalWindow.PageCreator() {

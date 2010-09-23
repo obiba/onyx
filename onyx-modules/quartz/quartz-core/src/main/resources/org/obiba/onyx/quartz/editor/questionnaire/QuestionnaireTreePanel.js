@@ -9,7 +9,6 @@ function buildQTree(id, options) {
 }
 
 Wicket.QTree.refreshTree = function(treeId) {
-	alert('refresh');
 	$("#" + treeId).jstree('refresh', -1);	
 }
 
