@@ -43,7 +43,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.editor.form.QuestionnaireElementWebPage;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
@@ -233,59 +232,87 @@ public class QuestionnaireTreePanel extends Panel {
       final IQuestionnaireElement element = elements.get(nodeId);
       if(element instanceof Section) {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-
+        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
-          public org.apache.wicket.Page createPage() {
-            return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-
-              @Override
-              public void onSave(AjaxRequestTarget target, Section section) {
-                super.onSave(target, section);
-                // update node name in jsTree
-                saveToFiles();
-                target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() + "');");
-              }
-            });
+          public void onSave(AjaxRequestTarget target, Section section) {
+            super.onSave(target, section);
+            // update node name in jsTree
+            saveToFiles();
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() + "');");
           }
         });
+        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+        // @Override
+        // public org.apache.wicket.Page createPage() {
+        // return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>((Section)
+        // element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        // @Override
+        // public void onSave(AjaxRequestTarget target, Section section) {
+        // super.onSave(target, section);
+        // // update node name in jsTree
+        // target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() +
+        // "');");
+        // saveToXml();
+        // }
+        // });
+        // }
+        // });
         elementWindow.show(target);
       } else if(element instanceof Page) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
-          public org.apache.wicket.Page createPage() {
-            return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>((Page) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-              @Override
-              public void onSave(AjaxRequestTarget target, Page page) {
-                super.onSave(target, page);
-                // update node name in jsTree
-                saveToFiles();
-                target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
-              }
-            });
+          public void onSave(AjaxRequestTarget target, Page page) {
+            super.onSave(target, page);
+            // update node name in jsTree
+            saveToFiles();
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
           }
         });
+        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+        // @Override
+        // public org.apache.wicket.Page createPage() {
+        // return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>((Page) element),
+        // ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        // @Override
+        // public void onSave(AjaxRequestTarget target, Page page) {
+        // super.onSave(target, page);
+        // // update node name in jsTree
+        // target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() +
+        // "');");
+        // saveToXml();
+        // }
+        // });
+        // }
+        // });
         elementWindow.show(target);
       } else if(element instanceof Question) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-
+        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
-          public org.apache.wicket.Page createPage() {
-
-            return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-              @Override
-              public void onSave(AjaxRequestTarget target, Question question) {
-                super.onSave(target, question);
-                // update node name in jsTree
-                saveToFiles();
-                target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
-              }
-            });
+          public void onSave(AjaxRequestTarget target, Question question) {
+            super.onSave(target, question);
+            // update node name in jsTree
+            saveToFiles();
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
           }
         });
+        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+        // @Override
+        // public org.apache.wicket.Page createPage() {
+        // return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>((Question)
+        // element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        // @Override
+        // public void onSave(AjaxRequestTarget target, Question question) {
+        // super.onSave(target, question);
+        // // update node name in jsTree
+        // target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" +
+        // question.getName() + "');");
+        // saveToXml();
+        // }
+        // });
+        // }
+        // });
         elementWindow.show(target);
       }
     }
@@ -342,72 +369,114 @@ public class QuestionnaireTreePanel extends Panel {
       final IQuestionnaireElement element = elements.get(nodeId);
       if((element instanceof Questionnaire || element instanceof Section) && "section".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-
+        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
-          public org.apache.wicket.Page createPage() {
-            return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-              @Override
-              public void onSave(AjaxRequestTarget target, Section section) {
-                super.onSave(target, section);
-                if(element instanceof Questionnaire) {
-                  ((Questionnaire) element).addSection(section);
-                } else if(element instanceof Section) {
-                  ((Section) element).addSection(section);
-                }
-                saveToFiles();
-                target.addComponent(treeContainer);
-              }
-            });
+          public void onSave(AjaxRequestTarget target, Section section) {
+            super.onSave(target, section);
+            if(element instanceof Questionnaire) {
+              ((Questionnaire) element).addSection(section);
+            } else if(element instanceof Section) {
+              ((Section) element).addSection(section);
+            }
+            saveToFiles();
+            target.addComponent(treeContainer);
           }
         });
+        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+        // @Override
+        // public org.apache.wicket.Page createPage() {
+        // return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>(new
+        // Section(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        // @Override
+        // public void onSave(AjaxRequestTarget target, Section section) {
+        // super.onSave(target, section);
+        // if(element instanceof Questionnaire) {
+        // ((Questionnaire) element).addSection(section);
+        // } else if(element instanceof Section) {
+        // ((Section) element).addSection(section);
+        // }
+        // saveToXml();
+        // target.addComponent(treeContainer);
+        // }
+        // });
+        // }
+        // });
         elementWindow.show(target);
       } else if((element instanceof Questionnaire || element instanceof Section) && "page".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
-          public org.apache.wicket.Page createPage() {
-            return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-              @Override
-              public void onSave(AjaxRequestTarget target, Page page) {
-                super.onSave(target, page);
-                if(element instanceof Questionnaire) {
-                  ((Questionnaire) element).addPage(page);
-                } else if(element instanceof Section) {
-                  ((Section) element).addPage(page);
-                }
-                saveToFiles();
-                target.addComponent(treeContainer);
-              }
-            });
+          public void onSave(AjaxRequestTarget target, Page page) {
+            super.onSave(target, page);
+            if(element instanceof Questionnaire) {
+              ((Questionnaire) element).addPage(page);
+            } else if(element instanceof Section) {
+              ((Section) element).addPage(page);
+            }
+            saveToFiles();
+            target.addComponent(treeContainer);
           }
         });
+        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+        // @Override
+        // public org.apache.wicket.Page createPage() {
+        // return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>(new Page(null)),
+        // ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        // @Override
+        // public void onSave(AjaxRequestTarget target, Page page) {
+        // super.onSave(target, page);
+        // if(element instanceof Questionnaire) {
+        // ((Questionnaire) element).addPage(page);
+        // } else if(element instanceof Section) {
+        // ((Section) element).addPage(page);
+        // }
+        // saveToXml();
+        // target.addComponent(treeContainer);
+        // }
+        // });
+        // }
+        // });
         elementWindow.show(target);
       } else if(element instanceof Page && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setPageCreator(new ModalWindow.PageCreator() {
 
+        Question newQuestion = new Question(null);
+        List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+        for(Locale locale : ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getLocales()) {
+          listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
+        }
+        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
-          public org.apache.wicket.Page createPage() {
-            Question newQuestion = new Question(null);
-            List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-            for(Locale locale : ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getLocales()) {
-              listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
-            }
-            return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-
-              @Override
-              public void onSave(AjaxRequestTarget target, Question question) {
-                super.onSave(target, question);
-                ((Page) element).addQuestion(question);
-                // easier to reload tree than creating new node in JS
-                saveToFiles();
-                target.addComponent(treeContainer);
-              }
-            });
+          public void onSave(AjaxRequestTarget target, Question question) {
+            super.onSave(target, question);
+            ((Page) element).addQuestion(question);
+            // easier to reload tree than creating new node in JS
+            saveToFiles();
+            target.addComponent(treeContainer);
           }
         });
+        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
+        // @Override
+        // public org.apache.wicket.Page createPage() {
+        // Question newQuestion = new Question(null);
+        // List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+        // for(Locale locale : ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getLocales()) {
+        // listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
+        // }
+        // return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new
+        // Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()),
+        // elementWindow) {
+        // @Override
+        // public void onSave(AjaxRequestTarget target, Question question) {
+        // super.onSave(target, question);
+        // ((Page) element).addQuestion(question);
+        // // easier to reload tree than creating new node in JS
+        // target.addComponent(treeContainer);
+        // saveToXml();
+        // }
+        // });
+        // }
+        // });
         elementWindow.show(target);
       }
     }

@@ -28,7 +28,6 @@ public class JsTreeBehavior extends AbstractDefaultAjaxBehavior {
   @Override
   public void renderHead(IHeaderResponse response) {
     super.renderHead(response);
-    response.renderJavascriptReference(new CompressedResourceReference(JsTreeBehavior.class, "jquery.js"));
     response.renderJavascriptReference(new CompressedResourceReference(JsTreeBehavior.class, "jquery.jstree.js"));
   }
 

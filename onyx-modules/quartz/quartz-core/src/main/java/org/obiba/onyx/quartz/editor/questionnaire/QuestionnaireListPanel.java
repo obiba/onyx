@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.wicket.Page;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -174,12 +173,7 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           layoutWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          layoutWindow.setPageCreator(new ModalWindow.PageCreator() {
-            @Override
-            public Page createPage() {
-              return new QuestionnaireLayoutPage(rowModel);
-            }
-          });
+          layoutWindow.setContent(new QuestionnaireTreePanel("content", rowModel));
           layoutWindow.show(target);
         }
       });
