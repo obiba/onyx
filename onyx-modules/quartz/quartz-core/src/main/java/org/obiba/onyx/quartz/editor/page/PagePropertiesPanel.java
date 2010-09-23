@@ -13,7 +13,6 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
@@ -31,7 +30,6 @@ public class PagePropertiesPanel extends AbstractQuestionnaireElementPanelForm<P
   public void createComponent() {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(super.getDefaultModel(), "name"), String.class);
     name.add(new RequiredFormFieldBehavior());
-    name.add(new StringValidator.MaximumLengthValidator(20));
     form.add(name);
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));

@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -140,7 +141,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, propertyKeyProvider, fos = new FileOutputStream(new File(bundleVersionDir, LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION)));
+      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, propertyKeyProvider, fos = new FileOutputStream(new File(bundleVersionDir, getPath(locale))));
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
@@ -155,8 +156,25 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   }
 
   @Override
+  public void updateLanguage(Locale locale, Properties language) {
+    try {
+      Properties loadedProperties = new Properties();
+      File file = new File(bundleVersionDir, getPath(locale));
+      if(file.exists()) loadedProperties.load(new FileInputStream(file));
+      loadedProperties.putAll(language);
+      setLanguage(locale, loadedProperties);
+    } catch(Exception ex) {
+      log.error("Failed to update language file", ex);
+    }
+  }
+
+  private String getPath(Locale locale) {
+    return LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION;
+  }
+
+  @Override
   public void deleteLanguage(Locale locale) {
-    if(!new File(bundleVersionDir, LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION).delete()) {
+    if(!new File(bundleVersionDir, getPath(locale)).delete()) {
       log.error("Failed to delete language file");
     }
   }

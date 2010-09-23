@@ -12,11 +12,7 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -36,12 +32,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.slf4j.Logger;
@@ -60,8 +53,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
 
   private ListModel<Locale> listLocaleModel;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
-
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
     super(id, model, model.getObject(), modalWindow);
     createComponent();
@@ -71,7 +62,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
     // -------------------- Name --------------------
     TextField<String> nameTextField = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     nameTextField.add(new RequiredFormFieldBehavior());
-    nameTextField.add(new StringValidator.MaximumLengthValidator(100));
     nameTextField.add(new AbstractValidator<String>() {
 
       private static final long serialVersionUID = 1L;
@@ -102,19 +92,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
     versionTextField.add(new StringValidator.MaximumLengthValidator(20));
 
     // -------------------- Locales and Locales labels --------------------
-
-    List<LocaleProperties> list = new ArrayList<LocaleProperties>();
-    for(Locale locale : form.getModelObject().getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, form.getModelObject());
-      List<String> values = new ArrayList<String>();
-      for(String property : localeProperties.getKeys()) {
-        QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(form.getModelObject().getName());
-        values.add(QuestionnaireStringResourceModelHelper.getMessage(bundle, form.getModelObject(), property, new Object[0], locale));
-      }
-      localeProperties.setValues(values.toArray(new String[0]));
-      list.add(localeProperties);
-    }
-    localePropertiesModel = new ListModel<LocaleProperties>(list);
 
     listLocaleModel = new ListModel<Locale>(new ArrayList<Locale>(form.getModelObject().getLocales()));
 
@@ -156,31 +133,15 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
       }
 
       log.info(questionnaire.getName() + " " + questionnaire.getVersion() + " " + questionnaire.getLocales().size());
-      Map<Locale, Properties> extractedLocaleProperties = extractLocalePropertiesToMap(questionnaire);
 
       // FIXME to have same working directory (for QuestionnaireCreator and QuestionnaireBundleManager)
       File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
       File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
 
-      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), extractedLocaleProperties);
+      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), getLocalePropertiesToMap());
     } catch(IOException e) {
       e.printStackTrace();
     }
   }
 
-  private Map<Locale, Properties> extractLocalePropertiesToMap(Questionnaire affectedQuestionnaire) {
-    DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
-    Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
-    for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
-      Properties properties = new Properties();
-      for(int i = 0; i < localeProperties.getKeys().length; i++) {
-        String key = localeProperties.getKeys()[i];
-        String value = localeProperties.getValues()[i];
-        String keyWithNamingStrategy = defaultPropertyKeyProviderImpl.getPropertyKey(affectedQuestionnaire, key);
-        properties.setProperty(keyWithNamingStrategy, value != null ? value : "");
-      }
-      mapLocaleProperties.put(localeProperties.getLocale(), properties);
-    }
-    return mapLocaleProperties;
-  }
 }

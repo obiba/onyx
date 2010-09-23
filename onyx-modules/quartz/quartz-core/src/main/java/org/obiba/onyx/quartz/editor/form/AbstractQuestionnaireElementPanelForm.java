@@ -10,8 +10,11 @@
 package org.obiba.onyx.quartz.editor.form;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -27,6 +30,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -46,6 +50,8 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
   protected Form<T> form;
 
   protected ListModel<LocaleProperties> localePropertiesModel;
+
+  protected Questionnaire questionnaireParent;
 
   public AbstractQuestionnaireElementPanelForm(String id, IModel<T> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model);
@@ -68,6 +74,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
       }
     }
     localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    this.questionnaireParent = questionnaireParent;
     this.modalWindow = modalWindow;
 
     feedbackPanel = new FeedbackPanel("content");
@@ -111,8 +118,29 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
 
   }
 
+  @SuppressWarnings("unchecked")
+  protected Map<Locale, Properties> getLocalePropertiesToMap() {
+    DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
+    Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
+    for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
+      Properties properties = new Properties();
+      for(int i = 0; i < localeProperties.getKeys().length; i++) {
+        String key = localeProperties.getKeys()[i];
+        String value = localeProperties.getValues()[i];
+        String keyWithNamingStrategy = defaultPropertyKeyProviderImpl.getPropertyKey((T) getDefaultModelObject(), key);
+        properties.setProperty(keyWithNamingStrategy, value != null ? value : "");
+      }
+      mapLocaleProperties.put(localeProperties.getLocale(), properties);
+    }
+    return mapLocaleProperties;
+  }
+
   public Form<T> getForm() {
     return form;
+  }
+
+  public Questionnaire getQuestionnaireParent() {
+    return questionnaireParent;
   }
 
 }

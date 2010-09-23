@@ -12,6 +12,9 @@ package org.obiba.onyx.quartz.editor.question;
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -64,10 +67,10 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, Questionnaire questionnaireParent, final ModalWindow questionWindow) {
     super(id, model, questionnaireParent, questionWindow);
-    createComponent(questionnaireParent);
+    createComponent();
   }
 
-  public void createComponent(final Questionnaire questionnaireParent) {
+  public void createComponent() {
 
     // TODO for test only
 
@@ -80,7 +83,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
-    name.add(new StringValidator.MaximumLengthValidator(20));
     form.add(name);
 
     TextField<String> variableName = new TextField<String>("variableName", new PropertyModel<String>(form.getModel(), "variableName"));
@@ -129,7 +131,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
       @Override
       public void addItem(AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), questionnaireParent, categoryWindow) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), getQuestionnaireParent(), categoryWindow) {
 
           @Override
           public void onSave(AjaxRequestTarget target, Category category) {
@@ -147,7 +149,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), questionnaireParent, categoryWindow) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), getQuestionnaireParent(), categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Category category) {
             super.onSave(target, category);
@@ -197,7 +199,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
       question.addUIArgument(ROW_COUNT_KEY, Integer.toString(nbRowsField.getModelObject()));
     }
 
-    log.info("name: " + question.getName() + ", varName: " + question.getVariableName() + ", multiple: " + question.isMultiple());
+    Map<Locale, Properties> localePropertiesToMap = getLocalePropertiesToMap();
 
     // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
     // "1.0").withSection("SECTION_1").withPage("PAGE_1");

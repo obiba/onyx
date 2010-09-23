@@ -113,4 +113,11 @@ public interface QuestionnaireBundle {
    * @param locale
    */
   void deleteLanguage(Locale locale);
+
+  /**
+   * Put language in language loaded from file
+   * @param locale
+   * @param language
+   */
+  void updateLanguage(Locale locale, Properties language);
 }
