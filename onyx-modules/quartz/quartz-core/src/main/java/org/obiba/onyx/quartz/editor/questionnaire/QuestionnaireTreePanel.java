@@ -248,6 +248,7 @@ public class QuestionnaireTreePanel extends Panel {
             });
           }
         });
+        elementWindow.show(target);
       } else if(element instanceof Page) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
         elementWindow.setPageCreator(new ModalWindow.PageCreator() {
@@ -262,9 +263,9 @@ public class QuestionnaireTreePanel extends Panel {
                 target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() + "');");
               }
             });
-
           }
         });
+        elementWindow.show(target);
       } else if(element instanceof Question) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
         elementWindow.setPageCreator(new ModalWindow.PageCreator() {
@@ -283,7 +284,6 @@ public class QuestionnaireTreePanel extends Panel {
           }
         });
       }
-      elementWindow.show(target);
     }
   }
 
@@ -354,6 +354,7 @@ public class QuestionnaireTreePanel extends Panel {
             });
           }
         });
+        elementWindow.show(target);
       } else if((element instanceof Questionnaire || element instanceof Section) && "page".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
         elementWindow.setPageCreator(new ModalWindow.PageCreator() {
@@ -374,6 +375,7 @@ public class QuestionnaireTreePanel extends Panel {
             });
           }
         });
+        elementWindow.show(target);
       } else if(element instanceof Page && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
         elementWindow.setPageCreator(new ModalWindow.PageCreator() {
@@ -397,8 +399,8 @@ public class QuestionnaireTreePanel extends Panel {
             });
           }
         });
+        elementWindow.show(target);
       }
-      elementWindow.show(target);
     }
   }
 

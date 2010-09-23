@@ -29,6 +29,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
@@ -39,7 +40,6 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
-    modalWindow.setInitialWidth(500);
     createComponent();
   }
 
@@ -48,6 +48,8 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));
     form.add(name);
+
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
 
     form.add(new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>()));
 

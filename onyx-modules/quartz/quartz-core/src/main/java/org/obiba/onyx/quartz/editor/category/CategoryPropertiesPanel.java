@@ -21,6 +21,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @SuppressWarnings("serial")
@@ -30,7 +31,6 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public CategoryPropertiesPanel(String id, Model<Category> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
-    modalWindow.setInitialWidth(500);
     createComponent();
   }
 
@@ -39,6 +39,8 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     name.add(new RequiredFormFieldBehavior());
     name.add(new StringValidator.MaximumLengthValidator(20));
     form.add(name);
+
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
 
     form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "escape")));
     form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "noAnswer")));

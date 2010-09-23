@@ -64,7 +64,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, Questionnaire questionnaireParent, final ModalWindow questionWindow) {
     super(id, model, questionnaireParent, questionWindow);
-    modalWindow.setInitialWidth(700);
 
     QuestionCategory questionCategory1 = new QuestionCategory();
     questionCategory1.setCategory(new Category("Cat 1"));

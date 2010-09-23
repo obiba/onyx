@@ -25,7 +25,6 @@ public class SectionPropertiesPanel extends AbstractQuestionnaireElementPanelFor
 
   public SectionPropertiesPanel(String id, IModel<Section> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
-    modalWindow.setInitialWidth(300);
     createComponent();
   }
 
