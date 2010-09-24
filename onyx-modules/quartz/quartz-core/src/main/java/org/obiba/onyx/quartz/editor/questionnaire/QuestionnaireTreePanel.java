@@ -183,6 +183,7 @@ public class QuestionnaireTreePanel extends Panel {
       IQuestionnaireElement element = elements.get(nodeId);
       // IQuestionnaireElement previousParent = elements.get(previousParentId);
       IQuestionnaireElement newParent = elements.get(newParentId);
+      Questionnaire questionnaire = (Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
       if(element instanceof Section) {
         Section section = (Section) element;
         if(newParent instanceof Questionnaire) {
@@ -191,38 +192,43 @@ public class QuestionnaireTreePanel extends Panel {
           } else {
             section.getParentSection().removeSection(section);
           }
-          ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).addSection(section, position);
-
+          int sectionSize = questionnaire.getSections().size();
+          questionnaire.addSection(section, position > sectionSize ? sectionSize : position);
         } else if(newParent instanceof Section) {
           if(section.getParentSection() == null) {
-            ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removeSection(section);
+            questionnaire.removeSection(section);
           } else {
             section.getParentSection().removeSection(section);
           }
-          ((Section) newParent).addSection(section, position);
+          int sectionSize = questionnaire.getSections().size();
+          ((Section) newParent).addSection(section, position > sectionSize ? sectionSize : position);
         }
       } else if(element instanceof Page) {
         Page page = (Page) element;
+
         if(newParent instanceof Questionnaire) {
           if(page.getSection() == null) {
             ((Questionnaire) newParent).removePage(page);
           } else {
             page.getSection().removePage(page);
           }
-          ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).addPage(page, position);
+          int pagesSize = questionnaire.getPages().size();
+          questionnaire.addPage(page, position > pagesSize ? pagesSize : position);
 
         } else if(newParent instanceof Section) {
           if(page.getSection() == null) {
-            ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).removePage(page);
+            questionnaire.removePage(page);
           } else {
             page.getSection().removePage(page);
           }
-          ((Section) newParent).addPage(page, position);
+          int pagesSize = questionnaire.getPages().size();
+          ((Section) newParent).addPage(page, position > pagesSize ? pagesSize : position);
         }
       } else if(element instanceof Question) {
         Question question = (Question) element;
         question.getPage().removeQuestion(question);
-        ((Page) newParent).addQuestion(question, position);
+        Page page = (Page) newParent;
+        page.addQuestion(question, position > page.getQuestions().size() ? page.getQuestions().size() : position);
       }
     }
   }
@@ -234,33 +240,30 @@ public class QuestionnaireTreePanel extends Panel {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Edit " + nodeId);
       final IQuestionnaireElement element = elements.get(nodeId);
+      if(element instanceof Questionnaire) {
+        elementWindow.setTitle(new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null));
+        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>((Questionnaire) element), elementWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
+            super.onSave(target, questionnaire);
+            saveToFiles();
+            // update node name in jsTree
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + questionnaire.getName() + "');");
+          }
+        });
+        elementWindow.show(target);
+      }
       if(element instanceof Section) {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
             super.onSave(target, section);
-            // update node name in jsTree
             saveToFiles();
+            // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
           }
         });
-        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-        // @Override
-        // public org.apache.wicket.Page createPage() {
-        // return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>((Section)
-        // element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target, Section section) {
-        // super.onSave(target, section);
-        // // update node name in jsTree
-        // target.appendJavascript("$('#" + treeId + "').jstree('rename_node'," + nodeId + ", '" + section.getName() +
-        // "');");
-        // saveToXml();
-        // }
-        // });
-        // }
-        // });
         elementWindow.show(target);
       } else if(element instanceof Page) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
@@ -268,27 +271,11 @@ public class QuestionnaireTreePanel extends Panel {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
             super.onSave(target, page);
-            // update node name in jsTree
             saveToFiles();
+            // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + page.getName() + "');");
           }
         });
-        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-        // @Override
-        // public org.apache.wicket.Page createPage() {
-        // return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>((Page) element),
-        // ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target, Page page) {
-        // super.onSave(target, page);
-        // // update node name in jsTree
-        // target.appendJavascript("$('#" + treeId + "').jstree('rename_node', #" + nodeId + ", '" + page.getName() +
-        // "');");
-        // saveToXml();
-        // }
-        // });
-        // }
-        // });
         elementWindow.show(target);
       } else if(element instanceof Question) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
@@ -296,27 +283,11 @@ public class QuestionnaireTreePanel extends Panel {
           @Override
           public void onSave(AjaxRequestTarget target, Question question) {
             super.onSave(target, question);
-            // update node name in jsTree
             saveToFiles();
+            // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
           }
         });
-        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-        // @Override
-        // public org.apache.wicket.Page createPage() {
-        // return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new Model<Question>((Question)
-        // element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target, Question question) {
-        // super.onSave(target, question);
-        // // update node name in jsTree
-        // target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" +
-        // question.getName() + "');");
-        // saveToXml();
-        // }
-        // });
-        // }
-        // });
         elementWindow.show(target);
       }
     }
@@ -386,25 +357,6 @@ public class QuestionnaireTreePanel extends Panel {
             target.addComponent(treeContainer);
           }
         });
-        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-        // @Override
-        // public org.apache.wicket.Page createPage() {
-        // return new QuestionnaireElementWebPage(new SectionPropertiesPanel("content", new Model<Section>(new
-        // Section(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target, Section section) {
-        // super.onSave(target, section);
-        // if(element instanceof Questionnaire) {
-        // ((Questionnaire) element).addSection(section);
-        // } else if(element instanceof Section) {
-        // ((Section) element).addSection(section);
-        // }
-        // saveToXml();
-        // target.addComponent(treeContainer);
-        // }
-        // });
-        // }
-        // });
         elementWindow.show(target);
       } else if((element instanceof Questionnaire || element instanceof Section) && "page".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
@@ -421,25 +373,6 @@ public class QuestionnaireTreePanel extends Panel {
             target.addComponent(treeContainer);
           }
         });
-        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-        // @Override
-        // public org.apache.wicket.Page createPage() {
-        // return new QuestionnaireElementWebPage(new PagePropertiesPanel("content", new Model<Page>(new Page(null)),
-        // ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target, Page page) {
-        // super.onSave(target, page);
-        // if(element instanceof Questionnaire) {
-        // ((Questionnaire) element).addPage(page);
-        // } else if(element instanceof Section) {
-        // ((Section) element).addPage(page);
-        // }
-        // saveToXml();
-        // target.addComponent(treeContainer);
-        // }
-        // });
-        // }
-        // });
         elementWindow.show(target);
       } else if(element instanceof Page && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
@@ -454,33 +387,10 @@ public class QuestionnaireTreePanel extends Panel {
           public void onSave(AjaxRequestTarget target, Question question) {
             super.onSave(target, question);
             ((Page) element).addQuestion(question);
-            // easier to reload tree than creating new node in JS
             saveToFiles();
             target.addComponent(treeContainer);
           }
         });
-        // elementWindow.setPageCreator(new ModalWindow.PageCreator() {
-        // @Override
-        // public org.apache.wicket.Page createPage() {
-        // Question newQuestion = new Question(null);
-        // List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-        // for(Locale locale : ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getLocales()) {
-        // listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
-        // }
-        // return new QuestionnaireElementWebPage(new QuestionPropertiesPanel("content", new
-        // Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()),
-        // elementWindow) {
-        // @Override
-        // public void onSave(AjaxRequestTarget target, Question question) {
-        // super.onSave(target, question);
-        // ((Page) element).addQuestion(question);
-        // // easier to reload tree than creating new node in JS
-        // target.addComponent(treeContainer);
-        // saveToXml();
-        // }
-        // });
-        // }
-        // });
         elementWindow.show(target);
       }
     }
@@ -490,6 +400,56 @@ public class QuestionnaireTreePanel extends Panel {
     String id = ID_PREFIX + elementCounter++;
     elements.put(id, element);
     return id;
+  }
+
+  public class QVisitor implements org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor {
+
+    private List<IQuestionnaireElement> children;
+
+    public QVisitor(List<IQuestionnaireElement> children) {
+      this.children = children;
+    }
+
+    @Override
+    public void visit(Questionnaire questionnaire) {
+      children.addAll(questionnaire.getSections());
+    }
+
+    @Override
+    public void visit(Section section) {
+      children.addAll(section.getSections());
+      children.addAll(section.getPages());
+    }
+
+    @Override
+    public void visit(Page page) {
+      children.addAll(page.getQuestions());
+    }
+
+    @Override
+    public void visit(Question question) {
+      children.addAll(question.getQuestionCategories());
+    }
+
+    @Override
+    public void visit(QuestionCategory questionCategory) {
+      // done by category
+    }
+
+    @Override
+    public void visit(Category category) {
+      children.add(category);
+    }
+
+    @Override
+    public void visit(OpenAnswerDefinition openAnswerDefinition) {
+      children.add(openAnswerDefinition);
+    }
+
+    public List<IQuestionnaireElement> getChildren() {
+      return children;
+    }
+
   }
 
   public class ListFragment extends Fragment {
@@ -504,39 +464,29 @@ public class QuestionnaireTreePanel extends Panel {
 
           IQuestionnaireElement element = item.getModelObject();
           item.add(new Label("itemTitle", element.getName()));
+          QVisitor questionnaireVisitor = new QVisitor(new ArrayList<IQuestionnaireElement>());
 
-          List<IQuestionnaireElement> children = new ArrayList<IQuestionnaireElement>();
-          if(element instanceof Questionnaire) {
-            Questionnaire questionnaire = (Questionnaire) element;
-            children.addAll(questionnaire.getSections());
-            children.addAll(questionnaire.getPages());
-          } else if(element instanceof Section) {
-            children.addAll(((Section) element).getPages());
-          } else if(element instanceof Page) {
-            children.addAll(((Page) element).getQuestions());
-          } else if(element instanceof Question) {
-            children.addAll(((Question) element).getQuestionCategories());
+          if(element instanceof Questionnaire || element instanceof Section || element instanceof Page || element instanceof Question) {
+            element.accept(questionnaireVisitor);
           } else if(element instanceof QuestionCategory) {
             QuestionCategory questionCategory = (QuestionCategory) element;
             Category category = questionCategory.getCategory();
-            if(category != null) children.add(category);
+            if(category != null) category.accept(questionnaireVisitor);
             OpenAnswerDefinition openAnswerDefinition = questionCategory.getOpenAnswerDefinition();
-            if(openAnswerDefinition != null) children.add(openAnswerDefinition);
+            if(openAnswerDefinition != null) openAnswerDefinition.accept(questionnaireVisitor);
           }
 
           item.add(new SimpleAttributeModifier("id", addElement(element)));
           item.add(new SimpleAttributeModifier("name", element.getName()));
-          item.add(new AttributeAppender("class", new Model<String>(children.isEmpty() ? "jstree-leaf" : "jstree-open"), " "));
+          item.add(new AttributeAppender("class", new Model<String>(questionnaireVisitor.getChildren().isEmpty() ? "jstree-leaf" : "jstree-open"), " "));
           item.add(new AttributeAppender("rel", new Model<String>(ClassUtils.getShortClassName(element.getClass())), " "));
-          if(children.isEmpty()) {
+          if(questionnaireVisitor.getChildren().isEmpty()) {
             item.add(new WebMarkupContainer("children"));
           } else {
-            item.add(new ListFragment("children", children));
+            item.add(new ListFragment("children", questionnaireVisitor.getChildren()));
           }
         }
       });
-
     }
   }
-
 }

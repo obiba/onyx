@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
@@ -89,7 +90,16 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     form.add(new CheckBox("multiple", new PropertyModel<Boolean>(form.getModel(), "multiple")));
 
     // radio group without default selection
-    layoutRadioGroup = new RadioGroup<String>("layoutRadioGroup", new Model<String>());
+    ValueMap uiArgumentsValueMap = form.getModelObject().getUIArgumentsValueMap();
+
+    String layoutRadioGroupString = null;
+    Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
+    if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(ROW_COUNT_KEY)) {
+      layoutRadioGroupString = Integer.parseInt((String) uiArgumentsValueMap.get(ROW_COUNT_KEY)) == form.getModelObject().getCategories().size() ? SINGLE_COLUMN_LAYOUT : GRID_LAYOUT;
+      nbRows = uiArgumentsValueMap.getInt(ROW_COUNT_KEY);
+    }
+
+    layoutRadioGroup = new RadioGroup<String>("layoutRadioGroup", uiArgumentsValueMap == null ? new Model<String>() : new Model<String>(layoutRadioGroupString));
     form.add(layoutRadioGroup);
 
     Radio<String> singleColumnLayout = new Radio<String>(SINGLE_COLUMN_LAYOUT, new Model<String>(SINGLE_COLUMN_LAYOUT));
@@ -102,12 +112,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     layoutRadioGroup.add(gridLayout);
     layoutRadioGroup.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
 
-    Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
-    ValueMap uiArguments = form.getModelObject().getUIArgumentsValueMap();
-    if(uiArguments != null && uiArguments.containsKey(ROW_COUNT_KEY)) {
-      nbRows = uiArguments.getInt(ROW_COUNT_KEY);
-    }
-    form.add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows)));
+    form.add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows), Integer.class));
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
 
@@ -162,7 +167,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
         refreshList(target);
       }
     };
-    form.add(categoryList);
+    form.add(new WebMarkupContainer("categoryList"));
 
     form.add(new Link<Void>("previewLink") {
 
@@ -191,9 +196,11 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
     // Make sure that the categories are added before this...
     String layoutSelection = layoutRadioGroup.getModelObject();
     if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-      question.addUIArgument(ROW_COUNT_KEY, Integer.toString(question.getCategories().size()));
+      question.clearUIArguments();
+      question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
     } else if(GRID_LAYOUT.equals(layoutSelection)) {
-      question.addUIArgument(ROW_COUNT_KEY, Integer.toString(nbRowsField.getModelObject()));
+      question.clearUIArguments();
+      question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
     }
 
     // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",

@@ -169,6 +169,10 @@ public class Question implements Serializable, IQuestionnaireElement {
     return map;
   }
 
+  public void clearUIArguments() {
+    if(uIArguments != null) uIArguments.clear();
+  }
+
   public void addUIArgument(String key, String value) {
     if(uIArguments == null) {
       uIArguments = new ArrayList<String[]>();
