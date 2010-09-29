@@ -23,7 +23,6 @@ import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -69,8 +68,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
   }
 
   public void createComponent() {
-
-    // TODO for test only
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
@@ -168,24 +165,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
       }
     };
     form.add(new WebMarkupContainer("categoryList"));
-
-    form.add(new Link<Void>("previewLink") {
-
-      @Override
-      public void onClick() {
-        Question q = getForm().getModelObject();
-        log.info("name: " + q.getName() + ", varName: " + q.getVariableName() + ", multiple: " + q.isMultiple());
-        //
-        // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
-        // "1.0").withSection("SECTION_1").withPage("PAGE_1");
-        // QuestionBuilder qBuilder = pBuilder.withQuestion(q.getName(), "1", q.isMultiple()); //
-        //
-        // SingleDocumentQuestionnairePage preview = new SingleDocumentQuestionnairePage(new
-        // Model(qBuilder.getQuestionnaire()));
-        // setResponsePage(preview);
-      }
-    });
-
   }
 
   @Override
@@ -202,45 +181,5 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
       question.clearUIArguments();
       question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
     }
-
-    // PageBuilder pBuilder = QuestionnaireBuilder.createQuestionnaire("TEST",
-    // "1.0").withSection("SECTION_1").withPage("PAGE_1");
-    // QuestionBuilder qBuilder = pBuilder.withQuestion(question.getName(), "1", question.isMultiple()); //
-    // PropertiesPropertyKeyWriterImpl
-    //
-    // SingleDocumentQuestionnairePage preview = new SingleDocumentQuestionnairePage(new
-    // Model(qBuilder.getQuestionnaire()));
-    // modalWindow.getId()
-    // modalWindow.getCsetContent(preview);
-    // modalWindow.repreview.setVisible(true);
-    //
-    // PopupSettings popupSettings = new PopupSettings(PageMap.forName("popuppagemap")).setHeight(
-    // 500).setWidth(500);
-    // BookmarkablePageLink link = new BookmarkablePageLink("popupLink",
-    // Popup.class).setPopupSettings(popupSettings))
-    // DefaultQuestionPanel qPanel = new DefaultQuestionPanel("1", new Model(qBuilder.getElement()));
-    //
-    // ModalWindow modal = new Window("modalWindow");
-    // modal.setCssClassName("onyx");
-    // modal.setInitialWidth(500);
-    // modal.setInitialHeight(300);
-    // modal.setResizable(true);
-    // modal.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-    // @Override
-    // public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-    // return true; // same as cancel
-    // }
-    // });
-    // modal.setContent(preview.render());
-    // modal.show(target);
-
-    // QuestionnaireRenderer qBuilder.getElement();
-    // propWriter = new
-    // PropertiesPropertyKeyWriterImpl();
-    // propWriter.write(key, "");
-
-    // TODO process this question
-    // DefaultPropertyKeyProviderImpl
-    // modalWindow.close(target);
   }
 }

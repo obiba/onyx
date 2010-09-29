@@ -33,7 +33,7 @@ public class LocaleProperties implements IClusterable {
     this.locale = locale;
     List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaireElement);
     values = new String[listSourceKeys.size()];
-    keys = listSourceKeys.toArray(new String[0]);
+    keys = listSourceKeys.toArray(new String[listSourceKeys.size()]);
   }
 
   public Locale getLocale() {

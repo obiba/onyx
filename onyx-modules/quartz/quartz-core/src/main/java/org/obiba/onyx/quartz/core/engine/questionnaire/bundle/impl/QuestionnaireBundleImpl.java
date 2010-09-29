@@ -113,6 +113,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
   @Override
   public void clearMessageSourceCache() {
+    // FIXME bad to do this ?
     ((ReloadableResourceBundleMessageSource) messageSource).clearCache();
   }
 
