@@ -177,6 +177,13 @@ public class QuestionnaireListPanel extends Panel {
           layoutWindow.show(target);
         }
       });
+      add(new AjaxLink<Questionnaire>("previewLink", rowModel) {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          layoutWindow.setContent(new Panel("content")/* mettre panel de previw a la place */);
+          layoutWindow.show(target);
+        }
+      });
     }
   }
 }

@@ -66,6 +66,11 @@ public class QuestionnaireStringResourceModelHelper {
     return stringResource;
   }
 
+  public static String getNonRecursiveMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable, String property, Object[] stringArgs, Locale locale) {
+    String propertyKey = bundle.getPropertyKey(localizable, property);
+    return bundle.getMessageSource().getMessage(propertyKey, stringArgs, locale);
+  }
+
   private static String extractKeyFromReference(String stringReference) {
     return stringReference.substring(StringReferenceCompatibleMessageFormat.STRING_REFERENCE_PREFIX.length(), stringReference.length() - StringReferenceCompatibleMessageFormat.STRING_REFERENCE_SUFFIX.length());
   }

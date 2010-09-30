@@ -35,6 +35,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -44,9 +45,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
+import org.obiba.onyx.quartz.editor.questionCategory.QuestionCategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.slf4j.Logger;
@@ -234,6 +237,7 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   @SuppressWarnings("hiding")
+  // TODO refactoring
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
     @Override
     protected void respond(final AjaxRequestTarget target) {
@@ -241,7 +245,7 @@ public class QuestionnaireTreePanel extends Panel {
       log.info("Edit " + nodeId);
       final IQuestionnaireElement element = elements.get(nodeId);
       if(element instanceof Questionnaire) {
-        elementWindow.setTitle(new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null));
+        elementWindow.setTitle(new ResourceModel("Questionnaire"));
         elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>((Questionnaire) element), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
@@ -254,7 +258,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(target);
       }
       if(element instanceof Section) {
-        elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
+        elementWindow.setTitle(new ResourceModel("Section"));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
@@ -266,7 +270,7 @@ public class QuestionnaireTreePanel extends Panel {
         });
         elementWindow.show(target);
       } else if(element instanceof Page) {
-        elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
+        elementWindow.setTitle(new ResourceModel("Page"));
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
@@ -278,7 +282,7 @@ public class QuestionnaireTreePanel extends Panel {
         });
         elementWindow.show(target);
       } else if(element instanceof Question) {
-        elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
+        elementWindow.setTitle(new ResourceModel("Question"));
         elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Question question) {
@@ -286,6 +290,32 @@ public class QuestionnaireTreePanel extends Panel {
             saveToFiles();
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
+          }
+        });
+        elementWindow.show(target);
+      } else if(element instanceof QuestionCategory) {
+        elementWindow.setTitle(new ResourceModel("QuestionCategory"));
+        elementWindow.setContent(new QuestionCategoryPropertiesPanel("content", new Model<QuestionCategory>((QuestionCategory) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target, QuestionCategory questionCategory) {
+            super.onSave(target, questionCategory);
+            saveToFiles();
+            // update node name in jsTree
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + questionCategory.getName() + "');");
+          }
+        });
+        elementWindow.show(target);
+      }
+
+      else if(element instanceof Category) {
+        elementWindow.setTitle(new StringResourceModel("Category", QuestionnaireTreePanel.this, null));
+        elementWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>((Category) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target, Category category) {
+            super.onSave(target, category);
+            saveToFiles();
+            // update node name in jsTree
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + category.getName() + "');");
           }
         });
         elementWindow.show(target);

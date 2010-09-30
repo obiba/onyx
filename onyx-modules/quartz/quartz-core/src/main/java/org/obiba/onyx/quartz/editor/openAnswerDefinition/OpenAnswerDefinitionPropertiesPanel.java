@@ -9,20 +9,31 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswerDefinition;
 
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.value.ValueMap;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
@@ -31,11 +42,15 @@ import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.data.DataValidator;
 
 @SuppressWarnings("serial")
 public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireElementPanelForm<OpenAnswerDefinition> {
 
   private VariableNamesPanel variableNamesPanel;
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private List<Class<? extends IValidator>> iValidatorsAvailable = Arrays.asList(MaximumValidator.class, MinimumValidator.class, RangeValidator.class);
 
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
@@ -70,6 +85,65 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
     form.add(specifySize, sizeTextFieldForUIArguments);
 
     form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getVariableNames()));
+
+    ListView<Class<? extends IValidator>> listViewValidator = new ListView<Class<? extends IValidator>>("listViewDataValidators", iValidatorsAvailable) {
+
+      @Override
+      protected void populateItem(ListItem<Class<? extends IValidator>> item) {
+        try {
+          Constructor<?> constructor = iValidatorsAvailable.get(item.getIndex()).getConstructors()[0];
+          int nbParameters = constructor.getParameterTypes().length;
+          IValidator validator = (IValidator) constructor.newInstance(new Object[nbParameters]);
+          item.add(new ValidatorFragment("validatorItem", new Model(new ValidatorObject(false, new DataValidator(validator, null)))));
+        } catch(Exception e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+
+      }
+    };
+    form.add(listViewValidator);
+  }
+
+  public class ValidatorFragment extends Fragment {
+    private CheckBox wantedValidatorCheckBox;
+
+    private List<TextField<Integer>> valuesTextFields;
+
+    public ValidatorFragment(String id, IModel<ValidatorObject> validatorModel) {
+      super(id, "fragmentValidator", OpenAnswerDefinitionPropertiesPanel.this, validatorModel);
+      this.wantedValidatorCheckBox = new CheckBox("wantedValidator", new Model<Boolean>(validatorModel.getObject().isWantThisValidator()));
+      add(wantedValidatorCheckBox);
+      add(new Label("labelValidator", validatorModel.getObject().getDataValidator().getClass().toString()));
+    }
+  }
+
+  public class ValidatorObject implements Serializable {
+
+    private boolean wantThisValidator;
+
+    private DataValidator dataValidator;
+
+    public ValidatorObject(boolean wantThisValidator, DataValidator dataValidator) {
+      this.wantThisValidator = wantThisValidator;
+      this.dataValidator = dataValidator;
+    }
+
+    public boolean isWantThisValidator() {
+      return wantThisValidator;
+    }
+
+    public void setWantThisValidator(boolean wantThisValidator) {
+      this.wantThisValidator = wantThisValidator;
+    }
+
+    public DataValidator getDataValidator() {
+      return dataValidator;
+    }
+
+    public void setDataValidator(DataValidator dataValidator) {
+      this.dataValidator = dataValidator;
+    }
 
   }
 

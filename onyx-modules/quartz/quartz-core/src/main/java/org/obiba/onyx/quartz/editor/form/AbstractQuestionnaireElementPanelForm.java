@@ -68,7 +68,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
           if(StringUtils.isNotBlank(model.getObject().getName())) {
             QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaireParent.getName());
             if(bundle != null) {
-              String message = QuestionnaireStringResourceModelHelper.getMessage(bundle, model.getObject(), property, new Object[0], locale);
+              String message = QuestionnaireStringResourceModelHelper.getNonRecursiveMessage(bundle, model.getObject(), property, new Object[0], locale);
               values.add(message);
             }
           }

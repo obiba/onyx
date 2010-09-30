@@ -14,11 +14,9 @@ import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -111,42 +109,7 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
       }
     };
 
-    final ModalWindow previewModalWindow = new ModalWindow("previewWindow");
-    AjaxButton previewButton = new AjaxButton("previewButton") {
-
-      @SuppressWarnings("unchecked")
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, final Form<?> onSubmitForm) {
-        // final IModel<Questionnaire> model = (IModel<Questionnaire>) onSubmitForm.getModel();
-        // previewModalWindow.setContent(new QuestionnaireWizardPanel("contents", questionnaireModel, stageModel,
-        // resuming));
-
-        previewModalWindow.show(target);
-      }
-    };
-    AjaxButton previewButton2 = new AjaxButton("previewButton2") {
-
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form<?> onSubmitForm) {
-        // final QuestionnaireRenderer questionnaireRenderer = new QuestionnaireRenderer(new
-        // File("D:\\devzone\\projects\\onyx\\onyx-example\\target\\work\\webapp\\WEB-INF\\config\\quartz\\resources",
-        // "questionnaires"), new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "html"));
-        // Questionnaire questionnaire = (Questionnaire) onSubmitForm.getModel().getObject();
-        // questionnaireRenderer.renderBundle(questionnaire.getName(), questionnaire.getLocales().toArray(new
-        // Locale[questionnaire.getLocales().size()]));
-        // previewModalWindow.setPageCreator(new PageCreator() {
-        //
-        // @Override
-        // public Page createPage() {
-        // return questionnaireRenderer.getStartPage();
-        // }
-        // });
-        previewModalWindow.show(target);
-      }
-
-    };
-
-    form.add(nameTextField, versionTextField, localesPalette, localesPropertiesAjaxTabbedPanel, previewModalWindow, previewButton, previewButton2);
+    form.add(nameTextField, versionTextField, localesPalette, localesPropertiesAjaxTabbedPanel);
   }
 
   @Override
