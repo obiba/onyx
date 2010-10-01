@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -34,10 +35,21 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.PagingClause;
+import org.obiba.core.service.PersistenceManager;
+import org.obiba.core.service.SortingClause;
+import org.obiba.core.validation.exception.ValidationRuntimeException;
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.InterviewManager;
+import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocumentQuestionnairePage;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
@@ -50,6 +62,15 @@ public class QuestionnaireListPanel extends Panel {
 
   @SpringBean
   protected QuestionnaireBundleManager questionnaireBundleManager;
+
+  @SpringBean
+  private InterviewManager interviewManager;
+
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   protected ModalWindow modalWindow;
 
@@ -180,7 +201,118 @@ public class QuestionnaireListPanel extends Panel {
       add(new AjaxLink<Questionnaire>("previewLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          layoutWindow.setContent(new Panel("content")/* mettre panel de previw a la place */);
+          layoutWindow.setContent(new Panel("contents"));
+          layoutWindow.show(target);
+        }
+      });
+      add(new AjaxLink<Questionnaire>("exportLink", rowModel) {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          activeQuestionnaireAdministrationService.setQuestionnaire(rowModel.getObject());
+          final Participant participant = new Participant();
+          participant.setId(1L);
+          participant.setInterview(new Interview());
+          final QuestionnaireParticipant questionnaireParticipant = new QuestionnaireParticipant();
+          PersistenceManager persistenceManager = new PersistenceManager() {
+
+            @Override
+            public <T> T refresh(T entity) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public <T> T matchOne(T template, SortingClause... clauses) {
+              if(template instanceof Participant) {
+                return (T) participant;
+              } else if(template instanceof QuestionnaireParticipant) {
+                return (T) questionnaireParticipant;
+              }
+              return null;
+            }
+
+            @Override
+            public <T> List<T> match(T template, PagingClause paging, SortingClause... clauses) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public <T> List<T> match(T template, SortingClause... clauses) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public <T> List<T> list(Class<T> type, PagingClause paging, SortingClause... clauses) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public <T> List<T> list(Class<T> type, SortingClause... clauses) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public Serializable getId(Object o) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public <T> T get(Class<T> type, Serializable id) {
+              if(type.isAssignableFrom(User.class)) {
+                return (T) userSessionService.getUser();
+              } else if(type.isAssignableFrom(QuestionnaireParticipant.class)) {
+                return (T) questionnaireParticipant;
+              } else if(type.isAssignableFrom(Participant.class)) {
+                return (T) participant;
+              }
+              return null;
+            }
+
+            @Override
+            public int count(Object template) {
+              // TODO Auto-generated method stub
+              return 0;
+            }
+
+            @Override
+            public int count(Class<?> type) {
+              // TODO Auto-generated method stub
+              return 0;
+            }
+
+            @Override
+            public <T> T save(T entity) throws ValidationRuntimeException {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public <T> T newInstance(Class<T> type) {
+              // TODO Auto-generated method stub
+              return null;
+            }
+
+            @Override
+            public void delete(Object entity) {
+              // TODO Auto-generated method stub
+
+            }
+          };
+          // activeQuestionnaireAdministrationService.setPersistenceManager(persistenceManager);
+          // interviewManager.setPersistenceManager(persistenceManager);
+          interviewManager.overrideInterview(participant);
+          layoutWindow.setPageCreator(new ModalWindow.PageCreator() {
+
+            @Override
+            public Page createPage() {
+              return new SingleDocumentQuestionnairePage(rowModel);
+            }
+          });
           layoutWindow.show(target);
         }
       });

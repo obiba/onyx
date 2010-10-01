@@ -34,15 +34,27 @@
 				<td valign="top" class="keyValueTableKey"><wicket:message key="VariableNames" /></td>
 				<td class="keyValueTableValueOdd"><div wicket:id="variableNamesPanel" /></td>
 			</tr>
-			<fieldset>
-				<div wicket:id="listViewDataValidators">
-					<div wicket:id="validatorItem" />
-				</div>
-			</fieldset>
 		</table>
+		
+		<fieldset>
+			<wicket:container wicket:id="listViewDataValidators">
+				<div wicket:id="validatorItem" />
+			</wicket:container>
+		</fieldset>
+		
 		<wicket:fragment wicket:id="fragmentValidator">
-			<input wicket:id="wantedValidator" type="checkbox" />
-			<div wicket:id="labelValidator" />		
+			<table>
+				<tr>
+					<td>
+						<input wicket:id="wantedValidator" type="checkbox" />
+						<label wicket:id="labelValidator" for="wantedValidator" />
+					</td>
+					<wicket:container wicket:id="listViewValues">
+						<td>
+							<input wicket:id="valueItem" type="text"/>
+						</td>
+					</wicket:container>
+			</tr></table>
 		</wicket:fragment>		
 	</wicket:extend>	
 </wicket:panel>

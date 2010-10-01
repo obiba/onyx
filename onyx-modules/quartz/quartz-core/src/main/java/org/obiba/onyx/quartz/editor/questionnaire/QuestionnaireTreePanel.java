@@ -458,22 +458,23 @@ public class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Question question) {
+      children.addAll(question.getQuestions());
       children.addAll(question.getQuestionCategories());
     }
 
     @Override
     public void visit(QuestionCategory questionCategory) {
-      // done by category
+      if(questionCategory.getCategory() != null) children.add(questionCategory.getCategory());
     }
 
     @Override
     public void visit(Category category) {
-      children.add(category);
+      if(category.getOpenAnswerDefinition() != null) children.add(category.getOpenAnswerDefinition());
     }
 
     @Override
     public void visit(OpenAnswerDefinition openAnswerDefinition) {
-      children.add(openAnswerDefinition);
+      children.addAll(openAnswerDefinition.getOpenAnswerDefinitions());
     }
 
     public List<IQuestionnaireElement> getChildren() {
@@ -496,15 +497,7 @@ public class QuestionnaireTreePanel extends Panel {
           item.add(new Label("itemTitle", element.getName()));
           QVisitor questionnaireVisitor = new QVisitor(new ArrayList<IQuestionnaireElement>());
 
-          if(element instanceof Questionnaire || element instanceof Section || element instanceof Page || element instanceof Question) {
-            element.accept(questionnaireVisitor);
-          } else if(element instanceof QuestionCategory) {
-            QuestionCategory questionCategory = (QuestionCategory) element;
-            Category category = questionCategory.getCategory();
-            if(category != null) category.accept(questionnaireVisitor);
-            OpenAnswerDefinition openAnswerDefinition = questionCategory.getOpenAnswerDefinition();
-            if(openAnswerDefinition != null) openAnswerDefinition.accept(questionnaireVisitor);
-          }
+          element.accept(questionnaireVisitor);
 
           item.add(new SimpleAttributeModifier("id", addElement(element)));
           item.add(new SimpleAttributeModifier("name", element.getName()));

@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ClassUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -29,6 +31,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
@@ -94,27 +97,33 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
           Constructor<?> constructor = iValidatorsAvailable.get(item.getIndex()).getConstructors()[0];
           int nbParameters = constructor.getParameterTypes().length;
           IValidator validator = (IValidator) constructor.newInstance(new Object[nbParameters]);
-          item.add(new ValidatorFragment("validatorItem", new Model(new ValidatorObject(false, new DataValidator(validator, null)))));
+          item.add(new ValidatorFragment("validatorItem", new Model(new ValidatorObject(false, new DataValidator(validator, null), new Integer[nbParameters]))));
         } catch(Exception e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
-
       }
     };
     form.add(listViewValidator);
   }
 
   public class ValidatorFragment extends Fragment {
-    private CheckBox wantedValidatorCheckBox;
 
     private List<TextField<Integer>> valuesTextFields;
 
     public ValidatorFragment(String id, IModel<ValidatorObject> validatorModel) {
       super(id, "fragmentValidator", OpenAnswerDefinitionPropertiesPanel.this, validatorModel);
-      this.wantedValidatorCheckBox = new CheckBox("wantedValidator", new Model<Boolean>(validatorModel.getObject().isWantThisValidator()));
-      add(wantedValidatorCheckBox);
-      add(new Label("labelValidator", validatorModel.getObject().getDataValidator().getClass().toString()));
+      add(new CheckBox("wantedValidator", new Model<Boolean>(validatorModel.getObject().isWantThisValidator())));
+      add(new Label("labelValidator", ClassUtils.getShortClassName(validatorModel.getObject().getDataValidator().getValidator().getClass())));
+      add(new ListView<Integer>("listViewValues", new ListModel<Integer>(Arrays.asList(validatorModel.getObject().getValues()))) {
+
+        @Override
+        protected void populateItem(ListItem<Integer> item) {
+          AttributeModifier attributeModifier = new AttributeModifier("size", true, new Model<Integer>(2));
+          PropertyModel<Integer> propertyModel = new PropertyModel<Integer>(getModelObject(), "[" + item.getIndex() + "]");
+          item.add(new TextField<Integer>("valueItem", propertyModel, Integer.class).add(attributeModifier));
+        }
+      });
     }
   }
 
@@ -124,9 +133,12 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
     private DataValidator dataValidator;
 
-    public ValidatorObject(boolean wantThisValidator, DataValidator dataValidator) {
+    private Integer values[];
+
+    public ValidatorObject(boolean wantThisValidator, DataValidator dataValidator, Integer values[]) {
       this.wantThisValidator = wantThisValidator;
       this.dataValidator = dataValidator;
+      this.values = values;
     }
 
     public boolean isWantThisValidator() {
@@ -143,6 +155,14 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
     public void setDataValidator(DataValidator dataValidator) {
       this.dataValidator = dataValidator;
+    }
+
+    public Integer[] getValues() {
+      return values;
+    }
+
+    public void setValues(Integer[] values) {
+      this.values = values;
     }
 
   }

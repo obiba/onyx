@@ -33,16 +33,16 @@ Wicket.QTree.buildTree = function(treeId) {
 					"valid_children" : [ "Question" ]
 				},
 				"Question" : {
-					"valid_children" : [ "QuestionCategory" ]
+					"valid_children" : [ "Question", "QuestionCategory" ]
 				},
 				"QuestionCategory" : {
-					"valid_children" : [ "Category", "OpenAnswerDefinition" ]
+					"valid_children" : [ "Category" ]
 				},
 				"Category" : {
-					"valid_children" : [ "none" ]
+					"valid_children" : [ "OpenAnswerDefinition" ]
 				},
 				"OpenAnswerDefinition" : {
-					"valid_children" : [ "none" ]
+					"valid_children" : [ "OpenAnswerDefinition" ]
 				}
 			}
 		},
