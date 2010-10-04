@@ -94,11 +94,6 @@
 			<artifactId>wicket-spring</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.odlabs.wiquery</groupId>
-			<artifactId>wiquery</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<optional>true</optional>
