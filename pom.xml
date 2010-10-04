@@ -783,12 +783,6 @@
       </snapshots>
     </repository>
 
-	<repository>
-		<id>wiquery repository</id>
-		<name>wiQuery repository</name>
-		<url>http://wiquery.googlecode.com/svn/repo/</url>
-	</repository>
-
   </repositories>
 
   <pluginRepositories>

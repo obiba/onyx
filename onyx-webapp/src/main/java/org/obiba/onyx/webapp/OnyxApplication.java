@@ -37,7 +37,6 @@ import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.runtime.Version;
 import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
-import org.odlabs.wiquery.core.commons.WiQueryInstantiationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -68,11 +67,6 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   private OnyxApplicationConfiguration onyxApplicationConfiguration;
 
-  /**
-   * The wiquery listener used to manage WiQuery components
-   */
-  private WiQueryInstantiationListener wiqueryPluginInstantiationListener;
-
   public UserService getUserService() {
     return userService;
   }
@@ -97,9 +91,8 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
   public String getConfigurationType() {
     if(onyxApplicationConfiguration != null && onyxApplicationConfiguration.getConfigurationType() != null) {
       return onyxApplicationConfiguration.getConfigurationType();
-    } else {
-      return super.getConfigurationType();
     }
+    return super.getConfigurationType();
   }
 
   @Override
@@ -114,15 +107,14 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
       if(!OnyxAuthenticatedSession.get().isSignedIn()) {
         // Redirect to intercept page to let the user sign in
         throw new RestartResponseAtInterceptPageException(LoginPage.class);
-      } else {
-        // User is signed in but doesn't have the proper access rights. Display error and redirect accordingly.
-        throw new RestartResponseAtInterceptPageException(AccessDeniedPage.class);
       }
-    } else {
-      // The component was not a page, so show an error message in the FeedbackPanel of the page
-      component.error("You do not have sufficient privileges to see this component.");
-      throw new UnauthorizedInstantiationException(component.getClass());
+      // User is signed in but doesn't have the proper access rights. Display error and redirect accordingly.
+      throw new RestartResponseAtInterceptPageException(AccessDeniedPage.class);
+
     }
+    // The component was not a page, so show an error message in the FeedbackPanel of the page
+    component.error("You do not have sufficient privileges to see this component.");
+    throw new UnauthorizedInstantiationException(component.getClass());
   }
 
   public ISpringContextLocator getSpringContextLocator() {
@@ -137,12 +129,12 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     if(userService.getUserCount(template) > 0) {
       if(OnyxAuthenticatedSession.get().isSignedIn()) {
         return HomePage.class;
-      } else {
-        return LoginPage.class;
       }
-    } else {
-      return ApplicationConfigurationPage.class;
+      return LoginPage.class;
+
     }
+    return ApplicationConfigurationPage.class;
+
   }
 
   public boolean isDevelopmentMode() {
@@ -208,11 +200,6 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
 
-    // Adds WiQuery's instantiation listener to this application:
-    // we add a component instantiation listener to create plugin managers each time a plugin is created
-    wiqueryPluginInstantiationListener = new WiQueryInstantiationListener();
-    addComponentInstantiationListener(wiqueryPluginInstantiationListener);
-
     log.info("Onyx Web Application [{}] v{} has started", getServletContext().getContextPath(), this.getVersion());
   }
 
@@ -241,7 +228,6 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
    * specified callback for each instance found.
    * @param callback the callback implementation to call for each listener instance
    */
-  @SuppressWarnings("unchecked")
   private void forEachListeners(IListenerCallback callback) {
     Map<String, WebApplicationStartupListener> listeners = applicationContext.getBeansOfType(WebApplicationStartupListener.class);
     if(listeners != null) {
