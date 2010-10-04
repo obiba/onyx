@@ -15,7 +15,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ public class EditorPage extends BasePage {
 
   public static final String EDITOR_COMPONENT = "editor-component";
 
-  private static final Logger log = LoggerFactory.getLogger(StagePage.class);
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private ModuleRegistry moduleRegistry;

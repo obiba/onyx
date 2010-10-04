@@ -113,9 +113,8 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
         log.info("Report {} dataCollectionMode is {}", getName(), collectionModeData.getValue());
         if(collectionModeData.getValue() != null && collectionModeData.getValue().equals("ELECTRONIC")) {
           return true;
-        } else {
-          return false;
         }
+        return false;
       } else {
         throw new RuntimeException("dataCollectionMode not of type TEXT. Please review the dataCollectionMode for report : " + getName());
       }

@@ -66,7 +66,7 @@ public class RowView extends DataViewBase {
    * @param dataProvider data provider
    */
   public RowView(String id, List<ICellPopulator> populators, IDataProvider dataProvider) {
-    this(id, (ICellPopulator[]) populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
+    this(id, populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
   }
 
   /**

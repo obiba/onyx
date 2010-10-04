@@ -21,6 +21,11 @@ import org.springframework.batch.item.ExecutionContext;
  */
 public class AppointmentUpdateLog implements Serializable {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public enum Level {
     INFO, WARN, ERROR;
   }

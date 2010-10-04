@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseQuestionCategorySelectionPanel extends Panel {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(BaseQuestionCategorySelectionPanel.class);
 
@@ -66,7 +71,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
    * @param target
    */
   protected void updateFeedbackPanel(AjaxRequestTarget target) {
-    WizardForm wizard = (WizardForm) findParent(WizardForm.class);
+    WizardForm wizard = findParent(WizardForm.class);
     if(wizard != null && wizard.getFeedbackWindow() != null) {
       if(wizard.getFeedbackMessage() != null) wizard.getFeedbackWindow().show(target);
     }
@@ -81,7 +86,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
    * @see IQuestionAnswerChangedListener
    */
   protected void fireQuestionCategorySelected(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    IQuestionCategorySelectionListener parentListener = findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);
     }

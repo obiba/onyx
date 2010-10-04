@@ -48,6 +48,11 @@ public class Participant extends AbstractEntity {
   private static final long serialVersionUID = 7720576329990574921L;
 
   public static final Map<String, String> essentialAttributeToFieldNameMap = new HashMap<String, String>() {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     {
       put(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, "enrollmentId");
       put(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, "siteNo");
@@ -195,7 +200,7 @@ public class Participant extends AbstractEntity {
     if(birthDate == null) return 0;
     Calendar cal = Calendar.getInstance();
     cal.setTime(birthDate);
-    return (long) cal.get(Calendar.YEAR);
+    return cal.get(Calendar.YEAR);
   }
 
   @Transient
@@ -203,7 +208,7 @@ public class Participant extends AbstractEntity {
     if(birthDate == null) return 0;
     Calendar cal = Calendar.getInstance();
     cal.setTime(birthDate);
-    return (long) cal.get(Calendar.MONTH);
+    return cal.get(Calendar.MONTH);
   }
 
   @Transient
@@ -211,7 +216,7 @@ public class Participant extends AbstractEntity {
     if(birthDate == null) return 0;
     Calendar cal = Calendar.getInstance();
     cal.setTime(birthDate);
-    return (long) cal.get(Calendar.DAY_OF_MONTH);
+    return cal.get(Calendar.DAY_OF_MONTH);
   }
 
   public String getBarcode() {

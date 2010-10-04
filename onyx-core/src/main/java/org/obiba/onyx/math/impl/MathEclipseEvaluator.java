@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.matheclipse.parser.client.ast.ASTNode;
 import org.matheclipse.parser.client.ast.FunctionNode;
 import org.matheclipse.parser.client.eval.DoubleEvaluator;
 import org.matheclipse.parser.client.eval.DoubleVariable;
@@ -37,7 +36,6 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MathEclipseEvaluator.class);
 
   public static MathEclipseEvaluator getInstance() {
@@ -170,9 +168,9 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
       String symbol = functionNode.getNode(0).toString();
       if(functions.get(symbol) != null) {
         if(functionNode.size() == 2 && functions.get(symbol) instanceof IDouble1Function) {
-          return ((IDouble1Function) functions.get(symbol)).evaluate(evaluateNode((ASTNode) functionNode.getNode(1)));
+          return ((IDouble1Function) functions.get(symbol)).evaluate(evaluateNode(functionNode.getNode(1)));
         } else if(functionNode.size() == 3 && functions.get(symbol) instanceof IDouble2Function) {
-          return ((IDouble2Function) functions.get(symbol)).evaluate(evaluateNode((ASTNode) functionNode.getNode(1)), evaluateNode((ASTNode) functionNode.getNode(2)));
+          return ((IDouble2Function) functions.get(symbol)).evaluate(evaluateNode(functionNode.getNode(1)), evaluateNode(functionNode.getNode(2)));
         }
       }
       return super.evaluateFunction(functionNode);

@@ -58,7 +58,7 @@ public class ParticipantReader extends AbstractParticipantReader {
 
   //
   // HSSF instance variables.
-  //   
+  //
   private Iterator<Row> rowIter;
 
   private HSSFFormulaEvaluator evaluator;
@@ -135,7 +135,7 @@ public class ParticipantReader extends AbstractParticipantReader {
       Cell cell = cellIter.next();
 
       if(cell != null) {
-        if(cell.getCellType() != HSSFCell.CELL_TYPE_STRING) {
+        if(cell.getCellType() != Cell.CELL_TYPE_STRING) {
           AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Header row contains unexpected cell type"));
           throw new IllegalArgumentException("Header row contains unexpected cell type");
         }
@@ -143,7 +143,7 @@ public class ParticipantReader extends AbstractParticipantReader {
         String columnName = cell.getRichStringCellValue().getString();
 
         if(columnName != null) {
-          String attributeName = (String) columnNameToAttributeNameMap.get(columnName.toUpperCase());
+          String attributeName = columnNameToAttributeNameMap.get(columnName.toUpperCase());
 
           if(attributeName != null) {
             if(!attributeNameToColumnIndexMap.containsKey(attributeName.toUpperCase())) {
@@ -288,7 +288,7 @@ public class ParticipantReader extends AbstractParticipantReader {
    */
   private Data getAttributeValue(ParticipantAttribute attribute, Cell cell, HSSFFormulaEvaluator evaluator) {
 
-    if(cell == null || cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) return null;
+    if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK) return null;
     Data data = null;
 
     try {

@@ -27,6 +27,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionStateHolder {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoryLinkSelectionPanel.class);
 
@@ -117,7 +122,7 @@ public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQue
 
   protected void fireSelectionEvent(AjaxRequestTarget target, boolean isSelected) {
     // fire event to other selectors in case of exclusive choice
-    IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    IQuestionCategorySelectionListener listener = findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
       listener.onQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), isSelected);
     }

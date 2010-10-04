@@ -62,6 +62,11 @@ public abstract class AbstractAjaxTimerBehavior extends AbstractDefaultAjaxBehav
   @Override
   protected IAjaxCallDecorator getAjaxCallDecorator() {
     return new AjaxCallDecorator() {
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       @Override
       public CharSequence decorateScript(CharSequence script) {
         return "var timeout;";

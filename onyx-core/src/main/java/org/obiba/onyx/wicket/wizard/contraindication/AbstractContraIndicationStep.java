@@ -22,6 +22,11 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
   // Constructors
   //
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public AbstractContraIndicationStep(String id) {
     super(id);
   }

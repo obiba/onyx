@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -51,7 +50,7 @@ public class DateFieldSource extends AbstractDataSourceDataModifier {
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);
 
-    return (DataBuilder.build((Serializable) cal.get(getField().toCalendarField())));
+    return (DataBuilder.build(cal.get(getField().toCalendarField())));
   }
 
   public DateField getField() {

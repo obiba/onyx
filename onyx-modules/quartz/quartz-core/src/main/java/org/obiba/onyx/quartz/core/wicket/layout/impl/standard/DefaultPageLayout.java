@@ -48,7 +48,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
 
   private static final long serialVersionUID = -1757316578083924986L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultPageLayout.class);
 
   @SpringBean
@@ -164,7 +163,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
         });
       }
 
-      public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {
+      public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target1) {
 
       }
 

@@ -111,6 +111,11 @@ public class Dialog extends ModalWindow {
 
     AjaxButton okButton = new AjaxButton("ok", form) {
 
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         Dialog.this.setStatus(Status.SUCCESS);
@@ -133,6 +138,11 @@ public class Dialog extends ModalWindow {
 
     AjaxLink cancelButton = new AjaxLink("cancel") {
 
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.CANCELLED);
@@ -146,6 +156,11 @@ public class Dialog extends ModalWindow {
     form.add(cancelButton);
 
     AjaxLink yesButton = new AjaxLink("yes") {
+
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -161,6 +176,11 @@ public class Dialog extends ModalWindow {
 
     AjaxLink noButton = new AjaxLink("no") {
 
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.NO);
@@ -174,6 +194,11 @@ public class Dialog extends ModalWindow {
     form.add(noButton);
 
     AjaxLink closeButton = new AjaxLink("close") {
+
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {

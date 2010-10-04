@@ -88,7 +88,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
         public Object getDisplayValue(Object object) {
           Data data = (Data) object;
-          return (String) new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), data.getValueAsString()).getObject();
+          return new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), data.getValueAsString()).getObject();
         }
 
         public String getIdValue(Object object, int index) {
@@ -175,7 +175,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
    * @param target
    */
   private void updateFeedback(final AjaxRequestTarget target) {
-    WizardForm wizard = (WizardForm) findParent(WizardForm.class);
+    WizardForm wizard = findParent(WizardForm.class);
     if(wizard != null && wizard.getFeedbackWindow() != null) {
       if(wizard.getFeedbackMessage() != null) wizard.getFeedbackWindow().show(target);
     }

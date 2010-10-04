@@ -32,6 +32,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractQuestionCategoriesView extends GridView {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoriesView.class);
 

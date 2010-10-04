@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.user;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -20,7 +18,7 @@ import org.obiba.core.domain.AbstractEntity;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Role extends AbstractEntity implements Serializable, Comparable<Role> {
+public class Role extends AbstractEntity implements Comparable<Role> {
 
   private static final long serialVersionUID = -5985745491689725964L;
 

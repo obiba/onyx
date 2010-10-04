@@ -60,7 +60,7 @@ public class DataUpgrade2_1_6_0 extends AbstractUpgradeStep {
 
   @SuppressWarnings("unchecked")
   private void createExportLogs() {
-    List<String> results = (List<String>) jdbcTemplate.queryForList(SELECT_BARCODES_OF_EXPORTED_PARTICIPANTS, (Map<String, Object>) null, String.class);
+    List<String> results = jdbcTemplate.queryForList(SELECT_BARCODES_OF_EXPORTED_PARTICIPANTS, (Map<String, Object>) null, String.class);
     log.info("Creating export logs for {} exported participants", results.size());
 
     for(String barcode : results) {

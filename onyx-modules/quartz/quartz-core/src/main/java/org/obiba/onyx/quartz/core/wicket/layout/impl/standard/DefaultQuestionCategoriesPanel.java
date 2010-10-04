@@ -220,7 +220,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     }
 
     // forward event to parent
-    IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    IQuestionCategorySelectionListener parentListener = findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }

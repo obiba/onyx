@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionCategory;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -26,6 +27,12 @@ public class QuestionCategoryPropertiesPanel extends AbstractQuestionnaireElemen
 
   private void createComponent() {
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
+  }
+
+  @Override
+  public void onSave(AjaxRequestTarget target, QuestionCategory t) {
+    // TODO Auto-generated method stub
+
   }
 
 }

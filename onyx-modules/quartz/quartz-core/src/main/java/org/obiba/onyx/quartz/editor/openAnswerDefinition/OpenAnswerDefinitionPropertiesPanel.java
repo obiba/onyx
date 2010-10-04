@@ -169,7 +169,6 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
 
   @Override
   public void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswerDefinition) {
-    super.onSave(target, openAnswerDefinition);
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
       openAnswerDefinition.addVariableName(entries.getKey(), entries.getValue());
     }

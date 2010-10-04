@@ -58,7 +58,7 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
    * @param dataProvider data provider
    */
   public GroupView(String id, List<ICellPopulator> populators, IDataProvider dataProvider) {
-    this(id, (ICellPopulator[]) populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
+    this(id, populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
   }
 
   /**

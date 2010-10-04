@@ -71,14 +71,14 @@ import org.springframework.web.context.request.SessionScope;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager")
-@TestExecutionListeners(value = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class, DbUnitAwareTestExecutionListener.class })
+@TestExecutionListeners(
+    value = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class, DbUnitAwareTestExecutionListener.class })
 public abstract class AbstractQuestionnaireTest {
 
   //
   // Constants
   //
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionnaireTest.class);
 
   private static final String COMPONENT_ID_SEPARATOR = ":";
@@ -265,7 +265,6 @@ public abstract class AbstractQuestionnaireTest {
    * @param question
    * @param string
    */
-  @SuppressWarnings("serial")
   protected void addComment(final Question question, String comment) {
     int index = question.getPage().getQuestions().indexOf(question) + 1;
 
@@ -675,7 +674,7 @@ public abstract class AbstractQuestionnaireTest {
 
   //
   // dropdown question
-  // 
+  //
 
   private void dropDownAnswer(Question question, CategoryAnswer answer) {
     FormTester formTester = wicketTester.newFormTester(getFormPath());

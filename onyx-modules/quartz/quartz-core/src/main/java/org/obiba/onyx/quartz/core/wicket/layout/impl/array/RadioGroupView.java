@@ -45,7 +45,7 @@ public class RadioGroupView extends GroupView<RadioGroup> {
    * @param dataProvider data provider
    */
   public RadioGroupView(String id, List<ICellPopulator> populators, IDataProvider dataProvider) {
-    this(id, (ICellPopulator[]) populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
+    this(id, populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
   }
 
   /**

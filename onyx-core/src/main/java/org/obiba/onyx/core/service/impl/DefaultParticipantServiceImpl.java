@@ -41,7 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAwareService implements ParticipantService {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultParticipantServiceImpl.class);
 
   private ModuleRegistry moduleRegistry;

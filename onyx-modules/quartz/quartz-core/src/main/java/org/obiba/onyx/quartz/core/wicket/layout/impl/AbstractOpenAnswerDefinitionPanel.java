@@ -32,7 +32,6 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractOpenAnswerDefinitionPanel.class);
 
   /**
@@ -122,7 +121,7 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
 
   protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), Boolean.valueOf(isSelected) });
-    IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    IQuestionCategorySelectionListener listener = findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
       listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }

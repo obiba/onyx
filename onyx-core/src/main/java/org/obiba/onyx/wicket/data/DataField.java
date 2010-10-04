@@ -268,6 +268,10 @@ public class DataField extends Panel {
 
   private abstract class FieldFragment extends Fragment {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     protected FormComponent field = null;
 
     public FieldFragment(String id, String markupId, MarkupContainer markupProvider) {
@@ -281,6 +285,11 @@ public class DataField extends Panel {
   }
 
   private class TextAreaFragment extends FieldFragment {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     public TextAreaFragment(String id, IModel model, final DataType dataType, Integer columns, Integer rows) {
       super(id, "textAreaFragment", DataField.this);

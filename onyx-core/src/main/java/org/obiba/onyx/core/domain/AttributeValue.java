@@ -65,6 +65,7 @@ public class AttributeValue extends AbstractEntity {
     return attributeType;
   }
 
+  @SuppressWarnings("incomplete-switch")
   public void setData(Data data) {
     if(data != null) {
       if(data.getType() == getAttributeType()) {

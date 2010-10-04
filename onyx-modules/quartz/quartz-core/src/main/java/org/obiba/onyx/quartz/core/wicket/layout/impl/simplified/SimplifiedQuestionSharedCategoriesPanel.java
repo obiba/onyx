@@ -47,7 +47,6 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
   private static final long serialVersionUID = 5144933183339704600L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionSharedCategoriesPanel.class);
 
   @SpringBean

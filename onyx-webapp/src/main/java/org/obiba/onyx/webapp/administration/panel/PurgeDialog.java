@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.administration.panel;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -135,7 +134,7 @@ public class PurgeDialog extends Dialog {
     return (OnyxDataPurgeModel) super.getDefaultModel();
   }
 
-  private class PurgeBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
+  private class PurgeBehavior extends AbstractDefaultAjaxBehavior {
     private static final long serialVersionUID = 1L;
 
     public void respond(AjaxRequestTarget target) {

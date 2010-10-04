@@ -9,14 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.participant;
 
-import java.io.Serializable;
-
 import org.obiba.onyx.core.domain.Attribute;
 
 /**
  * Participant attribute.
  */
-public class ParticipantAttribute extends Attribute implements Serializable, ParticipantElement {
+public class ParticipantAttribute extends Attribute implements ParticipantElement {
   //
   // Instance Variables
   //

@@ -9,50 +9,46 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.widget.sortable;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.wicket.Component;
+import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.odlabs.wiquery.ui.sortable.SortableAjaxBehavior;
+import org.springframework.util.StringUtils;
 
 @SuppressWarnings("serial")
-public abstract class SortableList<T> extends Panel {
+public abstract class SortableList<T extends Serializable> extends Panel {
 
   private WebMarkupContainer listContainer;
+
+  private final Map<String, T> itemByMarkupId = new HashMap<String, T>();
+
+  private AbstractDefaultAjaxBehavior toArrayBehavior;
+
+  private Label toArrayCallback;
+
+  private SortableListCallback<T> callback;
 
   public SortableList(String id, List<T> items) {
     super(id);
 
     add(CSSPackageResource.getHeaderContribution(SortableList.class, "SortableList.css"));
-
-    listContainer = new WebMarkupContainer("listContainer");
-    listContainer.setOutputMarkupId(true);
-    SortableAjaxBehavior sortableAjaxBehavior = new SortableAjaxBehavior() {
-
-      @Override
-      public void onUpdate(Component sortedComponent, int index, AjaxRequestTarget ajaxRequestTarget) {
-        SortableList.this.onUpdate(sortedComponent, index, ajaxRequestTarget);
-      }
-
-      @Override
-      public void onReceive(Component sortedComponent, int index, Component parentSortedComponent, AjaxRequestTarget ajaxRequestTarget) {
-        SortableList.this.onReceive(sortedComponent, index, parentSortedComponent, ajaxRequestTarget);
-      }
-
-      @Override
-      public void onRemove(Component sortedComponent, AjaxRequestTarget ajaxRequestTarget) {
-        SortableList.this.onRemove(sortedComponent, ajaxRequestTarget);
-      }
-    };
-    sortableAjaxBehavior.getSortableBehavior().setPlaceholder("ui-state-highlight");
-    listContainer.add(sortableAjaxBehavior);
+    add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
 
     ListView<T> listView = new ListView<T>("listView", items) {
       @Override
@@ -72,10 +68,21 @@ public abstract class SortableList<T> extends Panel {
             deleteItem(t, target);
           }
         });
+        itemByMarkupId.put(item.getMarkupId(), t);
       }
     };
+
+    listContainer = new WebMarkupContainer("listContainer");
+    listContainer.setOutputMarkupId(true);
     listContainer.add(listView);
     add(listContainer);
+
+    listContainer.add(new AbstractBehavior() {
+      @Override
+      public void renderHead(IHeaderResponse response) {
+        response.renderOnLoadJavascript("Wicket.Sortable.create('" + listContainer.getMarkupId() + "')");
+      }
+    });
 
     add(new AjaxLink<Void>("addItem") {
       @Override
@@ -83,33 +90,45 @@ public abstract class SortableList<T> extends Panel {
         addItem(target);
       }
     });
+
+    add(toArrayBehavior = new ToArrayBehavior());
+    toArrayCallback = new Label("toArrayCallback", "");
+    toArrayCallback.setOutputMarkupId(true);
+    toArrayCallback.setEscapeModelStrings(false);
+    add(toArrayCallback);
   }
 
   public void refreshList(AjaxRequestTarget target) {
     target.addComponent(listContainer);
   }
 
-  /**
-   * On add via drag n drop
-   * @param sortedComponent
-   * @param index
-   * @param parentSortedComponent
-   * @param target
-   */
-  public void onReceive(Component sortedComponent, int index, Component parentSortedComponent, AjaxRequestTarget target) {
+  @Override
+  protected void onBeforeRender() {
+    super.onBeforeRender();
+    toArrayCallback.setDefaultModelObject("Wicket.Sortable.toStringArray = function(items) {\n" + //
+    "  wicketAjaxGet('" + toArrayBehavior.getCallbackUrl(true) + "&items='+ items, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    "\n}");
   }
 
-  /**
-   * On remove via drag n drop
-   * @param sortedComponent
-   * @param target
-   */
-  public void onRemove(Component sortedComponent, AjaxRequestTarget target) {
+  public void save(AjaxRequestTarget target, SortableListCallback<T> callback1) {
+    this.callback = callback1;
+    target.appendJavascript("Wicket.Sortable.toArray('" + listContainer.getMarkupId() + "')");
+  }
+
+  protected class ToArrayBehavior extends AbstractDefaultAjaxBehavior {
+    @Override
+    protected void respond(AjaxRequestTarget target) {
+      Request request = RequestCycle.get().getRequest();
+      String items = request.getParameter("items");
+      List<T> orderedItems = new ArrayList<T>();
+      for(String markupId : StringUtils.commaDelimitedListToStringArray(items)) {
+        orderedItems.add(itemByMarkupId.get(markupId));
+      }
+      callback.onSave(orderedItems, target);
+    }
   }
 
   public abstract String getItemLabel(T t);
-
-  public abstract void onUpdate(Component sortedComponent, int index, AjaxRequestTarget target);
 
   public abstract void addItem(AjaxRequestTarget target);
 

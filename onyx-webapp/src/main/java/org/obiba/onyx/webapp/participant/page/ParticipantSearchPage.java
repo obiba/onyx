@@ -79,14 +79,14 @@ import org.obiba.onyx.wicket.behavior.DisplayTooltipBehaviour;
 import org.obiba.onyx.wicket.behavior.ExecuteJavaScriptBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.OptionSide;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -94,7 +94,7 @@ import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
@@ -460,7 +460,7 @@ public class ParticipantSearchPage extends BasePage {
 
       });
 
-      columns.add(new AbstractColumn(new Model("")) {
+      columns.add(new AbstractColumn(new Model<String>("")) {
 
         public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
           cellItem.add(new LockedInterviewFragment(componentId, rowModel));

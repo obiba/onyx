@@ -55,7 +55,6 @@ public class InvalidFormFieldBehavior extends AbstractBehavior {
 
   }
 
-  @SuppressWarnings("unused")
   private class FormComponentVisitor implements Component.IVisitor {
 
     private Boolean foundErrorMessages = false;

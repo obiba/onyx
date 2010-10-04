@@ -97,9 +97,8 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
     String propertyName = (String) args[0];
     if(propertyName.equals(LAST_EXPORT_DATE)) {
       return OnyxGlobalJsMethods.getLastExportDate(thisObj);
-    } else {
-      return OnyxGlobalJsMethods.getProperty(thisObj, propertyName);
     }
+    return OnyxGlobalJsMethods.getProperty(thisObj, propertyName);
   }
 
   private static Scriptable getLastExportDate(Scriptable thisObj) {

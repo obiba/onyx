@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebSession;
@@ -21,11 +22,11 @@ import org.apache.wicket.protocol.http.WebSession;
 public class DateModelUtils {
 
   public static IModel getShortDateTimeModel(IModel dateModel) {
-    return new FormatingDateTimeModel(SimpleDateFormat.SHORT, dateModel);
+    return new FormatingDateTimeModel(DateFormat.SHORT, dateModel);
   }
 
   public static IModel getDateTimeModel(IModel dateModel) {
-    return new FormatingDateTimeModel(SimpleDateFormat.MEDIUM, dateModel);
+    return new FormatingDateTimeModel(DateFormat.MEDIUM, dateModel);
   }
 
   public static IModel getDateTimeModel(IModel formatModel, IModel dateModel) {
@@ -33,11 +34,11 @@ public class DateModelUtils {
   }
 
   public static IModel getShortDateModel(IModel dateModel) {
-    return new FormatingDateModel(SimpleDateFormat.SHORT, dateModel);
+    return new FormatingDateModel(DateFormat.SHORT, dateModel);
   }
 
   public static IModel getDateModel(IModel dateModel) {
-    return new FormatingDateModel(SimpleDateFormat.MEDIUM, dateModel);
+    return new FormatingDateModel(DateFormat.MEDIUM, dateModel);
   }
 
   public static IModel getDateModel(IModel formatModel, IModel dateModel) {
@@ -77,7 +78,7 @@ public class DateModelUtils {
           }
         }
 
-        return SimpleDateFormat.getDateTimeInstance(format, SimpleDateFormat.SHORT, WebSession.get().getLocale()).format(date);
+        return DateFormat.getDateTimeInstance(format, DateFormat.SHORT, Session.get().getLocale()).format(date);
       }
       return "";
     }
@@ -118,7 +119,7 @@ public class DateModelUtils {
           }
         }
 
-        return SimpleDateFormat.getDateInstance(format, WebSession.get().getLocale()).format(date);
+        return DateFormat.getDateInstance(format, Session.get().getLocale()).format(date);
       }
       return "";
     }

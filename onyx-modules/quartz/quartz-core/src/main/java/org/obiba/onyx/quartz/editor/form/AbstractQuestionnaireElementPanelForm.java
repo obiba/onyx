@@ -118,9 +118,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
    * @param target
    * @param t
    */
-  public void onSave(AjaxRequestTarget target, T t) {
-
-  }
+  public abstract void onSave(AjaxRequestTarget target, T t);
 
   @SuppressWarnings("unchecked")
   private Map<Locale, Properties> getLocalePropertiesToMap() {

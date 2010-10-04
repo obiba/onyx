@@ -196,9 +196,8 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     String reason = (getReason() != null) ? getReason().getEventReason() : null;
     if(reason != null) {
       return new DefaultMessageSourceResolvable(new String[] { getName() + "." + reason, reason }, reason);
-    } else {
-      return null;
     }
+    return null;
   }
 
   public ActionType getStartingActionType() {

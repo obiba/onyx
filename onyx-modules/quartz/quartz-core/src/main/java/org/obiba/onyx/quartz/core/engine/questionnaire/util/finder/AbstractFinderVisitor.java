@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public abstract class AbstractFinderVisitor<T extends IQuestionnaireElement> imp
   protected AbstractFinderVisitor(String name) {
     this(name, true);
   }
-  
+
   /**
    * Constructor.
    * @param name
@@ -78,8 +79,7 @@ public abstract class AbstractFinderVisitor<T extends IQuestionnaireElement> imp
    */
   public T getFirstElement() {
     if(elements.size() > 0) return elements.get(0);
-    else
-      return null;
+    return null;
   }
 
   /**

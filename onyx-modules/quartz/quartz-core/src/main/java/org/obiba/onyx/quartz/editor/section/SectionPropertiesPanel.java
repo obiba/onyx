@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.section;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
@@ -33,6 +34,12 @@ public class SectionPropertiesPanel extends AbstractQuestionnaireElementPanelFor
     form.add(name);
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
+  }
+
+  @Override
+  public void onSave(AjaxRequestTarget target, Section t) {
+    // TODO Auto-generated method stub
+
   }
 
 }

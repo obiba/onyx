@@ -11,7 +11,6 @@ package org.obiba.onyx.webapp.participant.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -179,7 +178,7 @@ public class UpdateParticipantListWindow extends Dialog {
     content.showResult(updateSucceeded, (updateSucceeded) ? appointmentManagementService.getLastAppointmentUpdateStats() : null);
   }
 
-  private class UpdateParticipantListBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
+  private class UpdateParticipantListBehavior extends AbstractDefaultAjaxBehavior {
     private static final long serialVersionUID = 1L;
 
     public void respond(AjaxRequestTarget target) {

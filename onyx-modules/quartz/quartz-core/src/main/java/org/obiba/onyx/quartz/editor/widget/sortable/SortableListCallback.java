@@ -7,16 +7,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.service.impl;
+package org.obiba.onyx.quartz.editor.widget.sortable;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.apache.wicket.ajax.AjaxRequestTarget;
 
 /**
- * Thrown when authentication fails.
+ *
  */
-public class AuthenticationFailedException extends Exception {
+public abstract class SortableListCallback<T extends Serializable> implements Serializable {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
 
+  public abstract void onSave(List<T> orderedItems, AjaxRequestTarget target);
 }

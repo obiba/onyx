@@ -23,6 +23,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoryColumn.class);
 
   private IModel questionCategoryModel;
@@ -37,7 +42,7 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
   public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
     cellItem.setModel(questionCategoryModel);
     // find the row item index by exploring parents.
-    Item parentItem = (Item) cellItem.findParent(Item.class);
+    Item parentItem = cellItem.findParent(Item.class);
     if(parentItem != null) {
       log.debug("found parentItem.index={}", parentItem.getIndex());
       populateItem(cellItem, componentId, rowModel, parentItem.getIndex());

@@ -114,7 +114,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
 
   @Override
   public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
-    super.onSave(target, questionnaire);
 
     questionnaire.getLocales().clear();
     for(Locale locale : listLocaleModel.getObject()) {

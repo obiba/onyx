@@ -47,7 +47,6 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   @Override
   public void onSave(AjaxRequestTarget target, Category category) {
-    super.onSave(target, category);
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
       category.addVariableName(entries.getKey(), entries.getValue());
     }

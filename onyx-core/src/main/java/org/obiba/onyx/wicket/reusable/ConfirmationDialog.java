@@ -47,7 +47,7 @@ public class ConfirmationDialog extends Dialog {
           if(onNoCallback != null) onNoCallback.onNoButtonClicked(target);
         }
         // Ensure parent dialog doesn't close.
-        Dialog parent = (Dialog) ConfirmationDialog.this.findParent(Dialog.class);
+        Dialog parent = ConfirmationDialog.this.findParent(Dialog.class);
         if(parent != null) parent.setStatus(null);
       }
     });

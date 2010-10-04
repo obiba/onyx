@@ -107,7 +107,7 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     padWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target) {
         // fire event to other selectors in case of exclusive choice
-        IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) SimplifiedOpenAnswerDefinitionPanel.this.findParent(IQuestionCategorySelectionListener.class);
+        IQuestionCategorySelectionListener listener = SimplifiedOpenAnswerDefinitionPanel.this.findParent(IQuestionCategorySelectionListener.class);
         if(listener != null) {
           listener.onQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), !isQuestionCategorySelected());
         }

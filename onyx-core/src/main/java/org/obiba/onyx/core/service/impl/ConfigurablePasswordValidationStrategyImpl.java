@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.core.service.IPasswordValidationStrategy;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
@@ -27,7 +26,7 @@ import org.springframework.context.MessageSourceResolvable;
  * "group" of characters. For example "[abc[def!@]" includes the square bracked character along with "abcdef!@". Set
  * {@code minimumCharacterGroupUsage} to indicate the minimum number of "groups" that must be present in a password.
  */
-public class ConfigurablePasswordValidationStrategyImpl extends AbstractPasswordLengthValidationStrategy implements IPasswordValidationStrategy {
+public class ConfigurablePasswordValidationStrategyImpl extends AbstractPasswordLengthValidationStrategy {
 
   private boolean preventUserAttributeUsage = true;
 
@@ -122,10 +121,10 @@ public class ConfigurablePasswordValidationStrategyImpl extends AbstractPassword
   }
 
   /**
-   * Checks to ensure that the password contains characters from different character groups. The {@code
-   * minimumCharacterGroupsUsage} specifies the minimum number of groups which can be used for a password to be valid.
-   * For example if there are 5 character groups and {@code minimumCharacterGroupsUsage} is set to 4, then only 4 of the
-   * groups need be represented in the password. It does not matter which 4.
+   * Checks to ensure that the password contains characters from different character groups. The
+   * {@code minimumCharacterGroupsUsage} specifies the minimum number of groups which can be used for a password to be
+   * valid. For example if there are 5 character groups and {@code minimumCharacterGroupsUsage} is set to 4, then only 4
+   * of the groups need be represented in the password. It does not matter which 4.
    * @param list Error messages are added to this list.
    * @param password The password being checked.
    */
@@ -155,8 +154,8 @@ public class ConfigurablePasswordValidationStrategyImpl extends AbstractPassword
   }
 
   /**
-   * Returns a char[] of all the allowed characters. The allowed characters are obtained from {@code
-   * allowedCharacterGroups}.
+   * Returns a char[] of all the allowed characters. The allowed characters are obtained from
+   * {@code allowedCharacterGroups}.
    * @return A char[] of all allowed password characters.
    */
   char[] createValidPasswordCharArray() {

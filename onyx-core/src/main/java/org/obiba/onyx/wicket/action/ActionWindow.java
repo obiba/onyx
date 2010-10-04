@@ -27,9 +27,8 @@ import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 public abstract class ActionWindow extends Dialog {
-
-  private static final long serialVersionUID = -3711214735708110972L;
 
   private static final Logger log = LoggerFactory.getLogger(ActionWindow.class);
 
@@ -44,7 +43,6 @@ public abstract class ActionWindow extends Dialog {
 
   private ActionDefinitionPanel content;
 
-  @SuppressWarnings("serial")
   public ActionWindow(String id) {
     super(id);
 
@@ -57,7 +55,7 @@ public abstract class ActionWindow extends Dialog {
 
     setCloseButtonCallback(new CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getWindowContent();
+        ActionDefinitionPanel pane = ActionWindow.this.getWindowContent();
 
         if(status != null && status.equals(Dialog.Status.ERROR)) {
           FeedbackWindow feedback = pane.getFeedback();
@@ -73,7 +71,7 @@ public abstract class ActionWindow extends Dialog {
     setWindowClosedCallback(new WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target, Status status) {
         if(status != null && !status.equals(Dialog.Status.CANCELLED) && !status.equals(Dialog.Status.WINDOW_CLOSED)) {
-          ActionDefinitionPanel pane = (ActionDefinitionPanel) ActionWindow.this.getWindowContent();
+          ActionDefinitionPanel pane = ActionWindow.this.getWindowContent();
           Action action = pane.getAction();
           Stage stage = null;
           if(getDefaultModel() != null && getDefaultModelObject() != null) {
@@ -97,7 +95,6 @@ public abstract class ActionWindow extends Dialog {
    */
   public abstract void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
-  @SuppressWarnings("serial")
   public void show(AjaxRequestTarget target, IModel<Stage> stageModel, ActionDefinition actionDefinition) {
     show(target, stageModel, actionDefinition, null);
   }

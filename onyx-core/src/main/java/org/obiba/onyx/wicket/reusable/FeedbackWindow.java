@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.reusable;
 
-import java.util.List;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -45,8 +43,13 @@ public class FeedbackWindow extends Dialog {
     get("content").add(new AttributeModifier("class", true, new Model("onyx-feedback")));
 
     setWindowClosedCallback(new WindowClosedCallback() {
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       public void onClose(AjaxRequestTarget target, Status status) {
-        Dialog parent = (Dialog) FeedbackWindow.this.findParent(Dialog.class);
+        Dialog parent = FeedbackWindow.this.findParent(Dialog.class);
         if(parent != null) parent.setStatus(null);
       }
     });
@@ -55,7 +58,7 @@ public class FeedbackWindow extends Dialog {
   @Override
   public FeedbackWindow setContent(Component component) {
     FeedbackPanel feedbackPanel = (FeedbackPanel) component;
-    FeedbackMessage feedbackMessage = ((List<FeedbackMessage>) feedbackPanel.getFeedbackMessagesModel().getObject()).get(0);
+    FeedbackMessage feedbackMessage = (feedbackPanel.getFeedbackMessagesModel().getObject()).get(0);
 
     component.add(new AttributeModifier("class", true, new Model("feedback")));
 

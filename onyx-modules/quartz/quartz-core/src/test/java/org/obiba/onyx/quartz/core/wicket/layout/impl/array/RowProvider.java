@@ -16,6 +16,10 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvid
 
 class RowProvider extends AbstractDataListProvider<Row> {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   private List<Row> rows = new ArrayList<Row>();
 
   public RowProvider(int count) {

@@ -35,13 +35,13 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
-import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
+import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -188,9 +188,9 @@ public class QuestionnaireWizardForm extends WizardForm {
 
           private static final long serialVersionUID = -6691702933562884991L;
 
-          public void onYesButtonClicked(AjaxRequestTarget target) {
+          public void onYesButtonClicked(AjaxRequestTarget target1) {
             adminWindow.setStatus(Status.CLOSED);
-            if(adminWindow.getCloseButtonCallback() == null || (adminWindow.getCloseButtonCallback() != null && adminWindow.getCloseButtonCallback().onCloseButtonClicked(target, adminWindow.getStatus()))) adminWindow.close(target);
+            if(adminWindow.getCloseButtonCallback() == null || (adminWindow.getCloseButtonCallback() != null && adminWindow.getCloseButtonCallback().onCloseButtonClicked(target1, adminWindow.getStatus()))) adminWindow.close(target1);
           }
 
         });

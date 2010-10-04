@@ -19,6 +19,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
  */
 public abstract class SpringDetachableModel<T> extends LoadableDetachableModel<T> {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public SpringDetachableModel() {
     super();
     InjectorHolder.getInjector().inject(this);

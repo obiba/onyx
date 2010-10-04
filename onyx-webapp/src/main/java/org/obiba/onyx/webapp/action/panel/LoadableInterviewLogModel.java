@@ -12,7 +12,6 @@ package org.obiba.onyx.webapp.action.panel;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
@@ -25,7 +24,7 @@ import org.obiba.onyx.wicket.model.SpringDetachableModel;
  * {@code setStageName(String stageName)}. Calling {@code clearStageName()} will cause the complete list to be
  * retrieved. The returned values are sorted in ascending order.
  */
-public class LoadableInterviewLogModel extends SpringDetachableModel implements IModel {
+public class LoadableInterviewLogModel extends SpringDetachableModel {
 
   private static final long serialVersionUID = 1L;
 

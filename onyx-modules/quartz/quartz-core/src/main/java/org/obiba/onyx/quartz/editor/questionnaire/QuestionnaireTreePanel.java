@@ -262,7 +262,6 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
-            super.onSave(target, section);
             saveToFiles();
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
@@ -274,7 +273,6 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
-            super.onSave(target, page);
             saveToFiles();
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + page.getName() + "');");
@@ -298,7 +296,6 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new QuestionCategoryPropertiesPanel("content", new Model<QuestionCategory>((QuestionCategory) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, QuestionCategory questionCategory) {
-            super.onSave(target, questionCategory);
             saveToFiles();
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + questionCategory.getName() + "');");

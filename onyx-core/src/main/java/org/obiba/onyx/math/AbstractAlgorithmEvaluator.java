@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator, Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Logger log = LoggerFactory.getLogger(AbstractAlgorithmEvaluator.class);
 
   public static final String CURRENT_DATE = "currentDate";
@@ -66,13 +68,12 @@ public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator,
       String value = operand.getValueAsString();
       if(value == null) {
         return new Double(0d);
-      } else {
-        try {
-          Double d = DataBuilder.build(DataType.DECIMAL, value).getValue();
-          return d;
-        } catch(Exception e) {
-          log.error("Cannot convert: " + operand, e);
-        }
+      }
+      try {
+        Double d = DataBuilder.build(DataType.DECIMAL, value).getValue();
+        return d;
+      } catch(Exception e) {
+        log.error("Cannot convert: " + operand, e);
       }
       break;
     }

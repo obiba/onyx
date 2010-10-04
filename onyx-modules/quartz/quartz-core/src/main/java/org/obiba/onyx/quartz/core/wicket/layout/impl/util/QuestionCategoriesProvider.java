@@ -28,7 +28,6 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategoriesProvider.class);
 
   private IDataListFilter<QuestionCategory> filter;

@@ -68,6 +68,11 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
     value.setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior());
     value.add(new AjaxEventBehavior("onclick") {
 
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         OpenAnswer openAnswer = getOpenAnswer();
@@ -82,6 +87,11 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
     add(padWindow = createPadModalWindow("padModal"));
 
     padWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 1L;
+
       public void onClose(AjaxRequestTarget target) {
         if(getOpenAnswer() == null) {
           activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
@@ -98,6 +108,11 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
     DataType type = getOpenAnswerDefinition().getDataType();
     if(type.equals(DataType.INTEGER) || type.equals(DataType.DECIMAL)) {
       pad = new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel()) {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         @Override
         public boolean isRequired() {
           // is never required because in a array the pad allows deselecting the category when setting a null value
@@ -114,6 +129,11 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
 
       // same as cancel
       padWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public boolean onCloseButtonClicked(AjaxRequestTarget target) {
           return true;
         }

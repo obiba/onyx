@@ -134,7 +134,7 @@ public class QuestionnaireRenderer {
       EasyMock.expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((QuestionCategory) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(null).anyTimes();
       EasyMock.expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(null).anyTimes();
       EasyMock.expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn(null).anyTimes();
-      EasyMock.expect(userSessionServiceMock.getDatePattern()).andReturn(userSessionServiceMock.DEFAULT_DATE_FORMAT_PATTERN).anyTimes();
+      EasyMock.expect(userSessionServiceMock.getDatePattern()).andReturn(UserSessionService.DEFAULT_DATE_FORMAT_PATTERN).anyTimes();
       EasyMock.replay(activeQuestionnaireAdministrationServiceMock);
       EasyMock.replay(userSessionServiceMock);
 

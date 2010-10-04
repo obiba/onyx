@@ -24,7 +24,6 @@ public class QuestionCategorySelectionBehavior extends AbstractBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategorySelectionBehavior.class);
 
   private static final String SELECTED_CSS_CLASS = "ui-state-highlight";
@@ -38,7 +37,7 @@ public class QuestionCategorySelectionBehavior extends AbstractBehavior {
     if(IQuestionCategorySelectionStateHolder.class.isInstance(component)) {
       selector = (IQuestionCategorySelectionStateHolder) component;
     } else {
-      selector = (IQuestionCategorySelectionStateHolder) component.findParent(IQuestionCategorySelectionStateHolder.class);
+      selector = component.findParent(IQuestionCategorySelectionStateHolder.class);
     }
 
     // synchronize the state

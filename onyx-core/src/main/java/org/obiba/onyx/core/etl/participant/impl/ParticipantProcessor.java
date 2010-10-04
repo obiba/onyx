@@ -96,7 +96,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         }
 
         // Participant exists already in database
-      } else if(participant != null) {
+      } else {
         Interview interview = participant.getInterview();
 
         // Validate interview status

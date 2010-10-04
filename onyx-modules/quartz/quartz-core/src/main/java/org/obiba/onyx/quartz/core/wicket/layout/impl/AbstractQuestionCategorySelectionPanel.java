@@ -24,7 +24,10 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionListener {
 
-  @SuppressWarnings("unused")
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategorySelectionPanel.class);
 
   /**
@@ -42,7 +45,6 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * @param id
    * @return
    */
-  @SuppressWarnings("serial")
   protected AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id) {
     AbstractOpenAnswerDefinitionPanel openField;
 
@@ -96,7 +98,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
 
   protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), Boolean.valueOf(isSelected) });
-    IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    IQuestionCategorySelectionListener listener = findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
       listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }

@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.validation;
 
 import java.util.List;
 
-import org.apache.wicket.IClusterable;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * Validates the question choices minimum/maximum count of answers. It uses the settings of the question by default, and
  * if none is found and question parent exists, question parent settings are used.
  */
-public class AnswerCountValidator implements INullAcceptingValidator, IClusterable {
+public class AnswerCountValidator implements INullAcceptingValidator {
 
   private static final long serialVersionUID = 1L;
 
@@ -126,7 +125,7 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
                     if(!found) {
                       ValidationError error = newValidationError(question);
                       error.addMessageKey(KEY_PREFIX + ".OpenRequired");
-                      error.setVariable("open", (String) QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, childOpenAnswerDefinition).getObject());
+                      error.setVariable("open", QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, childOpenAnswerDefinition).getObject());
                       validatable.error(error);
                     }
                   }

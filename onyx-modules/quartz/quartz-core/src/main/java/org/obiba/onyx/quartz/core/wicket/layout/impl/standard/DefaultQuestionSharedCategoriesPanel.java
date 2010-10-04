@@ -47,7 +47,6 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
 
   private static final long serialVersionUID = 5144933183339704600L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionSharedCategoriesPanel.class);
 
   private RadioGroupView radioGroupView;
@@ -121,7 +120,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings( { "serial", "unchecked" })
+    @SuppressWarnings({ "serial", "unchecked" })
     public RadioGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
       super(id, "groupRows", DefaultQuestionSharedCategoriesPanel.this);
       add(radioGroupView = new RadioGroupView(id, (List) columns, rows));
@@ -134,7 +133,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings( { "serial", "unchecked" })
+    @SuppressWarnings({ "serial", "unchecked" })
     public CheckGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
       super(id, "groupRows", DefaultQuestionSharedCategoriesPanel.this);
       add(checkGroupView = new CheckGroupView(id, (List) columns, rows));
@@ -162,7 +161,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     target.addComponent(array);
 
-    IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    IQuestionCategorySelectionListener parentListener = findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }

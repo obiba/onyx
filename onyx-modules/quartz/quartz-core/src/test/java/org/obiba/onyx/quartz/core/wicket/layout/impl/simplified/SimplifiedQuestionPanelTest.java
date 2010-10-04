@@ -713,7 +713,6 @@ public class SimplifiedQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
-  @SuppressWarnings("unused")
   private void dumpPage(String testName) {
     tester.dumpPage();
     File dump = new File("target/" + getClass().getSimpleName() + "-" + testName + ".html");

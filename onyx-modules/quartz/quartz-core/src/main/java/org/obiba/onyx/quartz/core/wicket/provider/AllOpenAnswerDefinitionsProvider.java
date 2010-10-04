@@ -39,9 +39,8 @@ public class AllOpenAnswerDefinitionsProvider extends AbstractQuestionnaireEleme
   private List<OpenAnswerDefinition> getChildOpenAnswerDefinition(OpenAnswerDefinition parentOpenAnswerdefinition) {
     if(parentOpenAnswerdefinition.getOpenAnswerDefinitions().isEmpty()) {
       return Arrays.asList(new OpenAnswerDefinition[] { parentOpenAnswerdefinition });
-    } else {
-      return parentOpenAnswerdefinition.getOpenAnswerDefinitions();
     }
-
+    return parentOpenAnswerdefinition.getOpenAnswerDefinitions();
   }
+
 }

@@ -240,7 +240,7 @@ public class XmlParticipantReader extends AbstractParticipantReader {
       case TEXT:
         String textValue = value;
 
-        if(textValue != null && textValue.trim().length() != 0) {
+        if(textValue.trim().length() != 0) {
           data = DataBuilder.buildText(textValue);
         }
 

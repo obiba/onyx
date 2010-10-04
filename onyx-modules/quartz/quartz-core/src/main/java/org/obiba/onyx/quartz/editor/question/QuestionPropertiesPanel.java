@@ -13,10 +13,8 @@ import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategor
 
 import java.util.List;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
@@ -40,6 +38,7 @@ import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
+import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +60,8 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
   private FormComponent<String> layoutRadioGroup;
 
   private TextField<Integer> nbRowsField;
+
+  private SortableList<QuestionCategory> categoryList;
 
   public QuestionPropertiesPanel(String id, IModel<Question> model, Questionnaire questionnaireParent, final ModalWindow questionWindow) {
     super(id, model, questionnaireParent, questionWindow);
@@ -113,19 +114,10 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
 
-    @SuppressWarnings("hiding")
-    final SortableList<QuestionCategory> categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getQuestionCategories()) {
+    categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getQuestionCategories()) {
       @Override
       public String getItemLabel(QuestionCategory questionCategory) {
         return questionCategory.getCategory().getName();
-      }
-
-      @Override
-      public void onUpdate(Component sortedComponent, int index, AjaxRequestTarget target) {
-        QuestionCategory questionCategory = (QuestionCategory) sortedComponent.getDefaultModelObject();
-        List<QuestionCategory> questionCategories = getForm().getModelObject().getQuestionCategories();
-        questionCategories.remove(questionCategory);
-        questionCategories.add(index, questionCategory);
       }
 
       @Override
@@ -133,14 +125,14 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
         categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), getQuestionnaireParent(), categoryWindow) {
 
           @Override
-          public void onSave(AjaxRequestTarget target, Category category) {
-            super.onSave(target, category);
+          public void onSave(AjaxRequestTarget target1, Category category) {
+            super.onSave(target1, category);
             Question question = QuestionPropertiesPanel.this.getForm().getModelObject();
             QuestionCategory questionCategory = new QuestionCategory();
             questionCategory.setCategory(category);
             // questionCategory.setExportName(exportName); TODO set exportName
             question.addQuestionCategory(questionCategory);
-            refreshList(target);
+            refreshList(target1);
           }
         });
         categoryWindow.show(target);
@@ -150,9 +142,9 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
         categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), getQuestionnaireParent(), categoryWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Category category) {
-            super.onSave(target, category);
-            refreshList(target);
+          public void onSave(AjaxRequestTarget target1, Category category) {
+            super.onSave(target1, category);
+            refreshList(target1);
           }
         });
         categoryWindow.show(target);
@@ -163,23 +155,33 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
         getForm().getModelObject().getQuestionCategories().remove(questionCategory);
         refreshList(target);
       }
+
     };
-    form.add(new WebMarkupContainer("categoryList"));
+    form.add(categoryList);
   }
 
   @Override
-  public void onSave(AjaxRequestTarget target, Question question) {
-    super.onSave(target, question);
+  public void onSave(AjaxRequestTarget target, final Question question) {
 
-    // Layout single or grid
-    // Make sure that the categories are added before this...
-    String layoutSelection = layoutRadioGroup.getModelObject();
-    if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
-    } else if(GRID_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
-    }
+    categoryList.save(target, new SortableListCallback<QuestionCategory>() {
+      @Override
+      public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
+        question.getQuestionCategories().clear();
+        for(QuestionCategory questionCategory : orderedItems) {
+          question.getQuestionCategories().add(questionCategory);
+        }
+
+        // Layout single or grid: make sure that the categories are added before this...
+        String layoutSelection = layoutRadioGroup.getModelObject();
+        if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+          question.clearUIArguments();
+          question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
+        } else if(GRID_LAYOUT.equals(layoutSelection)) {
+          question.clearUIArguments();
+          question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+        }
+      }
+    });
+
   }
 }

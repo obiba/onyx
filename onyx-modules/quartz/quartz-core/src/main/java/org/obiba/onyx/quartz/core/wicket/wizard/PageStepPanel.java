@@ -31,7 +31,6 @@ public class PageStepPanel extends WizardStepPanel implements BeginEndListener {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(PageStepPanel.class);
 
   //

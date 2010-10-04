@@ -152,21 +152,21 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
         public void onClick(AjaxRequestTarget target) {
           final QuestionCommentModalPanel contentPanel = new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getDefaultModel()) {
 
-            protected void onAddComment(AjaxRequestTarget target) {
-              target.addComponent(imageLink);
+            protected void onAddComment(AjaxRequestTarget target1) {
+              target1.addComponent(imageLink);
             }
 
           };
 
           commentWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
-            public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+            public boolean onCloseButtonClicked(AjaxRequestTarget target1, Status status) {
 
               if(status.equals(Status.SUCCESS)) {
                 activeQuestionnaireAdministrationService.setComment((Question) contentPanel.getDefaultModelObject(), contentPanel.getComment());
-                contentPanel.onAddComment(target);
-                commentWindow.close(target);
+                contentPanel.onAddComment(target1);
+                commentWindow.close(target1);
               } else if(status.equals(Status.ERROR)) {
-                contentPanel.displayFeedback(target);
+                contentPanel.displayFeedback(target1);
                 return false;
               }
               return true;

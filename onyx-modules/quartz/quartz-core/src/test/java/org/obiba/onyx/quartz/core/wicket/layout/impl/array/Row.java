@@ -12,6 +12,11 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 import java.io.Serializable;
 
 class Row implements Serializable {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   private String id;
 
   private String label;

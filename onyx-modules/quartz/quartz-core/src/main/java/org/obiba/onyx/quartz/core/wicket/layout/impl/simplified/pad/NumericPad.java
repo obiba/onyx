@@ -48,7 +48,6 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
   public static final String INPUT_SIZE_KEY = "size";
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NumericPad.class);
 
   private DataField valuePressed;

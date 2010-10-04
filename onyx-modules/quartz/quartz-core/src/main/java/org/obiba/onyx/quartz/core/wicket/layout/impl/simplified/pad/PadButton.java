@@ -32,7 +32,7 @@ public class PadButton extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        IPadSelectionListener listener = (IPadSelectionListener) PadButton.this.findParent(IPadSelectionListener.class);
+        IPadSelectionListener listener = PadButton.this.findParent(IPadSelectionListener.class);
         if(listener != null) {
           listener.onPadSelection(target, PadButton.this.getDefaultModel());
         }

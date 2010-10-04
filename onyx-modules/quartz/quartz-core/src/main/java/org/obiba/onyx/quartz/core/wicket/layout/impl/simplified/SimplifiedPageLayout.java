@@ -120,14 +120,14 @@ public class SimplifiedPageLayout extends PageLayout {
   }
 
   private void updateProgressBar() {
-    QuestionnaireWizardForm form = (QuestionnaireWizardForm) findParent(QuestionnaireWizardForm.class);
+    QuestionnaireWizardForm form = findParent(QuestionnaireWizardForm.class);
     form.updateProgressBar(form);
     form.showProgressBar(true);
   }
 
   private void enableModalFeedback(boolean isEnable) {
     log.debug("Modal Feedback is enabled = {}", isEnable);
-    QuestionnaireWizardForm form = (QuestionnaireWizardForm) findParent(QuestionnaireWizardForm.class);
+    QuestionnaireWizardForm form = findParent(QuestionnaireWizardForm.class);
     form.setModalFeedback(isEnable);
   }
 

@@ -43,7 +43,6 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
   private static final long serialVersionUID = 5144933183339704600L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
 
   @SpringBean

@@ -82,11 +82,21 @@ public class ArrayExample extends Panel {
       super(id, "radioRows", ArrayExample.this);
       add(new RadioGroupView(id, (List) columns, rows) {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         @Override
         protected RadioGroup newGroup(String id, int index) {
           RadioGroup group = super.newGroup(id, index);
           // add ajax call back on group
           group.add(new AjaxFormChoiceComponentUpdatingBehavior() {
+
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 1L;
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -102,6 +112,11 @@ public class ArrayExample extends Panel {
   }
 
   private static class RadioPanel extends Panel implements IMarkupResourceStreamProvider {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     public RadioPanel(String id, IModel model) {
       super(id, model);
