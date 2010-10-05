@@ -23,8 +23,8 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 @SuppressWarnings("serial")
 public class PagePropertiesPanel extends AbstractQuestionnaireElementPanelForm<Page> {
 
-  public PagePropertiesPanel(String id, IModel<Page> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
-    super(id, model, questionnaireParent, modalWindow);
+  public PagePropertiesPanel(String id, IModel<Page> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+    super(id, model, questionnaireModel, modalWindow);
     createComponent();
   }
 

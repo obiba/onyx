@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -232,7 +233,7 @@ public class WorkstationPanel extends Panel {
           if(experimentalConditionService.instrumentCalibrationExists(instrumentMType.getType())) {
             ExperimentalCondition calibration = getLatestInstrumentMeasurementTypeCalibration(instrumentMType);
             if(calibration != null) {
-              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<InstrumentMeasurementTypeListColumnProvider>(InstrumentMeasurementTypeListColumnProvider.this, "dateTimeFormat"), new Model(calibration.getTime()))));
+              cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<DateFormat>(InstrumentMeasurementTypeListColumnProvider.this, "dateTimeFormat"), new Model<Date>(calibration.getTime()))));
               return;
             }
           }

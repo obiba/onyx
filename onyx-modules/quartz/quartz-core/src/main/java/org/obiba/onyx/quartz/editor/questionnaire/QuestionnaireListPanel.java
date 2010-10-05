@@ -93,7 +93,7 @@ public class QuestionnaireListPanel extends Panel {
     });
     add(layoutWindow);
 
-    add(new OnyxEntityList<User>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
+    add(new OnyxEntityList<Questionnaire>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
   }
 
   protected class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
@@ -116,10 +116,6 @@ public class QuestionnaireListPanel extends Panel {
     @Override
     public IModel<Questionnaire> model(Questionnaire questionnaire) {
       return new Model<Questionnaire>(questionnaire);
-    }
-
-    @Override
-    public void detach() {
     }
 
   }

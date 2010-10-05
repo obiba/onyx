@@ -80,9 +80,8 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
         if(dataType.equals(DataType.DECIMAL)) {
           return DataBuilder.buildDecimal(d);
-        } else {
-          return DataBuilder.buildInteger(Long.valueOf(Math.round(d)));
         }
+        return DataBuilder.buildInteger(Long.valueOf(Math.round(d)));
 
       }
     } catch(RuntimeException e) {

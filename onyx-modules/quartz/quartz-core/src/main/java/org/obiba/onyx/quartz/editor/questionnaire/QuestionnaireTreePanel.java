@@ -94,6 +94,8 @@ public class QuestionnaireTreePanel extends Panel {
     elementWindow = new ModalWindow("elementWindow");
     elementWindow.setCssClassName("onyx");
     elementWindow.setResizable(true);
+    elementWindow.setInitialWidth(1000);
+    elementWindow.setInitialHeight(600);
     elementWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
@@ -239,6 +241,7 @@ public class QuestionnaireTreePanel extends Panel {
   @SuppressWarnings("hiding")
   // TODO refactoring
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
+    @SuppressWarnings("unchecked")
     @Override
     protected void respond(final AjaxRequestTarget target) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
@@ -259,7 +262,7 @@ public class QuestionnaireTreePanel extends Panel {
       }
       if(element instanceof Section) {
         elementWindow.setTitle(new ResourceModel("Section"));
-        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
             saveToFiles();
@@ -270,7 +273,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(target);
       } else if(element instanceof Page) {
         elementWindow.setTitle(new ResourceModel("Page"));
-        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
             saveToFiles();
@@ -281,7 +284,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(target);
       } else if(element instanceof Question) {
         elementWindow.setTitle(new ResourceModel("Question"));
-        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Question question) {
             super.onSave(target, question);
@@ -293,7 +296,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(target);
       } else if(element instanceof QuestionCategory) {
         elementWindow.setTitle(new ResourceModel("QuestionCategory"));
-        elementWindow.setContent(new QuestionCategoryPropertiesPanel("content", new Model<QuestionCategory>((QuestionCategory) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new QuestionCategoryPropertiesPanel("content", new Model<QuestionCategory>((QuestionCategory) element), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, QuestionCategory questionCategory) {
             saveToFiles();
@@ -306,7 +309,7 @@ public class QuestionnaireTreePanel extends Panel {
 
       else if(element instanceof Category) {
         elementWindow.setTitle(new StringResourceModel("Category", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>((Category) element), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>((Category) element), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Category category) {
             super.onSave(target, category);
@@ -321,6 +324,7 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class DeleteBehavior extends AbstractDefaultAjaxBehavior {
+    @SuppressWarnings("unchecked")
     @Override
     protected void respond(AjaxRequestTarget target) {
       String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
@@ -354,14 +358,14 @@ public class QuestionnaireTreePanel extends Panel {
         }
       }
       // TODO temporary
-      new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject())), elementWindow).saveToFiles();
+      new QuestionnairePropertiesPanel("content", (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow).saveToFiles();
       // remove node from jsTree
       target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
     }
   }
 
-  @SuppressWarnings("hiding")
   protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
+    @SuppressWarnings("unchecked")
     @Override
     protected void respond(final AjaxRequestTarget target) {
       Request request = RequestCycle.get().getRequest();
@@ -371,33 +375,33 @@ public class QuestionnaireTreePanel extends Panel {
       final IQuestionnaireElement element = elements.get(nodeId);
       if((element instanceof Questionnaire || element instanceof Section) && "section".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Section section) {
-            super.onSave(target, section);
+          public void onSave(AjaxRequestTarget target1, Section section) {
+            super.onSave(target1, section);
             if(element instanceof Questionnaire) {
               ((Questionnaire) element).addSection(section);
             } else if(element instanceof Section) {
               ((Section) element).addSection(section);
             }
             saveToFiles();
-            target.addComponent(treeContainer);
+            target1.addComponent(treeContainer);
           }
         });
         elementWindow.show(target);
       } else if((element instanceof Questionnaire || element instanceof Section) && "page".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Page page) {
-            super.onSave(target, page);
+          public void onSave(AjaxRequestTarget target1, Page page) {
+            super.onSave(target1, page);
             if(element instanceof Questionnaire) {
               ((Questionnaire) element).addPage(page);
             } else if(element instanceof Section) {
               ((Section) element).addPage(page);
             }
             saveToFiles();
-            target.addComponent(treeContainer);
+            target1.addComponent(treeContainer);
           }
         });
         elementWindow.show(target);
@@ -409,13 +413,13 @@ public class QuestionnaireTreePanel extends Panel {
         for(Locale locale : ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getLocales()) {
           listLocaleProperties.add(new LocaleProperties(locale, newQuestion));
         }
-        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(newQuestion), ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()), elementWindow) {
+        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(newQuestion), (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Question question) {
-            super.onSave(target, question);
+          public void onSave(AjaxRequestTarget target1, Question question) {
+            super.onSave(target1, question);
             ((Page) element).addQuestion(question);
             saveToFiles();
-            target.addComponent(treeContainer);
+            target1.addComponent(treeContainer);
           }
         });
         elementWindow.show(target);

@@ -15,7 +15,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -28,12 +28,9 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
   private VariableNamesPanel variableNamesPanel;
 
-  public CategoryPropertiesPanel(String id, Model<Category> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
-    super(id, model, questionnaireParent, modalWindow);
-    createComponent();
-  }
+  public CategoryPropertiesPanel(String id, IModel<Category> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+    super(id, model, questionnaireModel, modalWindow);
 
-  public void createComponent() {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
     form.add(name);

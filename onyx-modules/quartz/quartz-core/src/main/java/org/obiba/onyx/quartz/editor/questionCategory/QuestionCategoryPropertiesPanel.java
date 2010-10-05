@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 @SuppressWarnings("serial")
 public class QuestionCategoryPropertiesPanel extends AbstractQuestionnaireElementPanelForm<QuestionCategory> {
 
-  public QuestionCategoryPropertiesPanel(String id, IModel<QuestionCategory> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
+  public QuestionCategoryPropertiesPanel(String id, IModel<QuestionCategory> model, IModel<Questionnaire> questionnaireParent, ModalWindow modalWindow) {
     super(id, model, questionnaireParent, modalWindow);
     createComponent();
   }

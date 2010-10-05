@@ -55,8 +55,8 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private List<Class<? extends IValidator>> iValidatorsAvailable = Arrays.asList(MaximumValidator.class, MinimumValidator.class, RangeValidator.class);
 
-  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
-    super(id, model, questionnaireParent, modalWindow);
+  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+    super(id, model, questionnaireModel, modalWindow);
     createComponent();
   }
 

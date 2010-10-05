@@ -19,17 +19,17 @@ public class OnyxEntityList<T> extends EntityListTablePanel<T> {
 
   private static final long serialVersionUID = 7891474467194294293L;
 
-  public OnyxEntityList(String id, EntityQueryService queryService, Class<T> type, IColumnProvider columns, IModel title) {
+  public OnyxEntityList(String id, EntityQueryService queryService, Class<T> type, IColumnProvider<T> columns, IModel<String> title) {
     super(id, queryService, type, columns, title);
     setAllowColumnSelection(false);
   }
 
-  public OnyxEntityList(String id, EntityQueryService queryService, T template, IColumnProvider columns, IModel title) {
+  public OnyxEntityList(String id, EntityQueryService queryService, T template, IColumnProvider<T> columns, IModel<String> title) {
     super(id, queryService, template, columns, title);
     setAllowColumnSelection(false);
   }
 
-  public OnyxEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
+  public OnyxEntityList(String id, SortableDataProvider<T> dataProvider, IColumnProvider<T> columns, IModel<String> title) {
     super(id, dataProvider, columns, title, 50);
     setAllowColumnSelection(false);
   }

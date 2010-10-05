@@ -23,13 +23,13 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 @SuppressWarnings("serial")
 public class SectionPropertiesPanel extends AbstractQuestionnaireElementPanelForm<Section> {
 
-  public SectionPropertiesPanel(String id, IModel<Section> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
-    super(id, model, questionnaireParent, modalWindow);
+  public SectionPropertiesPanel(String id, IModel<Section> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+    super(id, model, questionnaireModel, modalWindow);
     createComponent();
   }
 
   public void createComponent() {
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(super.getDefaultModel(), "name"), String.class);
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(getDefaultModel(), "name"), String.class);
     name.add(new RequiredFormFieldBehavior());
     form.add(name);
 

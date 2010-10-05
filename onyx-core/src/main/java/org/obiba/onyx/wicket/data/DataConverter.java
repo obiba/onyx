@@ -88,9 +88,8 @@ public class DataConverter implements IConverter {
     if(type.equals(DataType.DATE)) {
       Date date = data.getValue();
       return getDateConverter().convertToString(date, locale);
-    } else {
-      return data.getValueAsString();
     }
+    return data.getValueAsString();
   }
 
   public IConverter getDateConverter() {

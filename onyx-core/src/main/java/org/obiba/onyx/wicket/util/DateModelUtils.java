@@ -9,69 +9,66 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.util;
 
-import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.wicket.Session;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebSession;
 
 public class DateModelUtils {
 
-  public static IModel getShortDateTimeModel(IModel dateModel) {
+  public static IModel<String> getShortDateTimeModel(IModel<Date> dateModel) {
     return new FormatingDateTimeModel(DateFormat.SHORT, dateModel);
   }
 
-  public static IModel getDateTimeModel(IModel dateModel) {
+  public static IModel<String> getDateTimeModel(IModel<Date> dateModel) {
     return new FormatingDateTimeModel(DateFormat.MEDIUM, dateModel);
   }
 
-  public static IModel getDateTimeModel(IModel formatModel, IModel dateModel) {
+  public static IModel<String> getDateTimeModel(IModel<DateFormat> formatModel, IModel<Date> dateModel) {
     return new FormatingDateTimeModel(formatModel, dateModel);
   }
 
-  public static IModel getShortDateModel(IModel dateModel) {
+  public static IModel<String> getShortDateModel(IModel<Date> dateModel) {
     return new FormatingDateModel(DateFormat.SHORT, dateModel);
   }
 
-  public static IModel getDateModel(IModel dateModel) {
+  public static IModel<String> getDateModel(IModel<Date> dateModel) {
     return new FormatingDateModel(DateFormat.MEDIUM, dateModel);
   }
 
-  public static IModel getDateModel(IModel formatModel, IModel dateModel) {
+  public static IModel<String> getDateModel(IModel<DateFormat> formatModel, IModel<Date> dateModel) {
     return new FormatingDateModel(formatModel, dateModel);
   }
 
-  private static class FormatingDateTimeModel extends Model {
+  private static class FormatingDateTimeModel extends Model<String> {
 
     private static final long serialVersionUID = 0L;
 
-    IModel formatModel;
+    IModel<DateFormat> formatModel;
 
     int format;
 
-    IModel dateModel;
+    IModel<Date> dateModel;
 
-    FormatingDateTimeModel(int dateFormat, IModel dateModel) {
+    FormatingDateTimeModel(int dateFormat, IModel<Date> dateModel) {
       this.format = dateFormat;
       this.dateModel = dateModel;
     }
 
-    FormatingDateTimeModel(IModel formatModel, IModel dateModel) {
+    FormatingDateTimeModel(IModel<DateFormat> formatModel, IModel<Date> dateModel) {
       this.formatModel = formatModel;
       this.dateModel = dateModel;
     }
 
     @Override
-    public Serializable getObject() {
-      Date date = (Date) dateModel.getObject();
+    public String getObject() {
+      Date date = dateModel.getObject();
 
       if(date != null) {
         if(formatModel != null) {
-          DateFormat dateFormat = (DateFormat) formatModel.getObject();
+          DateFormat dateFormat = formatModel.getObject();
 
           if(dateFormat != null) {
             return dateFormat.format(date);
@@ -84,35 +81,33 @@ public class DateModelUtils {
     }
   }
 
-  private static class FormatingDateModel extends Model {
+  private static class FormatingDateModel extends Model<String> {
 
     private static final long serialVersionUID = 0L;
 
-    SimpleDateFormat formatter;
-
-    IModel formatModel;
+    IModel<DateFormat> formatModel;
 
     int format;
 
-    IModel dateModel;
+    IModel<Date> dateModel;
 
-    FormatingDateModel(int dateFormat, IModel dateModel) {
+    FormatingDateModel(int dateFormat, IModel<Date> dateModel) {
       this.format = dateFormat;
       this.dateModel = dateModel;
     }
 
-    FormatingDateModel(IModel formatModel, IModel dateModel) {
+    FormatingDateModel(IModel<DateFormat> formatModel, IModel<Date> dateModel) {
       this.formatModel = formatModel;
       this.dateModel = dateModel;
     }
 
     @Override
-    public Serializable getObject() {
-      Date date = (Date) dateModel.getObject();
+    public String getObject() {
+      Date date = dateModel.getObject();
 
       if(date != null) {
         if(formatModel != null) {
-          DateFormat dateFormat = (DateFormat) formatModel.getObject();
+          DateFormat dateFormat = formatModel.getObject();
 
           if(dateFormat != null) {
             return dateFormat.format(date);

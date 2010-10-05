@@ -55,18 +55,19 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
 
   protected ListModel<LocaleProperties> localePropertiesModel;
 
-  protected Questionnaire questionnaireParent;
+  protected IModel<Questionnaire> questionnaireModel;
 
-  public AbstractQuestionnaireElementPanelForm(String id, IModel<T> model, Questionnaire questionnaireParent, ModalWindow modalWindow) {
+  public AbstractQuestionnaireElementPanelForm(String id, IModel<T> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
     super(id, model);
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-    if(questionnaireParent != null) {
-      for(Locale locale : questionnaireParent.getLocales()) {
+    if(questionnaireModel != null) {
+      Questionnaire questionnaire = questionnaireModel.getObject();
+      for(Locale locale : questionnaire.getLocales()) {
         LocaleProperties localeProperties = new LocaleProperties(locale, model.getObject());
         List<String> values = new ArrayList<String>();
         for(String property : localeProperties.getKeys()) {
           if(StringUtils.isNotBlank(model.getObject().getName())) {
-            QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaireParent.getName());
+            QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
             if(bundle != null) {
               String message = QuestionnaireStringResourceModelHelper.getNonRecursiveMessage(bundle, model.getObject(), property, new Object[0], locale);
               values.add(message);
@@ -78,7 +79,7 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
       }
     }
     localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
-    this.questionnaireParent = questionnaireParent;
+    this.questionnaireModel = questionnaireModel;
     this.modalWindow = modalWindow;
 
     feedbackPanel = new FeedbackPanel("content");
@@ -138,14 +139,13 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
   }
 
   public void saveToFiles() {
-    File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
-    File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
-
     try {
-      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance((questionnaireParent != null ? questionnaireParent : (Questionnaire) getDefaultModelObject())), getLocalePropertiesToMap());
+      File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
+      File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
+      Questionnaire questionnaire = questionnaireModel == null || questionnaireModel.getObject() == null ? (Questionnaire) getDefaultModelObject() : questionnaireModel.getObject();
+      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance(questionnaire), getLocalePropertiesToMap());
     } catch(IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new RuntimeException("Cannot save questionnaire to file", e);
     }
   }
 
@@ -153,8 +153,8 @@ public abstract class AbstractQuestionnaireElementPanelForm<T extends IQuestionn
     return form;
   }
 
-  public Questionnaire getQuestionnaireParent() {
-    return questionnaireParent;
+  public IModel<Questionnaire> getQuestionnaireModel() {
+    return questionnaireModel;
   }
 
 }

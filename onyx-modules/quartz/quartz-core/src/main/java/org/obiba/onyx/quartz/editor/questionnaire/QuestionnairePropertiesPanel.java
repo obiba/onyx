@@ -45,7 +45,7 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
   private ListModel<Locale> listLocaleModel;
 
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, ModalWindow modalWindow) {
-    super(id, model, model.getObject(), modalWindow);
+    super(id, model, model, modalWindow);
     createComponent();
   }
 

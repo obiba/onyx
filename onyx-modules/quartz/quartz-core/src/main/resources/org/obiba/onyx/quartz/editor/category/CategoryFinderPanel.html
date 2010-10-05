@@ -1,0 +1,38 @@
+<wicket:panel>
+
+	<span wicket:id="feedback" />
+		
+	<table id="categoryFinder" wicket:id="finderType" >
+		<tr>
+			<td><input wicket:id="newCategory" type="radio" /></td>
+			<td><label wicket:id="newCategoryLabel">newCategoryLabel</label></td>
+			<td> </td>
+		</tr>
+		<tr>
+			<td><input wicket:id="categoryFinder" type="radio" /></td>
+			<td><label wicket:id="categoryFinderLabel">categoryFinderLabel</label></td>
+			<td><input wicket:id="categoryName" type="text" /></td>
+		</tr>
+		<tr wicket:id="categoryListContainer">
+			<td> </td>
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			<td><input wicket:id="questionFinder" type="radio" /></td>
+			<td><label wicket:id="questionFinderLabel">questionFinderLabel</label></td>
+			<td><input wicket:id="questionName" type="text" /></td>
+		</tr>
+		<tr wicket:id="questionListContainer">
+			<td> </td>
+			<td colspan="2"><span wicket:id="questionList" /></td>
+		</tr>
+	</table>
+	
+	<form wicket:id="form" autocomplete="off">
+		<div class="modal-footer">
+			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
+			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
+		</div>			
+	</form>
+		
+</wicket:panel>

@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.workstation;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,7 +224,7 @@ public class ExperimentalConditionHistoryPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         public void populateItem(Item<ICellPopulator<ExperimentalCondition>> cellItem, String componentId, IModel<ExperimentalCondition> rowModel) {
-          cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<ExperimentalConditionColumnProvider>(ExperimentalConditionColumnProvider.this, "dateTimeFormat"), new PropertyModel<ExperimentalCondition>(rowModel, "time"))));
+          cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<DateFormat>(ExperimentalConditionColumnProvider.this, "dateTimeFormat"), new PropertyModel<Date>(rowModel, "time"))));
         }
 
       });
