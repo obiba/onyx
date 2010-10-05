@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.editor.category;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,14 +85,17 @@ public abstract class CategoryFinderPanel extends Panel {
     final WebMarkupContainer categoryListContainer = new WebMarkupContainer("categoryListContainer");
     categoryListContainer.setOutputMarkupId(true);
     categoryListContainer.setVisible(false);
-    // categoryListContainer.add(new OnyxEntityList<User>("categoryList", new CategoryProvider(), new
-    // CategoryListColumnProvider(), new ResourceModel("Categories")));
+
+    final EntityListTablePanel<CategoryEntity> categoryList = new EntityListTablePanel<CategoryEntity>("categoryList", new CategoryProvider(), new CategoryListColumnProvider(), new ResourceModel("Categories"), 50);
+    categoryList.setDisplayRowSelectionColumn(true);
+    categoryList.setAllowColumnSelection(false);
+    categoryListContainer.add(categoryList);
     radioGroup.add(categoryListContainer);
 
     categoryName.add(new AjaxFormComponentUpdatingBehavior("onkeyup") {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        target.addComponent(categoryListContainer);
+        target.addComponent(categoryList);
       }
     });
 
@@ -111,6 +115,7 @@ public abstract class CategoryFinderPanel extends Panel {
 
     final EntityListTablePanel<QuestionCategoryEntity> questionList = new EntityListTablePanel<QuestionCategoryEntity>("questionList", new QuestionProvider(), new QuestionListColumnProvider(), new ResourceModel("Questions"), 50);
     questionList.setDisplayRowSelectionColumn(true);
+    questionList.setAllowColumnSelection(false);
     questionListContainer.add(questionList);
 
     questionName.add(new AjaxFormComponentUpdatingBehavior("onkeyup") {
@@ -130,6 +135,8 @@ public abstract class CategoryFinderPanel extends Panel {
         categoryListContainer.setVisible(searchCategory);
         questionName.setVisible(searchQuestion);
         questionListContainer.setVisible(searchQuestion);
+        if(searchCategory) questionList.clearSelections();
+        if(searchQuestion) categoryList.clearSelections();
         target.addComponent(radioGroup);
       }
     });
@@ -147,8 +154,15 @@ public abstract class CategoryFinderPanel extends Panel {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
         List<Category> categories = new ArrayList<Category>();
-        for(IEntity selected : questionList.getSelectedEntities()) {
-          categories.add(((QuestionCategoryEntity) selected).getQuestionCategory().getCategory());
+        String selection = radioGroup.getModelObject();
+        if(selection.equals(categoryRadio.getModelObject())) {
+          for(IEntity selected : categoryList.getSelectedEntities()) {
+            categories.add(((CategoryEntity) selected).getCategory());
+          }
+        } else if(selection.equals(questionRadio.getModelObject())) {
+          for(IEntity selected : questionList.getSelectedEntities()) {
+            categories.add(((QuestionCategoryEntity) selected).getQuestionCategory().getCategory());
+          }
         }
         modalWindow.close(target);
         onSave(target, categories);
@@ -171,6 +185,97 @@ public abstract class CategoryFinderPanel extends Panel {
   }
 
   public abstract void onSave(AjaxRequestTarget target, List<Category> categories);
+
+  private class CategoryProvider extends SortableDataProvider<CategoryEntity> {
+
+    private String lastSearch;
+
+    private List<String> categoryNames = new ArrayList<String>();
+
+    private Map<String, Category> categories = new HashMap<String, Category>();
+
+    private List<CategoryEntity> categoryEntities = new ArrayList<CategoryEntity>();
+
+    public CategoryProvider() {
+      Questionnaire questionnaire = questionnaireModel.getObject();
+      if(questionnaire.getQuestionnaireCache() == null) {
+        QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+      }
+      for(QuestionCategory questionCategory : questionnaire.getQuestionnaireCache().getQuestionCategoryCache().values()) {
+        Category category = questionCategory.getCategory();
+        if(!categoryNames.contains(category.getName())) {
+          categoryNames.add(category.getName());
+          categories.put(category.getName(), category);
+        }
+      }
+      for(Category category : ((Question) CategoryFinderPanel.this.getDefaultModelObject()).getCategories()) {
+        String name = category.getName();
+        categoryNames.remove(name);
+        categories.remove(name);
+      }
+      Collections.sort(categoryNames);
+    }
+
+    @Override
+    public Iterator<CategoryEntity> iterator(int first, int count) {
+      search();
+      return categoryEntities.subList(first, Math.min(first + count, categoryEntities.size())).iterator();
+    }
+
+    @Override
+    public int size() {
+      search();
+      return categoryEntities.size();
+    }
+
+    @Override
+    public IModel<CategoryEntity> model(CategoryEntity category) {
+      return new Model<CategoryEntity>(category);
+    }
+
+    private void search() {
+      String query = categoryName.getModelObject();
+      if(StringUtils.isNotBlank(query) && !StringUtils.equalsIgnoreCase(lastSearch, query)) {
+        categoryEntities.clear();
+        for(String name : categoryNames) {
+          if(name.toLowerCase().startsWith(query.toLowerCase())) {
+            CategoryEntity categoryEntity = new CategoryEntity(categories.get(name));
+            if(!categoryEntities.contains(categoryEntity)) categoryEntities.add(categoryEntity);
+          }
+        }
+        lastSearch = query;
+      }
+    }
+  }
+
+  private class CategoryListColumnProvider implements IColumnProvider<CategoryEntity>, Serializable {
+
+    private final List<IColumn<CategoryEntity>> columns = new ArrayList<IColumn<CategoryEntity>>();
+
+    public CategoryListColumnProvider() {
+      columns.add(new PropertyColumn<CategoryEntity>(new StringResourceModel("Category", CategoryFinderPanel.this, null), "category.name"));
+    }
+
+    @Override
+    public List<IColumn<CategoryEntity>> getAdditionalColumns() {
+      return null;
+    }
+
+    @Override
+    public List<String> getColumnHeaderNames() {
+      return null;
+    }
+
+    @Override
+    public List<IColumn<CategoryEntity>> getDefaultColumns() {
+      return columns;
+    }
+
+    @Override
+    public List<IColumn<CategoryEntity>> getRequiredColumns() {
+      return columns;
+    }
+  }
 
   private class QuestionProvider extends SortableDataProvider<QuestionCategoryEntity> {
 
@@ -214,9 +319,9 @@ public abstract class CategoryFinderPanel extends Panel {
       String query = questionName.getModelObject();
       if(StringUtils.isNotBlank(query) && !StringUtils.equalsIgnoreCase(lastSearch, query)) {
         questions.clear();
+        Question question = (Question) CategoryFinderPanel.this.getDefaultModelObject();
         for(String name : questionNames) {
           if(name.toLowerCase().startsWith(query.toLowerCase())) {
-            Question question = (Question) CategoryFinderPanel.this.getDefaultModelObject();
             for(QuestionCategory questionCategory : questionCache.get(name).getQuestionCategories()) {
               if(!question.getQuestionCategories().contains(questionCategory)) {
                 QuestionCategoryEntity categoryEntity = new QuestionCategoryEntity(questionCategory);
@@ -258,6 +363,39 @@ public abstract class CategoryFinderPanel extends Panel {
     public List<IColumn<QuestionCategoryEntity>> getRequiredColumns() {
       return columns;
     }
+  }
+
+  private class CategoryEntity implements IEntity {
+
+    private final Category category;
+
+    public CategoryEntity(Category category) {
+      this.category = category;
+    }
+
+    @Override
+    public Serializable getId() {
+      return category.getName();
+    }
+
+    @Override
+    public void setId(Serializable id) {
+    }
+
+    @Override
+    public int hashCode() {
+      return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return getId().equals(((IEntity) obj).getId());
+    }
+
+    public Category getCategory() {
+      return category;
+    }
+
   }
 
   private class QuestionCategoryEntity implements IEntity {
