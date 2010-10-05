@@ -68,11 +68,6 @@ public abstract class CategoryFinderPanel extends Panel {
     radioGroup.setOutputMarkupId(true);
     add(radioGroup);
 
-    final Radio<String> newCategoryRadio = new Radio<String>("newCategory", new Model<String>("newCategory"));
-    newCategoryRadio.setLabel(new ResourceModel("NewCategory"));
-    radioGroup.add(newCategoryRadio);
-    radioGroup.add(new SimpleFormComponentLabel("newCategoryLabel", newCategoryRadio));
-
     final Radio<String> categoryRadio = new Radio<String>("categoryFinder", new Model<String>("category"));
     categoryRadio.setLabel(new ResourceModel("FindByCategory"));
     radioGroup.add(categoryRadio);

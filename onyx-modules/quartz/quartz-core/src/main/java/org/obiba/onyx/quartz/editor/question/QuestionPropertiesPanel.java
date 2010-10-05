@@ -116,33 +116,63 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
 
     categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getQuestionCategories()) {
+
+      @Override
+      @SuppressWarnings({ "rawtypes", "unchecked" })
+      public SortableList<QuestionCategory>.Button[] getButtons() {
+
+        SortableList<QuestionCategory>.Button addButton = new SortableList.Button(new StringResourceModel("AddCategory", QuestionPropertiesPanel.this, null)) {
+
+          @Override
+          public void callback(AjaxRequestTarget target) {
+            categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), new Model<QuestionCategory>(new QuestionCategory()), getQuestionnaireModel(), categoryWindow) {
+
+              @Override
+              public void onSave(AjaxRequestTarget target1, Category category) {
+                super.onSave(target1, category);
+                QuestionCategory questionCategory = new QuestionCategory();
+                questionCategory.setCategory(category);
+                // questionCategory.setExportName(exportName); TODO set exportName
+                QuestionPropertiesPanel.this.getForm().getModelObject().addQuestionCategory(questionCategory);
+                refreshList(target1);
+              }
+            });
+            categoryWindow.show(target);
+          }
+        };
+
+        SortableList<QuestionCategory>.Button addExistingButton = new SortableList.Button(new StringResourceModel("AddExistingCategory", QuestionPropertiesPanel.this, null)) {
+
+          @Override
+          public void callback(AjaxRequestTarget target) {
+            categoryWindow.setContent(new CategoryFinderPanel("content", (IModel<Question>) QuestionPropertiesPanel.this.getDefaultModel(), getQuestionnaireModel(), categoryWindow) {
+              @Override
+              public void onSave(AjaxRequestTarget target1, List<Category> categories) {
+                Question question = QuestionPropertiesPanel.this.getForm().getModelObject();
+                for(Category category : categories) {
+                  QuestionCategory questionCategory = new QuestionCategory();
+                  questionCategory.setCategory(category);
+                  // questionCategory.setExportName(exportName); TODO set exportName
+                  question.addQuestionCategory(questionCategory);
+                }
+                refreshList(target1);
+              }
+            });
+            categoryWindow.show(target);
+          }
+        };
+
+        return new SortableList.Button[] { addButton, addExistingButton };
+      }
+
       @Override
       public String getItemLabel(QuestionCategory questionCategory) {
         return questionCategory.getCategory().getName();
       }
 
       @Override
-      @SuppressWarnings("unchecked")
-      public void addItem(AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryFinderPanel("content", (IModel<Question>) QuestionPropertiesPanel.this.getDefaultModel(), getQuestionnaireParentModel(), categoryWindow) {
-          @Override
-          public void onSave(AjaxRequestTarget target1, List<Category> categories) {
-            Question question = QuestionPropertiesPanel.this.getForm().getModelObject();
-            for(Category category : categories) {
-              QuestionCategory questionCategory = new QuestionCategory();
-              questionCategory.setCategory(category);
-              // questionCategory.setExportName(exportName); TODO set exportName
-              question.addQuestionCategory(questionCategory);
-            }
-            refreshList(target1);
-          }
-        });
-        categoryWindow.show(target);
-      }
-
-      @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), new Model<QuestionCategory>(questionCategory), getQuestionnaireParentModel(), categoryWindow) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), new Model<QuestionCategory>(questionCategory), getQuestionnaireModel(), categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Category category) {
             super.onSave(target1, category);

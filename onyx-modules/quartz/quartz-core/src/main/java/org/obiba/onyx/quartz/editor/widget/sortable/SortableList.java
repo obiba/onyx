@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.widget.sortable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,9 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.springframework.util.StringUtils;
 
 @SuppressWarnings("serial")
@@ -84,10 +87,9 @@ public abstract class SortableList<T extends Serializable> extends Panel {
       }
     });
 
-    add(new AjaxLink<Void>("addItem") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        addItem(target);
+    add(new ListView<Button>("buttons", Arrays.asList(getButtons())) {
+      protected void populateItem(ListItem<Button> item) {
+        item.add(new ButtonFragment("button", item.getModel()));
       }
     });
 
@@ -130,10 +132,41 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
   public abstract String getItemLabel(T t);
 
-  public abstract void addItem(AjaxRequestTarget target);
-
   public abstract void editItem(T t, AjaxRequestTarget target);
 
   public abstract void deleteItem(T t, AjaxRequestTarget target);
+
+  public abstract Button[] getButtons();
+
+  public abstract class Button implements Serializable {
+
+    private IModel<String> title;
+
+    public Button(IModel<String> title) {
+      this.title = title;
+    }
+
+    public abstract void callback(AjaxRequestTarget target);
+
+    public IModel<String> getTitle() {
+      return title;
+    }
+
+  }
+
+  public class ButtonFragment extends Fragment {
+
+    public ButtonFragment(String id, IModel<Button> model) {
+      super(id, "buttonFragment", SortableList.this, model);
+      final Button button = model.getObject();
+      add(new AjaxLink<Void>("button") {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          button.callback(target);
+        }
+      }.add(new Label("buttonLabel", button.getTitle())));
+    }
+
+  }
 
 }

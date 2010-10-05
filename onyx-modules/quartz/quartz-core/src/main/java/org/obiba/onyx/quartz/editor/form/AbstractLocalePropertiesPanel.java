@@ -47,7 +47,7 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
 
   protected Form<T> form;
 
-  protected IModel<Questionnaire> questionnaireParentModel;
+  protected IModel<Questionnaire> questionnaireModel;
 
   /**
    * @param id
@@ -55,7 +55,7 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
    */
   public AbstractLocalePropertiesPanel(String id, IModel<T> model, IModel<Questionnaire> questionnaireParentModel) {
     super(id, model);
-    this.questionnaireParentModel = questionnaireParentModel;
+    this.questionnaireModel = questionnaireParentModel;
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
     if(questionnaireParentModel != null && questionnaireParentModel.getObject() != null) {
       for(Locale locale : questionnaireParentModel.getObject().getLocales()) {
@@ -110,8 +110,8 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
     return form.getModel();
   }
 
-  public IModel<Questionnaire> getQuestionnaireParentModel() {
-    return questionnaireParentModel;
+  public IModel<Questionnaire> getQuestionnaireModel() {
+    return questionnaireModel;
   }
 
   /**
