@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.IClusterable;
+import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 
@@ -29,9 +30,9 @@ public class LocaleProperties implements IClusterable {
 
   private String[] values;
 
-  public LocaleProperties(Locale locale, IQuestionnaireElement questionnaireElement) {
+  public LocaleProperties(Locale locale, IModel<? extends IQuestionnaireElement> questionnaireElementModel) {
     this.locale = locale;
-    List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaireElement);
+    List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaireElementModel.getObject());
     values = new String[listSourceKeys.size()];
     keys = listSourceKeys.toArray(new String[listSourceKeys.size()]);
   }

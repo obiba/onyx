@@ -243,6 +243,19 @@ public class Question implements Serializable, IQuestionnaireElement {
     }
   }
 
+  public void addQuestion(Question question, int index) {
+    if(question != null) {
+      getQuestions().add(index, question);
+      question.setParentQuestion(this);
+    }
+  }
+
+  public void removeQuestion(Question question) {
+    if(question != null && getQuestions().remove(question)) {
+      question.setPage(null);
+    }
+  }
+
   public Integer getMinCount() {
     return minCount;
   }

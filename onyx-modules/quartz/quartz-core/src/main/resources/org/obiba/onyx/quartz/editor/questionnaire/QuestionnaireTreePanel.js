@@ -64,7 +64,7 @@ Wicket.QTree.buildTree = function(treeId) {
 							seperator_after : false, 
 							seperator_before : false 
 						}, 
-						"create_question": elementType != "Page" ? false :{ 
+						"create_question": (elementType != "Page" && elementType != "Question") ? false :{ 
 							label: "Add new Question", 
 							action: function (obj) { Wicket.QTree.addChild(elementId, 'question'); },
 							seperator_after : false, 
@@ -94,5 +94,8 @@ Wicket.QTree.buildTree = function(treeId) {
 			// see http://groups.google.com/group/jstree/browse_thread/thread/72c504f1212f7258/ff44f4f7d8a57422?lnk=gst&q=move_node#ff44f4f7d8a57422
 			Wicket.QTree.moveNode($(this).attr("id"), data.rslt.np.attr("id"), data.rslt.cp);
 		});
+	})
+	.bind("click.jstree", function (e, data) {
+		alert(e+' '+data);
 	});
 }

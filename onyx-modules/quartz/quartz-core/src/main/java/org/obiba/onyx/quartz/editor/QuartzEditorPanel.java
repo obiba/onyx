@@ -19,6 +19,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
@@ -32,7 +33,7 @@ import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 @SuppressWarnings("serial")
 public class QuartzEditorPanel extends Panel {
 
-  private ModalWindow modalWindow;
+  protected ModalWindow modalWindow;
 
   public QuartzEditorPanel(String id) {
     super(id);
@@ -92,8 +93,7 @@ public class QuartzEditorPanel extends Panel {
     add(new AjaxLink<Void>("categoryProps") {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Category", this, null));
-        modalWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), null, modalWindow));
+        modalWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), new Model<QuestionCategory>(new QuestionCategory()), null, modalWindow));
         modalWindow.show(target);
       }
     });

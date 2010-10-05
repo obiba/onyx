@@ -26,7 +26,7 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
@@ -38,7 +38,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 @SuppressWarnings("serial")
-public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPanelForm<Questionnaire> {
+public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPanel<Questionnaire> {
 
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -86,7 +86,7 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
 
     listLocaleModel = new ListModel<Locale>(new ArrayList<Locale>(form.getModelObject().getLocales()));
 
-    final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", listLocaleModel, form.getModelObject(), localePropertiesModel);
+    final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", listLocaleModel, form.getModel(), localePropertiesModel);
 
     Palette<Locale> localesPalette = new Palette<Locale>("languages", listLocaleModel, LocaleListModel.getInstance(), LocaleChoiceRenderer.getInstance(), 7, false) {
 
@@ -114,7 +114,6 @@ public class QuestionnairePropertiesPanel extends AbstractQuestionnaireElementPa
 
   @Override
   public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
-
     questionnaire.getLocales().clear();
     for(Locale locale : listLocaleModel.getObject()) {
       questionnaire.addLocale(locale);

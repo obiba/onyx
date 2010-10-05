@@ -41,22 +41,22 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
-import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanel;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataValidator;
 
 @SuppressWarnings("serial")
-public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireElementPanelForm<OpenAnswerDefinition> {
+public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireElementPanel<OpenAnswerDefinition> {
 
   private VariableNamesPanel variableNamesPanel;
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private List<Class<? extends IValidator>> iValidatorsAvailable = Arrays.asList(MaximumValidator.class, MinimumValidator.class, RangeValidator.class);
 
-  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
-    super(id, model, questionnaireModel, modalWindow);
+  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireParentModel, ModalWindow modalWindow) {
+    super(id, model, questionnaireParentModel, modalWindow);
     createComponent();
   }
 
@@ -65,7 +65,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends AbstractQuestionnaireEl
     name.add(new RequiredFormFieldBehavior());
     form.add(name);
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
 
     form.add(new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>()));
 

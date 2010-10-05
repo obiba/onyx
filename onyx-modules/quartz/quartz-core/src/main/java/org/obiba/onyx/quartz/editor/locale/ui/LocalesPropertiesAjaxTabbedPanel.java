@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.ListModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -26,7 +27,6 @@ import com.google.common.collect.Iterables;
 /**
  * Tabs of Locales and Labels Locales
  * 
- * see https://issues.apache.org/jira/browse/WICKET-2828 when last tab is deleted
  */
 public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
 
@@ -35,7 +35,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
   // this model must only be read
   private ListModel<Locale> dependantModel;
 
-  private IQuestionnaireElement questionnaireElement;
+  private IModel<? extends IQuestionnaireElement> questionnaireElementModel;
 
   private ListModel<LocaleProperties> localePropertiesModel;
 
@@ -44,17 +44,17 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
    * @param id
    * @param tabs
    */
-  public LocalesPropertiesAjaxTabbedPanel(String id, ListModel<Locale> dependantModel, IQuestionnaireElement questionnaireElement, ListModel<LocaleProperties> localePropertiesModel) {
+  public LocalesPropertiesAjaxTabbedPanel(String id, ListModel<Locale> dependantModel, IModel<? extends IQuestionnaireElement> questionnaireElementModel, ListModel<LocaleProperties> localePropertiesModel) {
     super(id, new ArrayList<ITab>());
     this.dependantModel = dependantModel;
     this.localePropertiesModel = localePropertiesModel;
-    this.questionnaireElement = questionnaireElement;
+    this.questionnaireElementModel = questionnaireElementModel;
     initUI();
   }
 
-  public LocalesPropertiesAjaxTabbedPanel(String id, IQuestionnaireElement questionnaireElement, ListModel<LocaleProperties> localePropertiesModel) {
+  public LocalesPropertiesAjaxTabbedPanel(String id, IModel<? extends IQuestionnaireElement> questionnaireElementModel, ListModel<LocaleProperties> localePropertiesModel) {
     super(id, new ArrayList<ITab>());
-    this.questionnaireElement = questionnaireElement;
+    this.questionnaireElementModel = questionnaireElementModel;
     this.localePropertiesModel = localePropertiesModel;
     initUI();
   }
@@ -94,7 +94,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     else if(listSelectedLocaleSize > listLocalePropertiesSize) {
       for(int i = listLocalePropertiesSize; i < listSelectedLocaleSize; i++) {
         final Locale locale = listSelectedLocale.get(i);
-        LocaleProperties localeProperties = new LocaleProperties(locale, questionnaireElement);
+        LocaleProperties localeProperties = new LocaleProperties(locale, questionnaireElementModel);
         LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(localeProperties);
         localePropertiesModel.getObject().add(localeProperties);
         getTabs().add(localePropertiesTab);

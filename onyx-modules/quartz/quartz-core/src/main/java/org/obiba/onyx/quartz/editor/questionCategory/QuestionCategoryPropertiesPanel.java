@@ -10,28 +10,29 @@
 package org.obiba.onyx.quartz.editor.questionCategory;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.form.AbstractLocalePropertiesPanel;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 
 @SuppressWarnings("serial")
-public class QuestionCategoryPropertiesPanel extends AbstractQuestionnaireElementPanelForm<QuestionCategory> {
+public class QuestionCategoryPropertiesPanel extends AbstractLocalePropertiesPanel<QuestionCategory> {
 
-  public QuestionCategoryPropertiesPanel(String id, IModel<QuestionCategory> model, IModel<Questionnaire> questionnaireParent, ModalWindow modalWindow) {
-    super(id, model, questionnaireParent, modalWindow);
+  public QuestionCategoryPropertiesPanel(String id, IModel<QuestionCategory> model, IModel<Questionnaire> questionnaireParent) {
+    super(id, model, questionnaireParent);
     createComponent();
   }
 
   private void createComponent() {
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
+    form.add(new TextField<String>("exportName", new PropertyModel<String>(form.getModel(), "exportName")));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
   }
 
   @Override
   public void onSave(AjaxRequestTarget target, QuestionCategory t) {
-    // TODO Auto-generated method stub
 
   }
 

@@ -18,28 +18,40 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanel;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.questionCategory.QuestionCategoryPropertiesPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @SuppressWarnings("serial")
-public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanelForm<Category> {
+public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<Category> {
 
   private VariableNamesPanel variableNamesPanel;
 
-  public CategoryPropertiesPanel(String id, IModel<Category> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
-    super(id, model, questionnaireModel, modalWindow);
+  private IModel<QuestionCategory> modelQuestionCategory;
 
+  private QuestionCategoryPropertiesPanel questionCategoryPropertiesPanel;
+
+  public CategoryPropertiesPanel(String id, IModel<Category> modelCategory, IModel<QuestionCategory> modelQuestionCategory, IModel<Questionnaire> questionnaireParentModel, ModalWindow modalWindow) {
+    super(id, modelCategory, questionnaireParentModel, modalWindow);
+    this.modelQuestionCategory = modelQuestionCategory;
+    createComponent();
+  }
+
+  public void createComponent() {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
     form.add(name);
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
+    Category modelObject = form.getModelObject();
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
+    form.add(questionCategoryPropertiesPanel = new QuestionCategoryPropertiesPanel("questionCategoryPropertiesPanel", modelQuestionCategory, questionnaireParentModel));
 
     form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "escape")));
     form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "noAnswer")));
-    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getVariableNames()));
+    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", modelObject.getVariableNames()));
   }
 
   @Override

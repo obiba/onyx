@@ -36,7 +36,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
-import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanelForm;
+import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanel;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
@@ -45,7 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
-public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelForm<Question> {
+public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Question> {
 
   private static final String SINGLE_COLUMN_LAYOUT = "singleColumnLayout";
 
@@ -113,7 +113,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
     form.add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows), Integer.class));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModelObject(), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
 
     categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getQuestionCategories()) {
       @Override
@@ -124,7 +124,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
       @Override
       @SuppressWarnings("unchecked")
       public void addItem(AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryFinderPanel("content", (IModel<Question>) QuestionPropertiesPanel.this.getDefaultModel(), getQuestionnaireModel(), categoryWindow) {
+        categoryWindow.setContent(new CategoryFinderPanel("content", (IModel<Question>) QuestionPropertiesPanel.this.getDefaultModel(), getQuestionnaireParentModel(), categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, List<Category> categories) {
             Question question = QuestionPropertiesPanel.this.getForm().getModelObject();
@@ -142,7 +142,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanelFo
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), getQuestionnaireModel(), categoryWindow) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), new Model<QuestionCategory>(questionCategory), getQuestionnaireParentModel(), categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Category category) {
             super.onSave(target1, category);
