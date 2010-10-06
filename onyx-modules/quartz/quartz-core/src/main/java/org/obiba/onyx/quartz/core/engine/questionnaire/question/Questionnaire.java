@@ -72,18 +72,21 @@ public class Questionnaire implements IHasSection, IHasPage {
     return sections != null ? sections : (sections = new ArrayList<Section>());
   }
 
+  @Override
   public void addSection(Section section) {
     if(section != null) {
       getSections().add(section);
     }
   }
 
+  @Override
   public void addSection(Section section, int index) {
     if(section != null) {
       getSections().add(index, section);
     }
   }
 
+  @Override
   public void removeSection(Section section) {
     if(section != null) {
       getSections().remove(section);
@@ -95,18 +98,21 @@ public class Questionnaire implements IHasSection, IHasPage {
     return pages != null ? pages : (pages = new ArrayList<Page>());
   }
 
+  @Override
   public void addPage(Page page) {
     if(page != null) {
       getPages().add(page);
     }
   }
 
+  @Override
   public void addPage(Page page, int index) {
     if(page != null) {
       getPages().add(index, page);
     }
   }
 
+  @Override
   public void removePage(Page page) {
     if(page != null) {
       getPages().remove(page);

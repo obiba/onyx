@@ -19,6 +19,26 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
  */
 public interface IHasPage extends Serializable, IQuestionnaireElement {
 
+  /**
+   * 
+   * @return
+   */
   List<Page> getPages();
+
+  /**
+   * @param page
+   */
+  void addPage(Page page);
+
+  /**
+   * @param page
+   * @param index
+   */
+  void addPage(Page page, int index);
+
+  /**
+   * @param page
+   */
+  void removePage(Page page);
 
 }

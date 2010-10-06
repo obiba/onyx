@@ -19,6 +19,26 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
  */
 public interface IHasSection extends Serializable, IQuestionnaireElement {
 
+  /**
+   * 
+   * @return
+   */
   List<Section> getSections();
+
+  /**
+   * @param section
+   */
+  void addSection(Section section);
+
+  /**
+   * @param section
+   * @param index
+   */
+  void addSection(Section section, int index);
+
+  /**
+   * @param section
+   */
+  void removeSection(Section section);
 
 }

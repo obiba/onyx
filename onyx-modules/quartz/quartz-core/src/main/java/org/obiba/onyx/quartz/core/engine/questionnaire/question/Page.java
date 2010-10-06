@@ -59,12 +59,14 @@ public class Page implements IHasQuestion {
     return questions != null ? questions : (questions = new ArrayList<Question>());
   }
 
+  @Override
   public void addQuestion(Question question) {
     if(question != null && getQuestions().add(question)) {
       question.setPage(this);
     }
   }
 
+  @Override
   public void addQuestion(Question question, int index) {
     if(question != null) {
       getQuestions().add(index, question);
@@ -72,6 +74,7 @@ public class Page implements IHasQuestion {
     }
   }
 
+  @Override
   public void removeQuestion(Question question) {
     if(question != null && getQuestions().remove(question)) {
       question.setPage(null);

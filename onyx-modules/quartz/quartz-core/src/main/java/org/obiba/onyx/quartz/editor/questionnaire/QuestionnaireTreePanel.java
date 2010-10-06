@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -53,47 +54,57 @@ import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class QuestionnaireTreePanel extends Panel {
 
-  protected final Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   private static final String ID_PREFIX = "element_";
 
-  protected Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
+  private Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
 
   // Map<Element, ParentElement>
-  protected Map<IQuestionnaireElement, IQuestionnaireElement> elementsParent = new HashMap<IQuestionnaireElement, IQuestionnaireElement>();
+  private Map<IQuestionnaireElement, IQuestionnaireElement> elementsParent = new HashMap<IQuestionnaireElement, IQuestionnaireElement>();
 
   private int elementCounter;
 
-  private AbstractDefaultAjaxBehavior moveBehavior;
+  private final AbstractDefaultAjaxBehavior moveBehavior;
 
-  private Label moveCallback;
+  private final Label moveCallback;
 
-  private AbstractDefaultAjaxBehavior editBehavior;
+  private final AbstractDefaultAjaxBehavior editBehavior;
 
-  private Label editCallback;
+  private final Label editCallback;
 
-  private AbstractDefaultAjaxBehavior deleteBehavior;
+  private final AbstractDefaultAjaxBehavior deleteBehavior;
 
-  private Label deleteCallback;
+  private final Label deleteCallback;
 
-  private AbstractDefaultAjaxBehavior addChildBehavior;
+  private final AbstractDefaultAjaxBehavior addChildBehavior;
 
-  private Label addChildCallback;
+  private final Label addChildCallback;
 
-  protected String treeId;
+  private final String treeId;
 
-  protected WebMarkupContainer treeContainer;
+  private final WebMarkupContainer treeContainer;
 
-  protected ModalWindow elementWindow;
+  private final ModalWindow elementWindow;
+
+  private final FeedbackPanel feedbackPanel;
+
+  private final FeedbackWindow feedbackWindow;
 
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
     super(id, model);
+
+    feedbackPanel = new FeedbackPanel("content");
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
 
     elementWindow = new ModalWindow("elementWindow");
     elementWindow.setCssClassName("onyx");
@@ -179,6 +190,7 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class MoveBehavior extends AbstractDefaultAjaxBehavior {
+
     @Override
     protected void respond(AjaxRequestTarget target) {
       Request request = RequestCycle.get().getRequest();
@@ -191,52 +203,70 @@ public class QuestionnaireTreePanel extends Panel {
       // IQuestionnaireElement previousParent = elements.get(previousParentId);
       IQuestionnaireElement newParent = elements.get(newParentId);
       Questionnaire questionnaire = (Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      if(element instanceof Section) {
+      if(element instanceof Section && newParent instanceof IHasSection) {
         Section section = (Section) element;
-        if(section.getParentSection() == null) {
-          questionnaire.removeSection(section);
-        } else {
-          section.getParentSection().removeSection(section);
+        IHasSection newHasSectionParent = (IHasSection) newParent;
+        for(Section existing : newHasSectionParent.getSections()) {
+          if(existing.getName().equalsIgnoreCase(section.getName())) {
+            error(new StringResourceModel("Section.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
+            feedbackWindow.setContent(feedbackPanel);
+            feedbackWindow.show(target);
+            break;
+          }
         }
-        if(newParent instanceof Questionnaire) {
-          int sectionSize = questionnaire.getSections().size();
-          questionnaire.addSection(section, position > sectionSize ? sectionSize : position);
-        } else if(newParent instanceof Section) {
-          Section sectionNewParent = (Section) newParent;
-          int sectionSize = sectionNewParent.getSections().size();
-          sectionNewParent.addSection(section, position > sectionSize ? sectionSize : position);
+        if(!hasErrorMessage()) {
+          if(section.getParentSection() == null) {
+            questionnaire.removeSection(section);
+          } else {
+            section.getParentSection().removeSection(section);
+          }
+          newHasSectionParent.addSection(section, Math.min(newHasSectionParent.getSections().size(), position));
         }
-      } else if(element instanceof Page) {
+      } else if(element instanceof Page && newParent instanceof IHasPage) {
         Page page = (Page) element;
-        if(page.getSection() == null) {
-          questionnaire.removePage(page);
-        } else {
-          page.getSection().removePage(page);
+        IHasPage newHasPageParent = (IHasPage) newParent;
+        for(Page existing : newHasPageParent.getPages()) {
+          if(existing.getName().equalsIgnoreCase(page.getName())) {
+            error(new StringResourceModel("Page.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
+            feedbackWindow.setContent(feedbackPanel);
+            feedbackWindow.show(target);
+            break;
+          }
         }
-        if(newParent instanceof Questionnaire) {
-          int pageSize = questionnaire.getPages().size();
-          questionnaire.addPage(page, position > pageSize ? pageSize : position);
-        } else if(newParent instanceof Section) {
-          Section sectionNewParent = (Section) newParent;
-          int pageSize = sectionNewParent.getPages().size();
-          sectionNewParent.addPage(page, position > pageSize ? pageSize : position);
+        if(!hasErrorMessage()) {
+          if(page.getSection() == null) {
+            questionnaire.removePage(page);
+          } else {
+            page.getSection().removePage(page);
+          }
+          newHasPageParent.addPage(page, Math.min(newHasPageParent.getPages().size(), position));
         }
-      } else if(element instanceof Question) {
+      } else if(element instanceof Question && newParent instanceof IHasQuestion) {
         Question question = (Question) element;
-        if(question.getParentQuestion() == null) {
-          question.getPage().removeQuestion(question);
-        } else {
-          question.getParentQuestion().removeQuestion(question);
+        IHasQuestion newHasQuestionParent = (IHasQuestion) newParent;
+        for(Question existing : newHasQuestionParent.getQuestions()) {
+          if(existing.getName().equalsIgnoreCase(question.getName())) {
+            error(new StringResourceModel("Question.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
+            feedbackWindow.setContent(feedbackPanel);
+            feedbackWindow.show(target);
+            break;
+          }
         }
-        if(newParent instanceof Page) {
-          Page pageNewParent = (Page) newParent;
-          int pageSize = pageNewParent.getQuestions().size();
-          pageNewParent.addQuestion(question, position > pageSize ? pageSize : position);
-        } else if(newParent instanceof Question) {
-          Question questionNewParent = (Question) newParent;
-          int questionsSize = questionNewParent.getQuestions().size();
-          questionNewParent.addQuestion(question, position > questionsSize ? questionsSize : position);
+        if(!hasErrorMessage()) {
+          if(question.getParentQuestion() == null) {
+            question.getPage().removeQuestion(question);
+          } else {
+            question.getParentQuestion().removeQuestion(question);
+          }
+          newHasQuestionParent.addQuestion(question, Math.min(position, newHasQuestionParent.getQuestions().size()));
         }
+      }
+
+      if(hasErrorMessage()) {
+        // target.appendJavascript("Wicket.QTree.refreshTree('" + treeId + "');");
+        target.addComponent(treeContainer);
+        feedbackWindow.setContent(feedbackPanel);
+        feedbackWindow.show(target);
       }
     }
   }
