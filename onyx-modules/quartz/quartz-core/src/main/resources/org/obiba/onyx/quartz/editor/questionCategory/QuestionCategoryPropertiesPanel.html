@@ -1,6 +1,11 @@
 <wicket:panel>
 	<wicket:extend>
-	<input wicket:id="exportName" type="text"> 
+	<table class="keyValueTable">
+		<tr>
+			<td valign="top" class="keyValueTableKey"><label for="exportName"><wicket:message key="ExportName" /></label></td>
+			<td class="keyValueTableValueOdd"><input wicket:id="exportName" type="text" /></td>
+		</tr>	
+	</table>	
 	<fieldset>
 		<legend><wicket:message key="LanguagesProperties" /></legend>
 	 	<div wicket:id="localesPropertiesTabs"></div>

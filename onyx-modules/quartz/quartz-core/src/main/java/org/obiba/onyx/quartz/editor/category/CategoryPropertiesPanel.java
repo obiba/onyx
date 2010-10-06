@@ -47,9 +47,9 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
     form.add(name);
 
     Category modelObject = form.getModelObject();
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
     questionCategoryPropertiesPanel = new QuestionCategoryPropertiesPanel("questionCategoryPropertiesPanel", questionCategoryModel, questionnaireModel);
     form.add(questionCategoryPropertiesPanel);
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
 
     form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "escape")));
     form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "noAnswer")));

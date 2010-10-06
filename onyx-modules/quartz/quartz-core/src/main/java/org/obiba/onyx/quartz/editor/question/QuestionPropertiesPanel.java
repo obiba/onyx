@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -179,6 +180,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
+        categoryWindow.setTitle(new ResourceModel("Category"));
         categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), getQuestionnaireModel(), categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Category category) {
