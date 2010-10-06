@@ -16,6 +16,7 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -30,13 +31,11 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
 
   private VariableNamesPanel variableNamesPanel;
 
-  private IModel<QuestionCategory> modelQuestionCategory;
+  private IModel<QuestionCategory> questionCategoryModel;
 
-  private QuestionCategoryPropertiesPanel questionCategoryPropertiesPanel;
-
-  public CategoryPropertiesPanel(String id, IModel<Category> modelCategory, IModel<QuestionCategory> modelQuestionCategory, IModel<Questionnaire> questionnaireParentModel, ModalWindow modalWindow) {
-    super(id, modelCategory, questionnaireParentModel, modalWindow);
-    this.modelQuestionCategory = modelQuestionCategory;
+  public CategoryPropertiesPanel(String id, IModel<QuestionCategory> questionCategoryModel, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+    super(id, new Model<Category>(questionCategoryModel.getObject().getCategory()), questionnaireModel, modalWindow);
+    this.questionCategoryModel = questionCategoryModel;
     createComponent();
   }
 
@@ -47,7 +46,7 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
 
     Category modelObject = form.getModelObject();
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
-    form.add(questionCategoryPropertiesPanel = new QuestionCategoryPropertiesPanel("questionCategoryPropertiesPanel", modelQuestionCategory, questionnaireModel));
+    form.add(new QuestionCategoryPropertiesPanel("questionCategoryPropertiesPanel", questionCategoryModel, questionnaireModel));
 
     form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "escape")));
     form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "noAnswer")));
@@ -59,5 +58,9 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
       category.addVariableName(entries.getKey(), entries.getValue());
     }
+  }
+
+  public QuestionCategory getQuestionCategory() {
+    return questionCategoryModel.getObject();
   }
 }

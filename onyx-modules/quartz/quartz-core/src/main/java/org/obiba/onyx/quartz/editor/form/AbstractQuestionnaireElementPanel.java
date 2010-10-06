@@ -31,11 +31,11 @@ public abstract class AbstractQuestionnaireElementPanel<T extends IQuestionnaire
    * 
    * @param id
    * @param model
-   * @param questionnaireParent
+   * @param questionnaireModel
    * @param modalWindow
    */
-  public AbstractQuestionnaireElementPanel(String id, IModel<T> model, IModel<Questionnaire> questionnaireParentModel, ModalWindow modalWindow) {
-    super(id, model, questionnaireParentModel);
+  public AbstractQuestionnaireElementPanel(String id, IModel<T> model, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+    super(id, model, questionnaireModel);
 
     this.modalWindow = modalWindow;
 

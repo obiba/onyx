@@ -76,7 +76,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
   }
 
   public void createComponent() {
-
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
     categoryWindow.setInitialWidth(1000);
@@ -132,16 +131,17 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
           @Override
           public void callback(AjaxRequestTarget target) {
-            categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), new Model<QuestionCategory>(new QuestionCategory()), getQuestionnaireModel(), categoryWindow) {
+            QuestionCategory questionCategory = new QuestionCategory();
+            questionCategory.setCategory(new Category(null));
+            questionCategory.setQuestion(form.getModelObject());
+            categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), getQuestionnaireModel(), categoryWindow) {
 
               @Override
               public void onSave(AjaxRequestTarget target1, Category category) {
                 super.onSave(target1, category);
-                QuestionCategory questionCategory = new QuestionCategory();
-                questionCategory.setCategory(category);
-                // questionCategory.setExportName(exportName); TODO set exportName
-                QuestionPropertiesPanel.this.getForm().getModelObject().addQuestionCategory(questionCategory);
+                QuestionPropertiesPanel.this.getForm().getModelObject().addQuestionCategory(getQuestionCategory());
                 refreshList(target1);
+                this.saveToFiles();
               }
             });
             categoryWindow.show(target);
@@ -179,11 +179,12 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(questionCategory.getCategory()), new Model<QuestionCategory>(questionCategory), getQuestionnaireModel(), categoryWindow) {
+        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), getQuestionnaireModel(), categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Category category) {
             super.onSave(target1, category);
             refreshList(target1);
+            this.saveToFiles();
           }
         });
         categoryWindow.show(target);

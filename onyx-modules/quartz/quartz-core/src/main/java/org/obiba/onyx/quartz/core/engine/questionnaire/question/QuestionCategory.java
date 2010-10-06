@@ -64,7 +64,7 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
   }
 
   public String getName() {
-    return question.getName() + "." + category.getName();
+    return (category.getName() == null) ? null : question.getName() + "." + category.getName();
   }
 
   public static String getQuestionName(String questionCategoryName) {

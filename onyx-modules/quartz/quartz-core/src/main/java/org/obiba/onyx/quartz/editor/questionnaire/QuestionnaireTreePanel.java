@@ -290,8 +290,7 @@ public class QuestionnaireTreePanel extends Panel {
           public void onSave(AjaxRequestTarget target, Question question) {
             super.onSave(target, question);
             saveToFiles();
-            // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + question.getName() + "');");
+            target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);

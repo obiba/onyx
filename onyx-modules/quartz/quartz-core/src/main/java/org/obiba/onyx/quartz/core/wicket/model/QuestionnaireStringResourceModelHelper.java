@@ -66,7 +66,7 @@ public class QuestionnaireStringResourceModelHelper {
     return stringResource;
   }
 
-  public static String getNonRecursiveMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable, String property, Object[] stringArgs, Locale locale) {
+  public static String getNonRecursiveResolutionMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable, String property, Object[] stringArgs, Locale locale) {
     String propertyKey = bundle.getPropertyKey(localizable, property);
     return bundle.getMessageSource().getMessage(propertyKey, stringArgs, locale);
   }

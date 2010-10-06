@@ -27,7 +27,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -53,20 +56,32 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
    * @param id
    * @param model
    */
-  public AbstractLocalePropertiesPanel(String id, IModel<T> model, IModel<Questionnaire> questionnaireParentModel) {
+  public AbstractLocalePropertiesPanel(String id, IModel<T> model, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
-    this.questionnaireModel = questionnaireParentModel;
+    this.questionnaireModel = questionnaireModel;
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-    if(questionnaireParentModel != null && questionnaireParentModel.getObject() != null) {
-      for(Locale locale : questionnaireParentModel.getObject().getLocales()) {
+    if(questionnaireModel != null && questionnaireModel.getObject() != null) {
+      for(Locale locale : questionnaireModel.getObject().getLocales()) {
         LocaleProperties localeProperties = new LocaleProperties(locale, model);
         List<String> values = new ArrayList<String>();
         for(String property : localeProperties.getKeys()) {
           if(StringUtils.isNotBlank(model.getObject().getName())) {
-            QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaireParentModel.getObject().getName());
+            QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaireModel.getObject().getName());
             if(bundle != null) {
-              String message = QuestionnaireStringResourceModelHelper.getNonRecursiveMessage(bundle, model.getObject(), property, new Object[0], locale);
-              values.add(message);
+              // special case when Category (bad to do this in superclass)
+              if(model.getObject() instanceof Category) {
+                Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(bundle.getQuestionnaire()).findCategories(model.getObject().getName());
+                // no message for category if it is not shared
+                if(map.get(model.getObject()).size() < 2) {
+                  values.add("");
+                } else {
+                  String message = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale);
+                  values.add(message);
+                }
+              } else {
+                String message = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale);
+                values.add(message);
+              }
             }
           }
         }
