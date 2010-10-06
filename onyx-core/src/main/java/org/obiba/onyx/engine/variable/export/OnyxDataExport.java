@@ -199,8 +199,8 @@ public class OnyxDataExport {
     captureEndDate = (captureEndDate != null) ? captureEndDate : exportDate;
 
     // Write an entry in ExportLog to flag the set of entities as exported.
-    ExportLog log = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
-    exportLogService.save(log);
+    ExportLog exportLog = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
+    exportLogService.save(exportLog);
   }
 
   private String getCurrentDateTimeString() {

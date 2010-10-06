@@ -10,25 +10,9 @@
 package org.obiba.onyx.quartz.editor;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
-import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerDefinitionPropertiesPanel;
-import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
-import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePropertiesPanel;
-import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 
 @SuppressWarnings("serial")
 public class QuartzEditorPanel extends Panel {
@@ -53,59 +37,6 @@ public class QuartzEditorPanel extends Panel {
     add(modalWindow);
 
     add(new QuestionnaireListPanel("questionnaire-list", modalWindow));
-
-    add(new AjaxLink<Void>("questionnaireProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow));
-        modalWindow.show(target);
-      }
-    });
-
-    add(new AjaxLink<Void>("sectionProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Section", this, null));
-        modalWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), null, modalWindow));
-        modalWindow.show(target);
-      }
-    });
-
-    add(new AjaxLink<Void>("pageProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Page", this, null));
-        modalWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), null, modalWindow));
-        modalWindow.show(target);
-      }
-    });
-
-    add(new AjaxLink<Void>("questionProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Question", this, null));
-        modalWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question(null)), null, modalWindow));
-        modalWindow.show(target);
-      }
-    });
-
-    add(new AjaxLink<Void>("categoryProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setContent(new CategoryPropertiesPanel("content", new Model<Category>(new Category(null)), new Model<QuestionCategory>(new QuestionCategory()), null, modalWindow));
-        modalWindow.show(target);
-      }
-    });
-
-    add(new AjaxLink<Void>("openAnswerDefinitionProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("OpenAnswerDefinition", this, null));
-        modalWindow.setContent(new OpenAnswerDefinitionPropertiesPanel("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition(null, null)), null, modalWindow));
-        modalWindow.show(target);
-      }
-    });
 
   }
 }

@@ -84,11 +84,11 @@ public class Category implements Serializable, IQuestionnaireElement {
     return getName();
   }
 
-  public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+  public OpenAnswerDefinition findOpenAnswerDefinition(String name1) {
     if(getOpenAnswerDefinition() == null) return null;
-    if(getOpenAnswerDefinition().getName().equals(name)) return getOpenAnswerDefinition();
+    if(getOpenAnswerDefinition().getName().equals(name1)) return getOpenAnswerDefinition();
 
-    return getOpenAnswerDefinition().findOpenAnswerDefinition(name);
+    return getOpenAnswerDefinition().findOpenAnswerDefinition(name1);
   }
 
   public void addVariableName(String questionName, String variableName) {

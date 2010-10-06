@@ -258,26 +258,27 @@ public class UserSearchPanel extends Panel {
     }
   }
 
-  /**
-   * Generate a unique user name, only for non existing user.
-   * @param user
-   */
-  private void generateLogin(User user) {
-    if(user.getId() != null) return;
-
-    String baseLogin = "";
-
-    if(user.getFirstName() != null && user.getFirstName().length() > 0) baseLogin = user.getFirstName().substring(0, 1).toLowerCase();
-    if(user.getLastName() != null && user.getLastName().length() > 0) baseLogin += user.getLastName().toLowerCase();
-
-    String login = (baseLogin.length() > 12) ? baseLogin.substring(0, 12) : baseLogin;
-    int i = 1;
-    while(userService.getUserWithLogin(login) != null) {
-      login = ((baseLogin.length() > 12) ? baseLogin.substring(0, (12 - (String.valueOf(i)).length())) : baseLogin) + i;
-      i++;
-    }
-
-    user.setLogin(login);
-  }
+  // /**
+  // * Generate a unique user name, only for non existing user.
+  // * @param user
+  // */
+  // private void generateLogin(User user) {
+  // if(user.getId() != null) return;
+  //
+  // String baseLogin = "";
+  //
+  // if(user.getFirstName() != null && user.getFirstName().length() > 0) baseLogin = user.getFirstName().substring(0,
+  // 1).toLowerCase();
+  // if(user.getLastName() != null && user.getLastName().length() > 0) baseLogin += user.getLastName().toLowerCase();
+  //
+  // String login = (baseLogin.length() > 12) ? baseLogin.substring(0, 12) : baseLogin;
+  // int i = 1;
+  // while(userService.getUserWithLogin(login) != null) {
+  // login = ((baseLogin.length() > 12) ? baseLogin.substring(0, (12 - (String.valueOf(i)).length())) : baseLogin) + i;
+  // i++;
+  // }
+  //
+  // user.setLogin(login);
+  // }
 
 }

@@ -34,7 +34,7 @@ public class InvalidFormFieldBehavior extends AbstractBehavior {
     super.onRendered(component);
 
     String cssClass = null;
-    if(component instanceof FormComponent && !((FormComponent) component).isValid()) {
+    if(component instanceof FormComponent && !((FormComponent<?>) component).isValid()) {
       cssClass = FIELD_INVALID_CSS_CLASS;
     } else if(component instanceof MarkupContainer) {
 
@@ -59,17 +59,17 @@ public class InvalidFormFieldBehavior extends AbstractBehavior {
 
     private Boolean foundErrorMessages = false;
 
+    @Override
     public Object component(Component component) {
 
-      FormComponent formComponent = (FormComponent) component;
+      FormComponent<?> formComponent = (FormComponent<?>) component;
 
       if(!formComponent.isValid()) {
         foundErrorMessages = true;
         return STOP_TRAVERSAL;
-      } else {
-        foundErrorMessages = false;
-        return CONTINUE_TRAVERSAL;
       }
+      foundErrorMessages = false;
+      return CONTINUE_TRAVERSAL;
     }
 
     public boolean hasFoundErrorMessages() {

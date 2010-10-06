@@ -61,7 +61,6 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
    * @param id
    * @param model
    */
-  @SuppressWarnings("serial")
   public NumericPad(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
 
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);

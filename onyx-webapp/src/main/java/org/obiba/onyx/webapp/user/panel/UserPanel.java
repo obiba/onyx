@@ -63,7 +63,7 @@ public class UserPanel extends Panel {
 
   private PasswordTextField password;
 
-  public UserPanel(String id, IModel model, final ModalWindow modalWindow) {
+  public UserPanel(String id, IModel<User> model, final ModalWindow modalWindow) {
     super(id, model);
     userModalWindow = modalWindow;
 
@@ -78,38 +78,38 @@ public class UserPanel extends Panel {
   /**
    * Expect User entity in IModel {@link User}
    */
-  private class UserPanelForm extends Form {
+  private class UserPanelForm extends Form<User> {
 
     private static final long serialVersionUID = 1L;
 
-    public UserPanelForm(String id, final IModel model) {
+    public UserPanelForm(String id, final IModel<User> model) {
       super(id);
       setModel(model);
 
-      TextField lastName = new TextField("lastName", new PropertyModel(getModel(), "lastName"));
+      TextField<String> lastName = new TextField<String>("lastName", new PropertyModel<String>(getModel(), "lastName"));
       lastName.add(new RequiredFormFieldBehavior());
       lastName.add(new StringValidator.MaximumLengthValidator(20));
       add(lastName);
 
-      TextField firstName = new TextField("firstName", new PropertyModel(getModel(), "firstName"));
+      TextField<String> firstName = new TextField<String>("firstName", new PropertyModel<String>(getModel(), "firstName"));
       firstName.add(new RequiredFormFieldBehavior());
       firstName.add(new StringValidator.MaximumLengthValidator(20));
       add(firstName);
 
-      TextField login = new TextField("login", new PropertyModel(getModel(), "login"));
+      TextField<String> login = new TextField<String>("login", new PropertyModel<String>(getModel(), "login"));
       login.add(new LoginUnicityValidator());
       login.add(new StringValidator.LengthBetweenValidator(2, 12));
       login.add(new PatternValidator("[a-zA-Z0-9_#.]+"));
-      if(((User) getModel().getObject()).getId() != null) login.setEnabled(false);
+      if(getModel().getObject().getId() != null) login.setEnabled(false);
       add(login);
 
-      password = new PasswordTextField("password", new Model(new String()));
+      password = new PasswordTextField("password", new Model<String>(new String()));
       password.setRequired(getUser().getLogin() == null);
       password.add(new StringValidator.MaximumLengthValidator(250));
       if(getUser().getLogin() != null) password.add(new PasswordValidator());
       add(password);
 
-      TextField email = new TextField("email", new PropertyModel(getModel(), "email"));
+      TextField<String> email = new TextField<String>("email", new PropertyModel<String>(getModel(), "email"));
       email.add(new StringValidator.MaximumLengthValidator(250));
       email.add(EmailAddressValidator.getInstance());
       add(email);
@@ -141,9 +141,9 @@ public class UserPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void onSubmit(AjaxRequestTarget target, Form form) {
+        public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           super.onSubmit();
-          User user = (User) UserPanelForm.this.getModelObject();
+          User user = UserPanelForm.this.getModelObject();
           String newPassword = UserPanel.this.password.getDefaultModelObjectAsString();
           // password is changed only if new password is entered
           if(newPassword != null && newPassword.length() > 0) {
@@ -159,7 +159,7 @@ public class UserPanel extends Panel {
         }
 
         @Override
-        protected void onError(AjaxRequestTarget target, Form form) {
+        protected void onError(AjaxRequestTarget target, Form<?> form) {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -172,29 +172,29 @@ public class UserPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void onSubmit(AjaxRequestTarget target, Form form) {
+        public void onSubmit(AjaxRequestTarget target, Form<?> form) {
           userModalWindow.close(target);
         }
       }.setDefaultFormProcessing(false));
     }
 
-    private class LoginUnicityValidator extends AbstractValidator {
+    private class LoginUnicityValidator extends AbstractValidator<String> {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected void onValidate(IValidatable validatable) {
+      protected void onValidate(IValidatable<String> validatable) {
         User existUser = userService.getUserWithLogin(validatable.getValue().toString());
         if(existUser != null) error(validatable, "LoginAlreadyUsed");
       }
     }
 
-    private class PasswordValidator extends AbstractValidator {
+    private class PasswordValidator extends AbstractValidator<String> {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected void onValidate(IValidatable validatable) {
+      protected void onValidate(IValidatable<String> validatable) {
         String newPassword = validatable.getValue().toString();
 
         // TODO validate the password's length and strenght
@@ -206,7 +206,7 @@ public class UserPanel extends Panel {
     }
 
     protected User getUser() {
-      return (User) getModelObject();
+      return getModelObject();
     }
   }
 

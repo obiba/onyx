@@ -103,11 +103,11 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
   }
 
   private ModalWindow createPadModalWindow(String padId) {
-    ModalWindow padWindow = new ModalWindow(padId);
+    ModalWindow newPadWindow = new ModalWindow(padId);
 
     DataType type = getOpenAnswerDefinition().getDataType();
     if(type.equals(DataType.INTEGER) || type.equals(DataType.DECIMAL)) {
-      pad = new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel()) {
+      pad = new NumericPad(newPadWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel()) {
         /**
          * 
          */
@@ -120,15 +120,15 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
         }
       };
 
-      padWindow.setTitle(new StringResourceModel("NumericPadTitle", pad, null));
-      padWindow.setContent(pad);
-      padWindow.setCssClassName("onyx");
-      padWindow.setInitialWidth(288);
-      padWindow.setInitialHeight(365);
-      padWindow.setResizable(false);
+      newPadWindow.setTitle(new StringResourceModel("NumericPadTitle", pad, null));
+      newPadWindow.setContent(pad);
+      newPadWindow.setCssClassName("onyx");
+      newPadWindow.setInitialWidth(288);
+      newPadWindow.setInitialHeight(365);
+      newPadWindow.setResizable(false);
 
       // same as cancel
-      padWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+      newPadWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
         /**
          * 
          */
@@ -139,10 +139,9 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
         }
       });
 
-      return padWindow;
-    } else {
-      throw new UnsupportedOperationException("Pad for type " + type + " not supported yet.");
+      return newPadWindow;
     }
+    throw new UnsupportedOperationException("Pad for type " + type + " not supported yet.");
   }
 
   public OpenAnswer getOpenAnswer() {

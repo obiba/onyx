@@ -85,14 +85,14 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
       }
 
     };
-    beginLink.add(new AttributeAppender("class", new Model("begin"), " "));
+    beginLink.add(new AttributeAppender("class", new Model<String>("begin"), " "));
 
     endLink = new AjaxButton("end", form) {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
         setStatus(Status.OTHER3);
         if(getCloseButtonCallback() == null || getCloseButtonCallback().onCloseButtonClicked(target, getStatus())) {
           QuestionnaireWizardAdministrationWindow.this.close(target);
@@ -100,12 +100,12 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      protected void onError(AjaxRequestTarget target, Form<?> form1) {
         setStatus(Status.ERROR);
-        ((QuestionnaireWizardForm) form).showFeedbackWindow(target);
+        ((QuestionnaireWizardForm) form1).showFeedbackWindow(target);
       }
     };
-    endLink.add(new AttributeAppender("class", new Model("end"), " "));
+    endLink.add(new AttributeAppender("class", new Model<String>("end"), " "));
   }
 
   public Component getBeginLink() {

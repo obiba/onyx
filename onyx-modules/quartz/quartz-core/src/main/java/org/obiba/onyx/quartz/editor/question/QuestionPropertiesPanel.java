@@ -27,9 +27,12 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -53,10 +56,10 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
-  protected ModalWindow categoryWindow;
-
   @SpringBean
   protected QuestionnaireBundleManager questionnaireBundleManager;
+
+  protected ModalWindow categoryWindow;
 
   private FormComponent<String> layoutRadioGroup;
 
@@ -64,8 +67,11 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
   private SortableList<QuestionCategory> categoryList;
 
-  public QuestionPropertiesPanel(String id, IModel<Question> model, IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
+  private final IModel<IHasQuestion> parentModel;
+
+  public QuestionPropertiesPanel(String id, IModel<Question> model, IModel<IHasQuestion> parentModel, IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id, model, questionnaireModel, questionWindow);
+    this.parentModel = parentModel;
     createComponent();
   }
 
@@ -80,6 +86,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.add(new RequiredFormFieldBehavior());
+    name.add(new QuestionUnicityValidator());
     form.add(name);
 
     TextField<String> variableName = new TextField<String>("variableName", new PropertyModel<String>(form.getModel(), "variableName"));
@@ -194,7 +201,6 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
 
   @Override
   public void onSave(AjaxRequestTarget target, final Question question) {
-
     categoryList.save(target, new SortableListCallback<QuestionCategory>() {
       @Override
       public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
@@ -214,6 +220,18 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
         }
       }
     });
+  }
 
+  private class QuestionUnicityValidator extends AbstractValidator<String> {
+
+    @Override
+    protected void onValidate(IValidatable<String> validatable) {
+      for(Question question : parentModel.getObject().getQuestions()) {
+        if(question != form.getModelObject() && question.getName().equalsIgnoreCase(validatable.getValue())) {
+          error(validatable, "QuestionAlreadyExists");
+          return;
+        }
+      }
+    }
   }
 }

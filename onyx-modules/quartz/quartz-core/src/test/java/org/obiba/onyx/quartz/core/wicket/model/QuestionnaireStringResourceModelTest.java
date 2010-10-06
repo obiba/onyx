@@ -85,8 +85,8 @@ public class QuestionnaireStringResourceModelTest {
 
     messageSource = new StaticMessageSource() {
       @Override
-      protected MessageFormat createMessageFormat(String msg, Locale locale) {
-        return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale);
+      protected MessageFormat createMessageFormat(String msg, Locale locale1) {
+        return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale1);
       }
     };
     messageSource.addMessage("Questionnaire.Questionnaire.label", locale, "Test questionnaire label");

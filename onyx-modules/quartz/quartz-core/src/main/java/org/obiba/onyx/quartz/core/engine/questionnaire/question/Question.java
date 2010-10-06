@@ -9,19 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.IDataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
-public class Question implements Serializable, IQuestionnaireElement {
+public class Question implements IHasQuestion {
 
   private static final long serialVersionUID = -7795909448581432466L;
 
@@ -142,12 +140,11 @@ public class Question implements Serializable, IQuestionnaireElement {
     if(data.getType().equals(DataType.BOOLEAN)) {
       Boolean val = data.getValue();
       return val != null && val;
-    } else {
-      try {
-        return Boolean.parseBoolean(data.getValueAsString());
-      } catch(Exception e) {
-        throw new IllegalArgumentException("Could not parse as a boolean: " + data, e);
-      }
+    }
+    try {
+      return Boolean.parseBoolean(data.getValueAsString());
+    } catch(Exception e) {
+      throw new IllegalArgumentException("Could not parse as a boolean: " + data, e);
     }
   }
 
@@ -232,6 +229,7 @@ public class Question implements Serializable, IQuestionnaireElement {
     this.parentQuestion = parentQuestion;
   }
 
+  @Override
   public List<Question> getQuestions() {
     return questions != null ? questions : (questions = new ArrayList<Question>());
   }
@@ -283,24 +281,25 @@ public class Question implements Serializable, IQuestionnaireElement {
   //
   // Find methods
   //
-  public Category findCategory(String name) {
+  public Category findCategory(String name1) {
     for(Category category : getCategories()) {
-      if(category.getName().equals(name)) {
+      if(category.getName().equals(name1)) {
         return category;
       }
     }
     return null;
   }
 
-  public QuestionCategory findQuestionCategory(String name) {
+  public QuestionCategory findQuestionCategory(String name1) {
     for(QuestionCategory qCategory : getQuestionCategories()) {
-      if(qCategory.getCategory().getName().equals(name)) {
+      if(qCategory.getCategory().getName().equals(name1)) {
         return qCategory;
       }
     }
     return null;
   }
 
+  @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);
   }

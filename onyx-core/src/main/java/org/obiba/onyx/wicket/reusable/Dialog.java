@@ -117,7 +117,7 @@ public class Dialog extends ModalWindow {
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
         Dialog.this.setStatus(Status.SUCCESS);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
           ModalWindow.closeCurrent(target);
@@ -125,7 +125,7 @@ public class Dialog extends ModalWindow {
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      protected void onError(AjaxRequestTarget target, Form<?> form1) {
         Dialog.this.setStatus(Status.ERROR);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
           ModalWindow.closeCurrent(target);

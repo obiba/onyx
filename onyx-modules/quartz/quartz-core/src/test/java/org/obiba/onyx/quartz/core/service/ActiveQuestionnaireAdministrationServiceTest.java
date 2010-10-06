@@ -60,15 +60,15 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   @Before
   public void setUp() {
-    ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) this.applicationContext;
-    applicationContext.getBeanFactory().registerScope("session", new SessionScope());
+    ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) this.applicationContext;
+    configurableApplicationContext.getBeanFactory().registerScope("session", new SessionScope());
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpSession session = new MockHttpSession();
     request.setSession(session);
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-    activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) applicationContext.getBean("activeQuestionnaireAdministrationService");
+    activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) configurableApplicationContext.getBean("activeQuestionnaireAdministrationService");
 
     questionnaire = createQuestionnaire();
   }

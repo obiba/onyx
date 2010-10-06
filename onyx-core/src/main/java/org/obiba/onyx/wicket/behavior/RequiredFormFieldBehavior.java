@@ -19,14 +19,14 @@ public class RequiredFormFieldBehavior extends AttributeAppender {
   private static final long serialVersionUID = -547194106510259211L;
 
   public RequiredFormFieldBehavior() {
-    super("class", new Model("required"), " ");
+    super("class", new Model<String>("required"), " ");
   }
 
   @Override
   public void bind(Component component) {
-    FormComponent formComp = (FormComponent) component;
+    FormComponent<?> formComp = (FormComponent<?>) component;
     formComp.setRequired(true);
     super.bind(component);
   }
 
-};
+}

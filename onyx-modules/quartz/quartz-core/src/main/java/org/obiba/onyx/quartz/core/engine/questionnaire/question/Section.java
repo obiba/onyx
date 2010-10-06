@@ -9,14 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-public class Section implements Serializable, IQuestionnaireElement {
+public class Section implements IHasSection, IHasPage {
 
   private static final long serialVersionUID = -1624223156473292196L;
 
@@ -32,6 +30,7 @@ public class Section implements Serializable, IQuestionnaireElement {
     this.name = name;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -40,6 +39,7 @@ public class Section implements Serializable, IQuestionnaireElement {
     this.name = name;
   }
 
+  @Override
   public List<Page> getPages() {
     return pages != null ? pages : (pages = new ArrayList<Page>());
   }
@@ -71,6 +71,7 @@ public class Section implements Serializable, IQuestionnaireElement {
     this.parentSection = parentSection;
   }
 
+  @Override
   public List<Section> getSections() {
     return sections != null ? sections : (sections = new ArrayList<Section>());
   }
@@ -94,6 +95,7 @@ public class Section implements Serializable, IQuestionnaireElement {
     }
   }
 
+  @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);
   }

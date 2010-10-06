@@ -203,12 +203,12 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
   }
 
-  public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+  public OpenAnswerDefinition findOpenAnswerDefinition(String name1) {
     for(OpenAnswerDefinition openAnswerDefinition : getOpenAnswerDefinitions()) {
-      if(openAnswerDefinition.getName().equals(name)) {
+      if(openAnswerDefinition.getName().equals(name1)) {
         return openAnswerDefinition;
       }
-      if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) return findOpenAnswerDefinition(name);
+      if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) return findOpenAnswerDefinition(name1);
     }
     return null;
   }

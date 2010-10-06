@@ -25,9 +25,9 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.magma.Attribute;
 import org.obiba.magma.AttributeAwareBuilder;
 import org.obiba.magma.Variable;
+import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
-import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
@@ -94,6 +94,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     this.questionnaire = bundle.getQuestionnaire();
   }
 
+  @Override
   public Set<VariableValueSource> createSources() {
     if(builder == null) {
       builder = new ImmutableSet.Builder<VariableValueSource>();
@@ -109,17 +110,20 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   protected void buildQuestionnaireVariables() {
 
     QuestionnaireWalker walker = new QuestionnaireWalker(new IWalkerVisitor() {
-
+      @Override
       public void visit(OpenAnswerDefinition openAnswerDefinition) {
       }
 
+      @Override
       public void visit(Category category) {
 
       }
 
+      @Override
       public void visit(QuestionCategory questionCategory) {
       }
 
+      @Override
       public void visit(Question question) {
         if(question.getParentQuestion() != null) {
           // We've already visited this question since we handle child questions when visiting the parent question
@@ -139,24 +143,28 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
             new QuestionVariableBuilder(subQuestion).withCategories().withComment(subQuestion.isBoilerPlate() == false).build();
           }
         } else {
-          QuestionVariableBuilder builder = new QuestionVariableBuilder(question).withCategories();
+          QuestionVariableBuilder questionVariableBuilder = new QuestionVariableBuilder(question).withCategories();
           // If the question has a datasource, then it's never displayed. BoilerPlates don't allow comments.
           if(question.hasDataSource() || question.isBoilerPlate()) {
-            builder.withoutComment();
+            questionVariableBuilder.withoutComment();
           }
-          builder.build();
+          questionVariableBuilder.build();
         }
       }
 
+      @Override
       public void visit(Page page) {
       }
 
+      @Override
       public void visit(Section section) {
       }
 
-      public void visit(Questionnaire questionnaire) {
+      @Override
+      public void visit(Questionnaire questionnaire1) {
       }
 
+      @Override
       public boolean visiteMore() {
         return true;
       }
@@ -328,10 +336,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       super(stage.getName());
     }
 
-    public void visit(Builder builder) {
-      super.visit(builder);
+    public void visit(Builder builder1) {
+      super.visit(builder1);
       // Questionnaire name
-      builder.addAttribute("questionnaire", questionnaire.getName());
+      builder1.addAttribute("questionnaire", questionnaire.getName());
     }
   }
 
@@ -361,8 +369,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     @Override
-    public void visit(Builder builder) {
-      super.visit(builder);
+    public void visit(Builder builder1) {
+      super.visit(builder1);
 
       // Sections : AncestorSection/ParentSection/QuestionSection
       StringBuilder sectionAttribute = new StringBuilder();
@@ -374,27 +382,27 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
           sectionAttribute.insert(0, '/');
         }
       }
-      builder.addAttribute("section", sectionAttribute.toString());
+      builder1.addAttribute("section", sectionAttribute.toString());
 
       // Page name
-      builder.addAttribute("page", question.getPage().getName());
+      builder1.addAttribute("page", question.getPage().getName());
 
       // Question name
-      builder.addAttribute("questionName", question.getName());
+      builder1.addAttribute("questionName", question.getName());
 
       if(question.getNumber() != null) {
         // Question number
-        builder.addAttribute("questionNumber", question.getNumber());
+        builder1.addAttribute("questionNumber", question.getNumber());
       }
 
       if(parentPlaceholder) {
         Attribute parentQuestionAttribute = Attribute.Builder.newAttribute("parentQuestion").withValue(BooleanType.get().trueValue()).build();
-        builder.addAttribute(parentQuestionAttribute);
+        builder1.addAttribute(parentQuestionAttribute);
       }
 
       if(boilerplate) {
         Attribute boilerplateAttribute = Attribute.Builder.newAttribute("boilerplate").withValue(BooleanType.get().trueValue()).build();
-        builder.addAttribute(boilerplateAttribute);
+        builder1.addAttribute(boilerplateAttribute);
       }
     }
 
@@ -407,10 +415,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     @Override
-    public void visit(Builder builder) {
-      super.visit(builder);
+    public void visit(Builder builder1) {
+      super.visit(builder1);
       // Flag this variable as a comment for another variable.
-      builder.addAttribute("commentFor", getQuestion().getName());
+      builder1.addAttribute("commentFor", getQuestion().getName());
     }
 
   }
@@ -423,26 +431,26 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       this.element = element;
     }
 
-    public void visit(Builder builder) {
-      visitAttributes(builder);
+    public void visit(Builder builder1) {
+      visitAttributes(builder1);
     }
 
-    public void visit(org.obiba.magma.Category.Builder builder) {
-      visitAttributes(builder);
+    public void visit(org.obiba.magma.Category.Builder builder1) {
+      visitAttributes(builder1);
     }
 
     protected Iterable<String> getProperties() {
       return propertyKeyProvider.getProperties(element);
     }
 
-    protected void visitAttributes(AttributeAwareBuilder<?> builder) {
+    protected void visitAttributes(AttributeAwareBuilder<?> builder1) {
       for(Locale locale : bundle.getAvailableLanguages()) {
         for(String property : getProperties()) {
           try {
             String stringResource = QuestionnaireStringResourceModelHelper.getMessage(bundle, element, property, null, locale);
             if(stringResource.trim().length() > 0) {
               String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
-              builder.addAttribute(property, noHTMLString, locale);
+              builder1.addAttribute(property, noHTMLString, locale);
             }
           } catch(NoSuchMessageException ex) {
             // ignored
@@ -462,10 +470,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     @Override
-    protected void visitAttributes(AttributeAwareBuilder<?> builder) {
-      super.visitAttributes(builder);
+    protected void visitAttributes(AttributeAwareBuilder<?> builder1) {
+      super.visitAttributes(builder1);
 
-      OnyxAttributeHelper.addConditionAttribute(builder, question.getCondition());
+      OnyxAttributeHelper.addConditionAttribute(builder1, question.getCondition());
 
       // get the min/max settings : for questions having a parent question, if no settings is found parent settings is
       // used.
@@ -478,14 +486,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         maxCount = question.getParentQuestion().getMaxCount();
       }
 
-      OnyxAttributeHelper.addRequiredAttribute(builder, question.isRequired());
+      OnyxAttributeHelper.addRequiredAttribute(builder1, question.isRequired());
 
       if(minCount != null && minCount > 1) {
-        OnyxAttributeHelper.addMinCountAttribute(builder, minCount);
+        OnyxAttributeHelper.addMinCountAttribute(builder1, minCount);
       }
 
       if(maxCount != null) {
-        OnyxAttributeHelper.addMaxCountAttribute(builder, maxCount);
+        OnyxAttributeHelper.addMaxCountAttribute(builder1, maxCount);
       }
     }
   }
@@ -498,18 +506,18 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       this.questionCategory = questionCategory;
     }
 
-    protected void visitAttributes(AttributeAwareBuilder<?> builder) {
-      super.visitAttributes(builder);
+    protected void visitAttributes(AttributeAwareBuilder<?> builder1) {
+      super.visitAttributes(builder1);
 
       // Provide the category name to the resolver
-      builder.addAttribute("categoryName", questionCategory.getCategory().getName());
+      builder1.addAttribute("categoryName", questionCategory.getCategory().getName());
       if(this.questionCategory.getQuestion().isMultiple() == false) {
         // Add a marker indicating that this is single-choice category variable
-        builder.addAttribute(Attribute.Builder.newAttribute("exclusiveChoiceCategoryVariable").withValue(BooleanType.get().valueOf(true)).build());
+        builder1.addAttribute(Attribute.Builder.newAttribute("exclusiveChoiceCategoryVariable").withValue(BooleanType.get().valueOf(true)).build());
       }
 
       // a category variable is implicitly always conditioned by it's parent question
-      OnyxAttributeHelper.addConditionAttribute(builder, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
+      OnyxAttributeHelper.addConditionAttribute(builder1, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
     }
   }
 
@@ -541,8 +549,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       });
     }
 
-    public void visit(Builder builder) {
-      super.visit(builder);
+    public void visit(Builder builder1) {
+      super.visit(builder1);
 
       if(oad.getDefaultValues() != null) {
         int order = 0;
@@ -552,18 +560,18 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
           // Make categories out of default values
           org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(categoryName);
           cb.accept(new OadDefaultValueBuilderVisitor(oad, categoryName)).withCode(Integer.toString(order++));
-          builder.addCategory(cb.build());
+          builder1.addCategory(cb.build());
         }
       }
-      builder.unit(oad.getUnit());
+      builder1.unit(oad.getUnit());
 
       // Provide the category name to the resolver
-      builder.addAttribute("categoryName", questionCategory.getCategory().getName())
+      builder1.addAttribute("categoryName", questionCategory.getCategory().getName())
       // Provide the openAnswer name to the resolver
       .addAttribute("openAnswerName", oad.getName());
 
       if(oad.getDataSource() != null) {
-        OnyxAttributeHelper.addSourceAttribute(builder, oad.getDataSource());
+        OnyxAttributeHelper.addSourceAttribute(builder1, oad.getDataSource());
       }
 
       List<String> validations = new ArrayList<String>();
@@ -583,11 +591,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         validations.add(oad.getValidationDataSources().toString());
       }
       if(validations.size() > 0) {
-        OnyxAttributeHelper.addValidationAttribute(builder, validations.toString());
+        OnyxAttributeHelper.addValidationAttribute(builder1, validations.toString());
       }
 
       // an open answer is implicitly always conditioned by the selection of its parent category.
-      OnyxAttributeHelper.addConditionAttribute(builder, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(), questionCategory.getCategory().getName()).toString());
+      OnyxAttributeHelper.addConditionAttribute(builder1, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(), questionCategory.getCategory().getName()).toString());
 
     }
 
@@ -603,13 +611,13 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       this.defaultValue = defaultValue;
     }
 
-    public void visit(org.obiba.magma.Category.Builder builder) {
+    public void visit(org.obiba.magma.Category.Builder builder1) {
       for(Locale locale : bundle.getAvailableLanguages()) {
         try {
           String stringResource = QuestionnaireStringResourceModelHelper.getMessage(bundle, oad, defaultValue, null, locale);
           if(stringResource.trim().length() > 0) {
             String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
-            builder.addAttribute(OnyxAttributeHelper.LABEL, noHTMLString, locale);
+            builder1.addAttribute(OnyxAttributeHelper.LABEL, noHTMLString, locale);
           }
         } catch(NoSuchMessageException ex) {
           // ignored
@@ -623,17 +631,17 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
    * @param validator
    * @return null if validator not identified.
    */
-  private String validatorToString(IValidator validator) {
+  private String validatorToString(IValidator<?> validator) {
     if(validator == null) {
       return null;
     }
 
     if(validator instanceof MaximumValidator) {
-      return "Number.Maximum[" + ((MaximumValidator) validator).getMaximum() + "]";
+      return "Number.Maximum[" + ((MaximumValidator<?>) validator).getMaximum() + "]";
     } else if(validator instanceof MinimumValidator) {
-      return "Number.Minimum[" + ((MinimumValidator) validator).getMinimum() + "]";
+      return "Number.Minimum[" + ((MinimumValidator<?>) validator).getMinimum() + "]";
     } else if(validator instanceof RangeValidator) {
-      return "Number.Range[" + ((RangeValidator) validator).getMinimum() + ", " + ((RangeValidator) validator).getMaximum() + "]";
+      return "Number.Range[" + ((RangeValidator<?>) validator).getMinimum() + ", " + ((RangeValidator<?>) validator).getMaximum() + "]";
     } else if(validator instanceof StringValidator) {
       if(validator instanceof StringValidator.ExactLengthValidator) {
         return "String.ExactLength[" + ((StringValidator.ExactLengthValidator) validator).getLength() + "]";

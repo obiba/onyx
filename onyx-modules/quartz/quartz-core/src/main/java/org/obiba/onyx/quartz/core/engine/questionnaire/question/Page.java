@@ -9,14 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-public class Page implements Serializable, IQuestionnaireElement {
+public class Page implements IHasQuestion {
 
   private static final long serialVersionUID = -7732601103831162009L;
 
@@ -56,6 +54,7 @@ public class Page implements Serializable, IQuestionnaireElement {
     uIFactoryName = factoryName;
   }
 
+  @Override
   public List<Question> getQuestions() {
     return questions != null ? questions : (questions = new ArrayList<Question>());
   }
