@@ -33,6 +33,8 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
 
   private IModel<QuestionCategory> questionCategoryModel;
 
+  private QuestionCategoryPropertiesPanel questionCategoryPropertiesPanel;
+
   public CategoryPropertiesPanel(String id, IModel<QuestionCategory> questionCategoryModel, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
     super(id, new Model<Category>(questionCategoryModel.getObject().getCategory()), questionnaireModel, modalWindow);
     this.questionCategoryModel = questionCategoryModel;
@@ -46,7 +48,8 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
 
     Category modelObject = form.getModelObject();
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
-    form.add(new QuestionCategoryPropertiesPanel("questionCategoryPropertiesPanel", questionCategoryModel, questionnaireModel));
+    questionCategoryPropertiesPanel = new QuestionCategoryPropertiesPanel("questionCategoryPropertiesPanel", questionCategoryModel, questionnaireModel);
+    form.add(questionCategoryPropertiesPanel);
 
     form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "escape")));
     form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "noAnswer")));
@@ -58,6 +61,13 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
       category.addVariableName(entries.getKey(), entries.getValue());
     }
+  }
+
+  @Override
+  public void saveToFiles() {
+    // TODO merge locale labels instead double save
+    super.saveToFiles();
+    questionCategoryPropertiesPanel.saveToFiles();
   }
 
   public QuestionCategory getQuestionCategory() {

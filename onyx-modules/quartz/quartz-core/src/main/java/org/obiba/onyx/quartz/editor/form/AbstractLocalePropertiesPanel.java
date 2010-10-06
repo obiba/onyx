@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.form;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
@@ -115,6 +119,17 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
       mapLocaleProperties.put(localeProperties.getLocale(), properties);
     }
     return mapLocaleProperties;
+  }
+
+  public void saveToFiles() {
+    try {
+      // TODO change this hardcoded stuff
+      File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
+      File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
+      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance((questionnaireModel != null ? questionnaireModel.getObject() : (Questionnaire) getDefaultModelObject())), getLocalePropertiesToMap());
+    } catch(IOException e) {
+      throw new RuntimeException("Cannot save questionnaire", e);
+    }
   }
 
   public Form<T> getForm() {

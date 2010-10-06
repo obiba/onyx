@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.form;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -19,8 +16,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 
 @SuppressWarnings("serial")
 public abstract class AbstractQuestionnaireElementPanel<T extends IQuestionnaireElement> extends AbstractLocalePropertiesPanel<T> {
@@ -63,16 +58,4 @@ public abstract class AbstractQuestionnaireElementPanel<T extends IQuestionnaire
       }
     }.setDefaultFormProcessing(false));
   }
-
-  public void saveToFiles() {
-    try {
-      // TODO change this hardcoded stuff
-      File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
-      File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
-      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance((questionnaireModel != null ? questionnaireModel.getObject() : (Questionnaire) getDefaultModelObject())), getLocalePropertiesToMap());
-    } catch(IOException e) {
-      throw new RuntimeException("Cannot save questionnaire", e);
-    }
-  }
-
 }
