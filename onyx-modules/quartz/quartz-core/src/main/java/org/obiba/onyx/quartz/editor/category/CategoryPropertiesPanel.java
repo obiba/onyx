@@ -64,10 +64,9 @@ public class CategoryPropertiesPanel extends AbstractQuestionnaireElementPanel<C
   }
 
   @Override
-  public void saveToFiles() {
-    // TODO merge locale labels instead double save
-    super.saveToFiles();
-    questionCategoryPropertiesPanel.saveToFiles();
+  public void persist(AjaxRequestTarget target) {
+    super.persist(target);
+    questionCategoryPropertiesPanel.persist(target);
   }
 
   public QuestionCategory getQuestionCategory() {

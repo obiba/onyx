@@ -58,4 +58,5 @@ public abstract class AbstractQuestionnaireElementPanel<T extends IQuestionnaire
       }
     }.setDefaultFormProcessing(false));
   }
+
 }

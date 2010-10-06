@@ -296,7 +296,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), new Model<IHasSection>((IHasSection) elementsParent.get(element)), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
-            saveToFiles();
+            persist(target);
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
           }
@@ -307,7 +307,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), new Model<IHasPage>((IHasPage) elementsParent.get(element)), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
-            saveToFiles();
+            persist(target);
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + page.getName() + "');");
           }
@@ -319,7 +319,7 @@ public class QuestionnaireTreePanel extends Panel {
           @Override
           public void onSave(AjaxRequestTarget target, Question question) {
             super.onSave(target, question);
-            saveToFiles();
+            persist(target);
             target.addComponent(treeContainer);
           }
         });
@@ -365,7 +365,7 @@ public class QuestionnaireTreePanel extends Panel {
         }
       }
       // TODO temporary
-      new QuestionnairePropertiesPanel("content", (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow).saveToFiles();
+      new QuestionnairePropertiesPanel("content", (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow).persist(target);
       // remove node from jsTree
       target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
     }
@@ -391,7 +391,7 @@ public class QuestionnaireTreePanel extends Panel {
             } else if(element instanceof Section) {
               ((Section) element).addSection(section);
             }
-            saveToFiles();
+            persist(target);
             target.addComponent(treeContainer);
           }
         });
@@ -407,7 +407,7 @@ public class QuestionnaireTreePanel extends Panel {
             } else if(element instanceof Section) {
               ((Section) element).addPage(page);
             }
-            saveToFiles();
+            persist(target);
             target.addComponent(treeContainer);
           }
         });
@@ -424,7 +424,7 @@ public class QuestionnaireTreePanel extends Panel {
             } else if(element instanceof Question) {
               ((Question) element).addQuestion(question);
             }
-            saveToFiles();
+            persist(target);
             target.addComponent(treeContainer);
           }
         });

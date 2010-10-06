@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -45,4 +46,9 @@ public interface QuestionnaireBundleManager {
    * @return
    */
   public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name);
+
+  /**
+   * @return
+   */
+  File getRootDir();
 }

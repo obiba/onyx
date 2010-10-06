@@ -141,7 +141,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
                 super.onSave(target1, category);
                 QuestionPropertiesPanel.this.getForm().getModelObject().addQuestionCategory(getQuestionCategory());
                 refreshList(target1);
-                this.saveToFiles();
+                persist(target1);
               }
             });
             categoryWindow.show(target);
@@ -184,7 +184,7 @@ public class QuestionPropertiesPanel extends AbstractQuestionnaireElementPanel<Q
           public void onSave(AjaxRequestTarget target1, Category category) {
             super.onSave(target1, category);
             refreshList(target1);
-            this.saveToFiles();
+            persist(target1);
           }
         });
         categoryWindow.show(target);

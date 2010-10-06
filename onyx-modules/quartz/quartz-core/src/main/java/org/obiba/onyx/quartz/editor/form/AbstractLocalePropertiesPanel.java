@@ -9,13 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.form;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,19 +28,28 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 @SuppressWarnings("serial")
 public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElement> extends Panel {
+
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   protected QuestionnaireBundleManager questionnaireBundleManager;
@@ -105,7 +113,7 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
   }
 
   @SuppressWarnings("unchecked")
-  protected Map<Locale, Properties> getLocalePropertiesToMap() {
+  protected Map<Locale, Properties> getPropertiesByLocale() {
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
     for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
@@ -119,17 +127,6 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
       mapLocaleProperties.put(localeProperties.getLocale(), properties);
     }
     return mapLocaleProperties;
-  }
-
-  public void saveToFiles() {
-    try {
-      // TODO change this hardcoded stuff
-      File bundleRootDirectory = new File("target\\work\\webapp\\WEB-INF\\config\\quartz\\resources", "questionnaires");
-      File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
-      new QuestionnaireCreator(bundleRootDirectory, bundleSourceDirectory).createQuestionnaire(QuestionnaireBuilder.getInstance((questionnaireModel != null ? questionnaireModel.getObject() : (Questionnaire) getDefaultModelObject())), getLocalePropertiesToMap());
-    } catch(IOException e) {
-      throw new RuntimeException("Cannot save questionnaire", e);
-    }
   }
 
   public Form<T> getForm() {
@@ -150,5 +147,45 @@ public abstract class AbstractLocalePropertiesPanel<T extends IQuestionnaireElem
    * @param t
    */
   public abstract void onSave(AjaxRequestTarget target, T t);
+
+  public void persist(AjaxRequestTarget target) {
+
+    try {
+
+      QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaireModel.getObject());
+      // TODO select touch-screen or standard
+      // builder.setSimplifiedUI(); // touch-screen
+      // builder.setStandardUI(); // standard
+      final Questionnaire questionnaire = builder.getQuestionnaire();
+      UniqueQuestionnaireElementNameBuilder.ensureQuestionnaireVariableNamesAreUnique(questionnaire);
+
+      log.info("save to " + questionnaireBundleManager.getRootDir());
+
+      // Create the bundle manager.
+      QuestionnaireBundleManager writeBundleManager = new QuestionnaireBundleManagerImpl(questionnaireBundleManager.getRootDir());
+      ((QuestionnaireBundleManagerImpl) writeBundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
+      ((QuestionnaireBundleManagerImpl) writeBundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
+
+      QuestionnaireBundle bundle = writeBundleManager.createBundle(questionnaire);
+      Iterable<Locale> localesToDelete = Iterables.filter(bundle.getAvailableLanguages(), new Predicate<Locale>() {
+        @Override
+        public boolean apply(Locale locale) {
+          return !questionnaire.getLocales().contains(locale);
+        }
+      });
+      for(Locale localeToDelete : localesToDelete) {
+        bundle.deleteLanguage(localeToDelete);
+      }
+      for(Entry<Locale, Properties> entry : getPropertiesByLocale().entrySet()) {
+        bundle.updateLanguage(entry.getKey(), entry.getValue());
+      }
+
+    } catch(Exception e) {
+      log.error("Cannot persist questionnaire", e);
+      error(e.getMessage());
+      feedbackWindow.setContent(feedbackPanel);
+      feedbackWindow.show(target);
+    }
+  }
 
 }

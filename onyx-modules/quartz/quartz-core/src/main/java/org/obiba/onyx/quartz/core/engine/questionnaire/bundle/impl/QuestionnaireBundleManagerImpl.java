@@ -351,4 +351,9 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     }
   }
 
+  @Override
+  public File getRootDir() {
+    return rootDir;
+  }
+
 }
