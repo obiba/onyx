@@ -44,6 +44,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.table.EntityListTablePanel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -54,13 +55,13 @@ import org.obiba.wicket.markup.html.table.IColumnProvider;
 @SuppressWarnings("serial")
 public abstract class CategoryFinderPanel extends Panel {
 
-  private final IModel<Questionnaire> questionnaireModel;
+  private final IModel<EditedQuestionnaire> questionnaireModel;
 
   private TextField<String> questionName;
 
   private TextField<String> categoryName;
 
-  public CategoryFinderPanel(String id, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public CategoryFinderPanel(String id, final IModel<Question> questionModel, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, questionModel);
     this.questionnaireModel = questionnaireModel;
 
@@ -192,7 +193,7 @@ public abstract class CategoryFinderPanel extends Panel {
     private List<CategoryEntity> categoryEntities = new ArrayList<CategoryEntity>();
 
     public CategoryProvider() {
-      Questionnaire questionnaire = questionnaireModel.getObject();
+      Questionnaire questionnaire = questionnaireModel.getObject().getElement();
       if(questionnaire.getQuestionnaireCache() == null) {
         QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
       }
@@ -283,7 +284,7 @@ public abstract class CategoryFinderPanel extends Panel {
     private List<QuestionCategoryEntity> questions = new ArrayList<QuestionCategoryEntity>();
 
     public QuestionProvider() {
-      Questionnaire questionnaire = questionnaireModel.getObject();
+      Questionnaire questionnaire = questionnaireModel.getObject().getElement();
       if(questionnaire.getQuestionnaireCache() == null) {
         QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
       }

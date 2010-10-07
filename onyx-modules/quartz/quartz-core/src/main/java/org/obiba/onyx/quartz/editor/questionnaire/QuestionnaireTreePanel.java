@@ -99,7 +99,7 @@ public class QuestionnaireTreePanel extends Panel {
   private final FeedbackWindow feedbackWindow;
 
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
-    super(id, model);
+    super(id, new Model<EditedQuestionnaire>(new EditedQuestionnaire(model.getObject())));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -108,6 +108,8 @@ public class QuestionnaireTreePanel extends Panel {
 
     elementWindow = new ModalWindow("elementWindow");
     elementWindow.setCssClassName("onyx");
+    elementWindow.setInitialWidth(1000);
+    elementWindow.setInitialHeight(600);
     elementWindow.setResizable(true);
     elementWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
@@ -282,15 +284,15 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new ResourceModel("Questionnaire"));
         elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>((Questionnaire) element), elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
-            super.onSave(target, questionnaire);
+          public void onSave(AjaxRequestTarget target, EditedQuestionnaire editedQuestionnaire) {
+            super.onSave(target, editedQuestionnaire);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + questionnaire.getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedQuestionnaire.getElement().getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
       }
-      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+      IModel<EditedQuestionnaire> questionnaireModel = (IModel<EditedQuestionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       if(element instanceof Section) {
         elementWindow.setTitle(new ResourceModel("Section"));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), new Model<IHasSection>((IHasSection) elementsParent.get(element)), questionnaireModel, elementWindow) {
@@ -375,7 +377,7 @@ public class QuestionnaireTreePanel extends Panel {
       String type = request.getParameter("type");
       log.info("Add " + type + " to " + nodeId);
       final IQuestionnaireElement element = elements.get(nodeId);
-      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+      IModel<EditedQuestionnaire> questionnaireModel = (IModel<EditedQuestionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       if(element instanceof IHasSection && "section".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), new Model<IHasSection>((IHasSection) element), questionnaireModel, elementWindow) {

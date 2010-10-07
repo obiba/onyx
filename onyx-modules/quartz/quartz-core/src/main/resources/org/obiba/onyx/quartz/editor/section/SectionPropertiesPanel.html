@@ -1,10 +1,13 @@
 <wicket:panel>
-	<wicket:extend>
+
+	<span wicket:id="feedback" />
+	
+	<form wicket:id="form" autocomplete="off" >
 	
 		<table class="keyValueTable">
 			<tr>
-				<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
-				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
+				<td class="keyValueTableKey"><label wicket:id="nameLabel">nameLabel</label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" /></td>
 			</tr>			
 		</table>
 	
@@ -12,6 +15,12 @@
 			<legend><wicket:message key="LanguagesProperties" /></legend>
 		 	<div wicket:id="localesPropertiesTabs"></div>
 		</fieldset>
+		
+		<div class="modal-footer">
+			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
+			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
+		</div>				
+		
+	</form>
 	
-	</wicket:extend>
 </wicket:panel>

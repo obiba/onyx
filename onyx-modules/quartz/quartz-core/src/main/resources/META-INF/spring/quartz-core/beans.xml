@@ -90,5 +90,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean id="questionnaireBeanResolver" class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver" />
+  
+  <bean id="questionnairePersistenceUtils" class="org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils">
+  <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+  </bean>
 
 </beans>

@@ -1,15 +1,21 @@
 <wicket:panel>
-	<wicket:extend>
+
+	<span wicket:id="feedback" />
+	
+	<form wicket:id="form" autocomplete="off" >	
+
 		<table class="keyValueTable">
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
 			</tr>
 		</table>
-			<fieldset>
-				<legend><wicket:message key="LanguagesProperties" /></legend>
-			 	<div wicket:id="localesPropertiesTabs"></div>
-			</fieldset>		
+		
+		<fieldset>
+			<legend><wicket:message key="LanguagesProperties" /></legend>
+		 	<div wicket:id="localesPropertiesTabs"></div>
+		</fieldset>		
+
 		<table>
 			<tr>
 				<td valign="top" class="keyValueTableKey"><wicket:message key="DataType" /></td>
@@ -42,19 +48,28 @@
 			</wicket:container>
 		</fieldset>
 		
-		<wicket:fragment wicket:id="fragmentValidator">
-			<table>
-				<tr>
+		<div class="modal-footer">
+			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
+			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
+		</div>				
+	
+	</form>		
+		
+	<wicket:fragment wicket:id="fragmentValidator">
+		<table>
+			<tr>
+				<td>
+					<input wicket:id="wantedValidator" type="checkbox" />
+					<label wicket:id="labelValidator" for="wantedValidator" />
+				</td>
+				<wicket:container wicket:id="listViewValues">
 					<td>
-						<input wicket:id="wantedValidator" type="checkbox" />
-						<label wicket:id="labelValidator" for="wantedValidator" />
+						<input wicket:id="valueItem" type="text"/>
 					</td>
-					<wicket:container wicket:id="listViewValues">
-						<td>
-							<input wicket:id="valueItem" type="text"/>
-						</td>
-					</wicket:container>
-			</tr></table>
-		</wicket:fragment>		
-	</wicket:extend>	
+				</wicket:container>
+			</tr>
+		</table>
+	</wicket:fragment>
+		
+				
 </wicket:panel>
