@@ -24,7 +24,7 @@ Wicket.QTree.buildTree = function(treeId) {
 			"valid_children" : [ "Questionnaire" ],
 			"types" : {
 				"Questionnaire" : {
-					"valid_children" : [ "Section", "Page" ]
+					"valid_children" : [ "Section" ]
 				},
 				"Section" : {
 					"valid_children" : [ "Section", "Page" ]
@@ -33,17 +33,8 @@ Wicket.QTree.buildTree = function(treeId) {
 					"valid_children" : [ "Question" ]
 				},
 				"Question" : {
-					"valid_children" : [ "Question", "QuestionCategory" ]
-				},
-				"QuestionCategory" : {
-					"valid_children" : [ "Category" ]
-				},
-				"Category" : {
-					"valid_children" : [ "OpenAnswerDefinition" ]
-				},
-				"OpenAnswerDefinition" : {
-					"valid_children" : [ "OpenAnswerDefinition" ]
-				}
+					"valid_children" : [ "Question" ]
+				}				
 			}
 		},
 		"contextmenu" : { 
@@ -58,7 +49,7 @@ Wicket.QTree.buildTree = function(treeId) {
 							seperator_after : false, 
 							seperator_before : false 
 						}, 
-						"create_page": (elementType != "Questionnaire" && elementType != "Section") ? false : { 
+						"create_page": (elementType != "Section") ? false : { 
 							label: "Add new Page", 
 							action: function (obj) { Wicket.QTree.addChild(elementId, 'page'); },
 							seperator_after : false, 

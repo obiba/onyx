@@ -15,9 +15,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasPage;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.editor.form.AbstractQuestionnaireElementPanel;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -25,9 +25,9 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 @SuppressWarnings("serial")
 public abstract class PagePropertiesPanel extends AbstractQuestionnaireElementPanel<Page> {
 
-  private final IModel<IHasPage> parentModel;
+  private final IModel<Section> parentModel;
 
-  public PagePropertiesPanel(String id, IModel<Page> model, IModel<IHasPage> parentModel, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
+  public PagePropertiesPanel(String id, IModel<Page> model, IModel<Section> parentModel, IModel<Questionnaire> questionnaireModel, ModalWindow modalWindow) {
     super(id, model, questionnaireModel, modalWindow);
     this.parentModel = parentModel;
     createComponent();

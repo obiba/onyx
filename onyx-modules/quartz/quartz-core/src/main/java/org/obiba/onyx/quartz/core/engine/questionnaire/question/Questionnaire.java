@@ -17,7 +17,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
 import org.obiba.runtime.Version;
 
-public class Questionnaire implements IHasSection, IHasPage {
+public class Questionnaire implements IHasSection {
 
   private static final long serialVersionUID = -9079010396321478385L;
 
@@ -93,26 +93,22 @@ public class Questionnaire implements IHasSection, IHasPage {
     }
   }
 
-  @Override
   public List<Page> getPages() {
     return pages != null ? pages : (pages = new ArrayList<Page>());
   }
 
-  @Override
   public void addPage(Page page) {
     if(page != null) {
       getPages().add(page);
     }
   }
 
-  @Override
   public void addPage(Page page, int index) {
     if(page != null) {
       getPages().add(index, page);
     }
   }
 
-  @Override
   public void removePage(Page page) {
     if(page != null) {
       getPages().remove(page);

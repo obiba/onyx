@@ -304,7 +304,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(respondTarget);
       } else if(element instanceof Page) {
         elementWindow.setTitle(new ResourceModel("Page"));
-        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), new Model<IHasPage>((IHasPage) elementsParent.get(element)), questionnaireModel, elementWindow) {
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), new Model<Section>((Section) elementsParent.get(element)), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
             persist(target);
@@ -349,13 +349,8 @@ public class QuestionnaireTreePanel extends Panel {
       } else if(element instanceof Page) {
         Page page = (Page) element;
         Section parentSection = page.getSection();
-        if(parentSection == null) {
-          // remove from questionnaire
-          questionnaire.removePage(page);
-        } else {
-          // remove from parentSection
-          parentSection.removePage(page);
-        }
+        // remove from parentSection
+        parentSection.removePage(page);
       } else if(element instanceof Question) {
         Question question = (Question) element;
         if(question.getParentQuestion() == null) {
@@ -386,44 +381,30 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), new Model<IHasSection>((IHasSection) element), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
-            if(element instanceof Questionnaire) {
-              ((Questionnaire) element).addSection(section);
-            } else if(element instanceof Section) {
-              ((Section) element).addSection(section);
-            }
+            ((IHasSection) element).addSection(section);
             persist(target);
             target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);
-
-      } else if(element instanceof IHasPage && "page".equals(type)) {
+      } else if(element instanceof Section && "page".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), new Model<IHasPage>((IHasPage) element), questionnaireModel, elementWindow) {
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), new Model<Section>((Section) element), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page page) {
-            if(element instanceof Questionnaire) {
-              ((Questionnaire) element).addPage(page);
-            } else if(element instanceof Section) {
-              ((Section) element).addPage(page);
-            }
+            ((Section) element).addPage(page);
             persist(target);
             target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);
-
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Question question) {
             super.onSave(target, question);
-            if(element instanceof Page) {
-              ((Page) element).addQuestion(question);
-            } else if(element instanceof Question) {
-              ((Question) element).addQuestion(question);
-            }
+            ((IHasQuestion) element).addQuestion(question);
             persist(target);
             target.addComponent(treeContainer);
           }
