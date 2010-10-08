@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.springframework.beans.factory.NamedBean;
 
 /**
@@ -19,6 +20,6 @@ import org.springframework.beans.factory.NamedBean;
  */
 public interface IPageLayoutFactory extends NamedBean {
 
-  public PageLayout createLayout(String id, IModel pageModel);
+  public PageLayout createLayout(String id, IModel<Page> pageModel);
 
 }

@@ -55,7 +55,7 @@ public class CategoryPropertiesPanel extends Panel {
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  private VariableNamesPanel variableNamesPanel;
+  private final VariableNamesPanel variableNamesPanel;
 
   private final FeedbackPanel feedbackPanel;
 

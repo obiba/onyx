@@ -9,6 +9,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 
@@ -18,10 +19,12 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
  */
 public class SimplifiedPageLayoutFactory implements IPageLayoutFactory {
 
-  public PageLayout createLayout(String id, IModel pageModel) {
+  @Override
+  public PageLayout createLayout(String id, IModel<Page> pageModel) {
     return new SimplifiedPageLayout(id, pageModel);
   }
 
+  @Override
   public String getBeanName() {
     return "quartz." + getClass().getSimpleName();
   }

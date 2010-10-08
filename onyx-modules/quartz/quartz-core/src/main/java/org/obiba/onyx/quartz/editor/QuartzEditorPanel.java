@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePropertiesPanel;
 
@@ -41,13 +42,21 @@ public class QuartzEditorPanel extends Panel {
 
     add(modalWindow);
 
-    add(new QuestionnaireListPanel("questionnaire-list", modalWindow));
+    final QuestionnaireListPanel questionnaireListPanel = new QuestionnaireListPanel("questionnaire-list", modalWindow);
+    questionnaireListPanel.setOutputMarkupId(true);
+    add(questionnaireListPanel);
 
     add(new AjaxLink<Void>("questionnaireProps") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow));
+        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target1, EditedQuestionnaire editedQuestionnaire) {
+            super.onSave(target1, editedQuestionnaire);
+            target1.addComponent(questionnaireListPanel);
+          }
+        });
         modalWindow.show(target);
       }
     });

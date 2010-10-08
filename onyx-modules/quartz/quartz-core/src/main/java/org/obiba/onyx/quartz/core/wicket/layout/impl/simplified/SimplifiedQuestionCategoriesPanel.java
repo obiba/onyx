@@ -53,8 +53,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * @param id
    * @param questionModel
    */
-  @SuppressWarnings("serial")
-  public SimplifiedQuestionCategoriesPanel(String id, IModel questionModel) {
+  public SimplifiedQuestionCategoriesPanel(String id, IModel<Question> questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
@@ -101,7 +100,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * Regular image categories (i.e., categories represented by images rather than text), in a single row.
    */
   private void addRegularImageCategoriesView() {
-    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", getDefaultModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
+    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", (IModel<Question>) getDefaultModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
     add(view);
   }
 
@@ -162,7 +161,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryImageLinksView extends QuestionCategoryComponentsView {
 
-    public QuestionCategoryImageLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+    public QuestionCategoryImageLinksView(String id, IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
     }
 
@@ -174,7 +173,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
   @SuppressWarnings("serial")
   private class OpenFragment extends Fragment {
-    public OpenFragment(String id, IModel questionCategoryModel, int index) {
+    public OpenFragment(String id, IModel<QuestionCategory> questionCategoryModel, int index) {
       super(id, "openFragment", SimplifiedQuestionCategoriesPanel.this);
 
       // do not display the or before the first open answer item or if the question is multiple
@@ -184,7 +183,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
         add(new Label("or", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "or")));
       }
 
-      OpenAnswerDefinition openAnswerDefinition = ((QuestionCategory) questionCategoryModel.getObject()).getOpenAnswerDefinition();
+      OpenAnswerDefinition openAnswerDefinition = questionCategoryModel.getObject().getOpenAnswerDefinition();
       if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) {
         add(new MultipleSimplifiedOpenAnswerDefinitionPanel("open", getQuestionModel(), questionCategoryModel));
       } else {

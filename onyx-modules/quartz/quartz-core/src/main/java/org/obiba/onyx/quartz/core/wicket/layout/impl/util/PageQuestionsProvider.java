@@ -52,8 +52,7 @@ public class PageQuestionsProvider implements IDataProvider {
     this.pageModel = new QuestionnaireModel(page);
   }
 
-  @SuppressWarnings("unchecked")
-  public Iterator iterator(int first, int count) {
+  public Iterator<Question> iterator(int first, int count) {
     List<Question> questionToAnswer = new ArrayList<Question>();
     for(Question question : getPage().getQuestions().subList(first, first + count)) {
       if(!answerQuestionIfDataSourceAvailable(question) && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {

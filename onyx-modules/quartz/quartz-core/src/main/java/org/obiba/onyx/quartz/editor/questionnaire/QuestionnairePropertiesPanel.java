@@ -20,6 +20,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
@@ -61,7 +62,7 @@ public class QuestionnairePropertiesPanel extends Panel {
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  private ListModel<Locale> listLocaleModel;
+  private final ListModel<Locale> listLocaleModel;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -129,6 +130,11 @@ public class QuestionnairePropertiesPanel extends Panel {
     form.add(version);
     form.add(new SimpleFormComponentLabel("versionLabel", version));
 
+    CheckBox touchScreen = new CheckBox("touchScreen", new PropertyModel<Boolean>(form.getModel(), "touchScreen"));
+    touchScreen.setLabel(new ResourceModel("TouchScreen"));
+    form.add(touchScreen);
+    form.add(new SimpleFormComponentLabel("touchScreenLabel", touchScreen));
+
     listLocaleModel = new ListModel<Locale>(new ArrayList<Locale>(questionnaire.getLocales()));
 
     final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", listLocaleModel, new PropertyModel<Questionnaire>(form.getModel(), "element"), localePropertiesModel);
@@ -139,8 +145,6 @@ public class QuestionnairePropertiesPanel extends Panel {
       protected Recorder<Locale> newRecorderComponent() {
         final Recorder<Locale> recorder = super.newRecorderComponent();
         recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
-          private static final long serialVersionUID = 1L;
 
           @Override
           protected void onUpdate(AjaxRequestTarget target) {

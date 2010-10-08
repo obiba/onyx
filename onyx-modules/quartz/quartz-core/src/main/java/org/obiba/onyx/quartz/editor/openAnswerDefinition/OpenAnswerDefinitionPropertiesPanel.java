@@ -55,7 +55,6 @@ import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
-import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataValidator;
@@ -67,16 +66,16 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  // @SpringBean
+  // private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  private FeedbackPanel feedbackPanel;
+  private final FeedbackPanel feedbackPanel;
 
-  private FeedbackWindow feedbackWindow;
+  private final FeedbackWindow feedbackWindow;
 
-  private Form<OpenAnswerDefinition> form;
+  private final Form<OpenAnswerDefinition> form;
 
-  private VariableNamesPanel variableNamesPanel;
+  private final VariableNamesPanel variableNamesPanel;
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private List<Class<? extends IValidator>> iValidatorsAvailable = Arrays.asList(MaximumValidator.class, MinimumValidator.class, RangeValidator.class);

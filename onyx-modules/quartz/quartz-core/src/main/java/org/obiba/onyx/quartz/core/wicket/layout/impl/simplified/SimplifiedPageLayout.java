@@ -57,8 +57,7 @@ public class SimplifiedPageLayout extends PageLayout {
    * @param id
    * @param pageModel
    */
-  @SuppressWarnings("serial")
-  public SimplifiedPageLayout(String id, IModel pageModel) {
+  public SimplifiedPageLayout(String id, IModel<Page> pageModel) {
     super(id, pageModel);
     setOutputMarkupId(true);
 

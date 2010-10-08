@@ -55,13 +55,13 @@ public abstract class PagePropertiesPanel extends Panel {
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  private FeedbackPanel feedbackPanel;
+  private final FeedbackPanel feedbackPanel;
 
-  private FeedbackWindow feedbackWindow;
+  private final FeedbackWindow feedbackWindow;
 
-  private Form<Page> form;
+  private final Form<Page> form;
 
-  private IModel<EditedQuestionnaire> questionnaireModel;
+  private final IModel<EditedQuestionnaire> questionnaireModel;
 
   public PagePropertiesPanel(String id, IModel<Page> model, final IModel<Section> parentModel, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, model);

@@ -29,11 +29,11 @@ import org.apache.wicket.model.util.ListModel;
 @SuppressWarnings({ "serial", "unchecked" })
 public class VariableNamesPanel extends Panel {
 
-  protected WebMarkupContainer itemsContainer;
+  private WebMarkupContainer itemsContainer;
 
-  protected FeedbackPanel feedbackPanel;
+  private final FeedbackPanel feedbackPanel;
 
-  private VariableNamesForm variableNamesForm;
+  private final VariableNamesForm variableNamesForm;
 
   /**
    * Constructor of VariableNamesPanel <br/>

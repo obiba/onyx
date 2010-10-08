@@ -58,7 +58,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
    * @param questionModel
    */
   @SuppressWarnings("serial")
-  public SimplifiedQuestionSharedCategoriesPanel(String id, IModel questionModel, IDataProvider<Question> questionsProvider) {
+  public SimplifiedQuestionSharedCategoriesPanel(String id, IModel<Question> questionModel, IDataProvider<Question> questionsProvider) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
@@ -73,7 +73,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
         Question question = (Question) rowModel.getObject();
         cellItem.add(new Label(componentId, new QuestionnaireStringResourceModel(question, "label")).setEscapeModelStrings(false));
-        cellItem.add(new AttributeAppender("class", new Model("obiba-label"), " "));
+        cellItem.add(new AttributeAppender("class", new Model<String>("obiba-label"), " "));
       }
 
     });
@@ -89,9 +89,9 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
           // show a link for check marking
           QuestionCategory questionCategory = (QuestionCategory) cellItem.getModel().getObject();
           if(questionCategory.getOpenAnswerDefinition() != null) {
-            cellItem.add(new QuestionCategoryOpenAnswerDefinitionPanel(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;"), null));
+            cellItem.add(new QuestionCategoryOpenAnswerDefinitionPanel(componentId, rowModel, cellItem.getModel(), new Model<String>("&nbsp;"), null));
           } else {
-            cellItem.add(new QuestionCategoryLink(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;"), null));
+            cellItem.add(new QuestionCategoryLink(componentId, rowModel, cellItem.getModel(), new Model<String>("&nbsp;"), null));
           }
         }
 

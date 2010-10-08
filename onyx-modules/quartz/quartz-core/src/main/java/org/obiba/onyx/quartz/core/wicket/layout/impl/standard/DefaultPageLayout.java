@@ -64,7 +64,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
    * @param pageModel
    */
   @SuppressWarnings("serial")
-  public DefaultPageLayout(String id, IModel pageModel) {
+  public DefaultPageLayout(String id, IModel<Page> pageModel) {
     super(id, pageModel);
     setOutputMarkupId(true);
 

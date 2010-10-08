@@ -76,19 +76,19 @@ public class QuestionPropertiesPanel extends Panel {
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  private ModalWindow categoryWindow;
+  private final ModalWindow categoryWindow;
 
-  private FormComponent<String> layoutRadioGroup;
+  private final FormComponent<String> layoutRadioGroup;
 
-  private TextField<Integer> nbRowsField;
+  private final TextField<Integer> nbRowsField;
 
-  private SortableList<QuestionCategory> categoryList;
+  private final SortableList<QuestionCategory> categoryList;
 
-  private FeedbackPanel feedbackPanel;
+  private final FeedbackPanel feedbackPanel;
 
-  private FeedbackWindow feedbackWindow;
+  private final FeedbackWindow feedbackWindow;
 
-  private Form<Question> form;
+  private final Form<Question> form;
 
   private final IModel<EditedQuestionnaire> questionnaireModel;
 

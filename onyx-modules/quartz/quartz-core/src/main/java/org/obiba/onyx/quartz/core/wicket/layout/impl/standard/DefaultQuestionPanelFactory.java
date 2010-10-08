@@ -9,6 +9,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 
@@ -18,10 +19,12 @@ import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
  */
 public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
 
-  public QuestionPanel createPanel(String id, IModel questionModel) {
+  @Override
+  public QuestionPanel createPanel(String id, IModel<Question> questionModel) {
     return new DefaultQuestionPanel(id, questionModel);
   }
 
+  @Override
   public String getBeanName() {
     return "quartz." + getClass().getSimpleName();
   }

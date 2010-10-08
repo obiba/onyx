@@ -57,9 +57,9 @@ public abstract class CategoryFinderPanel extends Panel {
 
   private final IModel<EditedQuestionnaire> questionnaireModel;
 
-  private TextField<String> questionName;
+  private final TextField<String> questionName;
 
-  private TextField<String> categoryName;
+  private final TextField<String> categoryName;
 
   public CategoryFinderPanel(String id, final IModel<Question> questionModel, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, questionModel);
