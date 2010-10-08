@@ -68,7 +68,7 @@ public class QuestionPropertiesPanel extends Panel {
 
   private static final String GRID_LAYOUT = "gridLayout";
 
-  protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   protected QuestionnaireBundleManager questionnaireBundleManager;

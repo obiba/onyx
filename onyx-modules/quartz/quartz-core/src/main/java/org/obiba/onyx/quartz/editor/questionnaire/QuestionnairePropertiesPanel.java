@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
@@ -32,6 +34,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -43,6 +46,7 @@ import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -54,7 +58,7 @@ import com.google.common.collect.Iterables;
 @SuppressWarnings("serial")
 public class QuestionnairePropertiesPanel extends Panel {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
@@ -70,7 +74,7 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   private final Form<EditedQuestionnaire> form;
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, final ModalWindow modalWindow) {
     super(id, new Model<EditedQuestionnaire>(new EditedQuestionnaire(model.getObject())));
 
@@ -158,6 +162,34 @@ public class QuestionnairePropertiesPanel extends Panel {
 
     form.add(localesPalette, localesPropertiesAjaxTabbedPanel);
 
+    final AJAXDownload download = new AJAXDownload() {
+
+      @Override
+      protected IResourceStream getResourceStream() {
+        try {
+          return new LocalePropertiesZipResource(questionnaireBundleManager.getBundle(questionnaire.getName()));
+        } catch(IOException e) {
+          log.error("Cannot persist questionnaire", e);
+          return null;
+        }
+      }
+
+      @Override
+      protected String getFileName() {
+        return questionnaire.getName() + "-locales.zip";
+      }
+    };
+    form.add(download);
+
+    form.add(new AjaxLink("downloadLocaleProperties") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        download.initiate(target);
+
+      }
+    });
+
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
@@ -199,4 +231,5 @@ public class QuestionnairePropertiesPanel extends Panel {
       feedbackWindow.show(target);
     }
   }
+
 }

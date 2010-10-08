@@ -23,7 +23,7 @@ public class EditorPage extends BasePage {
 
   public static final String EDITOR_COMPONENT = "editor-component";
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private ModuleRegistry moduleRegistry;

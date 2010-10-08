@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.core.util.FileUtil;
-import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
@@ -31,7 +30,7 @@ public class QuestionnaireCreator {
 
   private File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
 
-  private QuestionnaireVariableNameResolver variableNameResolver;
+  // private QuestionnaireVariableNameResolver variableNameResolver;
 
   public QuestionnaireCreator() throws IOException {
     super();

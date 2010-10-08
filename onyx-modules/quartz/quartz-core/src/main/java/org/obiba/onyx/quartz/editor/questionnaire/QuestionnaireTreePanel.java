@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class QuestionnaireTreePanel extends Panel {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   private static final String ID_PREFIX = "element_";
 

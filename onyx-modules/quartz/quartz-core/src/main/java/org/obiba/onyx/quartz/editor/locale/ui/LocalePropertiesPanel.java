@@ -30,7 +30,7 @@ public class LocalePropertiesPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected final transient Logger log = LoggerFactory.getLogger(getClass());
 
   public LocalePropertiesPanel(String id, LocaleProperties localeProperties) {
     super(id);

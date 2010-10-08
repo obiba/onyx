@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class PagePropertiesPanel extends Panel {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;

@@ -48,6 +48,7 @@ public class QuestionnaireWalker implements IVisitor {
    * @param questionnaire
    * @param preOrder a walk in which each parent node is traversed before its children is called a pre-order walk.
    */
+  @SuppressWarnings("hiding")
   public void walk(Questionnaire questionnaire, boolean preOrder) {
     this.preOrder = preOrder;
     questionnaire.accept(this);
