@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.editor.questionnaire;
 
 import static org.apache.commons.lang.ClassUtils.getShortClassName;
+import static org.apache.commons.lang.StringUtils.trimToNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -177,8 +179,8 @@ public class QuestionnaireTreePanel extends Panel {
   @Override
   protected void onBeforeRender() {
     super.onBeforeRender();
-    moveCallback.setDefaultModelObject("Wicket.QTree.moveNode = function(nodeId, newParentId, newPosition) {\n" + //
-    "  wicketAjaxGet('" + moveBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&newParentId='+ newParentId +'&newPosition='+ newPosition, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    moveCallback.setDefaultModelObject("Wicket.QTree.moveNode = function(nodeId, newParentId, newPosition, previousParentId) {\n" + //
+    "  wicketAjaxGet('" + moveBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&newParentId='+ newParentId +'&newPosition='+ newPosition +'&previousParentId='+ previousParentId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
     "\n}");
 
     editCallback.setDefaultModelObject("Wicket.QTree.editElement = function(nodeId) {\n" + //
@@ -200,23 +202,25 @@ public class QuestionnaireTreePanel extends Panel {
     protected void respond(AjaxRequestTarget target) {
       Request request = RequestCycle.get().getRequest();
       String nodeId = request.getParameter("nodeId");
-      // String previousParentId = request.getParameter("previousParentId");
-      String newParentId = request.getParameter("newParentId");
+      String previousParentId = trimToNull(request.getParameter("previousParentId"));
+      String newParentId = trimToNull(request.getParameter("newParentId"));
       int position = Integer.parseInt(request.getParameter("newPosition"));
+      boolean sameParent = StringUtils.equals(previousParentId, newParentId);
 
       IQuestionnaireElement element = elements.get(nodeId);
-      // IQuestionnaireElement previousParent = elements.get(previousParentId);
       IQuestionnaireElement newParent = elements.get(newParentId);
-      Questionnaire questionnaire = (Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      Questionnaire questionnaire = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
       if(element instanceof Section && newParent instanceof IHasSection) {
         Section section = (Section) element;
         IHasSection newHasSectionParent = (IHasSection) newParent;
-        for(Section existing : newHasSectionParent.getSections()) {
-          if(existing.getName().equalsIgnoreCase(section.getName())) {
-            error(new StringResourceModel("Section.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
-            feedbackWindow.setContent(feedbackPanel);
-            feedbackWindow.show(target);
-            break;
+        if(!sameParent) {
+          for(Section existing : newHasSectionParent.getSections()) {
+            if(existing.getName().equalsIgnoreCase(section.getName())) {
+              error(new StringResourceModel("Section.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
+              feedbackWindow.setContent(feedbackPanel);
+              feedbackWindow.show(target);
+              break;
+            }
           }
         }
         if(!hasErrorMessage()) {
@@ -230,12 +234,14 @@ public class QuestionnaireTreePanel extends Panel {
       } else if(element instanceof Page && newParent instanceof IHasPage) {
         Page page = (Page) element;
         IHasPage newHasPageParent = (IHasPage) newParent;
-        for(Page existing : newHasPageParent.getPages()) {
-          if(existing.getName().equalsIgnoreCase(page.getName())) {
-            error(new StringResourceModel("Page.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
-            feedbackWindow.setContent(feedbackPanel);
-            feedbackWindow.show(target);
-            break;
+        if(!sameParent) {
+          for(Page existing : newHasPageParent.getPages()) {
+            if(existing.getName().equalsIgnoreCase(page.getName())) {
+              error(new StringResourceModel("Page.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
+              feedbackWindow.setContent(feedbackPanel);
+              feedbackWindow.show(target);
+              break;
+            }
           }
         }
         if(!hasErrorMessage()) {
@@ -249,12 +255,14 @@ public class QuestionnaireTreePanel extends Panel {
       } else if(element instanceof Question && newParent instanceof IHasQuestion) {
         Question question = (Question) element;
         IHasQuestion newHasQuestionParent = (IHasQuestion) newParent;
-        for(Question existing : newHasQuestionParent.getQuestions()) {
-          if(existing.getName().equalsIgnoreCase(question.getName())) {
-            error(new StringResourceModel("Question.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
-            feedbackWindow.setContent(feedbackPanel);
-            feedbackWindow.show(target);
-            break;
+        if(!sameParent) {
+          for(Question existing : newHasQuestionParent.getQuestions()) {
+            if(existing.getName().equalsIgnoreCase(question.getName())) {
+              error(new StringResourceModel("Question.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
+              feedbackWindow.setContent(feedbackPanel);
+              feedbackWindow.show(target);
+              break;
+            }
           }
         }
         if(!hasErrorMessage()) {
@@ -342,7 +350,7 @@ public class QuestionnaireTreePanel extends Panel {
       String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Delete " + nodeId);
       IQuestionnaireElement element = elements.get(nodeId);
-      Questionnaire questionnaire = (Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      Questionnaire questionnaire = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
       if(element instanceof Section) {
         Section section = (Section) element;
         Section parentSection = section.getParentSection();

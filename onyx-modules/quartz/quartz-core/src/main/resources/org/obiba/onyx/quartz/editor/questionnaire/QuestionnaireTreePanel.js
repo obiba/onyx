@@ -82,7 +82,7 @@ Wicket.QTree.buildTree = function(treeId) {
 	.bind("move_node.jstree", function (e, data) {
 		data.rslt.o.each(function (i) {
 			// see http://groups.google.com/group/jstree/browse_thread/thread/72c504f1212f7258/ff44f4f7d8a57422?lnk=gst&q=move_node#ff44f4f7d8a57422
-			Wicket.QTree.moveNode($(this).attr("id"), data.rslt.np.attr("id"), data.rslt.cp);
+			Wicket.QTree.moveNode($(this).attr("id"), data.rslt.np.attr("id"), data.rslt.cp, data.rslt.op.attr("id"));
 		});
 	});
 }
