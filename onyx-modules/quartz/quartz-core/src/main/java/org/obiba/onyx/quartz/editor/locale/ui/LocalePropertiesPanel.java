@@ -12,8 +12,8 @@ package org.obiba.onyx.quartz.editor.locale.ui;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -51,9 +51,9 @@ public class LocalePropertiesPanel extends Panel {
         @Override
         protected void populateItem(LoopItem item) {
           TextArea<String> labelTextArea = new TextArea<String>("labelsTextArea", new PropertyModel<String>(getModelObject(), "values[" + item.getIteration() + "]"));
+          labelTextArea.setLabel(new Model<String>(getModelObject().getKeys()[item.getIteration()]));
           labelTextArea.add(new AttributeModifier("rows", true, new Model<Integer>(3)));
           labelTextArea.add(new AttributeModifier("cols", true, new Model<Integer>(50)));
-          Label labelLabel = new Label("labelsLabel", getModelObject().getKeys()[item.getIteration()]);
           labelTextArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
             private static final long serialVersionUID = 1L;
@@ -64,8 +64,8 @@ public class LocalePropertiesPanel extends Panel {
               delegateSubmit(null);
             }
           });
-          item.add(labelLabel);
           item.add(labelTextArea);
+          item.add(new SimpleFormComponentLabel("labelsLabel", labelTextArea));
         }
       };
       add(labels);

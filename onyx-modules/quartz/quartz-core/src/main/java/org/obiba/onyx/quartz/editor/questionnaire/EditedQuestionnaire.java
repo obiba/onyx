@@ -21,9 +21,6 @@ public class EditedQuestionnaire extends EditedElement<Questionnaire> {
 
   private boolean touchScreen;
 
-  public EditedQuestionnaire() {
-  }
-
   public EditedQuestionnaire(Questionnaire element) {
     super(element);
   }

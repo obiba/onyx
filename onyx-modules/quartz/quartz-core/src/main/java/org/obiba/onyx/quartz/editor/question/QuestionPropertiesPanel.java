@@ -219,17 +219,17 @@ public class QuestionPropertiesPanel extends Panel {
 
           @Override
           public void callback(AjaxRequestTarget target) {
-            categoryWindow.setContent(new CategoryFinderPanel("content", (IModel<Question>) QuestionPropertiesPanel.this.getDefaultModel(), questionnaireModel, categoryWindow) {
+            categoryWindow.setContent(new CategoryFinderPanel("content", new Model<Question>(QuestionPropertiesPanel.this.form.getModelObject().getElement()), questionnaireModel, categoryWindow) {
               @Override
               public void onSave(AjaxRequestTarget target1, List<Category> categories) {
                 Question question = QuestionPropertiesPanel.this.form.getModelObject().getElement();
                 for(Category category : categories) {
                   QuestionCategory questionCategory = new QuestionCategory();
                   questionCategory.setCategory(category);
-                  // questionCategory.setExportName(exportName); TODO set exportName
                   question.addQuestionCategory(questionCategory);
                 }
                 refreshList(target1);
+                persist(target1);
               }
             });
             categoryWindow.show(target);

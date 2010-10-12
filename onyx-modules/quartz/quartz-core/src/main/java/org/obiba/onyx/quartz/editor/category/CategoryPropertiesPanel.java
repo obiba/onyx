@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.editor.category;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,8 +44,6 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Iterables;
 
 @SuppressWarnings("serial")
 public class CategoryPropertiesPanel extends Panel {
@@ -104,7 +101,7 @@ public class CategoryPropertiesPanel extends Panel {
         if(StringUtils.isNotBlank(model.getObject().getName())) {
           QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
           if(bundle != null) {
-            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale));
+            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject().getCategory(), property, new Object[0], locale));
           }
         }
       }
@@ -130,7 +127,7 @@ public class CategoryPropertiesPanel extends Panel {
     Category category = form.getModelObject().getElement().getCategory();
 
     TextField<String> exportName = new TextField<String>("exportName", new PropertyModel<String>(form.getModel(), "element.exportName"));
-    exportName.setLabel(new ResourceModel("ExportName"));
+    exportName.setLabel(new ResourceModel("Export"));
     form.add(exportName);
     form.add(new SimpleFormComponentLabel("exportNameLabel", exportName));
 
@@ -138,8 +135,16 @@ public class CategoryPropertiesPanel extends Panel {
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("questionCategoryLocalesPropertiesTabs", new PropertyModel<QuestionCategory>(form.getModel(), "element"), localePropertiesModelQuestionCategory));
 
-    form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "element.category.escape")));
-    form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "element.category.noAnswer")));
+    CheckBox escapeCheckBox = new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "element.category.escape"));
+    escapeCheckBox.setLabel(new ResourceModel("Escape"));
+    form.add(escapeCheckBox);
+    form.add(new SimpleFormComponentLabel("escapeLabel", escapeCheckBox));
+
+    CheckBox noAnswerCheckBox = new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "element.category.noAnswer"));
+    noAnswerCheckBox.setLabel(new ResourceModel("NoAnswer"));
+    form.add(noAnswerCheckBox);
+    form.add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
+
     form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", category.getVariableNames()));
 
     form.add(new AjaxButton("save", form) {
@@ -170,9 +175,8 @@ public class CategoryPropertiesPanel extends Panel {
    * @param editedQuestionCategory
    */
   public void onSave(AjaxRequestTarget target, EditedQuestionCategory editedQuestionCategory) {
-    Iterable<LocaleProperties> localePropertiesIterable = Iterables.concat(localePropertiesModelCategory.getObject(), localePropertiesModelQuestionCategory.getObject());
-    List<LocaleProperties> localePropertiesList = new ArrayList<LocaleProperties>(Arrays.asList(Iterables.toArray(localePropertiesIterable, LocaleProperties.class)));
-    editedQuestionCategory.setLocalePropertiesWithNamingStrategy(localePropertiesList);
+    editedQuestionCategory.setLocalePropertiesWithNamingStrategy(localePropertiesModelQuestionCategory.getObject());
+    editedQuestionCategory.mergeCategoriesPropertiesWithNamingStrategy(localePropertiesModelCategory.getObject());
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
       editedQuestionCategory.getElement().getCategory().addVariableName(entries.getKey(), entries.getValue());
     }

@@ -21,19 +21,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 
-/**
- *
- */
 public class EditedElement<T extends IQuestionnaireElement> implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   protected T element;
 
-  private List<LocaleProperties> localeProperties = new ArrayList<LocaleProperties>();
-
-  public EditedElement() {
-  }
+  protected List<LocaleProperties> localeProperties = new ArrayList<LocaleProperties>();
 
   public EditedElement(T element) {
     this.element = element;
@@ -43,16 +37,8 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
     return element;
   }
 
-  public void setElement(T element) {
-    this.element = element;
-  }
-
-  public List<LocaleProperties> getLocaleProperties() {
-    return localeProperties;
-  }
-
   public void setLocalePropertiesWithNamingStrategy(List<LocaleProperties> localeProperties) {
-    this.localeProperties=localeProperties;
+    this.localeProperties = localeProperties;
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
     for(LocaleProperties localeProperty : this.localeProperties) {
       String[] keysWithNamingStrategy = new String[localeProperty.getKeys().length];
@@ -66,7 +52,7 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
 
   public Map<Locale, Properties> getPropertiesByLocale() {
     Map<Locale, Properties> propertiesByLocale = new HashMap<Locale, Properties>();
-    for(LocaleProperties localeProp : getLocaleProperties()) {
+    for(LocaleProperties localeProp : localeProperties) {
       Properties properties = new Properties();
       for(int i = 0; i < localeProp.getKeys().length; i++) {
         String key = localeProp.getKeys()[i];
@@ -77,5 +63,4 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
     }
     return propertiesByLocale;
   }
-
 }

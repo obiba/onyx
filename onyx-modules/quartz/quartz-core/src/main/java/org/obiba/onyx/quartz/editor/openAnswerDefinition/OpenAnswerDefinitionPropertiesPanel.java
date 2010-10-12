@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -38,6 +39,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -110,16 +112,27 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     add(form = new Form<OpenAnswerDefinition>("form", model));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
+    name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     form.add(name);
+    form.add(new SimpleFormComponentLabel("nameLabel", name));
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
 
-    form.add(new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>()));
+    DropDownChoice<DataType> dataTypeDropDownChoice = new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>());
+    dataTypeDropDownChoice.setLabel(new ResourceModel("DataType"));
+    form.add(dataTypeDropDownChoice);
+    form.add(new SimpleFormComponentLabel("dataTypeLabel", dataTypeDropDownChoice));
 
-    form.add(new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "required")));
+    CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "required"));
+    requiredCheckBox.setLabel(new ResourceModel("Required2"));
+    form.add(requiredCheckBox);
+    form.add(new SimpleFormComponentLabel("requiredLabel", requiredCheckBox));
 
-    form.add(new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "unit")));
+    TextField<String> unitTextField = new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "unit"));
+    unitTextField.setLabel(new ResourceModel("Unit"));
+    form.add(unitTextField);
+    form.add(new SimpleFormComponentLabel("unitLabel", unitTextField));
 
     final TextField<String> sizeTextFieldForUIArguments = new TextField<String>("size", new Model<String>());
     sizeTextFieldForUIArguments.setOutputMarkupPlaceholderTag(true);
@@ -133,7 +146,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
         target.addComponent(sizeTextFieldForUIArguments);
       }
     };
-    form.add(specifySize, sizeTextFieldForUIArguments);
+    form.add(new SimpleFormComponentLabel("sizeLabel", specifySize), specifySize, sizeTextFieldForUIArguments);
 
     form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getVariableNames()));
 
