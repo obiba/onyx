@@ -12,19 +12,21 @@
 			<tr>
 		    <td class="keyValueTableKey"><label wicket:id="versionLabel">versionLabel</label></td>
 		    <td class="keyValueTableValueOdd"><input wicket:id="version" type="text" /></td>
-		  </tr>			    
+		  </tr>
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label wicket:id="touchScreenLabel">touchScreenLabel</label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="touchScreen" type="checkbox" /></td>
-			</tr>		  
-		  <tr>
-		   	<td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
-		   	<td class="keyValueTableValueOdd"><div wicket:id="languages"></div></td>
-		  </tr>
+			</tr>		  		  			    
 		</table>
 		
 		<fieldset>
 			<legend><wicket:message key="LanguagesProperties" /></legend>
+		 	<table class="keyValueTable">
+			  <tr>
+			   	<td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
+			   	<td class="keyValueTableValueOdd"><div wicket:id="languages"></div></td>
+			  </tr>
+			</table>			
 		 	<div wicket:id="localesPropertiesTabs"></div>
 		 	<a wicket:id="downloadLocaleProperties"><wicket:message key="DownloadLocaleProperties" /></a>
 		</fieldset>

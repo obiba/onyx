@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.InterviewManager;
@@ -43,11 +45,17 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocumentQuestionnairePage;
+import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
+import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class QuestionnaireListPanel extends Panel {
+
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
@@ -164,8 +172,10 @@ public class QuestionnaireListPanel extends Panel {
 
   public class LinkFragment extends Fragment {
 
+    @SuppressWarnings("rawtypes")
     public LinkFragment(String id, final IModel<Questionnaire> rowModel) {
       super(id, "linkFragment", QuestionnaireListPanel.this, rowModel);
+      final Questionnaire questionnaire = rowModel.getObject();
 
       add(new AjaxLink<Questionnaire>("editLink", rowModel) {
         @Override
@@ -183,6 +193,32 @@ public class QuestionnaireListPanel extends Panel {
           layoutWindow.show(target);
         }
       });
+      final AJAXDownload download = new AJAXDownload() {
+
+        @Override
+        protected IResourceStream getResourceStream() {
+          try {
+            return new ZipResourceStream(questionnaireBundleManager.generateBundleZip(questionnaire.getName()));
+          } catch(IOException e) {
+            log.error("Cannot generate questionnaire zip", e);
+            return null;
+          }
+        }
+
+        @Override
+        protected String getFileName() {
+          return questionnaire.getName() + ".zip";
+        }
+      };
+      add(download);
+
+      add(new AjaxLink("downloadLink") {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          download.initiate(target);
+        }
+      });
+
       add(new AjaxLink<Questionnaire>("previewLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
@@ -193,7 +229,7 @@ public class QuestionnaireListPanel extends Panel {
       add(new AjaxLink<Questionnaire>("exportLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          activeQuestionnaireAdministrationService.setQuestionnaire(rowModel.getObject());
+          activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
           final Participant participant = new Participant();
           participant.setId(1L);
           participant.setInterview(new Interview());

@@ -9,10 +9,19 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -47,6 +56,7 @@ import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
+import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -169,7 +179,29 @@ public class QuestionnairePropertiesPanel extends Panel {
       @Override
       protected IResourceStream getResourceStream() {
         try {
-          return new LocalePropertiesZipResource(questionnaireBundleManager.getBundle(questionnaire.getName()));
+          QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
+          File tmpFile = File.createTempFile(bundle.getName() + "-locales", ".zip");
+          tmpFile.deleteOnExit();
+
+          OutputStream os = new FileOutputStream(tmpFile);
+          ZipOutputStream zos = new ZipOutputStream(os);
+          byte[] buffer = new byte[1024];
+          for(Locale locale : bundle.getAvailableLanguages()) {
+            ZipEntry zip = new ZipEntry("language_" + locale.getLanguage() + ".properties");
+            zos.putNextEntry(zip);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Properties properties = bundle.getLanguage(locale);
+            properties.store(out, "Languages properties for questionnaire " + bundle.getName() + " for " + locale.getDisplayLanguage());
+            InputStream fis = new ByteArrayInputStream(out.toByteArray());
+            int read = 0;
+            while((read = fis.read(buffer)) != -1) {
+              zos.write(buffer, 0, read);
+            }
+            zos.closeEntry();
+          }
+          zos.close();
+
+          return new ZipResourceStream(tmpFile);
         } catch(IOException e) {
           log.error("Cannot persist questionnaire", e);
           return null;

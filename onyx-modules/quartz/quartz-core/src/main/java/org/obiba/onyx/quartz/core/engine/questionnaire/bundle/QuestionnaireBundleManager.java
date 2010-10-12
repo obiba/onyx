@@ -51,4 +51,11 @@ public interface QuestionnaireBundleManager {
    * @return
    */
   File getRootDir();
+
+  /**
+   * @param name
+   * @return
+   * @throws IOException
+   */
+  File generateBundleZip(String name) throws IOException;
 }

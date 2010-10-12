@@ -43,7 +43,6 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
 
   private QuestionnaireWizardPanel wizardPanel;
 
-  @SuppressWarnings("serial")
   public QuartzPanel(String id, Stage stage, boolean resuming) {
     super(id);
 

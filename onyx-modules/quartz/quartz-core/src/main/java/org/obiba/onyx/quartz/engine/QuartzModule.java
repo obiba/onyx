@@ -66,10 +66,12 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   private CustomVariablesRegistry customVariablesRegistry;
 
+  @Override
   public String getName() {
     return "quartz";
   }
 
+  @Override
   public void initialize(WebApplication application) {
     log.info("initialize");
     for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
@@ -77,18 +79,18 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
       QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(stage.getName());
       if(bundle == null) {
         log.warn("Stage '{}' is configured, but no associated questionnaire could be found in the resources.", stage.getName());
-        log.warn("Stage '{}' has will not be registered.");
+        log.warn("Stage '{}' will not be registered.", stage.getName());
         iter.remove();
       }
-
     }
-
   }
 
+  @Override
   public void shutdown(WebApplication application) {
     log.info("shutdown");
   }
 
+  @Override
   public List<Stage> getStages() {
     return stages;
   }
@@ -97,6 +99,7 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     this.stages = stages;
   }
 
+  @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
@@ -113,6 +116,7 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     this.questionnaireParticipantService = questionnaireParticipantService;
   }
 
+  @Override
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
 
@@ -173,18 +177,22 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     return exec;
   }
 
+  @Override
   public Component getWorkstationPanel(String id) {
     return null;
   }
 
+  @Override
   public Component getEditorPanel(String id) {
     return new QuartzEditorPanel(id);
   }
 
+  @Override
   public boolean isInteractive() {
     return false;
   }
 
+  @Override
   public void delete(Participant participant) {
     questionnaireParticipantService.deleteAllQuestionnairesParticipant(participant);
   }
@@ -232,7 +240,6 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
   //
   // Methods
   //
-
   public void setBeanResolver(QuestionnaireBeanResolver beanResolver) {
     this.beanResolver = beanResolver;
   }

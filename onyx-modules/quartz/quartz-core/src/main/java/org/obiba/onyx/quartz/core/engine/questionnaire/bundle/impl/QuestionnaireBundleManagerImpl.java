@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -18,6 +20,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -240,13 +244,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
    * @throws IOException on any I/O error
    */
   private void serializeBundle(QuestionnaireBundle bundle) throws IOException {
-    // Create the bundle version directory, which will contain the questionnaire.
-    File bundleVersionDir = new File(new File(rootDir, bundle.getQuestionnaire().getName()), bundle.getQuestionnaire().getVersion());
-    if(!bundleVersionDir.exists()) {
-      if(!bundleVersionDir.mkdirs()) {
-        throw new IllegalArgumentException("Failed creating bundle version directory: " + bundleVersionDir);
-      }
-    }
+    File bundleVersionDir = getBundleDir(bundle);
 
     // Create the questionnaire file.
     File questionnaireFile = new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml");
@@ -271,6 +269,43 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
         }
       }
     }
+  }
+
+  /**
+   * Create the bundle version directory, which will contain the questionnaire.
+   * @param bundle
+   * @return the bundle version directory, which will contain the questionnaire.
+   */
+  private File getBundleDir(QuestionnaireBundle bundle) {
+    File bundleVersionDir = new File(new File(rootDir, bundle.getQuestionnaire().getName()), bundle.getQuestionnaire().getVersion());
+    if(!bundleVersionDir.exists()) {
+      if(!bundleVersionDir.mkdirs()) {
+        throw new IllegalArgumentException("Failed creating bundle version directory: " + bundleVersionDir);
+      }
+    }
+    return bundleVersionDir;
+  }
+
+  @Override
+  public File generateBundleZip(String name) throws IOException {
+    QuestionnaireBundle bundle = getBundle(name);
+    File zipFile = new File(name + ".zip");
+    ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
+
+    int bufferSize = 1024;
+    byte[] buffer = new byte[bufferSize];
+    for(File file : getBundleDir(bundle).listFiles()) {
+      BufferedInputStream in = new BufferedInputStream(new FileInputStream(file), bufferSize);
+      out.putNextEntry(new ZipEntry(file.getName()));
+      int count;
+      while((count = in.read(buffer, 0, bufferSize)) != -1) {
+        out.write(buffer, 0, count);
+      }
+      out.closeEntry();
+    }
+    out.flush();
+    out.close();
+    return zipFile;
   }
 
   /**
