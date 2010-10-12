@@ -68,6 +68,8 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   private final ListModel<Locale> listLocaleModel;
 
+  private final ListModel<LocaleProperties> localePropertiesModel;
+
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
@@ -94,7 +96,7 @@ public class QuestionnairePropertiesPanel extends Panel {
       localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
       listLocaleProperties.add(localeProperties);
     }
-    ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -214,16 +216,14 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   public void onSave(AjaxRequestTarget target, EditedQuestionnaire editedQuestionnaire) {
     Questionnaire questionnaire = editedQuestionnaire.getElement();
-    questionnaire.getLocales().clear();
-    for(Locale locale : listLocaleModel.getObject()) {
-      questionnaire.addLocale(locale);
-    }
+    questionnaire.setLocales(listLocaleModel.getObject());
+    editedQuestionnaire.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
     persist(target);
   }
 
   public void persist(AjaxRequestTarget target) {
     try {
-      questionnairePersistenceUtils.persist(form.getModelObject().getElement(), form.getModelObject());
+      questionnairePersistenceUtils.persist(form.getModelObject(), form.getModelObject());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

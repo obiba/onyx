@@ -49,6 +49,10 @@ public class LocaleProperties implements IClusterable {
     return keys;
   }
 
+  public void setKeys(String[] keys) {
+    this.keys = keys;
+  }
+
   public String[] getValues() {
     return values;
   }

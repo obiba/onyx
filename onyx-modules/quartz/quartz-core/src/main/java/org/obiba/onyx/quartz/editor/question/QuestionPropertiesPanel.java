@@ -50,6 +50,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
+import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
@@ -88,12 +89,14 @@ public class QuestionPropertiesPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<Question> form;
+  private final Form<EditedQuestion> form;
 
   private final IModel<EditedQuestionnaire> questionnaireModel;
 
+  private ListModel<LocaleProperties> localePropertiesModel;
+
   public QuestionPropertiesPanel(String id, IModel<Question> model, final IModel<IHasQuestion> parentModel, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow questionWindow) {
-    super(id, model);
+    super(id, new Model<EditedQuestion>(new EditedQuestion(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
@@ -112,7 +115,7 @@ public class QuestionPropertiesPanel extends Panel {
       localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
       listLocaleProperties.add(localeProperties);
     }
-    ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -120,7 +123,7 @@ public class QuestionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<Question>("form", model));
+    add(form = new Form<EditedQuestion>("form", (IModel<EditedQuestion>) getDefaultModel()));
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
@@ -129,7 +132,7 @@ public class QuestionPropertiesPanel extends Panel {
     categoryWindow.setResizable(true);
     form.add(categoryWindow);
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
@@ -137,7 +140,7 @@ public class QuestionPropertiesPanel extends Panel {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         for(Question question : parentModel.getObject().getQuestions()) {
-          if(question != form.getModelObject() && question.getName().equalsIgnoreCase(validatable.getValue())) {
+          if(question != form.getModelObject().getElement() && question.getName().equalsIgnoreCase(validatable.getValue())) {
             error(validatable, "QuestionAlreadyExists");
             return;
           }
@@ -147,24 +150,24 @@ public class QuestionPropertiesPanel extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    TextField<String> variableName = new TextField<String>("variableName", new PropertyModel<String>(form.getModel(), "variableName"));
+    TextField<String> variableName = new TextField<String>("variableName", new PropertyModel<String>(form.getModel(), "element.variableName"));
     variableName.setLabel(new ResourceModel("VariableName"));
     variableName.add(new StringValidator.MaximumLengthValidator(20));
     form.add(variableName);
     form.add(new SimpleFormComponentLabel("variableNameLabel", variableName));
 
-    CheckBox multiple = new CheckBox("multiple", new PropertyModel<Boolean>(form.getModel(), "multiple"));
+    CheckBox multiple = new CheckBox("multiple", new PropertyModel<Boolean>(form.getModel(), "element.multiple"));
     multiple.setLabel(new ResourceModel("Multiple"));
     form.add(multiple);
     form.add(new SimpleFormComponentLabel("multipleLabel", multiple));
 
     // radio group without default selection
-    ValueMap uiArgumentsValueMap = form.getModelObject().getUIArgumentsValueMap();
+    ValueMap uiArgumentsValueMap = form.getModelObject().getElement().getUIArgumentsValueMap();
 
     String layoutRadioGroupString = null;
     Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
     if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(ROW_COUNT_KEY)) {
-      layoutRadioGroupString = Integer.parseInt((String) uiArgumentsValueMap.get(ROW_COUNT_KEY)) == form.getModelObject().getCategories().size() ? SINGLE_COLUMN_LAYOUT : GRID_LAYOUT;
+      layoutRadioGroupString = Integer.parseInt((String) uiArgumentsValueMap.get(ROW_COUNT_KEY)) == form.getModelObject().getElement().getCategories().size() ? SINGLE_COLUMN_LAYOUT : GRID_LAYOUT;
       nbRows = uiArgumentsValueMap.getInt(ROW_COUNT_KEY);
     }
 
@@ -183,9 +186,9 @@ public class QuestionPropertiesPanel extends Panel {
 
     form.add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows), Integer.class));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Question>(form.getModel(), "element"), localePropertiesModel));
 
-    categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getQuestionCategories()) {
+    categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getElement().getQuestionCategories()) {
 
       @Override
       @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -197,13 +200,13 @@ public class QuestionPropertiesPanel extends Panel {
           public void callback(AjaxRequestTarget target) {
             QuestionCategory questionCategory = new QuestionCategory();
             questionCategory.setCategory(new Category(null));
-            questionCategory.setQuestion(form.getModelObject());
+            questionCategory.setQuestion(form.getModelObject().getElement());
             categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
 
               @Override
-              public void onSave(AjaxRequestTarget target1, QuestionCategory questionCategory1) {
-                super.onSave(target1, questionCategory1);
-                QuestionPropertiesPanel.this.form.getModelObject().addQuestionCategory(questionCategory1);
+              public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
+                super.onSave(target1, editedCategory);
+                QuestionPropertiesPanel.this.form.getModelObject().getElement().addQuestionCategory(editedCategory.getElement());
                 refreshList(target1);
                 persist(target1);
               }
@@ -219,7 +222,7 @@ public class QuestionPropertiesPanel extends Panel {
             categoryWindow.setContent(new CategoryFinderPanel("content", (IModel<Question>) QuestionPropertiesPanel.this.getDefaultModel(), questionnaireModel, categoryWindow) {
               @Override
               public void onSave(AjaxRequestTarget target1, List<Category> categories) {
-                Question question = QuestionPropertiesPanel.this.form.getModelObject();
+                Question question = QuestionPropertiesPanel.this.form.getModelObject().getElement();
                 for(Category category : categories) {
                   QuestionCategory questionCategory = new QuestionCategory();
                   questionCategory.setCategory(category);
@@ -246,8 +249,8 @@ public class QuestionPropertiesPanel extends Panel {
         categoryWindow.setTitle(new ResourceModel("Category"));
         categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, QuestionCategory questionCategory1) {
-            super.onSave(target1, questionCategory1);
+          public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
+            super.onSave(target1, editedCategory);
             refreshList(target1);
             persist(target1);
           }
@@ -257,7 +260,7 @@ public class QuestionPropertiesPanel extends Panel {
 
       @Override
       public void deleteItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        QuestionPropertiesPanel.this.form.getModelObject().getQuestionCategories().remove(questionCategory);
+        QuestionPropertiesPanel.this.form.getModelObject().getElement().getQuestionCategories().remove(questionCategory);
         refreshList(target);
       }
 
@@ -286,7 +289,9 @@ public class QuestionPropertiesPanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
-  public void onSave(AjaxRequestTarget target, final Question question) {
+  public void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion) {
+    editedQuestion.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
+    final Question question = editedQuestion.getElement();
     categoryList.save(target, new SortableListCallback<QuestionCategory>() {
       @Override
       public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {

@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.editor.category;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
@@ -44,6 +46,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Iterables;
+
 @SuppressWarnings("serial")
 public class CategoryPropertiesPanel extends Panel {
 
@@ -61,16 +65,21 @@ public class CategoryPropertiesPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<QuestionCategory> form;
+  private final Form<EditedQuestionCategory> form;
 
   private final IModel<EditedQuestionnaire> questionnaireModel;
 
+  private ListModel<LocaleProperties> localePropertiesModelCategory;
+
+  private ListModel<LocaleProperties> localePropertiesModelQuestionCategory;
+
   public CategoryPropertiesPanel(String id, IModel<QuestionCategory> model, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    super(id, model);
+    super(id, new Model<EditedQuestionCategory>(new EditedQuestionCategory(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
-    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
     Questionnaire questionnaire = questionnaireModel.getObject().getElement();
+
+    List<LocaleProperties> listLocalePropertiesQuestionCategory = new ArrayList<LocaleProperties>();
     for(Locale locale : questionnaire.getLocales()) {
       LocaleProperties localeProperties = new LocaleProperties(locale, model);
       List<String> values = new ArrayList<String>();
@@ -83,9 +92,26 @@ public class CategoryPropertiesPanel extends Panel {
         }
       }
       localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
-      listLocaleProperties.add(localeProperties);
+      listLocalePropertiesQuestionCategory.add(localeProperties);
     }
-    ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(listLocalePropertiesQuestionCategory);
+
+    List<LocaleProperties> listLocalePropertiesCategory = new ArrayList<LocaleProperties>();
+    for(Locale locale : questionnaire.getLocales()) {
+      LocaleProperties localeProperties = new LocaleProperties(locale, model);
+      List<String> values = new ArrayList<String>();
+      for(String property : localeProperties.getKeys()) {
+        if(StringUtils.isNotBlank(model.getObject().getName())) {
+          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
+          if(bundle != null) {
+            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale));
+          }
+        }
+      }
+      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
+      listLocalePropertiesCategory.add(localeProperties);
+    }
+    localePropertiesModelCategory = new ListModel<LocaleProperties>(listLocalePropertiesCategory);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -93,27 +119,27 @@ public class CategoryPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<QuestionCategory>("form", model));
+    add(form = new Form<EditedQuestionCategory>("form", (IModel<EditedQuestionCategory>) getDefaultModel()));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "category.name"));
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.category.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    Category category = form.getModelObject().getCategory();
+    Category category = form.getModelObject().getElement().getCategory();
 
-    TextField<String> exportName = new TextField<String>("exportName", new PropertyModel<String>(form.getModel(), "exportName"));
+    TextField<String> exportName = new TextField<String>("exportName", new PropertyModel<String>(form.getModel(), "element.exportName"));
     exportName.setLabel(new ResourceModel("ExportName"));
     form.add(exportName);
     form.add(new SimpleFormComponentLabel("exportNameLabel", exportName));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("categoryLocalesPropertiesTabs", new PropertyModel<Category>(form.getModel(), "category"), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("categoryLocalesPropertiesTabs", new PropertyModel<Category>(form.getModel(), "element.category"), localePropertiesModelCategory));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("questionCategoryLocalesPropertiesTabs", new PropertyModel<QuestionCategory>(form.getModel(), "element"), localePropertiesModelQuestionCategory));
 
-    form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "category.escape")));
-    form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "category.noAnswer")));
+    form.add(new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "element.category.escape")));
+    form.add(new CheckBox("noAnswer", new PropertyModel<Boolean>(form.getModel(), "element.category.noAnswer")));
     form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", category.getVariableNames()));
 
     form.add(new AjaxButton("save", form) {
@@ -141,11 +167,14 @@ public class CategoryPropertiesPanel extends Panel {
   /**
    * 
    * @param target
-   * @param questionCategory
+   * @param editedQuestionCategory
    */
-  public void onSave(AjaxRequestTarget target, QuestionCategory questionCategory) {
+  public void onSave(AjaxRequestTarget target, EditedQuestionCategory editedQuestionCategory) {
+    Iterable<LocaleProperties> localePropertiesIterable = Iterables.concat(localePropertiesModelCategory.getObject(), localePropertiesModelQuestionCategory.getObject());
+    List<LocaleProperties> localePropertiesList = new ArrayList<LocaleProperties>(Arrays.asList(Iterables.toArray(localePropertiesIterable, LocaleProperties.class)));
+    editedQuestionCategory.setLocalePropertiesWithNamingStrategy(localePropertiesList);
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
-      questionCategory.getCategory().addVariableName(entries.getKey(), entries.getValue());
+      editedQuestionCategory.getElement().getCategory().addVariableName(entries.getKey(), entries.getValue());
     }
   }
 

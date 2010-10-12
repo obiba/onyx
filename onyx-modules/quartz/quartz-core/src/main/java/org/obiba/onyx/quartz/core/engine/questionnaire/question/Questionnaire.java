@@ -61,6 +61,10 @@ public class Questionnaire implements IHasSection {
     return locales != null ? locales : (locales = new ArrayList<Locale>());
   }
 
+  public void setLocales(List<Locale> locales) {
+    this.locales = locales;
+  }
+
   public void addLocale(Locale locale) {
     if(locale != null) {
       getLocales().add(locale);

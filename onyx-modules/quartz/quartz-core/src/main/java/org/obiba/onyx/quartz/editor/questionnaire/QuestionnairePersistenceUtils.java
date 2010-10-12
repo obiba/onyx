@@ -9,22 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.EditedElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -42,7 +37,7 @@ public class QuestionnairePersistenceUtils {
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public void persist(IQuestionnaireElement element, EditedQuestionnaire editedQuestionnaire) throws Exception {
+  public void persist(EditedElement<?> editedElement, EditedQuestionnaire editedQuestionnaire) throws Exception {
 
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(editedQuestionnaire.getElement());
     if(editedQuestionnaire.isTouchScreen()) {
@@ -70,26 +65,9 @@ public class QuestionnairePersistenceUtils {
     for(Locale localeToDelete : localesToDelete) {
       bundle.deleteLanguage(localeToDelete);
     }
-    for(Entry<Locale, Properties> entry : getPropertiesByLocale(element, editedQuestionnaire.getLocaleProperties()).entrySet()) {
+    for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
       bundle.updateLanguage(entry.getKey(), entry.getValue());
     }
-
-  }
-
-  private Map<Locale, Properties> getPropertiesByLocale(IQuestionnaireElement element, List<LocaleProperties> localeProperties) {
-    DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
-    Map<Locale, Properties> propertiesByLocale = new HashMap<Locale, Properties>();
-    for(LocaleProperties localeProp : localeProperties) {
-      Properties properties = new Properties();
-      for(int i = 0; i < localeProp.getKeys().length; i++) {
-        String key = localeProp.getKeys()[i];
-        String value = localeProp.getValues()[i];
-        String keyWithNamingStrategy = defaultPropertyKeyProviderImpl.getPropertyKey(element, key);
-        properties.setProperty(keyWithNamingStrategy, value != null ? value : "");
-      }
-      propertiesByLocale.put(localeProp.getLocale(), properties);
-    }
-    return propertiesByLocale;
   }
 
   @Required

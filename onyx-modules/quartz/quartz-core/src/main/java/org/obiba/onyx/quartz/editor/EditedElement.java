@@ -11,9 +11,14 @@ package org.obiba.onyx.quartz.editor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 
 /**
@@ -23,7 +28,7 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
 
   private static final long serialVersionUID = 1L;
 
-  private T element;
+  protected T element;
 
   private List<LocaleProperties> localeProperties = new ArrayList<LocaleProperties>();
 
@@ -46,8 +51,31 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
     return localeProperties;
   }
 
-  public void setLocaleProperties(List<LocaleProperties> localeProperties) {
-    this.localeProperties = localeProperties;
+  public void setLocalePropertiesWithNamingStrategy(List<LocaleProperties> localeProperties) {
+    this.localeProperties=localeProperties;
+    DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
+    for(LocaleProperties localeProperty : this.localeProperties) {
+      String[] keysWithNamingStrategy = new String[localeProperty.getKeys().length];
+      for(int i = 0; i < localeProperty.getKeys().length; i++) {
+        String key = localeProperty.getKeys()[i];
+        keysWithNamingStrategy[i] = defaultPropertyKeyProviderImpl.getPropertyKey(element, key);
+      }
+      localeProperty.setKeys(keysWithNamingStrategy);
+    }
+  }
+
+  public Map<Locale, Properties> getPropertiesByLocale() {
+    Map<Locale, Properties> propertiesByLocale = new HashMap<Locale, Properties>();
+    for(LocaleProperties localeProp : getLocaleProperties()) {
+      Properties properties = new Properties();
+      for(int i = 0; i < localeProp.getKeys().length; i++) {
+        String key = localeProp.getKeys()[i];
+        String value = localeProp.getValues()[i];
+        properties.setProperty(key, value != null ? value : "");
+      }
+      propertiesByLocale.put(localeProp.getLocale(), properties);
+    }
+    return propertiesByLocale;
   }
 
 }

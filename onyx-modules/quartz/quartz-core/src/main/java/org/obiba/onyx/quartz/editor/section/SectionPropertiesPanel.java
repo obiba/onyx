@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
@@ -59,12 +60,14 @@ public abstract class SectionPropertiesPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<Section> form;
+  private final Form<EditedSection> form;
 
   private final IModel<EditedQuestionnaire> questionnaireModel;
 
+  private ListModel<LocaleProperties> localePropertiesModel;
+
   public SectionPropertiesPanel(String id, IModel<Section> model, final IModel<IHasSection> parentModel, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    super(id, model);
+    super(id, new Model<EditedSection>(new EditedSection(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
@@ -83,7 +86,7 @@ public abstract class SectionPropertiesPanel extends Panel {
       localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
       listLocaleProperties.add(localeProperties);
     }
-    ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -91,9 +94,9 @@ public abstract class SectionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<Section>("form", model));
+    add(form = new Form<EditedSection>("form", (IModel<EditedSection>) getDefaultModel()));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"), String.class);
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
@@ -101,7 +104,7 @@ public abstract class SectionPropertiesPanel extends Panel {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         for(Section section : parentModel.getObject().getSections()) {
-          if(section != form.getModelObject() && section.getName().equalsIgnoreCase(validatable.getValue())) {
+          if(section != form.getModelObject().getElement() && section.getName().equalsIgnoreCase(validatable.getValue())) {
             error(validatable, "SectionAlreadyExists");
             return;
           }
@@ -111,7 +114,7 @@ public abstract class SectionPropertiesPanel extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Section>(form.getModel(), "element"), localePropertiesModel));
 
     form.add(new AjaxButton("save", form) {
       @Override
@@ -138,9 +141,11 @@ public abstract class SectionPropertiesPanel extends Panel {
   /**
    * 
    * @param target
-   * @param t
+   * @param editedSection
    */
-  public abstract void onSave(AjaxRequestTarget target, Section section);
+  public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
+    editedSection.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
+  }
 
   public void persist(AjaxRequestTarget target) {
     try {

@@ -50,8 +50,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.editor.page.EditedPage;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
+import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
+import org.obiba.onyx.quartz.editor.section.EditedSection;
 import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -297,10 +300,11 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new ResourceModel("Section"));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), new Model<IHasSection>((IHasSection) elementsParent.get(element)), questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Section section) {
+          public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
+            super.onSave(target, editedSection);
             persist(target);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedSection.getElement().getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
@@ -308,10 +312,11 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new ResourceModel("Page"));
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), new Model<Section>((Section) elementsParent.get(element)), questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Page page) {
+          public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
+            super.onSave(target, editedPage);
             persist(target);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + page.getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getElement().getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
@@ -319,8 +324,8 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new ResourceModel("Question"));
         elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), new Model<IHasQuestion>((IHasQuestion) elementsParent.get(element)), questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Question question) {
-            super.onSave(target, question);
+          public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
+            super.onSave(target, editedQuestion);
             persist(target);
             target.addComponent(treeContainer);
           }
@@ -382,8 +387,9 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), new Model<IHasSection>((IHasSection) element), questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Section section) {
-            ((IHasSection) element).addSection(section);
+          public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
+            super.onSave(target, editedSection);
+            ((IHasSection) element).addSection(editedSection.getElement());
             persist(target);
             target.addComponent(treeContainer);
           }
@@ -393,8 +399,9 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), new Model<Section>((Section) element), questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Page page) {
-            ((Section) element).addPage(page);
+          public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
+            super.onSave(target, editedPage);
+            ((Section) element).addPage(editedPage.getElement());
             persist(target);
             target.addComponent(treeContainer);
           }
@@ -404,9 +411,9 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, Question question) {
-            super.onSave(target, question);
-            ((IHasQuestion) element).addQuestion(question);
+          public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
+            super.onSave(target, editedQuestion);
+            ((IHasQuestion) element).addQuestion(editedQuestion.getElement());
             persist(target);
             target.addComponent(treeContainer);
           }
