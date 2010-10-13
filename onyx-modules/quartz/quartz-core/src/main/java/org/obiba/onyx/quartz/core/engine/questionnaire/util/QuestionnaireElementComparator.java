@@ -7,38 +7,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.engine.questionnaire.question;
+package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.Comparator;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
 /**
  *
  */
-public interface IHasPage extends Serializable, IQuestionnaireElement {
+public class QuestionnaireElementComparator implements Comparator<IQuestionnaireElement> {
 
-  /**
-   * 
-   * @return
-   */
-  List<Page> getPages();
-
-  /**
-   * @param page
-   */
-  void addPage(Page page);
-
-  /**
-   * @param page
-   * @param index
-   */
-  void addPage(Page page, int index);
-
-  /**
-   * @param page
-   */
-  void removePage(Page page);
+  @Override
+  public int compare(IQuestionnaireElement arg0, IQuestionnaireElement arg1) {
+    return arg0.getName().compareTo(arg1.getName());
+  }
 
 }

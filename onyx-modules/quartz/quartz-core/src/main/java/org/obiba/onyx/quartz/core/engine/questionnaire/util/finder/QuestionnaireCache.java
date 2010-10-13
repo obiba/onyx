@@ -42,7 +42,7 @@ public class QuestionnaireCache implements IWalkerVisitor {
     return true;
   }
 
-  public void visit(Questionnaire questionnaire) {
+  public void visit(@SuppressWarnings("hiding") Questionnaire questionnaire) {
     this.questionnaire = questionnaire;
   }
 

@@ -46,6 +46,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
@@ -53,6 +54,8 @@ import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
+import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
@@ -95,6 +98,9 @@ public class QuestionPropertiesPanel extends Panel {
 
   private ListModel<LocaleProperties> localePropertiesModel;
 
+  private ConditionPanel conditionPanel;
+
+  @SuppressWarnings("unchecked")
   public QuestionPropertiesPanel(String id, IModel<Question> model, final IModel<IHasQuestion> parentModel, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id, new Model<EditedQuestion>(new EditedQuestion(model.getObject())));
     this.questionnaireModel = questionnaireModel;
@@ -135,12 +141,13 @@ public class QuestionPropertiesPanel extends Panel {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
+    final Question question = form.getModelObject().getElement();
     name.add(new AbstractValidator<String>() {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        for(Question question : parentModel.getObject().getQuestions()) {
-          if(question != form.getModelObject().getElement() && question.getName().equalsIgnoreCase(validatable.getValue())) {
+        for(Question q : parentModel.getObject().getQuestions()) {
+          if(question != q && q.getName().equalsIgnoreCase(validatable.getValue())) {
             error(validatable, "QuestionAlreadyExists");
             return;
           }
@@ -162,12 +169,12 @@ public class QuestionPropertiesPanel extends Panel {
     form.add(new SimpleFormComponentLabel("multipleLabel", multiple));
 
     // radio group without default selection
-    ValueMap uiArgumentsValueMap = form.getModelObject().getElement().getUIArgumentsValueMap();
+    ValueMap uiArgumentsValueMap = question.getUIArgumentsValueMap();
 
     String layoutRadioGroupString = null;
     Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
     if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(ROW_COUNT_KEY)) {
-      layoutRadioGroupString = Integer.parseInt((String) uiArgumentsValueMap.get(ROW_COUNT_KEY)) == form.getModelObject().getElement().getCategories().size() ? SINGLE_COLUMN_LAYOUT : GRID_LAYOUT;
+      layoutRadioGroupString = Integer.parseInt((String) uiArgumentsValueMap.get(ROW_COUNT_KEY)) == question.getCategories().size() ? SINGLE_COLUMN_LAYOUT : GRID_LAYOUT;
       nbRows = uiArgumentsValueMap.getInt(ROW_COUNT_KEY);
     }
 
@@ -188,10 +195,10 @@ public class QuestionPropertiesPanel extends Panel {
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Question>(form.getModel(), "element"), localePropertiesModel));
 
-    categoryList = new SortableList<QuestionCategory>("categoryList", form.getModelObject().getElement().getQuestionCategories()) {
+    categoryList = new SortableList<QuestionCategory>("categoryList", question.getQuestionCategories()) {
 
       @Override
-      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @SuppressWarnings({ "rawtypes" })
       public SortableList<QuestionCategory>.Button[] getButtons() {
 
         SortableList<QuestionCategory>.Button addButton = new SortableList.Button(new StringResourceModel("AddCategory", QuestionPropertiesPanel.this, null)) {
@@ -200,7 +207,7 @@ public class QuestionPropertiesPanel extends Panel {
           public void callback(AjaxRequestTarget target) {
             QuestionCategory questionCategory = new QuestionCategory();
             questionCategory.setCategory(new Category(null));
-            questionCategory.setQuestion(form.getModelObject().getElement());
+            questionCategory.setQuestion(question);
             categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
 
               @Override
@@ -222,7 +229,6 @@ public class QuestionPropertiesPanel extends Panel {
             categoryWindow.setContent(new CategoryFinderPanel("content", new Model<Question>(QuestionPropertiesPanel.this.form.getModelObject().getElement()), questionnaireModel, categoryWindow) {
               @Override
               public void onSave(AjaxRequestTarget target1, List<Category> categories) {
-                Question question = QuestionPropertiesPanel.this.form.getModelObject().getElement();
                 for(Category category : categories) {
                   QuestionCategory questionCategory = new QuestionCategory();
                   questionCategory.setCategory(category);
@@ -266,6 +272,8 @@ public class QuestionPropertiesPanel extends Panel {
 
     };
     form.add(categoryList);
+
+    form.add(conditionPanel = new ConditionPanel("conditions", new Model<Conditions>(new Conditions()), new Model<Question>(question), questionnaireModel));
 
     form.add(new AjaxButton("save", form) {
       @Override
@@ -311,11 +319,18 @@ public class QuestionPropertiesPanel extends Panel {
         }
       }
     });
+    editedQuestion.setConditions(((Conditions) conditionPanel.getDefaultModelObject()));
   }
 
-  public void persist(AjaxRequestTarget target) {
+  protected void persist(AjaxRequestTarget target) {
     try {
-      questionnairePersistenceUtils.persist(form.getModelObject(), questionnaireModel.getObject());
+      EditedQuestion editedQuestion = form.getModelObject();
+      Question question = editedQuestion.getElement();
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.persist(editedQuestion, questionnaireModel.getObject());
+      // ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder,
+      // condition.getQuestion().getName(), condition.getCategory() == null ? null : condition.getCategory().getName(),
+      // condition.getOpenAnswerDefinition() == null ? null : condition.getOpenAnswerDefinition().getName());
+      // question.setCondition(conditionBuilder.getElement());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

@@ -66,6 +66,7 @@ public abstract class PagePropertiesPanel extends Panel {
 
   private ListModel<LocaleProperties> localePropertiesModel;
 
+  @SuppressWarnings("unchecked")
   public PagePropertiesPanel(String id, IModel<Page> model, final IModel<Section> parentModel, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedPage>(new EditedPage(model.getObject())));
     this.questionnaireModel = questionnaireModel;

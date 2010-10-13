@@ -5,7 +5,7 @@
 	<form wicket:id="form" autocomplete="off" >	
 
 		<div wicket:id="categoryWindow" />
-			 		
+		
 		<fieldset>
 			<legend><wicket:message key="Name" /></legend>
 		 	<table class="keyValueTable">
@@ -50,6 +50,11 @@
 			<div wicket:id="categoryList" />
 							
 		</fieldset>	
+		
+		<fieldset>
+			<legend><wicket:message key="Conditions" /></legend>		
+			<div wicket:id="conditions" />
+		</fieldset>				
 		
 		<div class="modal-footer">
 			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>

@@ -26,8 +26,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
    * @param questionName
    * @param categoryName
    */
-  @SuppressWarnings("unchecked")
-  private ConditionBuilder(AbstractQuestionnaireElementBuilder parent, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
+  private ConditionBuilder(AbstractQuestionnaireElementBuilder<?> parent, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
     super(parent);
     if(getQuestionnaire().getName().equals(questionnaireName)) {
       this.element = getValidQuestionnaireDataSource(questionName, categoryName, openAnswerName);
@@ -45,8 +44,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
    * @param openAnswerDefinition
    * @return
    */
-  @SuppressWarnings("unchecked")
-  public static ConditionBuilder createQuestionCondition(AbstractQuestionnaireElementBuilder builder, String question, String category, String openAnswer) {
+  public static ConditionBuilder createQuestionCondition(AbstractQuestionnaireElementBuilder<?> builder, String question, String category, String openAnswer) {
     return new ConditionBuilder(builder, builder.getQuestionnaire().getName(), question, category, openAnswer);
   }
 
@@ -58,8 +56,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
    * @param category
    * @return
    */
-  @SuppressWarnings("unchecked")
-  public static ConditionBuilder createQuestionCondition(AbstractQuestionnaireElementBuilder builder, String questionnaireName, String question, String category, String openAnswer) {
+  public static ConditionBuilder createQuestionCondition(AbstractQuestionnaireElementBuilder<?> builder, String questionnaireName, String question, String category, String openAnswer) {
     return new ConditionBuilder(builder, questionnaireName, question, category, openAnswer);
   }
 

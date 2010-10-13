@@ -191,7 +191,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param question
    * @return
    */
-  public IDataSource newExternalDataSource(String questionnaire, String question) {
+  public IDataSource newExternalDataSource(@SuppressWarnings("hiding") String questionnaire, String question) {
     return ConditionBuilder.createQuestionCondition(this, questionnaire, question, null, null).getElement();
   }
 
@@ -202,7 +202,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param category
    * @return
    */
-  public IDataSource newExternalDataSource(String questionnaire, String question, String category) {
+  public IDataSource newExternalDataSource(@SuppressWarnings("hiding") String questionnaire, String question, String category) {
     return ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, null).getElement();
   }
 
@@ -214,7 +214,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param openAnswer
    * @return
    */
-  public IDataSource newExternalDataSource(String questionnaire, String question, String category, String openAnswer) {
+  public IDataSource newExternalDataSource(@SuppressWarnings("hiding") String questionnaire, String question, String category, String openAnswer) {
     return ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, openAnswer).getElement();
   }
 
@@ -222,7 +222,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Write the questionnaire properties.
    * @param writer
    */
-  public void writeProperties(IPropertyKeyProvider propertyKeyProvider, IPropertyKeyWriter writer) {
+  public void writeProperties(@SuppressWarnings("hiding") IPropertyKeyProvider propertyKeyProvider, IPropertyKeyWriter writer) {
     QuestionnaireWalker walker = new QuestionnaireWalker(new PropertyKeyWriterVisitor(propertyKeyProvider, writer));
     walker.walk(questionnaire);
     writer.end();
@@ -232,7 +232,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Create the localization properties for the current {@link Questionnaire}.
    * @return
    */
-  public Properties getProperties(IPropertyKeyProvider propertyKeyProvider) {
+  public Properties getProperties(@SuppressWarnings("hiding") IPropertyKeyProvider propertyKeyProvider) {
     PropertiesPropertyKeyWriterImpl pWriter = new PropertiesPropertyKeyWriterImpl();
 
     writeProperties(propertyKeyProvider, pWriter);

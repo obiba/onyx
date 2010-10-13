@@ -42,6 +42,7 @@ public class Category implements Serializable, IQuestionnaireElement {
     this.name = name;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -66,6 +67,7 @@ public class Category implements Serializable, IQuestionnaireElement {
     this.openAnswerDefinition = openAnswerDefinition;
   }
 
+  @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);
   }

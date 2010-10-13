@@ -25,7 +25,7 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
 
   private static final long serialVersionUID = 1L;
 
-  protected T element;
+  private T element;
 
   protected List<LocaleProperties> localeProperties = new ArrayList<LocaleProperties>();
 

@@ -60,8 +60,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
     initialize(questionnaire, pageLayoutFactoryClass, questionPanelFactoryClass);
   }
 
-  @SuppressWarnings("unchecked")
-  public AbstractQuestionnaireElementBuilder(AbstractQuestionnaireElementBuilder parent) {
+  public AbstractQuestionnaireElementBuilder(AbstractQuestionnaireElementBuilder<?> parent) {
     super();
     if(parent != null) {
       initialize(parent.getQuestionnaire(), parent.getDefaultPageUI(), parent.getDefaultQuestionUI());
@@ -70,6 +69,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
     }
   }
 
+  @SuppressWarnings("hiding")
   private void initialize(Questionnaire questionnaire, Class<? extends IPageLayoutFactory> pageLayoutFactoryClass, Class<? extends IQuestionPanelFactory> questionPanelFactoryClass) {
     this.questionnaire = questionnaire;
     if(pageLayoutFactoryClass != null) {
@@ -109,8 +109,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
    * @param name
    * @return
    */
-  @SuppressWarnings("unchecked")
-  protected static IllegalArgumentException invalidNameUnicityException(Class elementClass, String name) {
+  protected static IllegalArgumentException invalidNameUnicityException(Class<?> elementClass, String name) {
     return new IllegalArgumentException(elementClass.getSimpleName() + " name must be unique: " + name + ".");
   }
 
@@ -120,8 +119,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
    * @param name
    * @return
    */
-  @SuppressWarnings("unchecked")
-  protected static IllegalStateException invalidElementNameException(Class elementClass, String name) {
+  protected static IllegalStateException invalidElementNameException(Class<?> elementClass, String name) {
     return new IllegalStateException("Unable to find in questionnaire the " + elementClass.getSimpleName() + " with name: " + name + ". Create it first.");
   }
 

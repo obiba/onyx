@@ -121,8 +121,6 @@ public class QuestionnaireListPanel extends Panel {
 
     private final List<IColumn<Questionnaire>> columns = new ArrayList<IColumn<Questionnaire>>();
 
-    private final List<IColumn<Questionnaire>> additional = new ArrayList<IColumn<Questionnaire>>();
-
     public QuestionnaireListColumnProvider() {
       columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Name", QuestionnaireListPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Version", QuestionnaireListPanel.this, null), "version", "version"));
@@ -150,7 +148,7 @@ public class QuestionnaireListPanel extends Panel {
 
     @Override
     public List<IColumn<Questionnaire>> getAdditionalColumns() {
-      return additional;
+      return null;
     }
 
     @Override

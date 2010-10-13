@@ -49,20 +49,18 @@ public class QuestionnaireDataSource implements IDataSource {
   private String openAnswerDefinition;
 
   public QuestionnaireDataSource(String questionnaire, String question) {
-    super();
     initialize(questionnaire, question, null, null);
   }
 
   public QuestionnaireDataSource(String questionnaire, String question, String category) {
-    super();
     initialize(questionnaire, question, category, null);
   }
 
   public QuestionnaireDataSource(String questionnaire, String question, String category, String openAnswerDefinition) {
-    super();
     initialize(questionnaire, question, category, openAnswerDefinition);
   }
 
+  @SuppressWarnings("hiding")
   private void initialize(String questionnaire, String question, String category, String openAnswerDefinition) {
     if(questionnaire == null) throw new IllegalArgumentException("Questionnaire name cannot be null.");
     this.questionnaire = questionnaire;
@@ -73,6 +71,7 @@ public class QuestionnaireDataSource implements IDataSource {
     this.openAnswerDefinition = openAnswerDefinition;
   }
 
+  @Override
   public Data getData(Participant participant) {
     if(participant == null) return null;
 

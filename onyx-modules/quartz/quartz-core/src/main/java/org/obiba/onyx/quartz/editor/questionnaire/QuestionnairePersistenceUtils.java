@@ -37,7 +37,7 @@ public class QuestionnairePersistenceUtils {
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public void persist(EditedElement<?> editedElement, EditedQuestionnaire editedQuestionnaire) throws Exception {
+  public QuestionnaireBuilder persist(EditedElement<?> editedElement, EditedQuestionnaire editedQuestionnaire) throws Exception {
 
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(editedQuestionnaire.getElement());
     if(editedQuestionnaire.isTouchScreen()) {
@@ -68,6 +68,7 @@ public class QuestionnairePersistenceUtils {
     for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
       bundle.updateLanguage(entry.getKey(), entry.getValue());
     }
+    return builder;
   }
 
   @Required

@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-public class Section implements IHasSection, IHasPage {
+public class Section implements IHasSection {
 
   private static final long serialVersionUID = -1624223156473292196L;
 
@@ -39,19 +39,16 @@ public class Section implements IHasSection, IHasPage {
     this.name = name;
   }
 
-  @Override
   public List<Page> getPages() {
     return pages != null ? pages : (pages = new ArrayList<Page>());
   }
 
-  @Override
   public void addPage(Page page) {
     if(page != null && getPages().add(page)) {
       page.setSection(this);
     }
   }
 
-  @Override
   public void addPage(Page page, int index) {
     if(page != null) {
       getPages().add(index, page);
@@ -59,7 +56,6 @@ public class Section implements IHasSection, IHasPage {
     }
   }
 
-  @Override
   public void removePage(Page page) {
     if(page != null && getPages().remove(page)) {
       page.setSection(null);

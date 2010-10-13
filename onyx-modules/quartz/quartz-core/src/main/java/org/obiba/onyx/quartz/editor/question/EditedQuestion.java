@@ -11,13 +11,24 @@ package org.obiba.onyx.quartz.editor.question;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.editor.EditedElement;
+import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 
 public class EditedQuestion extends EditedElement<Question> {
 
   private static final long serialVersionUID = 1L;
 
+  private Conditions conditions;
+
   public EditedQuestion(Question element) {
     super(element);
+  }
+
+  public Conditions getConditions() {
+    return conditions;
+  }
+
+  public void setConditions(Conditions conditions) {
+    this.conditions = conditions;
   }
 
 }

@@ -195,10 +195,10 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
         throw new IllegalArgumentException("You cannot have categories with the same name in a question: " + element.getName());
       }
     }
-    QuestionCategory questionCategory = new QuestionCategory();
-    questionCategory.setCategory(element);
-    question.addQuestionCategory(questionCategory);
-    return questionCategory;
+    QuestionCategory qc = new QuestionCategory();
+    qc.setCategory(element);
+    question.addQuestionCategory(qc);
+    return qc;
   }
 
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {

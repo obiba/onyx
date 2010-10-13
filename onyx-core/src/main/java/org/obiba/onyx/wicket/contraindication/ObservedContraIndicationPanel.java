@@ -150,17 +150,15 @@ public class ObservedContraIndicationPanel extends Panel {
     return (IContraindicatable) getDefaultModelObject();
   }
 
-  private class ContraindicationChoiceRenderer implements IChoiceRenderer {
+  private class ContraindicationChoiceRenderer implements IChoiceRenderer<Contraindication> {
 
     private static final long serialVersionUID = 1L;
 
-    public Object getDisplayValue(Object object) {
-      Contraindication ci = (Contraindication) object;
+    public Object getDisplayValue(Contraindication ci) {
       return new MessageSourceResolvableStringModel(ci).getObject();
     }
 
-    public String getIdValue(Object object, int index) {
-      Contraindication ci = (Contraindication) object;
+    public String getIdValue(Contraindication ci, int index) {
       return ci.getCode();
     }
 

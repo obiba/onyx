@@ -43,7 +43,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasPage;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasSection;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -231,11 +230,11 @@ public class QuestionnaireTreePanel extends Panel {
           }
           newHasSectionParent.addSection(section, Math.min(newHasSectionParent.getSections().size(), position));
         }
-      } else if(element instanceof Page && newParent instanceof IHasPage) {
+      } else if(element instanceof Page && newParent instanceof Section) {
         Page page = (Page) element;
-        IHasPage newHasPageParent = (IHasPage) newParent;
+        Section newSectionParent = (Section) newParent;
         if(!sameParent) {
-          for(Page existing : newHasPageParent.getPages()) {
+          for(Page existing : newSectionParent.getPages()) {
             if(existing.getName().equalsIgnoreCase(page.getName())) {
               error(new StringResourceModel("Page.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
               feedbackWindow.setContent(feedbackPanel);
@@ -250,7 +249,7 @@ public class QuestionnaireTreePanel extends Panel {
           } else {
             page.getSection().removePage(page);
           }
-          newHasPageParent.addPage(page, Math.min(newHasPageParent.getPages().size(), position));
+          newSectionParent.addPage(page, Math.min(newSectionParent.getPages().size(), position));
         }
       } else if(element instanceof Question && newParent instanceof IHasQuestion) {
         Question question = (Question) element;

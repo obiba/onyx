@@ -120,7 +120,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param dataType
    * @return
    */
-  public OpenAnswerDefinitionBuilder addValidator(IValidator validator, DataType dataType) {
+  public OpenAnswerDefinitionBuilder addValidator(IValidator<?> validator, DataType dataType) {
     element.addDataValidator(new DataValidator(validator, dataType));
     return this;
   }
@@ -130,13 +130,13 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param validator
    * @return
    */
-  public OpenAnswerDefinitionBuilder addValidator(IValidator validator) {
+  public OpenAnswerDefinitionBuilder addValidator(IValidator<?> validator) {
     if(validator instanceof IDataValidator) {
       element.addDataValidator((IDataValidator) validator);
     } else if(validator instanceof StringValidator) {
       addValidator(validator, DataType.TEXT);
     } else if(validator instanceof NumberValidator) { // for backward compatibility
-      IValidator convertedValidator = convertNumberValidator((NumberValidator) validator);
+      IValidator<?> convertedValidator = convertNumberValidator((NumberValidator) validator);
       if(convertedValidator != null) {
         addValidator(convertedValidator, element.getDataType());
       }
@@ -386,9 +386,8 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
       } else {
         throw new IllegalArgumentException("Question " + questionName + " does not have any categories.");
       }
-    } else {
-      throw new IllegalArgumentException("No question can be found with name " + questionName);
     }
+    throw new IllegalArgumentException("No question can be found with name " + questionName);
   }
 
   /**
@@ -413,27 +412,31 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
     return new OpenAnswerDefinitionBuilder(parent, openAnswerDefinition);
   }
 
-  private IValidator convertNumberValidator(NumberValidator validator) {
+  private IValidator<?> convertNumberValidator(NumberValidator validator) {
     if(validator instanceof NumberValidator.RangeValidator) {
       NumberValidator.RangeValidator numberValidator = (NumberValidator.RangeValidator) validator;
       return new RangeValidator(numberValidator.getMinimum(), numberValidator.getMaximum());
-    } else if(validator instanceof NumberValidator.MinimumValidator) {
+    }
+    if(validator instanceof NumberValidator.MinimumValidator) {
       NumberValidator.MinimumValidator numberValidator = (NumberValidator.MinimumValidator) validator;
       return new MinimumValidator(numberValidator.getMinimum());
-    } else if(validator instanceof NumberValidator.MaximumValidator) {
+    }
+    if(validator instanceof NumberValidator.MaximumValidator) {
       NumberValidator.MaximumValidator numberValidator = (NumberValidator.MaximumValidator) validator;
       return new MaximumValidator(numberValidator.getMaximum());
-    } else if(validator instanceof NumberValidator.DoubleRangeValidator) {
+    }
+    if(validator instanceof NumberValidator.DoubleRangeValidator) {
       NumberValidator.DoubleRangeValidator numberValidator = (NumberValidator.DoubleRangeValidator) validator;
       return new RangeValidator(numberValidator.getMinimum(), numberValidator.getMaximum());
-    } else if(validator instanceof NumberValidator.DoubleMinimumValidator) {
+    }
+    if(validator instanceof NumberValidator.DoubleMinimumValidator) {
       NumberValidator.DoubleMinimumValidator numberValidator = (NumberValidator.DoubleMinimumValidator) validator;
       return new MinimumValidator(numberValidator.getMinimum());
-    } else if(validator instanceof NumberValidator.DoubleMaximumValidator) {
+    }
+    if(validator instanceof NumberValidator.DoubleMaximumValidator) {
       NumberValidator.DoubleMaximumValidator numberValidator = (NumberValidator.DoubleMaximumValidator) validator;
       return new MaximumValidator(numberValidator.getMaximum());
     }
-
     return null;
   }
 }

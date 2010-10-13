@@ -41,9 +41,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 public abstract class ActionDefinitionPanel extends Panel {
-
-  private static final long serialVersionUID = -5173222062528691764L;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ActionDefinitionPanel.class);
@@ -58,12 +57,11 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   private FeedbackWindow feedback;
 
-  @SuppressWarnings("serial")
   public ActionDefinitionPanel(String id, ActionDefinition definition, AjaxRequestTarget target) {
     super(id);
 
     Action action = new Action(definition);
-    setDefaultModel(new Model(action));
+    setDefaultModel(new Model<Action>(action));
 
     add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
@@ -72,12 +70,12 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     // password field
     User operatorTemplate = new User();
-    PasswordTextField password = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
+    PasswordTextField password = new PasswordTextField("password", new PropertyModel<String>(operatorTemplate, "password"));
     password.setRequired(definition.isAskPassword());
-    password.add(new IValidator() {
+    password.add(new IValidator<String>() {
 
-      public void validate(IValidatable validatable) {
-        if(!User.digest((String) validatable.getValue()).equals(userSessionService.getUser().getPassword())) {
+      public void validate(IValidatable<String> validatable) {
+        if(!User.digest(validatable.getValue()).equals(userSessionService.getUser().getPassword())) {
           validatable.error(new UserValidationError());
         }
       }
@@ -86,11 +84,11 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     // participant barcode field
     Participant participantTemplate = new Participant();
-    TextField barcode = new TextField("ParticipantCode", new PropertyModel(participantTemplate, "barcode"));
+    TextField<String> barcode = new TextField<String>("ParticipantCode", new PropertyModel<String>(participantTemplate, "barcode"));
     barcode.setRequired(definition.isAskParticipantId());
-    barcode.add(new IValidator() {
+    barcode.add(new IValidator<String>() {
 
-      public void validate(IValidatable validatable) {
+      public void validate(IValidatable<String> validatable) {
         if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
           validatable.error(new ParticipantValidationError());
         }
@@ -99,12 +97,12 @@ public abstract class ActionDefinitionPanel extends Panel {
     });
     add(barcode.setEnabled(definition.isAskParticipantId()));
 
-    Object commentNoteKey = new PropertyModel(definition, "commentNote").getObject();
+    Object commentNoteKey = new PropertyModel<Object>(definition, "commentNote").getObject();
     String defaultNote = new StringResourceModel("AnonymousComments", this, null).getString();
     Label commentNoteLabel = new Label("commentNote", new SpringStringResourceModel(commentNoteKey != null ? commentNoteKey.toString() : "", defaultNote).getString());
     add(commentNoteLabel.setEnabled(definition.isAskComment()));
 
-    TextArea commentArea = new TextArea("comment", new PropertyModel(this, "action.comment"));
+    TextArea<String> commentArea = new TextArea<String>("comment", new PropertyModel<String>(this, "action.comment"));
     commentArea.setRequired(definition.isAskComment() && definition.isCommentMandatory());
     commentArea.add(new StringValidator.MaximumLengthValidator(2000));
     add(commentArea.setEnabled(definition.isAskComment()));
@@ -122,13 +120,13 @@ public abstract class ActionDefinitionPanel extends Panel {
     }
 
     action.setEventReason(definition.getDefaultReason());
-    DropDownChoice reasonsDropDown = new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), definition.getReasons(), new IChoiceRenderer() {
-      public Object getDisplayValue(Object object) {
-        return new SpringStringResourceModel(object.toString()).getString();
+    DropDownChoice<String> reasonsDropDown = new DropDownChoice<String>("reasonsSelect", new PropertyModel<String>(ActionDefinitionPanel.this, "action.eventReason"), definition.getReasons(), new IChoiceRenderer<String>() {
+      public Object getDisplayValue(String object) {
+        return new SpringStringResourceModel(object).getString();
       }
 
-      public String getIdValue(Object object, int index) {
-        return object.toString();
+      public String getIdValue(String object, int index) {
+        return object;
       }
     });
     reasonsDropDown.setLabel(new ResourceModel("Reason"));
@@ -149,7 +147,6 @@ public abstract class ActionDefinitionPanel extends Panel {
     return userSessionService.getDateFormat();
   }
 
-  @SuppressWarnings("serial")
   private class ParticipantValidationError implements IValidationError, Serializable {
 
     public String getErrorMessage(IErrorMessageSource messageSource) {
@@ -158,7 +155,6 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   }
 
-  @SuppressWarnings("serial")
   private class UserValidationError implements IValidationError, Serializable {
 
     public String getErrorMessage(IErrorMessageSource messageSource) {

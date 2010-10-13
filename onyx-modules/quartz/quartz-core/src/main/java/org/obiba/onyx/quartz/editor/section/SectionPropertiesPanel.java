@@ -66,6 +66,7 @@ public abstract class SectionPropertiesPanel extends Panel {
 
   private ListModel<LocaleProperties> localePropertiesModel;
 
+  @SuppressWarnings("unchecked")
   public SectionPropertiesPanel(String id, IModel<Section> model, final IModel<IHasSection> parentModel, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedSection>(new EditedSection(model.getObject())));
     this.questionnaireModel = questionnaireModel;
