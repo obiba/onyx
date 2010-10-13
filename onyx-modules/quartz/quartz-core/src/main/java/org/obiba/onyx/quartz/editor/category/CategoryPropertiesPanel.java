@@ -70,6 +70,7 @@ public class CategoryPropertiesPanel extends Panel {
 
   private ListModel<LocaleProperties> localePropertiesModelQuestionCategory;
 
+  @SuppressWarnings("unchecked")
   public CategoryPropertiesPanel(String id, IModel<QuestionCategory> model, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedQuestionCategory>(new EditedQuestionCategory(model.getObject())));
     this.questionnaireModel = questionnaireModel;

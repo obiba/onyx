@@ -39,6 +39,7 @@ import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -47,6 +48,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
@@ -54,6 +56,7 @@ import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.question.condition.ConditionDataSource;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
@@ -327,10 +330,22 @@ public class QuestionPropertiesPanel extends Panel {
       EditedQuestion editedQuestion = form.getModelObject();
       Question question = editedQuestion.getElement();
       QuestionnaireBuilder builder = questionnairePersistenceUtils.persist(editedQuestion, questionnaireModel.getObject());
-      // ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder,
-      // condition.getQuestion().getName(), condition.getCategory() == null ? null : condition.getCategory().getName(),
-      // condition.getOpenAnswerDefinition() == null ? null : condition.getOpenAnswerDefinition().getName());
-      // question.setCondition(conditionBuilder.getElement());
+
+      Conditions conditions = editedQuestion.getConditions();
+      int nbDataSources = conditions.getDataSources().size();
+      if(nbDataSources > 0) {
+        List<IDataSource> ds = new ArrayList<IDataSource>(nbDataSources);
+        for(ConditionDataSource dataSource : conditions.getDataSources()) {
+          ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder, dataSource.getQuestion().getName(), dataSource.getCategory() == null ? null : dataSource.getCategory().getName(), dataSource.getOpenAnswerDefinition() == null ? null : dataSource.getOpenAnswerDefinition().getName());
+          ds.add(conditionBuilder.getElement());
+        }
+        if(nbDataSources == 1) {
+          question.setCondition(ds.get(0));
+        } else {
+          builder.inQuestion(question.getName()).setCondition(conditions.getExpression(), ds.toArray(new IDataSource[nbDataSources]));
+        }
+      }
+
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());
@@ -338,5 +353,4 @@ public class QuestionPropertiesPanel extends Panel {
       feedbackWindow.show(target);
     }
   }
-
 }

@@ -3,19 +3,23 @@
 	<div wicket:id="dataSourceWindow" />
 	
 	<form wicket:id="form" autocomplete="off">	
-	
-		<table class="keyValueTable">
-			<tr>
-				<td class="keyValueTableKey" valign="top"><label wicket:id="expressionLabel">expressionLabel</label></td>
-				<td class="keyValueTableValueOdd"><textarea wicket:id="expression" cols="60" rows="2"></textarea></td>
-			</tr>				
-		</table>
-		
-		<br />	
+			
 		<a class="obiba-button" wicket:id="addDataSource"><wicket:message key="DataSources.add" /></a>
+		
 		<br />
 		
 		<span wicket:id="dataSources" />
+		
+		<br />
+		
+		<div wicket:id="expressionContainer">
+			<table class="keyValueTable" wicket:id="expressionVisibility">
+				<tr>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="expressionLabel">expressionLabel</label></td>
+					<td class="keyValueTableValueOdd"><textarea wicket:id="expression" cols="60" rows="2"></textarea></td>
+				</tr>				
+			</table>		
+		</div>
 		
 	</form>	
 	

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -24,7 +23,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessCo
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -43,6 +42,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -50,16 +51,20 @@ import org.obiba.wicket.markup.html.table.IColumnProvider;
 @SuppressWarnings("serial")
 public class ConditionPanel extends Panel {
 
+  protected final transient Logger log = LoggerFactory.getLogger(getClass());
+
   private final ModalWindow dataSourceWindow;
 
-  private OnyxEntityList<ConditionDataSource> dataSources;
+  private final OnyxEntityList<ConditionDataSource> dataSources;
 
-  private Form<Conditions> form;
+  private final Form<Conditions> form;
+
+  private final WebMarkupContainer expressionContainer;
+
+  private WebMarkupContainer expressionVisibility;
 
   public ConditionPanel(String id, IModel<Conditions> model, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel) {
     super(id, model);
-
-    add(CSSPackageResource.getHeaderContribution(ConditionPanel.class, "ConditionPanel.css"));
 
     final Conditions conditions = model.getObject();
 
@@ -72,12 +77,19 @@ public class ConditionPanel extends Panel {
 
     add(form = new Form<Conditions>("form", model));
 
+    expressionContainer = new WebMarkupContainer("expressionContainer");
+    expressionContainer.setOutputMarkupId(true);
+    form.add(expressionContainer);
+
+    expressionVisibility = new WebMarkupContainer("expressionVisibility");
+    expressionVisibility.setVisible(conditions.getDataSources().size() > 1);
+    expressionContainer.add(expressionVisibility);
+
     final TextArea<String> expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
-    expression.setOutputMarkupId(true);
     expression.setLabel(new ResourceModel("Expression"));
     expression.setRequired(true);
-    form.add(expression);
-    form.add(new SimpleFormComponentLabel("expressionLabel", expression));
+    expressionVisibility.add(expression);
+    expressionVisibility.add(new SimpleFormComponentLabel("expressionLabel", expression));
 
     SortableDataProvider<ConditionDataSource> dataProvider = new SortableDataProvider<ConditionDataSource>() {
 
@@ -107,11 +119,9 @@ public class ConditionPanel extends Panel {
             List<ConditionDataSource> list = form.getModelObject().getDataSources();
             list.add(dataSource);
             dataSource.setIndex(list.size());
-            if(StringUtils.isBlank(expression.getModelObject())) {
-              expression.setModelObject("$" + dataSource.getIndex());
-            }
+            expressionVisibility.setVisible(list.size() > 1);
             target1.addComponent(dataSources);
-            target1.addComponent(expression);
+            target1.addComponent(expressionContainer);
           }
         });
         dataSourceWindow.show(target);
@@ -188,8 +198,11 @@ public class ConditionPanel extends Panel {
       add(new AjaxLink<ConditionDataSource>("deleteLink", model) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          ((Conditions) ConditionPanel.this.getDefaultModelObject()).getDataSources().remove(model.getObject());
+          List<ConditionDataSource> list = ((Conditions) ConditionPanel.this.getDefaultModelObject()).getDataSources();
+          list.remove(model.getObject());
+          expressionVisibility.setVisible(list.size() > 1);
           target.addComponent(dataSources);
+          target.addComponent(expressionContainer);
         }
       });
     }
