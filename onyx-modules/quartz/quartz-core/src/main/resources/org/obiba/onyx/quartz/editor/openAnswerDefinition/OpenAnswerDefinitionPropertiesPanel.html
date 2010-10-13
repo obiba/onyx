@@ -6,7 +6,7 @@
 
 		<table class="keyValueTable">
 			<tr>
-				<td valign="top" class="keyValueTableKey"><label for="name"><wicket:message key="Name" /></label></td>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="20" /></td>
 			</tr>
 		</table>
@@ -18,19 +18,19 @@
 
 		<table>
 			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="dataTypeLabel" /></td>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="dataTypeLabel"></label></td>
 				<td class="keyValueTableValueOdd"><select wicket:id="dataTypeDropDownChoice" /></td>
 			</tr>
 			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel" /></td>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel"></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="required" type="checkbox" /></td>
 			</tr>
 			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="unitLabel" /></td>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="unitLabel"></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="unit" type="text" size="20" /></td>
 			</tr>
 			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="sizeLabel" /></td>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="sizeLabel"></label></td>
 				<td class="keyValueTableValueOdd">
 					<input wicket:id="wantSpecifySize" type="checkbox" /> 
 					<input wicket:id="size" type="text" size="2" />
