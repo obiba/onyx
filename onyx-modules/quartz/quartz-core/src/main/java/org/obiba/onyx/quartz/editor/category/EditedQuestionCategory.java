@@ -46,7 +46,7 @@ public class EditedQuestionCategory extends EditedElement<QuestionCategory> {
       String[] keysWithNamingStrategy = new String[localeProperty.getKeys().length];
       for(int i = 0; i < localeProperty.getKeys().length; i++) {
         String key = localeProperty.getKeys()[i];
-        keysWithNamingStrategy[i] = defaultPropertyKeyProviderImpl.getPropertyKey(element.getCategory(), key);
+        keysWithNamingStrategy[i] = defaultPropertyKeyProviderImpl.getPropertyKey(getElement().getCategory(), key);
       }
       localeProperty.setKeys(keysWithNamingStrategy);
       find.setKeys((String[]) ArrayUtils.addAll(find.getKeys(), localeProperty.getKeys()));
