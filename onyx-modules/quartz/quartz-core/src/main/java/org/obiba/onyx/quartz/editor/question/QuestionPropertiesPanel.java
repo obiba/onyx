@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -271,10 +272,11 @@ public class QuestionPropertiesPanel extends Panel {
       public void deleteItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
         QuestionPropertiesPanel.this.form.getModelObject().getElement().getQuestionCategories().remove(questionCategory);
         refreshList(target);
+        persist(target);
       }
 
     };
-    form.add(categoryList);
+    form.add(form.getModelObject().getElement().getParentQuestion() == null ? categoryList : new WebMarkupContainer("categoryList"));
 
     form.add(conditionPanel = new ConditionPanel("conditions", new Model<Conditions>(new Conditions()), new Model<Question>(question), questionnaireModel));
 

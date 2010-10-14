@@ -41,6 +41,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
@@ -73,6 +74,9 @@ public class QuestionnaireTreePanel extends Panel {
 
   // Map<Element, ParentElement>
   private Map<IQuestionnaireElement, IQuestionnaireElement> elementsParent = new HashMap<IQuestionnaireElement, IQuestionnaireElement>();
+
+  @SpringBean
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   private int elementCounter;
 
@@ -228,7 +232,11 @@ public class QuestionnaireTreePanel extends Panel {
           } else {
             section.getParentSection().removeSection(section);
           }
+          if(newHasSectionParent instanceof Questionnaire) {
+            section.setParentSection(null);
+          }
           newHasSectionParent.addSection(section, Math.min(newHasSectionParent.getSections().size(), position));
+          persit();
         }
       } else if(element instanceof Page && newParent instanceof Section) {
         Page page = (Page) element;
@@ -250,6 +258,7 @@ public class QuestionnaireTreePanel extends Panel {
             page.getSection().removePage(page);
           }
           newSectionParent.addPage(page, Math.min(newSectionParent.getPages().size(), position));
+          persit();
         }
       } else if(element instanceof Question && newParent instanceof IHasQuestion) {
         Question question = (Question) element;
@@ -264,13 +273,22 @@ public class QuestionnaireTreePanel extends Panel {
             }
           }
         }
+        if(question.hasCategories() && newParent instanceof Question) {
+          error(new StringResourceModel("Question.ImpossibleMoveCategories", QuestionnaireTreePanel.this, null).getObject());
+        }
         if(!hasErrorMessage()) {
           if(question.getParentQuestion() == null) {
             question.getPage().removeQuestion(question);
           } else {
             question.getParentQuestion().removeQuestion(question);
           }
+          if(newHasQuestionParent instanceof Page) {
+            question.setParentQuestion(null);
+          } else if(newHasQuestionParent instanceof Question) {
+            question.setPage(null);
+          }
           newHasQuestionParent.addQuestion(question, Math.min(position, newHasQuestionParent.getQuestions().size()));
+          persit();
         }
       }
 
@@ -354,17 +372,15 @@ public class QuestionnaireTreePanel extends Panel {
         Section section = (Section) element;
         Section parentSection = section.getParentSection();
         if(parentSection == null) {
-          // remove from questionnaire
           questionnaire.removeSection(section);
         } else {
-          // remove from parentSection
           parentSection.removeSection(section);
         }
       } else if(element instanceof Page) {
         Page page = (Page) element;
         Section parentSection = page.getSection();
-        // remove from parentSection
         parentSection.removePage(page);
+        ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().removePage(page);
       } else if(element instanceof Question) {
         Question question = (Question) element;
         if(question.getParentQuestion() == null) {
@@ -373,8 +389,12 @@ public class QuestionnaireTreePanel extends Panel {
           question.getParentQuestion().removeQuestion(question);
         }
       }
-      // TODO temporary
-      new QuestionnairePropertiesPanel("content", (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel(), elementWindow).persist(target);
+      try {
+        EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+        questionnairePersistenceUtils.persist(defaultModelObject, defaultModelObject);
+      } catch(Exception e) {
+        log.error("Cannot persist questionnaire", e);
+      }
       // remove node from jsTree
       target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
     }
@@ -409,6 +429,7 @@ public class QuestionnaireTreePanel extends Panel {
           public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
             super.onSave(target, editedPage);
             ((Section) element).addPage(editedPage.getElement());
+            ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().addPage(editedPage.getElement());
             persist(target);
             target.addComponent(treeContainer);
           }
@@ -427,6 +448,15 @@ public class QuestionnaireTreePanel extends Panel {
         });
         elementWindow.show(respondTarget);
       }
+    }
+  }
+
+  protected void persit() {
+    try {
+      EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      questionnairePersistenceUtils.persist(defaultModelObject, defaultModelObject);
+    } catch(Exception e) {
+      log.error("Cannot persist questionnaire", e);
     }
   }
 

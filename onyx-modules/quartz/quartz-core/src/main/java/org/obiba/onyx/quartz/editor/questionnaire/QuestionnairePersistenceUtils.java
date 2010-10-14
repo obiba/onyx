@@ -65,8 +65,14 @@ public class QuestionnairePersistenceUtils {
     for(Locale localeToDelete : localesToDelete) {
       bundle.deleteLanguage(localeToDelete);
     }
-    for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
-      bundle.updateLanguage(entry.getKey(), entry.getValue());
+    if(editedElement.getPropertiesByLocale().entrySet().isEmpty()) {
+      for(Locale locale : editedQuestionnaire.getElement().getLocales()) {
+        bundle.updateLanguage(locale, new Properties());
+      }
+    } else {
+      for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
+        bundle.updateLanguage(entry.getKey(), entry.getValue());
+      }
     }
     return builder;
   }

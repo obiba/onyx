@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.springframework.util.StringUtils;
 
 @SuppressWarnings("serial")
@@ -48,12 +49,16 @@ public abstract class SortableList<T extends Serializable> extends Panel {
   private SortableListCallback<T> callback;
 
   public SortableList(String id, List<T> items) {
+    this(id, Model.ofList(items));
+  }
+
+  public SortableList(String id, IModel<? extends List<? extends T>> model) {
     super(id);
 
     add(CSSPackageResource.getHeaderContribution(SortableList.class, "SortableList.css"));
     add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
 
-    ListView<T> listView = new ListView<T>("listView", items) {
+    ListView<T> listView = new ListView<T>("listView", model) {
       @Override
       protected void populateItem(ListItem<T> item) {
         item.setOutputMarkupId(true);

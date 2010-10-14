@@ -57,35 +57,46 @@ import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
+
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  // @SpringBean
-  // private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  @SpringBean
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<OpenAnswerDefinition> form;
+  private final Form<EditedOpenAnswerDefinition> form;
 
   private final VariableNamesPanel variableNamesPanel;
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private List<Class<? extends IValidator>> iValidatorsAvailable = Arrays.asList(MaximumValidator.class, MinimumValidator.class, RangeValidator.class);
 
+  private ListModel<LocaleProperties> localePropertiesModel;
+
+  private IModel<EditedQuestionnaire> questionnaireModel;
+
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    super(id, model);
+    super(id, new Model<EditedOpenAnswerDefinition>(new EditedOpenAnswerDefinition(model.getObject())));
 
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+    this.questionnaireModel = questionnaireModel;
+
     Questionnaire questionnaire = questionnaireModel.getObject().getElement();
     for(Locale locale : questionnaire.getLocales()) {
       LocaleProperties localeProperties = new LocaleProperties(locale, model);
@@ -101,7 +112,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
       localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
       listLocaleProperties.add(localeProperties);
     }
-    ListModel<LocaleProperties> localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -109,35 +120,40 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<OpenAnswerDefinition>("form", model));
+    add(form = new Form<EditedOpenAnswerDefinition>("form", (IModel<EditedOpenAnswerDefinition>) getDefaultModel()));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", form.getModel(), localePropertiesModel));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<OpenAnswerDefinition>(form.getModel(), "element"), localePropertiesModel));
 
-    DropDownChoice<DataType> dataTypeDropDownChoice = new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>());
+    DropDownChoice<DataType> dataTypeDropDownChoice = new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "element.dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>());
     dataTypeDropDownChoice.setLabel(new ResourceModel("DataType"));
     form.add(dataTypeDropDownChoice);
     form.add(new SimpleFormComponentLabel("dataTypeLabel", dataTypeDropDownChoice));
 
-    CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "required"));
+    CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "element.required"));
     requiredCheckBox.setLabel(new ResourceModel("Required2"));
     form.add(requiredCheckBox);
     form.add(new SimpleFormComponentLabel("requiredLabel", requiredCheckBox));
 
-    TextField<String> unitTextField = new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "unit"));
+    TextField<String> unitTextField = new TextField<String>("unit", new PropertyModel<String>(form.getModel(), "element.unit"));
     unitTextField.setLabel(new ResourceModel("Unit"));
     form.add(unitTextField);
     form.add(new SimpleFormComponentLabel("unitLabel", unitTextField));
 
-    final TextField<String> sizeTextFieldForUIArguments = new TextField<String>("size", new Model<String>());
+    ValueMap uiArgumentsValueMap = form.getModelObject().getElement().getUIArgumentsValueMap();
+    Integer size = Integer.MIN_VALUE;
+    if(uiArgumentsValueMap != null && uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS) != null) {
+      size = (Integer) uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS);
+    }
+    final TextField<Integer> sizeTextFieldForUIArguments = new TextField<Integer>("size", new Model<Integer>(size), Integer.class);
+    sizeTextFieldForUIArguments.setLabel(new ResourceModel("Size"));
     sizeTextFieldForUIArguments.setOutputMarkupPlaceholderTag(true);
     sizeTextFieldForUIArguments.setVisible(false);
-    ValueMap uiArgumentsValueMap = form.getModelObject().getUIArgumentsValueMap();
     AjaxCheckBox specifySize = new AjaxCheckBox("wantSpecifySize", new Model<Boolean>(uiArgumentsValueMap != null ? uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS) != null : false)) {
 
       @Override
@@ -146,9 +162,9 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
         target.addComponent(sizeTextFieldForUIArguments);
       }
     };
-    form.add(new SimpleFormComponentLabel("sizeLabel", specifySize), specifySize, sizeTextFieldForUIArguments);
+    form.add(new SimpleFormComponentLabel("sizeLabel", sizeTextFieldForUIArguments), specifySize, sizeTextFieldForUIArguments);
 
-    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getVariableNames()));
+    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getElement().getVariableNames()));
 
     ListView<Class<? extends IValidator>> listViewValidator = new ListView<Class<? extends IValidator>>("listViewDataValidators", iValidatorsAvailable) {
 
@@ -249,9 +265,22 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
   }
 
-  public void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswerDefinition) {
+  public void onSave(AjaxRequestTarget target, EditedOpenAnswerDefinition editedOpenAnswerDefinition) {
+    editedOpenAnswerDefinition.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
+    editedOpenAnswerDefinition.getElement().clearVariableNames();
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
-      openAnswerDefinition.addVariableName(entries.getKey(), entries.getValue());
+      editedOpenAnswerDefinition.getElement().addVariableName(entries.getKey(), entries.getValue());
+    }
+  }
+
+  public void persist(AjaxRequestTarget target) {
+    try {
+      questionnairePersistenceUtils.persist(form.getModelObject(), questionnaireModel.getObject());
+    } catch(Exception e) {
+      log.error("Cannot persist questionnaire", e);
+      error(e.getMessage());
+      feedbackWindow.setContent(feedbackPanel);
+      feedbackWindow.show(target);
     }
   }
 }

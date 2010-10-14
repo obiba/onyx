@@ -54,6 +54,10 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   private Map<String, String> variableNames;
 
+  public OpenAnswerDefinition() {
+
+  }
+
   public OpenAnswerDefinition(String name, DataType dataType) {
     this.name = name;
     this.dataType = dataType;
@@ -101,6 +105,10 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   public Map<String, String> getVariableNames() {
     return variableNames != null ? variableNames : (variableNames = new HashMap<String, String>());
+  }
+
+  public void clearVariableNames() {
+    if(variableNames != null) variableNames.clear();
   }
 
   public ValueMap getUIArgumentsValueMap() {
@@ -200,6 +208,12 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     if(openAnswerDefinition != null) {
       getOpenAnswerDefinitions().add(openAnswerDefinition);
       openAnswerDefinition.setParentOpenAnswerDefinition(this);
+    }
+  }
+
+  public void removeOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
+    if(openAnswerDefinition != null && getOpenAnswerDefinitions().remove(openAnswerDefinition)) {
+      openAnswerDefinition.setParentOpenAnswerDefinition(null);
     }
   }
 
