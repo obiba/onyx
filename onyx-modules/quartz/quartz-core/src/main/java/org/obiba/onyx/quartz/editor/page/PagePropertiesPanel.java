@@ -9,11 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.page;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -30,17 +25,14 @@ import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -52,10 +44,10 @@ public abstract class PagePropertiesPanel extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private QuestionnaireBundleManager questionnaireBundleManager;
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -72,23 +64,7 @@ public abstract class PagePropertiesPanel extends Panel {
     super(id, new Model<EditedPage>(new EditedPage(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
-    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-    Questionnaire questionnaire = questionnaireModel.getObject().getElement();
-    for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, model);
-      List<String> values = new ArrayList<String>();
-      for(String property : localeProperties.getKeys()) {
-        if(StringUtils.isNotBlank(model.getObject().getName())) {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
-          if(bundle != null) {
-            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale));
-          }
-        }
-      }
-      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
-      listLocaleProperties.add(localeProperties);
-    }
-    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

@@ -50,7 +50,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
+        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<EditedQuestionnaire>(new EditedQuestionnaire(new Questionnaire(null, "1.0"))), modalWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, EditedQuestionnaire editedQuestionnaire) {
             super.onSave(target1, editedQuestionnaire);

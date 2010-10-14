@@ -23,7 +23,6 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -51,12 +50,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -77,6 +76,9 @@ public class QuestionnairePropertiesPanel extends Panel {
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
+
   private final ListModel<Locale> listLocaleModel;
 
   private final ListModel<LocaleProperties> localePropertiesModel;
@@ -88,26 +90,12 @@ public class QuestionnairePropertiesPanel extends Panel {
   private final Form<EditedQuestionnaire> form;
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, final ModalWindow modalWindow) {
-    super(id, new Model<EditedQuestionnaire>(new EditedQuestionnaire(model.getObject())));
+  public QuestionnairePropertiesPanel(String id, IModel<EditedQuestionnaire> model, final ModalWindow modalWindow) {
+    super(id, model);
 
-    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-    final Questionnaire questionnaire = model.getObject();
-    for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, model);
-      List<String> values = new ArrayList<String>();
-      for(String property : localeProperties.getKeys()) {
-        if(StringUtils.isNotBlank(model.getObject().getName())) {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
-          if(bundle != null) {
-            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale));
-          }
-        }
-      }
-      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
-      listLocaleProperties.add(localeProperties);
-    }
-    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    final Questionnaire questionnaire = model.getObject().getElement();
+    List<LocaleProperties> loadLocaleProperties = localePropertiesUtils.loadLocaleProperties(new Model<Questionnaire>(model.getObject().getElement()), model);
+    localePropertiesModel = new ListModel<LocaleProperties>(loadLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

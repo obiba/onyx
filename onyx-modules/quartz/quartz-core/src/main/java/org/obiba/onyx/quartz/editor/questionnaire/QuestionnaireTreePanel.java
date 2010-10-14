@@ -311,7 +311,7 @@ public class QuestionnaireTreePanel extends Panel {
       final IQuestionnaireElement element = elements.get(nodeId);
       if(element instanceof Questionnaire) {
         elementWindow.setTitle(new ResourceModel("Questionnaire"));
-        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>((Questionnaire) element), elementWindow) {
+        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<EditedQuestionnaire>(new EditedQuestionnaire((Questionnaire) element)), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestionnaire editedQuestionnaire) {
             super.onSave(target, editedQuestionnaire);

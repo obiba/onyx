@@ -177,8 +177,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
           IValidator validator = (IValidator) constructor.newInstance(new Object[nbParameters]);
           item.add(new ValidatorFragment("validatorItem", new Model(new ValidatorObject(false, new DataValidator(validator, null), new Integer[nbParameters]))));
         } catch(Exception e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          throw new RuntimeException(e);
         }
       }
     };

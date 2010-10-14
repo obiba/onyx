@@ -1,0 +1,55 @@
+/*******************************************************************************
+ * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+package org.obiba.onyx.quartz.editor.utils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
+import org.springframework.beans.factory.annotation.Required;
+
+public class LocalePropertiesUtils {
+
+  private QuestionnaireBundleManager questionnaireBundleManager;
+
+  public List<LocaleProperties> loadLocaleProperties(IModel<? extends IQuestionnaireElement> elementModel, IModel<EditedQuestionnaire> editedQuestionnaireModel) {
+    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+    final Questionnaire questionnaire = editedQuestionnaireModel.getObject().getElement();
+    for(Locale locale : questionnaire.getLocales()) {
+      LocaleProperties localeProperties = new LocaleProperties(locale, elementModel);
+      List<String> values = new ArrayList<String>();
+      for(String property : localeProperties.getKeys()) {
+        if(StringUtils.isNotBlank(elementModel.getObject().getName())) {
+          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
+          if(bundle != null) {
+            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, elementModel.getObject(), property, new Object[0], locale));
+          }
+        }
+      }
+      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
+      listLocaleProperties.add(localeProperties);
+    }
+    return listLocaleProperties;
+  }
+
+  @Required
+  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
+    this.questionnaireBundleManager = questionnaireBundleManager;
+  }
+}

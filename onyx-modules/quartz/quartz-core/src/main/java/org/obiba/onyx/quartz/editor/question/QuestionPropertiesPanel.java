@@ -305,25 +305,29 @@ public class QuestionPropertiesPanel extends Panel {
   public void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion) {
     editedQuestion.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
     final Question question = editedQuestion.getElement();
-    categoryList.save(target, new SortableListCallback<QuestionCategory>() {
-      @Override
-      public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
-        question.getQuestionCategories().clear();
-        for(QuestionCategory questionCategory : orderedItems) {
-          question.getQuestionCategories().add(questionCategory);
-        }
 
-        // Layout single or grid: make sure that the categories are added before this...
-        String layoutSelection = layoutRadioGroup.getModelObject();
-        if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-          question.clearUIArguments();
-          question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
-        } else if(GRID_LAYOUT.equals(layoutSelection)) {
-          question.clearUIArguments();
-          question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+    if(form.getModelObject().getElement().getParentQuestion() == null) {
+      categoryList.save(target, new SortableListCallback<QuestionCategory>() {
+        @Override
+        public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
+          question.getQuestionCategories().clear();
+          for(QuestionCategory questionCategory : orderedItems) {
+            question.getQuestionCategories().add(questionCategory);
+          }
         }
-      }
-    });
+      });
+    }
+
+    // Layout single or grid: make sure that the categories are added before this...
+    String layoutSelection = layoutRadioGroup.getModelObject();
+    if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+      question.clearUIArguments();
+      question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
+    } else if(GRID_LAYOUT.equals(layoutSelection)) {
+      question.clearUIArguments();
+      question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+    }
+
     editedQuestion.setConditions(((Conditions) conditionPanel.getDefaultModelObject()));
   }
 
@@ -334,17 +338,19 @@ public class QuestionPropertiesPanel extends Panel {
       QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
 
       Conditions conditions = editedQuestion.getConditions();
-      int nbDataSources = conditions.getDataSources().size();
-      if(nbDataSources > 0) {
-        List<IDataSource> ds = new ArrayList<IDataSource>(nbDataSources);
-        for(ConditionDataSource dataSource : conditions.getDataSources()) {
-          ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder, dataSource.getQuestion().getName(), dataSource.getCategory() == null ? null : dataSource.getCategory().getName(), dataSource.getOpenAnswerDefinition() == null ? null : dataSource.getOpenAnswerDefinition().getName());
-          ds.add(conditionBuilder.getElement());
-        }
-        if(nbDataSources == 1) {
-          question.setCondition(ds.get(0));
-        } else {
-          builder.inQuestion(question.getName()).setCondition(conditions.getExpression(), ds.toArray(new IDataSource[nbDataSources]));
+      if(conditions != null) {
+        int nbDataSources = conditions.getDataSources().size();
+        if(nbDataSources > 0) {
+          List<IDataSource> ds = new ArrayList<IDataSource>(nbDataSources);
+          for(ConditionDataSource dataSource : conditions.getDataSources()) {
+            ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder, dataSource.getQuestion().getName(), dataSource.getCategory() == null ? null : dataSource.getCategory().getName(), dataSource.getOpenAnswerDefinition() == null ? null : dataSource.getOpenAnswerDefinition().getName());
+            ds.add(conditionBuilder.getElement());
+          }
+          if(nbDataSources == 1) {
+            question.setCondition(ds.get(0));
+          } else {
+            builder.inQuestion(question.getName()).setCondition(conditions.getExpression(), ds.toArray(new IDataSource[nbDataSources]));
+          }
         }
       }
 
