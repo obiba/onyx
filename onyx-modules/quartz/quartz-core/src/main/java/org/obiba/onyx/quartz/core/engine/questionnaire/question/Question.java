@@ -10,7 +10,9 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.IDataSource;
@@ -187,11 +189,17 @@ public class Question implements IHasQuestion {
    */
   public List<Category> getCategories() {
     List<Category> categories = new ArrayList<Category>();
-
     for(QuestionCategory questionCategory : getQuestionCategories()) {
       categories.add(questionCategory.getCategory());
     }
+    return categories;
+  }
 
+  public Map<String, Category> getCategoriesByName() {
+    Map<String, Category> categories = new HashMap<String, Category>();
+    for(QuestionCategory questionCategory : getQuestionCategories()) {
+      categories.put(questionCategory.getCategory().getName(), questionCategory.getCategory());
+    }
     return categories;
   }
 

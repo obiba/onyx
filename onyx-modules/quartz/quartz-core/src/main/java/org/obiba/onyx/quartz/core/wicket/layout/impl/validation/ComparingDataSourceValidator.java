@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * Validates a {@link Data} value by comparing it to the one provided by the {@link IDataSource} in the context of the
  * currently administered questionnaire.
  */
-public class ComparingDataSourceValidator implements IValidator {
+public class ComparingDataSourceValidator implements IValidator<Data> {
 
   private static final long serialVersionUID = 1L;
 
@@ -34,21 +34,21 @@ public class ComparingDataSourceValidator implements IValidator {
 
   private Participant participant;
 
-  private IModel openAnswerDefinitionModel;
+  private IModel<OpenAnswerDefinition> openAnswerDefinitionModel;
 
   private int validationDataSourceIndex;
 
-  public ComparingDataSourceValidator(IModel openAnswerDefinitionModel, Participant participant, int validationDataSourceIndex) {
+  public ComparingDataSourceValidator(IModel<OpenAnswerDefinition> openAnswerDefinitionModel, Participant participant, int validationDataSourceIndex) {
     super();
     this.participant = participant;
     this.openAnswerDefinitionModel = openAnswerDefinitionModel;
     this.validationDataSourceIndex = validationDataSourceIndex;
   }
 
-  public void validate(IValidatable validatable) {
-    Data dataToCompare = (Data) validatable.getValue();
+  public void validate(IValidatable<Data> validatable) {
+    Data dataToCompare = validatable.getValue();
 
-    OpenAnswerDefinition open = (OpenAnswerDefinition) openAnswerDefinitionModel.getObject();
+    OpenAnswerDefinition open = openAnswerDefinitionModel.getObject();
     ComparingDataSource comparingDataSource = open.getValidationDataSource(validationDataSourceIndex);
     comparingDataSource.setDataSourceLeft(new FixedDataSource(dataToCompare));
 

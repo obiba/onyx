@@ -26,34 +26,31 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Validates the question choices minimum/maximum count of answers. It uses the settings of the question by default, and
  * if none is found and question parent exists, question parent settings are used.
  */
-public class AnswerCountValidator implements INullAcceptingValidator {
+public class AnswerCountValidator<T> implements INullAcceptingValidator<T> {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(AnswerCountValidator.class);
+  // private static final Logger log = LoggerFactory.getLogger(AnswerCountValidator.class);
 
   private static final String KEY_PREFIX = AnswerCountValidator.class.getSimpleName();
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private IModel questionModel;
+  private IModel<Question> questionModel;
 
-  public AnswerCountValidator(IModel questionModel) {
+  public AnswerCountValidator(IModel<Question> questionModel) {
     InjectorHolder.getInjector().inject(this);
     this.questionModel = questionModel;
   }
 
-  @SuppressWarnings("unchecked")
-  public void validate(IValidatable validatable) {
-    Question question = (Question) questionModel.getObject();
+  public void validate(IValidatable<T> validatable) {
+    Question question = questionModel.getObject();
     if(question.getQuestions().size() > 0 && question.getCategories().size() > 0) {
       for(Question child : question.getQuestions()) {
         if(child.isToBeAnswered(activeQuestionnaireAdministrationService)) {
@@ -65,7 +62,7 @@ public class AnswerCountValidator implements INullAcceptingValidator {
     }
   }
 
-  public void validate(IValidatable validatable, Question question) {
+  public void validate(IValidatable<T> validatable, Question question) {
     List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
 
     int count = getAnswerCount(question, categoryAnswers);

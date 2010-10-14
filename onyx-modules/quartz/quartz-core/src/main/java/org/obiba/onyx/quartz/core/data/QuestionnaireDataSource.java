@@ -149,4 +149,20 @@ public class QuestionnaireDataSource implements IDataSource {
     }
     return rval + "]";
   }
+
+  public String getQuestionnaire() {
+    return questionnaire;
+  }
+
+  public String getQuestion() {
+    return question;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public String getOpenAnswerDefinition() {
+    return openAnswerDefinition;
+  }
 }

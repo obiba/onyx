@@ -76,10 +76,10 @@ public class QuestionPropertiesPanel extends Panel {
 
   private static final String GRID_LAYOUT = "gridLayout";
 
-  protected final transient Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  protected QuestionnaireBundleManager questionnaireBundleManager;
+  private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
@@ -278,7 +278,7 @@ public class QuestionPropertiesPanel extends Panel {
     };
     form.add(form.getModelObject().getElement().getParentQuestion() == null ? categoryList : new WebMarkupContainer("categoryList"));
 
-    form.add(conditionPanel = new ConditionPanel("conditions", new Model<Conditions>(new Conditions()), new Model<Question>(question), questionnaireModel));
+    form.add(conditionPanel = new ConditionPanel("conditions", new Model<Question>(question), questionnaireModel));
 
     form.add(new AjaxButton("save", form) {
       @Override

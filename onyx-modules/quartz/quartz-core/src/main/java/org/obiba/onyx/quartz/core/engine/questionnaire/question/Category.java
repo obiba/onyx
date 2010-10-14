@@ -67,6 +67,17 @@ public class Category implements Serializable, IQuestionnaireElement {
     this.openAnswerDefinition = openAnswerDefinition;
   }
 
+  public Map<String, OpenAnswerDefinition> getOpenAnswerDefinitionsByName() {
+    Map<String, OpenAnswerDefinition> map = new HashMap<String, OpenAnswerDefinition>();
+    if(openAnswerDefinition != null) {
+      map.put(openAnswerDefinition.getName(), openAnswerDefinition);
+      for(OpenAnswerDefinition child : openAnswerDefinition.getOpenAnswerDefinitions()) {
+        map.put(child.getName(), child);
+      }
+    }
+    return map;
+  }
+
   @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);

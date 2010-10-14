@@ -43,6 +43,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -60,6 +61,9 @@ public class ConditionPanel extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
+  @SpringBean
+  private ConditionsFactory conditionsFactory;
+
   private final ModalWindow dataSourceWindow;
 
   private final OnyxEntityList<ConditionDataSource> dataSources;
@@ -70,10 +74,11 @@ public class ConditionPanel extends Panel {
 
   private WebMarkupContainer expressionVisibility;
 
-  public ConditionPanel(String id, IModel<Conditions> model, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel) {
-    super(id, model);
-
-    final Conditions conditions = model.getObject();
+  @SuppressWarnings("unchecked")
+  public ConditionPanel(String id, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel) {
+    super(id);
+    final Conditions conditions = conditionsFactory.create(questionModel.getObject());
+    setDefaultModel(new Model<Conditions>(conditions));
 
     dataSourceWindow = new ModalWindow("dataSourceWindow");
     dataSourceWindow.setCssClassName("onyx");
@@ -82,7 +87,7 @@ public class ConditionPanel extends Panel {
     dataSourceWindow.setResizable(true);
     add(dataSourceWindow);
 
-    add(form = new Form<Conditions>("form", model));
+    add(form = new Form<Conditions>("form", (IModel<Conditions>) getDefaultModel()));
 
     expressionContainer = new WebMarkupContainer("expressionContainer");
     expressionContainer.setOutputMarkupId(true);
@@ -100,7 +105,6 @@ public class ConditionPanel extends Panel {
 
       private final Pattern PATTERN = Pattern.compile("(\\$[\\d]+)");
 
-      @SuppressWarnings("unchecked")
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         String value = validatable.getValue();

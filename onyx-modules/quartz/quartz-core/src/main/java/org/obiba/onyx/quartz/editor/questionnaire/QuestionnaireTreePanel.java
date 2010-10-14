@@ -362,7 +362,6 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class DeleteBehavior extends AbstractDefaultAjaxBehavior {
-    @SuppressWarnings("unchecked")
     @Override
     protected void respond(AjaxRequestTarget target) {
       String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
