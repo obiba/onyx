@@ -20,8 +20,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
 import org.obiba.onyx.quartz.editor.EditedElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -33,28 +31,32 @@ import com.google.common.collect.Iterables;
  */
 public class QuestionnairePersistenceUtils {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  // private final Logger log = LoggerFactory.getLogger(getClass());
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public QuestionnaireBuilder persist(EditedElement<?> editedElement, EditedQuestionnaire editedQuestionnaire) throws Exception {
-
+  public QuestionnaireBuilder createBuilder(EditedQuestionnaire editedQuestionnaire) {
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(editedQuestionnaire.getElement());
     if(editedQuestionnaire.isTouchScreen()) {
       builder.setSimplifiedUI();
     } else {
       builder.setStandardUI();
     }
-    final Questionnaire questionnaire = builder.getQuestionnaire();
-    UniqueQuestionnaireElementNameBuilder.ensureQuestionnaireVariableNamesAreUnique(questionnaire);
+    return builder;
+  }
 
-    log.info("save to " + questionnaireBundleManager.getRootDir());
+  public void persist(EditedElement<?> editedElement, QuestionnaireBuilder builder) throws Exception {
+
+    UniqueQuestionnaireElementNameBuilder.ensureQuestionnaireVariableNamesAreUnique(builder.getQuestionnaire());
 
     // Create the bundle manager.
     QuestionnaireBundleManager writeBundleManager = new QuestionnaireBundleManagerImpl(questionnaireBundleManager.getRootDir());
     ((QuestionnaireBundleManagerImpl) writeBundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
     ((QuestionnaireBundleManagerImpl) writeBundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
+    final Questionnaire questionnaire = builder.getQuestionnaire();
+
+    // store xml file and locales
     QuestionnaireBundle bundle = writeBundleManager.createBundle(questionnaire);
     Iterable<Locale> localesToDelete = Iterables.filter(bundle.getAvailableLanguages(), new Predicate<Locale>() {
       @Override
@@ -66,7 +68,7 @@ public class QuestionnairePersistenceUtils {
       bundle.deleteLanguage(localeToDelete);
     }
     if(editedElement.getPropertiesByLocale().entrySet().isEmpty()) {
-      for(Locale locale : editedQuestionnaire.getElement().getLocales()) {
+      for(Locale locale : questionnaire.getLocales()) {
         bundle.updateLanguage(locale, new Properties());
       }
     } else {
@@ -74,7 +76,6 @@ public class QuestionnairePersistenceUtils {
         bundle.updateLanguage(entry.getKey(), entry.getValue());
       }
     }
-    return builder;
   }
 
   @Required

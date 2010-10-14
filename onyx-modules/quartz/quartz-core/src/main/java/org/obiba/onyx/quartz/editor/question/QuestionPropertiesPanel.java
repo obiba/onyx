@@ -331,7 +331,7 @@ public class QuestionPropertiesPanel extends Panel {
     try {
       EditedQuestion editedQuestion = form.getModelObject();
       Question question = editedQuestion.getElement();
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.persist(editedQuestion, questionnaireModel.getObject());
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
 
       Conditions conditions = editedQuestion.getConditions();
       int nbDataSources = conditions.getDataSources().size();
@@ -347,6 +347,8 @@ public class QuestionPropertiesPanel extends Panel {
           builder.inQuestion(question.getName()).setCondition(conditions.getExpression(), ds.toArray(new IDataSource[nbDataSources]));
         }
       }
+
+      questionnairePersistenceUtils.persist(editedQuestion, builder);
 
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);

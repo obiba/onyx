@@ -50,6 +50,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
@@ -255,7 +256,8 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   public void persist(AjaxRequestTarget target) {
     try {
-      questionnairePersistenceUtils.persist(form.getModelObject(), form.getModelObject());
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(form.getModelObject());
+      questionnairePersistenceUtils.persist(form.getModelObject(), builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

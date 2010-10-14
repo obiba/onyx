@@ -52,6 +52,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.page.EditedPage;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
@@ -391,7 +392,8 @@ public class QuestionnaireTreePanel extends Panel {
       }
       try {
         EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-        questionnairePersistenceUtils.persist(defaultModelObject, defaultModelObject);
+        QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject);
+        questionnairePersistenceUtils.persist(defaultModelObject, builder);
       } catch(Exception e) {
         log.error("Cannot persist questionnaire", e);
       }
@@ -454,7 +456,8 @@ public class QuestionnaireTreePanel extends Panel {
   protected void persit() {
     try {
       EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      questionnairePersistenceUtils.persist(defaultModelObject, defaultModelObject);
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject);
+      questionnairePersistenceUtils.persist(defaultModelObject, builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
     }

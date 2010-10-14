@@ -35,6 +35,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
@@ -149,7 +150,8 @@ public abstract class PagePropertiesPanel extends Panel {
 
   public void persist(AjaxRequestTarget target) {
     try {
-      questionnairePersistenceUtils.persist(form.getModelObject(), questionnaireModel.getObject());
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
+      questionnairePersistenceUtils.persist(form.getModelObject(), builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

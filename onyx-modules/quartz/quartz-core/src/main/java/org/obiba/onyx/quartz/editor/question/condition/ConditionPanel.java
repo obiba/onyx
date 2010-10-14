@@ -11,9 +11,16 @@ package org.obiba.onyx.quartz.editor.question.condition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -36,14 +43,14 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,7 +58,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class ConditionPanel extends Panel {
 
-  protected final transient Logger log = LoggerFactory.getLogger(getClass());
+  // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   private final ModalWindow dataSourceWindow;
 
@@ -87,7 +94,53 @@ public class ConditionPanel extends Panel {
 
     final TextArea<String> expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
     expression.setLabel(new ResourceModel("Expression"));
+    expression.setEscapeModelStrings(false);
     expression.setRequired(true);
+    expression.add(new AbstractValidator<String>() {
+
+      private final Pattern PATTERN = Pattern.compile("(\\$[\\d]+)");
+
+      @SuppressWarnings("unchecked")
+      @Override
+      protected void onValidate(IValidatable<String> validatable) {
+        String value = validatable.getValue();
+        if(StringUtils.isBlank(value)) return;
+        // check if all defined dataSources are used
+        if(conditions.getDataSources().size() > 1) {
+          List<String> ds = new ArrayList<String>();
+          for(int i = 1; i <= conditions.getDataSources().size(); i++) {
+            String variable = "$" + i;
+            ds.add(variable);
+            if(value.indexOf(variable) < 0) {
+              Map<String, Object> vars = new HashMap<String, Object>();
+              vars.put("variable", variable);
+              error(validatable, "UnusedDataSourceVariable", vars);
+            }
+          }
+          // check if for each expression variable, there is a datasource defined
+          List<String> variables = new ArrayList<String>();
+          find(value, variables);
+          for(String notFound : (Collection<String>) CollectionUtils.disjunction(ds, variables)) {
+            Map<String, Object> vars = new HashMap<String, Object>();
+            vars.put("variable", notFound);
+            error(validatable, "UndefinedDataSourceVariable", vars);
+          }
+        }
+
+      }
+
+      // I'm sure we can do this in a single regex but I didn't find it :-(
+      private void find(String value, List<String> variables) {
+        Matcher matcher = PATTERN.matcher(value);
+        if(matcher.find()) {
+          variables.add(matcher.group(0));
+          String start = value.substring(0, matcher.start(0));
+          String end = value.substring(matcher.end(0), value.length());
+          find(start + end, variables);
+        }
+      }
+    });
+
     expressionVisibility.add(expression);
     expressionVisibility.add(new SimpleFormComponentLabel("expressionLabel", expression));
 
