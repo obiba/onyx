@@ -38,7 +38,7 @@ public class ActionsPanel extends Panel {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  public ActionsPanel(String id, IModel stageModel, final ActionWindow modal) {
+  public ActionsPanel(String id, IModel<Stage> stageModel, final ActionWindow modal) {
     super(id, stageModel);
     setOutputMarkupId(true);
 
@@ -47,17 +47,18 @@ public class ActionsPanel extends Panel {
     SeparatorMarkupComponentBorder border = new SeparatorMarkupComponentBorder();
     for(ActionDefinition actionDef : getStageExecution().getActionDefinitions()) {
 
-      AjaxLink link = new AjaxLink(repeating.newChildId(), new Model(actionDef.getCode())) {
+      AjaxLink<String> link = new AjaxLink<String>(repeating.newChildId(), new Model<String>(actionDef.getCode())) {
 
         private static final long serialVersionUID = 1L;
 
+        @SuppressWarnings("unchecked")
         @Override
         public void onClick(AjaxRequestTarget target) {
           // Before allowing the action, make sure our actionDefinition is sill available
           // in the IStageExecution. This protects concurrent interview administration.
           // See ONYX-154
           IStageExecution stageExec = getStageExecution();
-          String code = (String) getModelObject();
+          String code = getModelObject();
           ActionDefinition actionDefinition = null;
           for(ActionDefinition definition : stageExec.getActionDefinitions()) {
             if(code.equals(definition.getCode())) {

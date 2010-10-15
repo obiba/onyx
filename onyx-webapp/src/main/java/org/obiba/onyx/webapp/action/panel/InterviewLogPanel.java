@@ -103,7 +103,7 @@ public class InterviewLogPanel extends Panel {
       protected void populateItem(LoopItem item) {
         item.setRenderBodyOnly(true);
         Action action = interviewLogList.get(item.getIteration());
-        item.add(new CommentFragment("rows", "interviewLogRow", InterviewLogPanel.this, new Model(action), item.getIteration()));
+        item.add(new CommentFragment("rows", "interviewLogRow", InterviewLogPanel.this, new Model<Action>(action), item.getIteration()));
       }
     };
 
@@ -138,7 +138,7 @@ public class InterviewLogPanel extends Panel {
       Action action = (Action) getDefaultModelObject();
       WebMarkupContainer webMarkupContainer = new WebMarkupContainer("logEntryRow");
       add(webMarkupContainer);
-      webMarkupContainer.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
+      webMarkupContainer.add(new AttributeAppender("class", true, new Model<String>(getOddEvenCssClass(iteration)), " "));
 
       webMarkupContainer = addCommonFragmentComponents(webMarkupContainer, action);
 
@@ -150,11 +150,11 @@ public class InterviewLogPanel extends Panel {
       } else {
         webMarkupContainerTwo.setVisible(false);
       }
-      webMarkupContainerTwo.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(iteration)), " "));
+      webMarkupContainerTwo.add(new AttributeAppender("class", true, new Model<String>(getOddEvenCssClass(iteration)), " "));
       CharSequence escapedComment = Strings.escapeMarkup(commentText);
       Label comment = new Label("comment", textToMultiLineHtml(escapedComment.toString()));
       comment.setEscapeModelStrings(false);
-      comment.add(new AttributeAppender("class", true, new Model("log-comment"), " "));
+      comment.add(new AttributeAppender("class", true, new Model<String>("log-comment"), " "));
       webMarkupContainerTwo.add(comment);
     }
   }
@@ -196,7 +196,7 @@ public class InterviewLogPanel extends Panel {
       ActionDefinition actionDefinition = actionDefinitionConfiguration.getActionDefinition(action.getActionType(), action.getActionDefinitionCode());
       actionModel = (actionDefinition != null) ? new MessageSourceResolvableStringModel(actionDefinition.getLabel()) : new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getActionDefinitionCode()));
     } else {
-      actionModel = new Model("");
+      actionModel = new Model<String>("");
     }
     return actionModel;
   }
@@ -206,7 +206,7 @@ public class InterviewLogPanel extends Panel {
     if(action.getEventReason() != null && !action.getEventReason().equals("")) {
       reasonModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getEventReason()));
     } else {
-      reasonModel = new Model("");
+      reasonModel = new Model<String>("");
     }
     return reasonModel;
   }
