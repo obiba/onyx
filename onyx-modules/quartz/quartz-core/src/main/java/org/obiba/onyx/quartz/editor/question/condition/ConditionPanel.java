@@ -107,7 +107,6 @@ public class ConditionPanel extends Panel {
 
     final TextArea<String> expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
     expression.setLabel(new ResourceModel("Expression"));
-    expression.setEscapeModelStrings(false);
     expression.setRequired(true);
     expression.add(new AbstractValidator<String>() {
 
