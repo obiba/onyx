@@ -36,21 +36,21 @@ public class FixedDataSource implements IDataSource {
   }
 
   public FixedDataSource(Data data) {
-    super();
     this.data = data;
     this.unit = null;
   }
 
   public FixedDataSource(Data data, String unit) {
-    super();
     this.data = data;
     this.unit = unit;
   }
 
+  @Override
   public Data getData(Participant participant) {
     return data;
   }
 
+  @Override
   public String getUnit() {
     return unit;
   }

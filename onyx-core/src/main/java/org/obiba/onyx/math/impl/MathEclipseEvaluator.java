@@ -42,12 +42,14 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return new MathEclipseEvaluator();
   }
 
+  @Override
   public boolean evaluateBoolean(String algorithm, List<Data> operands) {
     DoubleEvaluator engine = createEvaluator();
     double d = engine.evaluate("If[" + defineVariables(engine, algorithm, operands) + ", 1, 0]");
     return d == 1d;
   }
 
+  @Override
   public double evaluateDouble(String algorithm, List<Data> operands) {
     DoubleEvaluator engine = createEvaluator();
     double d = engine.evaluate(defineVariables(engine, algorithm, operands));
@@ -104,6 +106,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return newExpression;
   }
 
+  @Override
   public boolean evaluateBoolean(String algorithm, Participant participant, List<IDataSource> operands) {
     List<Data> datas = getDatas(participant, operands);
 
@@ -115,6 +118,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return d == 1d;
   }
 
+  @Override
   public double evaluateDouble(String algorithm, Participant participant, List<IDataSource> operands) {
     List<Data> datas = getDatas(participant, operands);
 

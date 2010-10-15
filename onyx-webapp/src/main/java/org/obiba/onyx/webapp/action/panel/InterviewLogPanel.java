@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.action.panel;
 
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,7 +92,7 @@ public class InterviewLogPanel extends Panel {
 
     final List<Action> interviewLogList = (List<Action>) getDefaultModelObject();
 
-    if (logItemLoop != null) {
+    if(logItemLoop != null) {
       remove(logItemLoop);
     }
     logItemLoop = new Loop("table", interviewLogList.size()) {
@@ -144,7 +145,7 @@ public class InterviewLogPanel extends Panel {
       WebMarkupContainer webMarkupContainerTwo = new WebMarkupContainer("logCommentRow");
       add(webMarkupContainerTwo);
       String commentText = "";
-      if (action.getComment() != null) {
+      if(action.getComment() != null) {
         commentText = action.getComment();
       } else {
         webMarkupContainerTwo.setVisible(false);
@@ -170,7 +171,7 @@ public class InterviewLogPanel extends Panel {
   }
 
   private WebMarkupContainer addCommonFragmentComponents(WebMarkupContainer webMarkupContainer, Action action) {
-    webMarkupContainer.add(new Label("dateTime", DateModelUtils.getDateTimeModel(new PropertyModel(action, "dateTime"))));
+    webMarkupContainer.add(new Label("dateTime", DateModelUtils.getDateTimeModel(new PropertyModel<Date>(action, "dateTime"))));
     webMarkupContainer.add(new Label("stage", getStageModel(action)));
     webMarkupContainer.add(new Label("action", getActionModel(action)));
     webMarkupContainer.add(new Label("author", action.getUser().getFullName()));
@@ -180,9 +181,9 @@ public class InterviewLogPanel extends Panel {
 
   private IModel getStageModel(Action action) {
     IModel stageModel;
-    if (action.getStage() != null) {
+    if(action.getStage() != null) {
       stageModel = new PropertyModel(new StageModel(moduleRegistry, action.getStage()), "description");
-      if (stageModel != null && stageModel.getObject() != null) {
+      if(stageModel != null && stageModel.getObject() != null) {
         return new MessageSourceResolvableStringModel(stageModel);
       }
     }
@@ -191,10 +192,9 @@ public class InterviewLogPanel extends Panel {
 
   private IModel getActionModel(Action action) {
     IModel actionModel;
-    if (action.getActionType() != null) {
+    if(action.getActionType() != null) {
       ActionDefinition actionDefinition = actionDefinitionConfiguration.getActionDefinition(action.getActionType(), action.getActionDefinitionCode());
-      actionModel = (actionDefinition != null) ? new MessageSourceResolvableStringModel(actionDefinition.getLabel()) : new MessageSourceResolvableStringModel(
-          new DefaultMessageSourceResolvable(action.getActionDefinitionCode()));
+      actionModel = (actionDefinition != null) ? new MessageSourceResolvableStringModel(actionDefinition.getLabel()) : new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getActionDefinitionCode()));
     } else {
       actionModel = new Model("");
     }
@@ -203,7 +203,7 @@ public class InterviewLogPanel extends Panel {
 
   private IModel getReasonModel(Action action) {
     IModel reasonModel;
-    if (action.getEventReason() != null && !action.getEventReason().equals("")) {
+    if(action.getEventReason() != null && !action.getEventReason().equals("")) {
       reasonModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getEventReason()));
     } else {
       reasonModel = new Model("");
@@ -223,8 +223,7 @@ public class InterviewLogPanel extends Panel {
         ((LoadableInterviewLogModel) InterviewLogPanel.this.getDefaultModel()).showAllLogEntries();
         addInterviewLogComponent();
         // Disable Show All Button
-        target
-            .appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
+        target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
         target.addComponent(InterviewLogPanel.this);
       }
 
@@ -256,7 +255,7 @@ public class InterviewLogPanel extends Panel {
       private static final long serialVersionUID = 1L;
 
       public void onClose(AjaxRequestTarget target, Status status) {
-        if (status.equals(Status.WINDOW_CLOSED) || status.equals(Status.SUCCESS) || status.equals(Status.CANCELLED)) {
+        if(status.equals(Status.WINDOW_CLOSED) || status.equals(Status.SUCCESS) || status.equals(Status.CANCELLED)) {
           dialogContent.clearCommentField();
         }
         modalWindow.resetStatus();
@@ -269,15 +268,14 @@ public class InterviewLogPanel extends Panel {
       private static final long serialVersionUID = -2156016038938151812L;
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        if (status.equals(Status.SUCCESS)) {
+        if(status.equals(Status.SUCCESS)) {
           Action comment = (Action) dialogContent.getDefaultModelObject();
           activeInterviewService.doAction(null, comment);
 
           // Scroll to bottom of log to make the recently added comment visible.
           InterviewLogPanel.this.add(new ScrollToBottomBehaviour("#interviewLogPanel tbody"));
           // Disable Show All Button
-          target
-              .appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
+          target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
 
           ((LoadableInterviewLogModel) InterviewLogPanel.this.getDefaultModel()).showAllLogEntries();
           InterviewLogPanel.this.addInterviewLogComponent();

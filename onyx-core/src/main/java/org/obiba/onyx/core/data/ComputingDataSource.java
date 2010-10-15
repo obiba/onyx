@@ -70,6 +70,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
    * 
    * @return null if type is not one of BOOLEAN, INTEGER, DECIMAL
    */
+  @Override
   public Data getData(Participant participant) {
     try {
       if(dataType.equals(DataType.BOOLEAN)) {
@@ -91,6 +92,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
     return null;
   }
 
+  @Override
   public String getUnit() {
     return unit;
   }

@@ -40,7 +40,10 @@ import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -57,9 +60,10 @@ import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
 import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
-import org.obiba.onyx.quartz.editor.question.condition.ConditionDataSource;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.question.condition.Conditions;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDS;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
@@ -339,13 +343,24 @@ public class QuestionPropertiesPanel extends Panel {
 
       Conditions conditions = editedQuestion.getConditions();
       if(conditions != null) {
-        int nbDataSources = conditions.getDataSources().size();
+        int nbDataSources = conditions.getNbDataSources();
         if(nbDataSources > 0) {
+  
           List<IDataSource> ds = new ArrayList<IDataSource>(nbDataSources);
-          for(ConditionDataSource dataSource : conditions.getDataSources()) {
-            ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder, dataSource.getQuestion().getName(), dataSource.getCategory() == null ? null : dataSource.getCategory().getName(), dataSource.getOpenAnswerDefinition() == null ? null : dataSource.getOpenAnswerDefinition().getName());
+          for(QuestionnaireDS questionnaireDS : conditions.getQuestionnaireDataSources()) {
+            ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder, questionnaireDS.getQuestion().getName(), questionnaireDS.getCategory() == null ? null : questionnaireDS.getCategory().getName(), questionnaireDS.getOpenAnswerDefinition() == null ? null : questionnaireDS.getOpenAnswerDefinition().getName());
             ds.add(conditionBuilder.getElement());
           }
+          for(ComparingDS comparingDS : conditions.getComparingDataSources()) {
+            if(ComparingDS.GENDER_TYPE.equals(comparingDS.getType())) {
+              ds.add(new ComparingDataSource(new ParticipantPropertyDataSource(ComparingDS.GENDER_TYPE), comparingDS.getOperator(), new FixedDataSource(comparingDS.getGender().toString())));
+            } else {
+              throw new RuntimeException("Not implemented yet... only support gender comparison");
+              // ds.add(new ComparingDataSource(new ParticipantPropertyDataSource(), comparingDS.getOperator(), new
+              // FixedDataSource(DataType.valueOf(comparingDS.getType()), comparingDS.getValue())));
+            }
+          }
+  
           if(nbDataSources == 1) {
             question.setCondition(ds.get(0));
           } else {

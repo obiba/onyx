@@ -137,15 +137,14 @@ public class MenuBuilder {
 
     private static final String SELECTED_CSS_CLASS = "ui-state-highlight";
 
-    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(MenuItemSelectionBehavior.class);
 
     @Override
     public void onComponentTag(Component component, ComponentTag tag) {
       super.onRendered(component);
 
-      if(component instanceof BookmarkablePageLink) {
-        BookmarkablePageLink link = (BookmarkablePageLink) component;
+      if(component instanceof BookmarkablePageLink<?>) {
+        BookmarkablePageLink<?> link = (BookmarkablePageLink<?>) component;
 
         Page currentPage = component.getPage();
         log.info("linkPageClass = {}, pageClass = {}", link.getPageClass().getSimpleName(), currentPage.getClass().getSimpleName());
@@ -179,7 +178,7 @@ public class MenuBuilder {
     initialiseModuleRegistry(moduleRegistry);
   }
 
-  private static void initialiseModuleRegistry(ModuleRegistry moduleRegistry) {
+  private static void initialiseModuleRegistry(@SuppressWarnings("hiding") ModuleRegistry moduleRegistry) {
     MenuBuilder.moduleRegistry = moduleRegistry;
   }
 }

@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.question.condition;
+package org.obiba.onyx.quartz.editor.question.condition.datasource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +47,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
  *
  */
 @SuppressWarnings("serial")
-public abstract class DataSourcePanel extends Panel {
+public abstract class QuestionnaireDSPanel extends Panel {
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
@@ -56,8 +56,11 @@ public abstract class DataSourcePanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  public DataSourcePanel(String id, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow dataSourceWindow) {
-    super(id, questionModel);
+  private final IModel<Question> questionModel;
+
+  public QuestionnaireDSPanel(String id, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow dataSourceWindow) {
+    super(id);
+    this.questionModel = questionModel;
 
     Questionnaire currentQuestionnaire = questionnaireModel.getObject().getElement();
 
@@ -84,15 +87,17 @@ public abstract class DataSourcePanel extends Panel {
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
-    ConditionDataSource dataSource = new ConditionDataSource();
+    QuestionnaireDS dataSource = new QuestionnaireDS();
     dataSource.setQuestionnaire(currentQuestionnaire);
-    final Form<ConditionDataSource> form = new Form<ConditionDataSource>("form", new Model<ConditionDataSource>(dataSource));
+    Model<QuestionnaireDS> model = new Model<QuestionnaireDS>(dataSource);
+    setDefaultModel(model);
+    final Form<QuestionnaireDS> form = new Form<QuestionnaireDS>("form", model);
     add(form);
 
     final DropDownChoice<Questionnaire> questionnaireChoice = new DropDownChoice<Questionnaire>("questionnaire", new PropertyModel<Questionnaire>(form.getModel(), "questionnaire"), questionnaires, new IChoiceRenderer<Questionnaire>() {
       @Override
       public Object getDisplayValue(Questionnaire element) {
-        return element.getName() + (questionnaireModel.getObject().getElement().getName().equals(element.getName()) ? " (" + new StringResourceModel("Current", DataSourcePanel.this, null).getString() + ")" : "");
+        return element.getName() + (questionnaireModel.getObject().getElement().getName().equals(element.getName()) ? " (" + new StringResourceModel("Current", QuestionnaireDSPanel.this, null).getString() + ")" : "");
       }
 
       @Override
@@ -200,7 +205,7 @@ public abstract class DataSourcePanel extends Panel {
       QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
     }
     Map<String, Question> questionCache = new HashMap<String, Question>(questionnaire.getQuestionnaireCache().getQuestionCache());
-    questionCache.remove(((Question) getDefaultModelObject()).getName());
+    questionCache.remove(questionModel.getObject().getName());
     List<Question> questions = new ArrayList<Question>(questionCache.values());
     Collections.sort(questions, new QuestionnaireElementComparator());
     return questions;
@@ -225,5 +230,5 @@ public abstract class DataSourcePanel extends Panel {
    * @param target
    * @param modelObject
    */
-  public abstract void onSave(AjaxRequestTarget target, ConditionDataSource modelObject);
+  public abstract void onSave(AjaxRequestTarget target, QuestionnaireDS modelObject);
 }

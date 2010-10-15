@@ -51,7 +51,7 @@ public class Dialog extends ModalWindow {
 
   private Type type;
 
-  private Form form;
+  private Form<?> form;
 
   private CloseButtonCallback closeButtonCallback;
 
@@ -105,7 +105,7 @@ public class Dialog extends ModalWindow {
     setCssClassName("onyx");
     setResizable(false);
 
-    form = new Form("form");
+    form = new Form<Object>("form");
     form.setOutputMarkupId(true);
     form.add(new WebMarkupContainer(getContentId()));
 
@@ -136,7 +136,7 @@ public class Dialog extends ModalWindow {
     okButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Ok", this, null)));
     form.add(okButton);
 
-    AjaxLink cancelButton = new AjaxLink("cancel") {
+    AjaxLink<?> cancelButton = new AjaxLink("cancel") {
 
       /**
        * 
@@ -155,7 +155,7 @@ public class Dialog extends ModalWindow {
     cancelButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Cancel", this, null)));
     form.add(cancelButton);
 
-    AjaxLink yesButton = new AjaxLink("yes") {
+    AjaxLink<?> yesButton = new AjaxLink("yes") {
 
       /**
        * 
@@ -174,7 +174,7 @@ public class Dialog extends ModalWindow {
     yesButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Yes", this, null)));
     form.add(yesButton);
 
-    AjaxLink noButton = new AjaxLink("no") {
+    AjaxLink<?> noButton = new AjaxLink("no") {
 
       /**
        * 
@@ -193,7 +193,7 @@ public class Dialog extends ModalWindow {
     noButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.No", this, null)));
     form.add(noButton);
 
-    AjaxLink closeButton = new AjaxLink("close") {
+    AjaxLink<?> closeButton = new AjaxLink("close") {
 
       /**
        * 
@@ -357,7 +357,7 @@ public class Dialog extends ModalWindow {
    * Returns a truncated version of the title when title is too long
    */
   @Override
-  public IModel getTitle() {
+  public IModel<String> getTitle() {
     String titleStr = (super.getTitle() != null) ? (String) super.getTitle().getObject() : null;
 
     if(titleStr != null && titleStr.length() > 50) {
@@ -365,7 +365,7 @@ public class Dialog extends ModalWindow {
       titleStr += "...";
     }
 
-    return new Model(titleStr);
+    return new Model<String>(titleStr);
   }
 
   /**
@@ -432,7 +432,7 @@ public class Dialog extends ModalWindow {
     this.type = type;
   }
 
-  public Form getForm() {
+  public Form<?> getForm() {
     return form;
   }
 
@@ -442,32 +442,32 @@ public class Dialog extends ModalWindow {
    */
   public void setFormCssClass(String formCssClass) {
     if(form != null) {
-      form.add(new AttributeModifier("class", true, new Model(formCssClass)));
+      form.add(new AttributeModifier("class", true, new Model<String>(formCssClass)));
     }
   }
 
-  public void addOption(String label, OptionSide side, AjaxLink link, String... name) {
+  public void addOption(String label, OptionSide side, AjaxLink<?> link, String... name) {
     link.add(new AttributeModifier("value", true, new SpringStringResourceModel("Dialog." + label)));
-    if(name.length > 0) link.add(new AttributeModifier("name", true, new Model(name[0])));
+    if(name.length > 0) link.add(new AttributeModifier("name", true, new Model<String>(name[0])));
 
     if(side.equals(OptionSide.LEFT)) {
-      link.add(new AttributeAppender("class", new Model("left"), " "));
+      link.add(new AttributeAppender("class", new Model<String>("left"), " "));
       customOptionsLeft.add(link);
     } else {
-      link.add(new AttributeAppender("class", new Model("right"), " "));
+      link.add(new AttributeAppender("class", new Model<String>("right"), " "));
       customOptionsRight.add(link);
     }
   }
 
   public void addSubmitOption(String label, OptionSide side, AjaxButton button, String... name) {
     button.add(new AttributeModifier("value", true, new SpringStringResourceModel("Dialog." + label)));
-    if(name.length > 0) button.add(new AttributeModifier("name", true, new Model(name[0])));
+    if(name.length > 0) button.add(new AttributeModifier("name", true, new Model<String>(name[0])));
 
     if(side.equals(OptionSide.LEFT)) {
-      button.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all left")));
+      button.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all left")));
       customOptionsLeft.add(button);
     } else {
-      button.add(new AttributeAppender("class", new Model("right"), " "));
+      button.add(new AttributeAppender("class", new Model<String>("right"), " "));
       customOptionsRight.add(button);
     }
   }
@@ -480,7 +480,7 @@ public class Dialog extends ModalWindow {
       RepeatingView repeater = new RepeatingView("link");
 
       for(Object option : customOptions) {
-        if(option instanceof AjaxLink) repeater.add((AjaxLink) option);
+        if(option instanceof AjaxLink) repeater.add((AjaxLink<?>) option);
         if(option instanceof AjaxButton) repeater.add((AjaxButton) option);
       }
 

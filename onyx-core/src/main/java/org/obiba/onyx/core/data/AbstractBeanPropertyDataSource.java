@@ -29,6 +29,7 @@ public abstract class AbstractBeanPropertyDataSource implements IDataSource {
 
   private String unit;
 
+  @Override
   public Data getData(Participant participant) {
 
     Object object = getBean(participant);
@@ -70,6 +71,7 @@ public abstract class AbstractBeanPropertyDataSource implements IDataSource {
     return data;
   }
 
+  @Override
   public String getUnit() {
     return unit;
   }
@@ -93,4 +95,9 @@ public abstract class AbstractBeanPropertyDataSource implements IDataSource {
   public String toString() {
     return property;
   }
+
+  public String getProperty() {
+    return property;
+  }
+
 }

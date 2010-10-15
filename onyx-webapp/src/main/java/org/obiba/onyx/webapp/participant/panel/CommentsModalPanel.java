@@ -138,16 +138,16 @@ public abstract class CommentsModalPanel extends Panel {
 
   public abstract void onAddComments(AjaxRequestTarget target);
 
-  private class CommentForm extends Form {
+  private class CommentForm extends Form<Action> {
 
     private static final long serialVersionUID = 1L;
 
     public CommentForm(String id) {
       super(id);
 
-      setModel(new Model(new Action()));
+      setModel(new Model<Action>(new Action()));
 
-      final TextArea newComment = new TextArea("newComment", new PropertyModel(getModel(), "comment"));
+      final TextArea<String> newComment = new TextArea<String>("newComment", new PropertyModel<String>(getModel(), "comment"));
       newComment.setLabel(new ResourceModel("Comment"));
       newComment.add(new RequiredFormFieldBehavior());
       newComment.add(new StringValidator.MaximumLengthValidator(2000));
@@ -160,10 +160,10 @@ public abstract class CommentsModalPanel extends Panel {
 
         private static final long serialVersionUID = 1L;
 
-        protected void onSubmit(AjaxRequestTarget target, Form form) {
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
           // Add new comment to interview.
-          Action comment = (Action) CommentForm.this.getModelObject();
+          Action comment = CommentForm.this.getModelObject();
           comment.setActionType(ActionType.COMMENT);
           comment.setStage(stageName);
 
@@ -180,10 +180,10 @@ public abstract class CommentsModalPanel extends Panel {
           target.addComponent(newComment);
 
           // Display a message confirming that the comment was saved.
-          info(new StringResourceModel("NewCommentAddedConfirmation", this, null, new Object[] { DateModelUtils.getDateTimeModel(new Model(new Date(System.currentTimeMillis()))) }).getString());
+          info(new StringResourceModel("NewCommentAddedConfirmation", this, null, new Object[] { DateModelUtils.getDateTimeModel(new Model<Date>(new Date(System.currentTimeMillis()))) }).getString());
         }
 
-        protected void onError(AjaxRequestTarget target, Form form) {
+        protected void onError(AjaxRequestTarget target, Form<?> form) {
           feedback.setContent(new FeedbackPanel("content"));
           feedback.show(target);
         }
@@ -246,18 +246,16 @@ public abstract class CommentsModalPanel extends Panel {
     }
   }
 
-  private class CommentsDataProvider implements IDataProvider {
+  private class CommentsDataProvider implements IDataProvider<Action> {
 
     private static final long serialVersionUID = 1L;
 
-    Action template;
-
-    public Iterator iterator(int first, int count) {
+    public Iterator<Action> iterator(int first, int count) {
       return commentList.iterator();
     }
 
-    public IModel model(Object object) {
-      return new Model((Action) object);
+    public IModel<Action> model(Action object) {
+      return new Model<Action>(object);
     }
 
     public int size() {

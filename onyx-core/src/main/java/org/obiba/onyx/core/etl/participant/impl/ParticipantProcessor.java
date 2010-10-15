@@ -103,26 +103,25 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview.getStatus() == InterviewStatus.CANCELLED)) {
           log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Interview " + interview.getStatus().toString().toLowerCase() + " => participant update ignored."));
           return null;
-        } else {
+        }
 
-          // Validate appointment date
-          if(!isNewAppointmentDateValid(participantItem)) {
-            log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => participant update ignored."));
+        // Validate appointment date
+        if(!isNewAppointmentDateValid(participantItem)) {
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => participant update ignored."));
+          return null;
+        }
+
+        Appointment appointment = participant.getAppointment();
+        if(appointment == null) {
+          // Use appointment obtained from the list
+          participant.setAppointment(participantItem.getAppointment());
+        } else {
+          // appointment in database exists
+          if(participantItem.getAppointment().getDate().equals(participant.getAppointment().getDate())) {
+            log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date for participant " + participantItem.getAppointment().getDate() + " same in database => participant update ignored."));
             return null;
           }
-
-          Appointment appointment = participant.getAppointment();
-          if(appointment == null) {
-            // Use appointment obtained from the list
-            participant.setAppointment(participantItem.getAppointment());
-          } else {
-            // appointment in database exists
-            if(participantItem.getAppointment().getDate().equals(participant.getAppointment().getDate())) {
-              log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date for participant " + participantItem.getAppointment().getDate() + " same in database => participant update ignored."));
-              return null;
-            }
-            participant.getAppointment().setDate(participantItem.getAppointment().getDate());
-          }
+          participant.getAppointment().setDate(participantItem.getAppointment().getDate());
         }
       }
     }
@@ -194,9 +193,8 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
       if(matchingValue == null) {
         if(attribute.isMandatoryAtEnrollment()) {
           return false;
-        } else {
-          data.setValue("");
         }
+        data.setValue("");
       }
     }
 

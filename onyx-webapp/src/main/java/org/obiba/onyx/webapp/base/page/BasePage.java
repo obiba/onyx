@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.base.page;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -31,12 +32,12 @@ import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.DialogBuilder;
-import org.obiba.onyx.wicket.reusable.PrintableReportPanel;
-import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.obiba.onyx.wicket.reusable.PrintableReportPanel;
+import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware, ReusableDialogProvider {
@@ -70,9 +71,9 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
               private static final long serialVersionUID = 1L;
 
-              public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+              public boolean onCloseButtonClicked(AjaxRequestTarget target1, Status status1) {
                 // Close the print dialog when the user dismisses the success message.
-                reusablePrintDialog.close(target);
+                reusablePrintDialog.close(target1);
                 return true;
               }
 
@@ -98,7 +99,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     reusablePrintDialog.setInitialWidth(50);
     add(reusablePrintDialog);
 
-    ContextImage img = new ContextImage("logo", new Model("images/logo/logo_on_dark.png"));
+    ContextImage img = new ContextImage("logo", new Model<String>("images/logo/logo_on_dark.png"));
     img.setMarkupId("logo");
     img.setOutputMarkupId(true);
 
@@ -119,7 +120,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
         menuBar = new MenuBar("menuBar");
 
         userFullName.setDefaultModel(new Model(OnyxAuthenticatedSession.get().getUser().getFullName() + " - "));
-        currentTime.setDefaultModel(DateModelUtils.getDateTimeModel(new Model(new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss", getLocale())), new Model(new Date())));
+        currentTime.setDefaultModel(DateModelUtils.getDateTimeModel(new Model<DateFormat>(new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss", getLocale())), new Model<Date>(new Date())));
       }
     }
 
@@ -143,6 +144,11 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     return "base-ajax-indicator";
   }
 
+  /**
+   * 
+   * @param language
+   * @param target
+   */
   public void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
     setResponsePage(getPage());
   }

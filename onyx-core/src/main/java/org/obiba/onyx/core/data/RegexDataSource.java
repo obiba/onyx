@@ -56,9 +56,8 @@ public class RegexDataSource extends AbstractDataSourceDataModifier {
     Matcher regexMatcher = regexPattern.matcher(data.getValueAsString());
     if(regexMatcher.matches() && regexMatcher.groupCount() > 0) {
       return new Data(data.getType(), regexMatcher.group(1));
-    } else {
-      return null;
     }
+    return null;
   }
 
   @Override

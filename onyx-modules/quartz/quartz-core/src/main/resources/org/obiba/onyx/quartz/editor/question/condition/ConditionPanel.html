@@ -4,13 +4,15 @@
 	
 	<form wicket:id="form" autocomplete="off">	
 			
-		<a class="obiba-button" wicket:id="addDataSource"><wicket:message key="DataSources.add" /></a>
+		<a class="obiba-button" wicket:id="addQuestionnaireDataSource"><wicket:message key="DataSources.questionnaire.add" /></a> 
+		<br />
+		<span wicket:id="questionnaireDataSources" />
 		
 		<br />
 		
-		<span wicket:id="dataSources" />
-		
+		<a class="obiba-button" wicket:id="addComparingDataSource"><wicket:message key="DataSources.comparing.add" /></a>
 		<br />
+		<span wicket:id="comparingDataSources" />		
 		
 		<div wicket:id="expressionContainer">
 			<table class="keyValueTable" wicket:id="expressionVisibility">

@@ -62,6 +62,7 @@ public class VariableDataSource implements IDataSource {
     this.path = path;
   }
 
+  @Override
   public Data getData(Participant participant) {
     log.debug("Fetching variable data for path: '{}'", path);
     if(participant == null) return null;
@@ -79,6 +80,7 @@ public class VariableDataSource implements IDataSource {
     return getVariableValueSource(table).getValue(valueSet);
   }
 
+  @Override
   public String getUnit() {
     ValueTable table = resolveTable();
     String magmaVariableUnit = getVariableValueSource(table).getVariable().getUnit();
@@ -105,9 +107,8 @@ public class VariableDataSource implements IDataSource {
         }
       }
       throw new IllegalStateException("Could not resolve ValueTable (name: " + tableName + ")");
-    } else {
-      throw new IllegalStateException("Could not resolve ValueTable (path does not contain a table name)");
     }
+    throw new IllegalStateException("Could not resolve ValueTable (path does not contain a table name)");
   }
 
   private void extractPathElements() {

@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.question.condition;
+package org.obiba.onyx.quartz.editor.question.condition.datasource;
 
 import java.io.Serializable;
 
@@ -19,11 +19,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 /**
  *
  */
-public class ConditionDataSource implements Serializable {
+public class QuestionnaireDS implements Serializable, DS {
 
   private static final long serialVersionUID = 1L;
 
-  private int index;
+  private int variable;
 
   private Questionnaire questionnaire;
 
@@ -65,12 +65,13 @@ public class ConditionDataSource implements Serializable {
     this.openAnswerDefinition = openAnswerDefinition;
   }
 
-  public int getIndex() {
-    return index;
+  @Override
+  public int getVariable() {
+    return variable;
   }
 
-  public void setIndex(int index) {
-    this.index = index;
+  public void setVariable(int index) {
+    this.variable = index;
   }
 
 }

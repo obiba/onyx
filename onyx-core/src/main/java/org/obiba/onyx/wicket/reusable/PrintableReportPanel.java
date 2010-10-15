@@ -167,24 +167,17 @@ public class PrintableReportPanel extends Panel {
     if(printableReport.isReady()) {
       if(printableReport.isElectronic()) {
         return new ResourceModel("ready");
-      } else {
-        return new ResourceModel("manual");
       }
-    } else {
-      return new ResourceModel("notReady");
+      return new ResourceModel("manual");
     }
+    return new ResourceModel("notReady");
   }
 
   private boolean isPrintable(IPrintableReport printableReport) {
     if(printableReport.isReady()) {
-      if(printableReport.isElectronic()) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
+      return printableReport.isElectronic();
     }
+    return false;
   }
 
   private String getOddEvenCssClass(int row) {
@@ -207,18 +200,18 @@ public class PrintableReportPanel extends Panel {
     }
   }
 
-  private class StoreModel implements IModel {
+  private class StoreModel implements IModel<Store> {
 
     private static final long serialVersionUID = 1L;
 
     private Store store;
 
-    public Object getObject() {
+    public Store getObject() {
       return store;
     }
 
-    public void setObject(Object object) {
-      this.store = (Store) object;
+    public void setObject(Store object) {
+      this.store = object;
     }
 
     public void detach() {
@@ -301,12 +294,12 @@ public class PrintableReportPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public FormComponent[] getDependentFormComponents() {
+    public FormComponent<?>[] getDependentFormComponents() {
       return null;
     }
 
     @SuppressWarnings("unchecked")
-    public void validate(Form form) {
+    public void validate(Form<?> form) {
       group.updateModel();
 
       List<Store> checkedReports = (List<Store>) group.getModelObject();

@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -49,6 +50,11 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDSPanel;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.DS;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDS;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDSPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -66,7 +72,9 @@ public class ConditionPanel extends Panel {
 
   private final ModalWindow dataSourceWindow;
 
-  private final OnyxEntityList<ConditionDataSource> dataSources;
+  private final OnyxEntityList<QuestionnaireDS> questionnaireDataSources;
+
+  private final OnyxEntityList<ComparingDS> comparingDataSources;
 
   private final Form<Conditions> form;
 
@@ -82,8 +90,8 @@ public class ConditionPanel extends Panel {
 
     dataSourceWindow = new ModalWindow("dataSourceWindow");
     dataSourceWindow.setCssClassName("onyx");
-    dataSourceWindow.setInitialWidth(800);
-    dataSourceWindow.setInitialHeight(300);
+    dataSourceWindow.setInitialWidth(700);
+    dataSourceWindow.setInitialHeight(200);
     dataSourceWindow.setResizable(true);
     add(dataSourceWindow);
 
@@ -94,7 +102,7 @@ public class ConditionPanel extends Panel {
     form.add(expressionContainer);
 
     expressionVisibility = new WebMarkupContainer("expressionVisibility");
-    expressionVisibility.setVisible(conditions.getDataSources().size() > 1);
+    expressionVisibility.setVisible(conditions.getNbDataSources() > 1);
     expressionContainer.add(expressionVisibility);
 
     final TextArea<String> expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
@@ -110,9 +118,9 @@ public class ConditionPanel extends Panel {
         String value = validatable.getValue();
         if(StringUtils.isBlank(value)) return;
         // check if all defined dataSources are used
-        if(conditions.getDataSources().size() > 1) {
+        if(conditions.getNbDataSources() > 1) {
           List<String> ds = new ArrayList<String>();
-          for(int i = 1; i <= conditions.getDataSources().size(); i++) {
+          for(int i = 1; i <= conditions.getNbDataSources(); i++) {
             String variable = "$" + i;
             ds.add(variable);
             if(value.indexOf(variable) < 0) {
@@ -148,36 +156,53 @@ public class ConditionPanel extends Panel {
     expressionVisibility.add(expression);
     expressionVisibility.add(new SimpleFormComponentLabel("expressionLabel", expression));
 
-    SortableDataProvider<ConditionDataSource> dataProvider = new SortableDataProvider<ConditionDataSource>() {
+    SortableDataProvider<QuestionnaireDS> questionnaireDSProvider = new SortableDataProvider<QuestionnaireDS>() {
 
       @Override
-      public Iterator<? extends ConditionDataSource> iterator(int first, int count) {
-        return conditions.getDataSources().iterator();
+      public Iterator<? extends QuestionnaireDS> iterator(int first, int count) {
+        return conditions.getQuestionnaireDataSources().iterator();
       }
 
       @Override
       public int size() {
-        return conditions.getDataSources().size();
+        return conditions.getQuestionnaireDataSources().size();
       }
 
       @Override
-      public IModel<ConditionDataSource> model(ConditionDataSource object) {
-        return new Model<ConditionDataSource>(object);
+      public IModel<QuestionnaireDS> model(QuestionnaireDS object) {
+        return new Model<QuestionnaireDS>(object);
       }
-
     };
 
-    form.add(new AjaxLink<Void>("addDataSource") {
+    SortableDataProvider<ComparingDS> comparingDSProvider = new SortableDataProvider<ComparingDS>() {
+
+      @Override
+      public Iterator<? extends ComparingDS> iterator(int first, int count) {
+        return conditions.getComparingDataSources().iterator();
+      }
+
+      @Override
+      public int size() {
+        return conditions.getComparingDataSources().size();
+      }
+
+      @Override
+      public IModel<ComparingDS> model(ComparingDS object) {
+        return new Model<ComparingDS>(object);
+      }
+    };
+
+    form.add(new AjaxLink<Void>("addQuestionnaireDataSource") {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        dataSourceWindow.setContent(new DataSourcePanel("content", questionModel, questionnaireModel, dataSourceWindow) {
+        dataSourceWindow.setContent(new QuestionnaireDSPanel("content", questionModel, questionnaireModel, dataSourceWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, ConditionDataSource dataSource) {
-            List<ConditionDataSource> list = form.getModelObject().getDataSources();
+          public void onSave(AjaxRequestTarget target1, QuestionnaireDS dataSource) {
+            List<QuestionnaireDS> list = conditions.getQuestionnaireDataSources();
             list.add(dataSource);
-            dataSource.setIndex(list.size());
-            expressionVisibility.setVisible(list.size() > 1);
-            target1.addComponent(dataSources);
+            dataSource.setVariable(conditions.getNbDataSources());
+            expressionVisibility.setVisible(conditions.getNbDataSources() > 1);
+            target1.addComponent(questionnaireDataSources);
             target1.addComponent(expressionContainer);
           }
         });
@@ -185,49 +210,69 @@ public class ConditionPanel extends Panel {
       }
     });
 
-    form.add(dataSources = new OnyxEntityList<ConditionDataSource>("dataSources", dataProvider, new DataSourcesColumnProvider(), new StringResourceModel("DataSources", ConditionPanel.this, null)));
+    form.add(new AjaxLink<Void>("addComparingDataSource") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        dataSourceWindow.setContent(new ComparingDSPanel("content", new Model<ComparingDS>(new ComparingDS()), dataSourceWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target1, ComparingDS dataSource) {
+            List<ComparingDS> list = conditions.getComparingDataSources();
+            list.add(dataSource);
+            dataSource.setVariable(conditions.getNbDataSources());
+            expressionVisibility.setVisible(conditions.getNbDataSources() > 1);
+            target1.addComponent(comparingDataSources);
+            target1.addComponent(expressionContainer);
+          }
+        });
+        dataSourceWindow.show(target);
+      }
+    });
+
+    form.add(questionnaireDataSources = new OnyxEntityList<QuestionnaireDS>("questionnaireDataSources", questionnaireDSProvider, new QuestionnaireDSColumnProvider(), new StringResourceModel("DataSources.questionnaire", ConditionPanel.this, null)));
+
+    form.add(comparingDataSources = new OnyxEntityList<ComparingDS>("comparingDataSources", comparingDSProvider, new ComparingDSColumnProvider(), new StringResourceModel("DataSources.comparing", ConditionPanel.this, null)));
 
   }
 
-  private class DataSourcesColumnProvider implements IColumnProvider<ConditionDataSource>, Serializable {
+  private class QuestionnaireDSColumnProvider implements IColumnProvider<QuestionnaireDS>, Serializable {
 
-    private final List<IColumn<ConditionDataSource>> columns = new ArrayList<IColumn<ConditionDataSource>>();
+    private final List<IColumn<QuestionnaireDS>> columns = new ArrayList<IColumn<QuestionnaireDS>>();
 
-    public DataSourcesColumnProvider() {
-      columns.add(new AbstractColumn<ConditionDataSource>(new StringResourceModel("Variable", ConditionPanel.this, null)) {
+    public QuestionnaireDSColumnProvider() {
+      columns.add(new AbstractColumn<QuestionnaireDS>(new StringResourceModel("Variable", ConditionPanel.this, null)) {
         @Override
-        public void populateItem(Item<ICellPopulator<ConditionDataSource>> cellItem, String componentId, IModel<ConditionDataSource> rowModel) {
-          cellItem.add(new Label(componentId, "$" + rowModel.getObject().getIndex()));
+        public void populateItem(Item<ICellPopulator<QuestionnaireDS>> cellItem, String componentId, IModel<QuestionnaireDS> rowModel) {
+          cellItem.add(new Label(componentId, "$" + rowModel.getObject().getVariable()));
         }
       });
-      columns.add(new PropertyColumn<ConditionDataSource>(new StringResourceModel("Questionnaire", ConditionPanel.this, null), "questionnaire.name"));
-      columns.add(new PropertyColumn<ConditionDataSource>(new StringResourceModel("Question", ConditionPanel.this, null), "question.name"));
-      columns.add(new AbstractColumn<ConditionDataSource>(new StringResourceModel("Category", ConditionPanel.this, null)) {
+      columns.add(new PropertyColumn<QuestionnaireDS>(new StringResourceModel("Questionnaire", ConditionPanel.this, null), "questionnaire.name"));
+      columns.add(new PropertyColumn<QuestionnaireDS>(new StringResourceModel("Question", ConditionPanel.this, null), "question.name"));
+      columns.add(new AbstractColumn<QuestionnaireDS>(new StringResourceModel("Category", ConditionPanel.this, null)) {
         @Override
-        public void populateItem(Item<ICellPopulator<ConditionDataSource>> cellItem, String componentId, IModel<ConditionDataSource> rowModel) {
+        public void populateItem(Item<ICellPopulator<QuestionnaireDS>> cellItem, String componentId, IModel<QuestionnaireDS> rowModel) {
           Category category = rowModel.getObject().getCategory();
           cellItem.add(new Label(componentId, category == null ? new StringResourceModel("Any", ConditionPanel.this, null) : new Model<String>(category.getName())));
         }
       });
-      columns.add(new AbstractColumn<ConditionDataSource>(new StringResourceModel("OpenAnswerDefinition", ConditionPanel.this, null)) {
+      columns.add(new AbstractColumn<QuestionnaireDS>(new StringResourceModel("OpenAnswerDefinition", ConditionPanel.this, null)) {
         @Override
-        public void populateItem(Item<ICellPopulator<ConditionDataSource>> cellItem, String componentId, IModel<ConditionDataSource> rowModel) {
+        public void populateItem(Item<ICellPopulator<QuestionnaireDS>> cellItem, String componentId, IModel<QuestionnaireDS> rowModel) {
           OpenAnswerDefinition openAnswer = rowModel.getObject().getOpenAnswerDefinition();
           cellItem.add(new Label(componentId, openAnswer == null ? "" : openAnswer.getName()));
         }
       });
 
-      columns.add(new HeaderlessColumn<ConditionDataSource>() {
+      columns.add(new HeaderlessColumn<QuestionnaireDS>() {
         @Override
-        public void populateItem(Item<ICellPopulator<ConditionDataSource>> cellItem, String componentId, IModel<ConditionDataSource> rowModel) {
-          cellItem.add(new DataSourceAction(componentId, rowModel));
+        public void populateItem(Item<ICellPopulator<QuestionnaireDS>> cellItem, String componentId, IModel<QuestionnaireDS> rowModel) {
+          cellItem.add(new DataSourceAction<QuestionnaireDS>(componentId, rowModel));
         }
       });
 
     }
 
     @Override
-    public List<IColumn<ConditionDataSource>> getAdditionalColumns() {
+    public List<IColumn<QuestionnaireDS>> getAdditionalColumns() {
       return null;
     }
 
@@ -237,28 +282,99 @@ public class ConditionPanel extends Panel {
     }
 
     @Override
-    public List<IColumn<ConditionDataSource>> getDefaultColumns() {
+    public List<IColumn<QuestionnaireDS>> getDefaultColumns() {
       return columns;
     }
 
     @Override
-    public List<IColumn<ConditionDataSource>> getRequiredColumns() {
+    public List<IColumn<QuestionnaireDS>> getRequiredColumns() {
       return columns;
     }
 
   }
 
-  public class DataSourceAction extends Fragment {
+  private class ComparingDSColumnProvider implements IColumnProvider<ComparingDS>, Serializable {
 
-    public DataSourceAction(String id, final IModel<ConditionDataSource> model) {
-      super(id, "dataSourceAction", ConditionPanel.this, model);
-      add(new AjaxLink<ConditionDataSource>("deleteLink", model) {
+    private final List<IColumn<ComparingDS>> columns = new ArrayList<IColumn<ComparingDS>>();
+
+    public ComparingDSColumnProvider() {
+      columns.add(new AbstractColumn<ComparingDS>(new StringResourceModel("Variable", ConditionPanel.this, null)) {
         @Override
+        public void populateItem(Item<ICellPopulator<ComparingDS>> cellItem, String componentId, IModel<ComparingDS> rowModel) {
+          cellItem.add(new Label(componentId, "$" + rowModel.getObject().getVariable()));
+        }
+      });
+      columns.add(new AbstractColumn<ComparingDS>(new StringResourceModel("Operator", ConditionPanel.this, null)) {
+        @Override
+        public void populateItem(Item<ICellPopulator<ComparingDS>> cellItem, String componentId, IModel<ComparingDS> rowModel) {
+          cellItem.add(new Label(componentId, new ResourceModel("Operator." + rowModel.getObject().getOperator().name())));
+        }
+      });
+      columns.add(new AbstractColumn<ComparingDS>(new StringResourceModel("Type", ConditionPanel.this, null)) {
+        @Override
+        public void populateItem(Item<ICellPopulator<ComparingDS>> cellItem, String componentId, IModel<ComparingDS> rowModel) {
+          cellItem.add(new Label(componentId, WordUtils.capitalizeFully(rowModel.getObject().getType())));
+        }
+      });
+      columns.add(new AbstractColumn<ComparingDS>(new StringResourceModel("Value", ConditionPanel.this, null)) {
+        @Override
+        public void populateItem(Item<ICellPopulator<ComparingDS>> cellItem, String componentId, IModel<ComparingDS> rowModel) {
+          ComparingDS comparingDS = rowModel.getObject();
+          IModel<String> m = ComparingDS.GENDER_TYPE.equals(comparingDS.getType()) ? new ResourceModel("Gender." + comparingDS.getGender().name()) : new Model<String>(comparingDS.getValue());
+          cellItem.add(new Label(componentId, m));
+        }
+      });
+      columns.add(new HeaderlessColumn<ComparingDS>() {
+        @Override
+        public void populateItem(Item<ICellPopulator<ComparingDS>> cellItem, String componentId, IModel<ComparingDS> rowModel) {
+          cellItem.add(new DataSourceAction<ComparingDS>(componentId, rowModel));
+        }
+      });
+
+    }
+
+    @Override
+    public List<IColumn<ComparingDS>> getAdditionalColumns() {
+      return null;
+    }
+
+    @Override
+    public List<String> getColumnHeaderNames() {
+      return null;
+    }
+
+    @Override
+    public List<IColumn<ComparingDS>> getDefaultColumns() {
+      return columns;
+    }
+
+    @Override
+    public List<IColumn<ComparingDS>> getRequiredColumns() {
+      return columns;
+    }
+
+  }
+
+  public class DataSourceAction<T extends DS> extends Fragment {
+
+    public DataSourceAction(String id, final IModel<T> model) {
+      super(id, "dataSourceAction", ConditionPanel.this, model);
+      add(new AjaxLink<T>("deleteLink", model) {
+        @Override
+        @SuppressWarnings({ "unchecked", "null" })
         public void onClick(AjaxRequestTarget target) {
-          List<ConditionDataSource> list = ((Conditions) ConditionPanel.this.getDefaultModelObject()).getDataSources();
-          list.remove(model.getObject());
-          expressionVisibility.setVisible(list.size() > 1);
-          target.addComponent(dataSources);
+          T ds = model.getObject();
+          List<T> list = null;
+          Conditions conditions = form.getModelObject();
+          if(ds instanceof QuestionnaireDS) {
+            list = (List<T>) conditions.getQuestionnaireDataSources();
+            target.addComponent(questionnaireDataSources);
+          } else if(ds instanceof ComparingDS) {
+            list = (List<T>) conditions.getComparingDataSources();
+            target.addComponent(comparingDataSources);
+          }
+          list.remove(ds);
+          expressionVisibility.setVisible(conditions.getNbDataSources() > 1);
           target.addComponent(expressionContainer);
         }
       });

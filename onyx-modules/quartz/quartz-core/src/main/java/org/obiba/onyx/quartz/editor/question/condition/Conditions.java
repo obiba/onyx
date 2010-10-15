@@ -13,6 +13,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
+import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDS;
+
 /**
  *
  */
@@ -20,16 +23,18 @@ public class Conditions implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private List<ConditionDataSource> dataSources = new ArrayList<ConditionDataSource>();
-
   private String expression;
 
-  public List<ConditionDataSource> getDataSources() {
-    return dataSources;
+  private List<QuestionnaireDS> questionnaireDataSources = new ArrayList<QuestionnaireDS>();
+
+  private List<ComparingDS> comparingDataSources = new ArrayList<ComparingDS>();
+
+  public List<QuestionnaireDS> getQuestionnaireDataSources() {
+    return questionnaireDataSources;
   }
 
-  public void setDataSources(List<ConditionDataSource> dataSources) {
-    this.dataSources = dataSources;
+  public void setQuestionnaireDataSources(List<QuestionnaireDS> dataSources) {
+    this.questionnaireDataSources = dataSources;
   }
 
   public String getExpression() {
@@ -38,6 +43,18 @@ public class Conditions implements Serializable {
 
   public void setExpression(String expression) {
     this.expression = expression;
+  }
+
+  public List<ComparingDS> getComparingDataSources() {
+    return comparingDataSources;
+  }
+
+  public void setComparingDataSources(List<ComparingDS> comparingDataSources) {
+    this.comparingDataSources = comparingDataSources;
+  }
+
+  public int getNbDataSources() {
+    return comparingDataSources.size() + questionnaireDataSources.size();
   }
 
 }
