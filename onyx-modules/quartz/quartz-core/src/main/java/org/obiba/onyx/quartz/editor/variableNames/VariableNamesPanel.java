@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.editor.category;
+package org.obiba.onyx.quartz.editor.variableNames;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -30,8 +29,6 @@ import org.apache.wicket.model.util.ListModel;
 public class VariableNamesPanel extends Panel {
 
   private WebMarkupContainer itemsContainer;
-
-  private final FeedbackPanel feedbackPanel;
 
   private final VariableNamesForm variableNamesForm;
 
@@ -53,9 +50,6 @@ public class VariableNamesPanel extends Panel {
         listVariableName.add(new String[] { entry.getKey(), entry.getValue() });
       }
     }
-    feedbackPanel = new FeedbackPanel("feedback");
-    feedbackPanel.setOutputMarkupId(true);
-    add(feedbackPanel);
     add(variableNamesForm = new VariableNamesForm("variableNamesForm", new ListModel<String[]>(listVariableName)));
   }
 
@@ -113,7 +107,7 @@ public class VariableNamesPanel extends Panel {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-              validateAndSubmit(target);
+              VariableNamesForm.this.delegateSubmit(null);
             }
 
           });
@@ -123,7 +117,7 @@ public class VariableNamesPanel extends Panel {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-              validateAndSubmit(target);
+              VariableNamesForm.this.delegateSubmit(null);
             }
           });
 
@@ -135,12 +129,6 @@ public class VariableNamesPanel extends Panel {
 
       }.setReuseItems(true));
 
-    }
-
-    protected void validateAndSubmit(AjaxRequestTarget target) {
-      VariableNamesForm.this.validateFormValidators();
-      VariableNamesForm.this.delegateSubmit(null);
-      target.addComponent(feedbackPanel);
     }
 
     private class AddAjaxButton extends AjaxButton {
@@ -156,7 +144,7 @@ public class VariableNamesPanel extends Panel {
         list.add(new String[] { null, null });
         addListView();
         target.addComponent(itemsContainer);
-        validateAndSubmit(target);
+        VariableNamesForm.this.delegateSubmit(null);
       }
     }
 
@@ -175,7 +163,7 @@ public class VariableNamesPanel extends Panel {
         list.remove(rowToDelete);
         addListView();
         target.addComponent(itemsContainer);
-        validateAndSubmit(target);
+        VariableNamesForm.this.delegateSubmit(null);
       }
     }
   }

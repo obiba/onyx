@@ -11,10 +11,8 @@ package org.obiba.onyx.quartz.editor.category;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -31,7 +29,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -39,13 +36,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.EditedOpenAnswerDefinition;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerDefinitionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.variableNames.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -65,6 +63,9 @@ public class CategoryPropertiesPanel extends Panel {
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
+
   private final VariableNamesPanel variableNamesPanel;
 
   private final FeedbackPanel feedbackPanel;
@@ -77,7 +78,7 @@ public class CategoryPropertiesPanel extends Panel {
 
   private final IModel<EditedQuestionnaire> questionnaireModel;
 
-  private ListModel<LocaleProperties> localePropertiesModelCategory;
+  private ListModel<LocaleProperties> localePropertiesModelCategory = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
 
   private ListModel<LocaleProperties> localePropertiesModelQuestionCategory;
 
@@ -92,41 +93,11 @@ public class CategoryPropertiesPanel extends Panel {
     add(form = new Form<EditedQuestionCategory>("form", (IModel<EditedQuestionCategory>) getDefaultModel()));
     final Category category = form.getModelObject().getElement().getCategory();
 
-    List<LocaleProperties> listLocalePropertiesQuestionCategory = new ArrayList<LocaleProperties>();
-    for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, model);
-      List<String> values = new ArrayList<String>();
-      for(String property : localeProperties.getKeys()) {
-        if(StringUtils.isNotBlank(model.getObject().getName())) {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
-          if(bundle != null) {
-            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale));
-          }
-        }
-      }
-      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
-      listLocalePropertiesQuestionCategory.add(localeProperties);
-    }
-    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(listLocalePropertiesQuestionCategory);
+    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
-    List<LocaleProperties> listLocalePropertiesCategory = new ArrayList<LocaleProperties>();
     if(QuestionnaireFinder.getInstance(questionnaire).findSharedCategories().contains(category)) {
-      for(Locale locale : questionnaire.getLocales()) {
-        LocaleProperties localeProperties = new LocaleProperties(locale, model);
-        List<String> values = new ArrayList<String>();
-        for(String property : localeProperties.getKeys()) {
-          if(StringUtils.isNotBlank(model.getObject().getName())) {
-            QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
-            if(bundle != null) {
-              values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject().getCategory(), property, new Object[0], locale));
-            }
-          }
-        }
-        localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
-        listLocalePropertiesCategory.add(localeProperties);
-      }
+      localePropertiesModelCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(new Model<Category>(model.getObject().getCategory()), questionnaireModel));
     }
-    localePropertiesModelCategory = new ListModel<LocaleProperties>(listLocalePropertiesCategory);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

@@ -1,0 +1,13 @@
+a.removeLink{
+	background-image:url(./delete.png);
+	width: 16px;
+	height: 16px;	
+	border: none;
+	display: block;
+}
+button.addButton{
+	background-image:url(./add.png);
+	width: 16px;
+	height: 16px;
+	border: none;
+}

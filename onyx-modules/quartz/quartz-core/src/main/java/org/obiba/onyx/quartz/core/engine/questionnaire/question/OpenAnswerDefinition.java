@@ -138,6 +138,10 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
   }
 
+  public void clearDataValidators() {
+    if(validators != null) validators.clear();
+  }
+
   public List<ComparingDataSource> getValidationDataSources() {
     return validationDataSources != null ? validationDataSources : (validationDataSources = new ArrayList<ComparingDataSource>());
   }

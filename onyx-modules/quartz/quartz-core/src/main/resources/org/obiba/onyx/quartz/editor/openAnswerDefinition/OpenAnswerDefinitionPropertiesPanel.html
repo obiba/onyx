@@ -41,34 +41,40 @@
 				<td class="keyValueTableValueOdd"><div wicket:id="variableNamesPanel" /></td>
 			</tr>
 		</table>
-		
-		<fieldset>
-			<wicket:container wicket:id="listViewDataValidators">
-				<div wicket:id="validatorItem" />
-			</wicket:container>
-		</fieldset>
-		
+			<fieldset>
+				<legend><wicket:message key="Validators" /></legend>
+				<div wicket:id="basicValidatorContainer">
+					<table>
+						<tr>
+							<td valign="top" class="keyValueTableKey"><label wicket:id="maximumValidatorLabel"></label></td>
+							<td class="keyValueTableValueOdd">
+								<input wicket:id="maximumValidatorCheckbox" type="checkbox" /> 
+								<input wicket:id="maximumValidatorValueTextField" type="text" size="2" />
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" class="keyValueTableKey"><label wicket:id="minimumValidatorLabel"></label></td>
+							<td class="keyValueTableValueOdd">
+								<input wicket:id="minimumValidatorCheckbox" type="checkbox" /> 
+								<input wicket:id="minimumValidatorValueTextField" type="text" size="2" />
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" class="keyValueTableKey"><label wicket:id="rangeValidatorLabel"></label></td>
+							<td class="keyValueTableValueOdd">
+								<input wicket:id="rangeValidatorCheckbox" type="checkbox" /> 
+								<input wicket:id="rangeMinValidatorValueTextField" type="text" size="2" />
+								<input wicket:id="rangeMaxValidatorValueTextField" type="text" size="2" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</fieldset>
 		<div class="modal-footer">
 			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
 			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
 		</div>				
 	
 	</form>		
-		
-	<wicket:fragment wicket:id="fragmentValidator">
-		<table>
-			<tr>
-				<td>
-					<input wicket:id="wantedValidator" type="checkbox" />
-					<label wicket:id="labelValidator" for="wantedValidator" />
-				</td>
-				<wicket:container wicket:id="listViewValues">
-					<td>
-						<input wicket:id="valueItem" type="text"/>
-					</td>
-				</wicket:container>
-			</tr>
-		</table>
-	</wicket:fragment>
 				
 </wicket:panel>

@@ -9,32 +9,26 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswerDefinition;
 
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -43,28 +37,31 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
-import org.obiba.onyx.quartz.editor.category.VariableNamesPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.variableNames.VariableNamesPanel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.thoughtworks.xstream.converters.ConversionException;
 
 @SuppressWarnings("serial")
 public class OpenAnswerDefinitionPropertiesPanel extends Panel {
@@ -72,7 +69,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private QuestionnaireBundleManager questionnaireBundleManager;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
@@ -85,35 +82,32 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
   private final VariableNamesPanel variableNamesPanel;
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private List<Class<? extends IValidator>> iValidatorsAvailable = Arrays.asList(MaximumValidator.class, MinimumValidator.class, RangeValidator.class);
-
   private ListModel<LocaleProperties> localePropertiesModel;
 
   private IModel<EditedQuestionnaire> questionnaireModel;
 
+  private AjaxCheckBox maximumValidatorCheckbox;
+
+  private AjaxCheckBox minimumValidatorCheckbox;
+
+  private AjaxCheckBox rangeValidatorCheckbox;
+
+  private TextField<String> maximumValidatorValueTextField;
+
+  private TextField<String> minimumValidatorValueTextField;
+
+  private TextField<String> rangeMinValidatorValueTextField;
+
+  private TextField<String> rangeMaxValidatorValueTextField;
+
+  private DropDownChoice<DataType> dataTypeDropDownChoice;
+
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedOpenAnswerDefinition>(new EditedOpenAnswerDefinition(model.getObject())));
 
-    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
     this.questionnaireModel = questionnaireModel;
 
-    Questionnaire questionnaire = questionnaireModel.getObject().getElement();
-    for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, model);
-      List<String> values = new ArrayList<String>();
-      for(String property : localeProperties.getKeys()) {
-        if(StringUtils.isNotBlank(model.getObject().getName())) {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
-          if(bundle != null) {
-            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, model.getObject(), property, new Object[0], locale));
-          }
-        }
-      }
-      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
-      listLocaleProperties.add(localeProperties);
-    }
-    localePropertiesModel = new ListModel<LocaleProperties>(listLocaleProperties);
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -131,10 +125,29 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
     form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<OpenAnswerDefinition>(form.getModel(), "element"), localePropertiesModel));
 
-    DropDownChoice<DataType> dataTypeDropDownChoice = new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "element.dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>());
+    DataType dataType = form.getModelObject().getElement().getDataType();
+    final boolean isTextType = (dataType == null ? false : dataType.equals(DataType.TEXT));
+
+    final WebMarkupContainer validatorContainer = new WebMarkupContainer("basicValidatorContainer");
+    validatorContainer.setOutputMarkupPlaceholderTag(true);
+    form.add(validatorContainer);
+
+    dataTypeDropDownChoice = new DropDownChoice<DataType>("dataTypeDropDownChoice", new PropertyModel<DataType>(form.getModel(), "element.dataType"), Arrays.asList(DataType.values()), new ChoiceRenderer<DataType>());
     dataTypeDropDownChoice.setLabel(new ResourceModel("DataType"));
-    form.add(dataTypeDropDownChoice);
+    dataTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        DataType dropDownChoiceModelObject2 = dataTypeDropDownChoice.getModelObject();
+        validatorContainer.setVisible(dropDownChoiceModelObject2 == null ? false : (!dropDownChoiceModelObject2.equals(DataType.BOOLEAN) && !dropDownChoiceModelObject2.equals(DataType.DATA)));
+        target.addComponent(validatorContainer);
+      }
+    });
     form.add(new SimpleFormComponentLabel("dataTypeLabel", dataTypeDropDownChoice));
+    form.add(dataTypeDropDownChoice);
+
+    DataType dropDownChoiceModelObject = dataTypeDropDownChoice.getModelObject();
+    validatorContainer.setVisible(dropDownChoiceModelObject == null ? false : (!dropDownChoiceModelObject.equals(DataType.BOOLEAN) && !dropDownChoiceModelObject.equals(DataType.DATA)));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(form.getModel(), "element.required"));
     requiredCheckBox.setLabel(new ResourceModel("Required2"));
@@ -147,7 +160,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     form.add(new SimpleFormComponentLabel("unitLabel", unitTextField));
 
     ValueMap uiArgumentsValueMap = form.getModelObject().getElement().getUIArgumentsValueMap();
-    Integer size = Integer.MIN_VALUE;
+    Integer size = null;
     if(uiArgumentsValueMap != null && uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS) != null) {
       size = (Integer) uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS);
     }
@@ -165,23 +178,128 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     };
     form.add(new SimpleFormComponentLabel("sizeLabel", sizeTextFieldForUIArguments), specifySize, sizeTextFieldForUIArguments);
 
-    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getElement().getVariableNames()));
-
-    ListView<Class<? extends IValidator>> listViewValidator = new ListView<Class<? extends IValidator>>("listViewDataValidators", iValidatorsAvailable) {
+    // MAXIMUM VALIDATOR
+    Collection<IDataValidator> maximumDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator>() {
 
       @Override
-      protected void populateItem(ListItem<Class<? extends IValidator>> item) {
-        try {
-          Constructor<?> constructor = iValidatorsAvailable.get(item.getIndex()).getConstructors()[0];
-          int nbParameters = constructor.getParameterTypes().length;
-          IValidator validator = (IValidator) constructor.newInstance(new Object[nbParameters]);
-          item.add(new ValidatorFragment("validatorItem", new Model(new ValidatorObject(false, new DataValidator(validator, null), new Integer[nbParameters]))));
-        } catch(Exception e) {
-          throw new RuntimeException(e);
+      public boolean apply(IDataValidator input) {
+        if(isTextType) {
+          return (input.getValidator() instanceof StringValidator.MaximumLengthValidator);
         }
+        return (input.getValidator() instanceof MaximumValidator);
+      }
+    });
+    String maximumValidatorValue = null;
+    if(!maximumDataValidators.isEmpty()) {
+      if(isTextType) {
+        maximumValidatorValue = String.valueOf(((StringValidator.MaximumLengthValidator) (maximumDataValidators.iterator().next()).getValidator()).getMaximum());
+      } else {
+        maximumValidatorValue = String.valueOf(((MaximumValidator<String>) (maximumDataValidators.iterator().next()).getValidator()).getMaximum());
+      }
+    }
+    maximumValidatorValueTextField = new TextField<String>("maximumValidatorValueTextField", new Model<String>(maximumValidatorValue), String.class);
+    maximumValidatorValueTextField.setOutputMarkupPlaceholderTag(true);
+    maximumValidatorValueTextField.setVisible(!maximumDataValidators.isEmpty());
+    maximumValidatorValueTextField.setRequired(!maximumDataValidators.isEmpty());
+    maximumValidatorCheckbox = new AjaxCheckBox("maximumValidatorCheckbox", new Model<Boolean>(!maximumDataValidators.isEmpty())) {
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        maximumValidatorValueTextField.setVisible(this.getModelObject());
+        maximumValidatorValueTextField.setRequired(this.getModelObject());
+        target.addComponent(maximumValidatorValueTextField);
       }
     };
-    form.add(listViewValidator);
+    maximumValidatorCheckbox.setLabel(new ResourceModel("MaximumValidator"));
+    validatorContainer.add(new SimpleFormComponentLabel("maximumValidatorLabel", maximumValidatorCheckbox), maximumValidatorCheckbox, maximumValidatorValueTextField);
+
+    // MINIMUM VALIDATOR
+    Collection<IDataValidator> minimumDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator>() {
+
+      @Override
+      public boolean apply(IDataValidator input) {
+        if(isTextType) {
+          return input.getValidator() instanceof StringValidator.MinimumLengthValidator;
+        }
+        return input.getValidator() instanceof MinimumValidator;
+      }
+    });
+    String minimumValidatorValue = null;
+    if(!minimumDataValidators.isEmpty()) {
+      if(isTextType) {
+        minimumValidatorValue = String.valueOf(((StringValidator.MinimumLengthValidator) (minimumDataValidators.iterator().next()).getValidator()).getMinimum());
+      } else {
+        minimumValidatorValue = String.valueOf(((MinimumValidator<String>) (minimumDataValidators.iterator().next()).getValidator()).getMinimum());
+      }
+    }
+    minimumValidatorValueTextField = new TextField<String>("minimumValidatorValueTextField", new Model<String>(minimumValidatorValue), String.class);
+    minimumValidatorValueTextField.setOutputMarkupPlaceholderTag(true);
+    minimumValidatorValueTextField.setVisible(!minimumDataValidators.isEmpty());
+    minimumValidatorValueTextField.setRequired(!minimumDataValidators.isEmpty());
+    minimumValidatorCheckbox = new AjaxCheckBox("minimumValidatorCheckbox", new Model<Boolean>(!minimumDataValidators.isEmpty())) {
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        minimumValidatorValueTextField.setVisible(this.getModelObject());
+        minimumValidatorValueTextField.setRedirect(this.getModelObject());
+        target.addComponent(minimumValidatorValueTextField);
+      }
+    };
+    minimumValidatorCheckbox.setLabel(new ResourceModel("MinimumValidator"));
+    validatorContainer.add(new SimpleFormComponentLabel("minimumValidatorLabel", minimumValidatorCheckbox), minimumValidatorCheckbox, minimumValidatorValueTextField);
+
+    // RANGE VALIDATOR
+    Collection<IDataValidator> rangeDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator>() {
+
+      @Override
+      public boolean apply(IDataValidator input) {
+        if(form.getModelObject().getElement().getDataType().equals(DataType.TEXT)) {
+          return input.getValidator() instanceof StringValidator.LengthBetweenValidator;
+        }
+        return input.getValidator() instanceof RangeValidator;
+      }
+    });
+    String rangeMinValidatorValue = null;
+    String rangeMaxValidatorValue = null;
+    if(!rangeDataValidators.isEmpty()) {
+      if(isTextType) {
+        StringValidator.LengthBetweenValidator rangeValidator = (StringValidator.LengthBetweenValidator) (rangeDataValidators.iterator().next()).getValidator();
+        rangeMinValidatorValue = String.valueOf(rangeValidator.getMinimum());
+        rangeMaxValidatorValue = String.valueOf(rangeValidator.getMaximum());
+      } else {
+        RangeValidator<String> rangeValidator = (RangeValidator<String>) (rangeDataValidators.iterator().next()).getValidator();
+        rangeMinValidatorValue = String.valueOf(rangeValidator.getMinimum());
+        rangeMaxValidatorValue = String.valueOf(rangeValidator.getMaximum());
+      }
+    }
+    rangeMinValidatorValueTextField = new TextField<String>("rangeMinValidatorValueTextField", new Model<String>(rangeMinValidatorValue), String.class);
+    rangeMaxValidatorValueTextField = new TextField<String>("rangeMaxValidatorValueTextField", new Model<String>(rangeMaxValidatorValue), String.class);
+
+    rangeMinValidatorValueTextField.setOutputMarkupPlaceholderTag(true);
+    rangeMaxValidatorValueTextField.setOutputMarkupPlaceholderTag(true);
+
+    rangeMinValidatorValueTextField.setVisible(!rangeDataValidators.isEmpty());
+    rangeMaxValidatorValueTextField.setVisible(!rangeDataValidators.isEmpty());
+
+    rangeMinValidatorValueTextField.setRequired(!rangeDataValidators.isEmpty());
+    rangeMaxValidatorValueTextField.setRequired(!rangeDataValidators.isEmpty());
+
+    rangeValidatorCheckbox = new AjaxCheckBox("rangeValidatorCheckbox", new Model<Boolean>(!rangeDataValidators.isEmpty())) {
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        rangeMinValidatorValueTextField.setVisible(this.getModelObject());
+        rangeMaxValidatorValueTextField.setVisible(this.getModelObject());
+        rangeMinValidatorValueTextField.setRequired(this.getModelObject());
+        rangeMaxValidatorValueTextField.setRequired(this.getModelObject());
+        target.addComponent(rangeMinValidatorValueTextField);
+        target.addComponent(rangeMaxValidatorValueTextField);
+      }
+    };
+    rangeValidatorCheckbox.setLabel(new ResourceModel("RangeValidator"));
+    validatorContainer.add(new SimpleFormComponentLabel("rangeValidatorLabel", rangeValidatorCheckbox), rangeValidatorCheckbox, rangeMinValidatorValueTextField, rangeMaxValidatorValueTextField);
+
+    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getElement().getVariableNames()));
 
     form.add(new AjaxButton("save", form) {
       @Override
@@ -205,72 +323,93 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
-  public class ValidatorFragment extends Fragment {
-
-    private List<TextField<Integer>> valuesTextFields;
-
-    public ValidatorFragment(String id, IModel<ValidatorObject> validatorModel) {
-      super(id, "fragmentValidator", OpenAnswerDefinitionPropertiesPanel.this, validatorModel);
-      add(new CheckBox("wantedValidator", new Model<Boolean>(validatorModel.getObject().isWantThisValidator())));
-      add(new Label("labelValidator", ClassUtils.getShortClassName(validatorModel.getObject().getDataValidator().getValidator().getClass())));
-      add(new ListView<Integer>("listViewValues", new ListModel<Integer>(Arrays.asList(validatorModel.getObject().getValues()))) {
-
-        @Override
-        protected void populateItem(ListItem<Integer> item) {
-          AttributeModifier attributeModifier = new AttributeModifier("size", true, new Model<Integer>(2));
-          PropertyModel<Integer> propertyModel = new PropertyModel<Integer>(getModelObject(), "[" + item.getIndex() + "]");
-          item.add(new TextField<Integer>("valueItem", propertyModel, Integer.class).add(attributeModifier));
-        }
-      });
-    }
-  }
-
-  public class ValidatorObject implements Serializable {
-
-    private boolean wantThisValidator;
-
-    private DataValidator dataValidator;
-
-    private Integer values[];
-
-    public ValidatorObject(boolean wantThisValidator, DataValidator dataValidator, Integer values[]) {
-      this.wantThisValidator = wantThisValidator;
-      this.dataValidator = dataValidator;
-      this.values = values;
-    }
-
-    public boolean isWantThisValidator() {
-      return wantThisValidator;
-    }
-
-    public void setWantThisValidator(boolean wantThisValidator) {
-      this.wantThisValidator = wantThisValidator;
-    }
-
-    public DataValidator getDataValidator() {
-      return dataValidator;
-    }
-
-    public void setDataValidator(DataValidator dataValidator) {
-      this.dataValidator = dataValidator;
-    }
-
-    public Integer[] getValues() {
-      return values;
-    }
-
-    public void setValues(Integer[] values) {
-      this.values = values;
-    }
-
-  }
-
   public void onSave(AjaxRequestTarget target, EditedOpenAnswerDefinition editedOpenAnswerDefinition) {
     editedOpenAnswerDefinition.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
-    editedOpenAnswerDefinition.getElement().clearVariableNames();
+    OpenAnswerDefinition openAnswerDefinition = editedOpenAnswerDefinition.getElement();
+    openAnswerDefinition.clearVariableNames();
     for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
-      editedOpenAnswerDefinition.getElement().addVariableName(entries.getKey(), entries.getValue());
+      openAnswerDefinition.addVariableName(entries.getKey(), entries.getValue());
     }
+
+    openAnswerDefinition.clearDataValidators();
+    String max = maximumValidatorValueTextField.getModelObject();
+    String min = minimumValidatorValueTextField.getModelObject();
+    String rangeMin = rangeMinValidatorValueTextField.getModelObject();
+    String rangeMax = rangeMaxValidatorValueTextField.getModelObject();
+    switch(dataTypeDropDownChoice.getModelObject()) {
+    case INTEGER: {
+      if(maximumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new MaximumValidator<Long>(Long.parseLong(max)), DataType.INTEGER);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(minimumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new MinimumValidator<Long>(Long.parseLong(min)), DataType.INTEGER);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(rangeValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new RangeValidator<Long>(Long.parseLong(rangeMin), Long.parseLong(rangeMax)), DataType.INTEGER);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      break;
+    }
+    case DECIMAL: {
+      if(maximumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new MaximumValidator<Double>(Double.parseDouble(max)), DataType.DECIMAL);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(minimumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new MinimumValidator<Double>(Double.parseDouble(min)), DataType.DECIMAL);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(rangeValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new RangeValidator<Double>(Double.parseDouble(rangeMin), Double.parseDouble(rangeMax)), DataType.DECIMAL);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      break;
+    }
+    case DATE: {
+      if(maximumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(DateValidator.maximum(parseDate(max)), DataType.DECIMAL);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(minimumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(DateValidator.minimum(parseDate(min)), DataType.DECIMAL);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(rangeValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(DateValidator.range(parseDate(rangeMin), parseDate(rangeMax)), DataType.DECIMAL);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      break;
+    }
+    case TEXT: {
+      if(maximumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new StringValidator.MaximumLengthValidator(Integer.parseInt(max)), DataType.TEXT);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(minimumValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new StringValidator.MinimumLengthValidator(Integer.parseInt(min)), DataType.TEXT);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      if(rangeValidatorCheckbox.getModelObject()) {
+        DataValidator dataValidator = new DataValidator(new StringValidator.LengthBetweenValidator(Integer.parseInt(rangeMin), Integer.parseInt(rangeMax)), DataType.TEXT);
+        openAnswerDefinition.addDataValidator(dataValidator);
+      }
+      break;
+    }
+    }
+  }
+
+  protected Date parseDate(String dateString) {
+    SimpleDateFormat[] formats = new SimpleDateFormat[] { new SimpleDateFormat("yyyy-MM-dd"), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S z") };
+    for(SimpleDateFormat sdf : formats) {
+      try {
+        return sdf.parse(dateString);
+      } catch(ParseException e) {
+        // Ignore, try the next format if any
+      }
+    }
+    throw new ConversionException("Cannot parse date '" + dateString + "'");
   }
 
   public void persist(AjaxRequestTarget target) {
