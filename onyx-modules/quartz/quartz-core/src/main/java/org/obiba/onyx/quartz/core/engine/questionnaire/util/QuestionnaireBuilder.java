@@ -252,7 +252,6 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   public void setSimplifiedUI() {
     setDefaultPageUI(SimplifiedPageLayoutFactory.class);
     setDefaultQuestionUI(SimplifiedQuestionPanelFactory.class);
-
     setPropertyKeyProvider(new SimplifiedUIPropertyKeyProviderImpl());
   }
 

@@ -30,8 +30,9 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -135,10 +136,20 @@ public class QuestionnairePropertiesPanel extends Panel {
     form.add(version);
     form.add(new SimpleFormComponentLabel("versionLabel", version));
 
-    CheckBox touchScreen = new CheckBox("touchScreen", new PropertyModel<Boolean>(form.getModel(), "touchScreen"));
-    touchScreen.setLabel(new ResourceModel("TouchScreen"));
-    form.add(touchScreen);
-    form.add(new SimpleFormComponentLabel("touchScreenLabel", touchScreen));
+    RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "element.uiType"));
+    uiType.setLabel(new ResourceModel("UIType"));
+    uiType.setRequired(true);
+    form.add(uiType);
+
+    Radio<String> standardUiType = new Radio<String>("standard", new Model<String>(Questionnaire.STANDARD_UI));
+    standardUiType.setLabel(new ResourceModel("UIType.standard"));
+    uiType.add(standardUiType);
+    uiType.add(new SimpleFormComponentLabel("standardLabel", standardUiType));
+
+    Radio<String> simplifiedUiType = new Radio<String>("simplified", new Model<String>(Questionnaire.SIMPLIFIED_UI));
+    simplifiedUiType.setLabel(new ResourceModel("UIType.simplified"));
+    uiType.add(simplifiedUiType);
+    uiType.add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
 
     listLocaleModel = new ListModel<Locale>(new ArrayList<Locale>(questionnaire.getLocales()));
 

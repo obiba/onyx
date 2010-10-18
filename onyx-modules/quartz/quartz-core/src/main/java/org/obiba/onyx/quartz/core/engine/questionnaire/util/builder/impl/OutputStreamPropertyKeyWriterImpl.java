@@ -37,23 +37,28 @@ public class OutputStreamPropertyKeyWriterImpl implements IPropertyKeyWriter {
     }
   }
 
+  @Override
   public void endBloc() {
     printWriter.println();
   }
 
+  @Override
   public void write(String key, String value) {
     printWriter.println(key + "=" + value);
   }
 
+  @Override
   public void end() {
     printWriter.flush();
     printWriter.close();
   }
 
+  @Override
   public Properties getReference() {
     return language;
   }
 
+  @Override
   public void writeComment(String... comments) {
     for(String comment : comments) {
       printWriter.println("## " + comment);

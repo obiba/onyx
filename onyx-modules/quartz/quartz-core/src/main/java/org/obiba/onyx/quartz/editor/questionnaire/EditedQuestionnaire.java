@@ -19,18 +19,8 @@ public class EditedQuestionnaire extends EditedElement<Questionnaire> {
 
   private static final long serialVersionUID = 1L;
 
-  private boolean touchScreen;
-
   public EditedQuestionnaire(Questionnaire element) {
     super(element);
-  }
-
-  public boolean isTouchScreen() {
-    return touchScreen;
-  }
-
-  public void setTouchScreen(boolean touchScreen) {
-    this.touchScreen = touchScreen;
   }
 
 }

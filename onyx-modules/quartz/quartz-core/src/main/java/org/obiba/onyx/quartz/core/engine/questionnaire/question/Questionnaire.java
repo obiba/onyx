@@ -21,6 +21,10 @@ public class Questionnaire implements IHasSection {
 
   private static final long serialVersionUID = -9079010396321478385L;
 
+  public static final String STANDARD_UI = "standard";
+
+  public static final String SIMPLIFIED_UI = "simplified";
+
   private String name;
 
   private String version;
@@ -31,6 +35,8 @@ public class Questionnaire implements IHasSection {
 
   private List<Page> pages;
 
+  private String uiType;
+
   private transient QuestionnaireCache questionnaireCache;
 
   public Questionnaire(String name, String version) {
@@ -38,6 +44,7 @@ public class Questionnaire implements IHasSection {
     setVersion(version);
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -119,10 +126,17 @@ public class Questionnaire implements IHasSection {
     }
   }
 
+  public String getUiType() {
+    return uiType;
+  }
+
+  public void setUiType(String uiType) {
+    this.uiType = uiType;
+  }
+
   //
   // Cache
   //
-
   public QuestionnaireCache getQuestionnaireCache() {
     return questionnaireCache;
   }
@@ -134,7 +148,7 @@ public class Questionnaire implements IHasSection {
   //
   // ILocalizable
   //
-
+  @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);
   }

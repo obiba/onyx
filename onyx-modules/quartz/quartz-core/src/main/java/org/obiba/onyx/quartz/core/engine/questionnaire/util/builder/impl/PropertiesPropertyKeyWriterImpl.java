@@ -46,20 +46,25 @@ public class PropertiesPropertyKeyWriterImpl implements IPropertyKeyWriter {
     return properties;
   }
 
+  @Override
   public void endBloc() {
   }
 
+  @Override
   public void write(String key, String value) {
     properties.put(key, value);
   }
 
+  @Override
   public void end() {
   }
 
+  @Override
   public Properties getReference() {
     return language;
   }
 
+  @Override
   public void writeComment(String... comments) {
   }
 

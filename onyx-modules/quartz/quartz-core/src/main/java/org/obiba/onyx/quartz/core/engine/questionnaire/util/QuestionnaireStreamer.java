@@ -63,6 +63,7 @@ public class QuestionnaireStreamer {
     xstream.alias("questionnaire", Questionnaire.class);
     xstream.useAttributeFor(Questionnaire.class, "name");
     xstream.useAttributeFor(Questionnaire.class, "version");
+    xstream.useAttributeFor(Questionnaire.class, "uiType");
 
     xstream.alias("section", Section.class);
     xstream.useAttributeFor(Section.class, "name");

@@ -36,11 +36,12 @@ public class QuestionnairePersistenceUtils {
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   public QuestionnaireBuilder createBuilder(EditedQuestionnaire editedQuestionnaire) {
-    QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(editedQuestionnaire.getElement());
-    if(editedQuestionnaire.isTouchScreen()) {
-      builder.setSimplifiedUI();
-    } else {
+    Questionnaire questionnaire = editedQuestionnaire.getElement();
+    QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);
+    if(Questionnaire.STANDARD_UI.equals(questionnaire.getUiType())) {
       builder.setStandardUI();
+    } else if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
+      builder.setSimplifiedUI();
     }
     return builder;
   }
