@@ -95,6 +95,7 @@
 .help {
 	padding:0.4167em;
 	margin-top:0.4167em;
+	margin-bottom:0.4167em;
 	background-color:#F0F0F0;
 	border:0.0833em solid #BBBBBB;
 }
@@ -122,11 +123,11 @@
 }
 
 .categories {
-	//padding-left:1.2500em;
+	/*padding-left:1.2500em;
 	padding-top:0.8333em;
 	padding-bottom:0.2500em;
-	/*border-top:0.0833em solid #C65F02;*/
-	margin-top: 0.5833em;
+	border-top:0.0833em solid #C65F02;
+	margin-top: 0.5833em;*/
 }
 
 .categories > .questions .categories {
@@ -167,6 +168,10 @@ table.array {
 	border-spacing:0;
 }
 
+table.array tr.ui-widget-header {
+	background:none repeat scroll 0 0 #FFFFFF;
+}
+
 table.array tr.ui-widget-header th.obiba-quartz-category {
 	color:#666666;
 	padding:0.5000em 0.8333em 0.8333em;
@@ -181,6 +186,7 @@ table.array tr.even {
 	padding-left:0.4167em;
 	padding-right:0.4167em;
 	text-align:left;
+	
 }
 
 table.array tr.odd {
