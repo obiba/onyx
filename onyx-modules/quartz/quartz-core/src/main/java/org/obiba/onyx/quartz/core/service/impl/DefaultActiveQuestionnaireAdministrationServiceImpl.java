@@ -38,6 +38,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveQuestionnaireAdministrationServiceImpl.class);
 
+  private boolean questionnaireDevelopmentMode = false;
+
   protected ActiveInterviewService activeInterviewService;
 
   private Questionnaire currentQuestionnaire;
@@ -49,6 +51,16 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   private INavigationStrategy navigationStrategy;
 
   private Page currentPage;
+
+  @Override
+  public boolean isQuestionnaireDevelopmentMode() {
+    return questionnaireDevelopmentMode;
+  }
+
+  @Override
+  public void setQuestionnaireDevelopmentMode(boolean mode) {
+    questionnaireDevelopmentMode = mode;
+  }
 
   public Questionnaire getQuestionnaire() {
     return currentQuestionnaire;
@@ -63,6 +75,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public Locale getLanguage() {
+    if(questionnaireDevelopmentMode) return defaultLanguage;
+
     Locale language = currentLanguage;
 
     if(currentLanguage == null) {
@@ -71,10 +85,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
         currentLanguage = currentQuestionnaireParticipant.getLocale();
         language = currentLanguage;
       }
+    }
 
-      if(currentLanguage == null) {
-        language = defaultLanguage;
-      }
+    if(language == null) {
+      language = defaultLanguage;
     }
 
     return language;
@@ -86,6 +100,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public QuestionnaireParticipant start(Participant participant, Locale language) {
     currentLanguage = null;
+    questionnaireDevelopmentMode = false;
 
     QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
@@ -213,6 +228,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public Page resumePage() {
+    questionnaireDevelopmentMode = false;
     currentPage = navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
     return currentPage;
   }

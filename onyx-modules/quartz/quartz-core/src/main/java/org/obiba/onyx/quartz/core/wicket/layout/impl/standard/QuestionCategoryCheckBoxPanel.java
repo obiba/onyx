@@ -75,39 +75,44 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
 
     // previous answer or default selection
     QuestionCategory questionCategory = (QuestionCategory) getDefaultModelObject();
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
-
     QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(selectionsModel, questionCategoryModel);
-    if(previousAnswer != null) selectionModel.select();
+
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      CategoryAnswer previousAnswer = previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
+      if(previousAnswer != null) selectionModel.select();
+    }
 
     checkbox = new CheckBox("checkbox", selectionModel);
     checkbox.setLabel(new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
+
     // persist selection on change event
     // and make sure there is no active open field previously selected
-    checkbox.add(new AjaxEventBehavior("onchange") {
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      checkbox.add(new AjaxEventBehavior("onchange") {
 
-      @Override
-      protected void onEvent(AjaxRequestTarget target) {
-        // toggle selection
-        // note: call for setModelObject to ensure modelChanged trigger is properly called
-        checkbox.setModelObject(!getSelectionModel().isSelected());
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          // toggle selection
+          // note: call for setModelObject to ensure modelChanged trigger is properly called
+          checkbox.setModelObject(!getSelectionModel().isSelected());
 
-        if(getSelectionModel().isSelected()) {
-          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getQuestionCategory().getCategory().getOpenAnswerDefinition(), null);
-        } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
-        }
-        if(getOpenField() != null) {
-          if(!getSelectionModel().isSelected()) {
-            resetOpenAnswerDefinitionPanels(target, getOpenField(), QuestionCategoryCheckBoxPanel.this.getDefaultModel());
-            updateFeedbackPanel(target);
+          if(getSelectionModel().isSelected()) {
+            activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getQuestionCategory().getCategory().getOpenAnswerDefinition(), null);
+          } else {
+            activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
           }
+          if(getOpenField() != null) {
+            if(!getSelectionModel().isSelected()) {
+              resetOpenAnswerDefinitionPanels(target, getOpenField(), QuestionCategoryCheckBoxPanel.this.getDefaultModel());
+              updateFeedbackPanel(target);
+            }
+          }
+
+          fireQuestionCategorySelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getDefaultModel(), getSelectionModel().isSelected());
         }
 
-        fireQuestionCategorySelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getDefaultModel(), getSelectionModel().isSelected());
-      }
-
-    });
+      });
+    }
 
     FormComponentLabel checkboxLabel = new FormComponentLabel("categoryLabel", checkbox);
     add(checkboxLabel);

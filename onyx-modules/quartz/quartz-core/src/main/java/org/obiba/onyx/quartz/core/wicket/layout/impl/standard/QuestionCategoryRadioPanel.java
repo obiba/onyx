@@ -80,27 +80,29 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     radio.setLabel(new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
     // persist selection on change event
     // and make sure there is no active open field previously selected
-    radio.add(new AjaxEventBehavior("onchange") {
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      radio.add(new AjaxEventBehavior("onchange") {
 
-      @Override
-      protected void onEvent(AjaxRequestTarget target) {
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
 
-        // make the radio group active for the selection
-        QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getDefaultModel());
+          // make the radio group active for the selection
+          QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getDefaultModel());
 
-        // exclusive choice, only one answer per question
-        activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-        activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
 
-        // make sure a previously selected open field is not asked for
-        resetOpenAnswerDefinitionPanels(target, QuestionCategoryRadioPanel.this.radioGroup, getQuestionCategoryModel());
+          // make sure a previously selected open field is not asked for
+          resetOpenAnswerDefinitionPanels(target, QuestionCategoryRadioPanel.this.radioGroup, getQuestionCategoryModel());
 
-        updateFeedbackPanel(target);
+          updateFeedbackPanel(target);
 
-        fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
-      }
+          fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
+        }
 
-    });
+      });
+    }
 
     FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radio);
     add(radioLabel);
@@ -122,11 +124,14 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     }
 
     // previous answer or default selection
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
 
-    if(previousAnswer != null) {
-      radioGroup.setModel(questionCategoryModel);
+      if(previousAnswer != null) {
+        radioGroup.setModel(questionCategoryModel);
+      }
     }
+
   }
 
   /**

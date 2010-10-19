@@ -22,6 +22,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.NoSuchMessageException;
 
 /**
  * 
@@ -49,7 +50,13 @@ public class QuestionnaireStringResourceModelHelper {
     int resolveAttempts = 0;
 
     while(true) {
-      stringResource = bundle.getMessageSource().getMessage(propertyKey, stringArgs, locale);
+      try {
+        stringResource = bundle.getMessageSource().getMessage(propertyKey, stringArgs, locale);
+      } catch(NoSuchMessageException e) {
+        stringResource = "";
+        // log.error(e.getMessage(), e);
+        break;
+      }
 
       if(StringReferenceCompatibleMessageFormat.isStringReference(stringResource)) {
         if(resolveAttempts == MAX_RESOLVE_STRING_REFERENCE_ATTEMPTS) {

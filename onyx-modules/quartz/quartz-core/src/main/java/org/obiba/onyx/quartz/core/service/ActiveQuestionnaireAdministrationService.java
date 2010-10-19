@@ -27,6 +27,20 @@ import org.obiba.onyx.util.data.Data;
 public interface ActiveQuestionnaireAdministrationService {
 
   /**
+   * Tells if the questionnaire is in development mode and therefore UI should not trigger selection events and check
+   * for default values.
+   * @return
+   */
+  public boolean isQuestionnaireDevelopmentMode();
+
+  /**
+   * Set if the questionnaire is in development mode.
+   * @see #isQuestionnaireDevelopmentMode()
+   * @param mode
+   */
+  public void setQuestionnaireDevelopmentMode(boolean mode);
+
+  /**
    * Get the current participant for the currently administered questionnaire.
    * @return
    */
@@ -54,8 +68,9 @@ public interface ActiveQuestionnaireAdministrationService {
   public Page getResumePage();
 
   /**
-   * Positions the questionnaire at the start page.
+   * Positions the questionnaire at the start page. Implicitly the questionnaire is not in development mode anymore.
    * 
+   * @see #isQuestionnaireDevelopmentMode()
    * @return new current page (start page)
    */
   public Page startPage();
@@ -103,8 +118,9 @@ public interface ActiveQuestionnaireAdministrationService {
   public Page endPage();
 
   /**
-   * Positions the questionnaire at the resume page.
+   * Positions the questionnaire at the resume page. Implicitly the questionnaire is not in development mode anymore.
    * 
+   * @see #isQuestionnaireDevelopmentMode()
    * @return new current page (resume page)
    */
   public Page resumePage();

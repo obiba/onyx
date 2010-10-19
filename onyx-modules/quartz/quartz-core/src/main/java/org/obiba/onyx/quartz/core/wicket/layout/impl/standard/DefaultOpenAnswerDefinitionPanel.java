@@ -71,9 +71,11 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   private void initialize() {
     setOutputMarkupId(true);
 
-    OpenAnswer previousAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
-    if(previousAnswer != null) {
-      setData(previousAnswer.getData());
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      OpenAnswer previousAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
+      if(previousAnswer != null) {
+        setData(previousAnswer.getData());
+      }
     }
 
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "label");
@@ -113,8 +115,10 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     add(openField);
 
     // validators
-    for(IValidator validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
-      openField.add(validator);
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      for(IValidator validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
+        openField.add(validator);
+      }
     }
 
     // at least this validator for textual input
@@ -126,44 +130,46 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     // behaviors
     openField.add(new InvalidFormFieldBehavior());
 
-    openField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        // persist data
-        activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
-
-        // clean a previous error message
-        updateFeedback(target);
-
-        fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
-      }
-
-      @Override
-      protected void onError(AjaxRequestTarget target, RuntimeException e) {
-        super.onError(target, e);
-        // display error messages
-        updateFeedback(target);
-      }
-    });
-
-    if(getOpenAnswerDefinition().getDefaultValues().size() == 0) {
-      openField.add(new AjaxEventBehavior("onclick") {
-
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      openField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
         @Override
-        protected void onEvent(AjaxRequestTarget target) {
+        protected void onUpdate(AjaxRequestTarget target) {
           // persist data
-          // do not fire event if category was already selected
-          if(activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
-            openField.focusField(target);
+          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
 
-            // persist data for category
-            activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
+          // clean a previous error message
+          updateFeedback(target);
 
-            fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
-          }
+          fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
         }
 
+        @Override
+        protected void onError(AjaxRequestTarget target, RuntimeException e) {
+          super.onError(target, e);
+          // display error messages
+          updateFeedback(target);
+        }
       });
+
+      if(getOpenAnswerDefinition().getDefaultValues().size() == 0) {
+        openField.add(new AjaxEventBehavior("onclick") {
+
+          @Override
+          protected void onEvent(AjaxRequestTarget target) {
+            // persist data
+            // do not fire event if category was already selected
+            if(activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
+              openField.focusField(target);
+
+              // persist data for category
+              activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
+
+              fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
+            }
+          }
+
+        });
+      }
     }
 
     // set the label of the field
