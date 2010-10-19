@@ -23,6 +23,9 @@ div.wicket-modal div.onyx .ui-state-error {
 	background-repeat: no-repeat;
 	color:black !important;
 	padding-left: 2.5em;
+	border: none;
+	background-color: #ffffff;
+	background-position:left center;
 }
 
 div.wicket-modal div.onyx .ui-state-highlight {

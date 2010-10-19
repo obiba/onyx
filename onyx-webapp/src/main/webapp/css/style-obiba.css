@@ -142,6 +142,7 @@ div.banner {
 #menuBar .obiba-menu .obiba-menu-item.ui-state-highlight {
   background-color: #C65F00;
   color: #FFFFFF !important;
+  border: none;
 }
 
 #menuAddOns{
@@ -1868,11 +1869,11 @@ div.appointment-update-log-panel-content  {
 }
 
 div.stageMenuBar {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 div.interviewMenuBar {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 div#essentialAttributes td.keyValueTableKey, div#configuredAttributeGroups td.keyValueTableKey, div.participant-panel-content td.keyValueTableKey {
