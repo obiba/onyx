@@ -102,6 +102,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
   private DropDownChoice<DataType> dataTypeDropDownChoice;
 
+  @SuppressWarnings("unchecked")
   public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedOpenAnswerDefinition>(new EditedOpenAnswerDefinition(model.getObject())));
 
@@ -179,10 +180,10 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     form.add(new SimpleFormComponentLabel("sizeLabel", sizeTextFieldForUIArguments), specifySize, sizeTextFieldForUIArguments);
 
     // MAXIMUM VALIDATOR
-    Collection<IDataValidator> maximumDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator>() {
+    Collection<IDataValidator<?>> maximumDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator<?>>() {
 
       @Override
-      public boolean apply(IDataValidator input) {
+      public boolean apply(IDataValidator<?> input) {
         if(isTextType) {
           return (input.getValidator() instanceof StringValidator.MaximumLengthValidator);
         }
@@ -214,10 +215,10 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     validatorContainer.add(new SimpleFormComponentLabel("maximumValidatorLabel", maximumValidatorCheckbox), maximumValidatorCheckbox, maximumValidatorValueTextField);
 
     // MINIMUM VALIDATOR
-    Collection<IDataValidator> minimumDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator>() {
+    Collection<IDataValidator<?>> minimumDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator<?>>() {
 
       @Override
-      public boolean apply(IDataValidator input) {
+      public boolean apply(IDataValidator<?> input) {
         if(isTextType) {
           return input.getValidator() instanceof StringValidator.MinimumLengthValidator;
         }
@@ -249,10 +250,10 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     validatorContainer.add(new SimpleFormComponentLabel("minimumValidatorLabel", minimumValidatorCheckbox), minimumValidatorCheckbox, minimumValidatorValueTextField);
 
     // RANGE VALIDATOR
-    Collection<IDataValidator> rangeDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator>() {
+    Collection<IDataValidator<?>> rangeDataValidators = Collections2.filter(form.getModelObject().getElement().getDataValidators(), new Predicate<IDataValidator<?>>() {
 
       @Override
-      public boolean apply(IDataValidator input) {
+      public boolean apply(IDataValidator<?> input) {
         if(form.getModelObject().getElement().getDataType().equals(DataType.TEXT)) {
           return input.getValidator() instanceof StringValidator.LengthBetweenValidator;
         }
@@ -323,6 +324,11 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
+  /**
+   * 
+   * @param target
+   * @param editedOpenAnswerDefinition
+   */
   public void onSave(AjaxRequestTarget target, EditedOpenAnswerDefinition editedOpenAnswerDefinition) {
     editedOpenAnswerDefinition.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
     OpenAnswerDefinition openAnswerDefinition = editedOpenAnswerDefinition.getElement();

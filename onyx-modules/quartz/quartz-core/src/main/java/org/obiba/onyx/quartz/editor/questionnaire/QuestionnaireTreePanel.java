@@ -55,6 +55,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.page.EditedPage;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
+import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.section.EditedSection;
@@ -438,13 +439,14 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(respondTarget);
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
+        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(), new Model<IHasQuestion>((IHasQuestion) element), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             super.onSave(target, editedQuestion);
-            ((IHasQuestion) element).addQuestion(editedQuestion.getElement());
-            persist(target);
-            target.addComponent(treeContainer);
+            // TODO
+            // ((IHasQuestion) element).addQuestion(editedQuestion.getElement());
+            // persist(target);
+            // target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);

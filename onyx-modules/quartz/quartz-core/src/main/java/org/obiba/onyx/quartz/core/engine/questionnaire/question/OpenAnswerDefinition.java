@@ -40,7 +40,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   private List<String[]> uIArguments;
 
-  private List<IDataValidator> validators;
+  private List<IDataValidator<?>> validators;
 
   private List<ComparingDataSource> validationDataSources;
 
@@ -128,11 +128,11 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     uIArguments.add(new String[] { key, value });
   }
 
-  public List<IDataValidator> getDataValidators() {
-    return validators != null ? validators : (validators = new ArrayList<IDataValidator>());
+  public List<IDataValidator<?>> getDataValidators() {
+    return validators != null ? validators : (validators = new ArrayList<IDataValidator<?>>());
   }
 
-  public void addDataValidator(IDataValidator validator) {
+  public void addDataValidator(IDataValidator<?> validator) {
     if(validator != null) {
       getDataValidators().add(validator);
     }

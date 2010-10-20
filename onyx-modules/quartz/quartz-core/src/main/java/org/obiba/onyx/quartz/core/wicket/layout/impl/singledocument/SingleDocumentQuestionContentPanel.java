@@ -193,18 +193,18 @@ public class SingleDocumentQuestionContentPanel extends Panel {
     }
   }
 
-  private String getValidationString(List<IDataValidator> validators) {
+  private String getValidationString(List<IDataValidator<?>> validators) {
     String validation = "";
 
-    for(IDataValidator validator : validators) {
+    for(IDataValidator<?> validator : validators) {
       validation = "- Validation: ";
-      String classPath = validator.getValidator().getClass().getName();
+      // String classPath = validator.getValidator().getClass().getName();
       if(validator.getValidator() instanceof MinimumValidator) {
-        validation += ">= " + ((MinimumValidator) validator.getValidator()).getMinimum();
+        validation += ">= " + ((MinimumValidator<?>) validator.getValidator()).getMinimum();
       } else if(validator.getValidator() instanceof MaximumValidator) {
-        validation += "<= " + ((MaximumValidator) validator.getValidator()).getMaximum();
+        validation += "<= " + ((MaximumValidator<?>) validator.getValidator()).getMaximum();
       } else if(validator.getValidator() instanceof RangeValidator) {
-        validation += ">= " + ((RangeValidator) validator.getValidator()).getMinimum() + "; <= " + ((RangeValidator) validator.getValidator()).getMaximum();
+        validation += ">= " + ((RangeValidator<?>) validator.getValidator()).getMinimum() + "; <= " + ((RangeValidator<?>) validator.getValidator()).getMaximum();
       } else {
         validation += validator.getValidator().toString();
       }

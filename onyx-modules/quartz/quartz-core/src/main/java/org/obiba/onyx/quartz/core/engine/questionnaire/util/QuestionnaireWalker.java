@@ -69,6 +69,7 @@ public class QuestionnaireWalker implements IVisitor {
     return visitor.visiteMore();
   }
 
+  @Override
   public final void visit(Questionnaire questionnaire) {
     if(preOrder) questionnaire.accept(visitor);
     for(Section section : questionnaire.getSections()) {
@@ -78,6 +79,7 @@ public class QuestionnaireWalker implements IVisitor {
     if(!preOrder) questionnaire.accept(visitor);
   }
 
+  @Override
   public final void visit(Section section) {
     if(preOrder) section.accept(visitor);
     if(visiteMore()) {
@@ -94,6 +96,7 @@ public class QuestionnaireWalker implements IVisitor {
     if(!preOrder) section.accept(visitor);
   }
 
+  @Override
   public final void visit(Page page) {
     if(preOrder) page.accept(visitor);
     if(visiteMore()) {
@@ -105,6 +108,7 @@ public class QuestionnaireWalker implements IVisitor {
     if(!preOrder) page.accept(visitor);
   }
 
+  @Override
   public final void visit(Question question) {
     if(preOrder) question.accept(visitor);
     if(visiteMore()) {
@@ -122,12 +126,14 @@ public class QuestionnaireWalker implements IVisitor {
     if(!preOrder) question.accept(visitor);
   }
 
+  @Override
   public final void visit(QuestionCategory questionCategory) {
     if(preOrder) questionCategory.accept(visitor);
     questionCategory.getCategory().accept(this);
     if(!preOrder) questionCategory.accept(visitor);
   }
 
+  @Override
   public final void visit(Category category) {
     if(preOrder) category.accept(visitor);
     if(visiteMore() && category.getOpenAnswerDefinition() != null) {
@@ -136,6 +142,7 @@ public class QuestionnaireWalker implements IVisitor {
     if(!preOrder) category.accept(visitor);
   }
 
+  @Override
   public final void visit(OpenAnswerDefinition openAnswerDefinition) {
     if(preOrder) openAnswerDefinition.accept(visitor);
     if(visiteMore()) {

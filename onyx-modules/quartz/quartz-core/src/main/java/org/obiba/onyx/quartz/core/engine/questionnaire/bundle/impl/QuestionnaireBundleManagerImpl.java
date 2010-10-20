@@ -248,15 +248,12 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
     // Create the questionnaire file.
     File questionnaireFile = new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml");
-    if(!questionnaireFile.exists()) {
-      if(!questionnaireFile.createNewFile()) {
-        throw new IllegalArgumentException("Failed creating questionnaire file: " + questionnaireFile);
-      }
+    if(!questionnaireFile.exists() && !questionnaireFile.createNewFile()) {
+      throw new IllegalArgumentException("Failed creating questionnaire file: " + questionnaireFile);
     }
 
     // Serialize the questionnaire to the file.
     FileOutputStream fos = null;
-
     try {
       fos = new FileOutputStream(questionnaireFile);
       QuestionnaireStreamer.toXML(bundle.getQuestionnaire(), new FileOutputStream(questionnaireFile));

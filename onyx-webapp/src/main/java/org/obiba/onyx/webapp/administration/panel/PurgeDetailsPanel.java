@@ -22,8 +22,8 @@ import org.obiba.onyx.wicket.model.SpringStringResourceModel;
  * Displays details on which Participants will be purged, breaking things down by exported and unexported as well as by
  * {@link InterviewStatus}.
  */
+@SuppressWarnings("serial")
 public class PurgeDetailsPanel extends Panel {
-  private static final long serialVersionUID = 1L;
 
   public PurgeDetailsPanel(String id, OnyxDataPurgeModel model) {
     super(id, model);

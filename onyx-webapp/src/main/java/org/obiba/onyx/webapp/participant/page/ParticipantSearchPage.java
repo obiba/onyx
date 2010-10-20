@@ -188,11 +188,11 @@ public class ParticipantSearchPage extends BasePage {
     Form form = new Form("searchForm");
     add(form);
 
-    form.add(new TextField("inputField", new Model(new String())));
+    form.add(new TextField<String>("inputField", new Model<String>(new String())));
 
     AjaxButton searchByInputField = new AjaxButton("searchByInputField", form) {
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         ParticipantEntityList replacement;
         String inputField = form.get("inputField").getDefaultModelObjectAsString();
 
@@ -206,7 +206,7 @@ public class ParticipantSearchPage extends BasePage {
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
         showFeedback(target);
       }
 
@@ -217,13 +217,13 @@ public class ParticipantSearchPage extends BasePage {
     form.add(new AjaxButton("submit", form) {
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         ParticipantEntityList replacement = getAllParticipantsList();
         replaceParticipantList(target, replacement);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
         showFeedback(target);
       }
 
@@ -232,14 +232,14 @@ public class ParticipantSearchPage extends BasePage {
     form.add(new AjaxButton("appointments", form) {
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         ParticipantEntityList replacement = new ParticipantEntityList("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
         replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         replaceParticipantList(target, replacement);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
         showFeedback(target);
       }
 
@@ -248,14 +248,14 @@ public class ParticipantSearchPage extends BasePage {
     form.add(new AjaxButton("interviews", form) {
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         ParticipantEntityList replacement = new ParticipantEntityList("participant-list", new InterviewedParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
         replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         replaceParticipantList(target, replacement);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
         showFeedback(target);
       }
 
@@ -648,7 +648,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           MultiLineLabel label = new MultiLineLabel("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
-          label.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
+          label.add(new AttributeModifier("class", true, new Model<String>("long-confirmation-dialog-content")));
 
           ConfirmationDialog confirmationDialog = createExportDialog();
           confirmationDialog.setContent(label);

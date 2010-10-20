@@ -64,7 +64,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       add(helpContent);
 
       // toggle has background image defined by css
-      ToggleLink toggleLink = new ToggleLink("helpToggle", new Model("&nbsp;&nbsp;&nbsp;&nbsp;"), new Model("&nbsp;&nbsp;&nbsp;&nbsp;"), helpContent);
+      ToggleLink toggleLink = new ToggleLink("helpToggle", new Model<String>("&nbsp;&nbsp;&nbsp;&nbsp;"), new Model<String>("&nbsp;&nbsp;&nbsp;&nbsp;"), helpContent);
       toggleLink.setLabelEscapeModelStrings(false);
       add(toggleLink);
     } else {
@@ -84,7 +84,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
     // change the css rendering in case of a boiler plate
     if(question.isBoilerPlate()) {
-      add(new AttributeModifier("class", new Model(BOILERPLATE_CLASS)));
+      add(new AttributeModifier("class", new Model<String>(BOILERPLATE_CLASS)));
       add(new EmptyPanel("content").setVisible(false));
     } else {
       setContent("content");
@@ -107,11 +107,12 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     final AddCommentWindow commentWindow;
     add(commentWindow = new AddCommentWindow("addCommentModal"));
 
-    final IModel commentWindowTitleModel = new LoadableDetachableModel() {
+    final IModel<String> commentWindowTitleModel = new LoadableDetachableModel<String>() {
 
+      @SuppressWarnings("unchecked")
       @Override
-      protected Object load() {
-        String title = (new StringResourceModel("CommentsWindow", BaseQuestionPanel.this, null)).getString() + " - " + new QuestionnaireStringResourceModel(BaseQuestionPanel.this.getDefaultModel(), "label").getString();
+      protected String load() {
+        String title = (new StringResourceModel("CommentsWindow", BaseQuestionPanel.this, null)).getString() + " - " + new QuestionnaireStringResourceModel((IModel<Question>) BaseQuestionPanel.this.getDefaultModel(), "label").getString();
 
         // Question label is truncated if too long for Modal Window title bar.
         if(title.length() > 50) {

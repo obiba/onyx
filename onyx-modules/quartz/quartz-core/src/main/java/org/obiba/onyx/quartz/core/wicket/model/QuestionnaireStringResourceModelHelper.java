@@ -89,8 +89,8 @@ public class QuestionnaireStringResourceModelHelper {
    * @param openAnswerDefinition
    * @return
    */
-  public static IModel getStringResourceModel(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
-    IModel model;
+  public static IModel<String> getStringResourceModel(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+    IModel<String> model;
 
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");
     QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "unitLabel");
@@ -98,7 +98,7 @@ public class QuestionnaireStringResourceModelHelper {
     QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(question, "label");
 
     if(!questionCategory.getQuestion().getName().equals(question.getName())) {
-      model = new Model(questionLabel.getString() + " / " + getStringResourceModel(questionCategory.getQuestion(), questionCategory, openAnswerDefinition).getObject());
+      model = new Model<String>(questionLabel.getString() + " / " + getStringResourceModel(questionCategory.getQuestion(), questionCategory, openAnswerDefinition).getObject());
     } else if(isValidString(openLabel.getString())) {
       model = openLabel;
     } else if(isValidString(unitLabel.getString())) {

@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoryLinkSelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategorySelectionBehavior;
@@ -46,20 +47,20 @@ public class QuestionCategoryImageLink extends AbstractQuestionCategoryLinkSelec
   // Constructors
   //
 
-  public QuestionCategoryImageLink(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel) {
+  public QuestionCategoryImageLink(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<String> labelModel) {
     super(id, questionModel, questionCategoryModel, labelModel, null);
   }
 
-  public QuestionCategoryImageLink(String id, IModel questionCategoryModel, IModel labelModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, labelModel);
+  public QuestionCategoryImageLink(String id, IModel<QuestionCategory> questionCategoryModel, IModel<String> labelModel) {
+    this(id, new QuestionnaireModel<Question>(questionCategoryModel.getObject().getQuestion()), questionCategoryModel, labelModel);
   }
 
   //
   // AbstractQuestionCategoryLinkSelectionPanel
   //
 
-  protected void addLinkComponent(IModel labelModel, IModel descriptionModel) {
-    AjaxLink link = new AjaxLink("link", labelModel) {
+  protected void addLinkComponent(IModel<String> labelModel, IModel<String> descriptionModel) {
+    AjaxLink<String> link = new AjaxLink<String>("link", labelModel) {
 
       private static final long serialVersionUID = 1L;
 

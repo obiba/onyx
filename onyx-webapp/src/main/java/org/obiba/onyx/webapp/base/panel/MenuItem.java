@@ -13,66 +13,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.IClusterable;
+import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.Roles;
 
 public class MenuItem implements IClusterable {
   private static final long serialVersionUID = -306635168756788763L;
+
   private List<MenuItem> subMenuItems;
-	private Class<?> page;
-	private String label;
-	private Roles roles = null;
+
+  private Class<? extends Page> page;
+
+  private String label;
+
+  private Roles roles = null;
+
   private PageParameters parameters;
 
-	public MenuItem(Class<?> page, String label) {
-		this.page = page;
-		this.label = label;
-		this.subMenuItems = new ArrayList<MenuItem>();
-	}
-  
-  public MenuItem(Class<?> page, PageParameters parameters, String label) {
+  public MenuItem(Class<? extends Page> page, String label) {
+    this.page = page;
+    this.label = label;
+    this.subMenuItems = new ArrayList<MenuItem>();
+  }
+
+  public MenuItem(Class<? extends Page> page, PageParameters parameters, String label) {
     this(page, label);
     this.parameters = parameters;
   }
 
-	public MenuItem(Class<?> page, String label, List<MenuItem> subMenuItems) {
-		this(page, label);
-		this.subMenuItems = subMenuItems;
-	}
-	
-	public MenuItem(Class<?> page, String label, Roles pRoles) {
-	  this(page, label);
-	  roles = pRoles;
+  public MenuItem(Class<? extends Page> page, String label, List<MenuItem> subMenuItems) {
+    this(page, label);
+    this.subMenuItems = subMenuItems;
   }
-	
-	public MenuItem(Class<?> page, String label, List<MenuItem> subMenuItems, Roles pRoles) {
+
+  public MenuItem(Class<? extends Page> page, String label, Roles pRoles) {
+    this(page, label);
+    roles = pRoles;
+  }
+
+  public MenuItem(Class<? extends Page> page, String label, List<MenuItem> subMenuItems, Roles pRoles) {
     this(page, label, subMenuItems);
     roles = pRoles;
   }
-  
+
   public void add(MenuItem item) {
-    if (subMenuItems == null)
-      subMenuItems = new ArrayList<MenuItem>();
-    
+    if(subMenuItems == null) subMenuItems = new ArrayList<MenuItem>();
+
     subMenuItems.add(item);
   }
 
-	public String getLabel() {
-		return label;
-	}
-	public Class<?> getPage() {
-		return page;
-	}
-	public PageParameters getParameters() {
+  public String getLabel() {
+    return label;
+  }
+
+  public Class<? extends Page> getPage() {
+    return page;
+  }
+
+  public PageParameters getParameters() {
     return parameters;
   }
+
   public List<MenuItem> getSubMenuItems() {
-		return subMenuItems;
-	}
-	public void setRoles(Roles pRoles) {
-	  roles = pRoles;
-	}
-	public Roles getRoles() {
-	  return roles;
-	}
+    return subMenuItems;
+  }
+
+  public void setRoles(Roles pRoles) {
+    roles = pRoles;
+  }
+
+  public Roles getRoles() {
+    return roles;
+  }
 }

@@ -9,6 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,6 +139,24 @@ public class Question implements IHasQuestion {
       }
     }
     return false;
+  }
+
+  public QuestionType getType() {
+    if(isBoilerPlate()) return BOILER_PLATE;
+
+    if(isArrayOfSharedCategories()) {
+      return isMultiple() ? ARRAY_CHECKBOX : ARRAY_RADIO;
+    }
+    if(isArrayOfJoinedCategories()) {
+      throw new RuntimeException("Unsupported question type [Array of joined categories] for question " + getName());
+    }
+    int nbCategories = getQuestionCategories().size();
+    if(nbCategories == 1) return SINGLE_OPEN_ANSWER;
+    if(nbCategories > 1) {
+      if(isMultiple()) return LIST_CHECKBOX;
+      return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
+    }
+    throw new RuntimeException("Unsupported question type for question " + getName());
   }
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {

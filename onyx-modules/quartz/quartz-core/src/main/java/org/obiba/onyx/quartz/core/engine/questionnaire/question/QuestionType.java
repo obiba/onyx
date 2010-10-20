@@ -7,23 +7,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.wicket.data;
-
-import org.apache.wicket.validation.IValidator;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
+package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 /**
- * Marker interface for {@code IValidator} instances that validate {@link Data} values.
+ *
  */
-public interface IDataValidator<T> extends IValidator<T> {
+public enum QuestionType {
 
-  public DataType getDataType();
+  BOILER_PLATE, //
 
-  /**
-   * Returns the decorated validator.
-   * 
-   * @return decorated validator
-   */
-  public IValidator<T> getValidator();
+  SINGLE_OPEN_ANSWER, //
+
+  LIST_RADIO, //
+  LIST_DROP_DOWN, //
+  LIST_CHECKBOX, //
+
+  ARRAY_RADIO, //
+  ARRAY_CHECKBOX;//
+
 }

@@ -48,7 +48,7 @@ public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQue
   // Constructors
   //
 
-  public AbstractQuestionCategoryLinkSelectionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel, IModel descriptionModel) {
+  public AbstractQuestionCategoryLinkSelectionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<String> labelModel, IModel<String> descriptionModel) {
     super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
 
@@ -83,7 +83,7 @@ public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQue
   // Methods
   //
 
-  protected abstract void addLinkComponent(IModel labelModel, IModel descriptionModel);
+  protected abstract void addLinkComponent(IModel<String> labelModel, IModel<String> descriptionModel);
 
   protected void handleSelectionEvent(AjaxRequestTarget target) {
     // persist (or not)

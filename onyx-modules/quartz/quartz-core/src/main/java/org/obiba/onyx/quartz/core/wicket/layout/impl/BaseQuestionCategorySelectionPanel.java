@@ -36,13 +36,13 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
   /**
    * The question model (not necessarily the question of the category in the case of shared categories question).
    */
-  private IModel questionModel;
+  private IModel<Question> questionModel;
 
   /**
    * @param id
    * @param model
    */
-  public BaseQuestionCategorySelectionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+  public BaseQuestionCategorySelectionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
 
@@ -50,16 +50,17 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
     add(new QuestionnaireStyleBehavior());
   }
 
-  public IModel getQuestionModel() {
+  public IModel<Question> getQuestionModel() {
     return questionModel;
   }
 
   public Question getQuestion() {
-    return (Question) questionModel.getObject();
+    return questionModel.getObject();
   }
 
-  public IModel getQuestionCategoryModel() {
-    return getDefaultModel();
+  @SuppressWarnings("unchecked")
+  public IModel<QuestionCategory> getQuestionCategoryModel() {
+    return (IModel<QuestionCategory>) getDefaultModel();
   }
 
   public QuestionCategory getQuestionCategory() {
@@ -85,7 +86,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
    * @param questionCategoryModel
    * @see IQuestionAnswerChangedListener
    */
-  protected void fireQuestionCategorySelected(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void fireQuestionCategorySelected(AjaxRequestTarget target, @SuppressWarnings("hiding") IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
     IQuestionCategorySelectionListener parentListener = findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);

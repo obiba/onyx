@@ -76,24 +76,24 @@ public class MenuBuilder {
     }
 
     // Creating the DataView containing the whole menu
-    container.add(new DataView("menuItem", new ListDataProvider(menuItems)) {
+    container.add(new DataView<MenuItem>("menuItem", new ListDataProvider<MenuItem>(menuItems)) {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected void populateItem(Item item) {
+      protected void populateItem(Item<MenuItem> item) {
         MenuItem menuItem = menuItems.get(item.getIndex());
         Component menuLink = getLink("menuLink", menuItem.getPage(), menuItem.getParameters(), "menuLabel", menuItem.getLabel(), container);
         item.add(menuLink);
 
         // Creating the DataView holding all items of a submenu
-        DataView menuItemDataView = new DataView("subMenuItem", new ListDataProvider(menuItem.getSubMenuItems())) {
+        DataView<MenuItem> menuItemDataView = new DataView<MenuItem>("subMenuItem", new ListDataProvider<MenuItem>(menuItem.getSubMenuItems())) {
 
           private static final long serialVersionUID = 1L;
 
           @Override
-          protected void populateItem(Item subItem) {
-            MenuItem subMenuItem = (MenuItem) subItem.getModelObject();
+          protected void populateItem(Item<MenuItem> subItem) {
+            MenuItem subMenuItem = subItem.getModelObject();
             Component link = getLink("subMenuLink", subMenuItem.getPage(), subMenuItem.getParameters(), "subMenuLabel", subMenuItem.getLabel(), container);
             subItem.add(link);
             setPageview(subItem, subMenuItem);
@@ -109,7 +109,8 @@ public class MenuBuilder {
 
   }
 
-  private static AbstractLink getLink(String linkId, Class<?> pageClass, PageParameters parameters, String labelId, String label, Component component) {
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private static AbstractLink getLink(String linkId, Class<? extends Page> pageClass, PageParameters parameters, String labelId, String label, Component component) {
     AbstractLink link;
     if(pageClass == null) link = new BookmarkablePageLink(linkId, component.getPage().getClass(), component.getPage().getPageParameters());
     else if(parameters != null) link = new BookmarkablePageLink(linkId, pageClass, parameters);

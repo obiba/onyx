@@ -60,18 +60,20 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     this.propertyKeyNamingStrategy = new DefaultPropertyKeyNamingStrategy();
   }
 
+  @Override
   public List<String> getProperties(IQuestionnaireElement localizable) {
     localizable.accept(this);
     return properties;
   }
 
+  @Override
   public String getPropertyKey(IQuestionnaireElement localizable, String property) {
     return propertyKeyNamingStrategy.getPropertyKey(localizable, property);
   }
 
   //
   // Questionnaire element properties setters and getters.
-  // 
+  //
   public void setQuestionnaireProperties(List<String> questionnaireProperties) {
     this.questionnaireProperties = questionnaireProperties;
   }
@@ -123,30 +125,37 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   //
   // visitor methods
   //
+  @Override
   public void visit(Questionnaire questionnaire) {
     properties = getQuestionnaireProperties();
   }
 
+  @Override
   public void visit(Section section) {
     properties = getSectionProperties();
   }
 
+  @Override
   public void visit(Page page) {
     properties = getPageProperties();
   }
 
+  @Override
   public void visit(Question question) {
     properties = getQuestionProperties();
   }
 
+  @Override
   public void visit(QuestionCategory questionCategory) {
     visit(questionCategory.getCategory());
   }
 
+  @Override
   public void visit(Category category) {
     properties = getCategoryProperties();
   }
 
+  @Override
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
     properties = new ArrayList<String>(getOpenAnswerDefinitionProperties());
     for(Data value : openAnswerDefinition.getDefaultValues()) {

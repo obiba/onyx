@@ -26,7 +26,7 @@ import org.obiba.onyx.wicket.model.SpringDetachableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QuestionnaireModel extends SpringDetachableModel {
+public class QuestionnaireModel<T extends IQuestionnaireElement> extends SpringDetachableModel<T> {
 
   private static final long serialVersionUID = -6997906325842949254L;
 
@@ -40,8 +40,7 @@ public class QuestionnaireModel extends SpringDetachableModel {
 
   private String questionnaireName;
 
-  @SuppressWarnings("unchecked")
-  private Class elementClass;
+  private Class<? extends IQuestionnaireElement> elementClass;
 
   private String elementName;
 
@@ -100,7 +99,7 @@ public class QuestionnaireModel extends SpringDetachableModel {
     return elementName;
   }
 
-  public Class getElementClass() {
+  public Class<? extends IQuestionnaireElement> getElementClass() {
     return elementClass;
   }
 
@@ -108,8 +107,9 @@ public class QuestionnaireModel extends SpringDetachableModel {
     return questionnaireName;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  protected Object load() {
+  protected T load() {
     // Now use these services to get current questionnaire bundle.
     QuestionnaireBundle bundle = bundleManager.getBundle(questionnaireName);
 
@@ -120,19 +120,19 @@ public class QuestionnaireModel extends SpringDetachableModel {
       finder.buildQuestionnaireCache();
     }
 
-    IQuestionnaireElement element = null;
+    T element = null;
     if(elementClass.equals(Questionnaire.class)) {
-      element = questionnaire;
+      element = (T) questionnaire;
     } else if(elementClass.equals(Section.class)) {
-      element = finder.findSection(elementName);
+      element = (T) finder.findSection(elementName);
     } else if(elementClass.equals(Page.class)) {
-      element = finder.findPage(elementName);
+      element = (T) finder.findPage(elementName);
     } else if(elementClass.equals(Question.class)) {
-      element = finder.findQuestion(elementName);
+      element = (T) finder.findQuestion(elementName);
     } else if(elementClass.equals(QuestionCategory.class)) {
-      element = finder.findQuestionCategory(QuestionCategory.getQuestionName(elementName), QuestionCategory.getCategoryName(elementName));
+      element = (T) finder.findQuestionCategory(QuestionCategory.getQuestionName(elementName), QuestionCategory.getCategoryName(elementName));
     } else if(elementClass.equals(OpenAnswerDefinition.class)) {
-      element = finder.findOpenAnswerDefinition(elementName);
+      element = (T) finder.findOpenAnswerDefinition(elementName);
     }
 
     return element;
@@ -149,7 +149,8 @@ public class QuestionnaireModel extends SpringDetachableModel {
     if(obj == this) {
       return true;
     } else if(obj instanceof QuestionnaireModel) {
-      QuestionnaireModel model = (QuestionnaireModel) obj;
+      @SuppressWarnings("unchecked")
+      QuestionnaireModel<T> model = (QuestionnaireModel<T>) obj;
       return (this.questionnaireName.equals(model.questionnaireName) && this.elementClass.equals(model.elementClass) && this.elementName.equals(model.elementName));
     }
     return super.equals(obj);

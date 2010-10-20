@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.editor.question;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.editor.EditedElement;
 import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 
@@ -17,10 +18,17 @@ public class EditedQuestion extends EditedElement<Question> {
 
   private static final long serialVersionUID = 1L;
 
+  private QuestionType questionType;
+
   private Conditions conditions;
+
+  public EditedQuestion() {
+    super(new Question(null));
+  }
 
   public EditedQuestion(Question element) {
     super(element);
+    questionType = element.getType();
   }
 
   public Conditions getConditions() {
@@ -29,6 +37,14 @@ public class EditedQuestion extends EditedElement<Question> {
 
   public void setConditions(Conditions conditions) {
     this.conditions = conditions;
+  }
+
+  public QuestionType getQuestionType() {
+    return questionType;
+  }
+
+  public void setQuestionType(QuestionType questionType) {
+    this.questionType = questionType;
   }
 
 }
