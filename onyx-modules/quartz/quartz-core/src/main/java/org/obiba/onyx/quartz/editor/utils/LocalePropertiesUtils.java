@@ -21,16 +21,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
-import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.springframework.beans.factory.annotation.Required;
 
 public class LocalePropertiesUtils {
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public List<LocaleProperties> loadLocaleProperties(IModel<? extends IQuestionnaireElement> elementModel, IModel<EditedQuestionnaire> editedQuestionnaireModel) {
+  public List<LocaleProperties> loadLocaleProperties(IModel<? extends IQuestionnaireElement> elementModel, IModel<Questionnaire> questionnaireModel) {
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
-    final Questionnaire questionnaire = editedQuestionnaireModel.getObject().getElement();
+    final Questionnaire questionnaire = questionnaireModel.getObject();
     for(Locale locale : questionnaire.getLocales()) {
       LocaleProperties localeProperties = new LocaleProperties(locale, elementModel);
       List<String> values = new ArrayList<String>();

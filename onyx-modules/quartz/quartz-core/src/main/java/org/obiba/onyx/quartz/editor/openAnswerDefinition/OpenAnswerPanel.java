@@ -32,6 +32,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -42,7 +44,11 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -56,6 +62,9 @@ public class OpenAnswerPanel extends Panel {
 
   // TODO: localize date format
   public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private DropDownChoice<DataType> dataType;
 
@@ -77,8 +86,12 @@ public class OpenAnswerPanel extends Panel {
 
   private SimpleFormComponentLabel maximumLabel;
 
-  public OpenAnswerPanel(String id, final IModel<EditedQuestion> questionModel, final IModel<OpenAnswerDefinition> model) {
+  private ListModel<LocaleProperties> localePropertiesModel;
+
+  public OpenAnswerPanel(String id, final IModel<EditedQuestion> questionModel, final IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
+
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     Question question = questionModel.getObject().getElement();
     OpenAnswerDefinition openAnswerDefinition = model.getObject();
@@ -128,8 +141,7 @@ public class OpenAnswerPanel extends Panel {
     add(unit);
     add(new SimpleFormComponentLabel("unitLabel", unit));
 
-    // add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new
-    // PropertyModel<Question>(form.getModel(), "element"), localePropertiesModel));
+    add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", model, localePropertiesModel));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));

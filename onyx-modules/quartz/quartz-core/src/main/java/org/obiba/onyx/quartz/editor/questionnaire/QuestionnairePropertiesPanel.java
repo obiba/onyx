@@ -95,7 +95,7 @@ public class QuestionnairePropertiesPanel extends Panel {
     super(id, model);
 
     final Questionnaire questionnaire = model.getObject().getElement();
-    List<LocaleProperties> loadLocaleProperties = localePropertiesUtils.loadLocaleProperties(new Model<Questionnaire>(model.getObject().getElement()), model);
+    List<LocaleProperties> loadLocaleProperties = localePropertiesUtils.loadLocaleProperties(new Model<Questionnaire>(model.getObject().getElement()), new PropertyModel<Questionnaire>(model, "element"));
     localePropertiesModel = new ListModel<LocaleProperties>(loadLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");

@@ -27,6 +27,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.utils.AjaxSubmitTabbedPanel;
@@ -46,7 +47,7 @@ public class EditQuestionPanel extends Panel {
 
   private AjaxSubmitTabbedPanel tabbedPanel;
 
-  public EditQuestionPanel(String id, IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final ModalWindow questionWindow) {
+  public EditQuestionPanel(String id, IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
 
     Question question = questionModel.getObject();
@@ -66,7 +67,7 @@ public class EditQuestionPanel extends Panel {
     final AbstractTab openAnswerTab = new AbstractTab(new ResourceModel("OpenAnswer")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new OpenAnswerPanel(panelId, model, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()));
+        return new OpenAnswerPanel(panelId, model, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionnaireModel);
       }
     };
     final AbstractTab categoriesTab = new AbstractTab(new ResourceModel("Categories")) {
@@ -90,7 +91,7 @@ public class EditQuestionPanel extends Panel {
     AbstractTab questionTab = new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new QuestionPanel(panelId, model, parentModel) {
+        return new QuestionPanel(panelId, model, parentModel, questionnaireModel) {
           @Override
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             switch(questionType) {
@@ -121,7 +122,10 @@ public class EditQuestionPanel extends Panel {
             case BOILER_PLATE:
               break;
             }
-            if(tabbedPanel != null) target.addComponent(tabbedPanel);
+            if(tabbedPanel != null) {
+              // TODO do not just reload tabset, but ajax submit form before
+              target.addComponent(tabbedPanel);
+            }
           }
         };
       }

@@ -26,6 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -64,7 +65,7 @@ public abstract class PagePropertiesPanel extends Panel {
     super(id, new Model<EditedPage>(new EditedPage(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

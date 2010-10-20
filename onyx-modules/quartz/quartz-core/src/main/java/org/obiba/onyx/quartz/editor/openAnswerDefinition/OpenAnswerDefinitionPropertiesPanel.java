@@ -43,6 +43,7 @@ import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
@@ -108,7 +109,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

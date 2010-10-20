@@ -24,12 +24,18 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 /**
@@ -38,8 +44,15 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 @SuppressWarnings("serial")
 public class QuestionPanel extends Panel {
 
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel) {
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
+
+  private ListModel<LocaleProperties> localePropertiesModel;
+
+  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
+
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(new PropertyModel<Question>(model, "element"), questionnaireModel));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name"));
@@ -89,8 +102,7 @@ public class QuestionPanel extends Panel {
     add(type);
     add(new SimpleFormComponentLabel("typeLabel", type));
 
-    // form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new
-    // PropertyModel<Question>(form.getModel(), "element"), localePropertiesModel));
+    add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Question>(model, "element"), localePropertiesModel));
   }
 
   /**

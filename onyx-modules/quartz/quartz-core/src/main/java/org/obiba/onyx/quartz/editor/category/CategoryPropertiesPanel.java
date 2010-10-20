@@ -93,10 +93,10 @@ public class CategoryPropertiesPanel extends Panel {
     add(form = new Form<EditedQuestionCategory>("form", (IModel<EditedQuestionCategory>) getDefaultModel()));
     final Category category = form.getModelObject().getElement().getCategory();
 
-    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
 
     if(QuestionnaireFinder.getInstance(questionnaire).findSharedCategories().contains(category)) {
-      localePropertiesModelCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(new Model<Category>(model.getObject().getCategory()), questionnaireModel));
+      localePropertiesModelCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(new Model<Category>(model.getObject().getCategory()), new PropertyModel<Questionnaire>(questionnaireModel, "element")));
     }
 
     feedbackPanel = new FeedbackPanel("content");

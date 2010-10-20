@@ -46,6 +46,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
@@ -108,7 +109,7 @@ public class QuestionPropertiesPanel extends Panel {
     super(id, new Model<EditedQuestion>(new EditedQuestion(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

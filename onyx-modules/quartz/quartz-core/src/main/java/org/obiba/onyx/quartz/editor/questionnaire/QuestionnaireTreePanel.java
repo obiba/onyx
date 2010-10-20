@@ -39,6 +39,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -439,7 +440,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(respondTarget);
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(), new Model<IHasQuestion>((IHasQuestion) element), elementWindow) {
+        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(), new Model<IHasQuestion>((IHasQuestion) element), new PropertyModel<Questionnaire>(questionnaireModel, "element"), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             super.onSave(target, editedQuestion);
