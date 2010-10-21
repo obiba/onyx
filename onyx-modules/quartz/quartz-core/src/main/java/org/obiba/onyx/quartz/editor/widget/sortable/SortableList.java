@@ -21,7 +21,6 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -39,6 +38,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.obiba.onyx.wicket.Images;
 import org.springframework.util.StringUtils;
 
 @SuppressWarnings("serial")
@@ -73,8 +73,8 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
         item.add(getItemTitle("item", t));
 
-        Image editImg = new Image("editImg", new ResourceReference(SortableList.class, "edit.png"));
-        editImg.add(new AttributeModifier("title", new ResourceModel("Edit")));
+        Image editImg = Images.getEditImage("editImg");
+        editImg.add(new AttributeModifier("title", true, new ResourceModel("Edit")));
         item.add(new AjaxLink<Void>("editItem") {
           @Override
           public void onClick(AjaxRequestTarget target) {
@@ -82,8 +82,8 @@ public abstract class SortableList<T extends Serializable> extends Panel {
           }
         }.add(editImg));
 
-        Image deleteImg = new Image("deleteImg", new ResourceReference(SortableList.class, "delete.png"));
-        deleteImg.add(new AttributeModifier("title", new ResourceModel("Delete")));
+        Image deleteImg = Images.getDeleteImage("deleteImg");
+        deleteImg.add(new AttributeModifier("title", true, new ResourceModel("Delete")));
         item.add(new AjaxLink<Void>("deleteItem") {
           @Override
           public void onClick(AjaxRequestTarget target) {

@@ -207,8 +207,14 @@ public class QuestionnaireFinder {
     CategoryFinder finder = new CategoryFinder();
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
-
     return finder.getQuestionSharedCategories();
+  }
+
+  public List<Category> findCategories() {
+    CategoryFinder finder = new CategoryFinder();
+    QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+    walker.walk(questionnaire);
+    return finder.getElements();
   }
 
   /**
@@ -224,7 +230,6 @@ public class QuestionnaireFinder {
         map.remove(category.getName());
       }
     }
-
     return new LinkedList<Category>(map.values());
   }
 

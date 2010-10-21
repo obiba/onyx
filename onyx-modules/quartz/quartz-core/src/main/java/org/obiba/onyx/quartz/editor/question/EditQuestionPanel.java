@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.editor.question;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -48,11 +49,11 @@ public class EditQuestionPanel extends Panel {
 
   private AjaxSubmitTabbedPanel tabbedPanel;
 
-  public EditQuestionPanel(String id, IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
+  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
 
     Question question = questionModel.getObject();
-    final IModel<EditedQuestion> model = new Model<EditedQuestion>(question == null ? new EditedQuestion() : new EditedQuestion(question));
+    final IModel<EditedQuestion> model = new Model<EditedQuestion>(StringUtils.isBlank(question.getName()) ? new EditedQuestion() : new EditedQuestion(question));
     setDefaultModel(model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -68,7 +69,7 @@ public class EditQuestionPanel extends Panel {
     final HidableTab openAnswerTab = new HidableTab(new ResourceModel("OpenAnswer")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new OpenAnswerPanel(panelId, model, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionnaireModel);
+        return new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionModel, questionnaireModel);
       }
     };
     openAnswerTab.setVisible(false);

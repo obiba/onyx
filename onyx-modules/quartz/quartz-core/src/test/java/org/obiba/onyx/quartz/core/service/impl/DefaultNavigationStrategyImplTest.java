@@ -60,17 +60,17 @@ public class DefaultNavigationStrategyImplTest {
 
   private List<CategoryAnswer> q1Answers;
 
-  private List<CategoryAnswer> q2Answers;
-
-  private List<CategoryAnswer> q3Answers;
-
-  private List<CategoryAnswer> q4Answers;
-
-  private List<CategoryAnswer> q5Answers;
-
-  private List<CategoryAnswer> q6Answers;
-
-  private List<CategoryAnswer> q7Answers;
+  // private List<CategoryAnswer> q2Answers;
+  //
+  // private List<CategoryAnswer> q3Answers;
+  //
+  // private List<CategoryAnswer> q4Answers;
+  //
+  // private List<CategoryAnswer> q5Answers;
+  //
+  // private List<CategoryAnswer> q6Answers;
+  //
+  // private List<CategoryAnswer> q7Answers;
 
   private INavigationStrategy navigationStrategy;
 
@@ -102,12 +102,12 @@ public class DefaultNavigationStrategyImplTest {
     q1Answer.addOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
-    q2Answers = new ArrayList<CategoryAnswer>();
-    q3Answers = new ArrayList<CategoryAnswer>();
-    q4Answers = new ArrayList<CategoryAnswer>();
-    q5Answers = new ArrayList<CategoryAnswer>();
-    q6Answers = new ArrayList<CategoryAnswer>();
-    q7Answers = new ArrayList<CategoryAnswer>();
+    // q2Answers = new ArrayList<CategoryAnswer>();
+    // q3Answers = new ArrayList<CategoryAnswer>();
+    // q4Answers = new ArrayList<CategoryAnswer>();
+    // q5Answers = new ArrayList<CategoryAnswer>();
+    // q6Answers = new ArrayList<CategoryAnswer>();
+    // q7Answers = new ArrayList<CategoryAnswer>();
 
     // Expect that the questionnaire is retrieved from the service.
     expect(serviceMock.getQuestionnaire()).andReturn(questionnaire);
@@ -136,12 +136,12 @@ public class DefaultNavigationStrategyImplTest {
     q1Answer.addOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
-    q2Answers = new ArrayList<CategoryAnswer>();
-    q3Answers = new ArrayList<CategoryAnswer>();
-    q4Answers = new ArrayList<CategoryAnswer>();
-    q5Answers = new ArrayList<CategoryAnswer>();
-    q6Answers = new ArrayList<CategoryAnswer>();
-    q7Answers = new ArrayList<CategoryAnswer>();
+    // q2Answers = new ArrayList<CategoryAnswer>();
+    // q3Answers = new ArrayList<CategoryAnswer>();
+    // q4Answers = new ArrayList<CategoryAnswer>();
+    // q5Answers = new ArrayList<CategoryAnswer>();
+    // q6Answers = new ArrayList<CategoryAnswer>();
+    // q7Answers = new ArrayList<CategoryAnswer>();
 
     // Test that from p2, we go to p3.
     expect(serviceMock.getQuestionnaire()).andReturn(questionnaire);
@@ -182,12 +182,12 @@ public class DefaultNavigationStrategyImplTest {
     q1Answer.addOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
-    q2Answers = new ArrayList<CategoryAnswer>();
-    q3Answers = new ArrayList<CategoryAnswer>();
-    q4Answers = new ArrayList<CategoryAnswer>();
-    q5Answers = new ArrayList<CategoryAnswer>();
-    q6Answers = new ArrayList<CategoryAnswer>();
-    q7Answers = new ArrayList<CategoryAnswer>();
+    // q2Answers = new ArrayList<CategoryAnswer>();
+    // q3Answers = new ArrayList<CategoryAnswer>();
+    // q4Answers = new ArrayList<CategoryAnswer>();
+    // q5Answers = new ArrayList<CategoryAnswer>();
+    // q6Answers = new ArrayList<CategoryAnswer>();
+    // q7Answers = new ArrayList<CategoryAnswer>();
 
     // Test that from p5, we go to p3.
     expect(serviceMock.getQuestionnaire()).andReturn(questionnaire);

@@ -61,6 +61,10 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.thoughtworks.xstream.converters.ConversionException;
 
+/**
+ * @deprecated use OpenAnswerPanel or OpenAnswerWindow
+ */
+@Deprecated
 @SuppressWarnings("serial")
 public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 

@@ -48,7 +48,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
-import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.util.data.DataType;
@@ -89,12 +88,12 @@ public class OpenAnswerPanel extends Panel {
 
   private ListModel<LocaleProperties> localePropertiesModel;
 
-  public OpenAnswerPanel(String id, final IModel<EditedQuestion> questionModel, final IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireModel) {
+  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
 
     localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
-    Question question = questionModel.getObject().getElement();
+    Question question = questionModel.getObject();
     OpenAnswerDefinition openAnswerDefinition = model.getObject();
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "name"));
@@ -103,7 +102,7 @@ public class OpenAnswerPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        // TODO check OpenAnswer unicity ?
+        // TODO OpenAnswer name must be unique in his category
       }
     });
     add(name);
@@ -242,6 +241,15 @@ public class OpenAnswerPanel extends Panel {
         onSubmit(target);
       }
     });
+  }
+
+  /**
+   * 
+   * @param target
+   * @param openAnswer
+   */
+  public void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
+
   }
 
   @SuppressWarnings("incomplete-switch")

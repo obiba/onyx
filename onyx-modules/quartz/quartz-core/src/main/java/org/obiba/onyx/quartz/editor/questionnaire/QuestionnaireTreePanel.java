@@ -438,11 +438,11 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(respondTarget);
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
+        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             super.onSave(target, editedQuestion);
-            // TODO
+            // TODO persist question
             // ((IHasQuestion) element).addQuestion(editedQuestion.getElement());
             // persist(target);
             // target.addComponent(treeContainer);

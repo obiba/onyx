@@ -53,7 +53,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
-import org.obiba.onyx.quartz.editor.category.CategoryPropertiesPanel;
+import org.obiba.onyx.quartz.editor.category.CategoryWindow;
 import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
@@ -126,8 +126,8 @@ public class QuestionPropertiesPanel extends Panel {
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
-    categoryWindow.setInitialWidth(1000);
-    categoryWindow.setInitialHeight(600);
+    categoryWindow.setInitialWidth(950);
+    categoryWindow.setInitialHeight(550);
     categoryWindow.setResizable(true);
     form.add(categoryWindow);
 
@@ -201,7 +201,7 @@ public class QuestionPropertiesPanel extends Panel {
             QuestionCategory questionCategory = new QuestionCategory();
             questionCategory.setCategory(new Category(null));
             questionCategory.setQuestion(question);
-            categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
+            categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
 
               @Override
               public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
@@ -246,7 +246,7 @@ public class QuestionPropertiesPanel extends Panel {
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
         categoryWindow.setTitle(new ResourceModel("Category"));
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
+        categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
             super.onSave(target1, editedCategory);

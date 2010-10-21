@@ -2,21 +2,25 @@
 
 	<script type="text/javascript" wicket:id="toArrayCallback"></script>
 	
-	<span wicket:id="buttons">
-		<span wicket:id="button" />
-	</span>
-	
-	<ul wicket:id="listContainer" class="sortable">
-		<li wicket:id="listView" class="ui-state-default">
-			<table class="item">
-				<tr>
-					<td class="name"><span wicket:id="item"></span></td>
-					<td class="action"><a wicket:id="editItem"><img wicket:id="editImg" /></a></td>
-					<td class="action"><a wicket:id="deleteItem"><img wicket:id="deleteImg" /></a></td>
-				</tr>
-			</table>
-		</li>
-	</ul>  
+	<div class="sortableList">
+
+		<span wicket:id="buttons">
+			<span wicket:id="button" />
+		</span>
+		
+		<ul wicket:id="listContainer" class="sortable">
+			<li wicket:id="listView" class="ui-state-default">
+				<table class="item">
+					<tr>
+						<td class="name"><span wicket:id="item"></span></td>
+						<td class="action"><a wicket:id="editItem"><img wicket:id="editImg" /></a></td>
+						<td class="action"><a wicket:id="deleteItem"><img wicket:id="deleteImg" /></a></td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+		
+	</div>  
 	
 	<wicket:fragment wicket:id="buttonFragment">
 		<a class="obiba-button" wicket:id="button"><span wicket:id="buttonLabel" /></a>

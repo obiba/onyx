@@ -9,40 +9,47 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.category;
 
+import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-import org.apache.wicket.validation.validator.StringValidator;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
+import org.apache.wicket.validation.validator.StringValidator.MaximumLengthValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
+import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -57,18 +64,35 @@ public class CategoriesPanel extends Panel {
 
   private final ModalWindow categoryWindow;
 
+  private final FeedbackPanel feedbackPanel;
+
+  private final FeedbackWindow feedbackWindow;
+
+  private SortableList<QuestionCategory> categoryList;
+
+  // private List<Category> questionnaireCategories;
+  //
+  // private List<Category> sharedCategories;
+
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
+    this.feedbackPanel = feedbackPanel;
+    this.feedbackWindow = feedbackWindow;
 
     Question question = model.getObject().getElement();
+
+    // QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    // questionnaireCategories = questionnaireFinder.findCategories();
+    // sharedCategories = questionnaireFinder.findSharedCategories();
 
     add(CSSPackageResource.getHeaderContribution(CategoriesPanel.class, "CategoriesPanel.css"));
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
-    categoryWindow.setInitialWidth(1000);
-    categoryWindow.setInitialHeight(600);
+    categoryWindow.setInitialWidth(950);
+    categoryWindow.setInitialHeight(550);
     categoryWindow.setResizable(true);
+    categoryWindow.setTitle(new ResourceModel("Category"));
     add(categoryWindow);
 
     // radio group without default selection
@@ -116,7 +140,7 @@ public class CategoriesPanel extends Panel {
     });
     add(new AjaxTabbedPanel("addTabs", tabs));
 
-    SortableList<QuestionCategory> categoryList = new SortableList<QuestionCategory>("categories", question.getQuestionCategories()) {
+    categoryList = new SortableList<QuestionCategory>("categories", question.getQuestionCategories()) {
 
       @Override
       public Component getItemTitle(@SuppressWarnings("hiding") String id, QuestionCategory questionCategory) {
@@ -125,8 +149,7 @@ public class CategoriesPanel extends Panel {
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setTitle(new ResourceModel("Category"));
-        categoryWindow.setContent(new CategoryPropertiesPanel("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
+        categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
             super.onSave(target1, editedCategory);
@@ -137,10 +160,10 @@ public class CategoriesPanel extends Panel {
       }
 
       @Override
+      @SuppressWarnings("unchecked")
       public void deleteItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        // QuestionPropertiesPanel.this.form.getModelObject().getElement().getQuestionCategories().remove(questionCategory);
-        // refreshList(target);
-        // persist(target);
+        ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
+        refreshList(target);
       }
 
       @Override
@@ -157,21 +180,53 @@ public class CategoriesPanel extends Panel {
 
     public SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
-      TextField<String> category = new TextField<String>("category", model, String.class);
-      category.setLabel(new ResourceModel("NewCategory"));
-      category.add(new StringValidator.MaximumLengthValidator(20));
-      add(category);
-      add(new SimpleFormComponentLabel("categoryLabel", category));
-      AjaxLink<String> simpelAddLink = new AjaxLink<String>("simpleAddLink") {
+      Form<String> form = new Form<String>("form", model);
+      add(form);
+      final TextField<String> categoryName = new TextField<String>("category", model, String.class);
+      categoryName.setOutputMarkupId(true);
+      categoryName.setLabel(new ResourceModel("NewCategory"));
+      categoryName.add(new MaximumLengthValidator(20));
+      categoryName.add(new AbstractValidator<String>() {
         @Override
-        public void onClick(AjaxRequestTarget target) {
-          // TODO simple add
+        @SuppressWarnings("unchecked")
+        protected void onValidate(IValidatable<String> validatable) {
+          String value = validatable.getValue();
+          if(StringUtils.isBlank(value)) return;
+
+          Question question = ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement();
+          for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+            if(equalsIgnoreCase(questionCategory.getName(), value) || equalsIgnoreCase(questionCategory.getCategory().getName(), value)) {
+              error(validatable, "CategoryAlreadyExists");
+              return;
+            }
+          }
+        }
+      });
+      form.add(categoryName);
+      form.add(new SimpleFormComponentLabel("categoryLabel", categoryName));
+      AjaxSubmitLink simpelAddLink = new AjaxSubmitLink("link", form) {
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
+          QuestionCategory questionCategory = new QuestionCategory();
+          Category category = new Category(categoryName.getModelObject());
+          questionCategory.setCategory(category);
+          Question question = ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement();
+          question.addQuestionCategory(questionCategory);
+          categoryName.setModelObject(null);
+          target.addComponent(categoryName);
+          target.addComponent(categoryList);
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form1) {
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       };
-      Image image = new Image("simpleAddImg", new Model<String>("add.png"));
-      image.add(new AttributeModifier("title", new ResourceModel("Add")));
-      simpelAddLink.add(image);
-      add(simpelAddLink);
+
+      simpelAddLink.add(Images.getAddImage("img").add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(simpelAddLink);
     }
   }
 
@@ -189,9 +244,7 @@ public class CategoriesPanel extends Panel {
           // TODO bulk add
         }
       };
-      Image image = new Image("bulkAddImg", new Model<String>("add.png"));
-      image.add(new AttributeModifier("title", new ResourceModel("Add")));
-      bulkAddLink.add(image);
+      bulkAddLink.add(Images.getAddImage("bulkAddImg").add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       add(bulkAddLink);
     }
   }
