@@ -17,8 +17,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -209,41 +210,50 @@ public class OpenAnswerPanel extends Panel {
     maxNumeric.add(numericPatternValidator);
     minMaxContainer.add(maxNumeric);
 
-    PatternValidator datePatternValidator = new PatternValidator("[0-9]4-[0-9]2-[0-9]2");
+    // TODO validate date
+    // PatternValidator datePatternValidator = new PatternValidator("[0-9]4-[0-9]2-[0-9]2");
     beforeDate = new TextField<String>("beforeDate", new Model<String>(minValue), String.class);
     beforeDate.setLabel(new ResourceModel("Before"));
-    beforeDate.add(datePatternValidator);
+    // beforeDate.add(datePatternValidator);
     minMaxContainer.add(beforeDate);
 
     afterDate = new TextField<String>("afterDate", new Model<String>(maxValue), String.class);
     afterDate.setLabel(new ResourceModel("After"));
-    afterDate.add(datePatternValidator);
+    // afterDate.add(datePatternValidator);
     minMaxContainer.add(afterDate);
 
     minMaxContainer.add(minimumLabel = new SimpleFormComponentLabel("minimumLabel", minLength));
     minMaxContainer.add(maximumLabel = new SimpleFormComponentLabel("maximumLabel", maxLength));
 
-    setMinMaxLabels();
+    setMinMaxLabels(dataType.getModelObject());
 
-    dataType.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+    // submit the whole form instead of just the dataType component
+    dataType.add(new AjaxFormSubmitBehavior("onchange") {
       @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        setMinMaxLabels();
+      protected void onSubmit(AjaxRequestTarget target) {
+        String value = dataType.getValue(); // use value because model is not set if validation error
+        setMinMaxLabels(value == null ? null : DataType.valueOf(value));
         target.addComponent(minMaxContainer);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target) {
+        Session.get().getFeedbackMessages().clear(); // we don't want to validate fields now
+        onSubmit(target);
       }
     });
   }
 
   @SuppressWarnings("incomplete-switch")
-  private void setMinMaxLabels() {
-    if(dataType.getModelObject() == null) {
+  private void setMinMaxLabels(DataType type) {
+    if(type == null) {
       setMinimumLabel(minLength);
       setMaximumLabel(maxLength);
       minLength.setVisible(true).setEnabled(false);
       maxLength.setVisible(true).setEnabled(false);
       clearAndHide(minNumeric, maxNumeric, beforeDate, afterDate);
     } else {
-      switch(dataType.getModelObject()) {
+      switch(type) {
       case TEXT:
         setMinimumLabel(minLength);
         setMaximumLabel(maxLength);

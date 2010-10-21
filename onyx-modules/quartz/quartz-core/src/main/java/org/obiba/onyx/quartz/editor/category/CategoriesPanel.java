@@ -48,7 +48,9 @@ public class CategoriesPanel extends Panel {
       nbRows = uiArgumentsValueMap.getInt(ROW_COUNT_KEY);
     }
 
-    RadioGroup<String> layout = new RadioGroup<String>("layoutRadioGroup", new Model<String>(uiArgumentsValueMap == null ? null : layoutValue));
+    RadioGroup<String> layout = new RadioGroup<String>("layout", new Model<String>(uiArgumentsValueMap == null ? null : layoutValue));
+    layout.setLabel(new ResourceModel("Layout"));
+    layout.setRequired(true);
     add(layout);
 
     Radio<String> singleColumnLayout = new Radio<String>(SINGLE_COLUMN_LAYOUT, new Model<String>(SINGLE_COLUMN_LAYOUT));

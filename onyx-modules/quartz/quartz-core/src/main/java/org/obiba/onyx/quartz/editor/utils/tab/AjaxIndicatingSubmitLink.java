@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.utils;
+package org.obiba.onyx.quartz.editor.utils.tab;
 
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -33,6 +33,7 @@ public abstract class AjaxIndicatingSubmitLink extends AjaxSubmitLink implements
     add(indicatorAppender);
   }
 
+  @Override
   public String getAjaxIndicatorMarkupId() {
     return indicatorAppender.getMarkupId();
   }

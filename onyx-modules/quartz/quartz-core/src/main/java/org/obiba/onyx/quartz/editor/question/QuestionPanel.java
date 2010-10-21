@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -92,13 +93,21 @@ public class QuestionPanel extends Panel {
       }
     });
     type.setLabel(new ResourceModel("QuestionType"));
-    type.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+    // submit the whole form instead of just the questionType component
+    type.add(new AjaxFormSubmitBehavior("onchange") {
+      @Override
+      protected void onSubmit(AjaxRequestTarget target) {
+        String value = type.getValue(); // use value because model is not set if validation error
+        if(value != null) onQuestionTypeChange(target, QuestionType.valueOf(value));
+      }
 
       @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        onQuestionTypeChange(target, type.getModelObject());
+      protected void onError(AjaxRequestTarget target) {
+        Session.get().getFeedbackMessages().clear(); // we don't want to validate fields now
+        onSubmit(target);
       }
     });
+
     add(type);
     add(new SimpleFormComponentLabel("typeLabel", type));
 

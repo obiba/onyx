@@ -30,7 +30,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerPanel;
-import org.obiba.onyx.quartz.editor.utils.AjaxSubmitTabbedPanel;
+import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
+import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -64,31 +65,39 @@ public class EditQuestionPanel extends Panel {
 
     final List<ITab> tabs = new ArrayList<ITab>();
 
-    final AbstractTab openAnswerTab = new AbstractTab(new ResourceModel("OpenAnswer")) {
+    final HidableTab openAnswerTab = new HidableTab(new ResourceModel("OpenAnswer")) {
       @Override
       public Panel getPanel(String panelId) {
         return new OpenAnswerPanel(panelId, model, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionnaireModel);
       }
     };
-    final AbstractTab categoriesTab = new AbstractTab(new ResourceModel("Categories")) {
+    openAnswerTab.setVisible(false);
+
+    final HidableTab categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       @Override
       public Panel getPanel(String panelId) {
         return new CategoriesPanel(panelId, model);
       }
     };
-    final AbstractTab rowsTab = new AbstractTab(new ResourceModel("Rows(questions)")) {
+    categoriesTab.setVisible(false);
+
+    final HidableTab rowsTab = new HidableTab(new ResourceModel("Rows(questions)")) {
       @Override
       public Panel getPanel(String panelId) {
         return new Panel(panelId, model);
       }
     };
-    final AbstractTab columnsTab = new AbstractTab(new ResourceModel("Columns(categories)")) {
+    rowsTab.setVisible(false);
+
+    final HidableTab columnsTab = new HidableTab(new ResourceModel("Columns(categories)")) {
       @Override
       public Panel getPanel(String panelId) {
         return new Panel(panelId, model);
       }
     };
-    AbstractTab questionTab = new AbstractTab(new ResourceModel("Question")) {
+    columnsTab.setVisible(false);
+
+    ITab questionTab = new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
         return new QuestionPanel(panelId, model, parentModel, questionnaireModel) {
@@ -96,34 +105,33 @@ public class EditQuestionPanel extends Panel {
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             switch(questionType) {
             case SINGLE_OPEN_ANSWER:
-              tabs.remove(categoriesTab);
-              tabs.remove(rowsTab);
-              tabs.remove(columnsTab);
-              tabs.add(1, openAnswerTab);
+              openAnswerTab.setVisible(true);
+              categoriesTab.setVisible(false);
+              rowsTab.setVisible(false);
+              columnsTab.setVisible(false);
               break;
 
             case LIST_CHECKBOX:
             case LIST_RADIO:
             case LIST_DROP_DOWN:
-              tabs.remove(openAnswerTab);
-              tabs.remove(rowsTab);
-              tabs.remove(columnsTab);
-              if(!tabs.contains(categoriesTab)) tabs.add(1, categoriesTab);
+              categoriesTab.setVisible(true);
+              openAnswerTab.setVisible(false);
+              rowsTab.setVisible(false);
+              columnsTab.setVisible(false);
               break;
 
             case ARRAY_CHECKBOX:
             case ARRAY_RADIO:
-              tabs.remove(openAnswerTab);
-              tabs.remove(categoriesTab);
-              if(!tabs.contains(rowsTab)) tabs.add(1, rowsTab);
-              if(!tabs.contains(columnsTab)) tabs.add(2, columnsTab);
+              rowsTab.setVisible(true);
+              columnsTab.setVisible(true);
+              openAnswerTab.setVisible(false);
+              categoriesTab.setVisible(false);
               break;
 
             case BOILER_PLATE:
               break;
             }
             if(tabbedPanel != null) {
-              // TODO do not just reload tabset, but ajax submit form before
               target.addComponent(tabbedPanel);
             }
           }
@@ -132,6 +140,10 @@ public class EditQuestionPanel extends Panel {
     };
 
     tabs.add(questionTab);
+    tabs.add(openAnswerTab);
+    tabs.add(categoriesTab);
+    tabs.add(rowsTab);
+    tabs.add(columnsTab);
     tabs.add(new AbstractTab(new ResourceModel("Conditions")) {
       @Override
       public Panel getPanel(String panelId) {
