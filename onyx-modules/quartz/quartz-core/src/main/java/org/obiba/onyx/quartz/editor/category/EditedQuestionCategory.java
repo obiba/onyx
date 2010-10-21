@@ -16,6 +16,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.editor.EditedElement;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.KeyValue;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -43,14 +44,11 @@ public class EditedQuestionCategory extends EditedElement<QuestionCategory> {
         }
       });
 
-      String[] keysWithNamingStrategy = new String[localeProperty.getKeys().length];
-      for(int i = 0; i < localeProperty.getKeys().length; i++) {
-        String key = localeProperty.getKeys()[i];
-        keysWithNamingStrategy[i] = defaultPropertyKeyProviderImpl.getPropertyKey(getElement().getCategory(), key);
+      for(int i = 0; i < localeProperty.getKeysValues().length; i++) {
+        String key = localeProperty.getKeysValues()[i].getKey();
+        localeProperty.getKeysValues()[i].setKey(defaultPropertyKeyProviderImpl.getPropertyKey(getElement().getCategory(), key));
       }
-      localeProperty.setKeys(keysWithNamingStrategy);
-      find.setKeys((String[]) ArrayUtils.addAll(find.getKeys(), localeProperty.getKeys()));
-      find.setValues((String[]) ArrayUtils.addAll(find.getValues(), localeProperty.getValues()));
+      find.setKeysValues((KeyValue[]) ArrayUtils.addAll(find.getKeysValues(), localeProperty.getKeysValues()));
     }
   }
 }

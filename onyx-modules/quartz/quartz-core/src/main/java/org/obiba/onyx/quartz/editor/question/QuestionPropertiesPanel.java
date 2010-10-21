@@ -13,7 +13,9 @@ import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategor
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -45,7 +47,6 @@ import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -105,8 +106,9 @@ public class QuestionPropertiesPanel extends Panel {
 
   private ConditionPanel conditionPanel;
 
-  public QuestionPropertiesPanel(String id, IModel<Question> model, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
-    super(id);
+  @SuppressWarnings("unchecked")
+  public QuestionPropertiesPanel(String id, IModel<Question> model, final Set<String> unavailableNames, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
+    super(id, new Model<EditedQuestion>(new EditedQuestion(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
     EditedQuestion editedQuestion = new EditedQuestion();
@@ -139,11 +141,9 @@ public class QuestionPropertiesPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        for(Question q : parentModel.getObject().getQuestions()) {
-          if(question != q && q.getName().equalsIgnoreCase(validatable.getValue())) {
-            error(validatable, "QuestionAlreadyExists");
-            return;
-          }
+        if(unavailableNames.contains(StringUtils.lowerCase(validatable.getValue()))) {
+          error(validatable, "QuestionAlreadyExists");
+          return;
         }
       }
     });

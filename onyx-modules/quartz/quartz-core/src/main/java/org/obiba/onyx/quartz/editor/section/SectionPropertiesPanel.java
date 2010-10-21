@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.section;
 
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -25,7 +28,6 @@ import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasSection;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
@@ -60,7 +62,7 @@ public abstract class SectionPropertiesPanel extends Panel {
   private ListModel<LocaleProperties> localePropertiesModel;
 
   @SuppressWarnings("unchecked")
-  public SectionPropertiesPanel(String id, IModel<Section> model, final IModel<IHasSection> parentModel, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public SectionPropertiesPanel(String id, final IModel<Section> model, final Set<String> unavailableNames, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedSection>(new EditedSection(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
@@ -81,11 +83,9 @@ public abstract class SectionPropertiesPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        for(Section section : parentModel.getObject().getSections()) {
-          if(section != form.getModelObject().getElement() && section.getName().equalsIgnoreCase(validatable.getValue())) {
-            error(validatable, "SectionAlreadyExists");
-            return;
-          }
+        if(unavailableNames.contains(StringUtils.lowerCase(validatable.getValue()))) {
+          error(validatable, "SectionAlreadyExists");
+          return;
         }
       }
     });

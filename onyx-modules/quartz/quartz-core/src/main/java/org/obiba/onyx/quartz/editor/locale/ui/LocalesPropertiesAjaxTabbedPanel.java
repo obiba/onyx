@@ -94,7 +94,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     else if(listSelectedLocaleSize > listLocalePropertiesSize) {
       for(int i = listLocalePropertiesSize; i < listSelectedLocaleSize; i++) {
         final Locale locale = listSelectedLocale.get(i);
-        LocaleProperties localeProperties = new LocaleProperties(locale, questionnaireElementModel);
+        LocaleProperties localeProperties = new LocaleProperties(locale, questionnaireElementModel.getObject());
         LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(localeProperties);
         localePropertiesModel.getObject().add(localeProperties);
         getTabs().add(localePropertiesTab);

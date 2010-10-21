@@ -9,32 +9,31 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.locale.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.wicket.IClusterable;
-import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 
 /**
  * Class representing a locale and his list of properties (keys and values)
  */
-public class LocaleProperties implements IClusterable {
+public class LocaleProperties implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   private Locale locale;
 
-  private String[] keys;
+  private KeyValue[] keysValues;
 
-  private String[] values;
-
-  public LocaleProperties(Locale locale, IModel<? extends IQuestionnaireElement> questionnaireElementModel) {
+  public LocaleProperties(Locale locale, IQuestionnaireElement element) {
     this.locale = locale;
-    List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaireElementModel.getObject());
-    values = new String[listSourceKeys.size()];
-    keys = listSourceKeys.toArray(new String[listSourceKeys.size()]);
+    List<String> listSourceKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
+    keysValues = new KeyValue[listSourceKeys.size()];
+    for(int i = 0; i < listSourceKeys.size(); i++) {
+      keysValues[i] = new KeyValue(listSourceKeys.get(i), null);
+    }
   }
 
   public Locale getLocale() {
@@ -45,20 +44,59 @@ public class LocaleProperties implements IClusterable {
     this.locale = locale;
   }
 
-  public String[] getKeys() {
-    return keys;
+  public KeyValue[] getKeysValues() {
+    return keysValues;
   }
 
-  public void setKeys(String[] keys) {
-    this.keys = keys;
+  public void setKeysValues(KeyValue[] keysValues) {
+    this.keysValues = keysValues;
   }
 
-  public String[] getValues() {
-    return values;
-  }
+  public class KeyValue implements Serializable {
 
-  public void setValues(String[] values) {
-    this.values = values;
-  }
+    private static final long serialVersionUID = 1L;
 
+    private String key;
+
+    private String fullKey;
+
+    private String value;
+
+    public KeyValue(String key, String value) {
+      this.key = key;
+      this.value = value;
+    }
+
+    /**
+     * key without context (label or description)
+     * @return
+     */
+    public String getKey() {
+      return key;
+    }
+
+    public void setKey(String key) {
+      this.key = key;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    /**
+     * key with context (Question.name.label or Category.name.description) MAY BE NOT INITIALIZED YET
+     * @return
+     */
+    public String getFullKey() {
+      return fullKey;
+    }
+
+    public void setFullKey(String fullKey) {
+      this.fullKey = fullKey;
+    }
+  }
 }

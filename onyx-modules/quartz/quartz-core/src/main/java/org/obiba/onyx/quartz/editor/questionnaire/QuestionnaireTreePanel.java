@@ -14,8 +14,10 @@ import static org.apache.commons.lang.StringUtils.trimToNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
@@ -42,8 +44,10 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasSection;
@@ -54,6 +58,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.page.EditedPage;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
@@ -66,6 +71,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 @SuppressWarnings("serial")
 public class QuestionnaireTreePanel extends Panel {
 
@@ -75,11 +82,11 @@ public class QuestionnaireTreePanel extends Panel {
 
   private Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
 
-  // Map<Element, ParentElement>
-  private Map<IQuestionnaireElement, IQuestionnaireElement> elementsParent = new HashMap<IQuestionnaireElement, IQuestionnaireElement>();
-
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+
+  @SpringBean
+  private QuestionnaireBundleManager questionnaireBundleManager;
 
   private int elementCounter;
 
@@ -109,6 +116,8 @@ public class QuestionnaireTreePanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
+  private ListModel<IQuestionnaireElement> root;
+
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
     super(id, new Model<EditedQuestionnaire>(new EditedQuestionnaire(model.getObject())));
 
@@ -135,8 +144,7 @@ public class QuestionnaireTreePanel extends Panel {
 
     add(JavascriptPackageResource.getHeaderContribution(QuestionnaireTreePanel.class, "QuestionnaireTreePanel.js"));
 
-    Questionnaire questionnaire = model.getObject();
-    treeId = "tree_" + questionnaire.getName();
+    treeId = "tree_" + model.getObject().getName();
 
     treeContainer = new WebMarkupContainer("treeContainer");
     treeContainer.setMarkupId(treeId);
@@ -144,8 +152,8 @@ public class QuestionnaireTreePanel extends Panel {
 
     add(treeContainer);
 
-    List<IQuestionnaireElement> root = new ArrayList<IQuestionnaireElement>();
-    root.add(questionnaire);
+    root = new ListModel<IQuestionnaireElement>();
+    root.setObject(Lists.newArrayList((IQuestionnaireElement) model.getObject()));
     ListFragment listFragment = new ListFragment("tree", root);
     listFragment.add(new JsTreeBehavior());
     treeContainer.add(listFragment);
@@ -215,13 +223,25 @@ public class QuestionnaireTreePanel extends Panel {
 
       IQuestionnaireElement element = elements.get(nodeId);
       IQuestionnaireElement newParent = elements.get(newParentId);
-      Questionnaire questionnaire = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
+
+      EditedQuestionnaire editedQuestionnaire = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(editedQuestionnaire.getElement().getName()).getQuestionnaire();
+      editedQuestionnaire.setElement(questionnaire);
+      QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+
       if(element instanceof Section && newParent instanceof IHasSection) {
-        Section section = (Section) element;
-        IHasSection newHasSectionParent = (IHasSection) newParent;
+        Section updatedElement = questionnaireFinder.findSection(element.getName());
+
+        final IHasSection updatedNewParent;
+        if(newParent instanceof Section) {
+          updatedNewParent = questionnaireFinder.findSection(newParent.getName());
+        } else {
+          updatedNewParent = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
+        }
+
         if(!sameParent) {
-          for(Section existing : newHasSectionParent.getSections()) {
-            if(existing.getName().equalsIgnoreCase(section.getName())) {
+          for(Section existing : updatedNewParent.getSections()) {
+            if(existing.getName().equalsIgnoreCase(updatedElement.getName())) {
               error(new StringResourceModel("Section.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
               feedbackWindow.setContent(feedbackPanel);
               feedbackWindow.show(target);
@@ -230,23 +250,23 @@ public class QuestionnaireTreePanel extends Panel {
           }
         }
         if(!hasErrorMessage()) {
-          if(section.getParentSection() == null) {
-            questionnaire.removeSection(section);
+          if(updatedElement.getParentSection() == null) {
+            questionnaire.removeSection(updatedElement);
           } else {
-            section.getParentSection().removeSection(section);
+            updatedElement.getParentSection().removeSection(updatedElement);
           }
-          if(newHasSectionParent instanceof Questionnaire) {
-            section.setParentSection(null);
+          if(updatedNewParent instanceof Questionnaire) {
+            updatedElement.setParentSection(null);
           }
-          newHasSectionParent.addSection(section, Math.min(newHasSectionParent.getSections().size(), position));
+          updatedNewParent.addSection(updatedElement, Math.min(updatedNewParent.getSections().size(), position));
           persit();
         }
       } else if(element instanceof Page && newParent instanceof Section) {
-        Page page = (Page) element;
-        Section newSectionParent = (Section) newParent;
+        Page updatedElement = questionnaireFinder.findPage(element.getName());
+        Section updatedNewParent = questionnaireFinder.findSection(newParent.getName());
         if(!sameParent) {
-          for(Page existing : newSectionParent.getPages()) {
-            if(existing.getName().equalsIgnoreCase(page.getName())) {
+          for(Page existing : updatedNewParent.getPages()) {
+            if(existing.getName().equalsIgnoreCase(updatedElement.getName())) {
               error(new StringResourceModel("Page.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
               feedbackWindow.setContent(feedbackPanel);
               feedbackWindow.show(target);
@@ -255,20 +275,27 @@ public class QuestionnaireTreePanel extends Panel {
           }
         }
         if(!hasErrorMessage()) {
-          if(page.getSection() == null) {
-            questionnaire.removePage(page);
+          if(updatedElement.getSection() == null) {
+            questionnaire.removePage(updatedElement);
           } else {
-            page.getSection().removePage(page);
+            updatedElement.getSection().removePage(updatedElement);
           }
-          newSectionParent.addPage(page, Math.min(newSectionParent.getPages().size(), position));
+          updatedNewParent.addPage(updatedElement, Math.min(updatedNewParent.getPages().size(), position));
           persit();
         }
       } else if(element instanceof Question && newParent instanceof IHasQuestion) {
-        Question question = (Question) element;
-        IHasQuestion newHasQuestionParent = (IHasQuestion) newParent;
+        Question updatedElement = questionnaireFinder.findQuestion(element.getName());
+
+        IHasQuestion updatedNewParent;
+        if(newParent instanceof Page) {
+          updatedNewParent = questionnaireFinder.findPage(element.getName());
+        } else {
+          updatedNewParent = questionnaireFinder.findQuestion(element.getName());
+        }
+
         if(!sameParent) {
-          for(Question existing : newHasQuestionParent.getQuestions()) {
-            if(existing.getName().equalsIgnoreCase(question.getName())) {
+          for(Question existing : updatedNewParent.getQuestions()) {
+            if(existing.getName().equalsIgnoreCase(updatedElement.getName())) {
               error(new StringResourceModel("Question.AlreadyExistForParent", QuestionnaireTreePanel.this, null).getObject());
               feedbackWindow.setContent(feedbackPanel);
               feedbackWindow.show(target);
@@ -276,21 +303,21 @@ public class QuestionnaireTreePanel extends Panel {
             }
           }
         }
-        if(question.hasCategories() && newParent instanceof Question) {
+        if(updatedElement.hasCategories() && newParent instanceof Question) {
           error(new StringResourceModel("Question.ImpossibleMoveCategories", QuestionnaireTreePanel.this, null).getObject());
         }
         if(!hasErrorMessage()) {
-          if(question.getParentQuestion() == null) {
-            question.getPage().removeQuestion(question);
+          if(updatedElement.getParentQuestion() == null) {
+            updatedElement.getPage().removeQuestion(updatedElement);
           } else {
-            question.getParentQuestion().removeQuestion(question);
+            updatedElement.getParentQuestion().removeQuestion(updatedElement);
           }
-          if(newHasQuestionParent instanceof Page) {
-            question.setParentQuestion(null);
-          } else if(newHasQuestionParent instanceof Question) {
-            question.setPage(null);
+          if(updatedNewParent instanceof Page) {
+            updatedElement.setParentQuestion(null);
+          } else if(updatedNewParent instanceof Question) {
+            updatedElement.setPage(null);
           }
-          newHasQuestionParent.addQuestion(question, Math.min(position, newHasQuestionParent.getQuestions().size()));
+          updatedNewParent.addQuestion(updatedElement, Math.min(position, updatedNewParent.getQuestions().size()));
           persit();
         }
       }
@@ -309,51 +336,83 @@ public class QuestionnaireTreePanel extends Panel {
     protected void respond(final AjaxRequestTarget respondTarget) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Edit " + nodeId);
-      final IQuestionnaireElement element = elements.get(nodeId);
+      IQuestionnaireElement element = elements.get(nodeId);
+      EditedQuestionnaire editedQuestionnaire = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(editedQuestionnaire.getElement().getName()).getQuestionnaire();
+      editedQuestionnaire.setElement(questionnaire);
+      QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
       if(element instanceof Questionnaire) {
         elementWindow.setTitle(new ResourceModel("Questionnaire"));
-        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<EditedQuestionnaire>(new EditedQuestionnaire((Questionnaire) element)), elementWindow) {
+        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<EditedQuestionnaire>(new EditedQuestionnaire(questionnaire)), elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedQuestionnaire editedQuestionnaire) {
-            super.onSave(target, editedQuestionnaire);
+          public void onSave(AjaxRequestTarget target, EditedQuestionnaire onSaveEditedQuestionnaire) {
+            super.onSave(target, onSaveEditedQuestionnaire);
+            elements.put(nodeId, onSaveEditedQuestionnaire.getElement());
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedQuestionnaire.getElement().getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + onSaveEditedQuestionnaire.getElement().getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
       }
+
       IModel<Questionnaire> questionnaireModel = new PropertyModel<Questionnaire>(QuestionnaireTreePanel.this.getDefaultModel(), "element");
       if(element instanceof Section) {
+        Section updatedElement = questionnaireFinder.findSection(element.getName());
         elementWindow.setTitle(new ResourceModel("Section"));
-        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), new Model<IHasSection>((IHasSection) elementsParent.get(element)), questionnaireModel, elementWindow) {
+        Set<String> unavailableNames = new HashSet<String>();
+        for(Section section : questionnaireModel.getObject().getSections()) {
+          unavailableNames.add(section.getName());
+        }
+        unavailableNames.remove(updatedElement.getName());
+
+        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
             super.onSave(target, editedSection);
             persist(target);
+            elements.put(nodeId, editedSection.getElement());
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedSection.getElement().getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
       } else if(element instanceof Page) {
+        Page updatedElement = questionnaireFinder.findPage(element.getName());
         elementWindow.setTitle(new ResourceModel("Page"));
-        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>((Page) element), new Model<Section>((Section) elementsParent.get(element)), questionnaireModel, elementWindow) {
+
+        Set<String> unavailableNames = new HashSet<String>();
+        for(Page page : updatedElement.getSection().getPages()) {
+          unavailableNames.add(page.getName());
+        }
+        unavailableNames.remove(updatedElement.getName());
+
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
             super.onSave(target, editedPage);
             persist(target);
+            elements.put(nodeId, editedPage.getElement());
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getElement().getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
       } else if(element instanceof Question) {
+        Question updatedElement = questionnaireFinder.findQuestion(element.getName());
         elementWindow.setTitle(new ResourceModel("Question"));
-        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>((Question) element), new Model<IHasQuestion>((IHasQuestion) elementsParent.get(element)), questionnaireModel, elementWindow) {
+
+        Set<String> unavailableNames = new HashSet<String>();
+        for(Question question : updatedElement.getPage() != null ? updatedElement.getPage().getQuestions() : updatedElement.getParentQuestion().getQuestions()) {
+          unavailableNames.add(question.getName());
+        }
+        unavailableNames.remove(updatedElement.getName());
+
+        elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             super.onSave(target, editedQuestion);
             persist(target);
+            elements.put(nodeId, editedQuestion.getElement());
             target.addComponent(treeContainer);
           }
         });
@@ -367,36 +426,35 @@ public class QuestionnaireTreePanel extends Panel {
     protected void respond(AjaxRequestTarget target) {
       String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Delete " + nodeId);
+
       IQuestionnaireElement element = elements.get(nodeId);
-      Questionnaire questionnaire = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
+      EditedQuestionnaire editedQuestionnaire = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(editedQuestionnaire.getElement().getName()).getQuestionnaire();
+      editedQuestionnaire.setElement(questionnaire);
+      QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+
       if(element instanceof Section) {
-        Section section = (Section) element;
-        Section parentSection = section.getParentSection();
+        Section updatedElement = questionnaireFinder.findSection(element.getName());
+        Section parentSection = updatedElement.getParentSection();
         if(parentSection == null) {
-          questionnaire.removeSection(section);
+          questionnaire.removeSection(updatedElement);
         } else {
-          parentSection.removeSection(section);
+          parentSection.removeSection(updatedElement);
         }
       } else if(element instanceof Page) {
-        Page page = (Page) element;
-        Section parentSection = page.getSection();
-        parentSection.removePage(page);
-        ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().removePage(page);
+        Page updatedElement = questionnaireFinder.findPage(element.getName());
+        Section parentSection = updatedElement.getSection();
+        parentSection.removePage(updatedElement);
+        ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().removePage(updatedElement);
       } else if(element instanceof Question) {
-        Question question = (Question) element;
-        if(question.getParentQuestion() == null) {
-          question.getPage().removeQuestion(question);
+        Question updatedElement = questionnaireFinder.findQuestion(element.getName());
+        if(updatedElement.getParentQuestion() == null) {
+          updatedElement.getPage().removeQuestion(updatedElement);
         } else {
-          question.getParentQuestion().removeQuestion(question);
+          updatedElement.getParentQuestion().removeQuestion(updatedElement);
         }
       }
-      try {
-        EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-        QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject.getElement());
-        questionnairePersistenceUtils.persist(defaultModelObject, builder);
-      } catch(Exception e) {
-        log.error("Cannot persist questionnaire", e);
-      }
+      persit();
       // remove node from jsTree
       target.appendJavascript("$('#" + treeId + "').jstree('delete_node', $('#" + nodeId + "'));");
     }
@@ -406,39 +464,76 @@ public class QuestionnaireTreePanel extends Panel {
     @Override
     protected void respond(final AjaxRequestTarget respondTarget) {
       Request request = RequestCycle.get().getRequest();
-      String nodeId = request.getParameter("nodeId");
+      final String nodeId = request.getParameter("nodeId");
       String type = request.getParameter("type");
       log.info("Add " + type + " to " + nodeId);
-      final IQuestionnaireElement element = elements.get(nodeId);
+
       IModel<Questionnaire> questionnaireModel = new PropertyModel<Questionnaire>(QuestionnaireTreePanel.this.getDefaultModel(), "element");
+      IQuestionnaireElement element = elements.get(nodeId);
+      final Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
+      questionnaireModel.setObject(questionnaire);
+      QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+
       if(element instanceof IHasSection && "section".equals(type)) {
+        final IHasSection updatedElement;
+        if(element instanceof Section) {
+          updatedElement = questionnaireFinder.findSection(element.getName());
+        } else {
+          updatedElement = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
+        }
+
+        Set<String> unavailableNames = new HashSet<String>();
+        for(Section section : updatedElement.getSections()) {
+          unavailableNames.add(section.getName());
+        }
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), new Model<IHasSection>((IHasSection) element), questionnaireModel, elementWindow) {
+        elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
             super.onSave(target, editedSection);
-            ((IHasSection) element).addSection(editedSection.getElement());
+            updatedElement.addSection(editedSection.getElement());
             persist(target);
+            root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);
       } else if(element instanceof Section && "page".equals(type)) {
+        final Section updatedElement = questionnaireFinder.findSection(element.getName());
         elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), new Model<Section>((Section) element), questionnaireModel, elementWindow) {
+
+        Set<String> unavailableNames = new HashSet<String>();
+        for(Page page : updatedElement.getPages()) {
+          unavailableNames.add(page.getName());
+        }
+
+        elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
             super.onSave(target, editedPage);
-            ((Section) element).addPage(editedPage.getElement());
+            updatedElement.addPage(editedPage.getElement());
             ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().addPage(editedPage.getElement());
             persist(target);
+            root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
+        IHasQuestion updatedElement;
+        if(element instanceof Page) {
+          updatedElement = questionnaireFinder.findPage(element.getName());
+        } else {
+          updatedElement = questionnaireFinder.findQuestion(element.getName());
+        }
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
+
+        Set<String> unavailableNames = new HashSet<String>();
+        for(Question question : updatedElement.getQuestions()) {
+          unavailableNames.add(question.getName());
+        }
+
+        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>(updatedElement), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             super.onSave(target, editedQuestion);
@@ -510,18 +605,18 @@ public class QuestionnaireTreePanel extends Panel {
     public void visit(OpenAnswerDefinition openAnswerDefinition) {
     }
 
-    public List<IQuestionnaireElement> getChildren() {
-      return children;
+    public ListModel<IQuestionnaireElement> getChildren() {
+      return new ListModel<IQuestionnaireElement>(children);
     }
 
   }
 
   public class ListFragment extends Fragment {
 
-    public ListFragment(String id, List<IQuestionnaireElement> list) {
+    public ListFragment(String id, ListModel<IQuestionnaireElement> root) {
       super(id, "listFragment", QuestionnaireTreePanel.this);
 
-      add(new ListView<IQuestionnaireElement>("item", list) {
+      add(new ListView<IQuestionnaireElement>("item", root) {
         @Override
         protected void populateItem(ListItem<IQuestionnaireElement> item) {
           item.setOutputMarkupId(true);
@@ -529,16 +624,13 @@ public class QuestionnaireTreePanel extends Panel {
           IQuestionnaireElement element = item.getModelObject();
           QVisitor questionnaireVisitor = new QVisitor(new ArrayList<IQuestionnaireElement>());
           element.accept(questionnaireVisitor);
-          for(IQuestionnaireElement child : questionnaireVisitor.getChildren()) {
-            elementsParent.put(child, element);
-          }
 
           item.add(new Label("itemTitle", "[" + getShortClassName(element.getClass()).toUpperCase() + "] " + element.getName()));
           item.add(new SimpleAttributeModifier("id", addElement(element)));
           item.add(new SimpleAttributeModifier("name", element.getName()));
-          item.add(new AttributeAppender("class", new Model<String>(questionnaireVisitor.getChildren().isEmpty() ? "jstree-leaf" : "jstree-open"), " "));
+          item.add(new AttributeAppender("class", new Model<String>(questionnaireVisitor.getChildren().getObject().isEmpty() ? "jstree-leaf" : "jstree-open"), " "));
           item.add(new AttributeAppender("rel", new Model<String>(ClassUtils.getShortClassName(element.getClass())), " "));
-          if(questionnaireVisitor.getChildren().isEmpty()) {
+          if(questionnaireVisitor.getChildren().getObject().isEmpty()) {
             item.add(new WebMarkupContainer("children"));
           } else {
             item.add(new ListFragment("children", questionnaireVisitor.getChildren()));

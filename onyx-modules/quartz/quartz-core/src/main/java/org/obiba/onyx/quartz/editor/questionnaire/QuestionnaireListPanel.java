@@ -186,6 +186,8 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           layoutWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
+          Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(rowModel.getObject().getName()).getQuestionnaire();
+          rowModel.setObject(questionnaire);
           layoutWindow.setContent(new QuestionnaireTreePanel("content", rowModel));
           layoutWindow.show(target);
         }

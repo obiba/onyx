@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.page;
 
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -60,7 +63,7 @@ public abstract class PagePropertiesPanel extends Panel {
   private ListModel<LocaleProperties> localePropertiesModel;
 
   @SuppressWarnings("unchecked")
-  public PagePropertiesPanel(String id, IModel<Page> model, final IModel<Section> parentModel, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public PagePropertiesPanel(String id, IModel<Page> model, final Set<String> unavailableNames, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedPage>(new EditedPage(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
@@ -81,11 +84,9 @@ public abstract class PagePropertiesPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        for(Page page : parentModel.getObject().getPages()) {
-          if(page != form.getModelObject().getElement() && page.getName().equalsIgnoreCase(validatable.getValue())) {
-            error(validatable, "PageAlreadyExists");
-            return;
-          }
+        if(unavailableNames.contains(StringUtils.lowerCase(validatable.getValue()))) {
+          error(validatable, "PageAlreadyExists");
+          return;
         }
       }
     });

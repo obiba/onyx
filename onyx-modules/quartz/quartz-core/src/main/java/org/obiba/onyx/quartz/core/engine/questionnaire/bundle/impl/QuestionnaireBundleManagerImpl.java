@@ -159,6 +159,17 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   }
 
   @Override
+  public QuestionnaireBundle getPersistedBundle(String name) {
+    QuestionnaireBundle bundle = null;
+    try {
+      bundle = loadBundle(name);
+    } catch(IOException ex) {
+      log.error("Failed to load questionnaire bundle " + name);
+    }
+    return bundle;
+  }
+
+  @Override
   public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name) {
     QuestionnaireBundle bundle = getBundle(name);
     if(bundle != null) bundle.clearMessageSourceCache();

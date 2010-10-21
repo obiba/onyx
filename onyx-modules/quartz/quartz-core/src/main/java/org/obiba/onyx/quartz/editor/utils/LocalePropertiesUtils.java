@@ -31,17 +31,15 @@ public class LocalePropertiesUtils {
     List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
     final Questionnaire questionnaire = questionnaireModel.getObject();
     for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, elementModel);
-      List<String> values = new ArrayList<String>();
-      for(String property : localeProperties.getKeys()) {
+      LocaleProperties localeProperties = new LocaleProperties(locale, elementModel.getObject());
+      for(LocaleProperties.KeyValue property : localeProperties.getKeysValues()) {
         if(StringUtils.isNotBlank(elementModel.getObject().getName())) {
           QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
           if(bundle != null) {
-            values.add(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, elementModel.getObject(), property, new Object[0], locale));
+            property.setValue(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, elementModel.getObject(), property.getKey(), new Object[0], locale));
           }
         }
       }
-      localeProperties.setValues(values.toArray(new String[localeProperties.getKeys().length]));
       listLocaleProperties.add(localeProperties);
     }
     return listLocaleProperties;

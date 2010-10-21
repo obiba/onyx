@@ -34,6 +34,13 @@ public interface QuestionnaireBundleManager {
   public QuestionnaireBundle getBundle(String name);
 
   /**
+   * Returns the latest version of the specified questionnaire bundle. (from xml file, not the cached)
+   * @param name
+   * @return
+   */
+  public QuestionnaireBundle getPersistedBundle(String name);
+
+  /**
    * Returns the latest versions of all questionnaire bundles.
    * 
    * @return managed questionnaire bundles
@@ -58,4 +65,5 @@ public interface QuestionnaireBundleManager {
    * @throws IOException
    */
   File generateBundleZip(String name) throws IOException;
+
 }

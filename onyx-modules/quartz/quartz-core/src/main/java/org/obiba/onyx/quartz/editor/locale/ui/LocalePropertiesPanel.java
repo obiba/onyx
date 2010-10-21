@@ -44,14 +44,14 @@ public class LocalePropertiesPanel extends Panel {
     public LocalePropertiesForm(String id, final LocaleProperties localeProperties) {
       super(id, new Model<LocaleProperties>(localeProperties));
 
-      Loop labels = new Loop("labelsItem", localeProperties.getKeys().length) {
+      Loop labels = new Loop("labelsItem", localeProperties.getKeysValues().length) {
 
         private static final long serialVersionUID = 1L;
 
         @Override
         protected void populateItem(LoopItem item) {
-          TextArea<String> labelTextArea = new TextArea<String>("labelsTextArea", new PropertyModel<String>(getModelObject(), "values[" + item.getIteration() + "]"));
-          labelTextArea.setLabel(new Model<String>(getModelObject().getKeys()[item.getIteration()]));
+          TextArea<String> labelTextArea = new TextArea<String>("labelsTextArea", new PropertyModel<String>(getModelObject(), "keysValues[" + item.getIteration() + "].value"));
+          labelTextArea.setLabel(new Model<String>(getModelObject().getKeysValues()[item.getIteration()].getKey()));
           labelTextArea.add(new AttributeModifier("rows", true, new Model<Integer>(3)));
           labelTextArea.add(new AttributeModifier("cols", true, new Model<Integer>(50)));
           labelTextArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {

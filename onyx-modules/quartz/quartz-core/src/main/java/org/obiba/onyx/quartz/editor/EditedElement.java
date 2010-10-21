@@ -45,12 +45,12 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
     this.localeProperties = localeProperties;
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
     for(LocaleProperties localeProperty : this.localeProperties) {
-      String[] keysWithNamingStrategy = new String[localeProperty.getKeys().length];
-      for(int i = 0; i < localeProperty.getKeys().length; i++) {
-        String key = localeProperty.getKeys()[i];
+      String[] keysWithNamingStrategy = new String[localeProperty.getKeysValues().length];
+      for(int i = 0; i < localeProperty.getKeysValues().length; i++) {
+        String key = localeProperty.getKeysValues()[i].getKey();
         keysWithNamingStrategy[i] = defaultPropertyKeyProviderImpl.getPropertyKey(element, key);
+        localeProperty.getKeysValues()[i].setFullKey(keysWithNamingStrategy[i]);
       }
-      localeProperty.setKeys(keysWithNamingStrategy);
     }
   }
 
@@ -58,10 +58,10 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
     Map<Locale, Properties> propertiesByLocale = new HashMap<Locale, Properties>();
     for(LocaleProperties localeProp : localeProperties) {
       Properties properties = new Properties();
-      for(int i = 0; i < localeProp.getKeys().length; i++) {
-        String key = localeProp.getKeys()[i];
-        String value = localeProp.getValues()[i];
-        properties.setProperty(key, value != null ? value : "");
+      for(int i = 0; i < localeProp.getKeysValues().length; i++) {
+        String fullKey = localeProp.getKeysValues()[i].getFullKey();
+        String value = localeProp.getKeysValues()[i].getValue();
+        properties.setProperty(fullKey, value != null ? value : "");
       }
       propertiesByLocale.put(localeProp.getLocale(), properties);
     }
