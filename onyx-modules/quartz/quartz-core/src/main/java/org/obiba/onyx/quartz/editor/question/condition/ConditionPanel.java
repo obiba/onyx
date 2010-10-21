@@ -50,12 +50,12 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDSPanel;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.DS;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDS;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDSPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 
@@ -83,7 +83,7 @@ public class ConditionPanel extends Panel {
   private WebMarkupContainer expressionVisibility;
 
   @SuppressWarnings("unchecked")
-  public ConditionPanel(String id, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel) {
+  public ConditionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
     super(id);
     final Conditions conditions = conditionsFactory.create(questionModel.getObject());
     setDefaultModel(new Model<Conditions>(conditions));

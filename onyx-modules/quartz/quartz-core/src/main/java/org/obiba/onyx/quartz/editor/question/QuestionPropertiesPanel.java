@@ -14,10 +14,12 @@ import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategor
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -59,7 +61,6 @@ import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDS;
-import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
@@ -98,18 +99,22 @@ public class QuestionPropertiesPanel extends Panel {
 
   private final Form<EditedQuestion> form;
 
-  private final IModel<EditedQuestionnaire> questionnaireModel;
+  private final IModel<Questionnaire> questionnaireModel;
 
   private ListModel<LocaleProperties> localePropertiesModel;
 
   private ConditionPanel conditionPanel;
 
-  @SuppressWarnings("unchecked")
-  public QuestionPropertiesPanel(String id, IModel<Question> model, final IModel<IHasQuestion> parentModel, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow questionWindow) {
-    super(id, new Model<EditedQuestion>(new EditedQuestion(model.getObject())));
+  public QuestionPropertiesPanel(String id, IModel<Question> model, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
+    super(id);
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
+    EditedQuestion editedQuestion = new EditedQuestion();
+    editedQuestion.setElement(model.getObject());
+    IModel<EditedQuestion> editedModel = new Model<EditedQuestion>(editedQuestion);
+    setDefaultModel(editedModel);
+
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -117,7 +122,7 @@ public class QuestionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<EditedQuestion>("form", (IModel<EditedQuestion>) getDefaultModel()));
+    add(form = new Form<EditedQuestion>("form", editedModel));
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
@@ -186,7 +191,7 @@ public class QuestionPropertiesPanel extends Panel {
     categoryList = new SortableList<QuestionCategory>("categoryList", question.getQuestionCategories()) {
 
       @Override
-      @SuppressWarnings({ "rawtypes" })
+      @SuppressWarnings({ "rawtypes", "unchecked" })
       public SortableList<QuestionCategory>.Button[] getButtons() {
 
         SortableList<QuestionCategory>.Button addButton = new SortableList.Button(new StringResourceModel("AddCategory", QuestionPropertiesPanel.this, null)) {
@@ -234,8 +239,8 @@ public class QuestionPropertiesPanel extends Panel {
       }
 
       @Override
-      public String getItemLabel(QuestionCategory questionCategory) {
-        return questionCategory.getCategory().getName();
+      public Component getItemTitle(@SuppressWarnings("hiding") String id, QuestionCategory questionCategory) {
+        return new Label(id, questionCategory.getName());
       }
 
       @Override

@@ -76,7 +76,7 @@ public class EditQuestionPanel extends Panel {
     final HidableTab categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new CategoriesPanel(panelId, model);
+        return new CategoriesPanel(panelId, model, questionnaireModel, feedbackPanel, feedbackWindow);
       }
     };
     categoriesTab.setVisible(false);

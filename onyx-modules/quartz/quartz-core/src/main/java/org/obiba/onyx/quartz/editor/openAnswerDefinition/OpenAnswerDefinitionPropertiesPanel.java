@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -48,10 +47,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
-import org.obiba.onyx.quartz.editor.variableNames.VariableNamesPanel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataValidator;
@@ -81,11 +78,9 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
   private final Form<EditedOpenAnswerDefinition> form;
 
-  private final VariableNamesPanel variableNamesPanel;
-
   private ListModel<LocaleProperties> localePropertiesModel;
 
-  private IModel<EditedQuestionnaire> questionnaireModel;
+  private IModel<Questionnaire> questionnaireModel;
 
   private AjaxCheckBox maximumValidatorCheckbox;
 
@@ -104,12 +99,14 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
   private DropDownChoice<DataType> dataTypeDropDownChoice;
 
   @SuppressWarnings("unchecked")
-  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    super(id, new Model<EditedOpenAnswerDefinition>(new EditedOpenAnswerDefinition(model.getObject())));
-
+  public OpenAnswerDefinitionPropertiesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+    super(id);
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
+    IModel<EditedOpenAnswerDefinition> editedModel = new Model<EditedOpenAnswerDefinition>(new EditedOpenAnswerDefinition(model.getObject()));
+    setDefaultModel(editedModel);
+
+    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -117,7 +114,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<EditedOpenAnswerDefinition>("form", (IModel<EditedOpenAnswerDefinition>) getDefaultModel()));
+    add(form = new Form<EditedOpenAnswerDefinition>("form", editedModel));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"));
     name.setLabel(new ResourceModel("Name"));
@@ -301,8 +298,6 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     rangeValidatorCheckbox.setLabel(new ResourceModel("RangeValidator"));
     validatorContainer.add(new SimpleFormComponentLabel("rangeValidatorLabel", rangeValidatorCheckbox), rangeValidatorCheckbox, rangeMinValidatorValueTextField, rangeMaxValidatorValueTextField);
 
-    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", form.getModelObject().getElement().getVariableNames()));
-
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
@@ -333,10 +328,6 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
   public void onSave(AjaxRequestTarget target, EditedOpenAnswerDefinition editedOpenAnswerDefinition) {
     editedOpenAnswerDefinition.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
     OpenAnswerDefinition openAnswerDefinition = editedOpenAnswerDefinition.getElement();
-    openAnswerDefinition.clearVariableNames();
-    for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
-      openAnswerDefinition.addVariableName(entries.getKey(), entries.getValue());
-    }
 
     openAnswerDefinition.clearDataValidators();
     String max = maximumValidatorValueTextField.getModelObject();

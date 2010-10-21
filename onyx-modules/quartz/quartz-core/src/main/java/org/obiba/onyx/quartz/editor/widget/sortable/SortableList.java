@@ -12,12 +12,16 @@ package org.obiba.onyx.quartz.editor.widget.sortable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -27,12 +31,14 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.springframework.util.StringUtils;
 
 @SuppressWarnings("serial")
@@ -52,6 +58,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     this(id, Model.ofList(items));
   }
 
+  @SuppressWarnings("unchecked")
   public SortableList(String id, IModel<? extends List<? extends T>> model) {
     super(id);
 
@@ -63,19 +70,27 @@ public abstract class SortableList<T extends Serializable> extends Panel {
       protected void populateItem(ListItem<T> item) {
         item.setOutputMarkupId(true);
         final T t = item.getModelObject();
-        item.add(new Label("item", getItemLabel(t)));
+
+        item.add(getItemTitle("item", t));
+
+        Image editImg = new Image("editImg", new ResourceReference(SortableList.class, "edit.png"));
+        editImg.add(new AttributeModifier("title", new ResourceModel("Edit")));
         item.add(new AjaxLink<Void>("editItem") {
           @Override
           public void onClick(AjaxRequestTarget target) {
             editItem(t, target);
           }
-        });
+        }.add(editImg));
+
+        Image deleteImg = new Image("deleteImg", new ResourceReference(SortableList.class, "delete.png"));
+        deleteImg.add(new AttributeModifier("title", new ResourceModel("Delete")));
         item.add(new AjaxLink<Void>("deleteItem") {
           @Override
           public void onClick(AjaxRequestTarget target) {
             deleteItem(t, target);
           }
-        });
+        }.add(deleteImg));
+
         itemByMarkupId.put(item.getMarkupId(), t);
       }
     };
@@ -92,7 +107,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
       }
     });
 
-    add(new ListView<Button>("buttons", Arrays.asList(getButtons())) {
+    add(new ListView<Button>("buttons", getButtons() == null ? Collections.EMPTY_LIST : Arrays.asList(getButtons())) {
       protected void populateItem(ListItem<Button> item) {
         item.add(new ButtonFragment("button", item.getModel()));
       }
@@ -135,7 +150,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     }
   }
 
-  public abstract String getItemLabel(T t);
+  public abstract Component getItemTitle(String id, T t);
 
   public abstract void editItem(T t, AjaxRequestTarget target);
 

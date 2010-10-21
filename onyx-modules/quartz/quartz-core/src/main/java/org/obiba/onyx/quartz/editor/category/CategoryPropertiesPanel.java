@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -29,21 +31,20 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.EditedOpenAnswerDefinition;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerDefinitionPropertiesPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
-import org.obiba.onyx.quartz.editor.variableNames.VariableNamesPanel;
+import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -58,15 +59,10 @@ public class CategoryPropertiesPanel extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private QuestionnaireBundleManager questionnaireBundleManager;
-
-  @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
-
-  private final VariableNamesPanel variableNamesPanel;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -76,28 +72,26 @@ public class CategoryPropertiesPanel extends Panel {
 
   private final Form<EditedQuestionCategory> form;
 
-  private final IModel<EditedQuestionnaire> questionnaireModel;
-
-  private ListModel<LocaleProperties> localePropertiesModelCategory = new ListModel<LocaleProperties>(new ArrayList<LocaleProperties>());
+  private final IModel<Questionnaire> questionnaireModel;
 
   private ListModel<LocaleProperties> localePropertiesModelQuestionCategory;
 
-  @SuppressWarnings("unchecked")
   private SortableList<OpenAnswerDefinition> openAnswerDefinitionList;
 
-  public CategoryPropertiesPanel(String id, IModel<QuestionCategory> model, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    super(id, new Model<EditedQuestionCategory>(new EditedQuestionCategory(model.getObject())));
-    this.questionnaireModel = questionnaireModel;
-    Questionnaire questionnaire = questionnaireModel.getObject().getElement();
+  public CategoryPropertiesPanel(String id, IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+    super(id);
 
-    add(form = new Form<EditedQuestionCategory>("form", (IModel<EditedQuestionCategory>) getDefaultModel()));
+    IModel<EditedQuestionCategory> editedModel = new Model<EditedQuestionCategory>(new EditedQuestionCategory(model.getObject()));
+    setDefaultModel(editedModel);
+
+    this.questionnaireModel = questionnaireModel;
+
+    Question question = model.getObject().getQuestion();
+
+    add(form = new Form<EditedQuestionCategory>("form", editedModel));
     final Category category = form.getModelObject().getElement().getCategory();
 
-    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, new PropertyModel<Questionnaire>(questionnaireModel, "element")));
-
-    if(QuestionnaireFinder.getInstance(questionnaire).findSharedCategories().contains(category)) {
-      localePropertiesModelCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(new Model<Category>(model.getObject().getCategory()), new PropertyModel<Questionnaire>(questionnaireModel, "element")));
-    }
+    localePropertiesModelQuestionCategory = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -111,17 +105,14 @@ public class CategoryPropertiesPanel extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    TextField<String> exportName = new TextField<String>("exportName", new PropertyModel<String>(form.getModel(), "element.exportName"));
-    exportName.setLabel(new ResourceModel("ExportName"));
-    form.add(exportName);
-    form.add(new SimpleFormComponentLabel("exportNameLabel", exportName));
-
-    form.add(new LocalesPropertiesAjaxTabbedPanel("categoryLocalesPropertiesTabs", new PropertyModel<Category>(form.getModel(), "element.category"), localePropertiesModelCategory));
-
-    form.add(new LocalesPropertiesAjaxTabbedPanel("questionCategoryLocalesPropertiesTabs", new PropertyModel<QuestionCategory>(form.getModel(), "element"), localePropertiesModelQuestionCategory));
+    TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"), question.getName()));
+    variable.setLabel(new ResourceModel("Variable"));
+    variable.add(new StringValidator.MaximumLengthValidator(20));
+    form.add(variable);
+    form.add(new SimpleFormComponentLabel("variableLabel", variable));
 
     CheckBox escapeCheckBox = new CheckBox("escape", new PropertyModel<Boolean>(form.getModel(), "element.category.escape"));
-    escapeCheckBox.setLabel(new ResourceModel("Escape"));
+    escapeCheckBox.setLabel(new ResourceModel("EscapeOrMissing"));
     form.add(escapeCheckBox);
     form.add(new SimpleFormComponentLabel("escapeLabel", escapeCheckBox));
 
@@ -130,7 +121,7 @@ public class CategoryPropertiesPanel extends Panel {
     form.add(noAnswerCheckBox);
     form.add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
 
-    form.add(variableNamesPanel = new VariableNamesPanel("variableNamesPanel", category.getVariableNames()));
+    form.add(new LocalesPropertiesAjaxTabbedPanel("questionCategoryLocalesPropertiesTabs", new PropertyModel<QuestionCategory>(form.getModel(), "element"), localePropertiesModelQuestionCategory));
 
     openAnswerDefinitionWindow = new ModalWindow("openAnswerDefinitionWindow");
     openAnswerDefinitionWindow.setCssClassName("onyx");
@@ -158,8 +149,8 @@ public class CategoryPropertiesPanel extends Panel {
     openAnswerDefinitionList = new SortableList<OpenAnswerDefinition>("openAnswerDefinitionList", listOpenAnswerDefinitionsModel) {
 
       @Override
-      public String getItemLabel(OpenAnswerDefinition openAnswerDefinition) {
-        return openAnswerDefinition.getName();
+      public Component getItemTitle(@SuppressWarnings("hiding") String id, OpenAnswerDefinition openAnswerDefinition) {
+        return new Label(id, openAnswerDefinition.getName());
       }
 
       @Override
@@ -260,12 +251,6 @@ public class CategoryPropertiesPanel extends Panel {
    */
   public void onSave(AjaxRequestTarget target, final EditedQuestionCategory editedQuestionCategory) {
     editedQuestionCategory.setLocalePropertiesWithNamingStrategy(localePropertiesModelQuestionCategory.getObject());
-    editedQuestionCategory.mergeCategoriesPropertiesWithNamingStrategy(localePropertiesModelCategory.getObject());
-
-    editedQuestionCategory.getElement().getCategory().clearVariableNames();
-    for(Map.Entry<String, String> entries : variableNamesPanel.getNewMapData().entrySet()) {
-      editedQuestionCategory.getElement().getCategory().addVariableName(entries.getKey(), entries.getValue());
-    }
 
     openAnswerDefinitionList.save(target, new SortableListCallback<OpenAnswerDefinition>() {
 

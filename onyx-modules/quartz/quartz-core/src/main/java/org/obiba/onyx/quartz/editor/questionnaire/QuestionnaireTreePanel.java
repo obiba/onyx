@@ -305,7 +305,6 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
-    @SuppressWarnings("unchecked")
     @Override
     protected void respond(final AjaxRequestTarget respondTarget) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
@@ -323,7 +322,7 @@ public class QuestionnaireTreePanel extends Panel {
         });
         elementWindow.show(respondTarget);
       }
-      IModel<EditedQuestionnaire> questionnaireModel = (IModel<EditedQuestionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+      IModel<Questionnaire> questionnaireModel = new PropertyModel<Questionnaire>(QuestionnaireTreePanel.this.getDefaultModel(), "element");
       if(element instanceof Section) {
         elementWindow.setTitle(new ResourceModel("Section"));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>((Section) element), new Model<IHasSection>((IHasSection) elementsParent.get(element)), questionnaireModel, elementWindow) {
@@ -393,7 +392,7 @@ public class QuestionnaireTreePanel extends Panel {
       }
       try {
         EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-        QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject);
+        QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject.getElement());
         questionnairePersistenceUtils.persist(defaultModelObject, builder);
       } catch(Exception e) {
         log.error("Cannot persist questionnaire", e);
@@ -404,7 +403,6 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
-    @SuppressWarnings("unchecked")
     @Override
     protected void respond(final AjaxRequestTarget respondTarget) {
       Request request = RequestCycle.get().getRequest();
@@ -412,7 +410,7 @@ public class QuestionnaireTreePanel extends Panel {
       String type = request.getParameter("type");
       log.info("Add " + type + " to " + nodeId);
       final IQuestionnaireElement element = elements.get(nodeId);
-      IModel<EditedQuestionnaire> questionnaireModel = (IModel<EditedQuestionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+      IModel<Questionnaire> questionnaireModel = new PropertyModel<Questionnaire>(QuestionnaireTreePanel.this.getDefaultModel(), "element");
       if(element instanceof IHasSection && "section".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), new Model<IHasSection>((IHasSection) element), questionnaireModel, elementWindow) {
@@ -440,7 +438,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(respondTarget);
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
         elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(), new Model<IHasQuestion>((IHasQuestion) element), new PropertyModel<Questionnaire>(questionnaireModel, "element"), elementWindow) {
+        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(), new Model<IHasQuestion>((IHasQuestion) element), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             super.onSave(target, editedQuestion);
@@ -458,7 +456,7 @@ public class QuestionnaireTreePanel extends Panel {
   protected void persit() {
     try {
       EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject);
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject.getElement());
       questionnairePersistenceUtils.persist(defaultModelObject, builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);

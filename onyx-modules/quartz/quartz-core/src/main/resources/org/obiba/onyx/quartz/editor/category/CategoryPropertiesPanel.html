@@ -11,24 +11,10 @@
 				<td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" /></td>
 			</tr>
-		</table>
-
-		<table class="keyValueTable">
 			<tr>
-				<td class="keyValueTableKey"><label wicket:id="exportNameLabel"></label></td>
-				<td class="keyValueTableValueOdd"><input wicket:id="exportName" type="text" /></td>
-			</tr>	
-		</table>	
-		<fieldset>
-			<legend><wicket:message key="LanguagesProperties" /></legend>
-		 	<div wicket:id="categoryLocalesPropertiesTabs"></div>
-		</fieldset>		
-
-		<fieldset>
-			<legend><wicket:message key="LanguagesPropertiesQuestionCategory" /></legend>
-			<div wicket:id="questionCategoryLocalesPropertiesTabs"></div>
-		</fieldset>
-		<table>
+				<td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="variable" type="text" /></td>
+			</tr>				
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label wicket:id="escapeLabel"></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="escape" type="checkbox" /></td>
@@ -36,13 +22,18 @@
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label wicket:id="noAnswerLabel"></label></td>
 				<td class="keyValueTableValueOdd"><input wicket:id="noAnswer" type="checkbox" /></td>
-			</tr>
-			<tr>
-				<td valign="top" class="keyValueTableKey"><wicket:message key="VariableNames" /></td>
-				<td class="keyValueTableValueOdd"><div wicket:id="variableNamesPanel" /></td>
-			</tr>
+			</tr>				
 		</table>
 		
+		<br />
+		
+		<fieldset>
+			<legend><wicket:message key="LanguagesProperties" /></legend>
+		 	<div wicket:id="questionCategoryLocalesPropertiesTabs"></div>
+		</fieldset>				
+		
+		<br />
+
 		<div wicket:id="openAnswerDefinitionList" />
 		
 		<div class="modal-footer">

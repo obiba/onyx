@@ -28,6 +28,10 @@ A:hover {
 	COLOR: #375FB7; text-decoration: underline;
 }
 
+img,a img {
+	border: none;
+}
+
 .required {
 	/*background: #FFB6C1;*/
 	/*background-image:url(../images/icons/16X16/warning.gif);

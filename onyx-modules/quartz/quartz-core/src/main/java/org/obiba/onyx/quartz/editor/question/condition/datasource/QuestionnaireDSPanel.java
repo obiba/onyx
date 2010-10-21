@@ -40,7 +40,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.editor.questionnaire.EditedQuestionnaire;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -58,11 +57,11 @@ public abstract class QuestionnaireDSPanel extends Panel {
 
   private final IModel<Question> questionModel;
 
-  public QuestionnaireDSPanel(String id, final IModel<Question> questionModel, final IModel<EditedQuestionnaire> questionnaireModel, final ModalWindow dataSourceWindow) {
+  public QuestionnaireDSPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow dataSourceWindow) {
     super(id);
     this.questionModel = questionModel;
 
-    Questionnaire currentQuestionnaire = questionnaireModel.getObject().getElement();
+    Questionnaire currentQuestionnaire = questionnaireModel.getObject();
 
     IChoiceRenderer<IQuestionnaireElement> renderer = new IChoiceRenderer<IQuestionnaireElement>() {
       @Override
@@ -97,7 +96,7 @@ public abstract class QuestionnaireDSPanel extends Panel {
     final DropDownChoice<Questionnaire> questionnaireChoice = new DropDownChoice<Questionnaire>("questionnaire", new PropertyModel<Questionnaire>(form.getModel(), "questionnaire"), questionnaires, new IChoiceRenderer<Questionnaire>() {
       @Override
       public Object getDisplayValue(Questionnaire element) {
-        return element.getName() + (questionnaireModel.getObject().getElement().getName().equals(element.getName()) ? " (" + new StringResourceModel("Current", QuestionnaireDSPanel.this, null).getString() + ")" : "");
+        return element.getName() + (questionnaireModel.getObject().getName().equals(element.getName()) ? " (" + new StringResourceModel("Current", QuestionnaireDSPanel.this, null).getString() + ")" : "");
       }
 
       @Override

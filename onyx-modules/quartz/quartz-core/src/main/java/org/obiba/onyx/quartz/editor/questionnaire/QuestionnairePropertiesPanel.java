@@ -255,7 +255,7 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   public void persist(AjaxRequestTarget target) {
     try {
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(form.getModelObject());
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(form.getModelObject().getElement());
       questionnairePersistenceUtils.persist(form.getModelObject(), builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);

@@ -1,8 +1,12 @@
 <wicket:panel>
 
+	<div wicket:id="categoryWindow" />
+
+	<br />
+	
 	<table class="keyValueTable">
 		<tr>
-	  	<td class="keyValueTableKey"><wicket:message key="Layout" /></td>
+	  	<td class="keyValueTableKey" valign="top"><wicket:message key="Layout" /></td>
 	   	<td class="keyValueTableValueOdd">	
 	   		<span wicket:id="layout">
 	 				<input type="radio" wicket:id="singleColumnLayout" /> <label wicket:id="singleColumnLayoutLabel"></label>
@@ -13,5 +17,13 @@
 	   	</td>
 	  </tr>
 	</table>
-
+	
+	<br />
+	
+	<div wicket:id="addTabs" />
+	
+	<br />
+	
+	<div wicket:id="categories" />
+	
 </wicket:panel>

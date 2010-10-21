@@ -37,6 +37,10 @@ public class EditedElement<T extends IQuestionnaireElement> implements Serializa
     return element;
   }
 
+  public void setElement(T element) {
+    this.element = element;
+  }
+
   public void setLocalePropertiesWithNamingStrategy(List<LocaleProperties> localeProperties) {
     this.localeProperties = localeProperties;
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();

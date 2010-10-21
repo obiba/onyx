@@ -35,8 +35,7 @@ public class QuestionnairePersistenceUtils {
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public QuestionnaireBuilder createBuilder(EditedQuestionnaire editedQuestionnaire) {
-    Questionnaire questionnaire = editedQuestionnaire.getElement();
+  public QuestionnaireBuilder createBuilder(Questionnaire questionnaire) {
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);
     if(Questionnaire.STANDARD_UI.equals(questionnaire.getUiType())) {
       builder.setStandardUI();
