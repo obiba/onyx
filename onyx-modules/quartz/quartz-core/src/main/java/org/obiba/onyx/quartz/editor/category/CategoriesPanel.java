@@ -13,6 +13,8 @@ import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,6 +23,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
@@ -46,11 +49,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -62,6 +69,8 @@ public class CategoriesPanel extends Panel {
 
   private static final String GRID_LAYOUT = "gridLayout";
 
+  private final transient Logger logger = LoggerFactory.getLogger(getClass());
+
   private final ModalWindow categoryWindow;
 
   private final FeedbackPanel feedbackPanel;
@@ -70,9 +79,9 @@ public class CategoriesPanel extends Panel {
 
   private SortableList<QuestionCategory> categoryList;
 
-  // private List<Category> questionnaireCategories;
-  //
-  // private List<Category> sharedCategories;
+  private List<Category> questionnaireCategories;
+
+  private List<Category> sharedCategories;
 
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
@@ -81,9 +90,11 @@ public class CategoriesPanel extends Panel {
 
     Question question = model.getObject().getElement();
 
-    // QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-    // questionnaireCategories = questionnaireFinder.findCategories();
-    // sharedCategories = questionnaireFinder.findSharedCategories();
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    questionnaireCategories = questionnaireFinder.findCategories();
+    Collections.sort(questionnaireCategories, new QuestionnaireElementComparator());
+
+    sharedCategories = questionnaireFinder.findSharedCategories();
 
     add(CSSPackageResource.getHeaderContribution(CategoriesPanel.class, "CategoriesPanel.css"));
 
@@ -178,11 +189,37 @@ public class CategoriesPanel extends Panel {
 
   public class SimpleAddPanel extends Panel {
 
+    private static final int AUTO_COMPLETE_SIZE = 15;
+
     public SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
       add(form);
-      final TextField<String> categoryName = new TextField<String>("category", model, String.class);
+
+      final AutoCompleteTextField<String> categoryName = new AutoCompleteTextField<String>("category", model) {
+        @Override
+        protected Iterator<String> getChoices(String input) {
+          if(StringUtils.isBlank(input)) {
+            List<String> emptyList = Collections.emptyList();
+            return emptyList.iterator();
+          }
+          @SuppressWarnings("unchecked")
+          Question question = ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement();
+          List<String> questionCatNames = new ArrayList<String>(question.getCategories().size());
+          for(Category category : question.getCategories()) {
+            questionCatNames.add(category.getName().toUpperCase());
+          }
+          List<String> choices = new ArrayList<String>(AUTO_COMPLETE_SIZE);
+          for(Category category : questionnaireCategories) {
+            String name = category.getName().toUpperCase();
+            if(!questionCatNames.contains(name) && name.startsWith(input.toUpperCase())) {
+              choices.add(name);
+              if(choices.size() == AUTO_COMPLETE_SIZE) break;
+            }
+          }
+          return choices.iterator();
+        }
+      };
       categoryName.setOutputMarkupId(true);
       categoryName.setLabel(new ResourceModel("NewCategory"));
       categoryName.add(new MaximumLengthValidator(20));
@@ -203,6 +240,7 @@ public class CategoriesPanel extends Panel {
         }
       });
       form.add(categoryName);
+
       form.add(new SimpleFormComponentLabel("categoryLabel", categoryName));
       AjaxSubmitLink simpelAddLink = new AjaxSubmitLink("link", form) {
         @Override

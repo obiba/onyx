@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -214,7 +215,7 @@ public class QuestionnaireFinder {
     CategoryFinder finder = new CategoryFinder();
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
-    return finder.getElements();
+    return new ArrayList<Category>(finder.getQuestionCategories().keySet());
   }
 
   /**
