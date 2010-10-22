@@ -18,6 +18,9 @@ import java.util.Map;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
 /**
  *
  */
@@ -45,18 +48,29 @@ public class LocaleProperties implements Serializable {
     this.elementLabels = elementLabels;
   }
 
+  public void addElementLabels(IQuestionnaireElement element, Locale locale, String key, String value) {
+    if(elementLabels.get(element) == null) {
+      elementLabels.put(element, new ElementLabels());
+    }
+    elementLabels.get(element).addKeyValue(locale, key, value);
+  }
+
   public class ElementLabels implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Map<Locale, List<KeyValue>> labels = new HashMap<Locale, List<KeyValue>>();
+    private Multimap<Locale, KeyValue> labels = LinkedListMultimap.create();
 
-    public Map<Locale, List<KeyValue>> getLabels() {
+    public Multimap<Locale, KeyValue> getLabels() {
       return labels;
     }
 
-    public void setLabels(Map<Locale, List<KeyValue>> labels) {
+    public void setLabels(Multimap<Locale, KeyValue> labels) {
       this.labels = labels;
+    }
+
+    public void addKeyValue(Locale locale, String key, String value) {
+      labels.put(locale, new KeyValue(key, value));
     }
   }
 
@@ -88,7 +102,5 @@ public class LocaleProperties implements Serializable {
     public void setValue(String value) {
       this.value = value;
     }
-
   }
-
 }

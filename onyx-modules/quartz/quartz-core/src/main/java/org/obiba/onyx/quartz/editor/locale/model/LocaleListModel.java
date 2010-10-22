@@ -8,20 +8,16 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.wicket.Session;
-import org.obiba.onyx.wicket.model.SpringDetachableModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
  * Model for List of Locale sorted by locale name (for locale of current user)
  */
-public class LocaleListModel extends SpringDetachableModel<List<Locale>> {
+public class LocaleListModel extends LoadableDetachableModel<List<Locale>> {
 
   private static final long serialVersionUID = 1L;
 
   private static LocaleListModel INSTANCE;
-
-  private LocaleListModel() {
-
-  }
 
   @Override
   protected List<Locale> load() {

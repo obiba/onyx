@@ -10,8 +10,12 @@
 package org.obiba.onyx.quartz.editor.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.model.IModel;
@@ -19,8 +23,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.ElementLabels;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -46,15 +53,58 @@ public class LocalePropertiesUtils {
     return listLocaleProperties;
   }
 
-  public LocaleProperties load(IQuestionnaireElement... elements) {
-    return null;
+  public LocaleProperties load(Questionnaire questionnaire, IQuestionnaireElement... elements) {
+    return load(questionnaire, new LocaleProperties(), elements);
   }
 
-  public LocaleProperties load(LocaleProperties localeProperties, IQuestionnaireElement... elements) {
-    return null;
+  public LocaleProperties load(Questionnaire questionnaire, LocaleProperties localeProperties, IQuestionnaireElement... elements) {
+    localeProperties.setLocales(questionnaire.getLocales());
+    for(IQuestionnaireElement element : elements) {
+      QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
+      List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
+      for(Locale locale : localeProperties.getLocales()) {
+        for(String key : listKeys) {
+          if(bundle != null) {
+            String value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
+            localeProperties.addElementLabels(element, locale, key, value);
+          }
+        }
+      }
+    }
+    return localeProperties;
   }
 
-  public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) {
+  public void transformKeyToFullKey(Questionnaire questionnaire, LocaleProperties localeProperties) {
+    DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
+    for(Entry<IQuestionnaireElement, ElementLabels> entry : localeProperties.getElementLabels().entrySet()) {
+      for(KeyValue keyValue : entry.getValue().getLabels().values()) {
+        keyValue.setValue(defaultPropertyKeyProviderImpl.getPropertyKey(entry.getKey(), keyValue.getKey()));
+      }
+    }
+  }
+
+  /**
+   * Change key like 'label' to '<type>.<name>.label'
+   * @param localeProperties
+   */
+  private void localePropertiesToMapToPersist(LocaleProperties localeProperties) {
+    Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
+    for(Locale locale : localeProperties.getLocales()) {
+      for(Entry<IQuestionnaireElement, ElementLabels> entry : localeProperties.getElementLabels().entrySet()) {
+        for(Entry<Locale, KeyValue> entryLocaleKeyValue : entry.getValue().getLabels().entries()) {
+          if(locale.equals(entryLocaleKeyValue.getKey())) {
+
+            // for(int i = 0; i < entryLocaleKeyValue.getValue().length; i++) {
+            // String fullKey = localeProp.getKeysValues()[i].getFullKey();
+            // String value = localeProp.getKeysValues()[i].getValue();
+            // properties.setProperty(fullKey, value != null ? value : "");
+            // }
+
+          }
+
+        }
+      }
+    }
 
   }
 
