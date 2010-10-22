@@ -20,6 +20,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -43,6 +44,18 @@ public class LocalePropertiesUtils {
       listLocaleProperties.add(localeProperties);
     }
     return listLocaleProperties;
+  }
+
+  public LocaleProperties load(IQuestionnaireElement... elements) {
+    return null;
+  }
+
+  public LocaleProperties load(LocaleProperties localeProperties, IQuestionnaireElement... elements) {
+    return null;
+  }
+
+  public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) {
+
   }
 
   @Required
