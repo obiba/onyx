@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +25,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.ElementLabels;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.springframework.beans.factory.annotation.Required;
@@ -74,38 +72,22 @@ public class LocalePropertiesUtils {
     return localeProperties;
   }
 
-  public void transformKeyToFullKey(Questionnaire questionnaire, LocaleProperties localeProperties) {
+  public Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties) {
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
-    for(Entry<IQuestionnaireElement, ElementLabels> entry : localeProperties.getElementLabels().entrySet()) {
-      for(KeyValue keyValue : entry.getValue().getLabels().values()) {
-        keyValue.setValue(defaultPropertyKeyProviderImpl.getPropertyKey(entry.getKey(), keyValue.getKey()));
-      }
-    }
-  }
-
-  /**
-   * Change key like 'label' to '<type>.<name>.label'
-   * @param localeProperties
-   */
-  private void localePropertiesToMapToPersist(LocaleProperties localeProperties) {
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
     for(Locale locale : localeProperties.getLocales()) {
-      for(Entry<IQuestionnaireElement, ElementLabels> entry : localeProperties.getElementLabels().entrySet()) {
-        for(Entry<Locale, KeyValue> entryLocaleKeyValue : entry.getValue().getLabels().entries()) {
-          if(locale.equals(entryLocaleKeyValue.getKey())) {
-
-            // for(int i = 0; i < entryLocaleKeyValue.getValue().length; i++) {
-            // String fullKey = localeProp.getKeysValues()[i].getFullKey();
-            // String value = localeProp.getKeysValues()[i].getValue();
-            // properties.setProperty(fullKey, value != null ? value : "");
-            // }
-
-          }
-
+      for(IQuestionnaireElement element : localeProperties.getElementLabels().keySet()) {
+        List<KeyValue> listKeyValue = localeProperties.getElementLabels().get(element).getLabels().get(locale);
+        Properties properties = new Properties();
+        for(KeyValue keyValue : listKeyValue) {
+          String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(element, keyValue.getKey());
+          String value = keyValue.getValue();
+          properties.setProperty(fullKey, value != null ? value : "");
         }
+        mapLocaleProperties.put(locale, properties);
       }
     }
-
+    return mapLocaleProperties;
   }
 
   @Required

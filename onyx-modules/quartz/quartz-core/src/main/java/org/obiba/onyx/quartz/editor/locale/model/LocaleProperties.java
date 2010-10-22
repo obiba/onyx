@@ -19,7 +19,7 @@ import java.util.Map;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
 import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  *
@@ -59,13 +59,13 @@ public class LocaleProperties implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Multimap<Locale, KeyValue> labels = LinkedListMultimap.create();
+    private ListMultimap<Locale, KeyValue> labels = LinkedListMultimap.create();
 
-    public Multimap<Locale, KeyValue> getLabels() {
+    public ListMultimap<Locale, KeyValue> getLabels() {
       return labels;
     }
 
-    public void setLabels(Multimap<Locale, KeyValue> labels) {
+    public void setLabels(ListMultimap<Locale, KeyValue> labels) {
       this.labels = labels;
     }
 
