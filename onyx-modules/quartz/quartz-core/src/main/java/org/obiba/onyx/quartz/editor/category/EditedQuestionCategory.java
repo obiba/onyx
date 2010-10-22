@@ -15,8 +15,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.editor.EditedElement;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.KeyValue;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2.KeyValue;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -33,13 +33,13 @@ public class EditedQuestionCategory extends EditedElement<QuestionCategory> {
    * add category properties to question category properties
    * @param localePropertiesArg
    */
-  public void mergeCategoriesPropertiesWithNamingStrategy(List<LocaleProperties> localePropertiesArg) {
+  public void mergeCategoriesPropertiesWithNamingStrategy(List<LocaleProperties2> localePropertiesArg) {
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
-    for(final LocaleProperties localeProperty : localePropertiesArg) {
-      LocaleProperties find = Iterables.find(this.localeProperties, new Predicate<LocaleProperties>() {
+    for(final LocaleProperties2 localeProperty : localePropertiesArg) {
+      LocaleProperties2 find = Iterables.find(this.localeProperties, new Predicate<LocaleProperties2>() {
 
         @Override
-        public boolean apply(LocaleProperties input) {
+        public boolean apply(LocaleProperties2 input) {
           return input.getLocale().equals(localeProperty.getLocale());
         }
       });

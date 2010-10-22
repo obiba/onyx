@@ -1,13 +1,15 @@
 <wicket:panel>
 
-	<table class="keyValueTable">
-		<tr>
-			<td class="keyValueTableKey"><label wicket:id="categoriesLabel"></label></td>
-			<td class="keyValueTableValueOdd">
-				<textarea wicket:id="categories" rows="2" cols="60"></textarea>
-				<a wicket:id="bulkAddLink"><img wicket:id="bulkAddImg" class="action" /></a>
-			</td>
-		</tr>	
-	</table>	
+	<form wicket:id="form" autocomplete="off" >	
+		<table class="keyValueTable">
+			<tr>
+				<td class="keyValueTableKey" valign="top"><label wicket:id="categoriesLabel"></label></td>
+				<td class="keyValueTableValueOdd">
+					<textarea wicket:id="categories" rows="2" cols="60"></textarea>
+					<a wicket:id="bulkAddLink"><img wicket:id="bulkAddImg" class="action" /></a>
+				</td>
+			</tr>	
+		</table>	
+	</form>
 
 </wicket:panel>

@@ -19,7 +19,7 @@ import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,17 +32,17 @@ public class LocalePropertiesPanel extends Panel {
 
   protected final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  public LocalePropertiesPanel(String id, LocaleProperties localeProperties) {
+  public LocalePropertiesPanel(String id, LocaleProperties2 localeProperties) {
     super(id);
     add(new LocalePropertiesForm("labelsForm", localeProperties));
   }
 
-  public class LocalePropertiesForm extends Form<LocaleProperties> {
+  public class LocalePropertiesForm extends Form<LocaleProperties2> {
 
     private static final long serialVersionUID = 1L;
 
-    public LocalePropertiesForm(String id, final LocaleProperties localeProperties) {
-      super(id, new Model<LocaleProperties>(localeProperties));
+    public LocalePropertiesForm(String id, final LocaleProperties2 localeProperties) {
+      super(id, new Model<LocaleProperties2>(localeProperties));
 
       Loop labels = new Loop("labelsItem", localeProperties.getKeysValues().length) {
 

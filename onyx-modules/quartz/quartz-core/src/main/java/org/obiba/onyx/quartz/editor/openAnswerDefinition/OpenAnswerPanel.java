@@ -46,7 +46,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
@@ -86,12 +86,12 @@ public class OpenAnswerPanel extends Panel {
 
   private SimpleFormComponentLabel maximumLabel;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     Question question = questionModel.getObject();
     OpenAnswerDefinition openAnswerDefinition = model.getObject();

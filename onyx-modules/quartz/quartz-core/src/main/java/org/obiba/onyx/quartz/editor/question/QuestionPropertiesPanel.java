@@ -56,7 +56,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryWindow;
 import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.question.condition.Conditions;
@@ -102,7 +102,7 @@ public class QuestionPropertiesPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   private ConditionPanel conditionPanel;
 
@@ -116,7 +116,7 @@ public class QuestionPropertiesPanel extends Panel {
     IModel<EditedQuestion> editedModel = new Model<EditedQuestion>(editedQuestion);
     setDefaultModel(editedModel);
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.editor.locale.predicate;
 import java.util.List;
 import java.util.Locale;
 
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 
 import com.google.common.base.Predicate;
 
@@ -20,7 +20,7 @@ import com.google.common.base.Predicate;
  * Predicate which keep LocaleProperties where locale in LocaleProperties are not in given locales (Locale list)
  * argument)
  */
-public class LocalePredicateMinusFilter implements Predicate<LocaleProperties> {
+public class LocalePredicateMinusFilter implements Predicate<LocaleProperties2> {
 
   private List<Locale> locales;
 
@@ -29,7 +29,7 @@ public class LocalePredicateMinusFilter implements Predicate<LocaleProperties> {
   }
 
   @Override
-  public boolean apply(LocaleProperties input) {
+  public boolean apply(LocaleProperties2 input) {
     return !locales.contains(input.getLocale());
   }
 }

@@ -10,54 +10,26 @@
 package org.obiba.onyx.quartz.editor.locale.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-
 /**
  *
  */
-public class LocaleProperties implements Serializable {
+public class ElementLabels implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private List<Locale> locales = new ArrayList<Locale>();
+  private Map<Locale, List<KeyValue>> labels = new HashMap<Locale, List<KeyValue>>();
 
-  private Map<IQuestionnaireElement, ElementLabels> elementLabels = new HashMap<IQuestionnaireElement, ElementLabels>();
-
-  public List<Locale> getLocales() {
-    return locales;
+  public Map<Locale, List<KeyValue>> getLabels() {
+    return labels;
   }
 
-  public void setLocales(List<Locale> locales) {
-    this.locales = locales;
-  }
-
-  public Map<IQuestionnaireElement, ElementLabels> getElementLabels() {
-    return elementLabels;
-  }
-
-  public void setElementLabels(Map<IQuestionnaireElement, ElementLabels> elementLabels) {
-    this.elementLabels = elementLabels;
-  }
-
-  public class ElementLabels implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private Map<Locale, List<KeyValue>> labels = new HashMap<Locale, List<KeyValue>>();
-
-    public Map<Locale, List<KeyValue>> getLabels() {
-      return labels;
-    }
-
-    public void setLabels(Map<Locale, List<KeyValue>> labels) {
-      this.labels = labels;
-    }
+  public void setLabels(Map<Locale, List<KeyValue>> labels) {
+    this.labels = labels;
   }
 
   public class KeyValue implements Serializable {
@@ -66,6 +38,8 @@ public class LocaleProperties implements Serializable {
 
     private String key;
 
+    private String fullKey;
+
     private String value;
 
     public KeyValue(String key, String value) {
@@ -73,6 +47,10 @@ public class LocaleProperties implements Serializable {
       this.value = value;
     }
 
+    /**
+     * key without context (label or description)
+     * @return
+     */
     public String getKey() {
       return key;
     }
@@ -89,6 +67,17 @@ public class LocaleProperties implements Serializable {
       this.value = value;
     }
 
+    /**
+     * key with context (Question.name.label or Category.name.description) MAY BE NOT INITIALIZED YET
+     * @return
+     */
+    public String getFullKey() {
+      return fullKey;
+    }
+
+    public void setFullKey(String fullKey) {
+      this.fullKey = fullKey;
+    }
   }
 
 }

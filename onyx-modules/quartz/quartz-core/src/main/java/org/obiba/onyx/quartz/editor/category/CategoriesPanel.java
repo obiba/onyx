@@ -13,15 +13,18 @@ import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -83,6 +86,8 @@ public class CategoriesPanel extends Panel {
 
   private List<Category> sharedCategories;
 
+  private Map<String, Category> categoriesByName;
+
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
     this.feedbackPanel = feedbackPanel;
@@ -93,6 +98,11 @@ public class CategoriesPanel extends Panel {
     QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
     questionnaireCategories = questionnaireFinder.findCategories();
     Collections.sort(questionnaireCategories, new QuestionnaireElementComparator());
+
+    categoriesByName = new HashMap<String, Category>();
+    for(Category category : questionnaireCategories) {
+      categoriesByName.put(category.getName(), category);
+    }
 
     sharedCategories = questionnaireFinder.findSharedCategories();
 
@@ -227,15 +237,10 @@ public class CategoriesPanel extends Panel {
         @Override
         @SuppressWarnings("unchecked")
         protected void onValidate(IValidatable<String> validatable) {
-          String value = validatable.getValue();
-          if(StringUtils.isBlank(value)) return;
-
-          Question question = ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement();
-          for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-            if(equalsIgnoreCase(questionCategory.getName(), value) || equalsIgnoreCase(questionCategory.getCategory().getName(), value)) {
-              error(validatable, "CategoryAlreadyExists");
-              return;
-            }
+          String name = validatable.getValue();
+          if(StringUtils.isBlank(name)) return;
+          if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement(), name)) {
+            error(validatable, "CategoryAlreadyExists");
           }
         }
       });
@@ -246,11 +251,7 @@ public class CategoriesPanel extends Panel {
         @Override
         @SuppressWarnings("unchecked")
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
-          QuestionCategory questionCategory = new QuestionCategory();
-          Category category = new Category(categoryName.getModelObject());
-          questionCategory.setCategory(category);
-          Question question = ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement();
-          question.addQuestionCategory(questionCategory);
+          addCategory(((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement(), categoryName.getModelObject());
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
           target.addComponent(categoryList);
@@ -272,18 +273,55 @@ public class CategoriesPanel extends Panel {
 
     public BulkAddPanel(String id, IModel<String> model) {
       super(id, model);
-      TextArea<String> categories = new TextArea<String>("categories", model);
+      Form<String> form = new Form<String>("form", model);
+      add(form);
+      final TextArea<String> categories = new TextArea<String>("categories", model);
+      categories.setOutputMarkupId(true);
       categories.setLabel(new ResourceModel("NewCategories"));
-      add(categories);
-      add(new SimpleFormComponentLabel("categoriesLabel", categories));
-      AjaxLink<String> bulkAddLink = new AjaxLink<String>("bulkAddLink") {
+      form.add(categories);
+      form.add(new SimpleFormComponentLabel("categoriesLabel", categories));
+      AjaxSubmitLink bulkAddLink = new AjaxSubmitLink("bulkAddLink") {
         @Override
-        public void onClick(AjaxRequestTarget target) {
-          // TODO bulk add
+        @SuppressWarnings("unchecked")
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
+          String[] names = StringUtils.split(categories.getModelObject(), ',');
+          if(names == null) return;
+
+          Question question = ((IModel<EditedQuestion>) CategoriesPanel.this.getDefaultModel()).getObject().getElement();
+          for(String name : new HashSet<String>(Arrays.asList(names))) {
+            addCategory(question, name);
+          }
+          categories.setModelObject(null);
+          target.addComponent(categories);
+          target.addComponent(categoryList);
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form1) {
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       };
       bulkAddLink.add(Images.getAddImage("bulkAddImg").add(new AttributeModifier("title", true, new ResourceModel("Add"))));
-      add(bulkAddLink);
+      form.add(bulkAddLink);
+    }
+  }
+
+  private boolean checkIfCategoryAlreadyExists(Question question, String name) {
+    for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+      if(equalsIgnoreCase(questionCategory.getName(), name) || equalsIgnoreCase(questionCategory.getCategory().getName(), name)) {
+        return true; // category already exists
+      }
+    }
+    return false;
+  }
+
+  private void addCategory(Question question, String name) {
+    if(!checkIfCategoryAlreadyExists(question, name)) {
+      Category category = categoriesByName.containsKey(name) ? categoriesByName.get(name) : new Category(name);
+      QuestionCategory questionCategory = new QuestionCategory();
+      questionCategory.setCategory(category);
+      question.addQuestionCategory(questionCategory);
     }
   }
 

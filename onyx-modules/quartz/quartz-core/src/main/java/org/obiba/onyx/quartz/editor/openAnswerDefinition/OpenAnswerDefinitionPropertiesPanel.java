@@ -45,7 +45,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
@@ -82,7 +82,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
 
   private final Form<EditedOpenAnswerDefinition> form;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   private IModel<Questionnaire> questionnaireModel;
 
@@ -110,7 +110,7 @@ public class OpenAnswerDefinitionPropertiesPanel extends Panel {
     IModel<EditedOpenAnswerDefinition> editedModel = new Model<EditedOpenAnswerDefinition>(new EditedOpenAnswerDefinition(model.getObject()));
     setDefaultModel(editedModel);
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

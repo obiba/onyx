@@ -31,7 +31,7 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
@@ -59,14 +59,14 @@ public abstract class SectionPropertiesPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   @SuppressWarnings("unchecked")
   public SectionPropertiesPanel(String id, final IModel<Section> model, final Set<String> unavailableNames, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedSection>(new EditedSection(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

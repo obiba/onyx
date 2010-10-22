@@ -11,14 +11,14 @@ package org.obiba.onyx.quartz.editor.locale.predicate;
 
 import java.util.Locale;
 
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 
 import com.google.common.base.Predicate;
 
 /**
  * Predicate which find LocaleProperties where locale is equals with given locale argument
  */
-public class LocalePredicateFinder implements Predicate<LocaleProperties> {
+public class LocalePredicateFinder implements Predicate<LocaleProperties2> {
 
   private Locale locale;
 
@@ -27,7 +27,7 @@ public class LocalePredicateFinder implements Predicate<LocaleProperties> {
   }
 
   @Override
-  public boolean apply(LocaleProperties input) {
+  public boolean apply(LocaleProperties2 input) {
     return input.getLocale().equals(locale);
   }
 }

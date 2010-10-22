@@ -15,7 +15,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 
 /**
  * Contains a {@link LocalePropertiesPanel}
@@ -24,11 +24,11 @@ public class LocalePropertiesTab extends AbstractTab {
 
   private static final long serialVersionUID = 1L;
 
-  private LocaleProperties localeProperties;
+  private LocaleProperties2 localeProperties;
 
   private LocalePropertiesPanel localePropertiesPanel;
 
-  public LocalePropertiesTab(LocaleProperties localeProperties) {
+  public LocalePropertiesTab(LocaleProperties2 localeProperties) {
     super(new Model<String>(localeProperties.getLocale().getDisplayLanguage(Session.get().getLocale())));
     this.localeProperties = localeProperties;
   }

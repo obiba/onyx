@@ -32,7 +32,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
@@ -60,14 +60,16 @@ public abstract class PagePropertiesPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   @SuppressWarnings("unchecked")
   public PagePropertiesPanel(String id, IModel<Page> model, final Set<String> unavailableNames, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, new Model<EditedPage>(new EditedPage(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    // IModel<LocaleProperties> localePropertiesModel = new Model<LocaleProperties>(new LocaleProperties());
+
+    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

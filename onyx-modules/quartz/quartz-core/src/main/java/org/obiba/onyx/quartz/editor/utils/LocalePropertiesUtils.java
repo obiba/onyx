@@ -20,19 +20,19 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.springframework.beans.factory.annotation.Required;
 
 public class LocalePropertiesUtils {
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public List<LocaleProperties> loadLocaleProperties(IModel<? extends IQuestionnaireElement> elementModel, IModel<Questionnaire> questionnaireModel) {
-    List<LocaleProperties> listLocaleProperties = new ArrayList<LocaleProperties>();
+  public List<LocaleProperties2> loadLocaleProperties(IModel<? extends IQuestionnaireElement> elementModel, IModel<Questionnaire> questionnaireModel) {
+    List<LocaleProperties2> listLocaleProperties = new ArrayList<LocaleProperties2>();
     final Questionnaire questionnaire = questionnaireModel.getObject();
     for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties localeProperties = new LocaleProperties(locale, elementModel.getObject());
-      for(LocaleProperties.KeyValue property : localeProperties.getKeysValues()) {
+      LocaleProperties2 localeProperties = new LocaleProperties2(locale, elementModel.getObject());
+      for(LocaleProperties2.KeyValue property : localeProperties.getKeysValues()) {
         if(StringUtils.isNotBlank(elementModel.getObject().getName())) {
           QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
           if(bundle != null) {

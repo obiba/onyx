@@ -34,7 +34,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -48,12 +48,12 @@ public class QuestionPanel extends Panel {
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
 
-    localePropertiesModel = new ListModel<LocaleProperties>(localePropertiesUtils.loadLocaleProperties(new PropertyModel<Question>(model, "element"), questionnaireModel));
+    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(new PropertyModel<Question>(model, "element"), questionnaireModel));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name"));

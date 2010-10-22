@@ -53,7 +53,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
 import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
@@ -82,7 +82,7 @@ public class QuestionnairePropertiesPanel extends Panel {
 
   private final ListModel<Locale> listLocaleModel;
 
-  private final ListModel<LocaleProperties> localePropertiesModel;
+  private final ListModel<LocaleProperties2> localePropertiesModel;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -95,8 +95,8 @@ public class QuestionnairePropertiesPanel extends Panel {
     super(id, model);
 
     final Questionnaire questionnaire = model.getObject().getElement();
-    List<LocaleProperties> loadLocaleProperties = localePropertiesUtils.loadLocaleProperties(new Model<Questionnaire>(model.getObject().getElement()), new PropertyModel<Questionnaire>(model, "element"));
-    localePropertiesModel = new ListModel<LocaleProperties>(loadLocaleProperties);
+    List<LocaleProperties2> loadLocaleProperties = localePropertiesUtils.loadLocaleProperties(new Model<Questionnaire>(model.getObject().getElement()), new PropertyModel<Questionnaire>(model, "element"));
+    localePropertiesModel = new ListModel<LocaleProperties2>(loadLocaleProperties);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

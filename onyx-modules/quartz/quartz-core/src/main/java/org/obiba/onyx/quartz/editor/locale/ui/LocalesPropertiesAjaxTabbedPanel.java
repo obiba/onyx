@@ -19,7 +19,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.ListModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
 import org.obiba.onyx.quartz.editor.locale.predicate.LocalePredicateFactory;
 
 import com.google.common.collect.Iterables;
@@ -37,14 +37,14 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
 
   private IModel<? extends IQuestionnaireElement> questionnaireElementModel;
 
-  private ListModel<LocaleProperties> localePropertiesModel;
+  private ListModel<LocaleProperties2> localePropertiesModel;
 
   /**
    * @param abstractReadOnlyModel
    * @param id
    * @param tabs
    */
-  public LocalesPropertiesAjaxTabbedPanel(String id, ListModel<Locale> dependantModel, IModel<? extends IQuestionnaireElement> questionnaireElementModel, ListModel<LocaleProperties> localePropertiesModel) {
+  public LocalesPropertiesAjaxTabbedPanel(String id, ListModel<Locale> dependantModel, IModel<? extends IQuestionnaireElement> questionnaireElementModel, ListModel<LocaleProperties2> localePropertiesModel) {
     super(id, new ArrayList<ITab>());
     this.dependantModel = dependantModel;
     this.localePropertiesModel = localePropertiesModel;
@@ -52,7 +52,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     initUI();
   }
 
-  public LocalesPropertiesAjaxTabbedPanel(String id, IModel<? extends IQuestionnaireElement> questionnaireElementModel, ListModel<LocaleProperties> localePropertiesModel) {
+  public LocalesPropertiesAjaxTabbedPanel(String id, IModel<? extends IQuestionnaireElement> questionnaireElementModel, ListModel<LocaleProperties2> localePropertiesModel) {
     super(id, new ArrayList<ITab>());
     this.questionnaireElementModel = questionnaireElementModel;
     this.localePropertiesModel = localePropertiesModel;
@@ -62,7 +62,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
   public void initUI() {
     getTabs().clear();
     if(localePropertiesModel.getObject().size() != 0) {
-      for(LocaleProperties localeProperties : localePropertiesModel.getObject()) {
+      for(LocaleProperties2 localeProperties : localePropertiesModel.getObject()) {
         LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(localeProperties);
         getTabs().add(localePropertiesTab);
       }
@@ -80,8 +80,8 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
 
     // remove a tab
     if(listSelectedLocaleSize < listLocalePropertiesSize) {
-      Iterable<LocaleProperties> localePropertiesToRemove = Iterables.filter(localePropertiesModel.getObject(), LocalePredicateFactory.newLocalePredicateFilter(listSelectedLocale));
-      localePropertiesModel.getObject().removeAll(Arrays.asList(Iterables.toArray(localePropertiesToRemove, LocaleProperties.class)));
+      Iterable<LocaleProperties2> localePropertiesToRemove = Iterables.filter(localePropertiesModel.getObject(), LocalePredicateFactory.newLocalePredicateFilter(listSelectedLocale));
+      localePropertiesModel.getObject().removeAll(Arrays.asList(Iterables.toArray(localePropertiesToRemove, LocaleProperties2.class)));
       Iterable<ITab> tabToDelete = Iterables.filter(getTabs(), LocalePredicateFactory.newLocalePredicateTabRemover(listSelectedLocale));
       getTabs().removeAll(Arrays.asList(Iterables.toArray(tabToDelete, ITab.class)));
 
@@ -94,7 +94,7 @@ public class LocalesPropertiesAjaxTabbedPanel extends AjaxTabbedPanel {
     else if(listSelectedLocaleSize > listLocalePropertiesSize) {
       for(int i = listLocalePropertiesSize; i < listSelectedLocaleSize; i++) {
         final Locale locale = listSelectedLocale.get(i);
-        LocaleProperties localeProperties = new LocaleProperties(locale, questionnaireElementModel.getObject());
+        LocaleProperties2 localeProperties = new LocaleProperties2(locale, questionnaireElementModel.getObject());
         LocalePropertiesTab localePropertiesTab = new LocalePropertiesTab(localeProperties);
         localePropertiesModel.getObject().add(localeProperties);
         getTabs().add(localePropertiesTab);
