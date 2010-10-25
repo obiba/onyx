@@ -227,7 +227,10 @@ public class QuestionnaireTreePanel extends Panel {
       IQuestionnaireElement element = elements.get(nodeId);
       IQuestionnaireElement newParent = elements.get(newParentId);
 
-      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getName()).getQuestionnaire();
+      @SuppressWarnings("unchecked")
+      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+      final Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
+      questionnaireModel.setObject(questionnaire);
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
 
       if(element instanceof Section && newParent instanceof IHasSection) {
@@ -289,9 +292,9 @@ public class QuestionnaireTreePanel extends Panel {
 
         IHasQuestion updatedNewParent;
         if(newParent instanceof Page) {
-          updatedNewParent = questionnaireFinder.findPage(element.getName());
+          updatedNewParent = questionnaireFinder.findPage(newParent.getName());
         } else {
-          updatedNewParent = questionnaireFinder.findQuestion(element.getName());
+          updatedNewParent = questionnaireFinder.findQuestion(newParent.getName());
         }
 
         if(!sameParent) {
@@ -333,14 +336,19 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
-    @SuppressWarnings("unchecked")
+
     @Override
     protected void respond(final AjaxRequestTarget respondTarget) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Edit " + nodeId);
+
+      @SuppressWarnings("unchecked")
+      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       IQuestionnaireElement element = elements.get(nodeId);
-      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getName()).getQuestionnaire();
+      final Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
+      questionnaireModel.setObject(questionnaire);
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+
       if(element instanceof Questionnaire) {
         elementWindow.setTitle(new ResourceModel("Questionnaire"));
         elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(questionnaire), elementWindow) {
@@ -355,7 +363,6 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.show(respondTarget);
       }
 
-      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       if(element instanceof Section) {
         Section updatedElement = questionnaireFinder.findSection(element.getName());
         elementWindow.setTitle(new ResourceModel("Section"));
@@ -407,9 +414,12 @@ public class QuestionnaireTreePanel extends Panel {
       String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Delete " + nodeId);
 
+      @SuppressWarnings("unchecked")
+      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       IQuestionnaireElement element = elements.get(nodeId);
-      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getName()).getQuestionnaire();
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+      questionnaireModel.setObject(questionnaire);
 
       if(element instanceof Section) {
         Section updatedElement = questionnaireFinder.findSection(element.getName());
@@ -423,7 +433,6 @@ public class QuestionnaireTreePanel extends Panel {
         Page updatedElement = questionnaireFinder.findPage(element.getName());
         Section parentSection = updatedElement.getSection();
         parentSection.removePage(updatedElement);
-        questionnaire.removePage(updatedElement);
       } else if(element instanceof Question) {
         Question updatedElement = questionnaireFinder.findQuestion(element.getName());
         if(updatedElement.getParentQuestion() == null) {
