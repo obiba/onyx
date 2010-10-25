@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.page;
 
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -29,6 +26,7 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -59,7 +57,7 @@ public abstract class PagePropertiesPanel extends Panel {
 
   private final IModel<LocaleProperties> localePropertiesModel;
 
-  public PagePropertiesPanel(String id, IModel<Page> model, final Set<String> unavailableNames, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public PagePropertiesPanel(String id, IModel<Page> model, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
 
@@ -78,7 +76,7 @@ public abstract class PagePropertiesPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(unavailableNames.contains(StringUtils.lowerCase(validatable.getValue()))) {
+        if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findPage(validatable.getValue()) != null) {
           error(validatable, "PageAlreadyExists");
           return;
         }

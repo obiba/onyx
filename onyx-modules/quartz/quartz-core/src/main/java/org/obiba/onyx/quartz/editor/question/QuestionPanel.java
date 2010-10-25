@@ -29,9 +29,10 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -47,7 +48,7 @@ public abstract class QuestionPanel extends Panel {
 
   private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     logger.info("EditedQuestion: " + model.getObject());
@@ -58,12 +59,9 @@ public abstract class QuestionPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        Question question = model.getObject().getElement();
-        for(Question q : parentModel.getObject().getQuestions()) {
-          if(question != q && q.getName().equalsIgnoreCase(validatable.getValue())) {
-            error(validatable, "QuestionAlreadyExists");
-            return;
-          }
+        if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findQuestion(validatable.getValue()) != null) {
+          error(validatable, "QuestionAlreadyExists");
+          return;
         }
       }
     });
@@ -76,8 +74,22 @@ public abstract class QuestionPanel extends Panel {
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
 
-    List<QuestionType> typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
-    typeChoices.remove(QuestionType.BOILER_PLATE);
+    // available choices when question type is already set
+    List<QuestionType> typeChoices = null;
+    QuestionType questionType = model.getObject().getQuestionType();
+    if(questionType == null) {
+      typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
+      typeChoices.remove(QuestionType.BOILER_PLATE);
+    } else {
+      if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
+        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
+      } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
+        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
+      } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
+        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+      }
+    }
+
     final DropDownChoice<QuestionType> type = new DropDownChoice<QuestionType>("type", new PropertyModel<QuestionType>(model, "questionType"), typeChoices, new IChoiceRenderer<QuestionType>() {
       @Override
       public Object getDisplayValue(QuestionType questionType) {
@@ -104,6 +116,9 @@ public abstract class QuestionPanel extends Panel {
         onSubmit(target);
       }
     });
+
+    // apply UI (tabs) about question type
+    if(questionType != null) onQuestionTypeChange(null, questionType);
 
     add(type);
     add(new SimpleFormComponentLabel("typeLabel", type));

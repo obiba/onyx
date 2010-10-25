@@ -25,7 +25,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
@@ -67,7 +66,7 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
+  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
@@ -133,7 +132,7 @@ public abstract class EditQuestionPanel extends Panel {
     ITab questionTab = new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new QuestionPanel(panelId, model, parentModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+        return new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
           @Override
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             switch(questionType) {
@@ -164,7 +163,7 @@ public abstract class EditQuestionPanel extends Panel {
             case BOILER_PLATE:
               break;
             }
-            if(tabbedPanel != null) {
+            if(tabbedPanel != null && target != null) {
               target.addComponent(tabbedPanel);
             }
           }
