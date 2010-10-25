@@ -72,22 +72,52 @@ public class LocalePropertiesUtils {
     return localeProperties;
   }
 
-  public Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties) {
+  private Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties) {
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
     for(Locale locale : localeProperties.getLocales()) {
+      Properties properties = new Properties();
       for(IQuestionnaireElement element : localeProperties.getElementLabels().keySet()) {
         List<KeyValue> listKeyValue = localeProperties.getElementLabels().get(element).getLabels().get(locale);
-        Properties properties = new Properties();
         for(KeyValue keyValue : listKeyValue) {
           String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(element, keyValue.getKey());
           String value = keyValue.getValue();
           properties.setProperty(fullKey, value != null ? value : "");
         }
-        mapLocaleProperties.put(locale, properties);
       }
+      mapLocaleProperties.put(locale, properties);
     }
     return mapLocaleProperties;
+  }
+
+  public void persist(final Questionnaire questionnaire, LocaleProperties localeProperties) {
+    // TODO need builder... (merge with questionnairePersistenceUtils
+    // QuestionnaireBundleManager writeBundleManager = new
+    // QuestionnaireBundleManagerImpl(questionnaireBundleManager.getRootDir());
+    // ((QuestionnaireBundleManagerImpl) writeBundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
+    // ((QuestionnaireBundleManagerImpl) writeBundleManager).setResourceLoader(new
+    // PathMatchingResourcePatternResolver());
+    //
+    // QuestionnaireBundle bundle = writeBundleManager.getPersistedBundle(questionnaire.getName());
+    // Iterable<Locale> localesToDelete = Iterables.filter(bundle.getAvailableLanguages(), new Predicate<Locale>() {
+    // @Override
+    // public boolean apply(Locale locale) {
+    // return !questionnaire.getLocales().contains(locale);
+    // }
+    // });
+    // for(Locale localeToDelete : localesToDelete) {
+    // bundle.deleteLanguage(localeToDelete);
+    // }
+    // Map<Locale, Properties> localePropertiesMap = toLocalePropertiesMap(localeProperties);
+    // if(localePropertiesMap.entrySet().isEmpty()) {
+    // for(Locale locale : questionnaire.getLocales()) {
+    // bundle.updateLanguage(locale, new Properties());
+    // }
+    // } else {
+    // for(Entry<Locale, Properties> entry : localePropertiesMap.entrySet()) {
+    // bundle.updateLanguage(entry.getKey(), entry.getValue());
+    // }
+    // }
   }
 
   @Required
