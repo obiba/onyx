@@ -17,12 +17,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -31,6 +36,7 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -38,6 +44,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -51,10 +58,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleChoiceRenderer;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleListModel;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
-import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
@@ -80,23 +85,18 @@ public class QuestionnairePropertiesPanel extends Panel {
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  private final ListModel<Locale> listLocaleModel;
-
-  private final ListModel<LocaleProperties2> localePropertiesModel;
+  private final IModel<LocaleProperties> localePropertiesModel;
 
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<EditedQuestionnaire> form;
+  private final Form<Questionnaire> form;
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public QuestionnairePropertiesPanel(String id, IModel<EditedQuestionnaire> model, final ModalWindow modalWindow) {
+  @SuppressWarnings("rawtypes")
+  public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, final ModalWindow modalWindow) {
     super(id, model);
-
-    final Questionnaire questionnaire = model.getObject().getElement();
-    List<LocaleProperties2> loadLocaleProperties = localePropertiesUtils.loadLocaleProperties(new Model<Questionnaire>(model.getObject().getElement()), new PropertyModel<Questionnaire>(model, "element"));
-    localePropertiesModel = new ListModel<LocaleProperties2>(loadLocaleProperties);
+    final Questionnaire questionnaire = model.getObject();
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -104,9 +104,9 @@ public class QuestionnairePropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<EditedQuestionnaire>("form", (IModel<EditedQuestionnaire>) getDefaultModel()));
+    add(form = new Form<Questionnaire>("form", model));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"));
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
@@ -129,14 +129,14 @@ public class QuestionnairePropertiesPanel extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "element.version"));
+    TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "version"));
     version.setLabel(new ResourceModel("Version"));
     version.add(new RequiredFormFieldBehavior());
     version.add(new StringValidator.MaximumLengthValidator(20));
     form.add(version);
     form.add(new SimpleFormComponentLabel("versionLabel", version));
 
-    RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "element.uiType"));
+    RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "uiType"));
     uiType.setLabel(new ResourceModel("UIType"));
     uiType.setRequired(true);
     form.add(uiType);
@@ -151,28 +151,67 @@ public class QuestionnairePropertiesPanel extends Panel {
     uiType.add(simplifiedUiType);
     uiType.add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
 
-    listLocaleModel = new ListModel<Locale>(new ArrayList<Locale>(questionnaire.getLocales()));
+    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaire, questionnaire));
+    final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow);
+    labelsPanel.setOutputMarkupId(true);
+    form.add(labelsPanel);
 
-    final LocalesPropertiesAjaxTabbedPanel localesPropertiesAjaxTabbedPanel = new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", listLocaleModel, new PropertyModel<Questionnaire>(form.getModel(), "element"), localePropertiesModel);
-
-    Palette<Locale> localesPalette = new Palette<Locale>("languages", listLocaleModel, LocaleListModel.getInstance(), LocaleChoiceRenderer.getInstance(), 7, false) {
+    final Locale userLocale = Session.get().getLocale();
+    IChoiceRenderer<Locale> renderer = new IChoiceRenderer<Locale>() {
+      @Override
+      public String getIdValue(Locale locale, int index) {
+        return locale.toString();
+      }
 
       @Override
-      protected Recorder<Locale> newRecorderComponent() {
-        final Recorder<Locale> recorder = super.newRecorderComponent();
-        recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+      public Object getDisplayValue(Locale locale) {
+        return locale.getDisplayLanguage(userLocale);
+      }
+    };
 
+    IModel<List<Locale>> localeChoices = new LoadableDetachableModel<List<Locale>>() {
+      @Override
+      protected List<Locale> load() {
+        List<Locale> locales = new ArrayList<Locale>();
+        for(String language : Locale.getISOLanguages()) {
+          locales.add(new Locale(language));
+        }
+        Collections.sort(locales, new Comparator<Locale>() {
+          @Override
+          public int compare(Locale locale1, Locale locale2) {
+            return locale1.getDisplayLanguage(userLocale).compareTo(locale2.getDisplayLanguage(userLocale));
+          }
+        });
+        return locales;
+      }
+    };
+
+    final Palette<Locale> localesPalette = new Palette<Locale>("languages", new ListModel<Locale>(questionnaire.getLocales()), localeChoices, renderer, 5, false) {
+      protected Recorder<Locale> newRecorderComponent() {
+        Recorder<Locale> recorder = super.newRecorderComponent();
+        recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
           @Override
           protected void onUpdate(AjaxRequestTarget target) {
-            localesPropertiesAjaxTabbedPanel.dependantModelChanged();
-            target.addComponent(localesPropertiesAjaxTabbedPanel);
+            LocaleProperties localeProperties = localePropertiesModel.getObject();
+            Collection<Locale> selectedLocales = getModelCollection();
+            @SuppressWarnings("unchecked")
+            Collection<Locale> removedLocales = CollectionUtils.subtract(localeProperties.getLocales(), selectedLocales);
+            for(Locale locale : removedLocales) {
+              localeProperties.removeLocale(questionnaire, locale);
+            }
+            for(Locale locale : selectedLocales) {
+              if(!localeProperties.getLocales().contains(locale)) {
+                localeProperties.addLocale(questionnaire, locale);
+              }
+            }
+            labelsPanel.onModelChange(target);
           }
         });
         return recorder;
       }
     };
 
-    form.add(localesPalette, localesPropertiesAjaxTabbedPanel);
+    form.add(localesPalette);
 
     final AJAXDownload download = new AJAXDownload() {
 
@@ -220,7 +259,6 @@ public class QuestionnairePropertiesPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         download.initiate(target);
-
       }
     });
 
@@ -246,17 +284,15 @@ public class QuestionnairePropertiesPanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
-  public void onSave(AjaxRequestTarget target, EditedQuestionnaire editedQuestionnaire) {
-    Questionnaire questionnaire = editedQuestionnaire.getElement();
-    questionnaire.setLocales(listLocaleModel.getObject());
-    editedQuestionnaire.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
-    persist(target);
-  }
-
-  public void persist(AjaxRequestTarget target) {
+  /**
+   * 
+   * @param target
+   * @param questionnaire
+   */
+  public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
     try {
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(form.getModelObject().getElement());
-      questionnairePersistenceUtils.persist(form.getModelObject(), builder);
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(form.getModelObject());
+      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject(), builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

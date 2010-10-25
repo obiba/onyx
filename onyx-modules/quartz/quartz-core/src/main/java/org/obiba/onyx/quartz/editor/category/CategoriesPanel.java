@@ -44,6 +44,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -55,12 +56,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -72,7 +73,10 @@ public class CategoriesPanel extends Panel {
 
   private static final String GRID_LAYOUT = "gridLayout";
 
-  private final transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private final ModalWindow categoryWindow;
 
@@ -88,7 +92,7 @@ public class CategoriesPanel extends Panel {
 
   private Map<String, Category> categoriesByName;
 
-  public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
@@ -163,6 +167,10 @@ public class CategoriesPanel extends Panel {
 
     categoryList = new SortableList<QuestionCategory>("categories", question.getQuestionCategories()) {
 
+      public void onItemPopulation(QuestionCategory questionCategory) {
+        localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, questionCategory.getCategory());
+      }
+
       @Override
       public Component getItemTitle(@SuppressWarnings("hiding") String id, QuestionCategory questionCategory) {
         return new Label(id, questionCategory.getName());
@@ -170,9 +178,9 @@ public class CategoriesPanel extends Panel {
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
+        categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
+          public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
             super.onSave(target1, editedCategory);
             refreshList(target1);
           }

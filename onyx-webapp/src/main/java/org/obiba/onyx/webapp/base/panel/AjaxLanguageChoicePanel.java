@@ -27,6 +27,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author ymarcon
  * 
  */
+@SuppressWarnings("serial")
 public abstract class AjaxLanguageChoicePanel extends Panel {
 
   private Locale selectedLanguage;

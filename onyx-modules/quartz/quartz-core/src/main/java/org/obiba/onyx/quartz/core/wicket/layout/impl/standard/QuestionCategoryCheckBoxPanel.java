@@ -78,7 +78,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(selectionsModel, questionCategoryModel);
 
     if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
-      CategoryAnswer previousAnswer = previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
+      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
       if(previousAnswer != null) selectionModel.select();
     }
 

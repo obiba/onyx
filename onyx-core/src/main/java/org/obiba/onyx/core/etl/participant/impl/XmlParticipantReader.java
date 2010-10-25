@@ -222,6 +222,7 @@ public class XmlParticipantReader extends AbstractParticipantReader {
    * @throws IllegalArgumentException if the cell type is not compatible with the attribute type, or if the attribute is
    * mandatory but its value is <code>null</code>
    */
+  @SuppressWarnings("incomplete-switch")
   private Data getAttributeValue(ParticipantAttribute attribute, String value) {
     if(value == null) return null;
     Data data = null;

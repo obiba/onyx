@@ -23,6 +23,7 @@ public class TimeStampAlgorithm {
 
   private boolean stageWasCompletedOnce = false;
 
+  @SuppressWarnings("incomplete-switch")
   public TimeStampAlgorithm(List<Action> actions) {
 
     // Iterate on all actions (in the order they were executed)

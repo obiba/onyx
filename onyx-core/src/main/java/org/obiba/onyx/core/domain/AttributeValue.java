@@ -97,6 +97,7 @@ public class AttributeValue extends AbstractEntity {
     }
   }
 
+  @SuppressWarnings("incomplete-switch")
   public Data getData() {
     Data data = null;
 

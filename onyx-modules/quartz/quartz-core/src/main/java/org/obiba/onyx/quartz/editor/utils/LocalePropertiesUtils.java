@@ -14,62 +14,52 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties.KeyValue;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.springframework.beans.factory.annotation.Required;
+
+import com.google.common.collect.ListMultimap;
 
 public class LocalePropertiesUtils {
 
+  // private transient Logger logger = LoggerFactory.getLogger(getClass());
+
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public List<LocaleProperties2> loadLocaleProperties(IModel<? extends IQuestionnaireElement> elementModel, IModel<Questionnaire> questionnaireModel) {
-    List<LocaleProperties2> listLocaleProperties = new ArrayList<LocaleProperties2>();
-    final Questionnaire questionnaire = questionnaireModel.getObject();
-    for(Locale locale : questionnaire.getLocales()) {
-      LocaleProperties2 localeProperties = new LocaleProperties2(locale, elementModel.getObject());
-      for(LocaleProperties2.KeyValue property : localeProperties.getKeysValues()) {
-        if(StringUtils.isNotBlank(elementModel.getObject().getName())) {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
-          if(bundle != null) {
-            property.setValue(QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, elementModel.getObject(), property.getKey(), new Object[0], locale));
-          }
-        }
-      }
-      listLocaleProperties.add(localeProperties);
-    }
-    return listLocaleProperties;
-  }
-
   public LocaleProperties load(Questionnaire questionnaire, IQuestionnaireElement... elements) {
-    return load(questionnaire, new LocaleProperties(), elements);
+    LocaleProperties localeProperties = new LocaleProperties();
+    load(localeProperties, questionnaire, elements);
+    return localeProperties;
   }
 
-  public LocaleProperties load(Questionnaire questionnaire, LocaleProperties localeProperties, IQuestionnaireElement... elements) {
-    localeProperties.setLocales(questionnaire.getLocales());
+  public void load(LocaleProperties localeProperties, Questionnaire questionnaire, IQuestionnaireElement... elements) {
+    localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
     for(IQuestionnaireElement element : elements) {
       QuestionnaireBundle bundle = questionnaireBundleManager.getClearedMessageSourceCacheBundle(questionnaire.getName());
       List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
       for(Locale locale : localeProperties.getLocales()) {
         for(String key : listKeys) {
           if(bundle != null) {
-            String value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
+            String value = null;
+            try {
+              value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
+            } catch(Exception e) {
+              // label not found
+            }
             localeProperties.addElementLabels(element, locale, key, value);
           }
         }
       }
     }
-    return localeProperties;
   }
 
   private Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties) {
@@ -77,9 +67,10 @@ public class LocalePropertiesUtils {
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
     for(Locale locale : localeProperties.getLocales()) {
       Properties properties = new Properties();
-      for(IQuestionnaireElement element : localeProperties.getElementLabels().keySet()) {
-        List<KeyValue> listKeyValue = localeProperties.getElementLabels().get(element).getLabels().get(locale);
-        for(KeyValue keyValue : listKeyValue) {
+      for(Entry<IQuestionnaireElement, ListMultimap<Locale, KeyValue>> entry : localeProperties.getElementLabels().entrySet()) {
+        IQuestionnaireElement element = entry.getKey();
+        List<KeyValue> keyValueList = entry.getValue().get(locale);
+        for(KeyValue keyValue : keyValueList) {
           String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(element, keyValue.getKey());
           String value = keyValue.getValue();
           properties.setProperty(fullKey, value != null ? value : "");

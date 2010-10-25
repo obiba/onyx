@@ -42,6 +42,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.IDataValidator;
 
+@SuppressWarnings("serial")
 public class AssignCodeToParticipantPanel extends Panel {
 
   @SpringBean(name = "userSessionService")
@@ -57,8 +58,6 @@ public class AssignCodeToParticipantPanel extends Panel {
   private IdentifierSequenceProvider identifierSequenceProvider;
 
   private final Model receptionCommentModel = new Model();
-
-  private static final long serialVersionUID = 1L;
 
   /**
    * Required by Unit Tests

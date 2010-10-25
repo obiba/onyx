@@ -61,7 +61,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
       private static final long serialVersionUID = 1L;
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-        if(status == null || status != null && status.equals(Status.WINDOW_CLOSED)) {
+        if(status == null || status.equals(Status.WINDOW_CLOSED)) {
           return true;
         } else if(status.equals(Status.SUCCESS)) {
           printableReportPanel.printReports();

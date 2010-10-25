@@ -2,9 +2,39 @@
 
 	<span wicket:id="feedback" />
 	
+	<div wicket:id="openAnswerWindow" />
+
 	<form wicket:id="form" autocomplete="off" >	
 	
-		<div wicket:id="categoryPanel" />
+		<table class="keyValueTable">
+			<tr>
+				<td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" /></td>
+			</tr>
+			<tr>
+				<td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="variable" type="text" /></td>
+			</tr>				
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="escapeLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="escape" type="checkbox" /></td>
+			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="noAnswerLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="noAnswer" type="checkbox" /></td>
+			</tr>				
+		</table>
+		
+		<br />
+		
+		<fieldset>
+			<legend><wicket:message key="LanguagesProperties" /></legend>
+		 	<div wicket:id="labels"></div>
+		</fieldset>				
+		
+		<br />
+	
+		<div wicket:id="openAnswerDefinitionList" />
 
 		<div class="modal-footer">
 			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>

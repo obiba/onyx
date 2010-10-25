@@ -180,10 +180,9 @@ public class InterviewLogPanel extends Panel {
   }
 
   private IModel getStageModel(Action action) {
-    IModel stageModel;
     if(action.getStage() != null) {
-      stageModel = new PropertyModel(new StageModel(moduleRegistry, action.getStage()), "description");
-      if(stageModel != null && stageModel.getObject() != null) {
+      IModel stageModel = new PropertyModel(new StageModel(moduleRegistry, action.getStage()), "description");
+      if(stageModel.getObject() != null) {
         return new MessageSourceResolvableStringModel(stageModel);
       }
     }

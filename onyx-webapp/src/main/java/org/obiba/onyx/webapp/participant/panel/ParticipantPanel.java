@@ -34,6 +34,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
+@SuppressWarnings("serial")
 public class ParticipantPanel extends Panel {
 
   @SpringBean(name = "userSessionService")
@@ -41,8 +42,6 @@ public class ParticipantPanel extends Panel {
 
   @SpringBean
   ParticipantMetadata participantMetadata;
-
-  private static final long serialVersionUID = -5722864134344016349L;
 
   public ParticipantPanel(String id, IModel<Participant> participantModel) {
     this(id, participantModel, false);

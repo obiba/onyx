@@ -286,6 +286,7 @@ public class ParticipantReader extends AbstractParticipantReader {
    * @return attribute value (or <code>null</code> if none)
    * @throws IllegalArgumentException if the cell type is not compatible with the attribute type
    */
+  @SuppressWarnings("incomplete-switch")
   private Data getAttributeValue(ParticipantAttribute attribute, Cell cell, HSSFFormulaEvaluator evaluator) {
 
     if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK) return null;

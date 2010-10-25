@@ -168,6 +168,7 @@ public class ActionsPanelTest {
     EasyMock.verify(mockActiveInterviewService, mockStageExecution);
   }
 
+  @SuppressWarnings("serial")
   @Test
   public void testActionsPanelIsInvisibleWhenInteractiveStage() {
 
@@ -191,8 +192,6 @@ public class ActionsPanelTest {
     WicketTester tester = new WicketTester(application);
 
     tester.startPanel(new TestPanelSource() {
-
-      private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
         // Model may contain null since the panel only passes the value along and doesn't actually use it itself.

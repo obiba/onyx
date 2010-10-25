@@ -84,9 +84,8 @@ public class DefaultUserPasswordServiceImpl implements UserPasswordService {
     String suppliedHashedPassword = passwordHashingStrategy.hashPassword(password);
     if(suppliedHashedPassword.equals(currentHashedPassword)) {
       return user;
-    } else {
-      throw new AuthenticationFailedException();
     }
+    throw new AuthenticationFailedException();
   }
 
   public String generatePassword(User user) {
@@ -99,12 +98,7 @@ public class DefaultUserPasswordServiceImpl implements UserPasswordService {
   }
 
   public boolean isNewPasswordRequired(User user) {
-    if(preventPasswordReuse) {
-      // TODO Auto-generated method stub
-      return false;
-    } else {
-      return false;
-    }
+    return !preventPasswordReuse;
   }
 
   public String resetPassword(User user) {

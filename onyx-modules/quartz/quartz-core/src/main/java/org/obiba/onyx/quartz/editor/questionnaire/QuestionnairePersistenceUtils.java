@@ -10,16 +10,15 @@
 package org.obiba.onyx.quartz.editor.questionnaire;
 
 import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.Properties;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
-import org.obiba.onyx.quartz.editor.EditedElement;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -45,7 +44,7 @@ public class QuestionnairePersistenceUtils {
     return builder;
   }
 
-  public void persist(EditedElement<?> editedElement, QuestionnaireBuilder builder) throws Exception {
+  public void persist(IQuestionnaireElement element, LocaleProperties localeProperties, QuestionnaireBuilder builder) throws Exception {
 
     UniqueQuestionnaireElementNameBuilder.ensureQuestionnaireVariableNamesAreUnique(builder.getQuestionnaire());
 
@@ -67,15 +66,15 @@ public class QuestionnairePersistenceUtils {
     for(Locale localeToDelete : localesToDelete) {
       bundle.deleteLanguage(localeToDelete);
     }
-    if(editedElement.getPropertiesByLocale().entrySet().isEmpty()) {
-      for(Locale locale : questionnaire.getLocales()) {
-        bundle.updateLanguage(locale, new Properties());
-      }
-    } else {
-      for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
-        bundle.updateLanguage(entry.getKey(), entry.getValue());
-      }
-    }
+    // if(editedElement.getPropertiesByLocale().entrySet().isEmpty()) {
+    // for(Locale locale : questionnaire.getLocales()) {
+    // bundle.updateLanguage(locale, new Properties());
+    // }
+    // } else {
+    // for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
+    // bundle.updateLanguage(entry.getKey(), entry.getValue());
+    // }
+    // }
   }
 
   @Required

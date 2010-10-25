@@ -20,13 +20,12 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.model.util.ListModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -34,10 +33,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
-import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -45,15 +46,12 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 @SuppressWarnings("serial")
 public class QuestionPanel extends Panel {
 
-  @SpringBean
-  private LocalePropertiesUtils localePropertiesUtils;
+  private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  private ListModel<LocaleProperties2> localePropertiesModel;
-
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<Questionnaire> questionnaireModel) {
+  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(new PropertyModel<Question>(model, "element"), questionnaireModel));
+    logger.info("EditedQuestion: " + model.getObject());
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name"));
@@ -111,7 +109,10 @@ public class QuestionPanel extends Panel {
     add(type);
     add(new SimpleFormComponentLabel("typeLabel", type));
 
-    add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Question>(model, "element"), localePropertiesModel));
+    PropertyModel<Question> questionModel = new PropertyModel<Question>(model, "element");
+    logger.info("questionModel.getObject(): " + questionModel.getObject());
+
+    add(new LabelsPanel("labels", localePropertiesModel, questionModel, feedbackPanel, feedbackWindow));
   }
 
   /**

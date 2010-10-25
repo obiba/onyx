@@ -94,6 +94,7 @@ import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 @AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
 
@@ -503,6 +504,7 @@ public class ParticipantSearchPage extends BasePage {
     @SpringBean
     private OnyxDataExport onyxDataExport;
 
+    @SuppressWarnings("serial")
     public ActionFragment(String id) {
       super(id, "actionFragment", ParticipantSearchPage.this);
 
@@ -761,8 +763,6 @@ public class ParticipantSearchPage extends BasePage {
    * @see ONYX-169
    */
   private class ActionListFragment extends Fragment {
-
-    private static final long serialVersionUID = 1L;
 
     private abstract class ActionLink extends AjaxLink {
 

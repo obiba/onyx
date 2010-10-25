@@ -30,6 +30,7 @@ import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 /**
  * Allows the signed user to change his password and preferred language
  */
+@SuppressWarnings("serial")
 public class ProfilePage extends BasePage {
 
   @SpringBean
@@ -60,7 +61,6 @@ public class ProfilePage extends BasePage {
     add(languageSelect);
 
     ChangePasswordPanel changePassword = new ChangePasswordPanel("changePassword", previousPageId) {
-      private static final long serialVersionUID = 1L;
 
       public void onSuccess(AjaxRequestTarget target) {
         Label contentLabel = new Label("content", new StringResourceModel("PasswordSuccessfullyChanged", this, null));

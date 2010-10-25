@@ -27,13 +27,13 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -46,13 +46,14 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
-import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.data.IDataValidator;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
  *
@@ -66,35 +67,31 @@ public class OpenAnswerPanel extends Panel {
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  private DropDownChoice<DataType> dataType;
+  private final DropDownChoice<DataType> dataType;
 
-  private WebMarkupContainer minMaxContainer;
+  private final WebMarkupContainer minMaxContainer;
 
-  private TextField<String> minLength;
+  private final TextField<String> minLength;
 
-  private TextField<String> maxLength;
+  private final TextField<String> maxLength;
 
-  private TextField<String> minNumeric;
+  private final TextField<String> minNumeric;
 
-  private TextField<String> maxNumeric;
+  private final TextField<String> maxNumeric;
 
-  private TextField<String> beforeDate;
+  private final TextField<String> beforeDate;
 
-  private TextField<String> afterDate;
+  private final TextField<String> afterDate;
 
   private SimpleFormComponentLabel minimumLabel;
 
   private SimpleFormComponentLabel maximumLabel;
 
-  private ListModel<LocaleProperties2> localePropertiesModel;
-
-  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel) {
+  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
-
     Question question = questionModel.getObject();
-    OpenAnswerDefinition openAnswerDefinition = model.getObject();
+    OpenAnswerDefinition openAnswer = model.getObject();
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "name"));
     name.setLabel(new ResourceModel("Name"));
@@ -141,7 +138,8 @@ public class OpenAnswerPanel extends Panel {
     add(unit);
     add(new SimpleFormComponentLabel("unitLabel", unit));
 
-    add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", model, localePropertiesModel));
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
+    add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));
@@ -150,7 +148,7 @@ public class OpenAnswerPanel extends Panel {
 
     // min/max validators
     String maxValue = null, minValue = null;
-    for(IDataValidator<?> dataValidator : openAnswerDefinition.getDataValidators()) {
+    for(IDataValidator<?> dataValidator : openAnswer.getDataValidators()) {
       IValidator<?> validator = dataValidator.getValidator();
       if(validator instanceof RangeValidator<?>) {
         RangeValidator<?> rangeValidator = (RangeValidator<?>) validator;

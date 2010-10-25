@@ -41,7 +41,6 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
@@ -59,13 +58,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.editor.page.EditedPage;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
-import org.obiba.onyx.quartz.editor.section.EditedSection;
 import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -84,6 +83,9 @@ public class QuestionnaireTreePanel extends Panel {
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
 
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
@@ -118,8 +120,12 @@ public class QuestionnaireTreePanel extends Panel {
 
   private ListModel<IQuestionnaireElement> root;
 
+  private final LocaleProperties localeProperties;
+
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
-    super(id, new Model<EditedQuestionnaire>(new EditedQuestionnaire(model.getObject())));
+    super(id, model);
+
+    localeProperties = localePropertiesUtils.load(model.getObject());
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -224,9 +230,7 @@ public class QuestionnaireTreePanel extends Panel {
       IQuestionnaireElement element = elements.get(nodeId);
       IQuestionnaireElement newParent = elements.get(newParentId);
 
-      EditedQuestionnaire editedQuestionnaire = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(editedQuestionnaire.getElement().getName()).getQuestionnaire();
-      editedQuestionnaire.setElement(questionnaire);
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getName()).getQuestionnaire();
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
 
       if(element instanceof Section && newParent instanceof IHasSection) {
@@ -236,7 +240,7 @@ public class QuestionnaireTreePanel extends Panel {
         if(newParent instanceof Section) {
           updatedNewParent = questionnaireFinder.findSection(newParent.getName());
         } else {
-          updatedNewParent = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
+          updatedNewParent = ((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject());
         }
 
         if(!sameParent) {
@@ -332,30 +336,29 @@ public class QuestionnaireTreePanel extends Panel {
   }
 
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
+    @SuppressWarnings("unchecked")
     @Override
     protected void respond(final AjaxRequestTarget respondTarget) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Edit " + nodeId);
       IQuestionnaireElement element = elements.get(nodeId);
-      EditedQuestionnaire editedQuestionnaire = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(editedQuestionnaire.getElement().getName()).getQuestionnaire();
-      editedQuestionnaire.setElement(questionnaire);
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getName()).getQuestionnaire();
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
       if(element instanceof Questionnaire) {
         elementWindow.setTitle(new ResourceModel("Questionnaire"));
-        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<EditedQuestionnaire>(new EditedQuestionnaire(questionnaire)), elementWindow) {
+        elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(questionnaire), elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedQuestionnaire onSaveEditedQuestionnaire) {
-            super.onSave(target, onSaveEditedQuestionnaire);
-            elements.put(nodeId, onSaveEditedQuestionnaire.getElement());
+          public void onSave(AjaxRequestTarget target, Questionnaire savedQuestionnaire) {
+            super.onSave(target, savedQuestionnaire);
+            elements.put(nodeId, savedQuestionnaire);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + onSaveEditedQuestionnaire.getElement().getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + savedQuestionnaire.getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
       }
 
-      IModel<Questionnaire> questionnaireModel = new PropertyModel<Questionnaire>(QuestionnaireTreePanel.this.getDefaultModel(), "element");
+      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       if(element instanceof Section) {
         Section updatedElement = questionnaireFinder.findSection(element.getName());
         elementWindow.setTitle(new ResourceModel("Section"));
@@ -367,12 +370,11 @@ public class QuestionnaireTreePanel extends Panel {
 
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
-            super.onSave(target, editedSection);
-            persist(target);
-            elements.put(nodeId, editedSection.getElement());
+          @SuppressWarnings("hiding")
+          public void onSave(AjaxRequestTarget target, Section section) {
+            elements.put(nodeId, section);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedSection.getElement().getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
@@ -388,12 +390,11 @@ public class QuestionnaireTreePanel extends Panel {
 
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
+          public void onSave(AjaxRequestTarget target, Page editedPage) {
             super.onSave(target, editedPage);
-            persist(target);
-            elements.put(nodeId, editedPage.getElement());
+            elements.put(nodeId, editedPage);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getElement().getName() + "');");
+            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getName() + "');");
           }
         });
         elementWindow.show(respondTarget);
@@ -428,9 +429,7 @@ public class QuestionnaireTreePanel extends Panel {
       log.info("Delete " + nodeId);
 
       IQuestionnaireElement element = elements.get(nodeId);
-      EditedQuestionnaire editedQuestionnaire = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(editedQuestionnaire.getElement().getName()).getQuestionnaire();
-      editedQuestionnaire.setElement(questionnaire);
+      Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getName()).getQuestionnaire();
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
 
       if(element instanceof Section) {
@@ -445,7 +444,7 @@ public class QuestionnaireTreePanel extends Panel {
         Page updatedElement = questionnaireFinder.findPage(element.getName());
         Section parentSection = updatedElement.getSection();
         parentSection.removePage(updatedElement);
-        ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().removePage(updatedElement);
+        questionnaire.removePage(updatedElement);
       } else if(element instanceof Question) {
         Question updatedElement = questionnaireFinder.findQuestion(element.getName());
         if(updatedElement.getParentQuestion() == null) {
@@ -468,7 +467,8 @@ public class QuestionnaireTreePanel extends Panel {
       String type = request.getParameter("type");
       log.info("Add " + type + " to " + nodeId);
 
-      IModel<Questionnaire> questionnaireModel = new PropertyModel<Questionnaire>(QuestionnaireTreePanel.this.getDefaultModel(), "element");
+      @SuppressWarnings("unchecked")
+      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       IQuestionnaireElement element = elements.get(nodeId);
       final Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
       questionnaireModel.setObject(questionnaire);
@@ -479,7 +479,7 @@ public class QuestionnaireTreePanel extends Panel {
         if(element instanceof Section) {
           updatedElement = questionnaireFinder.findSection(element.getName());
         } else {
-          updatedElement = ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement();
+          updatedElement = questionnaire;
         }
 
         Set<String> unavailableNames = new HashSet<String>();
@@ -489,10 +489,9 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), unavailableNames, questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
-            super.onSave(target, editedSection);
-            updatedElement.addSection(editedSection.getElement());
-            persist(target);
+          @SuppressWarnings("hiding")
+          public void onSave(AjaxRequestTarget target, Section section) {
+            updatedElement.addSection(section);
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
@@ -509,11 +508,10 @@ public class QuestionnaireTreePanel extends Panel {
 
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), unavailableNames, questionnaireModel, elementWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedPage editedPage) {
+          public void onSave(AjaxRequestTarget target, Page editedPage) {
             super.onSave(target, editedPage);
-            updatedElement.addPage(editedPage.getElement());
-            ((EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject()).getElement().addPage(editedPage.getElement());
-            persist(target);
+            updatedElement.addPage(editedPage);
+            questionnaire.addPage(editedPage);
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
@@ -550,9 +548,9 @@ public class QuestionnaireTreePanel extends Panel {
 
   protected void persit() {
     try {
-      EditedQuestionnaire defaultModelObject = (EditedQuestionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(defaultModelObject.getElement());
-      questionnairePersistenceUtils.persist(defaultModelObject, builder);
+      Questionnaire questionnaire = (Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
+      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaire);
+      questionnairePersistenceUtils.persist(questionnaire, localeProperties, builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
     }

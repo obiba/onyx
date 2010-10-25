@@ -24,15 +24,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
-import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -43,7 +42,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class SectionPropertiesPanel extends Panel {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
@@ -55,18 +54,15 @@ public abstract class SectionPropertiesPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<EditedSection> form;
+  private final Form<Section> form;
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private ListModel<LocaleProperties2> localePropertiesModel;
+  private final IModel<LocaleProperties> localePropertiesModel;
 
-  @SuppressWarnings("unchecked")
   public SectionPropertiesPanel(String id, final IModel<Section> model, final Set<String> unavailableNames, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    super(id, new Model<EditedSection>(new EditedSection(model.getObject())));
+    super(id, model);
     this.questionnaireModel = questionnaireModel;
-
-    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -74,9 +70,9 @@ public abstract class SectionPropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<EditedSection>("form", (IModel<EditedSection>) getDefaultModel()));
+    add(form = new Form<Section>("form", model));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "element.name"), String.class);
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
@@ -92,7 +88,8 @@ public abstract class SectionPropertiesPanel extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Section>(form.getModel(), "element"), localePropertiesModel));
+    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject()));
+    form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     form.add(new AjaxButton("save", form) {
       @Override
@@ -119,16 +116,12 @@ public abstract class SectionPropertiesPanel extends Panel {
   /**
    * 
    * @param target
-   * @param editedSection
+   * @param section
    */
-  public void onSave(AjaxRequestTarget target, EditedSection editedSection) {
-    editedSection.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
-  }
-
-  public void persist(AjaxRequestTarget target) {
+  public void onSave(AjaxRequestTarget target, Section section) {
     try {
       QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
-      questionnairePersistenceUtils.persist(form.getModelObject(), builder);
+      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject(), builder);
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

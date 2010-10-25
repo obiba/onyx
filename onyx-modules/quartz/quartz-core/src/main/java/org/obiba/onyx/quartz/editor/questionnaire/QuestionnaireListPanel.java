@@ -178,7 +178,7 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<EditedQuestionnaire>(new EditedQuestionnaire(rowModel.getObject())), modalWindow));
+          modalWindow.setContent(new QuestionnairePropertiesPanel("content", rowModel, modalWindow));
           modalWindow.show(target);
         }
       });

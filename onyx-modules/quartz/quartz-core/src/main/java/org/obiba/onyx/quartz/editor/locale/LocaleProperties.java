@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.locale.model;
+package org.obiba.onyx.quartz.editor.locale;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +17,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.springframework.util.Assert;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -30,7 +33,7 @@ public class LocaleProperties implements Serializable {
 
   private List<Locale> locales = new ArrayList<Locale>();
 
-  private Map<IQuestionnaireElement, ElementLabels> elementLabels = new HashMap<IQuestionnaireElement, ElementLabels>();
+  private Map<IQuestionnaireElement, ListMultimap<Locale, KeyValue>> elementLabels = new HashMap<IQuestionnaireElement, ListMultimap<Locale, KeyValue>>();
 
   public List<Locale> getLocales() {
     return locales;
@@ -40,38 +43,45 @@ public class LocaleProperties implements Serializable {
     this.locales = locales;
   }
 
-  public Map<IQuestionnaireElement, ElementLabels> getElementLabels() {
+  public Map<IQuestionnaireElement, ListMultimap<Locale, KeyValue>> getElementLabels() {
     return elementLabels;
   }
 
-  public void setElementLabels(Map<IQuestionnaireElement, ElementLabels> elementLabels) {
+  public void setElementLabels(Map<IQuestionnaireElement, ListMultimap<Locale, KeyValue>> elementLabels) {
     this.elementLabels = elementLabels;
   }
 
   public void addElementLabels(IQuestionnaireElement element, Locale locale, String key, String value) {
-    if(elementLabels.get(element) == null) {
-      elementLabels.put(element, new ElementLabels());
+    Assert.notNull(element);
+    Assert.notNull(locale);
+    ListMultimap<Locale, KeyValue> labels = elementLabels.get(element);
+    if(labels == null) {
+      labels = LinkedListMultimap.create();
+      elementLabels.put(element, labels);
     }
-    elementLabels.get(element).addKeyValue(locale, key, value);
+    labels.put(locale, new KeyValue(key, value));
   }
 
-  public class ElementLabels implements Serializable {
+  public ListMultimap<Locale, KeyValue> getElementLabels(IQuestionnaireElement element) {
+    return elementLabels.get(element);
+  }
 
-    private static final long serialVersionUID = 1L;
-
-    private ListMultimap<Locale, KeyValue> labels = LinkedListMultimap.create();
-
-    public ListMultimap<Locale, KeyValue> getLabels() {
-      return labels;
+  public void addLocale(Questionnaire questionnaire, Locale locale) {
+    if(!locales.contains(locale)) locales.add(locale);
+    List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaire);
+    for(String key : listKeys) {
+      addElementLabels(questionnaire, locale, key, null);
     }
+  }
 
-    public void setLabels(ListMultimap<Locale, KeyValue> labels) {
-      this.labels = labels;
-    }
+  public void removeLocale(Questionnaire questionnaire, Locale locale) {
+    locales.remove(locale);
+    getElementLabels(questionnaire).removeAll(locale);
+  }
 
-    public void addKeyValue(Locale locale, String key, String value) {
-      labels.put(locale, new KeyValue(key, value));
-    }
+  @Override
+  public String toString() {
+    return "locales: " + locales + ", elementLabels: " + elementLabels;
   }
 
   public class KeyValue implements Serializable {
@@ -83,6 +93,7 @@ public class LocaleProperties implements Serializable {
     private String value;
 
     public KeyValue(String key, String value) {
+      Assert.notNull(key);
       this.key = key;
       this.value = value;
     }
@@ -102,5 +113,11 @@ public class LocaleProperties implements Serializable {
     public void setValue(String value) {
       this.value = value;
     }
+
+    @Override
+    public String toString() {
+      return key + "=" + value;
+    }
+
   }
 }

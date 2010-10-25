@@ -46,10 +46,9 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  */
-@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR" })
+@SuppressWarnings("serial")
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR" })
 public class DevelopersPanel extends Panel {
-
-  private static final long serialVersionUID = 8577685399815703632L;
 
   private static final Logger log = LoggerFactory.getLogger(DevelopersPanel.class);
 

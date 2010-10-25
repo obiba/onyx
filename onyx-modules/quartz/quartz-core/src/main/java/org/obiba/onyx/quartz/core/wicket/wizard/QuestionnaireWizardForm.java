@@ -210,6 +210,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     });
 
     adminWindow.setWindowClosedCallback(new WindowClosedCallback() {
+      @SuppressWarnings("incomplete-switch")
       public void onClose(AjaxRequestTarget target, Status status) {
         switch(status) {
         case OTHER:

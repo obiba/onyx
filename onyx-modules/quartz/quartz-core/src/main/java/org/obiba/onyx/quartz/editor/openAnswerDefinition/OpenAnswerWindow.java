@@ -19,6 +19,7 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -33,7 +34,7 @@ public abstract class OpenAnswerWindow extends Panel {
 
   private final Form<OpenAnswerDefinition> form;
 
-  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -44,7 +45,7 @@ public abstract class OpenAnswerWindow extends Panel {
 
     add(form = new Form<OpenAnswerDefinition>("form", model));
 
-    form.add(new OpenAnswerPanel("openAnswerPanel", model, questionModel, questionnaireModel));
+    form.add(new OpenAnswerPanel("openAnswerPanel", model, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));
 
     form.add(new AjaxButton("save", form) {
       @Override

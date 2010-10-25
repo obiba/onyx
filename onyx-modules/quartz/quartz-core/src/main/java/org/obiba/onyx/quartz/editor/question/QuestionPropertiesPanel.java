@@ -36,7 +36,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
@@ -55,9 +54,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBui
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryWindow;
-import org.obiba.onyx.quartz.editor.category.EditedQuestionCategory;
-import org.obiba.onyx.quartz.editor.locale.model.LocaleProperties2;
-import org.obiba.onyx.quartz.editor.locale.ui.LocalesPropertiesAjaxTabbedPanel;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
@@ -102,7 +99,9 @@ public class QuestionPropertiesPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private ListModel<LocaleProperties2> localePropertiesModel;
+  // private ListModel<LocaleProperties2> localePropertiesModel;
+
+  private final LocaleProperties localeProperties;
 
   private ConditionPanel conditionPanel;
 
@@ -111,12 +110,15 @@ public class QuestionPropertiesPanel extends Panel {
     super(id, new Model<EditedQuestion>(new EditedQuestion(model.getObject())));
     this.questionnaireModel = questionnaireModel;
 
+    localeProperties = localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject());
+
     EditedQuestion editedQuestion = new EditedQuestion();
     editedQuestion.setElement(model.getObject());
     IModel<EditedQuestion> editedModel = new Model<EditedQuestion>(editedQuestion);
     setDefaultModel(editedModel);
 
-    localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model, questionnaireModel));
+    // localePropertiesModel = new ListModel<LocaleProperties2>(localePropertiesUtils.loadLocaleProperties(model,
+    // questionnaireModel));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -186,12 +188,13 @@ public class QuestionPropertiesPanel extends Panel {
 
     form.add(nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows), Integer.class));
 
-    form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new PropertyModel<Question>(form.getModel(), "element"), localePropertiesModel));
+    // form.add(new LocalesPropertiesAjaxTabbedPanel("localesPropertiesTabs", new
+    // PropertyModel<Question>(form.getModel(), "element"), localePropertiesModel));
 
     categoryList = new SortableList<QuestionCategory>("categoryList", question.getQuestionCategories()) {
 
       @Override
-      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @SuppressWarnings("rawtypes")
       public SortableList<QuestionCategory>.Button[] getButtons() {
 
         SortableList<QuestionCategory>.Button addButton = new SortableList.Button(new StringResourceModel("AddCategory", QuestionPropertiesPanel.this, null)) {
@@ -204,9 +207,9 @@ public class QuestionPropertiesPanel extends Panel {
             categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
 
               @Override
-              public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
+              public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
                 super.onSave(target1, editedCategory);
-                QuestionPropertiesPanel.this.form.getModelObject().getElement().addQuestionCategory(editedCategory.getElement());
+                QuestionPropertiesPanel.this.form.getModelObject().getElement().addQuestionCategory(editedCategory);
                 refreshList(target1);
                 persist(target1);
               }
@@ -248,7 +251,7 @@ public class QuestionPropertiesPanel extends Panel {
         categoryWindow.setTitle(new ResourceModel("Category"));
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, EditedQuestionCategory editedCategory) {
+          public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
             super.onSave(target1, editedCategory);
             refreshList(target1);
             persist(target1);
@@ -292,7 +295,7 @@ public class QuestionPropertiesPanel extends Panel {
   }
 
   public void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion) {
-    editedQuestion.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
+    // editedQuestion.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
     final Question question = editedQuestion.getElement();
 
     if(form.getModelObject().getElement().getParentQuestion() == null) {
@@ -354,7 +357,7 @@ public class QuestionPropertiesPanel extends Panel {
         }
       }
 
-      questionnairePersistenceUtils.persist(editedQuestion, builder);
+      questionnairePersistenceUtils.persist(editedQuestion.getElement(), localeProperties, builder);
 
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);

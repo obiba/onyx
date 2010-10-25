@@ -239,6 +239,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return actions;
   }
 
+  @SuppressWarnings("incomplete-switch")
   public Action getStatusAction() {
     Interview interview = getInterview();
     Action template = new Action();
@@ -255,8 +256,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false));
 
     if(actions.size() > 0) return actions.get(0);
-    else
-      return null;
+    return null;
   }
 
   public void reinstateInterview() {

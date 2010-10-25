@@ -44,9 +44,8 @@ import org.obiba.wicket.markup.html.panel.LinkPanel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
+@SuppressWarnings("serial")
 public class UserSearchPanel extends Panel {
-
-  private static final long serialVersionUID = 1L;
 
   @SpringBean
   private EntityQueryService queryService;

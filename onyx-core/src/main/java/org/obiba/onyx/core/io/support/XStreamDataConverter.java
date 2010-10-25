@@ -54,6 +54,7 @@ public class XStreamDataConverter implements Converter {
   // Methods
   //
 
+  @SuppressWarnings("incomplete-switch")
   private Serializable convertStringToType(String stringValue, DataType type) {
     Serializable value = null;
 

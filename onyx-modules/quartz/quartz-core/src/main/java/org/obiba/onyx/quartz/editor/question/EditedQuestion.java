@@ -28,7 +28,7 @@ public class EditedQuestion extends EditedElement<Question> {
 
   public EditedQuestion(Question element) {
     super(element);
-    questionType = element.getType();
+    if(element != null) questionType = element.getType();
   }
 
   public Conditions getConditions() {
@@ -45,6 +45,11 @@ public class EditedQuestion extends EditedElement<Question> {
 
   public void setQuestionType(QuestionType questionType) {
     this.questionType = questionType;
+  }
+
+  @Override
+  public String toString() {
+    return "question: " + getElement() + ", questionType: " + questionType;
   }
 
 }

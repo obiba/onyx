@@ -24,16 +24,21 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerPanel;
+import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,20 +46,40 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public class EditQuestionPanel extends Panel {
 
+  private transient Logger logger = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
+
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
   private final Form<EditedQuestion> form;
 
-  private AjaxSubmitTabbedPanel tabbedPanel;
+  private final IModel<LocaleProperties> localePropertiesModel;
+
+  private final AjaxSubmitTabbedPanel tabbedPanel;
 
   public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
 
     Question question = questionModel.getObject();
-    final IModel<EditedQuestion> model = new Model<EditedQuestion>(StringUtils.isBlank(question.getName()) ? new EditedQuestion() : new EditedQuestion(question));
+
+    logger.info("question: " + question);
+
+    EditedQuestion editedQuestion = null;
+    if(StringUtils.isBlank(question.getName())) {
+      editedQuestion = new EditedQuestion(null);
+      editedQuestion.setElement(question);
+    } else {
+      editedQuestion = new EditedQuestion(question);
+    }
+    final IModel<EditedQuestion> model = new Model<EditedQuestion>(editedQuestion);
+
     setDefaultModel(model);
+
+    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), question));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -69,7 +94,7 @@ public class EditQuestionPanel extends Panel {
     final HidableTab openAnswerTab = new HidableTab(new ResourceModel("OpenAnswer")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionModel, questionnaireModel);
+        return new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
       }
     };
     openAnswerTab.setVisible(false);
@@ -77,7 +102,7 @@ public class EditQuestionPanel extends Panel {
     final HidableTab categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new CategoriesPanel(panelId, model, questionnaireModel, feedbackPanel, feedbackWindow);
+        return new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
       }
     };
     categoriesTab.setVisible(false);
@@ -101,7 +126,7 @@ public class EditQuestionPanel extends Panel {
     ITab questionTab = new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new QuestionPanel(panelId, model, parentModel, questionnaireModel) {
+        return new QuestionPanel(panelId, model, parentModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
           @Override
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             switch(questionType) {

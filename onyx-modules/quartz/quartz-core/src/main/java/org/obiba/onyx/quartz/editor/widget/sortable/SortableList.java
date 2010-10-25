@@ -150,6 +150,10 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     }
   }
 
+  public void onItemPopulation(T t) {
+
+  }
+
   public abstract Component getItemTitle(String id, T t);
 
   public abstract void editItem(T t, AjaxRequestTarget target);
