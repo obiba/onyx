@@ -32,7 +32,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasQuestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -44,11 +43,11 @@ import org.slf4j.LoggerFactory;
  *
  */
 @SuppressWarnings("serial")
-public class QuestionPanel extends Panel {
+public abstract class QuestionPanel extends Panel {
 
   private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<IHasQuestion> parentModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     logger.info("EditedQuestion: " + model.getObject());
@@ -120,8 +119,5 @@ public class QuestionPanel extends Panel {
    * @param target
    * @param questionType
    */
-  public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
-
-  }
-
+  public abstract void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType);
 }

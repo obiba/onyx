@@ -16,11 +16,15 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -28,14 +32,25 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public abstract class OpenAnswerWindow extends Panel {
 
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
   private final Form<OpenAnswerDefinition> form;
 
+  private final IModel<Questionnaire> questionnaireModel;
+
+  private final IModel<LocaleProperties> localePropertiesModel;
+
   public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
+    this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -74,8 +89,17 @@ public abstract class OpenAnswerWindow extends Panel {
    * @param target
    * @param openAnswer
    */
-  public void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
+  public abstract void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer);
 
+  public void persist(AjaxRequestTarget target) {
+    try {
+      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
+    } catch(Exception e) {
+      log.error("Cannot persist questionnaire", e);
+      error(e.getMessage());
+      feedbackWindow.setContent(feedbackPanel);
+      feedbackWindow.show(target);
+    }
   }
 
 }

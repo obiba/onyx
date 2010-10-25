@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.util.Locale;
-
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
@@ -19,11 +16,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  *
@@ -34,7 +29,9 @@ public class QuestionnairePersistenceUtils {
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  public QuestionnaireBuilder createBuilder(Questionnaire questionnaire) {
+  private LocalePropertiesUtils localePropertiesUtils;
+
+  private QuestionnaireBuilder createBuilder(Questionnaire questionnaire) {
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);
     if(Questionnaire.STANDARD_UI.equals(questionnaire.getUiType())) {
       builder.setStandardUI();
@@ -44,7 +41,7 @@ public class QuestionnairePersistenceUtils {
     return builder;
   }
 
-  public void persist(IQuestionnaireElement element, LocaleProperties localeProperties, QuestionnaireBuilder builder) throws Exception {
+  private void persist(QuestionnaireBuilder builder, LocaleProperties localeProperties) throws Exception {
 
     UniqueQuestionnaireElementNameBuilder.ensureQuestionnaireVariableNamesAreUnique(builder.getQuestionnaire());
 
@@ -57,29 +54,22 @@ public class QuestionnairePersistenceUtils {
 
     // store xml file and locales
     QuestionnaireBundle bundle = writeBundleManager.createBundle(questionnaire);
-    Iterable<Locale> localesToDelete = Iterables.filter(bundle.getAvailableLanguages(), new Predicate<Locale>() {
-      @Override
-      public boolean apply(Locale locale) {
-        return !questionnaire.getLocales().contains(locale);
-      }
-    });
-    for(Locale localeToDelete : localesToDelete) {
-      bundle.deleteLanguage(localeToDelete);
-    }
-    // if(editedElement.getPropertiesByLocale().entrySet().isEmpty()) {
-    // for(Locale locale : questionnaire.getLocales()) {
-    // bundle.updateLanguage(locale, new Properties());
-    // }
-    // } else {
-    // for(Entry<Locale, Properties> entry : editedElement.getPropertiesByLocale().entrySet()) {
-    // bundle.updateLanguage(entry.getKey(), entry.getValue());
-    // }
-    // }
+    localePropertiesUtils.persist(bundle, localeProperties);
+
+  }
+
+  public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
+    persist(createBuilder(questionnaire), localeProperties);
   }
 
   @Required
   public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
     this.questionnaireBundleManager = questionnaireBundleManager;
+  }
+
+  @Required
+  public void setLocalePropertiesUtils(LocalePropertiesUtils localePropertiesUtils) {
+    this.localePropertiesUtils = localePropertiesUtils;
   }
 
 }

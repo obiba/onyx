@@ -36,12 +36,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
@@ -52,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 @SuppressWarnings("serial")
-public class CategoryWindow extends Panel {
+public abstract class CategoryWindow extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
@@ -158,7 +157,6 @@ public class CategoryWindow extends Panel {
         openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, OpenAnswerDefinition openAnswer1) {
-            super.onSave(target1, openAnswer1);
             refreshList(target1);
           }
         });
@@ -191,7 +189,6 @@ public class CategoryWindow extends Panel {
             openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
               @Override
               public void onSave(AjaxRequestTarget target1, OpenAnswerDefinition openAnswer) {
-                super.onSave(target1, openAnswer);
                 OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
                 if(currentOpenAnswer == null) {
                   category.setOpenAnswerDefinition(openAnswer);
@@ -221,6 +218,21 @@ public class CategoryWindow extends Panel {
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+
+        openAnswerDefinitionList.save(target, new SortableListCallback<OpenAnswerDefinition>() {
+
+          @Override
+          public void onSave(List<OpenAnswerDefinition> orderedItems, AjaxRequestTarget target1) {
+            OpenAnswerDefinition currentOpenAnswer = form.getModelObject().getOpenAnswerDefinition();
+            if(currentOpenAnswer != null && !CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
+              currentOpenAnswer.getOpenAnswerDefinitions().clear();
+              for(OpenAnswerDefinition openAnswerDefinition : orderedItems) {
+                currentOpenAnswer.addOpenAnswerDefinition(openAnswerDefinition);
+              }
+            }
+          }
+        });
+
         onSave(target, form.getModelObject());
         modalWindow.close(target);
       }
@@ -245,28 +257,11 @@ public class CategoryWindow extends Panel {
    * @param target
    * @param questionCategory
    */
-  public void onSave(AjaxRequestTarget target, final QuestionCategory questionCategory) {
-    // editedQuestionCategory.setLocalePropertiesWithNamingStrategy(localeProperties.getObject());
-
-    openAnswerDefinitionList.save(target, new SortableListCallback<OpenAnswerDefinition>() {
-
-      @Override
-      public void onSave(List<OpenAnswerDefinition> orderedItems, AjaxRequestTarget target1) {
-        OpenAnswerDefinition currentOpenAnswer = questionCategory.getOpenAnswerDefinition();
-        if(currentOpenAnswer != null && !CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
-          currentOpenAnswer.getOpenAnswerDefinitions().clear();
-          for(OpenAnswerDefinition openAnswerDefinition : orderedItems) {
-            currentOpenAnswer.addOpenAnswerDefinition(openAnswerDefinition);
-          }
-        }
-      }
-    });
-  }
+  public abstract void onSave(AjaxRequestTarget target, final QuestionCategory questionCategory);
 
   public void persist(AjaxRequestTarget target) {
     try {
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
-      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject(), builder);
+      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());
@@ -274,5 +269,4 @@ public class CategoryWindow extends Panel {
       feedbackWindow.show(target);
     }
   }
-
 }

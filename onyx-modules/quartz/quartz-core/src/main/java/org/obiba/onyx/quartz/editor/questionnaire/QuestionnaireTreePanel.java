@@ -56,15 +56,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.page.PagePropertiesPanel;
 import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionPropertiesPanel;
 import org.obiba.onyx.quartz.editor.section.SectionPropertiesPanel;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -349,7 +348,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(questionnaire), elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Questionnaire savedQuestionnaire) {
-            super.onSave(target, savedQuestionnaire);
+            persist(target);
             elements.put(nodeId, savedQuestionnaire);
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + savedQuestionnaire.getName() + "');");
@@ -391,7 +390,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page editedPage) {
-            super.onSave(target, editedPage);
+            persist(target);
             elements.put(nodeId, editedPage);
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getName() + "');");
@@ -411,7 +410,6 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new QuestionPropertiesPanel("content", new Model<Question>(updatedElement), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
-            super.onSave(target, editedQuestion);
             persist(target);
             elements.put(nodeId, editedQuestion.getElement());
             target.addComponent(treeContainer);
@@ -489,9 +487,9 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
         elementWindow.setContent(new SectionPropertiesPanel("content", new Model<Section>(new Section(null)), unavailableNames, questionnaireModel, elementWindow) {
           @Override
-          @SuppressWarnings("hiding")
           public void onSave(AjaxRequestTarget target, Section section) {
             updatedElement.addSection(section);
+            persist(respondTarget);
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
@@ -509,9 +507,9 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new PagePropertiesPanel("content", new Model<Page>(new Page(null)), unavailableNames, questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Page editedPage) {
-            super.onSave(target, editedPage);
             updatedElement.addPage(editedPage);
             questionnaire.addPage(editedPage);
+            persist(target);
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
@@ -534,11 +532,8 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(new Question(null)), new Model<IHasQuestion>(updatedElement), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
-            super.onSave(target, editedQuestion);
-            // TODO persist question
-            // ((IHasQuestion) element).addQuestion(editedQuestion.getElement());
-            // persist(target);
-            // target.addComponent(treeContainer);
+            persist(target);
+            target.addComponent(treeContainer);
           }
         });
         elementWindow.show(respondTarget);
@@ -548,10 +543,9 @@ public class QuestionnaireTreePanel extends Panel {
 
   protected void persit() {
     try {
-      Questionnaire questionnaire = (Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject();
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaire);
-      questionnairePersistenceUtils.persist(questionnaire, localeProperties, builder);
+      questionnairePersistenceUtils.persist((Questionnaire) QuestionnaireTreePanel.this.getDefaultModelObject(), localeProperties);
     } catch(Exception e) {
+      // TODO display error to user
       log.error("Cannot persist questionnaire", e);
     }
   }

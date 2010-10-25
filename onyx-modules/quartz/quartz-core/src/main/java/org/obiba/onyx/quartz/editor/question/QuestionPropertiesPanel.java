@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.editor.question;
 
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,35 +40,25 @@ import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.onyx.core.data.ComparingDataSource;
-import org.obiba.onyx.core.data.FixedDataSource;
-import org.obiba.onyx.core.data.IDataSource;
-import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoryFinderPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryWindow;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
-import org.obiba.onyx.quartz.editor.question.condition.Conditions;
-import org.obiba.onyx.quartz.editor.question.condition.datasource.ComparingDS;
-import org.obiba.onyx.quartz.editor.question.condition.datasource.QuestionnaireDS;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
-import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
-public class QuestionPropertiesPanel extends Panel {
+public abstract class QuestionPropertiesPanel extends Panel {
 
   private static final String SINGLE_COLUMN_LAYOUT = "singleColumnLayout";
 
@@ -208,7 +197,6 @@ public class QuestionPropertiesPanel extends Panel {
 
               @Override
               public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
-                super.onSave(target1, editedCategory);
                 QuestionPropertiesPanel.this.form.getModelObject().getElement().addQuestionCategory(editedCategory);
                 refreshList(target1);
                 persist(target1);
@@ -252,7 +240,6 @@ public class QuestionPropertiesPanel extends Panel {
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
-            super.onSave(target1, editedCategory);
             refreshList(target1);
             persist(target1);
           }
@@ -294,70 +281,75 @@ public class QuestionPropertiesPanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
-  public void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion) {
-    // editedQuestion.setLocalePropertiesWithNamingStrategy(localePropertiesModel.getObject());
-    final Question question = editedQuestion.getElement();
+  public abstract void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion);
 
-    if(form.getModelObject().getElement().getParentQuestion() == null) {
-      categoryList.save(target, new SortableListCallback<QuestionCategory>() {
-        @Override
-        public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
-          question.getQuestionCategories().clear();
-          for(QuestionCategory questionCategory : orderedItems) {
-            question.getQuestionCategories().add(questionCategory);
-          }
-        }
-      });
-    }
+  // {
+  // final Question question = editedQuestion.getElement();
+  //
+  // if(form.getModelObject().getElement().getParentQuestion() == null) {
+  // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
+  // @Override
+  // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
+  // question.getQuestionCategories().clear();
+  // for(QuestionCategory questionCategory : orderedItems) {
+  // question.getQuestionCategories().add(questionCategory);
+  // }
+  // }
+  // });
+  // }
+  //
+  // // Layout single or grid: make sure that the categories are added before this...
+  // String layoutSelection = layoutRadioGroup.getModelObject();
+  // if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+  // question.clearUIArguments();
+  // question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
+  // } else if(GRID_LAYOUT.equals(layoutSelection)) {
+  // question.clearUIArguments();
+  // question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+  // }
+  //
+  // editedQuestion.setConditions(((Conditions) conditionPanel.getDefaultModelObject()));
+  // }
 
-    // Layout single or grid: make sure that the categories are added before this...
-    String layoutSelection = layoutRadioGroup.getModelObject();
-    if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
-    } else if(GRID_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
-    }
-
-    editedQuestion.setConditions(((Conditions) conditionPanel.getDefaultModelObject()));
-  }
-
-  protected void persist(AjaxRequestTarget target) {
+  public void persist(AjaxRequestTarget target) {
     try {
-      EditedQuestion editedQuestion = form.getModelObject();
-      Question question = editedQuestion.getElement();
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
+      // EditedQuestion editedQuestion = form.getModelObject();
+      // Question question = editedQuestion.getElement();
+      // QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
+      // Conditions conditions = editedQuestion.getConditions();
+      // if(conditions != null) {
+      // int nbDataSources = conditions.getNbDataSources();
+      // if(nbDataSources > 0) {
+      //
+      // List<IDataSource> ds = new ArrayList<IDataSource>(nbDataSources);
+      // for(QuestionnaireDS questionnaireDS : conditions.getQuestionnaireDataSources()) {
+      // ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder,
+      // questionnaireDS.getQuestion().getName(), questionnaireDS.getCategory() == null ? null :
+      // questionnaireDS.getCategory().getName(), questionnaireDS.getOpenAnswerDefinition() == null ? null :
+      // questionnaireDS.getOpenAnswerDefinition().getName());
+      // ds.add(conditionBuilder.getElement());
+      // }
+      // for(ComparingDS comparingDS : conditions.getComparingDataSources()) {
+      // if(ComparingDS.GENDER_TYPE.equals(comparingDS.getType())) {
+      // ds.add(new ComparingDataSource(new ParticipantPropertyDataSource(ComparingDS.GENDER_TYPE),
+      // comparingDS.getOperator(), new FixedDataSource(comparingDS.getGender().toString())));
+      // } else {
+      // throw new RuntimeException("Not implemented yet... only support gender comparison");
+      // // ds.add(new ComparingDataSource(new ParticipantPropertyDataSource(), comparingDS.getOperator(), new
+      // // FixedDataSource(DataType.valueOf(comparingDS.getType()), comparingDS.getValue())));
+      // }
+      // }
+      //
+      // if(nbDataSources == 1) {
+      // question.setCondition(ds.get(0));
+      // } else {
+      // builder.inQuestion(question.getName()).setCondition(conditions.getExpression(), ds.toArray(new
+      // IDataSource[nbDataSources]));
+      // }
+      // }
+      // }
 
-      Conditions conditions = editedQuestion.getConditions();
-      if(conditions != null) {
-        int nbDataSources = conditions.getNbDataSources();
-        if(nbDataSources > 0) {
-
-          List<IDataSource> ds = new ArrayList<IDataSource>(nbDataSources);
-          for(QuestionnaireDS questionnaireDS : conditions.getQuestionnaireDataSources()) {
-            ConditionBuilder conditionBuilder = ConditionBuilder.createQuestionCondition(builder, questionnaireDS.getQuestion().getName(), questionnaireDS.getCategory() == null ? null : questionnaireDS.getCategory().getName(), questionnaireDS.getOpenAnswerDefinition() == null ? null : questionnaireDS.getOpenAnswerDefinition().getName());
-            ds.add(conditionBuilder.getElement());
-          }
-          for(ComparingDS comparingDS : conditions.getComparingDataSources()) {
-            if(ComparingDS.GENDER_TYPE.equals(comparingDS.getType())) {
-              ds.add(new ComparingDataSource(new ParticipantPropertyDataSource(ComparingDS.GENDER_TYPE), comparingDS.getOperator(), new FixedDataSource(comparingDS.getGender().toString())));
-            } else {
-              throw new RuntimeException("Not implemented yet... only support gender comparison");
-              // ds.add(new ComparingDataSource(new ParticipantPropertyDataSource(), comparingDS.getOperator(), new
-              // FixedDataSource(DataType.valueOf(comparingDS.getType()), comparingDS.getValue())));
-            }
-          }
-
-          if(nbDataSources == 1) {
-            question.setCondition(ds.get(0));
-          } else {
-            builder.inQuestion(question.getName()).setCondition(conditions.getExpression(), ds.toArray(new IDataSource[nbDataSources]));
-          }
-        }
-      }
-
-      questionnairePersistenceUtils.persist(editedQuestion.getElement(), localeProperties, builder);
+      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localeProperties);
 
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
@@ -366,4 +358,5 @@ public class QuestionPropertiesPanel extends Panel {
       feedbackWindow.show(target);
     }
   }
+
 }

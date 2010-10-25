@@ -29,11 +29,10 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -118,10 +117,11 @@ public abstract class SectionPropertiesPanel extends Panel {
    * @param target
    * @param section
    */
-  public void onSave(AjaxRequestTarget target, Section section) {
+  public abstract void onSave(AjaxRequestTarget target, Section section);
+
+  public void persist(AjaxRequestTarget target) {
     try {
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(questionnaireModel.getObject());
-      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject(), builder);
+      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

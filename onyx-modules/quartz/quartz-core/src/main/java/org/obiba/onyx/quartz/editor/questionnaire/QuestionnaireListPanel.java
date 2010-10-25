@@ -37,7 +37,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -60,13 +59,7 @@ public class QuestionnaireListPanel extends Panel {
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
-  private InterviewManager interviewManager;
-
-  @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
-  // @SpringBean
-  // private UserSessionService userSessionService;
 
   private final ModalWindow modalWindow;
 
@@ -78,8 +71,8 @@ public class QuestionnaireListPanel extends Panel {
 
     layoutWindow = new ModalWindow("layoutWindow");
     layoutWindow.setCssClassName("onyx");
-    layoutWindow.setInitialWidth(1000);
-    layoutWindow.setInitialHeight(600);
+    layoutWindow.setInitialWidth(1050);
+    layoutWindow.setInitialHeight(650);
     layoutWindow.setResizable(true);
     layoutWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
@@ -178,7 +171,12 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          modalWindow.setContent(new QuestionnairePropertiesPanel("content", rowModel, modalWindow));
+          modalWindow.setContent(new QuestionnairePropertiesPanel("content", rowModel, modalWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire1) {
+              persist(target1);
+            }
+          });
           modalWindow.show(target);
         }
       });
@@ -186,8 +184,7 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           layoutWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(rowModel.getObject().getName()).getQuestionnaire();
-          rowModel.setObject(questionnaire);
+          rowModel.setObject(questionnaireBundleManager.getPersistedBundle(rowModel.getObject().getName()).getQuestionnaire());
           layoutWindow.setContent(new QuestionnaireTreePanel("content", rowModel));
           layoutWindow.show(target);
         }
@@ -235,7 +232,7 @@ public class QuestionnaireListPanel extends Panel {
 
             @Override
             public Page createPage() {
-              return new SingleDocumentQuestionnairePage(new QuestionnaireModel(rowModel.getObject()));
+              return new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(rowModel.getObject()));
             }
           });
           layoutWindow.show(target);

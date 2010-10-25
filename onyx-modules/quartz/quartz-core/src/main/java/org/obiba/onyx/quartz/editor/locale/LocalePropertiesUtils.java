@@ -7,9 +7,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.utils;
+package org.obiba.onyx.quartz.editor.locale;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,13 +18,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
-import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -81,34 +82,24 @@ public class LocalePropertiesUtils {
     return mapLocaleProperties;
   }
 
-  public void persist(final Questionnaire questionnaire, LocaleProperties localeProperties) {
-    // TODO need builder... (merge with questionnairePersistenceUtils
-    // QuestionnaireBundleManager writeBundleManager = new
-    // QuestionnaireBundleManagerImpl(questionnaireBundleManager.getRootDir());
-    // ((QuestionnaireBundleManagerImpl) writeBundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
-    // ((QuestionnaireBundleManagerImpl) writeBundleManager).setResourceLoader(new
-    // PathMatchingResourcePatternResolver());
-    //
-    // QuestionnaireBundle bundle = writeBundleManager.getPersistedBundle(questionnaire.getName());
-    // Iterable<Locale> localesToDelete = Iterables.filter(bundle.getAvailableLanguages(), new Predicate<Locale>() {
-    // @Override
-    // public boolean apply(Locale locale) {
-    // return !questionnaire.getLocales().contains(locale);
-    // }
-    // });
-    // for(Locale localeToDelete : localesToDelete) {
-    // bundle.deleteLanguage(localeToDelete);
-    // }
-    // Map<Locale, Properties> localePropertiesMap = toLocalePropertiesMap(localeProperties);
-    // if(localePropertiesMap.entrySet().isEmpty()) {
-    // for(Locale locale : questionnaire.getLocales()) {
-    // bundle.updateLanguage(locale, new Properties());
-    // }
-    // } else {
-    // for(Entry<Locale, Properties> entry : localePropertiesMap.entrySet()) {
-    // bundle.updateLanguage(entry.getKey(), entry.getValue());
-    // }
-    // }
+  public void persist(final QuestionnaireBundle bundle, LocaleProperties localeProperties) {
+
+    List<Locale> questionnaireLocales = bundle.getQuestionnaire().getLocales();
+    @SuppressWarnings("unchecked")
+    Collection<Locale> deletedLocales = CollectionUtils.subtract(bundle.getAvailableLanguages(), questionnaireLocales);
+    for(Locale localeToDelete : deletedLocales) {
+      bundle.deleteLanguage(localeToDelete);
+    }
+    Map<Locale, Properties> localePropertiesMap = toLocalePropertiesMap(localeProperties);
+    if(localePropertiesMap.entrySet().isEmpty()) {
+      for(Locale locale : questionnaireLocales) {
+        bundle.updateLanguage(locale, new Properties());
+      }
+    } else {
+      for(Entry<Locale, Properties> entry : localePropertiesMap.entrySet()) {
+        bundle.updateLanguage(entry.getKey(), entry.getValue());
+      }
+    }
   }
 
   @Required

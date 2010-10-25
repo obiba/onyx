@@ -57,11 +57,10 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -72,7 +71,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 @SuppressWarnings("serial")
-public class QuestionnairePropertiesPanel extends Panel {
+public abstract class QuestionnairePropertiesPanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
@@ -289,10 +288,11 @@ public class QuestionnairePropertiesPanel extends Panel {
    * @param target
    * @param questionnaire
    */
-  public void onSave(AjaxRequestTarget target, Questionnaire questionnaire) {
+  public abstract void onSave(AjaxRequestTarget target, Questionnaire questionnaire);
+
+  public void persist(AjaxRequestTarget target) {
     try {
-      QuestionnaireBuilder builder = questionnairePersistenceUtils.createBuilder(form.getModelObject());
-      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject(), builder);
+      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);
       error(e.getMessage());

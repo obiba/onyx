@@ -52,7 +52,7 @@ public class QuartzEditorPanel extends Panel {
         modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
-            super.onSave(target1, questionnaire);
+            persist(target1);
             target1.addComponent(questionnaireListPanel);
           }
         });

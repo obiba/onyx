@@ -32,8 +32,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerPanel;
-import org.obiba.onyx.quartz.editor.utils.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -44,12 +45,15 @@ import org.slf4j.LoggerFactory;
  *
  */
 @SuppressWarnings("serial")
-public class EditQuestionPanel extends Panel {
+public abstract class EditQuestionPanel extends Panel {
 
   private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
+
+  @SpringBean
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -61,8 +65,11 @@ public class EditQuestionPanel extends Panel {
 
   private final AjaxSubmitTabbedPanel tabbedPanel;
 
+  private final IModel<Questionnaire> questionnaireModel;
+
   public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<IHasQuestion> parentModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
+    this.questionnaireModel = questionnaireModel;
 
     Question question = questionModel.getObject();
 
@@ -126,7 +133,7 @@ public class EditQuestionPanel extends Panel {
     ITab questionTab = new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new QuestionPanel(panelId, model, parentModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+        return new QuestionPanel(panelId, model, parentModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
           @Override
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             switch(questionType) {
@@ -206,8 +213,16 @@ public class EditQuestionPanel extends Panel {
    * @param target
    * @param editedQuestion
    */
-  public void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion) {
-    // TODO save question
-  }
+  public abstract void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion);
 
+  public void persist(AjaxRequestTarget target) {
+    try {
+      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
+    } catch(Exception e) {
+      logger.error("Cannot persist questionnaire", e);
+      error(e.getMessage());
+      feedbackWindow.setContent(feedbackPanel);
+      feedbackWindow.show(target);
+    }
+  }
 }
