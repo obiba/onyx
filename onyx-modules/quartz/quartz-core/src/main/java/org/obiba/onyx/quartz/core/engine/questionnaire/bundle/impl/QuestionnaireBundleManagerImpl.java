@@ -163,16 +163,10 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     QuestionnaireBundle bundle = null;
     try {
       bundle = loadBundle(name);
+      bundle.clearMessageSourceCache();
     } catch(IOException ex) {
       log.error("Failed to load questionnaire bundle " + name);
     }
-    return bundle;
-  }
-
-  @Override
-  public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name) {
-    QuestionnaireBundle bundle = getBundle(name);
-    if(bundle != null) bundle.clearMessageSourceCache();
     return bundle;
   }
 

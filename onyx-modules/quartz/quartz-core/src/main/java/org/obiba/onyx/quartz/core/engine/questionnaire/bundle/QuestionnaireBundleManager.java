@@ -35,6 +35,7 @@ public interface QuestionnaireBundleManager {
 
   /**
    * Returns the latest version of the specified questionnaire bundle. (from xml file, not the cached)
+   *
    * @param name
    * @return
    */
@@ -46,13 +47,6 @@ public interface QuestionnaireBundleManager {
    * @return managed questionnaire bundles
    */
   public Set<QuestionnaireBundle> bundles();
-
-  /**
-   * Returns a questionnaire with cache of message source cleared (used to have properties updated)
-   * @param name
-   * @return
-   */
-  public QuestionnaireBundle getClearedMessageSourceCacheBundle(String name);
 
   /**
    * @return

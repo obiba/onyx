@@ -15,6 +15,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
 public class ValidationUtils {
   public static boolean mustValidate(IQuestionnaireElement element, IValidatable<String> validatable) {
-    return !StringUtils.lowerCase(StringUtils.trimToEmpty(element.getName())).equals(StringUtils.lowerCase(StringUtils.trimToEmpty(validatable.getValue())));
+    return !StringUtils.trimToEmpty(element.getName()).equals(StringUtils.trimToEmpty(validatable.getValue()));
   }
 }
