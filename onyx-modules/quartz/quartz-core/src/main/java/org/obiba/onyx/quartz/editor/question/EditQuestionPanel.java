@@ -163,6 +163,12 @@ public abstract class EditQuestionPanel extends Panel {
         return new Panel(panelId, model);
       }
     });
+    tabs.add(new AbstractTab(new ResourceModel("Preview")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        return new QuestionPreviewPanel(panelId, model, questionnaireModel);
+      }
+    });
 
     setTabsVisibility(editedQuestion.getQuestionType());
 
@@ -171,6 +177,28 @@ public abstract class EditQuestionPanel extends Panel {
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        // save each tab
+        switch(form.getModelObject().getQuestionType()) {
+        case SINGLE_OPEN_ANSWER:
+          // openAnswerTab.save();
+          break;
+
+        case LIST_CHECKBOX:
+        case LIST_RADIO:
+        case LIST_DROP_DOWN:
+          // categoriesTab.save();
+          break;
+
+        case ARRAY_CHECKBOX:
+        case ARRAY_RADIO:
+          // rowsTab.save();
+          // columnsTab.save();
+          break;
+
+        case BOILER_PLATE:
+          break;
+        }
+
         onSave(target, form.getModelObject());
         questionWindow.close(target);
       }
