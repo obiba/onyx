@@ -53,7 +53,7 @@ public class PurgeDialogPanel extends Panel {
   }
 
   public void showResult(boolean purgeSucceeded, int participantsDeleted) {
-    IModel messageModel;
+    IModel<String> messageModel;
     if(purgeSucceeded) {
       resultFragment.successImage.setVisible(true);
       messageModel = (participantsDeleted > 0) ? new StringResourceModel("SuccessPurgeResult", PurgeDialogPanel.this, null, new Object[] { participantsDeleted }) : new StringResourceModel("SuccessPurgeResultNoParticipant", PurgeDialogPanel.this, null);
@@ -103,7 +103,7 @@ public class PurgeDialogPanel extends Panel {
 
     private Image progressImage;
 
-    public ProgressFragment(String id, IModel messageModel) {
+    public ProgressFragment(String id, IModel<String> messageModel) {
       super(id, "progressFragment", PurgeDialogPanel.this);
 
       progressLabel = new Label("progressLabel", messageModel);

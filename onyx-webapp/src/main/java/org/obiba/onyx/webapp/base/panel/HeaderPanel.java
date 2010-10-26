@@ -23,22 +23,19 @@ import org.obiba.onyx.webapp.administration.page.AdministrationPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.user.page.ProfilePage;
 
+@SuppressWarnings("serial")
 public class HeaderPanel extends Panel {
-
-  private static final long serialVersionUID = 1L;
 
   @SpringBean
   private EntityQueryService queryService;
 
   HeaderPanelModel model = new HeaderPanelModel();
 
-  @SuppressWarnings("serial")
+  @SuppressWarnings("rawtypes")
   public HeaderPanel(String id) {
     super(id);
 
     add(new Link("profile") {
-
-      private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick() {
@@ -51,9 +48,7 @@ public class HeaderPanel extends Panel {
 
     });
 
-    Link helpLink = new Link("help") {
-
-      private static final long serialVersionUID = 1L;
+    Link<?> helpLink = new Link("help") {
 
       @Override
       public void onClick() {
@@ -63,8 +58,6 @@ public class HeaderPanel extends Panel {
     add(helpLink);
 
     add(new Link("quit") {
-
-      private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick() {
@@ -76,8 +69,6 @@ public class HeaderPanel extends Panel {
   }
 
   private class HeaderPanelModel implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     public User getUserLoggedIn() {
       return OnyxAuthenticatedSession.get().getUser();
@@ -97,8 +88,6 @@ public class HeaderPanel extends Panel {
 
   @AuthorizeAction(action = "RENDER", roles = { "SYSTEM_ADMINISTRATOR" })
   private abstract class AdminLink extends Link<Object> {
-
-    private static final long serialVersionUID = 1L;
 
     public AdminLink(String id) {
       super(id);

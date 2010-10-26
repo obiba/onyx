@@ -59,7 +59,8 @@ public class User extends AbstractEntity {
   private Status status;
 
   @ManyToMany
-  @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = @JoinColumn(
+      name = "role_id"))
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
   private Set<Role> roles;
 
@@ -129,8 +130,7 @@ public class User extends AbstractEntity {
 
   public boolean isDeleted() {
     if(deleted == null) return false;
-    else
-      return deleted;
+    return deleted;
   }
 
   public void setDeleted(Boolean deleted) {

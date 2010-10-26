@@ -13,19 +13,18 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DataManagementPanel extends Panel {
 
-  private static final Logger log = LoggerFactory.getLogger(DataManagementPanel.class);
+  // private static final Logger log = LoggerFactory.getLogger(DataManagementPanel.class);
 
   private static final long serialVersionUID = 1L;
 
   public DataManagementPanel(String id) {
     super(id);
 
-    AjaxLink purgeLink = new AjaxLink("purge") {
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> purgeLink = new AjaxLink("purge") {
       private static final long serialVersionUID = 1L;
 
       @Override

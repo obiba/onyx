@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.resource.FileResourceStream;
@@ -64,6 +65,7 @@ public class DevelopersPanel extends Panel {
     final DumpInput dumpInput = new DumpInput();
     setDefaultModel(new CompoundPropertyModel<DumpInput>(dumpInput));
 
+    @SuppressWarnings("rawtypes")
     Form<?> dumpForm = new Form("dumpForm");
     add(dumpForm);
 
@@ -96,7 +98,8 @@ public class DevelopersPanel extends Panel {
     };
     dumpForm.add(dumpLink);
 
-    AjaxLink refreshStatsLink = new AjaxLink("refreshStatsLink") {
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> refreshStatsLink = new AjaxLink("refreshStatsLink") {
 
       private static final long serialVersionUID = 109761762415267865L;
 
@@ -108,7 +111,8 @@ public class DevelopersPanel extends Panel {
     };
     add(refreshStatsLink);
 
-    AjaxLink clearCacheLink = new AjaxLink("clearCacheLink") {
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> clearCacheLink = new AjaxLink("clearCacheLink") {
 
       private static final long serialVersionUID = 109761762415267865L;
 
@@ -125,7 +129,7 @@ public class DevelopersPanel extends Panel {
 
   @Override
   public boolean isVisible() {
-    return ((OnyxApplication) OnyxApplication.get()).isDevelopmentMode();
+    return ((OnyxApplication) WebApplication.get()).isDevelopmentMode();
   }
 
   private File dump(DumpInput dumpInput) throws IOException {

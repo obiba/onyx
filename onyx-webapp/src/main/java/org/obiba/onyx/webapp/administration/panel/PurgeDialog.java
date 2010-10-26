@@ -43,10 +43,11 @@ public class PurgeDialog extends Dialog {
 
   private PurgeDialogPanel content;
 
-  private AjaxLink purgeSubmitLink;
+  private AjaxLink<?> purgeSubmitLink;
 
   private int participantsDeleted;
 
+  @SuppressWarnings("rawtypes")
   public PurgeDialog(String id) {
     super(id);
     setTitle((new ResourceModel("PurgeParticipants")));
@@ -84,7 +85,7 @@ public class PurgeDialog extends Dialog {
     });
 
     content = new PurgeDialogPanel(getContentId(), getPurgeModel());
-    content.add(new AttributeModifier("class", true, new Model("obiba-content purge-panel-content")));
+    content.add(new AttributeModifier("class", true, new Model<String>("obiba-content purge-panel-content")));
     content.setOutputMarkupId(true);
     setContent(content);
 

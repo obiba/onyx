@@ -22,7 +22,6 @@ import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.support.VariableEntityBean;
-import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.magma.DataValueConverter;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class PdfVariableReport extends PdfReport {
   // Constants
   //
 
-  private static final Logger log = LoggerFactory.getLogger(VariableDataSource.class);
+  private static final Logger log = LoggerFactory.getLogger(PdfVariableReport.class);
 
   private static final String PARTICIPANT_TABLE_NAME = "Participants";
 

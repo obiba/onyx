@@ -18,6 +18,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.administration.panel.DataManagementPanel;
 import org.obiba.onyx.webapp.administration.panel.DevelopersPanel;
@@ -30,18 +34,21 @@ import org.obiba.onyx.webapp.user.panel.UserSearchPanel;
  * @author acarey
  * 
  */
-@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR" })
+@SuppressWarnings("serial")
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR" })
 public class AdministrationPage extends BasePage {
 
-  private List<AjaxLink> links;
+  @SpringBean
+  private ModuleRegistry moduleRegistry;
 
-  @SuppressWarnings("serial")
+  private List<AjaxLink<?>> links;
+
   public AdministrationPage() {
-    super();
 
-    links = new ArrayList<AjaxLink>();
+    links = new ArrayList<AjaxLink<?>>();
 
-    AjaxLink userTab = new AjaxLink("userTab") {
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> userTab = new AjaxLink("userTab") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -54,7 +61,8 @@ public class AdministrationPage extends BasePage {
     add(userTab);
     links.add(userTab);
 
-    AjaxLink dataTab = new AjaxLink("dataTab") {
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> dataTab = new AjaxLink("dataTab") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -67,7 +75,27 @@ public class AdministrationPage extends BasePage {
     add(dataTab);
     links.add(dataTab);
 
-    AjaxLink devTab = new AjaxLink("devTab") {
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> editorTab = new AjaxLink("editorTab") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        for(Module module : moduleRegistry.getModules()) {
+          Component editorComponent = module.getEditorPanel(getContentId());
+          if(editorComponent != null) {
+            replaceContent(target, editorComponent);
+            activateLink(this, target);
+            break;
+          }
+        }
+      }
+    };
+    editorTab.setOutputMarkupId(true);
+    add(editorTab);
+    links.add(editorTab);
+
+    @SuppressWarnings("rawtypes")
+    AjaxLink<?> devTab = new AjaxLink("devTab") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -77,7 +105,7 @@ public class AdministrationPage extends BasePage {
 
       @Override
       public boolean isVisible() {
-        return ((OnyxApplication) OnyxApplication.get()).isDevelopmentMode();
+        return ((OnyxApplication) WebApplication.get()).isDevelopmentMode();
       }
     };
     devTab.setOutputMarkupId(true);
@@ -88,7 +116,7 @@ public class AdministrationPage extends BasePage {
     Component content = new UserSearchPanel(getContentId());
     content.setOutputMarkupId(true);
     add(content);
-    userTab.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all selected")));
+    userTab.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all selected")));
 
   }
 
@@ -100,12 +128,12 @@ public class AdministrationPage extends BasePage {
     target.addComponent(content);
   }
 
-  private void activateLink(AjaxLink selectedLink, AjaxRequestTarget target) {
-    for(AjaxLink link : links) {
+  private void activateLink(AjaxLink<?> selectedLink, AjaxRequestTarget target) {
+    for(AjaxLink<?> link : links) {
       if(link != selectedLink) {
-        link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all")));
+        link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all")));
       } else {
-        link.add(new AttributeModifier("class", true, new Model("obiba-button ui-corner-all selected")));
+        link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all selected")));
       }
       target.addComponent(link);
     }
