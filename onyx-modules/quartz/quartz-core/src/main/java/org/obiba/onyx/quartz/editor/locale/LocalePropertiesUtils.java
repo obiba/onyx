@@ -43,21 +43,20 @@ public class LocalePropertiesUtils {
   }
 
   public void load(LocaleProperties localeProperties, Questionnaire questionnaire, IQuestionnaireElement... elements) {
+    if(questionnaire.getName() == null) return;
     localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
     for(IQuestionnaireElement element : elements) {
-      QuestionnaireBundle bundle = questionnaire.getName() != null ? questionnaireBundleManager.getPersistedBundle(questionnaire.getName()) : null;
+      QuestionnaireBundle bundle = questionnaireBundleManager.getPersistedBundle(questionnaire.getName());
       List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
       for(Locale locale : localeProperties.getLocales()) {
         for(String key : listKeys) {
-          if(bundle != null) {
-            String value = null;
-            try {
-              value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
-            } catch(Exception e) {
-              // label not found
-            }
-            localeProperties.addElementLabels(element, locale, key, value);
+          String value = null;
+          try {
+            value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
+          } catch(Exception e) {
+            // label not found
           }
+          localeProperties.addElementLabels(element, locale, key, value);
         }
       }
     }

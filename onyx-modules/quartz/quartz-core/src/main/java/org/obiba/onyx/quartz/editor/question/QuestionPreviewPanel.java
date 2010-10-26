@@ -11,7 +11,10 @@ package org.obiba.onyx.quartz.editor.question;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanel;
 
 /**
  *
@@ -21,6 +24,7 @@ public class QuestionPreviewPanel extends Panel {
 
   public QuestionPreviewPanel(String id, IModel<EditedQuestion> model, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
+    add(new DefaultQuestionPanel("preview", new PropertyModel<Question>(model, "element")));
   }
 
 }

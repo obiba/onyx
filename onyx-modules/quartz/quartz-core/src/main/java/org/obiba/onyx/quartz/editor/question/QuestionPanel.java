@@ -77,7 +77,7 @@ public abstract class QuestionPanel extends Panel {
     // available choices when question type is already set
     List<QuestionType> typeChoices = null;
     QuestionType questionType = model.getObject().getQuestionType();
-    if(questionType == null) {
+    if(questionType == null || questionType == QuestionType.BOILER_PLATE) {
       typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
       typeChoices.remove(QuestionType.BOILER_PLATE);
     } else {

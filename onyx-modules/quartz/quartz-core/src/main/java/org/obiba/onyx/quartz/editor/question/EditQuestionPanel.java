@@ -29,6 +29,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -187,26 +188,38 @@ public abstract class EditQuestionPanel extends Panel {
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        // save each tab
-        switch(form.getModelObject().getQuestionType()) {
-        case SINGLE_OPEN_ANSWER:
-          // openAnswerTab.save();
-          break;
+        QuestionType questionType = form.getModelObject().getQuestionType();
+        if(questionType != null) {
+          switch(questionType) {
+          case SINGLE_OPEN_ANSWER:
+            // openAnswerTab.save();
+            break;
 
-        case LIST_CHECKBOX:
-        case LIST_RADIO:
-        case LIST_DROP_DOWN:
-          categoriesTab.save();
-          break;
+          case LIST_CHECKBOX:
+            model.getObject().getElement().setUIFactoryName(null);
+            model.getObject().getElement().setMultiple(true);
+            categoriesTab.save();
+            break;
+          case LIST_RADIO:
+            model.getObject().getElement().setUIFactoryName(null);
+            model.getObject().getElement().setMultiple(false);
+            categoriesTab.save();
+            break;
+          case LIST_DROP_DOWN:
+            model.getObject().getElement().setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
+            model.getObject().getElement().setMultiple(false);
+            categoriesTab.save();
+            break;
 
-        case ARRAY_CHECKBOX:
-        case ARRAY_RADIO:
-          // rowsTab.save();
-          // columnsTab.save();
-          break;
+          case ARRAY_CHECKBOX:
+          case ARRAY_RADIO:
+            // rowsTab.save();
+            // columnsTab.save();
+            break;
 
-        case BOILER_PLATE:
-          break;
+          case BOILER_PLATE:
+            break;
+          }
         }
 
         onSave(target, form.getModelObject());
