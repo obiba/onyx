@@ -17,7 +17,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePropertiesPanel;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePanel;
 
 @SuppressWarnings("serial")
 public class QuartzEditorPanel extends Panel {
@@ -49,7 +49,7 @@ public class QuartzEditorPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        modalWindow.setContent(new QuestionnairePropertiesPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
+        modalWindow.setContent(new QuestionnairePanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
             persist(target1);

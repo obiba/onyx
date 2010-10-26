@@ -51,8 +51,6 @@ public abstract class QuestionPanel extends Panel {
   public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    logger.info("EditedQuestion: " + model.getObject());
-
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());

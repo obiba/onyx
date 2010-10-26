@@ -171,7 +171,7 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          modalWindow.setContent(new QuestionnairePropertiesPanel("content", rowModel, modalWindow) {
+          modalWindow.setContent(new QuestionnairePanel("content", rowModel, modalWindow) {
             @Override
             public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire1) {
               persist(target1);

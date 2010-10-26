@@ -66,6 +66,14 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
+  private HidableTab openAnswerTab;
+
+  private HidableTab categoriesTab;
+
+  private HidableTab rowsTab;
+
+  private HidableTab columnsTab;
+
   public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
     this.questionnaireModel = questionnaireModel;
@@ -97,7 +105,7 @@ public abstract class EditQuestionPanel extends Panel {
 
     final List<ITab> tabs = new ArrayList<ITab>();
 
-    final HidableTab openAnswerTab = new HidableTab(new ResourceModel("OpenAnswer")) {
+    openAnswerTab = new HidableTab(new ResourceModel("OpenAnswer")) {
       @Override
       public Panel getPanel(String panelId) {
         return new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
@@ -105,7 +113,7 @@ public abstract class EditQuestionPanel extends Panel {
     };
     openAnswerTab.setVisible(false);
 
-    final HidableTab categoriesTab = new HidableTab(new ResourceModel("Categories")) {
+    categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       @Override
       public Panel getPanel(String panelId) {
         return new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
@@ -113,7 +121,7 @@ public abstract class EditQuestionPanel extends Panel {
     };
     categoriesTab.setVisible(false);
 
-    final HidableTab rowsTab = new HidableTab(new ResourceModel("Rows(questions)")) {
+    rowsTab = new HidableTab(new ResourceModel("Rows(questions)")) {
       @Override
       public Panel getPanel(String panelId) {
         return new Panel(panelId, model);
@@ -121,7 +129,7 @@ public abstract class EditQuestionPanel extends Panel {
     };
     rowsTab.setVisible(false);
 
-    final HidableTab columnsTab = new HidableTab(new ResourceModel("Columns(categories)")) {
+    columnsTab = new HidableTab(new ResourceModel("Columns(categories)")) {
       @Override
       public Panel getPanel(String panelId) {
         return new Panel(panelId, model);
@@ -135,34 +143,7 @@ public abstract class EditQuestionPanel extends Panel {
         return new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
           @Override
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
-            switch(questionType) {
-            case SINGLE_OPEN_ANSWER:
-              openAnswerTab.setVisible(true);
-              categoriesTab.setVisible(false);
-              rowsTab.setVisible(false);
-              columnsTab.setVisible(false);
-              break;
-
-            case LIST_CHECKBOX:
-            case LIST_RADIO:
-            case LIST_DROP_DOWN:
-              categoriesTab.setVisible(true);
-              openAnswerTab.setVisible(false);
-              rowsTab.setVisible(false);
-              columnsTab.setVisible(false);
-              break;
-
-            case ARRAY_CHECKBOX:
-            case ARRAY_RADIO:
-              rowsTab.setVisible(true);
-              columnsTab.setVisible(true);
-              openAnswerTab.setVisible(false);
-              categoriesTab.setVisible(false);
-              break;
-
-            case BOILER_PLATE:
-              break;
-            }
+            setTabsVisibility(questionType);
             if(tabbedPanel != null && target != null) {
               target.addComponent(tabbedPanel);
             }
@@ -182,6 +163,8 @@ public abstract class EditQuestionPanel extends Panel {
         return new Panel(panelId, model);
       }
     });
+
+    setTabsVisibility(editedQuestion.getQuestionType());
 
     form.add(tabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow, tabs));
 
@@ -207,12 +190,72 @@ public abstract class EditQuestionPanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
+  private void setTabsVisibility(QuestionType questionType) {
+    if(questionType == null) return;
+    switch(questionType) {
+    case SINGLE_OPEN_ANSWER:
+      openAnswerTab.setVisible(true);
+      categoriesTab.setVisible(false);
+      rowsTab.setVisible(false);
+      columnsTab.setVisible(false);
+      break;
+
+    case LIST_CHECKBOX:
+    case LIST_RADIO:
+    case LIST_DROP_DOWN:
+      categoriesTab.setVisible(true);
+      openAnswerTab.setVisible(false);
+      rowsTab.setVisible(false);
+      columnsTab.setVisible(false);
+      break;
+
+    case ARRAY_CHECKBOX:
+    case ARRAY_RADIO:
+      rowsTab.setVisible(true);
+      columnsTab.setVisible(true);
+      openAnswerTab.setVisible(false);
+      categoriesTab.setVisible(false);
+      break;
+
+    case BOILER_PLATE:
+      break;
+    }
+  }
+
   /**
    * 
    * @param target
    * @param editedQuestion
    */
   public abstract void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion);
+
+  // {
+  // final Question question = editedQuestion.getElement();
+  //
+  // if(form.getModelObject().getElement().getParentQuestion() == null) {
+  // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
+  // @Override
+  // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
+  // question.getQuestionCategories().clear();
+  // for(QuestionCategory questionCategory : orderedItems) {
+  // question.getQuestionCategories().add(questionCategory);
+  // }
+  // }
+  // });
+  // }
+  //
+  // // Layout single or grid: make sure that the categories are added before this...
+  // String layoutSelection = layoutRadioGroup.getModelObject();
+  // if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+  // question.clearUIArguments();
+  // question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
+  // } else if(GRID_LAYOUT.equals(layoutSelection)) {
+  // question.clearUIArguments();
+  // question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+  // }
+  //
+  // editedQuestion.setConditions(((Conditions) conditionPanel.getDefaultModelObject()));
+  // }
 
   public void persist(AjaxRequestTarget target) {
     try {

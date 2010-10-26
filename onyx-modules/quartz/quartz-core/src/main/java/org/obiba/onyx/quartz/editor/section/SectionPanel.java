@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.page;
+package org.obiba.onyx.quartz.editor.section;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -24,8 +24,8 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
-public abstract class PagePropertiesPanel extends Panel {
+public abstract class SectionPanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
@@ -51,13 +51,13 @@ public abstract class PagePropertiesPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<Page> form;
+  private final Form<Section> form;
 
   private final IModel<Questionnaire> questionnaireModel;
 
   private final IModel<LocaleProperties> localePropertiesModel;
 
-  public PagePropertiesPanel(String id, IModel<Page> model, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public SectionPanel(String id, final IModel<Section> model, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
 
@@ -67,7 +67,7 @@ public abstract class PagePropertiesPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<Page>("form", model));
+    add(form = new Form<Section>("form", model));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
     name.setLabel(new ResourceModel("Name"));
@@ -76,8 +76,8 @@ public abstract class PagePropertiesPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findPage(validatable.getValue()) != null) {
-          error(validatable, "PageAlreadyExists");
+        if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSection(validatable.getValue()) != null) {
+          error(validatable, "SectionAlreadyExists");
           return;
         }
       }
@@ -113,9 +113,9 @@ public abstract class PagePropertiesPanel extends Panel {
   /**
    * 
    * @param target
-   * @param page
+   * @param section
    */
-  public abstract void onSave(AjaxRequestTarget target, Page page);
+  public abstract void onSave(AjaxRequestTarget target, Section section);
 
   public void persist(AjaxRequestTarget target) {
     try {

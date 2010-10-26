@@ -71,7 +71,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 @SuppressWarnings("serial")
-public abstract class QuestionnairePropertiesPanel extends Panel {
+public abstract class QuestionnairePanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
@@ -93,7 +93,7 @@ public abstract class QuestionnairePropertiesPanel extends Panel {
   private final Form<Questionnaire> form;
 
   @SuppressWarnings("rawtypes")
-  public QuestionnairePropertiesPanel(String id, IModel<Questionnaire> model, final ModalWindow modalWindow) {
+  public QuestionnairePanel(String id, IModel<Questionnaire> model, final ModalWindow modalWindow) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
 
