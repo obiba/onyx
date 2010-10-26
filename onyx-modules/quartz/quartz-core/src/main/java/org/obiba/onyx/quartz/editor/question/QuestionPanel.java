@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
@@ -35,7 +36,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
-import org.obiba.onyx.quartz.editor.utils.ValidationUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public abstract class QuestionPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(ValidationUtils.mustValidate(model.getObject().getElement(), validatable)) {
+        if(!StringUtils.equalsIgnoreCase(model.getObject().getElement().getName(), validatable.getValue())) {
           if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findQuestion(validatable.getValue()) != null) {
             error(validatable, "QuestionAlreadyExists");
           }

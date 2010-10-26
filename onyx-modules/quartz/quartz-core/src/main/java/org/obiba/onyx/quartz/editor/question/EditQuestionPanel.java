@@ -126,7 +126,7 @@ public abstract class EditQuestionPanel extends Panel {
 
       @Override
       public void save() {
-        categoriesPanel.save();
+        if(categoriesPanel != null) categoriesPanel.save();
       }
     };
     categoriesTab.setVisible(false);

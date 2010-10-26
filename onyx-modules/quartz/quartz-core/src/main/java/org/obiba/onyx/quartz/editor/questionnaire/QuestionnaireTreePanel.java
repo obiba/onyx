@@ -399,6 +399,7 @@ public class QuestionnaireTreePanel extends Panel {
           public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             persist(target);
             elements.put(nodeId, editedQuestion.getElement());
+            root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target.addComponent(treeContainer);
           }
         });

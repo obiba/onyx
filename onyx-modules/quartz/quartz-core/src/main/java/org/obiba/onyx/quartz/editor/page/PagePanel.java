@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.page;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -31,7 +32,6 @@ import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
-import org.obiba.onyx.quartz.editor.utils.ValidationUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -77,7 +77,7 @@ public abstract class PagePanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(ValidationUtils.mustValidate(model.getObject(), validatable)) {
+        if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
           if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findPage(validatable.getValue()) != null) {
             error(validatable, "PageAlreadyExists");
           }
