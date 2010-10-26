@@ -68,7 +68,7 @@ public abstract class EditQuestionPanel extends Panel {
 
   private HidableTab openAnswerTab;
 
-  private HidableTab categoriesTab;
+  private SavableHidableTab categoriesTab;
 
   private HidableTab rowsTab;
 
@@ -113,10 +113,20 @@ public abstract class EditQuestionPanel extends Panel {
     };
     openAnswerTab.setVisible(false);
 
-    categoriesTab = new HidableTab(new ResourceModel("Categories")) {
+    categoriesTab = new SavableHidableTab(new ResourceModel("Categories")) {
+      private CategoriesPanel categoriesPanel;
+
       @Override
       public Panel getPanel(String panelId) {
-        return new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        if(categoriesPanel == null) {
+          categoriesPanel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        }
+        return categoriesPanel;
+      }
+
+      @Override
+      public void save() {
+        categoriesPanel.save();
       }
     };
     categoriesTab.setVisible(false);
@@ -186,7 +196,7 @@ public abstract class EditQuestionPanel extends Panel {
         case LIST_CHECKBOX:
         case LIST_RADIO:
         case LIST_DROP_DOWN:
-          // categoriesTab.save();
+          categoriesTab.save();
           break;
 
         case ARRAY_CHECKBOX:

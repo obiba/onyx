@@ -92,8 +92,13 @@ public class CategoriesPanel extends Panel {
 
   private Map<String, Category> categoriesByName;
 
+  private RadioGroup<String> layout;
+
+  private TextField<Integer> nbRowsField;
+
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
+
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
 
@@ -129,7 +134,7 @@ public class CategoriesPanel extends Panel {
       nbRows = uiArgumentsValueMap.getInt(ROW_COUNT_KEY);
     }
 
-    RadioGroup<String> layout = new RadioGroup<String>("layout", new Model<String>(uiArgumentsValueMap == null ? null : layoutValue));
+    layout = new RadioGroup<String>("layout", new Model<String>(uiArgumentsValueMap == null ? null : layoutValue));
     layout.setLabel(new ResourceModel("Layout"));
     layout.setRequired(true);
     add(layout);
@@ -144,7 +149,7 @@ public class CategoriesPanel extends Panel {
     layout.add(gridLayout);
     layout.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
 
-    TextField<Integer> nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows), Integer.class);
+    nbRowsField = new TextField<Integer>("nbRows", new Model<Integer>(nbRows), Integer.class);
     gridLayout.setLabel(new ResourceModel("NbRows"));
     add(nbRowsField);
 
@@ -332,4 +337,15 @@ public class CategoriesPanel extends Panel {
     }
   }
 
+  public void save() {
+    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
+    String layoutSelection = layout.getModelObject();
+    if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+      question.clearUIArguments();
+      question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
+    } else if(GRID_LAYOUT.equals(layoutSelection)) {
+      question.clearUIArguments();
+      question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+    }
+  }
 }

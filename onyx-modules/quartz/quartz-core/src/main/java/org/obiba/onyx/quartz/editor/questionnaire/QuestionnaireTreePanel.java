@@ -369,6 +369,7 @@ public class QuestionnaireTreePanel extends Panel {
         elementWindow.setContent(new SectionPanel("content", new Model<Section>(updatedElement), questionnaireModel, elementWindow) {
           @Override
           public void onSave(AjaxRequestTarget target, Section section) {
+            persist(target);
             elements.put(nodeId, section);
             // update node name in jsTree
             target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");

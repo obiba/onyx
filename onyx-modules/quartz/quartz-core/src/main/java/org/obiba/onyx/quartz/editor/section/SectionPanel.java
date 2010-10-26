@@ -31,6 +31,7 @@ import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.ValidationUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -76,9 +77,10 @@ public abstract class SectionPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSection(validatable.getValue()) != null) {
-          error(validatable, "SectionAlreadyExists");
-          return;
+        if(ValidationUtils.mustValidate(model.getObject(), validatable)) {
+          if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSection(validatable.getValue()) != null) {
+            error(validatable, "SectionAlreadyExists");
+          }
         }
       }
     });

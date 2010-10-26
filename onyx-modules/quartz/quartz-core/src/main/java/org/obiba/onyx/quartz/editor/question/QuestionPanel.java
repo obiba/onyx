@@ -35,6 +35,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.utils.ValidationUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -57,9 +58,10 @@ public abstract class QuestionPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findQuestion(validatable.getValue()) != null) {
-          error(validatable, "QuestionAlreadyExists");
-          return;
+        if(ValidationUtils.mustValidate(model.getObject().getElement(), validatable)) {
+          if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findQuestion(validatable.getValue()) != null) {
+            error(validatable, "QuestionAlreadyExists");
+          }
         }
       }
     });
@@ -114,9 +116,6 @@ public abstract class QuestionPanel extends Panel {
         onSubmit(target);
       }
     });
-
-    // apply UI (tabs) about question type
-    if(questionType != null) onQuestionTypeChange(null, questionType);
 
     add(type);
     add(new SimpleFormComponentLabel("typeLabel", type));
