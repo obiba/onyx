@@ -10,23 +10,18 @@
 package org.obiba.onyx.wicket;
 
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.markup.html.image.Image;
 
 /**
  *
  */
 public class Images {
 
-  public static Image getAddImage(String id) {
-    return new Image(id, new ResourceReference(Images.class, "add.png"));
-  }
+  public static ResourceReference ADD = new ResourceReference(Images.class, "add.png");
 
-  public static Image getDeleteImage(String id) {
-    return new Image(id, new ResourceReference(Images.class, "delete.png"));
-  }
+  public static ResourceReference DELETE = new ResourceReference(Images.class, "delete.png");
 
-  public static Image getEditImage(String id) {
-    return new Image(id, new ResourceReference(Images.class, "edit.png"));
-  }
+  public static ResourceReference EDIT = new ResourceReference(Images.class, "edit.png");
+
+  public static ResourceReference ERROR = new ResourceReference(Images.class, "error.png");
 
 }

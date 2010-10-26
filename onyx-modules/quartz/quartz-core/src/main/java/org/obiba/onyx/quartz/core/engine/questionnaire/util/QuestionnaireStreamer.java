@@ -64,6 +64,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Questionnaire.class, "name");
     xstream.useAttributeFor(Questionnaire.class, "version");
     xstream.useAttributeFor(Questionnaire.class, "uiType");
+    xstream.useAttributeFor(Questionnaire.class, "convertedToVariableConditions");
 
     xstream.alias("section", Section.class);
     xstream.useAttributeFor(Section.class, "name");

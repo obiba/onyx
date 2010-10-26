@@ -9,55 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePanel;
 
 @SuppressWarnings("serial")
 public class QuartzEditorPanel extends Panel {
 
-  protected ModalWindow modalWindow;
-
   public QuartzEditorPanel(String id) {
     super(id);
-
-    modalWindow = new ModalWindow("modalWindow");
-    modalWindow.setCssClassName("onyx");
-    modalWindow.setInitialWidth(1000);
-    modalWindow.setInitialHeight(600);
-    modalWindow.setResizable(true);
-    modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-      @Override
-      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        return true; // same as cancel
-      }
-    });
-
-    add(modalWindow);
-
-    final QuestionnaireListPanel questionnaireListPanel = new QuestionnaireListPanel("questionnaire-list", modalWindow);
-    questionnaireListPanel.setOutputMarkupId(true);
-    add(questionnaireListPanel);
-
-    add(new AjaxLink<Void>("questionnaireProps") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        modalWindow.setContent(new QuestionnairePanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
-          @Override
-          public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
-            persist(target1);
-            target1.addComponent(questionnaireListPanel);
-          }
-        });
-        modalWindow.show(target);
-      }
-    });
+    add(new QuestionnaireListPanel("questionnaires"));
   }
 }

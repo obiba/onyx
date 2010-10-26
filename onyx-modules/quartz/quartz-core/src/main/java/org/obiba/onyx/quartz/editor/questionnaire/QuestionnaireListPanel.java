@@ -17,10 +17,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -28,6 +32,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessCo
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -45,6 +50,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocume
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
+import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
@@ -59,30 +65,48 @@ public class QuestionnaireListPanel extends Panel {
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+
+  @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private final ModalWindow modalWindow;
 
-  private final ModalWindow layoutWindow;
-
-  public QuestionnaireListPanel(String id, ModalWindow modalWindow) {
+  public QuestionnaireListPanel(String id) {
     super(id);
-    this.modalWindow = modalWindow;
 
-    layoutWindow = new ModalWindow("layoutWindow");
-    layoutWindow.setCssClassName("onyx");
-    layoutWindow.setInitialWidth(1050);
-    layoutWindow.setInitialHeight(650);
-    layoutWindow.setResizable(true);
-    layoutWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+    add(CSSPackageResource.getHeaderContribution(QuestionnaireListPanel.class, "QuestionnaireListPanel.css"));
+
+    modalWindow = new ModalWindow("modalWindow");
+    modalWindow.setCssClassName("onyx");
+    modalWindow.setInitialWidth(1050);
+    modalWindow.setInitialHeight(650);
+    modalWindow.setResizable(true);
+    modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
         return true; // same as cancel
       }
     });
-    add(layoutWindow);
+    add(modalWindow);
 
-    add(new OnyxEntityList<Questionnaire>("questionnaire-list", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("QuestionnaireList", QuestionnaireListPanel.this, null)));
+    final OnyxEntityList<Questionnaire> questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("Questionnaires", QuestionnaireListPanel.this, null));
+    add(questionnaireList);
+
+    add(new AjaxLink<Void>("questionnaireProps") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
+        modalWindow.setContent(new QuestionnairePanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
+          @Override
+          public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
+            persist(target1);
+            target1.addComponent(questionnaireList);
+          }
+        });
+        modalWindow.show(target);
+      }
+    });
   }
 
   protected class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
@@ -114,7 +138,39 @@ public class QuestionnaireListPanel extends Panel {
     private final List<IColumn<Questionnaire>> columns = new ArrayList<IColumn<Questionnaire>>();
 
     public QuestionnaireListColumnProvider() {
-      columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Name", QuestionnaireListPanel.this, null), "name", "name"));
+      columns.add(new AbstractColumn<Questionnaire>(new StringResourceModel("Name", QuestionnaireListPanel.this, null), "name") {
+        @Override
+        public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
+          final Questionnaire questionnaire = rowModel.getObject();
+          final String name = questionnaire.getName();
+          cellItem.add(new AjaxLazyLoadPanel(componentId) {
+            @Override
+            public Component getLazyLoadComponent(String componentId1) {
+              String str = name;
+              try {
+                if(!questionnaire.isConvertedToVariableConditions()) {
+                  QuestionnaireDataSourceConverter.convertToVariableDataSources(questionnaire);
+                  questionnairePersistenceUtils.persist(questionnaire);
+                }
+              } catch(Exception e) {
+                log.error("Cannot convert questionnaire", e);
+                String errorMsg = new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();
+                str += " <img title=\"" + errorMsg + "\" alt=\"" + errorMsg + "\" src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>";
+              }
+              return new Label(componentId1, str).setEscapeModelStrings(false);
+            }
+
+            @Override
+            public Component getLoadingComponent(String markupId) {
+              String message = new StringResourceModel("converting", QuestionnaireListPanel.this, null).getString();
+              String conversion = "<span class=\"converting\"><img alt=\"" + message + "\" src=\"" + RequestCycle.get().urlFor(AbstractDefaultAjaxBehavior.INDICATOR) + "\"/>" + message + "</span>";
+              return new Label(markupId, name + conversion).setEscapeModelStrings(false);
+            }
+
+          });
+        }
+      });
+
       columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Version", QuestionnaireListPanel.this, null), "version", "version"));
       columns.add(new AbstractColumn<Questionnaire>(new StringResourceModel("Language(s)", QuestionnaireListPanel.this, null)) {
         @Override
@@ -170,6 +226,7 @@ public class QuestionnaireListPanel extends Panel {
       add(new AjaxLink<Questionnaire>("editLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
+
           modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
           modalWindow.setContent(new QuestionnairePanel("content", rowModel, modalWindow) {
             @Override
@@ -178,17 +235,20 @@ public class QuestionnaireListPanel extends Panel {
             }
           });
           modalWindow.show(target);
+
         }
       });
       add(new AjaxLink<Questionnaire>("layoutLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          layoutWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
+
+          modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
           rowModel.setObject(questionnaireBundleManager.getPersistedBundle(rowModel.getObject().getName()).getQuestionnaire());
-          layoutWindow.setContent(new QuestionnaireTreePanel("content", rowModel));
-          layoutWindow.show(target);
+          modalWindow.setContent(new QuestionnaireTreePanel("content", rowModel));
+          modalWindow.show(target);
         }
       });
+
       final AJAXDownload download = new AJAXDownload() {
 
         @Override
@@ -218,8 +278,8 @@ public class QuestionnaireListPanel extends Panel {
       add(new AjaxLink<Questionnaire>("previewLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          layoutWindow.setContent(new Panel("contents"));
-          layoutWindow.show(target);
+          modalWindow.setContent(new Panel("contents"));
+          modalWindow.show(target);
         }
       });
       add(new AjaxLink<Questionnaire>("exportLink", rowModel) {
@@ -228,14 +288,14 @@ public class QuestionnaireListPanel extends Panel {
           activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
           activeQuestionnaireAdministrationService.setDefaultLanguage(rowModel.getObject().getLocales().get(0));
           activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-          layoutWindow.setPageCreator(new ModalWindow.PageCreator() {
+          modalWindow.setPageCreator(new ModalWindow.PageCreator() {
 
             @Override
             public Page createPage() {
               return new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(rowModel.getObject()));
             }
           });
-          layoutWindow.show(target);
+          modalWindow.show(target);
         }
       });
     }

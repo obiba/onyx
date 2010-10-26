@@ -81,7 +81,6 @@ public class AssignCodeToParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("serial")
     public AssignCodeToParticipantForm(String id, final IModel participantModel, ParticipantMetadata participantMetadata) {
       super(id, participantModel);
 
@@ -150,7 +149,6 @@ public class AssignCodeToParticipantPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private class BarCodeAlreadyUsedError implements IValidationError, Serializable {
 
     private String id;
@@ -165,7 +163,6 @@ public class AssignCodeToParticipantPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private class ParticipantAlreadyReceivedError implements IValidationError, Serializable {
 
     public String getErrorMessage(IErrorMessageSource messageSource) {

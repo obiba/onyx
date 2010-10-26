@@ -65,7 +65,6 @@ public class ParticipantReader extends AbstractParticipantReader {
 
   private Row row;
 
-  @SuppressWarnings("unchecked")
   @Override
   public void open(ExecutionContext context) throws ItemStreamException {
     super.open(context);
@@ -120,7 +119,6 @@ public class ParticipantReader extends AbstractParticipantReader {
   //
   // Local methods
   //
-  @SuppressWarnings("unchecked")
   private void initAttributeNameToColumnIndexMap(ExecutionContext context, Row headerRow) {
     if(headerRow == null) {
       AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Null headerRow"));
@@ -174,7 +172,6 @@ public class ParticipantReader extends AbstractParticipantReader {
     return row;
   }
 
-  @SuppressWarnings("unchecked")
   private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, Row row) {
     boolean rowContainsWhitespaceOnly = true;
 
@@ -315,9 +312,8 @@ public class ParticipantReader extends AbstractParticipantReader {
     } catch(IllegalArgumentException ex) {
       if(attribute.isMandatoryAtEnrollment()) {
         throw new IllegalArgumentException("Wrong data type value for field '" + attribute.getName() + "': " + cell.toString());
-      } else {
-        return null;
       }
+      return null;
     }
 
     return data;

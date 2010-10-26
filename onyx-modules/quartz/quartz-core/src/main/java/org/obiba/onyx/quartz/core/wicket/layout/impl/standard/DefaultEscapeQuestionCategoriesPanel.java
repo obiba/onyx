@@ -50,7 +50,6 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
    * @param id
    * @param questionModel
    */
-  @SuppressWarnings("serial")
   public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel) {
     this(id, questionModel, null);
   }

@@ -26,7 +26,6 @@ public class ArrayExampleTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
         return new ArrayExample(panelId);

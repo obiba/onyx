@@ -73,7 +73,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
         item.add(getItemTitle("item", t));
 
-        Image editImg = Images.getEditImage("editImg");
+        Image editImg = new Image("editImg", Images.EDIT);
         editImg.add(new AttributeModifier("title", true, new ResourceModel("Edit")));
         item.add(new AjaxLink<Void>("editItem") {
           @Override
@@ -82,7 +82,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
           }
         }.add(editImg));
 
-        Image deleteImg = Images.getDeleteImage("deleteImg");
+        Image deleteImg = new Image("deleteImg", Images.DELETE);
         deleteImg.add(new AttributeModifier("title", true, new ResourceModel("Delete")));
         item.add(new AjaxLink<Void>("deleteItem") {
           @Override
@@ -150,6 +150,10 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     }
   }
 
+  /**
+   * 
+   * @param t
+   */
   public void onItemPopulation(T t) {
 
   }

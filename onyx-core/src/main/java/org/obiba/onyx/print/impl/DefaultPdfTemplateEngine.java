@@ -231,9 +231,8 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
         }
       }
       throw new IllegalStateException("Could not resolve ValueTable (name: " + tableName + ")");
-    } else {
-      throw new IllegalStateException("Could not resolve ValueTable (tableName is null)");
     }
+    throw new IllegalStateException("Could not resolve ValueTable (tableName is null)");
   }
 
   private String[] extractPathElements(String variablePath) {

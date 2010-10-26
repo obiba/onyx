@@ -1,10 +1,13 @@
 <wicket:panel>
 
-	<div wicket:id="layoutWindow" style="overflow:auto"/>
+	<div wicket:id="modalWindow" style="overflow:auto"/>
 
 	<h1 class="results-list"><wicket:message key="Questionnaires" /></h1>
-	<span wicket:id="questionnaire-list" />
-
+	<span wicket:id="questionnaires" />
+	
+	<br />
+	<a class="obiba-button" wicket:id="questionnaireProps"><wicket:message key="CreateQuestionnaire" /></a>
+	
 	<wicket:fragment wicket:id="linkFragment">
 		<a wicket:id="editLink"><wicket:message key="Edit" /></a>
 		<a wicket:id="layoutLink"><wicket:message key="Layout" /></a>

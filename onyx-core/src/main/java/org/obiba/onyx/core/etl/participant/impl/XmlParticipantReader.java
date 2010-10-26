@@ -112,7 +112,6 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     xstream.addImplicitCollection(XmlParticipantInput.class, "attributes");
   }
 
-  @SuppressWarnings("unchecked")
   private void setAttributeNameToTagMap() {
     attributeNameToTagMap = new HashMap<String, String>();
     if(columnNameToAttributeNameMap != null) {
@@ -250,9 +249,8 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     } catch(IllegalArgumentException ex) {
       if(attribute.isMandatoryAtEnrollment()) {
         throw new IllegalArgumentException("Wrong data type value for field '" + attribute.getName() + "': " + value);
-      } else {
-        return null;
       }
+      return null;
     }
 
     return data;

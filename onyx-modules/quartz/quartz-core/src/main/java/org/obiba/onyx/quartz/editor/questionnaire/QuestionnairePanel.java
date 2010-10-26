@@ -100,7 +100,6 @@ public abstract class QuestionnairePanel extends Panel {
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
-
     add(feedbackWindow);
 
     add(form = new Form<Questionnaire>("form", model));

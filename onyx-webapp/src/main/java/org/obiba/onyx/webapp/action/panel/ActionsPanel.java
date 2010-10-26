@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.action.panel;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -16,7 +17,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -69,7 +69,7 @@ public class ActionsPanel extends Panel {
           if(actionDefinition != null) {
             modal.show(target, (IModel<Stage>) ActionsPanel.this.getDefaultModel(), actionDefinition);
           } else {
-            log.warn("Concurrent interview administration. Session {} tried to execute ActionDefinition {} on stage {}, yet that ActionDefinition is not available for the current stage's state.", new Object[] { WebSession.get().getId(), getModelObject(), getStage() });
+            log.warn("Concurrent interview administration. Session {} tried to execute ActionDefinition {} on stage {}, yet that ActionDefinition is not available for the current stage's state.", new Object[] { Session.get().getId(), getModelObject(), getStage() });
             setResponsePage(InterviewPage.class);
           }
         }

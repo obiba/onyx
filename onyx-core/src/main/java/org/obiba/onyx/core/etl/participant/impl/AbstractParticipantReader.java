@@ -38,12 +38,11 @@ import org.springframework.core.io.Resource;
 /**
  * 
  */
-@SuppressWarnings("unchecked")
 public abstract class AbstractParticipantReader implements ItemStreamReader<Participant> {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractParticipantReader.class);
 
-  //  
+  //
   // Instance variables
   //
   private Resource inputDirectory;
@@ -100,9 +99,9 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
     }
   }
 
-  //  
+  //
   // Local methods
-  //  
+  //
 
   public FilenameFilter getFilter() {
     return (new FilenameFilter() {
@@ -154,9 +153,9 @@ public abstract class AbstractParticipantReader implements ItemStreamReader<Part
 
   public abstract String getFilePattern();
 
-  //  
+  //
   // Common methods used in subclasses
-  //  
+  //
   protected void checkColumnsForMandatoryAttributesPresent() {
     List<ParticipantAttribute> allAttributes = new ArrayList<ParticipantAttribute>();
     allAttributes.addAll(participantMetadata.getEssentialAttributes());

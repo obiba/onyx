@@ -17,8 +17,6 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Administration window (dialog) for questionnaires.
@@ -33,13 +31,13 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(QuestionnaireWizardAdministrationWindow.class);
+  // private static final Logger log = LoggerFactory.getLogger(QuestionnaireWizardAdministrationWindow.class);
 
   //
   // Instance Variables
   //
 
-  private AjaxLink beginLink;
+  private AjaxLink<?> beginLink;
 
   private AjaxButton endLink;
 
@@ -71,6 +69,7 @@ public class QuestionnaireWizardAdministrationWindow extends WizardAdministratio
   // Methods
   //
 
+  @SuppressWarnings("rawtypes")
   private void createBeginAndEndButtons(final QuestionnaireWizardForm form) {
     beginLink = new AjaxLink("begin") {
 

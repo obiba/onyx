@@ -39,6 +39,7 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -276,7 +277,7 @@ public class CategoriesPanel extends Panel {
         }
       };
 
-      simpelAddLink.add(Images.getAddImage("img").add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      simpelAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(simpelAddLink);
     }
   }
@@ -314,7 +315,8 @@ public class CategoriesPanel extends Panel {
           feedbackWindow.show(target);
         }
       };
-      bulkAddLink.add(Images.getAddImage("bulkAddImg").add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+
+      bulkAddLink.add(new Image("bulkAddImg", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(bulkAddLink);
     }
   }

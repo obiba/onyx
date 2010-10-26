@@ -50,16 +50,20 @@ public class QuestionnairePersistenceUtils {
     ((QuestionnaireBundleManagerImpl) writeBundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
     ((QuestionnaireBundleManagerImpl) writeBundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
-    final Questionnaire questionnaire = builder.getQuestionnaire();
+    // store xml file
+    QuestionnaireBundle bundle = writeBundleManager.createBundle(builder.getQuestionnaire());
 
-    // store xml file and locales
-    QuestionnaireBundle bundle = writeBundleManager.createBundle(questionnaire);
-    localePropertiesUtils.persist(bundle, localeProperties);
+    // store locales
+    if(localeProperties != null) localePropertiesUtils.persist(bundle, localeProperties);
 
   }
 
   public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
     persist(createBuilder(questionnaire), localeProperties);
+  }
+
+  public void persist(Questionnaire questionnaire) throws Exception {
+    persist(createBuilder(questionnaire), null);
   }
 
   @Required
