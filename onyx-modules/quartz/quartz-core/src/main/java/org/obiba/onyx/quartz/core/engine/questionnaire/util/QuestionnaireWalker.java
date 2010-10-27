@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -74,6 +75,10 @@ public class QuestionnaireWalker implements IVisitor {
     if(preOrder) questionnaire.accept(visitor);
     for(Section section : questionnaire.getSections()) {
       section.accept(this);
+      if(!visiteMore()) break;
+    }
+    for(Variable variable : questionnaire.getVariables()) {
+      visit(variable);
       if(!visiteMore()) break;
     }
     if(!preOrder) questionnaire.accept(visitor);
@@ -152,6 +157,11 @@ public class QuestionnaireWalker implements IVisitor {
       }
     }
     if(!preOrder) openAnswerDefinition.accept(visitor);
+  }
+
+  @Override
+  public void visit(Variable variable) {
+    visitor.visit(variable);
   }
 
 }

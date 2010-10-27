@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.finder;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -61,6 +62,10 @@ public class OpenAnswerDefinitionFinder extends AbstractFinderVisitor<OpenAnswer
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
     visitElement(openAnswerDefinition);
+  }
+
+  @Override
+  public void visit(Variable variable) {
   }
 
 }

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -80,5 +81,7 @@ public interface QuestionnaireVariableNameResolver {
    * @return
    */
   public String variableName(Question question, QuestionCategory questionCategory, OpenAnswerDefinition oad);
+
+  public String variableName(Variable customVariable);
 
 }

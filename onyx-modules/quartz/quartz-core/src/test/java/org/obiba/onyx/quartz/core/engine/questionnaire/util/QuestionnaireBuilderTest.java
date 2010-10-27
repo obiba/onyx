@@ -18,6 +18,9 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.magma.Variable;
+import org.obiba.magma.type.BooleanType;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -214,6 +217,78 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q1.YES.label"));
     Assert.assertEquals("${Category.YES.label}", localizationProperties.getProperty("QuestionCategory.Q1.YES.label"));
     Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.SPECIFY.Right"));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableNameIsUnique() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    builder.withVariable("var1", BooleanType.get(), "$('Q2').any('PNA','DNK')");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableScriptIsNotNull() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableScriptIsNotEmpty() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "  ");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableEntityTypeIsParticipant() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable(new Variable.Builder("var2", BooleanType.get(), "Blabla").build());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableExistsWhenAddedAsACondition() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").setQuestionnaireVariableCondition("var2");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableNameIsUniqueWhenAddedAsACondition() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").setQuestionnaireVariableCondition("var1", "$('Q2').any('PNA','DNK')");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableNameIsUniqueWhenAddedAsIsAsACondition() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    Variable.Builder vbuilder = new Variable.Builder("var1", BooleanType.get(), "Participant");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").setQuestionnaireVariableCondition(vbuilder.build());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableValueTypeIsCheckedWhenAddedAsIsAsACondition() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    Variable.Builder vbuilder = new Variable.Builder("var2", TextType.get(), "Participant");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").setQuestionnaireVariableCondition(vbuilder.build());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void makeSureVariableEntityTypeIsCheckedWhenAddedAsIsAsACondition() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    Variable.Builder vbuilder = new Variable.Builder("var2", BooleanType.get(), "Blabla");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").setQuestionnaireVariableCondition(vbuilder.build());
+  }
+
+  @Test
+  public void testVariableStreaming() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("TestQuestionnaire", "1.0");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("Y", "N", "PNA", "DNK");
+    builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
+    builder.withVariable("var2", BooleanType.get(), "$('Q1').any('Y','N')");
+    System.out.print(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
   }
 
 }

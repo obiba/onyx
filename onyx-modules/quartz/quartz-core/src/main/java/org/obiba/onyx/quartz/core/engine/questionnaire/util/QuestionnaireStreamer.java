@@ -16,6 +16,8 @@ import java.util.Properties;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
@@ -40,6 +42,7 @@ import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.springframework.context.ApplicationContext;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
 public class QuestionnaireStreamer {
 
@@ -57,7 +60,11 @@ public class QuestionnaireStreamer {
   }
 
   private void initializeXStream(ApplicationContext applicationContext) {
-    xstream = (applicationContext == null) ? new XStream() : new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
+    ReflectionProvider reflectionProvider = null;
+    if(applicationContext != null) {
+      reflectionProvider = new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext);
+    }
+    xstream = MagmaEngine.get().getExtension(MagmaXStreamExtension.class).getXStreamFactory().createXStream(reflectionProvider);
     xstream.setMode(XStream.ID_REFERENCES);
 
     xstream.alias("questionnaire", Questionnaire.class);

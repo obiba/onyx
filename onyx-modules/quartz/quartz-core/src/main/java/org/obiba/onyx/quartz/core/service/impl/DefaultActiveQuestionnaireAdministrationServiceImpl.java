@@ -403,6 +403,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   protected abstract QuestionAnswer findAnswer(Question question);
 
   public void setActiveAnswers(Question question, boolean active) {
+    if(questionnaireDevelopmentMode) return;
     // question answers are made active (and created if none, in the case of boiler plates)
     QuestionAnswer questionAnswer = findAnswer(question);
 

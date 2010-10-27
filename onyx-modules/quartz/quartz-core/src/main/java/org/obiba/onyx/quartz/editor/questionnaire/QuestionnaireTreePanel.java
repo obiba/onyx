@@ -43,6 +43,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -585,6 +586,12 @@ public class QuestionnaireTreePanel extends Panel {
 
     public ListModel<IQuestionnaireElement> getChildren() {
       return new ListModel<IQuestionnaireElement>(children);
+    }
+
+    @Override
+    public void visit(Variable variable) {
+      // TODO Auto-generated method stub
+
     }
 
   }

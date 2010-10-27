@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.util.List;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -149,6 +150,12 @@ public class UniqueQuestionnaireElementNameBuilder {
       @Override
       public boolean visiteMore() {
         return true;
+      }
+
+      @Override
+      public void visit(Variable variable) {
+        // register variable name and check for conflict
+        variableNameResolver.variableName(variable);
       }
 
     });

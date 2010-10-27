@@ -24,6 +24,8 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.obiba.core.util.StreamUtil;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.js.MagmaJsExtension;
+import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -168,7 +170,7 @@ public class QuestionnaireRenderer {
   }
 
   public static void main(String[] args) {
-    new MagmaEngine();
+    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
     QuestionnaireRenderer renderer = new QuestionnaireRenderer(new File(args[0]), new File(args[1]));
     if(args.length > 2) {
       renderer.renderBundle(args[2]);

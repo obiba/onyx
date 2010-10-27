@@ -15,6 +15,9 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.core.util.FileUtil;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.js.MagmaJsExtension;
+import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
@@ -54,6 +57,7 @@ public class QuestionnaireCreator {
   }
 
   private void initialize() throws IOException {
+    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
     if(bundleSourceDirectory.exists()) {
       FileUtil.copyDirectory(bundleSourceDirectory, bundleRootDirectory);
     }

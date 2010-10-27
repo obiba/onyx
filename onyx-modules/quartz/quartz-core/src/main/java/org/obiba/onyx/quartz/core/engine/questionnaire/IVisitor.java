@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -37,5 +38,7 @@ public interface IVisitor {
   public void visit(Category category);
 
   public void visit(OpenAnswerDefinition openAnswerDefinition);
+
+  public void visit(Variable variable);
 
 }

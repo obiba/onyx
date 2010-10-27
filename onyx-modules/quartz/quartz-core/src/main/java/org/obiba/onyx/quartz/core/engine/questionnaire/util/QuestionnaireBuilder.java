@@ -11,6 +11,8 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.util.Properties;
 
+import org.obiba.magma.ValueType;
+import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -88,6 +90,27 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    */
   public static QuestionnaireBuilder getInstance(Questionnaire questionnaire) {
     return new QuestionnaireBuilder(questionnaire);
+  }
+
+  /**
+   * Add a derived variable in the questionnaire.
+   * @param name
+   * @param type
+   * @param script
+   * @return
+   */
+  public QuestionnaireBuilder withVariable(String name, ValueType type, String script) {
+    return withVariable(new Variable.Builder(name, type, "Participant").addAttribute("script", script).build());
+  }
+
+  /**
+   * Add an already built derived variable in the questionnaire.
+   * @param variable
+   * @return
+   */
+  public QuestionnaireBuilder withVariable(Variable variable) {
+    addVariable(variable);
+    return this;
   }
 
   /**

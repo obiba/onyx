@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.markup.html.panel.Panel;
@@ -76,9 +77,11 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
   private void setDefaultLanguage() {
     Locale sessionLocale = getSession().getLocale();
 
-    if(activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().contains(sessionLocale)) activeQuestionnaireAdministrationService.setDefaultLanguage(sessionLocale);
+    List<Locale> locales = activeQuestionnaireAdministrationService.getQuestionnaire().getLocales();
+
+    if(locales.isEmpty() || locales.contains(sessionLocale)) activeQuestionnaireAdministrationService.setDefaultLanguage(sessionLocale);
     else
-      activeQuestionnaireAdministrationService.setDefaultLanguage(activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().get(0));
+      activeQuestionnaireAdministrationService.setDefaultLanguage(locales.get(0));
   }
 
 }

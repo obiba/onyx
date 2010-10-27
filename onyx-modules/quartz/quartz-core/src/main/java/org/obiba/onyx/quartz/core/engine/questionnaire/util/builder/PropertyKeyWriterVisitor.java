@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -93,6 +94,12 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
     if(openAnswerDefinition.getDataSource() == null) {
       writePropertyKey(openAnswerDefinition);
     }
+  }
+
+  @Override
+  public void visit(Variable variable) {
+    // TODO Auto-generated method stub
+
   }
 
   /**

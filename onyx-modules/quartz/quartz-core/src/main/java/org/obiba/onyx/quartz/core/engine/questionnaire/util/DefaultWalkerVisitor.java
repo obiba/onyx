@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -23,29 +24,42 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
  */
 public class DefaultWalkerVisitor implements IWalkerVisitor {
 
+  @Override
   public boolean visiteMore() {
     return true;
   }
 
+  @Override
   public void visit(Questionnaire questionnaire) {
   }
 
+  @Override
   public void visit(Section section) {
   }
 
+  @Override
   public void visit(Page page) {
   }
 
+  @Override
   public void visit(Question question) {
   }
 
+  @Override
   public void visit(QuestionCategory questionCategory) {
   }
 
+  @Override
   public void visit(Category category) {
   }
 
+  @Override
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
+  }
+
+  @Override
+  public void visit(Variable variable) {
+
   }
 
 }

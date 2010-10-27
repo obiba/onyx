@@ -71,8 +71,7 @@ import org.springframework.web.context.request.SessionScope;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager")
-@TestExecutionListeners(
-    value = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class, DbUnitAwareTestExecutionListener.class })
+@TestExecutionListeners(value = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class, DbUnitAwareTestExecutionListener.class })
 public abstract class AbstractQuestionnaireTest {
 
   //

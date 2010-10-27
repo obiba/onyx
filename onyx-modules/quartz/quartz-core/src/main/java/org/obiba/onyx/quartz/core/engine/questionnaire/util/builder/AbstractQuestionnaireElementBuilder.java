@@ -12,7 +12,9 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
@@ -82,6 +84,25 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
     } else {
       this.questionPanelFactoryClass = DefaultQuestionPanelFactory.class;
     }
+  }
+
+  protected void addVariable(Variable variable) {
+    Variable var = QuestionnaireFinder.getInstance(questionnaire).findVariable(variable.getName());
+    if(var != null) {
+      throw invalidNameUnicityException(Variable.class, variable.getName());
+    }
+    if(!variable.getEntityType().equals("Participant")) {
+      throw new IllegalArgumentException("Wrong variable value type: 'Participant' expected, '" + variable.getEntityType() + "' found in variable " + variable.getName());
+    }
+    if(!variable.hasAttribute("script")) {
+      throw new IllegalArgumentException("Missing 'script' attribute in variable: " + variable.getName());
+    } else {
+      String script = variable.getAttributeStringValue("script");
+      if(script == null || script.trim().length() == 0) {
+        throw new IllegalArgumentException("Missing 'script' attribute in variable: " + variable.getName());
+      }
+    }
+    questionnaire.addVariable(variable);
   }
 
   /**

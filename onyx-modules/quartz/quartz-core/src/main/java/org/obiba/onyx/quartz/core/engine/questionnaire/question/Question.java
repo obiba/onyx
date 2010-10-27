@@ -161,6 +161,7 @@ public class Question implements IHasQuestion {
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
     if(condition == null) return true;
+    if(service.isQuestionnaireDevelopmentMode()) return true;
 
     Data data = condition.getData(service.getQuestionnaireParticipant().getParticipant());
     if(data == null) return false;

@@ -25,9 +25,9 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.magma.Attribute;
 import org.obiba.magma.AttributeAwareBuilder;
 import org.obiba.magma.Variable;
-import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
+import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
@@ -168,6 +168,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       public boolean visiteMore() {
         return true;
       }
+
+      @Override
+      public void visit(Variable variable) {
+        new CustomVariableBuilder(variable).build();
+      }
     });
     walker.walk(questionnaire);
 
@@ -217,6 +222,19 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
    */
   protected String variableName(Question question, QuestionCategory questionCategory, OpenAnswerDefinition oad) {
     return variableNameResolver.variableName(question, questionCategory, oad);
+  }
+
+  private class CustomVariableBuilder {
+    private Variable variable;
+
+    public CustomVariableBuilder(Variable variable) {
+      super();
+      this.variable = variable;
+    }
+
+    public void build() {
+      builder.add(new JavascriptVariableValueSource(variable));
+    }
   }
 
   private class QuestionVariableBuilder {

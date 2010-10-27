@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.finder;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -92,6 +93,10 @@ public class QuestionnaireCache implements IWalkerVisitor {
 
   public Map<String, OpenAnswerDefinition> getOpenAnswerDefinitionCache() {
     return openAnswerDefinitionCache;
+  }
+
+  @Override
+  public void visit(Variable variable) {
   }
 
 }

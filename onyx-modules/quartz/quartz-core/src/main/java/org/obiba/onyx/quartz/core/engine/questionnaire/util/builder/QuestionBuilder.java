@@ -12,11 +12,14 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.magma.Variable;
+import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -360,6 +363,61 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     }
 
     return child;
+  }
+
+  /**
+   * Set the condition based on a provided derived variable that will be added to the questionnaire. Check that a
+   * variable with same name does not already exist and that the variable value type is boolean.
+   * @param variable
+   * @return
+   */
+  public QuestionBuilder setQuestionnaireVariableCondition(Variable variable) {
+    if(!variable.getEntityType().equals(BooleanType.get())) {
+      throw new IllegalArgumentException("Boolean type is expected for questionnaire variable used as a question condition: " + variable.getName());
+    }
+    addVariable(variable);
+    getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variable.getName()));
+    return this;
+  }
+
+  /**
+   * Set the condition based on a newly created derived variable that is added in the questionnaire. Check that a
+   * variable with same name does not already exist and set the boolean value type.
+   * @param variableName
+   * @param script
+   * @return
+   */
+  public QuestionBuilder setQuestionnaireVariableCondition(String variableName, String script) {
+    addVariable(new Variable.Builder(variableName, BooleanType.get(), "Participant").addAttribute("script", script).build());
+    getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variableName));
+    return this;
+  }
+
+  /**
+   * Set the condition based on the derived variable name defined in the questionnaire. Check is made that the variable
+   * exists in the questionnaire and the value type is boolean.
+   * @param variableName
+   * @return
+   */
+  public QuestionBuilder setQuestionnaireVariableCondition(String variableName) {
+    Variable var = QuestionnaireFinder.getInstance(questionnaire).findVariable(variableName);
+    if(var == null) throw new IllegalArgumentException("No such variable in the questionnaire with name: " + variableName);
+    if(!var.getValueType().equals(BooleanType.get())) {
+      throw new IllegalArgumentException("Boolean type is expected for questionnaire variable used as a question condition: " + variableName);
+    }
+    getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variableName));
+    return this;
+  }
+
+  /**
+   * Set the condition based on the value of a variable identified by the provided path. No check is made on whether the
+   * variable path is valid or if the variable value type is boolean.
+   * @param variablePath
+   * @return
+   */
+  public QuestionBuilder setVariableCondition(String variablePath) {
+    getElement().setCondition(new VariableDataSource(variablePath));
+    return this;
   }
 
   /**

@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -58,6 +59,25 @@ public class QuestionnaireFinder {
    */
   public Questionnaire getQuestionnaire() {
     return questionnaire;
+  }
+
+  /**
+   * Find {@link Variable} in the questionnaire.
+   * @param name
+   * @return null if not found
+   */
+  public Variable findVariable(String name) {
+    long time = getDuration(0);
+    Variable variable = null;
+    for(Variable var : questionnaire.getVariables()) {
+      if(var.getName().equals(name)) {
+        variable = var;
+        break;
+      }
+    }
+    addTotal("variable", getDuration(time));
+
+    return variable;
   }
 
   /**

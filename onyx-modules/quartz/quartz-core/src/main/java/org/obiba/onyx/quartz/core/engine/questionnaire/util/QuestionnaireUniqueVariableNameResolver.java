@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -58,6 +59,14 @@ public class QuestionnaireUniqueVariableNameResolver implements QuestionnaireVar
     }
     if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, oad, variableNames.get(variableName));
     variableNames.put(variableName, oad);
+    return variableName;
+  }
+
+  @Override
+  public String variableName(Variable customVariable) {
+    String variableName = customVariable.getName();
+    if(variableNames.containsKey(variableName)) throw new QuestionnaireVariableNameNotUniqueException(variableName, null, variableNames.get(variableName));
+    variableNames.put(variableName, null);
     return variableName;
   }
 }

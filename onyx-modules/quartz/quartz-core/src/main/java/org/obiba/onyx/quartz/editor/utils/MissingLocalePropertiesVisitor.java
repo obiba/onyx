@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.utils;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -67,7 +68,13 @@ public class MissingLocalePropertiesVisitor implements IWalkerVisitor {
 
   @Override
   public boolean visiteMore() {
-    return true;  // no stop
+    return true; // no stop
+  }
+
+  @Override
+  public void visit(Variable variable) {
+    // TODO Auto-generated method stub
+
   }
 
 }

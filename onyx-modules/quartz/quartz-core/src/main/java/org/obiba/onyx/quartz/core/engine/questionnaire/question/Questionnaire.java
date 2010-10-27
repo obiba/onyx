@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
 import org.obiba.runtime.Version;
@@ -34,6 +35,8 @@ public class Questionnaire implements IHasSection {
   private List<Section> sections;
 
   private List<Page> pages;
+
+  private List<Variable> variables;
 
   private String uiType;
 
@@ -126,6 +129,22 @@ public class Questionnaire implements IHasSection {
   public void removePage(Page page) {
     if(page != null) {
       getPages().remove(page);
+    }
+  }
+
+  public List<Variable> getVariables() {
+    return variables != null ? variables : (variables = new ArrayList<Variable>());
+  }
+
+  public void addVariable(Variable variable) {
+    if(variable != null) {
+      getVariables().add(variable);
+    }
+  }
+
+  public void removeVariable(Variable variable) {
+    if(variable != null) {
+      getVariables().remove(variable);
     }
   }
 

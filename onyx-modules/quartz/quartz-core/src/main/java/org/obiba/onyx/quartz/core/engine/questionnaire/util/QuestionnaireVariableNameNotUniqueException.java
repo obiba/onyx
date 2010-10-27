@@ -35,9 +35,12 @@ public class QuestionnaireVariableNameNotUniqueException extends RuntimeExceptio
 
   @Override
   public String getMessage() {
-    StringBuilder sb = new StringBuilder().append("The user configured variable name [").append(variableName).append("] is use by both ");
-    sb = buildQuestionnaireElementDetails(duplicate, sb);
-    sb.append(" and ");
+    StringBuilder sb = new StringBuilder().append("The user configured variable name [").append(variableName).append("] is used by ");
+    if(duplicate != null) {
+      sb.append("both ");
+      sb = buildQuestionnaireElementDetails(duplicate, sb);
+      sb.append(" and ");
+    }
     sb = buildQuestionnaireElementDetails(original, sb);
     sb.append(".");
     return sb.toString();
