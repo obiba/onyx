@@ -1,50 +1,56 @@
-<questionnaire id="1" name="VariableRenamingDemoQuestionnaire" version="1.0">
-  <locales id="2">
-    <locale id="3">en</locale>
-  </locales>
-  <sections id="4">
-    <section id="5" name="SECTION_ONE">
-      <pages id="6"/>
-      <sections id="7">
-        <section id="8" name="PARTICIPANT">
-          <parentSection reference="5"/>
-          <pages id="9">
-            <page id="10" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="8"/>
-              <questions id="11">
-                <question id="12" name="ABLE_TO_BALANCE_ON_ONE_FOOT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="10"/>
-                  <questionCategories id="13">
-                    <questionCategory id="14">
-                      <question reference="12"/>
-                      <category id="15" name="N" escape="false">
-                        <variableNames id="16"/>
+<questionnaire id="1" name="VariableRenamingDemoQuestionnaire" version="1.0" convertedToVariableConditions="false">
+  <sections id="2">
+    <section id="3" name="SECTION_ONE">
+      <pages id="4"/>
+      <sections id="5">
+        <section id="6" name="PARTICIPANT">
+          <parentSection reference="3"/>
+          <pages id="7">
+            <page id="8" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="6"/>
+              <questions id="9">
+                <question id="10" name="ABLE_TO_BALANCE_ON_ONE_FOOT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="8"/>
+                  <questionCategories id="11">
+                    <questionCategory id="12">
+                      <question reference="10"/>
+                      <category id="13" name="N" escape="false">
+                        <variableNames id="14"/>
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
-                    <questionCategory id="17">
-                      <question reference="12"/>
-                      <category id="18" name="Y" escape="false">
-                        <variableNames id="19"/>
+                    <questionCategory id="15">
+                      <question reference="10"/>
+                      <category id="16" name="Y" escape="false">
+                        <variableNames id="17"/>
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="20"/>
+                  <questions id="18"/>
                   <variableName>balance_on_one_foot</variableName>
                 </question>
               </questions>
             </page>
-            <page id="21" name="2" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="8"/>
-              <questions id="22">
-                <question id="23" name="ARRAY_OPEN" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="21"/>
-                  <questionCategories id="24">
-                    <questionCategory id="25">
-                      <question reference="23"/>
-                      <category id="26" name="WEEK" escape="false">
-                        <variableNames id="27">
+            <page id="19" name="2" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="6"/>
+              <questions id="20">
+                <question id="21" name="IS_ABLE_TO_BALANCE_ON_ONE_FOOT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="19"/>
+                  <questionCategories id="22"/>
+                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="23">
+                    <path>VariableRenamingDemoQuestionnaire:able_to_balance_on_one_foot</path>
+                    <pathElementsExtracted>false</pathElementsExtracted>
+                  </condition>
+                  <questions id="24"/>
+                </question>
+                <question id="25" name="ARRAY_OPEN" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="19"/>
+                  <questionCategories id="26">
+                    <questionCategory id="27">
+                      <question reference="25"/>
+                      <category id="28" name="WEEK" escape="false">
+                        <variableNames id="29">
                           <entry>
                             <string>RED_WINE</string>
                             <string>red_wine_week</string>
@@ -57,10 +63,10 @@
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
-                    <questionCategory id="28">
-                      <question reference="23"/>
-                      <category id="29" name="PNA" escape="false">
-                        <variableNames id="30">
+                    <questionCategory id="30">
+                      <question reference="25"/>
+                      <category id="31" name="PNA" escape="false">
+                        <variableNames id="32">
                           <entry>
                             <string>RED_WINE</string>
                             <string>red_wine_pna</string>
@@ -73,10 +79,10 @@
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
-                    <questionCategory id="31">
-                      <question reference="23"/>
-                      <category id="32" name="DNK" escape="false">
-                        <variableNames id="33">
+                    <questionCategory id="33">
+                      <question reference="25"/>
+                      <category id="34" name="DNK" escape="false">
+                        <variableNames id="35">
                           <entry>
                             <string>RED_WINE</string>
                             <string>red_wine_dnk</string>
@@ -90,38 +96,38 @@
                       </category>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="34">
-                    <question id="35" name="RED_WINE" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                      <questionCategories id="36"/>
-                      <parentQuestion reference="23"/>
-                      <questions id="37"/>
+                  <questions id="36">
+                    <question id="37" name="RED_WINE" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <questionCategories id="38"/>
+                      <parentQuestion reference="25"/>
+                      <questions id="39"/>
                     </question>
-                    <question id="38" name="WHITE_WINE" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                      <questionCategories id="39"/>
-                      <parentQuestion reference="23"/>
-                      <questions id="40"/>
+                    <question id="40" name="WHITE_WINE" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <questionCategories id="41"/>
+                      <parentQuestion reference="25"/>
+                      <questions id="42"/>
                     </question>
                   </questions>
                 </question>
               </questions>
             </page>
-            <page id="41" name="3" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="8"/>
-              <questions id="42">
-                <question id="43" name="STANDING_HEIGHT_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="41"/>
-                  <questionCategories id="44">
-                    <questionCategory id="45">
-                      <question reference="43"/>
-                      <category id="46" name="NC" escape="false">
-                        <variableNames id="47"/>
+            <page id="43" name="3" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="6"/>
+              <questions id="44">
+                <question id="45" name="STANDING_HEIGHT_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="43"/>
+                  <questionCategories id="46">
+                    <questionCategory id="47">
+                      <question reference="45"/>
+                      <category id="48" name="NC" escape="false">
+                        <variableNames id="49"/>
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
-                    <questionCategory id="48">
-                      <question reference="43"/>
-                      <category id="49" name="SEVERE_SPINE_CONDITION" escape="false">
-                        <variableNames id="50">
+                    <questionCategory id="50">
+                      <question reference="45"/>
+                      <category id="51" name="SEVERE_SPINE_CONDITION" escape="false">
+                        <variableNames id="52">
                           <entry>
                             <string>STANDING_HEIGHT_CI</string>
                             <string>severe_spine_condition</string>
@@ -130,67 +136,67 @@
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
-                    <questionCategory id="51">
-                      <question reference="43"/>
-                      <category id="52" name="OTHER" escape="false">
-                        <variableNames id="53"/>
+                    <questionCategory id="53">
+                      <question reference="45"/>
+                      <category id="54" name="OTHER" escape="false">
+                        <variableNames id="55"/>
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="54"/>
+                  <questions id="56"/>
                 </question>
               </questions>
             </page>
-            <page id="55" name="4" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="8"/>
-              <questions id="56">
-                <question id="57" name="WAIST_HIPS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="55"/>
-                  <questionCategories id="58">
-                    <questionCategory id="59">
-                      <question reference="57"/>
-                      <category reference="46"/>
+            <page id="57" name="4" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="6"/>
+              <questions id="58">
+                <question id="59" name="WAIST_HIPS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="57"/>
+                  <questionCategories id="60">
+                    <questionCategory id="61">
+                      <question reference="59"/>
+                      <category reference="48"/>
                     </questionCategory>
-                    <questionCategory id="60">
-                      <question reference="57"/>
-                      <category id="61" name="YES_SPECIFY" escape="false">
-                        <openAnswerDefinition id="62" name="YES_SPECIFY" dataType="TEXT" required="true">
-                          <uIArguments id="63">
-                            <string-array id="64">
+                    <questionCategory id="62">
+                      <question reference="59"/>
+                      <category id="63" name="YES_SPECIFY" escape="false">
+                        <openAnswerDefinition id="64" name="YES_SPECIFY" dataType="TEXT" required="true">
+                          <uIArguments id="65">
+                            <string-array id="66">
                               <string>size</string>
                               <string>60</string>
                             </string-array>
                           </uIArguments>
-                          <openAnswerDefinitions id="65"/>
-                          <variableNames id="66">
+                          <openAnswerDefinitions id="67"/>
+                          <variableNames id="68">
                             <entry>
                               <string>WAIST_HIPS_CI</string>
                               <string>waist_hips_ci_reason</string>
                             </entry>
                           </variableNames>
                         </openAnswerDefinition>
-                        <variableNames id="67"/>
+                        <variableNames id="69"/>
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="68"/>
+                  <questions id="70"/>
                 </question>
               </questions>
             </page>
-            <page id="69" name="5" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="8"/>
-              <questions id="70">
-                <question id="71" name="ARRAY_OPEN_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="69"/>
-                  <questionCategories id="72">
-                    <questionCategory id="73">
-                      <question reference="71"/>
-                      <category id="74" name="WEEK_DS" escape="false">
-                        <openAnswerDefinition id="75" name="WEEK_QUANTITY" dataType="INTEGER" required="true">
-                          <openAnswerDefinitions id="76"/>
-                          <variableNames id="77">
+            <page id="71" name="5" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="6"/>
+              <questions id="72">
+                <question id="73" name="ARRAY_OPEN_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="71"/>
+                  <questionCategories id="74">
+                    <questionCategory id="75">
+                      <question reference="73"/>
+                      <category id="76" name="WEEK_DS" escape="false">
+                        <openAnswerDefinition id="77" name="WEEK_QUANTITY" dataType="INTEGER" required="true">
+                          <openAnswerDefinitions id="78"/>
+                          <variableNames id="79">
                             <entry>
                               <string>WHITE_WINE_DS</string>
                               <string>white_wine_week_quantity</string>
@@ -201,45 +207,52 @@
                             </entry>
                           </variableNames>
                         </openAnswerDefinition>
-                        <variableNames id="78"/>
+                        <variableNames id="80"/>
                         <noAnswer>false</noAnswer>
                       </category>
                     </questionCategory>
-                    <questionCategory id="79">
-                      <question reference="71"/>
-                      <category reference="29"/>
+                    <questionCategory id="81">
+                      <question reference="73"/>
+                      <category reference="31"/>
                     </questionCategory>
-                    <questionCategory id="80">
-                      <question reference="71"/>
-                      <category reference="32"/>
+                    <questionCategory id="82">
+                      <question reference="73"/>
+                      <category reference="34"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="81">
-                    <question id="82" name="RED_WINE_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                      <questionCategories id="83"/>
-                      <parentQuestion reference="71"/>
-                      <questions id="84"/>
+                  <questions id="83">
+                    <question id="84" name="RED_WINE_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <questionCategories id="85"/>
+                      <parentQuestion reference="73"/>
+                      <questions id="86"/>
                     </question>
-                    <question id="85" name="WHITE_WINE_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                      <questionCategories id="86"/>
-                      <parentQuestion reference="71"/>
-                      <questions id="87"/>
+                    <question id="87" name="WHITE_WINE_DS" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <questionCategories id="88"/>
+                      <parentQuestion reference="73"/>
+                      <questions id="89"/>
                     </question>
                   </questions>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="88"/>
+          <sections id="90"/>
         </section>
       </sections>
     </section>
   </sections>
-  <pages id="89">
-    <page reference="10"/>
-    <page reference="21"/>
-    <page reference="41"/>
-    <page reference="55"/>
-    <page reference="69"/>
+  <pages id="91">
+    <page reference="8"/>
+    <page reference="19"/>
+    <page reference="43"/>
+    <page reference="57"/>
+    <page reference="71"/>
   </pages>
+  <variables id="92">
+    <variable id="93" name="able_to_balance_on_one_foot" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="94" name="script" valueType="text">$(&apos;balance_on_one_foot&apos;).any(&apos;Y&apos;)</attribute>
+      </attributes>
+    </variable>
+  </variables>
 </questionnaire>

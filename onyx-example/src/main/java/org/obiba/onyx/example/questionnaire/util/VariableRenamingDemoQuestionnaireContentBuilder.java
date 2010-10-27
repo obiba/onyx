@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.example.questionnaire.util;
 
+import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.util.data.DataType;
 
@@ -38,8 +39,15 @@ public class VariableRenamingDemoQuestionnaireContentBuilder {
     builder.withSection("SECTION_ONE").withSection("PARTICIPANT").withPage("1");
     builder.inPage("1").withQuestion("ABLE_TO_BALANCE_ON_ONE_FOOT").setVariableName("balance_on_one_foot").withSharedCategories(N, Y);
 
-    // Specify the variable names of categories and shared categories. Questions have multiple answers.
+    // Make a derived variable from previous question
+    builder.withVariable("able_to_balance_on_one_foot", BooleanType.get(), "$('balance_on_one_foot').any('Y')");
+
     builder.inSection("PARTICIPANT").withPage("2");
+
+    // A boiler plate depending on the derived variable
+    builder.inPage("2").withQuestion("IS_ABLE_TO_BALANCE_ON_ONE_FOOT").setQuestionnaireVariableCondition("able_to_balance_on_one_foot");
+
+    // Specify the variable names of categories and shared categories. Questions have multiple answers.
     builder.inPage("2").withQuestion("ARRAY_OPEN", true);
     builder.inQuestion("ARRAY_OPEN").withQuestion("RED_WINE", true);
     builder.inQuestion("ARRAY_OPEN").withQuestion("WHITE_WINE", true);
@@ -66,6 +74,7 @@ public class VariableRenamingDemoQuestionnaireContentBuilder {
     builder.inQuestion("ARRAY_OPEN_DS").withSharedCategory(DNK);
     builder.inOpenAnswerDefinition("WEEK_QUANTITY").setVariableName("RED_WINE_DS", "red_wine_week_quantity");
     builder.inOpenAnswerDefinition("WEEK_QUANTITY").setVariableName("WHITE_WINE_DS", "white_wine_week_quantity");
+
     return builder;
   }
 }
