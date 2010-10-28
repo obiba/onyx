@@ -18,18 +18,23 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryListPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
@@ -70,7 +75,7 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private HidableTab openAnswerTab;
+  private SavableHidableTab openAnswerTab;
 
   private SavableHidableTab categoriesTab;
 
@@ -82,7 +87,7 @@ public abstract class EditQuestionPanel extends Panel {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
-    Question question = questionModel.getObject();
+    final Question question = questionModel.getObject();
 
     logger.info("question: " + question);
 
@@ -109,10 +114,41 @@ public abstract class EditQuestionPanel extends Panel {
 
     final List<ITab> tabs = new ArrayList<ITab>();
 
-    openAnswerTab = new HidableTab(new ResourceModel("OpenAnswer")) {
+    openAnswerTab = new SavableHidableTab(new ResourceModel("OpenAnswer")) {
+
+      private OpenAnswerPanel panel;
+
       @Override
       public Panel getPanel(String panelId) {
-        return new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        final OpenAnswerDefinition openAnswerDefinition;
+        if(panel == null) {
+          if(!question.getCategories().isEmpty() && question.getCategories().get(0).getOpenAnswerDefinition() != null) {
+            openAnswerDefinition = question.getCategories().get(0).getOpenAnswerDefinition();
+          } else {
+            openAnswerDefinition = new OpenAnswerDefinition();
+          }
+          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target) {
+              // if openAnswerDefinition has not been added to question yet
+              if(question.getCategories().isEmpty()) {
+                QuestionCategory questionCategory = new QuestionCategory();
+                // TODO
+                Category category = new Category("whatPutHere?");
+                category.setOpenAnswerDefinition(openAnswerDefinition);
+                questionCategory.setCategory(category);
+                question.addQuestionCategory(questionCategory);
+              }
+              // otherwise edit openAnswerDefinition in his own is sufficient
+            }
+          };
+        }
+        return panel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
       }
     };
     openAnswerTab.setVisible(false);
@@ -123,14 +159,38 @@ public abstract class EditQuestionPanel extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target) {
+              String layoutSelection = layout.getModelObject();
+              if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
+                question.clearUIArguments();
+                question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, question.getCategories().size() + "");
+              } else if(GRID_LAYOUT.equals(layoutSelection)) {
+                question.clearUIArguments();
+                question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
+              }
+            }
+          };
         }
+
+        // if(question.getParentQuestion() == null) {
+        // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
+        // @Override
+        // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
+        // question.getQuestionCategories().clear();
+        // for(QuestionCategory questionCategory : orderedItems) {
+        // question.getQuestionCategories().add(questionCategory);
+        // }
+        // }
+        // });
+        // }
         return panel;
       }
 
       @Override
-      public void save() {
-        if(panel != null) panel.save();
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
       }
     };
     categoriesTab.setVisible(false);
@@ -176,8 +236,8 @@ public abstract class EditQuestionPanel extends Panel {
       }
     };
 
-    tabs.add(questionTab);
-    tabs.add(openAnswerTab);
+    tabs.add(new PanelCachingTab(questionTab));
+    tabs.add(new PanelCachingTab(openAnswerTab));
     tabs.add(categoriesTab);
     tabs.add(rowsTab);
     tabs.add(columnsTab);
@@ -205,23 +265,30 @@ public abstract class EditQuestionPanel extends Panel {
         if(questionType != null) {
           switch(questionType) {
           case SINGLE_OPEN_ANSWER:
-            // openAnswerTab.save();
+            openAnswerTab.save(target);
+            if(question.getCategories().isEmpty() || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
+              form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null).getObject());
+              return;
+            }
             break;
 
           case LIST_CHECKBOX:
             model.getObject().getElement().setUIFactoryName(null);
             model.getObject().getElement().setMultiple(true);
-            categoriesTab.save();
+            categoriesTab.save(target);
+            if(!validateList()) return;
             break;
           case LIST_RADIO:
             model.getObject().getElement().setUIFactoryName(null);
             model.getObject().getElement().setMultiple(false);
-            categoriesTab.save();
+            categoriesTab.save(target);
+            if(!validateList()) return;
             break;
           case LIST_DROP_DOWN:
             model.getObject().getElement().setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
             model.getObject().getElement().setMultiple(false);
-            categoriesTab.save();
+            categoriesTab.save(target);
+            if(!validateList()) return;
             break;
 
           case ARRAY_CHECKBOX:
@@ -239,6 +306,14 @@ public abstract class EditQuestionPanel extends Panel {
         questionWindow.close(target);
       }
 
+      private boolean validateList() {
+        if(question.getCategories().size() < 2) {
+          form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
+          return false;
+        }
+        return true;
+      }
+
       @Override
       protected void onError(AjaxRequestTarget target, Form<?> form2) {
         feedbackWindow.setContent(feedbackPanel);
@@ -252,6 +327,7 @@ public abstract class EditQuestionPanel extends Panel {
         questionWindow.close(target);
       }
     }.setDefaultFormProcessing(false));
+
   }
 
   private void setTabsVisibility(QuestionType questionType) {

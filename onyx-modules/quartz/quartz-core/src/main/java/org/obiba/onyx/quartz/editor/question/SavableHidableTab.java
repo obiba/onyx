@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 
@@ -26,6 +27,6 @@ public abstract class SavableHidableTab extends HidableTab {
     super(title);
   }
 
-  public abstract void save();
+  public abstract void save(AjaxRequestTarget target);
 
 }

@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.category;
 
 import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -32,17 +33,17 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
  *
  */
 @SuppressWarnings("serial")
-public class CategoriesPanel extends Panel {
+public abstract class CategoriesPanel extends Panel {
 
-  private static final String SINGLE_COLUMN_LAYOUT = "singleColumnLayout";
+  protected static final String SINGLE_COLUMN_LAYOUT = "singleColumnLayout";
 
-  private static final String GRID_LAYOUT = "gridLayout";
+  protected static final String GRID_LAYOUT = "gridLayout";
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  private RadioGroup<String> layout;
+  protected RadioGroup<String> layout;
 
-  private TextField<Integer> nbRowsField;
+  protected TextField<Integer> nbRowsField;
 
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
@@ -80,15 +81,5 @@ public class CategoriesPanel extends Panel {
     add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));
   }
 
-  public void save() {
-    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
-    String layoutSelection = layout.getModelObject();
-    if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, String.valueOf(question.getCategories().size()));
-    } else if(GRID_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, String.valueOf(nbRowsField.getModelObject()));
-    }
-  }
+  public abstract void onSave(AjaxRequestTarget target);
 }

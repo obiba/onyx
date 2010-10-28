@@ -21,6 +21,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -70,7 +71,7 @@ public class LabelsPanel extends Panel {
           return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)));
         }
       };
-      tabs.add(tab);
+      tabs.add(new PanelCachingTab(tab));
       tabByLocale.put(locale, tab);
     }
 

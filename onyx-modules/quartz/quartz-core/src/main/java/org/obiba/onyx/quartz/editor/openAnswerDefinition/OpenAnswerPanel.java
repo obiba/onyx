@@ -244,9 +244,8 @@ public class OpenAnswerPanel extends Panel {
   /**
    * 
    * @param target
-   * @param openAnswer
    */
-  public void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
+  public void onSave(AjaxRequestTarget target) {
 
   }
 

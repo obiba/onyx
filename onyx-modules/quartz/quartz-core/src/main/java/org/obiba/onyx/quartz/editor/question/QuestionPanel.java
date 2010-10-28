@@ -82,6 +82,7 @@ public abstract class QuestionPanel extends Panel {
     if(questionType == null || questionType == QuestionType.BOILER_PLATE) {
       typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
       typeChoices.remove(QuestionType.BOILER_PLATE);
+      model.getObject().setQuestionType(null);
     } else {
       if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
         typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
