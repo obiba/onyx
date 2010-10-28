@@ -29,6 +29,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -100,7 +101,7 @@ public abstract class CategoryWindow extends Panel {
     openAnswerWindow.setInitialWidth(900);
     openAnswerWindow.setInitialHeight(500);
     openAnswerWindow.setResizable(true);
-    openAnswerWindow.setTitle(new ResourceModel("OpenAnswerDefinition"));
+    openAnswerWindow.setTitle(new StringResourceModel("OpenAnswerDefinition", CategoryWindow.this, null));
     add(openAnswerWindow);
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "category.name"));
@@ -196,6 +197,7 @@ public abstract class CategoryWindow extends Panel {
                     currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
                   } else {
                     OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
+                    // TODO
                     newOpenAnswer.setName("whatNamePutHere");
                     newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
                     newOpenAnswer.addOpenAnswerDefinition(openAnswer);
