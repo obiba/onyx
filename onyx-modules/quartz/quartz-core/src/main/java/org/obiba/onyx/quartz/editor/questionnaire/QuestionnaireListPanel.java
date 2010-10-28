@@ -148,8 +148,9 @@ public class QuestionnaireListPanel extends Panel {
             public Component getLazyLoadComponent(String componentId1) {
               String str = name;
               try {
-                if(!questionnaire.isConvertedToVariableConditions()) {
+                if(!questionnaire.isConvertedToMagmaVariables()) {
                   QuestionnaireDataSourceConverter.convertToVariableDataSources(questionnaire);
+                  questionnaire.setConvertedToMagmaVariables(true);
                   questionnairePersistenceUtils.persist(questionnaire);
                 }
               } catch(Exception e) {

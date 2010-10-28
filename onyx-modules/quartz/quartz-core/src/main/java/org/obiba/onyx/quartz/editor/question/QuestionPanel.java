@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -49,7 +50,7 @@ public abstract class QuestionPanel extends Panel {
 
   private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType) {
     super(id, model);
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
@@ -59,7 +60,8 @@ public abstract class QuestionPanel extends Panel {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equalsIgnoreCase(model.getObject().getElement().getName(), validatable.getValue())) {
-          if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findQuestion(validatable.getValue()) != null) {
+          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+          if(questionnaireFinder.findQuestion(validatable.getValue()) != null) {
             error(validatable, "QuestionAlreadyExists");
           }
         }
@@ -92,13 +94,13 @@ public abstract class QuestionPanel extends Panel {
 
     final DropDownChoice<QuestionType> type = new DropDownChoice<QuestionType>("type", new PropertyModel<QuestionType>(model, "questionType"), typeChoices, new IChoiceRenderer<QuestionType>() {
       @Override
-      public Object getDisplayValue(QuestionType questionType) {
-        return new StringResourceModel("QuestionType." + questionType, QuestionPanel.this, null).getString();
+      public Object getDisplayValue(QuestionType type1) {
+        return new StringResourceModel("QuestionType." + type1, QuestionPanel.this, null).getString();
       }
 
       @Override
-      public String getIdValue(QuestionType questionType, int index) {
-        return questionType.name();
+      public String getIdValue(QuestionType type1, int index) {
+        return type1.name();
       }
     });
     type.setLabel(new ResourceModel("QuestionType"));
@@ -117,8 +119,12 @@ public abstract class QuestionPanel extends Panel {
       }
     });
 
-    add(type);
-    add(new SimpleFormComponentLabel("typeLabel", type));
+    WebMarkupContainer typeContainer = new WebMarkupContainer("typeContainer");
+    typeContainer.setVisible(useQuestionType);
+    add(typeContainer);
+
+    typeContainer.add(type);
+    typeContainer.add(new SimpleFormComponentLabel("typeLabel", type));
 
     PropertyModel<Question> questionModel = new PropertyModel<Question>(model, "element");
     logger.info("questionModel.getObject(): " + questionModel.getObject());

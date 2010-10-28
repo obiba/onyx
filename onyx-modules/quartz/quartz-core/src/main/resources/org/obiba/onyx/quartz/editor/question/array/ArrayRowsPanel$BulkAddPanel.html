@@ -3,10 +3,12 @@
 	<form wicket:id="form" autocomplete="off" >	
 		<table class="keyValueTable">
 			<tr>
-				<td class="keyValueTableKey" valign="top"><label wicket:id="categoriesLabel"></label></td>
+				<td class="keyValueTableKey" valign="top"><label wicket:id="questionsLabel"></label></td>
 				<td class="keyValueTableValueOdd">
-					<textarea wicket:id="categories" rows="2" cols="60"></textarea>
+					<textarea wicket:id="questions" rows="2" cols="60"></textarea>
 					<a wicket:id="bulkAddLink"><img wicket:id="bulkAddImg" class="action" /></a>
+					<br />
+					<span class="instructions"><wicket:message key=CommaSeparatedNames /></span>
 				</td>
 			</tr>	
 		</table>	

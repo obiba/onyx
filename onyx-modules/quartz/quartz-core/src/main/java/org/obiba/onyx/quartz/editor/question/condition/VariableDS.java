@@ -7,31 +7,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.question.condition.datasource;
+package org.obiba.onyx.quartz.editor.question.condition;
 
 import java.io.Serializable;
 
-import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.util.data.ComparisonOperator;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  *
  */
-public class ComparingDS implements Serializable, DS {
+public class VariableDS implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  public static final String GENDER_TYPE = "gender";
+  private int index;
 
-  private int variable;
+  private String table;
+
+  private String name;
 
   private ComparisonOperator operator;
 
-  private String type;
+  private DataType type;
 
   private String value;
 
-  private Gender gender;
+  public boolean isComparison() {
+    return operator != null;
+  }
 
   public ComparisonOperator getOperator() {
     return operator;
@@ -41,28 +45,11 @@ public class ComparingDS implements Serializable, DS {
     this.operator = operator;
   }
 
-  public Gender getGender() {
-    return gender;
-  }
-
-  public void setGender(Gender gender) {
-    this.gender = gender;
-  }
-
-  @Override
-  public int getVariable() {
-    return variable;
-  }
-
-  public void setVariable(int index) {
-    this.variable = index;
-  }
-
-  public String getType() {
+  public DataType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(DataType type) {
     this.type = type;
   }
 
@@ -72,6 +59,30 @@ public class ComparingDS implements Serializable, DS {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  public int getIndex() {
+    return index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
+  public String getTable() {
+    return table;
+  }
+
+  public void setTable(String table) {
+    this.table = table;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
 }

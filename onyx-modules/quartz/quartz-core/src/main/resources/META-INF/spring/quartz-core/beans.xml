@@ -95,12 +95,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="localePropertiesUtils" ref="localePropertiesUtils" />
 	</bean>
 
-	<bean id="conditionsFactory" class="org.obiba.onyx.quartz.editor.question.condition.ConditionsFactory">
-		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
-	</bean>
-	
 	<bean id="localePropertiesUtils" class="org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils">
-  		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
-  	</bean>
+ 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+ 	</bean>
 
 </beans>

@@ -1,0 +1,49 @@
+<wicket:panel>
+
+	<span wicket:id="feedback" />
+	
+	<form wicket:id="form" autocomplete="off" >	
+
+		<table class="keyValueTable">
+			<tr>
+				<td class="keyValueTableKey"><label wicket:id="magmaTableLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="magmaTable" type="text" size="40" /></td>
+			</tr>	
+			<tr>
+				<td class="keyValueTableKey"><label wicket:id="magmaNameLabel"></label></td>
+				<td class="keyValueTableValueOdd"><input wicket:id="magmaName" type="text" size="40" /></td>
+			</tr>	
+		</table>
+		
+		<br />
+		
+		<fieldset>
+			<legend><wicket:message key="Comparison" /></legend>
+			<table class="keyValueTable">
+				<tr>
+					<td class="keyValueTableKey"><label wicket:id="operatorLabel"></label></td>
+					<td class="keyValueTableValueOdd"><select wicket:id="operator"></select></td>
+				</tr>	
+				<tr>
+					<td class="keyValueTableKey"><label wicket:id="typeLabel"></label></td>
+					<td class="keyValueTableValueOdd"><select wicket:id="type"></select></td>
+				</tr>					
+				<tr wicket:id="valueContainer">
+					<td class="keyValueTableKey"><label wicket:id="valueLabel"></label></td>
+					<td class="keyValueTableValueOdd">
+						<input wicket:id="stringValue" type="text"  />
+						<input wicket:id="numericValue" type="text" />
+						<input wicket:id="dateValue" type="text" size="10" />									
+					</td>
+				</tr>
+			</table>
+		</fieldset>		
+		
+		<div class="modal-footer">
+			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
+			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
+		</div>				
+	
+	</form>	
+	
+</wicket:panel>

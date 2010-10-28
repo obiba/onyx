@@ -133,4 +133,14 @@ public class VariableDataSource implements IDataSource {
     }
   }
 
+  public String getTableName() {
+    extractPathElements();
+    return tableName;
+  }
+
+  public String getVariableName() {
+    extractPathElements();
+    return variableName;
+  }
+
 }

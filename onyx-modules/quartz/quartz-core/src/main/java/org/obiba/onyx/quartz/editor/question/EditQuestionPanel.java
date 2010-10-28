@@ -31,9 +31,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
+import org.obiba.onyx.quartz.editor.category.CategoryListPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerPanel;
+import org.obiba.onyx.quartz.editor.question.array.ArrayRowsPanel;
+import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
@@ -115,35 +118,45 @@ public abstract class EditQuestionPanel extends Panel {
     openAnswerTab.setVisible(false);
 
     categoriesTab = new SavableHidableTab(new ResourceModel("Categories")) {
-      private CategoriesPanel categoriesPanel;
+      private CategoriesPanel panel;
 
       @Override
       public Panel getPanel(String panelId) {
-        if(categoriesPanel == null) {
-          categoriesPanel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        if(panel == null) {
+          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
         }
-        return categoriesPanel;
+        return panel;
       }
 
       @Override
       public void save() {
-        if(categoriesPanel != null) categoriesPanel.save();
+        if(panel != null) panel.save();
       }
     };
     categoriesTab.setVisible(false);
 
     rowsTab = new HidableTab(new ResourceModel("Rows(questions)")) {
+      private ArrayRowsPanel panel;
+
       @Override
       public Panel getPanel(String panelId) {
-        return new Panel(panelId, model);
+        if(panel == null) {
+          panel = new ArrayRowsPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        }
+        return panel;
       }
     };
     rowsTab.setVisible(false);
 
     columnsTab = new HidableTab(new ResourceModel("Columns(categories)")) {
+      private CategoryListPanel panel;
+
       @Override
       public Panel getPanel(String panelId) {
-        return new Panel(panelId, model);
+        if(panel == null) {
+          panel = new CategoryListPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        }
+        return panel;
       }
     };
     columnsTab.setVisible(false);
@@ -151,7 +164,7 @@ public abstract class EditQuestionPanel extends Panel {
     ITab questionTab = new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+        return new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true) {
           @Override
           public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             setTabsVisibility(questionType);
@@ -171,7 +184,7 @@ public abstract class EditQuestionPanel extends Panel {
     tabs.add(new AbstractTab(new ResourceModel("Conditions")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new Panel(panelId, model);
+        return new ConditionPanel(panelId, questionModel);
       }
     });
     tabs.add(new AbstractTab(new ResourceModel("Preview")) {

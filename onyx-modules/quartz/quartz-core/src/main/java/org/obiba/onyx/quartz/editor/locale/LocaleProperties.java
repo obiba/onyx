@@ -21,7 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -56,7 +56,7 @@ public class LocaleProperties implements Serializable {
     Assert.notNull(locale);
     ListMultimap<Locale, KeyValue> labels = elementLabels.get(element);
     if(labels == null) {
-      labels = LinkedListMultimap.create();
+      labels = ArrayListMultimap.create();
       elementLabels.put(element, labels);
     }
     labels.put(locale, new KeyValue(key, value));

@@ -41,7 +41,7 @@ public class Questionnaire implements IHasSection {
   private String uiType;
 
   /** Indicates if question conditions where converted to Magma variables */
-  private boolean convertedToVariableConditions;
+  private boolean convertedToMagmaVariables;
 
   private transient QuestionnaireCache questionnaireCache;
 
@@ -159,12 +159,12 @@ public class Questionnaire implements IHasSection {
   /**
    * @return true if question conditions where converted to Magma variables
    */
-  public boolean isConvertedToVariableConditions() {
-    return convertedToVariableConditions;
+  public boolean isConvertedToMagmaVariables() {
+    return convertedToMagmaVariables;
   }
 
-  public void setConvertedToVariableConditions(boolean convertedToVariableConditions) {
-    this.convertedToVariableConditions = convertedToVariableConditions;
+  public void setConvertedToMagmaVariables(boolean convertedToMagmaVariables) {
+    this.convertedToMagmaVariables = convertedToMagmaVariables;
   }
 
   //

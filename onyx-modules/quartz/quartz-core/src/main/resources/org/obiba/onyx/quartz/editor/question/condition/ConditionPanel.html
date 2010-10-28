@@ -1,23 +1,21 @@
 <wicket:panel>
 
-	<div wicket:id="dataSourceWindow" />
+	<div wicket:id="variableWindow" />
 	
-	<form wicket:id="form" autocomplete="off">	
+	<form wicket:id="form" autocomplete="off">
+	
+		<br />
+		<a class="obiba-button" wicket:id="addVariable"><wicket:message key="Variables.add" /></a>
+		<br />	 
+		<br />
+		<span wicket:id="variables" />
+		
+		<br />
 			
-		<a class="obiba-button" wicket:id="addQuestionnaireDataSource"><wicket:message key="DataSources.questionnaire.add" /></a> 
-		<br />
-		<span wicket:id="questionnaireDataSources" />
-		
-		<br />
-		
-		<a class="obiba-button" wicket:id="addComparingDataSource"><wicket:message key="DataSources.comparing.add" /></a>
-		<br />
-		<span wicket:id="comparingDataSources" />		
-		
 		<div wicket:id="expressionContainer">
 			<table class="keyValueTable" wicket:id="expressionVisibility">
 				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="expressionLabel">expressionLabel</label></td>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="expressionLabel"></label></td>
 					<td class="keyValueTableValueOdd"><textarea wicket:id="expression" cols="60" rows="2"></textarea></td>
 				</tr>				
 			</table>		
@@ -25,8 +23,9 @@
 		
 	</form>	
 	
-	<wicket:fragment wicket:id="dataSourceAction">
-		<a wicket:id="deleteLink"><wicket:message key="Delete" /></a>
+	<wicket:fragment wicket:id="variableAction">
+		<a wicket:id="editLink"><img wicket:id="editImg" /></a>
+		<a wicket:id="deleteLink"><img wicket:id="deleteImg" /></a>
 	</wicket:fragment>	
 	
 </wicket:panel>
