@@ -419,8 +419,8 @@ public class QuestionnaireTreePanel extends Panel {
       IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       IQuestionnaireElement element = elements.get(nodeId);
       Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
-      QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
       questionnaireModel.setObject(questionnaire);
+      QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
 
       if(element instanceof Section) {
         Section updatedElement = questionnaireFinder.findSection(element.getName());

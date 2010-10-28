@@ -22,10 +22,6 @@ public class EditedQuestion extends EditedElement<Question> {
 
   private Conditions conditions;
 
-  public EditedQuestion() {
-    super(new Question(null));
-  }
-
   public EditedQuestion(Question element) {
     super(element);
     if(element != null) questionType = element.getType();

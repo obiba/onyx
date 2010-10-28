@@ -225,16 +225,17 @@ public class ArrayRowsPanel extends Panel {
     }
   }
 
-  // private boolean checkIfQuestionAlreadyExists(String name) {
-  // QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-  // if(questionnaireFinder.findQuestion(name) != null) {
-  // return true;
-  // }
-  // return false;
-  // }
+  private boolean checkIfQuestionAlreadyExists(String name) {
+    questionnaireModel.getObject().setQuestionnaireCache(null); // invalidate cache
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    if(questionnaireFinder.findQuestion(name) != null) {
+      return true;
+    }
+    return false;
+  }
 
   private void addQuestion(String name) {
-    if(StringUtils.isNotBlank(name)) {
+    if(StringUtils.isNotBlank(name) && !checkIfQuestionAlreadyExists(name)) {
       Question parent = ((EditedQuestion) ArrayRowsPanel.this.getDefaultModelObject()).getElement();
       parent.addQuestion(new Question(name));
     }

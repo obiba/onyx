@@ -170,21 +170,22 @@ public abstract class EditQuestionPanel extends Panel {
                 question.clearUIArguments();
                 question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
               }
+              // if(question.getParentQuestion() == null) {
+              // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
+              // @Override
+              // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
+              // question.getQuestionCategories().clear();
+              // for(QuestionCategory questionCategory : orderedItems) {
+              // question.getQuestionCategories().add(questionCategory);
+              // }
+              // }
+              // });
+              // }
+
             }
           };
         }
 
-        // if(question.getParentQuestion() == null) {
-        // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
-        // @Override
-        // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
-        // question.getQuestionCategories().clear();
-        // for(QuestionCategory questionCategory : orderedItems) {
-        // question.getQuestionCategories().add(questionCategory);
-        // }
-        // }
-        // });
-        // }
         return panel;
       }
 
@@ -271,32 +272,32 @@ public abstract class EditQuestionPanel extends Panel {
               return;
             }
             break;
-
           case LIST_CHECKBOX:
-            model.getObject().getElement().setUIFactoryName(null);
-            model.getObject().getElement().setMultiple(true);
+            question.setUIFactoryName(null);
+            question.setMultiple(true);
             categoriesTab.save(target);
             if(!validateList()) return;
             break;
           case LIST_RADIO:
-            model.getObject().getElement().setUIFactoryName(null);
-            model.getObject().getElement().setMultiple(false);
+            question.setUIFactoryName(null);
+            question.setMultiple(false);
             categoriesTab.save(target);
             if(!validateList()) return;
             break;
           case LIST_DROP_DOWN:
-            model.getObject().getElement().setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
-            model.getObject().getElement().setMultiple(false);
+            question.setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
+            question.setMultiple(false);
             categoriesTab.save(target);
             if(!validateList()) return;
             break;
-
           case ARRAY_CHECKBOX:
-          case ARRAY_RADIO:
-            // rowsTab.save();
-            // columnsTab.save();
+            question.setMultiple(true);
+            if(!validateArray()) return;
             break;
-
+          case ARRAY_RADIO:
+            question.setMultiple(false);
+            if(!validateArray()) return;
+            break;
           case BOILER_PLATE:
             break;
           }
@@ -304,6 +305,14 @@ public abstract class EditQuestionPanel extends Panel {
 
         onSave(target, form.getModelObject());
         questionWindow.close(target);
+      }
+
+      private boolean validateArray() {
+        if(question.getQuestions().size() < 2 || question.getCategories().size() < 1) {
+          form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
+          return false;
+        }
+        return true;
       }
 
       private boolean validateList() {
