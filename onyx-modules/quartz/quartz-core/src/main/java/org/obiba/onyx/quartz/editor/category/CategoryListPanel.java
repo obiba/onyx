@@ -41,9 +41,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator.MaximumLengthValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -108,7 +107,7 @@ public class CategoryListPanel extends Panel {
     categoryWindow.setInitialWidth(950);
     categoryWindow.setInitialHeight(550);
     categoryWindow.setResizable(true);
-    categoryWindow.setTitle(new ResourceModel("Category"));
+    categoryWindow.setTitle(new StringResourceModel("Category", CategoryListPanel.this, null));
     add(categoryWindow);
 
     final IModel<String> addCategoryModel = new Model<String>();
@@ -203,25 +202,20 @@ public class CategoryListPanel extends Panel {
       categoryName.setOutputMarkupId(true);
       categoryName.setLabel(new ResourceModel("NewCategory"));
       categoryName.add(new MaximumLengthValidator(20));
-      categoryName.add(new AbstractValidator<String>() {
-        @Override
-        @SuppressWarnings("unchecked")
-        protected void onValidate(IValidatable<String> validatable) {
-          String name = validatable.getValue();
-          if(StringUtils.isBlank(name)) return;
-          if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
-            error(validatable, "CategoryAlreadyExists");
-          }
-        }
-      });
+
       form.add(categoryName);
       form.add(new SimpleFormComponentLabel("categoryLabel", categoryName));
 
-      AjaxSubmitLink simpelAddLink = new AjaxSubmitLink("link", form) {
+      AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link", form) {
         @Override
         @SuppressWarnings("unchecked")
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String name = categoryName.getModelObject();
+          if(StringUtils.isBlank(name)) return;
+          if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
+            error(new ResourceModel("CategoryAlreadyExists").getObject());
+            return;
+          }
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name);
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
@@ -235,8 +229,8 @@ public class CategoryListPanel extends Panel {
         }
       };
 
-      simpelAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
-      form.add(simpelAddLink);
+      simpleAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(simpleAddLink);
     }
   }
 
