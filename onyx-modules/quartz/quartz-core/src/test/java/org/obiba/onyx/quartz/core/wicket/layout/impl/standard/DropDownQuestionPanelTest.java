@@ -137,7 +137,7 @@ public class DropDownQuestionPanelTest {
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
 
     expect(activeQuestionnaireAdministrationServiceMock.findAnswers(question)).andReturn(Arrays.asList(new CategoryAnswer[] { previousCategoryAnswer })).atLeastOnce();
-
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();

@@ -50,6 +50,7 @@ public class AnswerCountValidator<T> implements INullAcceptingValidator<T> {
   }
 
   public void validate(IValidatable<T> validatable) {
+    if(activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) return;
     Question question = questionModel.getObject();
     if(question.getQuestions().size() > 0 && question.getCategories().size() > 0) {
       for(Question child : question.getQuestions()) {

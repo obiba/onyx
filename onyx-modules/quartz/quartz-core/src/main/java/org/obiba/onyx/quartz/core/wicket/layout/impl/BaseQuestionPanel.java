@@ -129,7 +129,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     add(imageLink);
 
     // Boiler Plate questions should not have comments.
-    if(!question.isBoilerPlate()) {
+    if(!question.isBoilerPlate() && !activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
 
       // Display a different link if a comment already exist for question.
       imageLink.add(new AbstractBehavior() {
