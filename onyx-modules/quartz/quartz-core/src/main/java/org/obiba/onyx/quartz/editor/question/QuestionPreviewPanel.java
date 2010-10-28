@@ -31,7 +31,7 @@ public class QuestionPreviewPanel extends Panel {
     super(id, model);
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaireModel.getObject());
     // activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaireModel.getObject().getLocales().get(0));
-    // activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
+    activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
     add(new DefaultQuestionPanel("preview", new PropertyModel<Question>(model, "element")));
   }
 
