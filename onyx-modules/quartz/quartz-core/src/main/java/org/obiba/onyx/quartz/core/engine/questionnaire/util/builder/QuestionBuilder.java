@@ -375,8 +375,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     if(!variable.getValueType().equals(BooleanType.get())) {
       throw new IllegalArgumentException("Boolean type is expected for questionnaire variable used as a question condition: " + variable.getName());
     }
-    Variable var = QuestionnaireFinder.getInstance(questionnaire).findVariable(variable.getName());
-    if(var == null) addVariable(variable);
+    addVariable(variable);
     getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variable.getName()));
     return this;
   }
@@ -443,29 +442,6 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
-   * Set a {@link ComparingDataSource} condition.
-   * @param dataSource1
-   * @param operator
-   * @param dataSource2
-   * @return
-   */
-  public QuestionBuilder setCondition(IDataSource dataSource1, ComparisonOperator operator, IDataSource dataSource2) {
-    getElement().setCondition(new ComparingDataSource(dataSource1, operator, dataSource2));
-    return this;
-  }
-
-  /**
-   * Set a {@link ComparingDataSource} condition over gender participant property.
-   * @param operator
-   * @param gender
-   * @return
-   */
-  public QuestionBuilder setCondition(ComparisonOperator operator, Gender gender) {
-    getElement().setCondition(new ComparingDataSource(new ParticipantPropertyDataSource("gender"), operator, new FixedDataSource(gender.toString())));
-    return this;
-  }
-
-  /**
    * Condition on question answering and/or category choice in another questionnaire.
    * @param questionnaireName
    * @param question
@@ -479,10 +455,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add the data source condition (must be of boolean type).
-   * @param name
-   * @param dataSource1
-   * @param comparisonOperator
-   * @param dataSource2
+   * @param dataSource
    * @return
    */
   public QuestionBuilder setCondition(IDataSource dataSource) {
@@ -491,11 +464,38 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Set a {@link ComparingDataSource} condition.
+   * @param dataSource1
+   * @param operator
+   * @param dataSource2
+   * @return
+   */
+  @Deprecated
+  public QuestionBuilder setCondition(IDataSource dataSource1, ComparisonOperator operator, IDataSource dataSource2) {
+    getElement().setCondition(new ComparingDataSource(dataSource1, operator, dataSource2));
+    return this;
+  }
+
+  /**
+   * Set a {@link ComparingDataSource} condition over gender participant property.
+   * @param operator
+   * @param gender
+   * @return
+   */
+  @Deprecated
+  public QuestionBuilder setCondition(ComparisonOperator operator, Gender gender) {
+    getElement().setCondition(new ComparingDataSource(new ParticipantPropertyDataSource("gender"), operator, new FixedDataSource(gender.toString())));
+    return this;
+  }
+
+  /**
    * Add a {@link ComputingDataSource} as a condition.
    * @param expression
    * @param dataSources
    * @return
+   * @deprecated
    */
+  @Deprecated
   public QuestionBuilder setCondition(String expression, IDataSource... dataSources) {
     getElement().setCondition(new ComputingDataSource(DataType.BOOLEAN, expression).addDataSources(dataSources));
     return this;
