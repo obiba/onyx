@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.editor.widget.sortable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,15 +51,13 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
   private Label toArrayCallback;
 
-  private SortableListCallback<T> callback;
-
   public SortableList(String id, List<T> items) {
     this(id, Model.ofList(items));
   }
 
   @SuppressWarnings("unchecked")
   public SortableList(String id, IModel<? extends List<? extends T>> model) {
-    super(id);
+    super(id, model);
 
     add(CSSPackageResource.getHeaderContribution(SortableList.class, "SortableList.css"));
     add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
@@ -132,21 +129,17 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     "\n}");
   }
 
-  public void save(AjaxRequestTarget target, SortableListCallback<T> callback1) {
-    this.callback = callback1;
-    target.appendJavascript("Wicket.Sortable.toArray('" + listContainer.getMarkupId() + "')");
-  }
-
   protected class ToArrayBehavior extends AbstractDefaultAjaxBehavior {
     @Override
     protected void respond(AjaxRequestTarget target) {
       Request request = RequestCycle.get().getRequest();
       String items = request.getParameter("items");
-      List<T> orderedItems = new ArrayList<T>();
+      @SuppressWarnings("unchecked")
+      List<T> modelList = (List<T>) SortableList.this.getDefaultModelObject();
+      modelList.clear();
       for(String markupId : StringUtils.commaDelimitedListToStringArray(items)) {
-        orderedItems.add(itemByMarkupId.get(markupId));
+        modelList.add(itemByMarkupId.get(markupId));
       }
-      callback.onSave(orderedItems, target);
     }
   }
 

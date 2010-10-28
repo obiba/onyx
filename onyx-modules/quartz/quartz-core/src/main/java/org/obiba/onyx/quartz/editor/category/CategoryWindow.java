@@ -43,7 +43,6 @@ import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
-import org.obiba.onyx.quartz.editor.widget.sortable.SortableListCallback;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -218,21 +217,6 @@ public abstract class CategoryWindow extends Panel {
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-
-        openAnswerDefinitionList.save(target, new SortableListCallback<OpenAnswerDefinition>() {
-
-          @Override
-          public void onSave(List<OpenAnswerDefinition> orderedItems, AjaxRequestTarget target1) {
-            OpenAnswerDefinition currentOpenAnswer = form.getModelObject().getOpenAnswerDefinition();
-            if(currentOpenAnswer != null && !CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
-              currentOpenAnswer.getOpenAnswerDefinitions().clear();
-              for(OpenAnswerDefinition openAnswerDefinition : orderedItems) {
-                currentOpenAnswer.addOpenAnswerDefinition(openAnswerDefinition);
-              }
-            }
-          }
-        });
-
         onSave(target, form.getModelObject());
         modalWindow.close(target);
       }

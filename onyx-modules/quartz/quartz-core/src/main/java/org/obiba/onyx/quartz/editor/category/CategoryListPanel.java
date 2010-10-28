@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.editor.category;
 
 import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
-import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +33,8 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -67,10 +64,6 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public class CategoryListPanel extends Panel {
 
-  private static final String SINGLE_COLUMN_LAYOUT = "singleColumnLayout";
-
-  private static final String GRID_LAYOUT = "gridLayout";
-
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
@@ -89,10 +82,6 @@ public class CategoryListPanel extends Panel {
   private List<Category> sharedCategories;
 
   private Map<String, Category> categoriesByName;
-
-  private RadioGroup<String> layout;
-
-  private TextField<Integer> nbRowsField;
 
   public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
@@ -308,15 +297,4 @@ public class CategoryListPanel extends Panel {
     }
   }
 
-  public void save() {
-    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
-    String layoutSelection = layout.getModelObject();
-    if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
-    } else if(GRID_LAYOUT.equals(layoutSelection)) {
-      question.clearUIArguments();
-      question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
-    }
-  }
 }
