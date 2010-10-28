@@ -96,11 +96,10 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
     }
     if(!variable.hasAttribute("script")) {
       throw new IllegalArgumentException("Missing 'script' attribute in variable: " + variable.getName());
-    } else {
-      String script = variable.getAttributeStringValue("script");
-      if(script == null || script.trim().length() == 0) {
-        throw new IllegalArgumentException("Missing 'script' attribute in variable: " + variable.getName());
-      }
+    }
+    String script = variable.getAttributeStringValue("script");
+    if(script == null || script.trim().length() == 0) {
+      throw new IllegalArgumentException("Missing 'script' attribute in variable: " + variable.getName());
     }
     questionnaire.addVariable(variable);
   }

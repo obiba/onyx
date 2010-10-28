@@ -766,11 +766,8 @@ public class ParticipantSearchPage extends BasePage {
 
     private abstract class ActionLink extends AjaxLink {
 
-      IModel participantModel;
-
       public ActionLink(String id, IModel participantModel) {
         super(id, participantModel);
-        this.participantModel = participantModel;
       }
 
     }
@@ -805,7 +802,7 @@ public class ParticipantSearchPage extends BasePage {
           // Determine if the interview is locked after the user clicks the link. ONYX-664
           if(!interviewManager.isInterviewAvailable(getParticipant())) {
             content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel());
-            content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
+            content.add(new AttributeModifier("class", true, new Model<String>("obiba-content unlockInterview-panel-content")));
             unlockInterviewWindow.setContent(content);
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
 

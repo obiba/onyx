@@ -372,10 +372,11 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public QuestionBuilder setQuestionnaireVariableCondition(Variable variable) {
-    if(!variable.getEntityType().equals(BooleanType.get())) {
+    if(!variable.getValueType().equals(BooleanType.get())) {
       throw new IllegalArgumentException("Boolean type is expected for questionnaire variable used as a question condition: " + variable.getName());
     }
-    addVariable(variable);
+    Variable var = QuestionnaireFinder.getInstance(questionnaire).findVariable(variable.getName());
+    if(var == null) addVariable(variable);
     getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variable.getName()));
     return this;
   }

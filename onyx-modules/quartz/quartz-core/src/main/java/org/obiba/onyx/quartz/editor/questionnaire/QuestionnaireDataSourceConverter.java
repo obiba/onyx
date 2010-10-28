@@ -15,6 +15,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
@@ -24,7 +25,10 @@ import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.util.data.Data;
 
 /**
  *
@@ -38,6 +42,9 @@ public class QuestionnaireDataSourceConverter {
   // private static Logger logger = LoggerFactory.getLogger(QuestionnaireDataSourceConverter.class);
 
   public static void convertToVariableDataSources(Questionnaire questionnaire) {
+
+    QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);
+
     if(questionnaire.getQuestionnaireCache() == null) {
       QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
     }
@@ -48,7 +55,7 @@ public class QuestionnaireDataSourceConverter {
         ComputingDataSource computingDataSource = (ComputingDataSource) condition;
         List<IDataSource> dataSources = computingDataSource.getDataSources();
         for(IDataSource dataSource : new ArrayList<IDataSource>(dataSources)) {
-          IDataSource newDataSource = convert(dataSource, questionnaire);
+          IDataSource newDataSource = convert(dataSource, question, questionnaire);
           if(newDataSource != dataSource) {
             int index = dataSources.indexOf(dataSource);
             dataSources.remove(dataSource);
@@ -57,23 +64,45 @@ public class QuestionnaireDataSourceConverter {
         }
       } else if(condition instanceof ComparingDataSource) {
         ComparingDataSource comparingDataSource = (ComparingDataSource) condition;
-        comparingDataSource.setDataSourceLeft(convert(comparingDataSource.getDataSourceLeft(), questionnaire));
-        comparingDataSource.setDataSourceRight(convert(comparingDataSource.getDataSourceRight(), questionnaire));
+        String variableName = null;
+        String property = ((ParticipantPropertyDataSource) comparingDataSource.getDataSourceLeft()).getProperty();
+        if(GENDER.equals(property)) {
+          variableName = ADMIN_PARTICIPANT_GENDER_PATH;
+        } else {
+          throw new IllegalArgumentException("Unsupported property[ " + property + " for dataSource " + comparingDataSource.getDataSourceLeft() + " for question " + question);
+        }
+        Data data = ((FixedDataSource) comparingDataSource.getDataSourceRight()).getData(null);
+        String value = data.getValueAsString();
+        variableName += "." + value;
+
+        QuestionBuilder questionBuilder = QuestionBuilder.inQuestion(builder, question);
+        Variable variable = QuestionnaireFinder.getInstance(questionnaire).findVariable(variableName);
+        if(variable == null) {
+          String scriptValue = null;
+          switch(data.getType()) {
+          case DECIMAL:
+          case INTEGER:
+            scriptValue = value;
+            break;
+          default:
+            scriptValue = "'" + value + "'";
+          }
+          questionBuilder.setQuestionnaireVariableCondition(variableName, "${'" + variableName + "'}.any(" + scriptValue + ")");
+        } else {
+          questionBuilder.setQuestionnaireVariableCondition(variable);
+        }
       }
     }
   }
 
-  private static IDataSource convert(IDataSource dataSource, Questionnaire questionnaire) {
-    if(dataSource instanceof VariableDataSource || dataSource instanceof FixedDataSource) {
+  private static IDataSource convert(IDataSource dataSource, Question question, Questionnaire questionnaire) {
+    if(dataSource instanceof VariableDataSource) {
       return dataSource; // no conversion
     }
     if(dataSource instanceof QuestionnaireDataSource) {
       return convertQuestionnaireDataSource((QuestionnaireDataSource) dataSource, questionnaire);
     }
-    if(dataSource instanceof ParticipantPropertyDataSource) {
-      return convertParticipantPropertyDataSource((ParticipantPropertyDataSource) dataSource);
-    }
-    throw new IllegalArgumentException("DataSource " + dataSource + " was not converted to VariableDataSource");
+    throw new IllegalArgumentException("DataSource " + dataSource + " was not converted to VariableDataSource for question " + question);
   }
 
   private static VariableDataSource convertQuestionnaireDataSource(QuestionnaireDataSource dataSource, Questionnaire questionnaire) {
@@ -84,10 +113,4 @@ public class QuestionnaireDataSourceConverter {
     return new VariableDataSource(path.toString());
   }
 
-  private static VariableDataSource convertParticipantPropertyDataSource(ParticipantPropertyDataSource dataSource) {
-    if(GENDER.equals(dataSource.getProperty())) {
-      return new VariableDataSource(ADMIN_PARTICIPANT_GENDER_PATH);
-    }
-    throw new IllegalArgumentException("DataSource " + dataSource + " was not converted to VariableDataSource");
-  }
 }
