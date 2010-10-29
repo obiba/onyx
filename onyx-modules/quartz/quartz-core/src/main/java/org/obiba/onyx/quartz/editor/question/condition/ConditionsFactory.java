@@ -9,13 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question.condition;
 
-import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComputingDataSource;
-import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 
 /**
  *
@@ -24,7 +24,7 @@ public class ConditionsFactory {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  public static Conditions create(Question question) {
+  public static Conditions create(Question question, Questionnaire questionnaire) {
     Conditions conditions = new Conditions();
     IDataSource conditionDataSource = question.getCondition();
     if(conditionDataSource != null) {
@@ -39,19 +39,16 @@ public class ConditionsFactory {
             conditions.getVariables().add(ds);
           }
         }
-      } else if(conditionDataSource instanceof ComparingDataSource) {
-        ComparingDataSource comparingDataSource = (ComparingDataSource) conditionDataSource;
-        IDataSource left = comparingDataSource.getDataSourceLeft();
-        IDataSource right = comparingDataSource.getDataSourceRight();
-        if(left instanceof VariableDataSource && right instanceof FixedDataSource) {
-          Data data = ((FixedDataSource) right).getData(null);
-          VariableDS ds = createVariableDS((VariableDataSource) left);
-          ds.setOperator(comparingDataSource.getComparisonOperator());
-          ds.setType(data.getType());
-          ds.setValue(data.getValueAsString());
-          conditions.getVariables().add(ds);
-          ds.setIndex(conditions.getVariables().size());
+      } else if(conditionDataSource instanceof VariableDataSource) {
+        VariableDataSource variableDataSource = (VariableDataSource) conditionDataSource;
+        if(questionnaire.getQuestionnaireCache() == null) {
+          QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
         }
+        Variable variable = questionnaire.getQuestionnaireCache().getVariableCache().get(variableDataSource.getVariableName());
+        VariableDS ds = createVariableDS(variableDataSource);
+        ds.setScript(variable.getAttributeStringValue("script"));
+        conditions.getVariables().add(ds);
+        ds.setIndex(conditions.getVariables().size());
       }
     }
 

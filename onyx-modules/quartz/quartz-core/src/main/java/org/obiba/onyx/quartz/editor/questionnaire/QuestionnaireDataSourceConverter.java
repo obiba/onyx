@@ -89,7 +89,7 @@ public class QuestionnaireDataSourceConverter {
           }
           questionBuilder.setQuestionnaireVariableCondition(variableName, "${'" + variableName + "'}.any(" + scriptValue + ")");
         } else {
-          questionBuilder.setQuestionnaireVariableCondition(variable);
+          question.setCondition(new VariableDataSource(questionnaire.getName() + ":" + variable.getName()));
         }
       }
     }

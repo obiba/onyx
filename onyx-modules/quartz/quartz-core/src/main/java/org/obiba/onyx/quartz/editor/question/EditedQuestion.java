@@ -9,30 +9,46 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import static org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator.ROW_COUNT_KEY;
+
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.ListToGridPermutator;
 import org.obiba.onyx.quartz.editor.EditedElement;
-import org.obiba.onyx.quartz.editor.question.condition.Conditions;
 
 public class EditedQuestion extends EditedElement<Question> {
 
   private static final long serialVersionUID = 1L;
 
+  public static enum Layout {
+    SINGLE_COLUMN, GRID;
+  }
+
   private QuestionType questionType;
 
-  private Conditions conditions;
+  private Layout layout = Layout.SINGLE_COLUMN;
+
+  private int nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
 
   public EditedQuestion(Question element) {
     super(element);
-    if(element != null) questionType = element.getType();
+    if(element != null) {
+      setElement(element);
+      questionType = element.getType();
+    }
   }
 
-  public Conditions getConditions() {
-    return conditions;
-  }
-
-  public void setConditions(Conditions conditions) {
-    this.conditions = conditions;
+  @Override
+  public void setElement(Question question) {
+    super.setElement(question);
+    if(question != null) {
+      ValueMap map = question.getUIArgumentsValueMap();
+      if(map != null && map.containsKey(ROW_COUNT_KEY)) {
+        layout = Layout.GRID;
+        nbRows = map.getInt(ROW_COUNT_KEY);
+      }
+    }
   }
 
   public QuestionType getQuestionType() {
@@ -43,9 +59,40 @@ public class EditedQuestion extends EditedElement<Question> {
     this.questionType = questionType;
   }
 
-  @Override
-  public String toString() {
-    return "question: " + getElement() + ", questionType: " + questionType;
+  public Layout getLayout() {
+    return layout;
   }
 
+  public void setLayout(Layout layout) {
+    this.layout = layout;
+    setLayoutInfos();
+  }
+
+  public int getNbRows() {
+    return nbRows;
+  }
+
+  public void setNbRows(int nbRows) {
+    this.nbRows = nbRows;
+    setLayoutInfos();
+  }
+
+  @Override
+  public String toString() {
+    return "question: " + getElement() + ", questionType: " + questionType + ", layout: " + layout + ", nbRows: " + nbRows;
+  }
+
+  private void setLayoutInfos() {
+    if(layout != null) {
+      Question question = getElement();
+      question.clearUIArguments();
+      switch(layout) {
+      case GRID:
+        question.addUIArgument(ROW_COUNT_KEY, String.valueOf(nbRows));
+        break;
+      case SINGLE_COLUMN:
+        break;
+      }
+    }
+  }
 }

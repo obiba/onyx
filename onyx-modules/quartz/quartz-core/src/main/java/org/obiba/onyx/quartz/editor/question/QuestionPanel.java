@@ -39,8 +39,6 @@ import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -48,7 +46,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class QuestionPanel extends Panel {
 
-  private transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType) {
     super(id, model);
@@ -127,10 +125,7 @@ public abstract class QuestionPanel extends Panel {
     typeContainer.add(type);
     typeContainer.add(new SimpleFormComponentLabel("typeLabel", type));
 
-    PropertyModel<Question> questionModel = new PropertyModel<Question>(model, "element");
-    logger.info("questionModel.getObject(): " + questionModel.getObject());
-
-    add(new LabelsPanel("labels", localePropertiesModel, questionModel, feedbackPanel, feedbackWindow));
+    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow));
   }
 
   /**

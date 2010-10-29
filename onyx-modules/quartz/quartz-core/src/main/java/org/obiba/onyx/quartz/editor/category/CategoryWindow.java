@@ -56,10 +56,10 @@ public abstract class CategoryWindow extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
-  private LocalePropertiesUtils localePropertiesUtils;
+  private transient LocalePropertiesUtils localePropertiesUtils;
 
   private final FeedbackPanel feedbackPanel;
 

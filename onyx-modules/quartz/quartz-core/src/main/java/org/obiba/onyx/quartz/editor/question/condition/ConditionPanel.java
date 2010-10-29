@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question.condition;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +49,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -69,10 +72,12 @@ public class ConditionPanel extends Panel {
 
   private final WebMarkupContainer expressionVisibility;
 
+  private final TextArea<String> expression;
+
   @SuppressWarnings("unchecked")
-  public ConditionPanel(String id, final IModel<Question> questionModel) {
+  public ConditionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
     super(id);
-    final Conditions conditions = ConditionsFactory.create(questionModel.getObject());
+    final Conditions conditions = ConditionsFactory.create(questionModel.getObject(), questionnaireModel.getObject());
     setDefaultModel(new Model<Conditions>(conditions));
 
     variableWindow = new ModalWindow("variableWindow");
@@ -92,7 +97,7 @@ public class ConditionPanel extends Panel {
     expressionVisibility.setVisible(conditions.getVariables().size() > 1);
     expressionContainer.add(expressionVisibility);
 
-    final TextArea<String> expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
+    expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
     expression.setLabel(new ResourceModel("Expression"));
     expression.setRequired(true);
     expression.add(new AbstractValidator<String>() {
@@ -197,11 +202,7 @@ public class ConditionPanel extends Panel {
         @Override
         public void populateItem(Item<ICellPopulator<VariableDS>> cellItem, String componentId, IModel<VariableDS> rowModel) {
           VariableDS ds = rowModel.getObject();
-          String value = ds.getTable() + ":" + ds.getName();
-          if(ds.isComparison()) {
-            value += " " + new StringResourceModel("Operator." + ds.getOperator().name(), ConditionPanel.this, null).getString() + " " + ds.getValue();
-          }
-          cellItem.add(new Label(componentId, value));
+          cellItem.add(new Label(componentId, isBlank(ds.getScript()) ? ds.getTable() + ":" + ds.getName() : ds.getScript()));
         }
       });
       columns.add(new HeaderlessColumn<VariableDS>() {
@@ -259,7 +260,13 @@ public class ConditionPanel extends Panel {
       add(new AjaxLink<Void>("deleteLink") {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          form.getModelObject().getVariables().remove(model.getObject());
+          List<VariableDS> variableList = form.getModelObject().getVariables();
+          variableList.remove(model.getObject());
+          if(variableList.size() <= 1) {
+            expression.setModelObject(null);
+            expressionVisibility.setVisible(false);
+            target.addComponent(expressionContainer);
+          }
           target.addComponent(variables);
         }
       }.add(deleteImg));

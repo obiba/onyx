@@ -384,7 +384,7 @@ public abstract class CategoryFinderPanel extends Panel {
 
     @Override
     public boolean equals(Object obj) {
-      return getId().equals(((IEntity) obj).getId());
+      return obj != null && getId().equals(((IEntity) obj).getId());
     }
 
     public Category getCategory() {
@@ -417,7 +417,7 @@ public abstract class CategoryFinderPanel extends Panel {
 
     @Override
     public boolean equals(Object obj) {
-      return getId().equals(((IEntity) obj).getId());
+      return obj != null && getId().equals(((IEntity) obj).getId());
     }
 
     public QuestionCategory getQuestionCategory() {

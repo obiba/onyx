@@ -18,24 +18,12 @@
 		<br />
 		
 		<fieldset>
-			<legend><wicket:message key="Comparison" /></legend>
+			<legend><wicket:message key="DerivedVariable" /></legend>
 			<table class="keyValueTable">
 				<tr>
-					<td class="keyValueTableKey"><label wicket:id="operatorLabel"></label></td>
-					<td class="keyValueTableValueOdd"><select wicket:id="operator"></select></td>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="scriptLabel"></label></td>
+					<td class="keyValueTableValueOdd"><textarea wicket:id="script" cols="60" rows="3"></textarea></td>
 				</tr>	
-				<tr>
-					<td class="keyValueTableKey"><label wicket:id="typeLabel"></label></td>
-					<td class="keyValueTableValueOdd"><select wicket:id="type"></select></td>
-				</tr>					
-				<tr wicket:id="valueContainer">
-					<td class="keyValueTableKey"><label wicket:id="valueLabel"></label></td>
-					<td class="keyValueTableValueOdd">
-						<input wicket:id="stringValue" type="text"  />
-						<input wicket:id="numericValue" type="text" />
-						<input wicket:id="dateValue" type="text" size="10" />									
-					</td>
-				</tr>
 			</table>
 		</fieldset>		
 		

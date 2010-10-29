@@ -9,6 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +38,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryListPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
@@ -58,10 +61,10 @@ public abstract class EditQuestionPanel extends Panel {
   private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private LocalePropertiesUtils localePropertiesUtils;
+  private transient LocalePropertiesUtils localePropertiesUtils;
 
   @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -75,21 +78,19 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private SavableHidableTab openAnswerTab;
+  private final SavableHidableTab openAnswerTab;
 
-  private SavableHidableTab categoriesTab;
+  private final HidableTab categoriesTab;
 
-  private HidableTab rowsTab;
+  private final HidableTab rowsTab;
 
-  private HidableTab columnsTab;
+  private final HidableTab columnsTab;
 
   public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
     final Question question = questionModel.getObject();
-
-    logger.info("question: " + question);
 
     EditedQuestion editedQuestion = null;
     if(StringUtils.isBlank(question.getName())) {
@@ -98,6 +99,7 @@ public abstract class EditQuestionPanel extends Panel {
     } else {
       editedQuestion = new EditedQuestion(question);
     }
+
     final IModel<EditedQuestion> model = new Model<EditedQuestion>(editedQuestion);
 
     setDefaultModel(model);
@@ -122,24 +124,22 @@ public abstract class EditQuestionPanel extends Panel {
       public Panel getPanel(String panelId) {
         final OpenAnswerDefinition openAnswerDefinition;
         if(panel == null) {
-          if(!question.getCategories().isEmpty() && question.getCategories().get(0).getOpenAnswerDefinition() != null) {
-            openAnswerDefinition = question.getCategories().get(0).getOpenAnswerDefinition();
-          } else {
+          final List<Category> categories = question.getCategories();
+          if(categories.isEmpty()) {
             openAnswerDefinition = new OpenAnswerDefinition();
+          } else {
+            openAnswerDefinition = categories.get(0).getOpenAnswerDefinition();
           }
           panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
             @Override
             public void onSave(AjaxRequestTarget target) {
-              // if openAnswerDefinition has not been added to question yet
-              if(question.getCategories().isEmpty()) {
-                QuestionCategory questionCategory = new QuestionCategory();
-                // TODO
-                Category category = new Category("whatPutHere?");
+              if(categories.isEmpty()) {
+                Category category = new Category(openAnswerDefinition.getName());
                 category.setOpenAnswerDefinition(openAnswerDefinition);
+                QuestionCategory questionCategory = new QuestionCategory();
                 questionCategory.setCategory(category);
                 question.addQuestionCategory(questionCategory);
               }
-              // otherwise edit openAnswerDefinition in his own is sufficient
             }
           };
         }
@@ -153,46 +153,17 @@ public abstract class EditQuestionPanel extends Panel {
     };
     openAnswerTab.setVisible(false);
 
-    categoriesTab = new SavableHidableTab(new ResourceModel("Categories")) {
+    categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       private CategoriesPanel panel;
 
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target) {
-              String layoutSelection = layout.getModelObject();
-              if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-                question.clearUIArguments();
-                question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, question.getCategories().size() + "");
-              } else if(GRID_LAYOUT.equals(layoutSelection)) {
-                question.clearUIArguments();
-                question.addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
-              }
-              // if(question.getParentQuestion() == null) {
-              // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
-              // @Override
-              // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
-              // question.getQuestionCategories().clear();
-              // for(QuestionCategory questionCategory : orderedItems) {
-              // question.getQuestionCategories().add(questionCategory);
-              // }
-              // }
-              // });
-              // }
-
-            }
-          };
+          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
         }
-
         return panel;
       }
 
-      @Override
-      public void save(AjaxRequestTarget target) {
-        if(panel != null) panel.onSave(target);
-      }
     };
     categoriesTab.setVisible(false);
 
@@ -245,7 +216,7 @@ public abstract class EditQuestionPanel extends Panel {
     tabs.add(new AbstractTab(new ResourceModel("Conditions")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new ConditionPanel(panelId, questionModel);
+        return new ConditionPanel(panelId, questionModel, questionnaireModel);
       }
     });
     tabs.add(new AbstractTab(new ResourceModel("Preview")) {
@@ -264,40 +235,33 @@ public abstract class EditQuestionPanel extends Panel {
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
         QuestionType questionType = form.getModelObject().getQuestionType();
         if(questionType != null) {
+          int nbCategories = question.getCategories().size();
           switch(questionType) {
           case SINGLE_OPEN_ANSWER:
             openAnswerTab.save(target);
-            if(question.getCategories().isEmpty() || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
+            if(nbCategories == 0 || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
               form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null).getObject());
-              return;
             }
             break;
+
           case LIST_CHECKBOX:
-            question.setUIFactoryName(null);
-            question.setMultiple(true);
-            categoriesTab.save(target);
-            if(!validateList()) return;
-            break;
           case LIST_RADIO:
-            question.setUIFactoryName(null);
-            question.setMultiple(false);
-            categoriesTab.save(target);
-            if(!validateList()) return;
-            break;
           case LIST_DROP_DOWN:
-            question.setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
-            question.setMultiple(false);
-            categoriesTab.save(target);
-            if(!validateList()) return;
+            question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : null);
+            question.setMultiple(questionType == LIST_CHECKBOX);
+            if(nbCategories < 2) {
+              form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
+            }
             break;
+
           case ARRAY_CHECKBOX:
-            question.setMultiple(true);
-            if(!validateArray()) return;
-            break;
           case ARRAY_RADIO:
-            question.setMultiple(false);
-            if(!validateArray()) return;
+            question.setMultiple(questionType == ARRAY_CHECKBOX);
+            if(question.getQuestions().size() < 2 || nbCategories < 1) {
+              form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
+            }
             break;
+
           case BOILER_PLATE:
             break;
           }
@@ -305,22 +269,6 @@ public abstract class EditQuestionPanel extends Panel {
 
         onSave(target, form.getModelObject());
         questionWindow.close(target);
-      }
-
-      private boolean validateArray() {
-        if(question.getQuestions().size() < 2 || question.getCategories().size() < 1) {
-          form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
-          return false;
-        }
-        return true;
-      }
-
-      private boolean validateList() {
-        if(question.getCategories().size() < 2) {
-          form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
-          return false;
-        }
-        return true;
       }
 
       @Override

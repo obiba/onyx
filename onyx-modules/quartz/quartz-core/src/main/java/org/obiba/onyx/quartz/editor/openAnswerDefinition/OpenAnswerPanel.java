@@ -62,7 +62,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 public class OpenAnswerPanel extends Panel {
 
   // TODO: localize date format
-  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  public final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;

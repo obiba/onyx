@@ -11,9 +11,6 @@ package org.obiba.onyx.quartz.editor.question.condition;
 
 import java.io.Serializable;
 
-import org.obiba.onyx.util.data.ComparisonOperator;
-import org.obiba.onyx.util.data.DataType;
-
 /**
  *
  */
@@ -27,39 +24,7 @@ public class VariableDS implements Serializable {
 
   private String name;
 
-  private ComparisonOperator operator;
-
-  private DataType type;
-
-  private String value;
-
-  public boolean isComparison() {
-    return operator != null;
-  }
-
-  public ComparisonOperator getOperator() {
-    return operator;
-  }
-
-  public void setOperator(ComparisonOperator operator) {
-    this.operator = operator;
-  }
-
-  public DataType getType() {
-    return type;
-  }
-
-  public void setType(DataType type) {
-    this.type = type;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
+  private String script;
 
   public int getIndex() {
     return index;
@@ -83,6 +48,14 @@ public class VariableDS implements Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getScript() {
+    return script;
+  }
+
+  public void setScript(String script) {
+    this.script = script;
   }
 
 }

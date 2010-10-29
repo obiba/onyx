@@ -21,7 +21,7 @@ public class MapModel<T> implements IModel<T> {
 
   private static final long serialVersionUID = 1L;
 
-  /** Any model object (which may or may not implement IModel) */
+  /** Any model object */
   private Map<String, T> map;
 
   private String expression;

@@ -10,38 +10,28 @@
 package org.obiba.onyx.quartz.editor.question.condition;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
-import org.obiba.onyx.util.data.ComparisonOperator;
-import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -59,21 +49,9 @@ public abstract class VariableDSPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final DropDownChoice<DataType> dataType;
+  private final List<String> magmaNameChoices = new ArrayList<String>();
 
-  private final WebMarkupContainer valueContainer;
-
-  private final TextField<String> stringValue;
-
-  private final TextField<String> numericValue;
-
-  private final TextField<String> dateValue;
-
-  private SimpleFormComponentLabel valueLabel;
-
-  private List<String> magmaNameChoices = new ArrayList<String>();
-
-  private ListMultimap<String, String> valuesByTable = ArrayListMultimap.create();
+  private final ListMultimap<String, String> valuesByTable = ArrayListMultimap.create();
 
   public VariableDSPanel(String id, final IModel<VariableDS> model, final ModalWindow variableWindow) {
     super(id, model);
@@ -89,7 +67,6 @@ public abstract class VariableDSPanel extends Panel {
     add(form);
 
     final List<String> tables = new ArrayList<String>();
-    valuesByTable = ArrayListMultimap.create();
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
       for(ValueTable valueTable : datasource.getValueTables()) {
@@ -156,83 +133,10 @@ public abstract class VariableDSPanel extends Panel {
     form.add(magmaName);
     form.add(new SimpleFormComponentLabel("magmaNameLabel", magmaName));
 
-    // TODO add validation
-    // TODO add boolean support
-    final DropDownChoice<ComparisonOperator> operatorChoice = new DropDownChoice<ComparisonOperator>("operator", new PropertyModel<ComparisonOperator>(form.getModel(), "operator"), Arrays.asList(ComparisonOperator.values()), new IChoiceRenderer<ComparisonOperator>() {
-      @Override
-      public Object getDisplayValue(ComparisonOperator element) {
-        return new StringResourceModel("Operator." + element.name(), VariableDSPanel.this, null).getString();
-      }
-
-      @Override
-      public String getIdValue(ComparisonOperator element, int index) {
-        return element.name();
-      }
-    });
-    operatorChoice.setLabel(new ResourceModel("Operator"));
-    operatorChoice.setNullValid(false);
-    form.add(operatorChoice);
-    form.add(new SimpleFormComponentLabel("operatorLabel", operatorChoice));
-
-    List<DataType> types = new ArrayList<DataType>(Arrays.asList(DataType.values()));
-    types.remove(DataType.DATA);
-
-    dataType = new DropDownChoice<DataType>("type", new PropertyModel<DataType>(form.getModel(), "type"), types, new IChoiceRenderer<DataType>() {
-      @Override
-      public Object getDisplayValue(DataType element) {
-        return new StringResourceModel("DataType." + element.name(), VariableDSPanel.this, null).getString();
-      }
-
-      @Override
-      public String getIdValue(DataType element, int index) {
-        return element.name();
-      }
-    });
-    dataType.setLabel(new ResourceModel("Type"));
-    dataType.setNullValid(false);
-    form.add(dataType);
-    form.add(new SimpleFormComponentLabel("typeLabel", dataType));
-
-    valueContainer = new WebMarkupContainer("valueContainer");
-    valueContainer.setOutputMarkupId(true);
-    form.add(valueContainer);
-
-    stringValue = new TextField<String>("stringValue", new PropertyModel<String>(model, "value"), String.class);
-    stringValue.setLabel(new ResourceModel("Value"));
-    valueContainer.add(stringValue);
-
-    // PatternValidator numericPatternValidator = new PatternValidator("[0-9]*");
-    numericValue = new TextField<String>("numericValue", new PropertyModel<String>(model, "value"), String.class);
-    numericValue.setLabel(new ResourceModel("Value"));
-    // numericValue.add(numericPatternValidator);
-    valueContainer.add(numericValue);
-
-    // TODO validate date
-    // PatternValidator datePatternValidator = new PatternValidator("[0-9]4-[0-9]2-[0-9]2");
-    dateValue = new TextField<String>("dateValue", new PropertyModel<String>(model, "value"), String.class);
-    dateValue.setLabel(new ResourceModel("Value"));
-    // dateValue(datePatternValidator);
-    valueContainer.add(dateValue);
-
-    valueContainer.add(valueLabel = new SimpleFormComponentLabel("valueLabel", stringValue));
-
-    setValueLabels(dataType.getModelObject());
-
-    // submit the whole form instead of just the dataType component
-    dataType.add(new AjaxFormSubmitBehavior("onchange") {
-      @Override
-      protected void onSubmit(AjaxRequestTarget target) {
-        String value = dataType.getValue(); // use value because model is not set if validation error
-        setValueLabels(value == null ? null : DataType.valueOf(value));
-        target.addComponent(valueContainer);
-      }
-
-      @Override
-      protected void onError(AjaxRequestTarget target) {
-        Session.get().getFeedbackMessages().clear(); // we don't want to validate fields now
-        onSubmit(target);
-      }
-    });
+    TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(model, "script"));
+    script.setLabel(new ResourceModel("Script"));
+    form.add(script);
+    form.add(new SimpleFormComponentLabel("scriptLabel", script));
 
     form.add(new AjaxButton("save", form) {
       @Override
@@ -269,48 +173,4 @@ public abstract class VariableDSPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("incomplete-switch")
-  private void setValueLabels(DataType type) {
-    if(type == null) {
-      setValueLabel(stringValue);
-      stringValue.setVisible(true).setEnabled(false);
-      clearAndHide(numericValue, dateValue);
-    } else {
-      switch(type) {
-      case TEXT:
-        setValueLabel(stringValue);
-        stringValue.setVisible(true).setEnabled(true);
-        clearAndHide(numericValue, dateValue);
-        break;
-
-      case DECIMAL:
-      case INTEGER:
-        setValueLabel(numericValue);
-        numericValue.setVisible(true);
-        clearAndHide(stringValue, dateValue);
-        break;
-
-      case DATE:
-        setValueLabel(dateValue);
-        dateValue.setVisible(true);
-        clearAndHide(stringValue, numericValue);
-        break;
-      }
-    }
-  }
-
-  private void setValueLabel(FormComponent<?> component) {
-    SimpleFormComponentLabel newLabel = new SimpleFormComponentLabel(valueLabel.getId(), component);
-    valueLabel.replaceWith(newLabel);
-    valueLabel = newLabel;
-  }
-
-  private void clearAndHide(FormComponent<?>... components) {
-    if(components != null) {
-      for(FormComponent<?> component : components) {
-        component.setModelObject(null);
-        component.setVisible(false);
-      }
-    }
-  }
 }

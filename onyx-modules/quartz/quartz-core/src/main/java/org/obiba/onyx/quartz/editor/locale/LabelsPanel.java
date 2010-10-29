@@ -48,11 +48,11 @@ public class LabelsPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  private AjaxSubmitTabbedPanel tabbedPanel;
+  private final AjaxSubmitTabbedPanel tabbedPanel;
 
   private final IModel<? extends IQuestionnaireElement> elementModel;
 
-  private Map<Locale, ITab> tabByLocale = new HashMap<Locale, ITab>();
+  private final Map<Locale, ITab> tabByLocale = new HashMap<Locale, ITab>();
 
   public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);

@@ -77,16 +77,16 @@ public class QuestionnaireTreePanel extends Panel {
 
   private static final String ID_PREFIX = "element_";
 
-  private Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
+  @SpringBean
+  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private transient LocalePropertiesUtils localePropertiesUtils;
 
   @SpringBean
-  private LocalePropertiesUtils localePropertiesUtils;
+  private transient QuestionnaireBundleManager questionnaireBundleManager;
 
-  @SpringBean
-  private QuestionnaireBundleManager questionnaireBundleManager;
+  private final Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
 
   private int elementCounter;
 

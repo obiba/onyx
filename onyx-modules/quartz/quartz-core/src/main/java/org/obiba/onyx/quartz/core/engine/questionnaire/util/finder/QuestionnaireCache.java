@@ -37,38 +37,53 @@ public class QuestionnaireCache implements IWalkerVisitor {
 
   private Map<String, OpenAnswerDefinition> openAnswerDefinitionCache = new TreeMap<String, OpenAnswerDefinition>();
 
+  private Map<String, Variable> variableCache = new TreeMap<String, Variable>();
+
   private Questionnaire questionnaire;
 
+  @Override
   public boolean visiteMore() {
     return true;
   }
 
+  @Override
   public void visit(@SuppressWarnings("hiding") Questionnaire questionnaire) {
     this.questionnaire = questionnaire;
   }
 
+  @Override
   public void visit(Section section) {
     sectionCache.put(section.getName(), section);
   }
 
+  @Override
   public void visit(Page page) {
     pageCache.put(page.getName(), page);
   }
 
+  @Override
   public void visit(Question question) {
     questionCache.put(question.getName(), question);
   }
 
+  @Override
   public void visit(QuestionCategory questionCategory) {
     questionCategoryCache.put(questionCategory.getName(), questionCategory);
   }
 
+  @Override
   public void visit(Category category) {
 
   }
 
+  @Override
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
     openAnswerDefinitionCache.put(openAnswerDefinition.getName(), openAnswerDefinition);
+  }
+
+  @Override
+  public void visit(Variable variable) {
+    variableCache.put(variable.getName(), variable);
   }
 
   public Questionnaire getQuestionnaire() {
@@ -95,8 +110,8 @@ public class QuestionnaireCache implements IWalkerVisitor {
     return openAnswerDefinitionCache;
   }
 
-  @Override
-  public void visit(Variable variable) {
+  public Map<String, Variable> getVariableCache() {
+    return variableCache;
   }
 
 }
