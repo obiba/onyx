@@ -62,6 +62,10 @@ public class VariableDataSource implements IDataSource {
     this.path = path;
   }
 
+  public String getPath() {
+    return path;
+  }
+
   @Override
   public Data getData(Participant participant) {
     log.debug("Fetching variable data for path: '{}'", path);

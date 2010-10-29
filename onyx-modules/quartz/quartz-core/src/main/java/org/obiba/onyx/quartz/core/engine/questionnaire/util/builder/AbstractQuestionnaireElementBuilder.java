@@ -13,8 +13,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.obiba.magma.Variable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
@@ -54,6 +56,11 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
   private Class<? extends IQuestionPanelFactory> questionPanelFactoryClass;
 
   /**
+   * A utility for resolving variable names.
+   */
+  protected QuestionnaireVariableNameResolver variableNameResolver;
+
+  /**
    * Constructor with a given questionnaire.
    * @param questionnaire
    */
@@ -73,6 +80,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
 
   @SuppressWarnings("hiding")
   private void initialize(Questionnaire questionnaire, Class<? extends IPageLayoutFactory> pageLayoutFactoryClass, Class<? extends IQuestionPanelFactory> questionPanelFactoryClass) {
+    this.variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
     this.questionnaire = questionnaire;
     if(pageLayoutFactoryClass != null) {
       this.pageLayoutFactoryClass = pageLayoutFactoryClass;

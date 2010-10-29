@@ -417,11 +417,21 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public QuestionBuilder setVariableCondition(String variablePath) {
-    VariableDataSource ds = new VariableDataSource(variablePath);
+    return setVariableCondition(new VariableDataSource(variablePath));
+  }
+
+  /**
+   * Set the condition based on a variable condition. No check is made on whether the variable with given path exists or
+   * if the variable value type is boolean or if the variable entity type is Participant.
+   * @param ds
+   * @return
+   * @see QuestionnaireBuilder#newDataSource(String) and {@link QuestionnaireBuilder#newDataSource(String, String)}
+   */
+  public QuestionBuilder setVariableCondition(VariableDataSource ds) {
     if(ds.getTableName() == null) {
-      throw new IllegalArgumentException("Missing table name in variable path: " + variablePath);
+      throw new IllegalArgumentException("Missing table name in variable path: " + ds.getPath());
     }
-    getElement().setCondition(new VariableDataSource(variablePath));
+    getElement().setCondition(ds);
     return this;
   }
 
@@ -510,6 +520,23 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder setCondition(String expression, IDataSource... dataSources) {
     getElement().setCondition(new ComputingDataSource(DataType.BOOLEAN, expression).addDataSources(dataSources));
     return this;
+  }
+
+  /**
+   * Get the question variable path.
+   * @param name
+   * @return
+   */
+  public String getVariablePath() {
+    return getQuestionnaire().getName() + ":" + getVariableName();
+  }
+
+  /**
+   * Get the question variable name.
+   * @return
+   */
+  public String getVariableName() {
+    return variableNameResolver.variableName(getElement());
   }
 
   /**

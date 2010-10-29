@@ -14,17 +14,13 @@ import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 
 public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataSource> {
-
-  private QuestionnaireVariableNameResolver variableNameResolver;
 
   /**
    * Constructor of a Question Condition.
@@ -36,7 +32,6 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
    */
   private ConditionBuilder(AbstractQuestionnaireElementBuilder<?> parent, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
     super(parent);
-    this.variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
     if(getQuestionnaire().getName().equals(questionnaireName)) {
       this.element = getValidVariableDataSource(questionName, categoryName, openAnswerName);
     } else {
@@ -108,7 +103,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
     } else {
       // make a boolean derived variable that represents the fact that an answer was made
       variableName = variableNameResolver.variableName(question);
-      String conditionVariableName = variableName + "_condition";
+      String conditionVariableName = variableName + "_answered";
       if(!questionnaire.hasVariable(conditionVariableName)) {
         Variable.Builder varBuilder = new Variable.Builder(conditionVariableName, BooleanType.get(), "Participant");
         varBuilder.addAttribute("script", "$('" + variableName + "').isNull().not()");

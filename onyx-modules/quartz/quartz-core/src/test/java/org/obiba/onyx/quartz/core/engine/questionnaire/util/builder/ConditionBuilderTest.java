@@ -36,9 +36,9 @@ public class ConditionBuilderTest {
     builder.inPage("P1").withQuestion("Q2").withCategories("A", "B", "C", "D");
     builder.inQuestion("Q2").setCondition("Q1");
     Assert.assertEquals(1, builder.getQuestionnaire().getVariables().size());
-    Assert.assertEquals(true, builder.getQuestionnaire().hasVariable("q1_condition"));
-    Assert.assertNotNull(QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findVariable("q1_condition"));
-    Assert.assertEquals("$('q1').isNull().not()", builder.getQuestionnaire().getVariable("q1_condition").getAttributeStringValue("script"));
+    Assert.assertEquals(true, builder.getQuestionnaire().hasVariable("q1_answered"));
+    Assert.assertNotNull(QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findVariable("q1_answered"));
+    Assert.assertEquals("$('q1').isNull().not()", builder.getQuestionnaire().getVariable("q1_answered").getAttributeStringValue("script"));
   }
 
   @Test
