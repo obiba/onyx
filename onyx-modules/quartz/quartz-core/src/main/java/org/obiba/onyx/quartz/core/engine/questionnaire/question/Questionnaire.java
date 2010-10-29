@@ -148,6 +148,24 @@ public class Questionnaire implements IHasSection {
     }
   }
 
+  public boolean hasVariable(String name) {
+    for(Variable variable : getVariables()) {
+      if(variable.getName().equals(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public Variable getVariable(String name) {
+    for(Variable variable : getVariables()) {
+      if(variable.getName().equals(name)) {
+        return variable;
+      }
+    }
+    throw new IllegalArgumentException("No such variable in questionnaire '" + this.name + "': " + name);
+  }
+
   public String getUiType() {
     return uiType;
   }

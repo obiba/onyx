@@ -289,6 +289,9 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     builder.withVariable("var1", BooleanType.get(), "$('Q1').any('PNA','DNK')");
     builder.withVariable("var2", BooleanType.get(), "$('Q1').any('Y','N')");
     System.out.print(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+    Assert.assertEquals(2, builder.getQuestionnaire().getVariables().size());
+    Assert.assertEquals(true, builder.getQuestionnaire().hasVariable("var1"));
+    Assert.assertEquals(true, builder.getQuestionnaire().hasVariable("var2"));
   }
 
 }

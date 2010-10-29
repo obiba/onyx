@@ -55,7 +55,7 @@ public class DataSourceTest {
   @Test
   public void testDateFieldToString() {
     DateFieldSource ds = new DateFieldSource(new VariableDataSource("Onyx.Questionnaire.BirthDate"), DateField.YEAR);
-    Assert.assertEquals("DateField[Variable[Onyx.Questionnaire.BirthDate]].YEAR", ds.toString());
+    Assert.assertEquals("DateField[$('Onyx.Questionnaire.BirthDate')].YEAR", ds.toString());
   }
 
   @Test
@@ -70,13 +70,13 @@ public class DataSourceTest {
   @Test
   public void testModifiedDateToString() {
     ModifiedDateSource ds = new ModifiedDateSource(new VariableDataSource("Onyx.Admin.Participant.birthDate"), Arrays.asList(new DateModifier[] { new DateModifier(Calendar.YEAR, 5), new DateModifier(Calendar.MONTH, 6) }));
-    Assert.assertEquals("ModifiedDate[Variable[Onyx.Admin.Participant.birthDate], [DateModifier[YEAR, 5], DateModifier[MONTH, 6]]]", ds.toString());
+    Assert.assertEquals("ModifiedDate[$('Onyx.Admin.Participant.birthDate'), [DateModifier[YEAR, 5], DateModifier[MONTH, 6]]]", ds.toString());
   }
 
   @Test
   public void testRegexToString() {
     RegexDataSource ds = new RegexDataSource(new VariableDataSource("Onyx.Admin.Participant.birthDate"), "^\\s*([a-zA-Z]\\d[a-zA-Z]).*$");
-    Assert.assertEquals("Regex[Variable[Onyx.Admin.Participant.birthDate], '^\\s*([a-zA-Z]\\d[a-zA-Z]).*$']", ds.toString());
+    Assert.assertEquals("Regex[$('Onyx.Admin.Participant.birthDate'), '^\\s*([a-zA-Z]\\d[a-zA-Z]).*$']", ds.toString());
   }
 
   @Test
@@ -88,6 +88,6 @@ public class DataSourceTest {
   @Test
   public void testVariableToString() {
     VariableDataSource ds = new VariableDataSource("Onyx.Admin.Participant.firstName");
-    Assert.assertEquals("Variable[Onyx.Admin.Participant.firstName]", ds.toString());
+    Assert.assertEquals("$('Onyx.Admin.Participant.firstName')", ds.toString());
   }
 }

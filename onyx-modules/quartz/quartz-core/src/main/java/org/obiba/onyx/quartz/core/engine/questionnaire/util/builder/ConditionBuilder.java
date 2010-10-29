@@ -9,17 +9,25 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import org.obiba.magma.Variable;
+import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
 
 public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataSource> {
 
+  private QuestionnaireVariableNameResolver variableNameResolver;
+
   /**
-   * Constructor of an {@link ExternalAnswerCondition}.
+   * Constructor of a Question Condition.
    * @param parent
    * @param name
    * @param questionnaireName
@@ -28,8 +36,9 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
    */
   private ConditionBuilder(AbstractQuestionnaireElementBuilder<?> parent, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
     super(parent);
+    this.variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
     if(getQuestionnaire().getName().equals(questionnaireName)) {
-      this.element = getValidQuestionnaireDataSource(questionName, categoryName, openAnswerName);
+      this.element = getValidVariableDataSource(questionName, categoryName, openAnswerName);
     } else {
       // cannot check names
       element = new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerName);
@@ -67,34 +76,48 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
    * @param openAnswerName
    * @return
    */
-  private IDataSource getValidQuestionnaireDataSource(String questionName, String categoryName, String openAnswerName) {
+  private IDataSource getValidVariableDataSource(String questionName, String categoryName, String openAnswerName) {
     Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion(questionName);
-    Category category = null;
+    QuestionCategory questionCategory = null;
     if(question == null) throw invalidElementNameException(Question.class, questionName);
 
     if(categoryName != null && !categoryName.equals(QuestionnaireDataSource.ANY_CATEGORY)) {
       if(question.getCategories().size() > 0) {
-        category = question.findCategory(categoryName);
-        if(category == null) throw invalidElementNameException(Category.class, categoryName);
+        questionCategory = question.findQuestionCategory(categoryName);
+        if(questionCategory == null) throw invalidElementNameException(Category.class, categoryName);
       } else {
         Question parentQuestion = question.getParentQuestion();
-        category = parentQuestion.findCategory(categoryName);
-        if(category == null) throw invalidElementNameException(Category.class, categoryName);
+        questionCategory = parentQuestion.findQuestionCategory(categoryName);
+        if(questionCategory == null) throw invalidElementNameException(Category.class, categoryName);
       }
     }
 
+    String variableName;
     if(openAnswerName != null) {
-      if(category == null) {
+      if(questionCategory == null) {
         throw invalidElementNameException(OpenAnswerDefinition.class, openAnswerName);
       }
 
-      OpenAnswerDefinition open = category.findOpenAnswerDefinition(openAnswerName);
+      OpenAnswerDefinition open = questionCategory.getCategory().findOpenAnswerDefinition(openAnswerName);
       if(open == null) {
         throw invalidElementNameException(OpenAnswerDefinition.class, openAnswerName);
       }
+      variableName = variableNameResolver.variableName(question, questionCategory, open);
+    } else if(questionCategory != null) {
+      variableName = variableNameResolver.variableName(question, questionCategory);
+    } else {
+      // make a boolean derived variable that represents the fact that an answer was made
+      variableName = variableNameResolver.variableName(question);
+      String conditionVariableName = variableName + "_condition";
+      if(!questionnaire.hasVariable(conditionVariableName)) {
+        Variable.Builder varBuilder = new Variable.Builder(conditionVariableName, BooleanType.get(), "Participant");
+        varBuilder.addAttribute("script", "$('" + variableName + "').isNull().not()");
+        questionnaire.addVariable(varBuilder.build());
+      }
+      variableName = conditionVariableName;
     }
 
-    return new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerName);
+    return new VariableDataSource(questionnaire.getName() + ":" + variableName);
   }
 
 }

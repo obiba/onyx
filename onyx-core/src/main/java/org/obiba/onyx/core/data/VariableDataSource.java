@@ -56,7 +56,7 @@ public class VariableDataSource implements IDataSource {
   /**
    * Flag indicating whether path elements have been extracted (only want to do this once).
    */
-  private boolean pathElementsExtracted;
+  private transient boolean pathElementsExtracted;
 
   public VariableDataSource(String path) {
     this.path = path;
@@ -90,7 +90,7 @@ public class VariableDataSource implements IDataSource {
 
   @Override
   public String toString() {
-    return "Variable[" + path + "]";
+    return "$('" + path + "')";
   }
 
   private ValueTable resolveTable() {

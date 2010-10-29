@@ -411,11 +411,16 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Set the condition based on the value of a variable identified by the provided path. No check is made on whether the
-   * variable path is valid or if the variable value type is boolean.
+   * variable with given path exists or if the variable value type is boolean or if the variable entity type is
+   * Participant.
    * @param variablePath
    * @return
    */
   public QuestionBuilder setVariableCondition(String variablePath) {
+    VariableDataSource ds = new VariableDataSource(variablePath);
+    if(ds.getTableName() == null) {
+      throw new IllegalArgumentException("Missing table name in variable path: " + variablePath);
+    }
     getElement().setCondition(new VariableDataSource(variablePath));
     return this;
   }
@@ -447,7 +452,9 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param question
    * @param category can be null
    * @return
+   * @deprecated use {@link #setVariableCondition(String)} instead
    */
+  @Deprecated
   public QuestionBuilder setCondition(String questionnaire, String question, String category) {
     getElement().setCondition(ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, null).getElement());
     return this;
@@ -457,7 +464,9 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * Add the data source condition (must be of boolean type).
    * @param dataSource
    * @return
+   * @deprecated use {@link #setVariableCondition(String)} instead
    */
+  @Deprecated
   public QuestionBuilder setCondition(IDataSource dataSource) {
     getElement().setCondition(dataSource);
     return this;
@@ -469,6 +478,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param operator
    * @param dataSource2
    * @return
+   * @deprecated use {@link #setVariableCondition(String)} or {@link #setQuestionnaireVariableCondition(String)} instead
    */
   @Deprecated
   public QuestionBuilder setCondition(IDataSource dataSource1, ComparisonOperator operator, IDataSource dataSource2) {
@@ -481,6 +491,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param operator
    * @param gender
    * @return
+   * @deprecated use {@link #setVariableCondition(String)} or {@link #setQuestionnaireVariableCondition(String)} instead
    */
   @Deprecated
   public QuestionBuilder setCondition(ComparisonOperator operator, Gender gender) {
@@ -493,7 +504,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param expression
    * @param dataSources
    * @return
-   * @deprecated
+   * @deprecated use {@link #setVariableCondition(String)} or {@link #setQuestionnaireVariableCondition(String)} instead
    */
   @Deprecated
   public QuestionBuilder setCondition(String expression, IDataSource... dataSources) {
