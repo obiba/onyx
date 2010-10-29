@@ -118,7 +118,7 @@ public class ArrayRowsPanel extends Panel {
       @Override
       @SuppressWarnings("unchecked")
       public void editItem(Question question, AjaxRequestTarget target) {
-        questionWindow.setContent(new QuestionWindow("content", (IModel<EditedQuestion>) ArrayRowsPanel.this.getDefaultModel(), questionnaireModel, localePropertiesModel, questionWindow) {
+        questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, EditedQuestion editedQuestion) {
 
@@ -168,7 +168,7 @@ public class ArrayRowsPanel extends Panel {
       form.add(questionName);
       form.add(new SimpleFormComponentLabel("questionLabel", questionName));
 
-      AjaxSubmitLink simpelAddLink = new AjaxSubmitLink("link", form) {
+      AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link", form) {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           addQuestion(questionName.getModelObject());
@@ -184,8 +184,8 @@ public class ArrayRowsPanel extends Panel {
         }
       };
 
-      simpelAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
-      form.add(simpelAddLink);
+      simpleAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(simpleAddLink);
     }
   }
 

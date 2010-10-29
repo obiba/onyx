@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.locale;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +22,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.springframework.util.Assert;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 /**
@@ -59,7 +62,18 @@ public class LocaleProperties implements Serializable {
       labels = ArrayListMultimap.create();
       elementLabels.put(element, labels);
     }
-    labels.put(locale, new KeyValue(key, value));
+    final KeyValue keyValue = new KeyValue(key, value);
+    Collection<KeyValue> filter = Collections2.filter(labels.get(locale), new Predicate<KeyValue>() {
+
+      @Override
+      public boolean apply(KeyValue input) {
+        return input.getKey().equals(keyValue.getKey());
+      }
+
+    });
+    if(filter.isEmpty()) {
+      labels.put(locale, keyValue);
+    }
   }
 
   public ListMultimap<Locale, KeyValue> getElementLabels(IQuestionnaireElement element) {
