@@ -428,10 +428,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @see QuestionnaireBuilder#newDataSource(String) and {@link QuestionnaireBuilder#newDataSource(String, String)}
    */
   public QuestionBuilder setVariableCondition(VariableDataSource ds) {
-    if(ds.getTableName() == null) {
-      throw new IllegalArgumentException("Missing table name in variable path: " + ds.getPath());
-    }
-    getElement().setCondition(ds);
+    getElement().setCondition(checkVariablePath(ds));
     return this;
   }
 

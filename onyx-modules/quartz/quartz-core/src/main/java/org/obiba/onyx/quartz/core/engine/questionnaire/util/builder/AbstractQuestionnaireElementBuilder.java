@@ -13,7 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.obiba.magma.Variable;
+import org.obiba.magma.type.BooleanType;
+import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireUniqueVariableNameResolver;
@@ -113,6 +120,57 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
   }
 
   /**
+   * Returns a valid {@link VariableDataSource} for current questionnaire.
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerName
+   * @return
+   */
+  protected VariableDataSource getValidVariableDataSource(String questionName, String categoryName, String openAnswerName) {
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion(questionName);
+    QuestionCategory questionCategory = null;
+    if(question == null) throw invalidElementNameException(Question.class, questionName);
+
+    if(categoryName != null && !categoryName.equals(QuestionnaireDataSource.ANY_CATEGORY)) {
+      if(question.getCategories().size() > 0) {
+        questionCategory = question.findQuestionCategory(categoryName);
+        if(questionCategory == null) throw invalidElementNameException(Category.class, categoryName);
+      } else {
+        Question parentQuestion = question.getParentQuestion();
+        questionCategory = parentQuestion.findQuestionCategory(categoryName);
+        if(questionCategory == null) throw invalidElementNameException(Category.class, categoryName);
+      }
+    }
+
+    String variableName;
+    if(openAnswerName != null) {
+      if(questionCategory == null) {
+        throw invalidElementNameException(OpenAnswerDefinition.class, openAnswerName);
+      }
+
+      OpenAnswerDefinition open = questionCategory.getCategory().findOpenAnswerDefinition(openAnswerName);
+      if(open == null) {
+        throw invalidElementNameException(OpenAnswerDefinition.class, openAnswerName);
+      }
+      variableName = variableNameResolver.variableName(question, questionCategory, open);
+    } else if(questionCategory != null) {
+      variableName = variableNameResolver.variableName(question, questionCategory);
+    } else {
+      // make a boolean derived variable that represents the fact that an answer was made
+      variableName = variableNameResolver.variableName(question);
+      String conditionVariableName = variableName + "_answered";
+      if(!questionnaire.hasVariable(conditionVariableName)) {
+        Variable.Builder varBuilder = new Variable.Builder(conditionVariableName, BooleanType.get(), "Participant");
+        varBuilder.addAttribute("script", "$('" + variableName + "').isNull().not()");
+        questionnaire.addVariable(varBuilder.build());
+      }
+      variableName = conditionVariableName;
+    }
+
+    return new VariableDataSource(questionnaire.getName() + ":" + variableName);
+  }
+
+  /**
    * Check that the given name respects the naming pattern.
    * @param name
    * @return
@@ -120,6 +178,13 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
   protected static boolean checkNamePattern(String name) {
     Matcher m = NAME_PATTERN.matcher(name);
     return m.matches();
+  }
+
+  protected static VariableDataSource checkVariablePath(VariableDataSource ds) {
+    if(ds.getTableName() == null) {
+      throw new IllegalArgumentException("Missing table name in variable path: " + ds.getPath());
+    }
+    return ds;
   }
 
   /**

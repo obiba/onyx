@@ -22,6 +22,7 @@ import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -156,7 +157,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerDefinitionName)));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, getValidVariableDataSource(questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
@@ -168,24 +169,11 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param categoryName
    * @param openAnswerDefinitionName
    * @return
+   * @deprecated use {@link #addValidator(ComparisonOperator, String)} instead
    */
+  @Deprecated
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
     element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName)));
-    return this;
-  }
-
-  /**
-   * Add a {@link IValidator} based on a {@link ParticipantPropertyDataSource} to the current
-   * {@link OpenAnswerDefinition}.
-   * @param comparisonOperator
-   * @param property
-   * @return
-   */
-  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String property) {
-    if(!checkNamePattern(property)) {
-      throw new IllegalArgumentException("Not a valid Participant property: " + property + ". Expected pattern is " + NAME_PATTERN);
-    }
-    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new ParticipantPropertyDataSource(property)));
     return this;
   }
 
@@ -220,6 +208,17 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, IDataSource dataSource) {
     element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, dataSource));
+    return this;
+  }
+
+  /**
+   * Add a {@link IValidator} based on a {@link VariableDataSource} to the current {@link OpenAnswerDefinition}.
+   * @param comparisonOperator
+   * @param variablePath
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String variablePath) {
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, checkVariablePath(new VariableDataSource(variablePath))));
     return this;
   }
 
