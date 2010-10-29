@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -26,12 +27,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -39,7 +38,6 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -71,7 +69,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 @SuppressWarnings("serial")
-public class QuestionnaireTreePanel extends Panel {
+public abstract class QuestionnaireTreePanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
@@ -110,8 +108,6 @@ public class QuestionnaireTreePanel extends Panel {
 
   private final WebMarkupContainer treeContainer;
 
-  private final ModalWindow elementWindow;
-
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
@@ -129,22 +125,6 @@ public class QuestionnaireTreePanel extends Panel {
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
-
-    elementWindow = new ModalWindow("elementWindow");
-    elementWindow.setCssClassName("onyx");
-    elementWindow.setInitialWidth(1000);
-    elementWindow.setInitialHeight(600);
-    elementWindow.setResizable(true);
-    elementWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-      @Override
-      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        return true;
-      }
-    });
-
-    Form<Void> form = new Form<Void>("form");
-    form.add(elementWindow);
-    add(form);
 
     add(JavascriptPackageResource.getHeaderContribution(QuestionnaireTreePanel.class, "QuestionnaireTreePanel.js"));
 
@@ -193,6 +173,10 @@ public class QuestionnaireTreePanel extends Panel {
     addChildCallback.setEscapeModelStrings(false);
     add(addChildCallback);
   }
+
+  public abstract void show(Component component, IModel<String> title, AjaxRequestTarget target);
+
+  public abstract String getShownComponentId();
 
   @Override
   protected void onBeforeRender() {
@@ -339,7 +323,7 @@ public class QuestionnaireTreePanel extends Panel {
   protected class EditBehavior extends AbstractDefaultAjaxBehavior {
 
     @Override
-    protected void respond(final AjaxRequestTarget respondTarget) {
+    protected void respond(final AjaxRequestTarget target) {
       final String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       log.info("Edit " + nodeId);
 
@@ -351,60 +335,57 @@ public class QuestionnaireTreePanel extends Panel {
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
 
       if(element instanceof Questionnaire) {
-        elementWindow.setTitle(new ResourceModel("Questionnaire"));
-        elementWindow.setContent(new QuestionnairePanel("content", new Model<Questionnaire>(questionnaire), elementWindow) {
+        QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire)) {
           @Override
-          public void onSave(AjaxRequestTarget target, Questionnaire savedQuestionnaire) {
-            persist(target);
+          public void onSave(AjaxRequestTarget target1, Questionnaire savedQuestionnaire) {
+            persist(target1);
             elements.put(nodeId, savedQuestionnaire);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + savedQuestionnaire.getName() + "');");
+            target1.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + savedQuestionnaire.getName() + "');");
           }
-        });
-        elementWindow.show(respondTarget);
+        };
+        show(questionnairePanel, new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null), target);
+
       }
 
       if(element instanceof Section) {
         Section updatedElement = questionnaireFinder.findSection(element.getName());
-        elementWindow.setTitle(new ResourceModel("Section"));
-        elementWindow.setContent(new SectionPanel("content", new Model<Section>(updatedElement), questionnaireModel, elementWindow) {
+        SectionPanel sectionPanel = new SectionPanel(getShownComponentId(), new Model<Section>(updatedElement), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target, Section section) {
-            persist(target);
+          public void onSave(AjaxRequestTarget target1, Section section) {
+            persist(target1);
             elements.put(nodeId, section);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
+            target1.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + section.getName() + "');");
           }
-        });
-        elementWindow.show(respondTarget);
+        };
+        show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
+
       } else if(element instanceof Page) {
         Page updatedElement = questionnaireFinder.findPage(element.getName());
-        elementWindow.setTitle(new ResourceModel("Page"));
-
-        elementWindow.setContent(new PagePanel("content", new Model<Page>(updatedElement), questionnaireModel, elementWindow) {
+        PagePanel pagePanel = new PagePanel(getShownComponentId(), new Model<Page>(updatedElement), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target, Page editedPage) {
-            persist(target);
+          public void onSave(AjaxRequestTarget target1, Page editedPage) {
+            persist(target1);
             elements.put(nodeId, editedPage);
             // update node name in jsTree
-            target.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getName() + "');");
+            target1.appendJavascript("$('#" + treeId + "').jstree('rename_node', $('#" + nodeId + "'), '" + editedPage.getName() + "');");
           }
-        });
-        elementWindow.show(respondTarget);
+        };
+        show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
+
       } else if(element instanceof Question) {
         Question updatedElement = questionnaireFinder.findQuestion(element.getName());
-        elementWindow.setTitle(new ResourceModel("Question"));
-
-        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(updatedElement), questionnaireModel, elementWindow) {
+        EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(updatedElement), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
-            persist(target);
+          public void onSave(AjaxRequestTarget target1, EditedQuestion editedQuestion) {
+            persist(target1);
             elements.put(nodeId, editedQuestion.getElement());
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
-            target.addComponent(treeContainer);
+            target1.addComponent(treeContainer);
           }
-        });
-        elementWindow.show(respondTarget);
+        };
+        show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), target);
       }
     }
   }
@@ -471,8 +452,7 @@ public class QuestionnaireTreePanel extends Panel {
           updatedElement = questionnaire;
         }
 
-        elementWindow.setTitle(new StringResourceModel("Section", QuestionnaireTreePanel.this, null));
-        elementWindow.setContent(new SectionPanel("content", new Model<Section>(new Section(null)), questionnaireModel, elementWindow) {
+        SectionPanel sectionPanel = new SectionPanel(getShownComponentId(), new Model<Section>(new Section(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, Section section) {
             updatedElement.addSection(section);
@@ -480,13 +460,12 @@ public class QuestionnaireTreePanel extends Panel {
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target1.addComponent(treeContainer);
           }
-        });
-        elementWindow.show(target);
+        };
+        show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
+
       } else if(element instanceof Section && "page".equals(type)) {
         final Section updatedElement = questionnaireFinder.findSection(element.getName());
-        elementWindow.setTitle(new StringResourceModel("Page", QuestionnaireTreePanel.this, null));
-
-        elementWindow.setContent(new PagePanel("content", new Model<Page>(new Page(null)), questionnaireModel, elementWindow) {
+        PagePanel pagePanel = new PagePanel(getShownComponentId(), new Model<Page>(new Page(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, Page editedPage) {
             updatedElement.addPage(editedPage);
@@ -495,8 +474,9 @@ public class QuestionnaireTreePanel extends Panel {
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target1.addComponent(treeContainer);
           }
-        });
-        elementWindow.show(target);
+        };
+        show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
+
       } else if(element instanceof IHasQuestion && "question".equals(type)) {
         final IHasQuestion updatedElement;
         if(element instanceof Page) {
@@ -504,9 +484,8 @@ public class QuestionnaireTreePanel extends Panel {
         } else {
           updatedElement = questionnaireFinder.findQuestion(element.getName());
         }
-        elementWindow.setTitle(new StringResourceModel("Question", QuestionnaireTreePanel.this, null));
 
-        elementWindow.setContent(new EditQuestionPanel("content", new Model<Question>(new Question(null)), questionnaireModel, elementWindow) {
+        EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, EditedQuestion editedQuestion) {
             updatedElement.addQuestion(editedQuestion.getElement());
@@ -514,8 +493,8 @@ public class QuestionnaireTreePanel extends Panel {
             root.setObject(Lists.newArrayList((IQuestionnaireElement) questionnaire));
             target1.addComponent(treeContainer);
           }
-        });
-        elementWindow.show(target);
+        };
+        show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), target);
       }
     }
   }
@@ -609,13 +588,6 @@ public class QuestionnaireTreePanel extends Panel {
           IQuestionnaireElement element = item.getModelObject();
 
           String label = "[" + getShortClassName(element.getClass()).toUpperCase() + "] " + element.getName();
-          if(element instanceof Question) {
-            try {
-              label += (" " + ((Question) element).getType());
-            } catch(Exception e) {
-
-            }
-          }
           QVisitor questionnaireVisitor = new QVisitor(new ArrayList<IQuestionnaireElement>());
           element.accept(questionnaireVisitor);
 

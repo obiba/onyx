@@ -32,7 +32,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.form.Form;
@@ -93,7 +92,7 @@ public abstract class QuestionnairePanel extends Panel {
   private final Form<Questionnaire> form;
 
   @SuppressWarnings("rawtypes")
-  public QuestionnairePanel(String id, IModel<Questionnaire> model, final ModalWindow modalWindow) {
+  public QuestionnairePanel(String id, IModel<Questionnaire> model) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
 
@@ -264,7 +263,6 @@ public abstract class QuestionnairePanel extends Panel {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
         onSave(target, form.getModelObject());
-        modalWindow.close(target);
       }
 
       @Override
@@ -277,7 +275,6 @@ public abstract class QuestionnairePanel extends Panel {
     form.add(new AjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        modalWindow.close(target);
       }
     }.setDefaultFormProcessing(false));
   }

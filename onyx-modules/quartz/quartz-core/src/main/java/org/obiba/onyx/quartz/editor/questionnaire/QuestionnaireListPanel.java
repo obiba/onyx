@@ -34,11 +34,13 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColu
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -79,31 +81,29 @@ public class QuestionnaireListPanel extends Panel {
 
     modalWindow = new ModalWindow("modalWindow");
     modalWindow.setCssClassName("onyx");
-    modalWindow.setInitialWidth(1050);
-    modalWindow.setInitialHeight(650);
+    modalWindow.setInitialWidth(1100);
+    modalWindow.setInitialHeight(600);
     modalWindow.setResizable(true);
+    modalWindow.setTitle(new ResourceModel("Questionnaire"));
     modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
         return true; // same as cancel
       }
     });
-    add(modalWindow);
+
+    @SuppressWarnings("rawtypes")
+    Form<?> form = new Form("form");
+    form.add(modalWindow);
+    add(form);
 
     final OnyxEntityList<Questionnaire> questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("Questionnaires", QuestionnaireListPanel.this, null));
     add(questionnaireList);
 
-    add(new AjaxLink<Void>("questionnaireProps") {
+    add(new AjaxLink<Void>("addQuestionnaire") {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-        modalWindow.setContent(new QuestionnairePanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0")), modalWindow) {
-          @Override
-          public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
-            persist(target1);
-            target1.addComponent(questionnaireList);
-          }
-        });
+        modalWindow.setContent(new EditionPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0"))));
         modalWindow.show(target);
       }
     });
@@ -227,25 +227,8 @@ public class QuestionnaireListPanel extends Panel {
       add(new AjaxLink<Questionnaire>("editLink", rowModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-
-          modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          modalWindow.setContent(new QuestionnairePanel("content", rowModel, modalWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire1) {
-              persist(target1);
-            }
-          });
-          modalWindow.show(target);
-
-        }
-      });
-      add(new AjaxLink<Questionnaire>("layoutLink", rowModel) {
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-
-          modalWindow.setTitle(new StringResourceModel("Questionnaire", this, null));
-          rowModel.setObject(questionnaireBundleManager.getPersistedBundle(rowModel.getObject().getName()).getQuestionnaire());
-          modalWindow.setContent(new QuestionnaireTreePanel("content", rowModel));
+          modalWindow.setTitle(questionnaire.getName());
+          modalWindow.setContent(new EditionPanel("content", rowModel));
           modalWindow.show(target);
         }
       });

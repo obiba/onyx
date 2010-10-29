@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
@@ -86,7 +85,7 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final HidableTab columnsTab;
 
-  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow questionWindow) {
+  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
@@ -268,7 +267,6 @@ public abstract class EditQuestionPanel extends Panel {
         }
 
         onSave(target, form.getModelObject());
-        questionWindow.close(target);
       }
 
       @Override
@@ -281,7 +279,6 @@ public abstract class EditQuestionPanel extends Panel {
     form.add(new AjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        questionWindow.close(target);
       }
     }.setDefaultFormProcessing(false));
 
@@ -325,34 +322,6 @@ public abstract class EditQuestionPanel extends Panel {
    * @param editedQuestion
    */
   public abstract void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion);
-
-  // {
-  // final Question question = editedQuestion.getElement();
-  //
-  // if(form.getModelObject().getElement().getParentQuestion() == null) {
-  // categoryList.save(target, new SortableListCallback<QuestionCategory>() {
-  // @Override
-  // public void onSave(List<QuestionCategory> orderedItems, AjaxRequestTarget target1) {
-  // question.getQuestionCategories().clear();
-  // for(QuestionCategory questionCategory : orderedItems) {
-  // question.getQuestionCategories().add(questionCategory);
-  // }
-  // }
-  // });
-  // }
-  //
-  // // Layout single or grid: make sure that the categories are added before this...
-  // String layoutSelection = layoutRadioGroup.getModelObject();
-  // if(SINGLE_COLUMN_LAYOUT.equals(layoutSelection)) {
-  // question.clearUIArguments();
-  // question.addUIArgument(ROW_COUNT_KEY, question.getCategories().size() + "");
-  // } else if(GRID_LAYOUT.equals(layoutSelection)) {
-  // question.clearUIArguments();
-  // question.addUIArgument(ROW_COUNT_KEY, nbRowsField.getModelObject() + "");
-  // }
-  //
-  // editedQuestion.setConditions(((Conditions) conditionPanel.getDefaultModelObject()));
-  // }
 
   public void persist(AjaxRequestTarget target) {
     try {

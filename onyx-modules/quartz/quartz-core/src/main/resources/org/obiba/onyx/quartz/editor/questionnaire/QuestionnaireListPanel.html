@@ -1,16 +1,17 @@
 <wicket:panel>
 
-	<div wicket:id="modalWindow" style="overflow:auto"/>
-
+	<form wicket:id="form" autocomplete="off" class="obiba-content" >
+		<div wicket:id="modalWindow" style="overflow:auto"/>
+	</form>
+	
 	<h1 class="results-list"><wicket:message key="Questionnaires" /></h1>
 	<span wicket:id="questionnaires" />
 	
 	<br />
-	<a class="obiba-button" wicket:id="questionnaireProps"><wicket:message key="CreateQuestionnaire" /></a>
+	<a class="obiba-button" wicket:id="addQuestionnaire"><wicket:message key="CreateQuestionnaire" /></a>
 	
 	<wicket:fragment wicket:id="linkFragment">
 		<a wicket:id="editLink"><wicket:message key="Edit" /></a>
-		<a wicket:id="layoutLink"><wicket:message key="Layout" /></a>
 		<a wicket:id="downloadLink"><wicket:message key="Download" /></a>
 		<a wicket:id="previewLink"><wicket:message key="Preview" /></a>
 		<a wicket:id="exportLink"><wicket:message key="Export" /></a>

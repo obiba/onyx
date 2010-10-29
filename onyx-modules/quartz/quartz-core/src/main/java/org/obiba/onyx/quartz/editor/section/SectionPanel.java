@@ -12,7 +12,6 @@ package org.obiba.onyx.quartz.editor.section;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
@@ -58,7 +57,7 @@ public abstract class SectionPanel extends Panel {
 
   private final IModel<LocaleProperties> localePropertiesModel;
 
-  public SectionPanel(String id, final IModel<Section> model, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
+  public SectionPanel(String id, final IModel<Section> model, final IModel<Questionnaire> questionnaireModel) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
 
@@ -94,7 +93,6 @@ public abstract class SectionPanel extends Panel {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
         onSave(target, form.getModelObject());
-        modalWindow.close(target);
       }
 
       @Override
@@ -107,7 +105,6 @@ public abstract class SectionPanel extends Panel {
     form.add(new AjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        modalWindow.close(target);
       }
     }.setDefaultFormProcessing(false));
   }

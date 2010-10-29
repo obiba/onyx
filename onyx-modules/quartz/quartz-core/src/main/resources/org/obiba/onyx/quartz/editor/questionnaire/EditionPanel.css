@@ -1,0 +1,24 @@
+.edition {
+	float: none;
+	width: 1000px;
+}
+
+.edition .tree {
+	float: left;
+	width: 400px;
+	height: 600px;
+	overflow: auto;
+}
+
+.edition .properties {
+	width: 650px;
+	height: 600px;
+	overflow: auto;
+	padding-left: 10px;
+}
+
+h1.title {
+	color: #C65F02;
+	font-weight: bold;
+	font-size: 14px;
+}
