@@ -17,150 +17,159 @@
     
     <style type="text/css">
     
-    	body {
-    		font-family:arial,FreeSans,Helvetica,sans-serif;
-    		font-size: 12px;
-    	}
+      body {
+        font-family:arial,FreeSans,Helvetica,sans-serif;
+        font-size: 12px;
+        margin: 0px;
+      }
     	
-    	#toggle-label {
-			background:none repeat scroll 0 0 #666666;
-			border:1px solid #CCCCCC;
-			color:#FFFFFF;
-			margin-left:900px;
-			opacity:0.7;
-			padding:5px;
-			position:fixed;
-        }
+      #toolbar {
+        background:none repeat scroll 0 0 #666666;
+        border-bottom:1px solid #CCCCCC;
+        color:#FFFFFF;
+        opacity:0.7;
+        padding:5px;
+        position:fixed;
+        width: 100%;
+        top: 0px;
+      }
     	
-  		div.title {
-  			font-size:1em;
-  			font-weight: bold;
-  			margin-bottom: 10px;
-  		}
+      .title {
+        font-size:1em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .questionnaire {
+        margin-top: 40px;
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+      }
+	
+      .questionnaire > .title {
+        font-size:1.3em;
+      }
   		
-  		div.questionnaire > div.title {
-  			font-size:1.3333em;
-  		}
+      .section {
+        margin-top: 10px;
+        margin-left: 10px;
+      }
   		
-  		div.section {
-  		    margin-top: 10px;
-  		}
-  		
-  		div.section > div.label{
-  			font-weight: bold;
-  			margin-left: 5px;
-  			border-top: solid 2px;
-  			padding-bottom:5px;
-  		}
-  		
-  		div.section > div.label:before {
-	    	content: "Section: ";
-	    }
+      .section .label {
+        font-size:1.1em;
+        font-weight: bold;
+      }
+
+      .section .page .label {
+        margin-left: 0px;
+      }
+
+      .section .page .question .label {
+        border: none;
+        font-weight: normal;
+      }
+
+      .section .page .question .obiba-quartz-boilerplate .label {
+        padding-bottom:10px;
+      }
+
+      .section .label:before {
+        content: "Section: ";
+      }
+	
+      .subsection {
+        margin-left: 10px;
+      }
 	    
-  		div.subsection {
-  			margin-left: 10px;
-  		}
+      .page {
+        margin-left: 10px;
+        margin-top: 20px;
+        border:1px solid #AAAAAA;
+        padding-bottom: 10px;
+      }
   		
-  		div.subsection > div.label {
-  			font-weight: bold;
-  			padding-bottom:5px;
-  		}
-  		
-  		div.subsection > div.label:before {
-	    	content: "Section: ";
-	    }
-	    
-  		div.page {
-  			margin-left: 20px;
-			margin-top: 20px;
-			border:1px solid #AAAAAA;
-  		}
-  		
-  		div.page > div.label {
-  			background-color:#DFDFDF;
-			border-bottom:1px solid #AAAAAA;
-			font-weight:bold;
-			padding-bottom:8px;
-			padding-left:10px;
-			padding-top:8px;
-  		}
+      .page > .label {
+        background-color:#DFDFDF;
+        border-bottom:1px solid #AAAAAA;
+        font-weight:bold;
+        padding-bottom:8px;
+        padding-left:10px;
+        padding-top:8px;
+      }
   		  		
-  		div.page > div.label:before {
-	    	content: "Page: ";
-	    }
+      .page > .label:before {
+        content: "Page: ";
+      }
+
+      .page > .question > div:first-child {
+        border-top:1px solid #AAAAAA;
+        border-bottom:1px solid #AAAAAA;
+      }
+
+      .question .label:before {
+        content: "";
+      }
 	    
-	    div.question > div:first-child {
-	        background-color:#EEEEEE;
-	        border-top:1px solid #AAAAAA;
-	        border-bottom:1px solid #AAAAAA;
-	        margin-top:10px;
-	        margin-bottom:10px;
-	        padding:10px;
-	    }
-	    
-  		div.question > div.label{
-  			border-top: dotted 1px;
-  			padding-bottom:5px;
-  			padding-top:5px;
-  		}
+      .question > div:first-child {
+        background-color:#EEEEEE;
+        margin-top:10px;
+        padding-top:10px;
+        padding-left:10px;
+        padding-right:10px;
+      }
   		
-  		div.question > div.instructions{
-  			font-size: smaller;
-  		}
+      .instructions, .specifications, .caption {
+        font-style: italic;
+        margin-left: 5px;
+      }
+ 
+      .instructions {
+        padding-top: 5px;
+      }
+
+      .specifications {
+        padding-bottom: 10px;
+      }
+
+      .question-details {
+        margin-top: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
   		
-  		div.question > div.question-details {
-  			border: solid 2px;
-  			background-color: #edf3ee;
-  			margin: 20px;
-  			max-width: 900px;
-  			display: inline-block;
-  		}
+      .details-content-label {
+        margin-left: 10px;
+        margin-bottom: 5px;
+      }
   		
-  		div.question-details {
-  		    padding-left: 10px;
-  			padding-right: 10px;
-  		}
+      .details-content-table {
+        margin-left: 40px;
+        margin-bottom: 10px;
+      }
+  	    
+      .details-content-table > thead > tr > th {
+        border-bottom: dotted 1px #aaaaaa;
+        padding-right:40px;
+        text-align: left;
+      }
   		
-  		div.question-details > div.title {
-  			margin-right: 20px;
-  		}
+      .type {
+        font-weight: normal;
+      }
   		
-  		div.question-details > div.content {
-  			margin-right: 20px;
-  		}
-  		
-  		div.details-content-label {
-  			margin-left: 10px;
-  			margin-bottom: 5px;
-  		}
-  		
-  		table.details-content-table {
-  			margin-left: 80px;
-  			margin-bottom: 10px;
-  		}
-  		
-  		table.details-content-table > thead > tr > th{
-			border-bottom: solid 2px;
-			padding-right:40px;
-			text-align: left;
-  		}
-  		
-  		.type {
-  			font-weight: normal;
-  		}
-  		
-		.help-toggle {
-			display: none;
-		}
+      .help-toggle {
+        display: none;
+      }
 		
-		.label-open {
-			float: left;
-		}
+      .label-open {
+        float: left;
+      }
 		
-		.open {
-			float: left;
-		}
-  		
+      .open {
+        float: left;
+        padding-left: 5px;
+      }  		
   	</style>
   	
   	<script type="text/javascript">
@@ -200,9 +209,11 @@ function toggle(el) {
     
   </head>
   <body>
-    <label id="toggle-label" for="toggle" class="noprint">
-      <input type="checkbox" id="toggle" onclick="toggleDetails();" checked="yes">show variables
-    </label>
+    <div id="toolbar" class="noprint">
+      <label for="toggle">
+        <input id="toggle" onclick="toggleDetails();" checked="checked" type="checkbox">show variables
+      </label>
+    </div>>
     <div class="questionnaire">
       <div class="title" wicket:id="title"/>
       <div class="section" wicket:id="sections">
