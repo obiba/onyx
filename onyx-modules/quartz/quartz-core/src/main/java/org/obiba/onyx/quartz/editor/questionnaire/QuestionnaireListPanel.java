@@ -35,6 +35,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -103,10 +104,22 @@ public class QuestionnaireListPanel extends Panel {
     add(new AjaxLink<Void>("addQuestionnaire") {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        modalWindow.setContent(new EditionPanel("content", new Model<Questionnaire>(new Questionnaire(null, "1.0"))));
+
+        Model<Questionnaire> questionnaireModel = new Model<Questionnaire>(new Questionnaire(new StringResourceModel("NewQuestionnaire", QuestionnaireListPanel.this, null).getString(), "1.0"));
+        final EditionPanel editionPanel = new EditionPanel("content", questionnaireModel);
+        QuestionnairePanel rightPanel = new QuestionnairePanel("properties", questionnaireModel, true) {
+          @Override
+          public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
+            persist(target1);
+            target1.addComponent(editionPanel.getTree());
+          }
+        };
+        editionPanel.setRightPanel(rightPanel);
+
+        modalWindow.setContent(editionPanel);
         modalWindow.show(target);
       }
-    });
+    }.add(new Image("img", Images.ADD)));
   }
 
   protected class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {

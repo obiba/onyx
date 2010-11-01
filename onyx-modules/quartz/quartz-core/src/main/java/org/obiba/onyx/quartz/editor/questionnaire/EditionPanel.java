@@ -26,10 +26,13 @@ public class EditionPanel extends Panel {
 
   private Label prpertiesTitle;
 
-  private Component properties;
+  private Component rightPanel;
+
+  private QuestionnaireTreePanel tree;
 
   public EditionPanel(String id, IModel<Questionnaire> model) {
     super(id, model);
+    this.rightPanel = new WebMarkupContainer("properties");
 
     add(CSSPackageResource.getHeaderContribution(EditionPanel.class, "EditionPanel.css"));
 
@@ -37,15 +40,13 @@ public class EditionPanel extends Panel {
     propertiesContainer.setOutputMarkupId(true);
     add(propertiesContainer);
 
-    properties = new WebMarkupContainer("properties");
-    propertiesContainer.add(properties);
+    propertiesContainer.add(rightPanel);
     propertiesContainer.add(prpertiesTitle = new Label("title"));
 
-    QuestionnaireTreePanel tree = new QuestionnaireTreePanel("tree", model) {
+    tree = new QuestionnaireTreePanel("tree", model) {
       @Override
       public void show(Component component, IModel<String> title, AjaxRequestTarget target) {
-        properties.replaceWith(component);
-        properties = component;
+        setRightPanel(component);
         prpertiesTitle.setDefaultModel(title);
         target.addComponent(propertiesContainer);
       }
@@ -55,8 +56,18 @@ public class EditionPanel extends Panel {
         return "properties";
       }
     };
+    tree.setOutputMarkupId(true);
     add(tree);
 
+  }
+
+  public void setRightPanel(Component component) {
+    rightPanel.replaceWith(component);
+    rightPanel = component;
+  }
+
+  public QuestionnaireTreePanel getTree() {
+    return tree;
   }
 
 }

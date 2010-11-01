@@ -148,7 +148,7 @@ public class Questionnaire implements IHasSection {
     }
   }
 
-  public boolean hasVariable(String name) {
+  public boolean hasVariable(@SuppressWarnings("hiding") String name) {
     for(Variable variable : getVariables()) {
       if(variable.getName().equals(name)) {
         return true;
@@ -157,7 +157,7 @@ public class Questionnaire implements IHasSection {
     return false;
   }
 
-  public Variable getVariable(String name) {
+  public Variable getVariable(@SuppressWarnings("hiding") String name) {
     for(Variable variable : getVariables()) {
       if(variable.getName().equals(name)) {
         return variable;

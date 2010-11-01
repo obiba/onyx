@@ -92,7 +92,7 @@ public abstract class QuestionnairePanel extends Panel {
   private final Form<Questionnaire> form;
 
   @SuppressWarnings("rawtypes")
-  public QuestionnairePanel(String id, IModel<Questionnaire> model) {
+  public QuestionnairePanel(String id, IModel<Questionnaire> model, boolean newQuestionnaire) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
 
@@ -148,9 +148,8 @@ public abstract class QuestionnairePanel extends Panel {
     uiType.add(simplifiedUiType);
     uiType.add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
 
-    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaire, questionnaire));
+    localePropertiesModel = new Model<LocaleProperties>(newQuestionnaire ? localePropertiesUtils.loadForNewQuestionnaire(questionnaire) : localePropertiesUtils.load(questionnaire, questionnaire));
     final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow);
-    labelsPanel.setOutputMarkupId(true);
     form.add(labelsPanel);
 
     final Locale userLocale = Session.get().getLocale();

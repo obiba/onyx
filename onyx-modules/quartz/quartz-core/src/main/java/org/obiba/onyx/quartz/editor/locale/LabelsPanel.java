@@ -22,6 +22,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -54,6 +55,8 @@ public class LabelsPanel extends Panel {
 
   private final Map<Locale, ITab> tabByLocale = new HashMap<Locale, ITab>();
 
+  private WebMarkupContainer tabsContainer;
+
   public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
     this.elementModel = elementModel;
@@ -76,9 +79,15 @@ public class LabelsPanel extends Panel {
     }
 
     tabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow, tabs);
+    tabbedPanel.setVisible(tabs.size() > 0);
+
+    tabsContainer = new WebMarkupContainer("tabsContainer");
+    tabsContainer.setOutputMarkupId(true);
+    tabsContainer.add(tabbedPanel);
 
     Form<LocaleProperties> form = new Form<LocaleProperties>("form", model);
-    form.add(tabbedPanel);
+    form.setOutputMarkupId(true);
+    form.add(tabsContainer);
     add(form);
   }
 
@@ -120,13 +129,8 @@ public class LabelsPanel extends Panel {
       }
     }
 
-    boolean hasTabs = tabs.size() > 0;
-    tabbedPanel.setVisible(hasTabs);
-    if(hasTabs) {
-      target.addComponent(tabbedPanel);
-    } else {
-      target.addComponent(this);
-    }
+    tabbedPanel.setVisible(tabs.size() > 0);
+    target.addComponent(tabsContainer);
   }
 
   public class InputPanel extends Panel {

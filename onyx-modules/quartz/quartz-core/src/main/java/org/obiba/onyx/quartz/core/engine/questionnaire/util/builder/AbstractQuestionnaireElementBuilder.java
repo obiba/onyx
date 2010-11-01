@@ -182,7 +182,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
 
   protected static VariableDataSource checkVariablePath(VariableDataSource ds) {
     if(ds.getTableName() == null) {
-      throw new IllegalArgumentException("Missing table name in variable path: " + ds.getPath());
+      throw new IllegalArgumentException("Missing table name in variable path: " + ds.getTableName());
     }
     return ds;
   }

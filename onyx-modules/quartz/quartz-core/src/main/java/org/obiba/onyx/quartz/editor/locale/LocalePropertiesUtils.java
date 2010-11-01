@@ -62,6 +62,18 @@ public class LocalePropertiesUtils {
     }
   }
 
+  public LocaleProperties loadForNewQuestionnaire(Questionnaire questionnaire) {
+    LocaleProperties localeProperties = new LocaleProperties();
+    localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
+    List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaire);
+    for(Locale locale : localeProperties.getLocales()) {
+      for(String key : listKeys) {
+        localeProperties.addElementLabels(questionnaire, locale, key, null);
+      }
+    }
+    return localeProperties;
+  }
+
   private Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties) {
     DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();

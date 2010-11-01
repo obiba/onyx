@@ -335,7 +335,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
 
       if(element instanceof Questionnaire) {
-        QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire)) {
+        QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire), false) {
           @Override
           public void onSave(AjaxRequestTarget target1, Questionnaire savedQuestionnaire) {
             persist(target1);
@@ -569,8 +569,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Variable variable) {
-      // TODO Auto-generated method stub
-
     }
 
   }
