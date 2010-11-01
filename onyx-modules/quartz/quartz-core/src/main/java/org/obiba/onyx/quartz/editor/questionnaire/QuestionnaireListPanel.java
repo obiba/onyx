@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -36,6 +35,7 @@ import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -251,7 +251,6 @@ public class QuestionnaireListPanel extends Panel {
       });
 
       final AJAXDownload download = new AJAXDownload() {
-
         @Override
         protected IResourceStream getResourceStream() {
           try {
@@ -283,20 +282,13 @@ public class QuestionnaireListPanel extends Panel {
           modalWindow.show(target);
         }
       });
-      add(new AjaxLink<Questionnaire>("exportLink", rowModel) {
+      add(new Link<Questionnaire>("exportLink", rowModel) {
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onClick() {
           activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
           activeQuestionnaireAdministrationService.setDefaultLanguage(rowModel.getObject().getLocales().get(0));
           activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-          modalWindow.setPageCreator(new ModalWindow.PageCreator() {
-
-            @Override
-            public Page createPage() {
-              return new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(rowModel.getObject()));
-            }
-          });
-          modalWindow.show(target);
+          setResponsePage(new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(rowModel.getObject())));
         }
       });
     }
