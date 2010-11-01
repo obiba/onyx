@@ -224,7 +224,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     return variableNameResolver.variableName(question, questionCategory, oad);
   }
 
-  private class CustomVariableBuilder {
+  private class CustomVariableBuilder extends BaseQuartzBuilderVisitor {
     private Variable variable;
 
     public CustomVariableBuilder(Variable variable) {
@@ -233,7 +233,9 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     public void build() {
-      builder.add(new JavascriptVariableValueSource(variable));
+      Variable.Builder varBuilder = Variable.Builder.sameAs(variable);
+      varBuilder.accept(this);
+      builder.add(new JavascriptVariableValueSource(varBuilder.build()));
     }
   }
 
