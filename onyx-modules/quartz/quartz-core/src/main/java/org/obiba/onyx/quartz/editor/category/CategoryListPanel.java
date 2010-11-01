@@ -213,7 +213,7 @@ public class CategoryListPanel extends Panel {
           String name = categoryName.getModelObject();
           if(StringUtils.isBlank(name)) return;
           if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
-            error(new ResourceModel("CategoryAlreadyExists").getObject());
+            error(new StringResourceModel("CategoryAlreadyExists", CategoryListPanel.this, null).getObject());
             return;
           }
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name);
