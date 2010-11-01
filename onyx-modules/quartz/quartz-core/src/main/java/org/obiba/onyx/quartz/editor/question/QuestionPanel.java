@@ -76,18 +76,20 @@ public abstract class QuestionPanel extends Panel {
 
     // available choices when question type is already set
     List<QuestionType> typeChoices = null;
-    QuestionType questionType = model.getObject().getQuestionType();
-    if(questionType == null || questionType == QuestionType.BOILER_PLATE) {
-      typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
-      typeChoices.remove(QuestionType.BOILER_PLATE);
-      model.getObject().setQuestionType(null);
-    } else {
-      if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
-        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
-      } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
-        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
-      } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
-        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+    if(useQuestionType) {
+      QuestionType questionType = model.getObject().getQuestionType();
+      if(questionType == null || questionType == QuestionType.BOILER_PLATE) {
+        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
+        typeChoices.remove(QuestionType.BOILER_PLATE);
+        model.getObject().setQuestionType(null);
+      } else {
+        if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
+          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
+        } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
+          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
+        } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
+          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+        }
       }
     }
 

@@ -140,7 +140,7 @@ public class CategoryListPanel extends Panel {
 
       @Override
       public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
+        categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), model, questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
             refreshList(target1);

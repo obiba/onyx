@@ -156,7 +156,7 @@ public class Question implements IHasQuestion {
       if(isMultiple()) return LIST_CHECKBOX;
       return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
     }
-    throw new RuntimeException("Unsupported question type for question " + getName());
+    return null;
   }
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {

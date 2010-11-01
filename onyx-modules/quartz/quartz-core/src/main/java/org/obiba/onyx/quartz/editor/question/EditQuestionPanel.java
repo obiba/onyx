@@ -30,6 +30,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -102,8 +103,10 @@ public abstract class EditQuestionPanel extends Panel {
     final IModel<EditedQuestion> model = new Model<EditedQuestion>(editedQuestion);
 
     setDefaultModel(model);
-
-    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), question));
+    List<IQuestionnaireElement> listElement = new ArrayList<IQuestionnaireElement>();
+    listElement.add(question);
+    listElement.addAll(question.getQuestionCategories());
+    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), listElement.toArray(new IQuestionnaireElement[listElement.size()])));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

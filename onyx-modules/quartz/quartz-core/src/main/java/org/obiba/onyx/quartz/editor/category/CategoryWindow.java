@@ -17,6 +17,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -36,11 +37,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
+import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
@@ -75,11 +78,7 @@ public abstract class CategoryWindow extends Panel {
 
   private final ModalWindow openAnswerWindow;
 
-  public CategoryWindow(String id, IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
-    this(id, model, questionnaireModel, null, modalWindow);
-  }
-
-  public CategoryWindow(String id, IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public CategoryWindow(String id, IModel<QuestionCategory> model, IModel<EditedQuestion> editedQuestionModel, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel == null ? new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject())) : localePropertiesModel;
@@ -197,8 +196,7 @@ public abstract class CategoryWindow extends Panel {
                     currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
                   } else {
                     OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
-                    // TODO
-                    newOpenAnswer.setName("whatNamePutHere");
+                    newOpenAnswer.setName(category.getName());
                     newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
                     newOpenAnswer.addOpenAnswerDefinition(openAnswer);
                     category.setOpenAnswerDefinition(newOpenAnswer);
@@ -214,7 +212,12 @@ public abstract class CategoryWindow extends Panel {
       }
     };
 
-    form.add(openAnswerDefinitionList);
+    QuestionType questionType = editedQuestionModel.getObject().getQuestionType();
+    if(questionType.isArrayType()) {
+      form.add(new WebMarkupContainer("openAnswerDefinitionList"));
+    } else {
+      form.add(openAnswerDefinitionList);
+    }
 
     form.add(new AjaxButton("save", form) {
       @Override

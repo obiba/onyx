@@ -25,4 +25,8 @@ public enum QuestionType {
   ARRAY_RADIO, //
   ARRAY_CHECKBOX;//
 
+  public boolean isArrayType() {
+    return this == ARRAY_RADIO || this == ARRAY_CHECKBOX;
+  }
+
 }

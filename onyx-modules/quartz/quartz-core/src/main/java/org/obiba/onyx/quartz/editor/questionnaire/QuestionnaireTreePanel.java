@@ -71,7 +71,7 @@ import com.google.common.collect.Lists;
 @SuppressWarnings("serial")
 public abstract class QuestionnaireTreePanel extends Panel {
 
-  private final transient Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   private static final String ID_PREFIX = "element_";
 
