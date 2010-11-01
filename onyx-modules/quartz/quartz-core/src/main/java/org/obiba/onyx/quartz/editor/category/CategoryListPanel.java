@@ -107,7 +107,7 @@ public class CategoryListPanel extends Panel {
     categoryWindow.setInitialWidth(950);
     categoryWindow.setInitialHeight(550);
     categoryWindow.setResizable(true);
-    categoryWindow.setTitle(new StringResourceModel("Category", CategoryListPanel.this, null));
+    categoryWindow.setTitle(new ResourceModel("Category"));
     add(categoryWindow);
 
     final IModel<String> addCategoryModel = new Model<String>();
@@ -129,6 +129,7 @@ public class CategoryListPanel extends Panel {
 
     categoryList = new SortableList<QuestionCategory>("categories", question.getQuestionCategories()) {
 
+      @Override
       public void onItemPopulation(QuestionCategory questionCategory) {
         localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, questionCategory.getCategory());
       }

@@ -286,9 +286,9 @@ public class QuestionnaireListPanel extends Panel {
         @Override
         public void onClick() {
           activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
-          activeQuestionnaireAdministrationService.setDefaultLanguage(rowModel.getObject().getLocales().get(0));
+          activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaire.getLocales().get(0));
           activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-          setResponsePage(new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(rowModel.getObject())));
+          setResponsePage(new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(questionnaire)));
         }
       });
     }
