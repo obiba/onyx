@@ -31,17 +31,14 @@ public class QuestionnairePersistenceUtils {
 
   private LocalePropertiesUtils localePropertiesUtils;
 
-  private QuestionnaireBuilder createBuilder(Questionnaire questionnaire) {
+  public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
+
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);
     if(Questionnaire.STANDARD_UI.equals(questionnaire.getUiType())) {
       builder.setStandardUI();
     } else if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
       builder.setSimplifiedUI();
     }
-    return builder;
-  }
-
-  private void persist(QuestionnaireBuilder builder, LocaleProperties localeProperties) throws Exception {
 
     UniqueQuestionnaireElementNameBuilder.ensureQuestionnaireVariableNamesAreUnique(builder.getQuestionnaire());
 
@@ -55,15 +52,10 @@ public class QuestionnairePersistenceUtils {
 
     // store locales
     if(localeProperties != null) localePropertiesUtils.persist(bundle, localeProperties);
-
-  }
-
-  public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
-    persist(createBuilder(questionnaire), localeProperties);
   }
 
   public void persist(Questionnaire questionnaire) throws Exception {
-    persist(createBuilder(questionnaire), null);
+    persist(questionnaire, null);
   }
 
   @Required

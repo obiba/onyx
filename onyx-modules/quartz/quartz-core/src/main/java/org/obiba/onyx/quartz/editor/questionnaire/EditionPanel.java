@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 
 /**
@@ -24,36 +25,39 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 @SuppressWarnings("serial")
 public class EditionPanel extends Panel {
 
-  private Label prpertiesTitle;
+  public static final String RIGHT_PANEL = "rightPanel";
+
+  private Label rightPanelTitle;
 
   private Component rightPanel;
 
   private QuestionnaireTreePanel tree;
 
+  private WebMarkupContainer rightPanelContainer;
+
   public EditionPanel(String id, IModel<Questionnaire> model) {
     super(id, model);
-    this.rightPanel = new WebMarkupContainer("properties");
+    this.rightPanel = new WebMarkupContainer(RIGHT_PANEL);
 
     add(CSSPackageResource.getHeaderContribution(EditionPanel.class, "EditionPanel.css"));
 
-    final WebMarkupContainer propertiesContainer = new WebMarkupContainer("propertiesContainer");
-    propertiesContainer.setOutputMarkupId(true);
-    add(propertiesContainer);
+    rightPanelContainer = new WebMarkupContainer("rightPanelContainer");
+    rightPanelContainer.setOutputMarkupId(true);
+    add(rightPanelContainer);
 
-    propertiesContainer.add(rightPanel);
-    propertiesContainer.add(prpertiesTitle = new Label("title"));
+    rightPanelContainer.add(rightPanel);
+    rightPanelContainer.add(rightPanelTitle = new Label("title"));
 
     tree = new QuestionnaireTreePanel("tree", model) {
       @Override
       public void show(Component component, IModel<String> title, AjaxRequestTarget target) {
-        setRightPanel(component);
-        prpertiesTitle.setDefaultModel(title);
-        target.addComponent(propertiesContainer);
+        setRightPanel(component, title);
+        target.addComponent(rightPanelContainer);
       }
 
       @Override
       public String getShownComponentId() {
-        return "properties";
+        return RIGHT_PANEL;
       }
     };
     tree.setOutputMarkupId(true);
@@ -61,9 +65,17 @@ public class EditionPanel extends Panel {
 
   }
 
-  public void setRightPanel(Component component) {
+  public void setRightPanel(Component component, IModel<String> title) {
     rightPanel.replaceWith(component);
     rightPanel = component;
+    rightPanelTitle.setDefaultModel(title);
+  }
+
+  public void restoreDefaultRightPanel(AjaxRequestTarget target) {
+    WebMarkupContainer component = new WebMarkupContainer(RIGHT_PANEL);
+    component.setOutputMarkupId(true);
+    setRightPanel(component, new Model<String>(""));
+    target.addComponent(rightPanelContainer);
   }
 
   public QuestionnaireTreePanel getTree() {

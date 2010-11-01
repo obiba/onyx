@@ -105,16 +105,20 @@ public class QuestionnaireListPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
 
-        Model<Questionnaire> questionnaireModel = new Model<Questionnaire>(new Questionnaire(new StringResourceModel("NewQuestionnaire", QuestionnaireListPanel.this, null).getString(), "1.0"));
+        Questionnaire newQuestionnaire = new Questionnaire(new StringResourceModel("NewQuestionnaire", QuestionnaireListPanel.this, null).getString(), "1.0");
+        newQuestionnaire.setConvertedToMagmaVariables(true);
+        Model<Questionnaire> questionnaireModel = new Model<Questionnaire>(newQuestionnaire);
         final EditionPanel editionPanel = new EditionPanel("content", questionnaireModel);
-        QuestionnairePanel rightPanel = new QuestionnairePanel("properties", questionnaireModel, true) {
+        QuestionnairePanel rightPanel = new QuestionnairePanel(EditionPanel.RIGHT_PANEL, questionnaireModel, true) {
           @Override
           public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
             persist(target1);
+            editionPanel.restoreDefaultRightPanel(target1);
             target1.addComponent(editionPanel.getTree());
+            target1.addComponent(questionnaireList);
           }
         };
-        editionPanel.setRightPanel(rightPanel);
+        editionPanel.setRightPanel(rightPanel, new Model<String>(""));
 
         modalWindow.setContent(editionPanel);
         modalWindow.show(target);

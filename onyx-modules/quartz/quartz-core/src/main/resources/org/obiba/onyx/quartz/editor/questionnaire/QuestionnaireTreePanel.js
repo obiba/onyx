@@ -12,8 +12,13 @@ Wicket.QTree.refreshTree = function(treeId) {
 	$("#" + treeId).jstree('refresh', -1);	
 }
 
-Wicket.QTree.buildTree = function(treeId) {
+Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 	$("#" + treeId).jstree({
+		"json_data" : {
+			"ajax" : {
+				"url" : jsonUrl
+			}
+		},		
 		"themes" : {
 			"theme" : "apple",
 			"url": "resources/org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior/themes/apple/style.css",
@@ -77,7 +82,7 @@ Wicket.QTree.buildTree = function(treeId) {
 					return obj; 
 				}
 		 }, 					
-		"plugins" : [ "themes", "html_data", "types", "ui", "dnd", "contextmenu" ]
+		"plugins" : [ "themes", "json_data", "types", "ui", "dnd", "contextmenu" ]
 	})
 	.bind("move_node.jstree", function (e, data) {
 		data.rslt.o.each(function (i) {

@@ -269,7 +269,7 @@ public abstract class EditQuestionPanel extends Panel {
           }
         }
 
-        onSave(target, form.getModelObject());
+        onSave(target, form.getModelObject().getElement());
       }
 
       @Override
@@ -286,6 +286,8 @@ public abstract class EditQuestionPanel extends Panel {
     }.setDefaultFormProcessing(false));
 
   }
+
+  public abstract void onSave(AjaxRequestTarget target, Question question);
 
   private void setTabsVisibility(QuestionType questionType) {
     if(questionType == null) return;
@@ -318,13 +320,6 @@ public abstract class EditQuestionPanel extends Panel {
       break;
     }
   }
-
-  /**
-   * 
-   * @param target
-   * @param editedQuestion
-   */
-  public abstract void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion);
 
   public void persist(AjaxRequestTarget target) {
     try {

@@ -278,11 +278,6 @@ public abstract class QuestionnairePanel extends Panel {
     }.setDefaultFormProcessing(false));
   }
 
-  /**
-   * 
-   * @param target
-   * @param questionnaire
-   */
   public abstract void onSave(AjaxRequestTarget target, Questionnaire questionnaire);
 
   public void persist(AjaxRequestTarget target) {
