@@ -98,7 +98,7 @@
 
 .menu a {
 	text-decoration: none;
-	color: #fff !important;
+	color: #FFFFFF !important;
 	font-weight:bold;
 	padding: .4em 1em;
 	display: block;
@@ -107,11 +107,11 @@
 }
 
 .menu a:hover, .menu li:hover {
-  	color: #375FB7 !important;
+  	color: #FFFFFF !important;
   	text-decoration:none;
 }
 .menu li:hover>a {
-  	color: #375FB7 !important;
+  	color: #FFFFFF !important;
   	text-decoration:none;
 }
 .menu li li {	/* create borders around each item */

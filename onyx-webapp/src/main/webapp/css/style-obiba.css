@@ -1625,6 +1625,7 @@ ul#interviewMenuBar li > div {
 .menu-right {
   display: block;
   text-align: right;
+  padding-right:5px;
 }
 
 ul#interviewMenuBar li a {
