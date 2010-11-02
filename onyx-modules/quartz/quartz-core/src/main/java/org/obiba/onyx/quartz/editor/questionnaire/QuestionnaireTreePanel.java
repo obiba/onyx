@@ -550,11 +550,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Question question) {
-      try {
-        if(question.getType() != QuestionType.ARRAY_CHECKBOX && question.getType() != QuestionType.ARRAY_RADIO) {
-          children.addAll(question.getQuestions());
-        }
-      } catch(Exception e) {
+      QuestionType questionType = question.getType();
+      if(questionType != QuestionType.ARRAY_CHECKBOX && questionType != QuestionType.ARRAY_RADIO) {
         children.addAll(question.getQuestions());
       }
     }

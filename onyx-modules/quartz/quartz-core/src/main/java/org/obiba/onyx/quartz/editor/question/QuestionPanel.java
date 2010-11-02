@@ -57,7 +57,7 @@ public abstract class QuestionPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(model.getObject().getElement().getName(), validatable.getValue())) {
+        if(!StringUtils.equals(model.getObject().getElement().getName(), validatable.getValue())) {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           if(questionnaireFinder.findQuestion(validatable.getValue()) != null) {
             error(validatable, "QuestionAlreadyExists");
@@ -78,12 +78,12 @@ public abstract class QuestionPanel extends Panel {
     List<QuestionType> typeChoices = null;
     if(useQuestionType) {
       QuestionType questionType = model.getObject().getQuestionType();
-      if(questionType == null || questionType == QuestionType.BOILER_PLATE) {
+      if(questionType == null) {
         typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
-        typeChoices.remove(QuestionType.BOILER_PLATE);
-        model.getObject().setQuestionType(null);
       } else {
-        if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
+        if(questionType == QuestionType.BOILER_PLATE) {
+          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.BOILER_PLATE));
+        } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
           typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
         } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
           typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
@@ -104,6 +104,7 @@ public abstract class QuestionPanel extends Panel {
         return type1.name();
       }
     });
+    type.add(new RequiredFormFieldBehavior());
     type.setLabel(new ResourceModel("QuestionType"));
     // submit the whole form instead of just the questionType component
     type.add(new AjaxFormSubmitBehavior("onchange") {

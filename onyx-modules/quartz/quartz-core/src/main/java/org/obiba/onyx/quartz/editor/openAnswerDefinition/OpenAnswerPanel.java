@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
@@ -46,6 +47,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -87,10 +89,10 @@ public class OpenAnswerPanel extends Panel {
 
   private SimpleFormComponentLabel maximumLabel;
 
-  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    Question question = questionModel.getObject();
+    final Question question = questionModel.getObject();
     OpenAnswerDefinition openAnswer = model.getObject();
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "name"));
@@ -99,7 +101,12 @@ public class OpenAnswerPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        // TODO OpenAnswer name must be unique in his category
+        if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
+          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+          if(questionnaireFinder.findOpenAnswerDefinition(validatable.getValue()) != null) {
+            error(validatable, "OpenAnswerAlreadyExists");
+          }
+        }
       }
     });
     add(name);

@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,18 +32,19 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
-import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
@@ -78,7 +79,7 @@ public abstract class CategoryWindow extends Panel {
 
   private final ModalWindow openAnswerWindow;
 
-  public CategoryWindow(String id, IModel<QuestionCategory> model, IModel<EditedQuestion> editedQuestionModel, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel == null ? new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject())) : localePropertiesModel;
@@ -106,6 +107,17 @@ public abstract class CategoryWindow extends Panel {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "category.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
+    name.add(new AbstractValidator<String>() {
+      @Override
+      protected void onValidate(IValidatable<String> validatable) {
+        if(!StringUtils.equalsIgnoreCase(model.getObject().getCategory().getName(), validatable.getValue())) {
+          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+          if(questionnaireFinder.findCategory(validatable.getValue()) != null) {
+            error(validatable, "CategoryAlreadyExists");
+          }
+        }
+      }
+    });
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
@@ -212,12 +224,7 @@ public abstract class CategoryWindow extends Panel {
       }
     };
 
-    QuestionType questionType = editedQuestionModel.getObject().getQuestionType();
-    if(questionType.isArrayType()) {
-      form.add(new WebMarkupContainer("openAnswerDefinitionList"));
-    } else {
-      form.add(openAnswerDefinitionList);
-    }
+    form.add(openAnswerDefinitionList);
 
     form.add(new AjaxButton("save", form) {
       @Override

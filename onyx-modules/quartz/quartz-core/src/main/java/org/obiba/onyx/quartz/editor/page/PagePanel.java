@@ -76,7 +76,7 @@ public abstract class PagePanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
+        if(!StringUtils.equals(model.getObject().getName(), validatable.getValue())) {
           if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findPage(validatable.getValue()) != null) {
             error(validatable, "PageAlreadyExists");
           }

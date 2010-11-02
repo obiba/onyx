@@ -76,7 +76,7 @@ public abstract class SectionPanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
+        if(!StringUtils.equals(model.getObject().getName(), validatable.getValue())) {
           if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSection(validatable.getValue()) != null) {
             error(validatable, "SectionAlreadyExists");
           }
