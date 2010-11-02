@@ -4,11 +4,13 @@
 		<div wicket:id="modalWindow" style="overflow:auto"/>
 	</form>
 	
-	<h1 class="results-list"><wicket:message key="Questionnaires" /></h1>
-	<span wicket:id="questionnaires" />
-	
-	<br />
-	<a class="obiba-button" wicket:id="addQuestionnaire"><img wicket:id="img" class="add" /> <wicket:message key="CreateQuestionnaire" /></a>
+	<div class="obiba-content-region ui-corner-all">
+	  <h1 class="results-list"><wicket:message key="Questionnaires" /></h1>
+	  <br />
+	  <span wicket:id="questionnaires" />
+	  <br />
+	  <a class="obiba-button" wicket:id="addQuestionnaire"><img wicket:id="img" class="add" /> <wicket:message key="CreateQuestionnaire" /></a>    
+	</div>
 	
 	<wicket:fragment wicket:id="linkFragment">
 		<a wicket:id="editLink"><wicket:message key="Edit" /></a>

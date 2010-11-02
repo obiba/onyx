@@ -32,6 +32,14 @@ img,a img {
 	border: none;
 }
 
+h1.title {
+  border-bottom:1px solid #C65F02;
+  color:#C65F02;
+  font-size:1em;
+  font-weight:bold;
+  padding-bottom:2px;
+}
+
 .required {
 	/*background: #FFB6C1;*/
 	/*background-image:url(../images/icons/16X16/warning.gif);
