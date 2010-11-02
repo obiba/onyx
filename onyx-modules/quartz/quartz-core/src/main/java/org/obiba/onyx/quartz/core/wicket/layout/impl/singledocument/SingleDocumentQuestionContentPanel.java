@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
 import java.util.List;
 
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -27,6 +28,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.magma.DataTypes;
 import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -94,9 +96,12 @@ public class SingleDocumentQuestionContentPanel extends Panel {
 
         @Override
         protected void populateItem(Item<QuestionCategory> item) {
-          item.add(new Label("code", new PropertyModel<String>(item.getModel(), "exportName")));
-          item.add(new Label("name", new PropertyModel<String>(item.getModel(), "category.name")));
-          item.add(new Label("escape", new Model<String>((item.getModelObject().getCategory().isEscape()) ? "x" : "")));
+          Category category = item.getModelObject().getCategory();
+          Label name = new Label("name", item.getIndex() == 0 ? category.getName() : ", " + category.getName());
+          item.add(name);
+          if(category.isEscape()) {
+            item.add(new SimpleAttributeModifier("class", "missing"));
+          }
         }
 
       };

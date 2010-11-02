@@ -8,23 +8,9 @@
 </wicket:fragment>
 
 <wicket:fragment wicket:id="categoryFragment">
-  <div class="details-content-label"><wicket:message key="Categories">[- Categories:]</wicket:message></div>
-  <table class="details-content-table">
-    <thead>
-      <tr>
-        <th><wicket:message key="Code">[Code]</wicket:message></th>
-        <th><wicket:message key="Name">[Name]</wicket:message></th>
-        <th><wicket:message key="Missing">[Missing]</wicket:message></th>
-      </tr>
-    </thead>
-    <tbody>
-		<tr wicket:id="categories">
-			<td class="category"><span wicket:id="code"></span></td>
-			<td class="category"><span wicket:id="name"></span></td>
-			<td class="category"><span wicket:id="escape"></span></td>
-		</tr>
-    </tbody>
-  </table>
+  <div class="details-content-label">
+    <wicket:message key="Categories">[- Categories:]</wicket:message>&nbsp<span wicket:id="categories"><span wicket:id="name"/></span>
+  </div>
   
   <wicket:container wicket:id="questionCategories">
       <div class="title" wicket:id="category"><span wicket:id="label"></span>&nbsp;<span class="type" wicket:id="type"></span></div>
