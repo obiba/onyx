@@ -30,6 +30,8 @@ public class SingleDocumentQuestionnairePage extends WebPage {
 
     add(new Label("title", new PropertyModel<String>(model, "name")));
 
+    add(new Label("questionnaire", new PropertyModel<String>(model, "name")));
+
     add(new DataView<Section>("sections", new AllSectionsProvider(model)) {
       @Override
       protected void populateItem(Item<Section> item) {
