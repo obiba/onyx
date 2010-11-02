@@ -1023,7 +1023,7 @@ div.tab-row a span {float:none;}
 /* End IE5-Mac hack */
 
 div.tab-row a:hover span {
-color:#FFFFFF;
+/*color:#FFFFFF;*/
 }
 
 div.tab-row .selected a{ /*Selected Tab style*/
