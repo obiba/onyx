@@ -1,0 +1,295 @@
+/*************** Generic Modal Window ********************/
+
+div.wicket-modal div.w_content_1 div.header {
+  text-align: left;
+  margin-top: 0.8333em;
+  margin-bottom: 0.8333em;
+  margin-left: 0.25em;
+}
+
+div.wicket-modal div.w_content_1 div.footer {
+  text-align: center;
+  margin-top: 0.8333em;
+}
+
+div.wicket-modal {
+  overflow: auto;
+}
+
+/*************** Onyx Style Modal Window ********************/
+
+div.modal-footer {
+  text-align: right;
+  padding-right: 1.6667em;
+  padding-top: 0.75em;
+}
+
+div.wizard-modal-footer {
+  text-align: center !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+}
+
+div.wicket-mask-dark {
+	opacity:0.4 !important;
+}
+
+div.wicket-modal div.onyx a.w_close {
+  background-position:-45px 45px;
+  margin-right: 0.8333em;
+  height:2.0833em;
+  width:1.6667em;
+}
+
+div.wicket-modal div.onyx a.w_close:hover {
+  background-position:-72px 45px;
+  margin-right: 0.8333em;
+  height:2.0833em;
+  width:1.6667em;
+}
+
+div.wicket-modal div.onyx div.w_caption {
+  height:2.5em;
+}
+
+div.wicket-modal div.onyx div.w_content {
+	overflow: hidden;
+}
+
+div.wicket-modal div.onyx div.w_content_3 {
+	border:0em solid #BBBBBB;
+}
+
+div.wicket-modal div.onyx div.w_left,
+div.wicket-modal div.onyx div.w_right {
+  background-image: url('../images/modal/modal-onyx-graph2.png');
+  _background-image: url('../images/modal/modal-onyx-graph2.png');
+}
+
+div.wicket-modal div.onyx div.w_top,
+div.wicket-modal div.onyx div.w_bottom,
+div.wicket-modal div.onyx div.w_topLeft,
+div.wicket-modal div.onyx div.w_topRight,
+div.wicket-modal div.onyx div.w_bottomRight,
+div.wicket-modal div.onyx div.w_bottomLeft,
+div.wicket-modal div.onyx a.w_close {
+  background-image: url('../images/modal/modal-onyx-graph1.png');
+  _background-image: url('../images/modal/modal-onyx-graph1.png');
+}
+
+div.wicket-modal div.onyx .imagelink { 
+  font-family:arial,sans-serif;
+  font-size:1.5em;  
+}
+
+div.wicket-modal div.onyx .obiba-content {
+	overflow: auto;
+  	margin-left:0.75em;
+	margin-right:0.8333em;
+	margin-top:0.5833em;
+}
+
+div.wicket-modal div.onyx .separator {
+  border-top:0.0833em solid #C65F02;
+  margin-right:0.8333em;
+  margin-left:0.8333em;
+}
+
+div.wicket-modal div.onyx span.w_captionText  {
+  margin-left:0.8333em;
+  margin-top:0.5833em;
+  color: #C65F02;
+  height:1.6667em;
+}
+
+/*************** Table in Modal Window Style ********************/
+div.wicket-modal div.onyx table.keyValueTable {
+	border-spacing:0.1667em;
+}
+
+div.wicket-modal div.onyx tr.ui-state-disabled td.keyValueTableKey {
+	color: #CCCCCC;
+}
+
+div.wicket-modal div.onyx td.keyValueTableValue input{
+	width: 18.0833em;
+}
+
+div.wicket-modal div.onyx td.keyValueTableValue select{
+	width: 18.3333em;
+}
+/*************** END Table in Modal Window Style ********************/
+
+div.wicket-modal div.onyx .window-action-content {
+  	height:31.5em;
+}
+
+div.wicket-modal div.onyx .participant-panel-content {
+  	height:34.8em;
+}
+
+div.wicket-modal div.onyx .unlockInterview-panel-content {
+  	height:8.0833em;
+  	margin-left:1em;
+}
+
+div.wicket-modal div.onyx .updateParticipantList-panel-content {
+  	height:8.8333em;
+  	margin-left:1em;
+}
+
+div.wicket-modal div.onyx .purge-panel-content {
+  	height:8.75em;
+}
+
+div.wicket-modal div.onyx .experimental-condition-history-panel {
+  height: 16em;
+  width: 96%;
+  margin-left: 0.8333em;
+  margin-top: 0.9167em;
+}
+
+div.wicket-modal div.onyx .interview-log-panel-content {
+  height: 31em;
+  width: 55em;
+  margin-left: 0.8333em;
+}
+
+div.wicket-modal div.onyx .interview-log-panel-content tbody {
+  max-height: 29em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+div.wicket-modal div.onyx .experimental-condition-form {
+  height: 20.8333em;
+  width: 37.3333em;
+  margin-left: 0.8333em;
+  margin-top: 0.9167em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+div.wicket-modal div.onyx .experimental-condition-form p, .experimental-condition-history-panel p {
+  margin-top: 0em;
+  margin-left: 0.4167em;
+}
+
+div.wicket-modal div.onyx .experimental-condition-form p select, .experimental-condition-history-panel  p select {
+  font-family: arial,sans-serif;
+  font-weight: bold;
+}
+
+div.wicket-modal div.onyx .manual-input-panel table {
+  width: 100%;
+}
+
+div.wicket-modal div.onyx .manual-input-panel tbody {
+  max-height: 27.4167em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+div.wicket-modal div.onyx .printable-report-panel {
+  height: 30.7em;
+  width: 46.6667em;
+  margin-left: 0.8333em;
+}
+
+div.wicket-modal div.onyx .participant-registry-search-panel {
+  height: 31.7em;
+  width: 43.6667em;
+  margin-left: 0.8333em;
+}
+
+#participant-registry-search-panel {
+	margin-top: 0.8em;
+	margin-bottom: 0.8em;
+}
+
+#participant-registry-search-panel #participant-search-messages-container{
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    height: 0.5em;
+}
+
+.participant-view-panel {
+  height: 26.2em;
+  width: 46.7em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.checkboxColumn {
+  width: 3em;
+}
+
+div.wicket-modal div.onyx .manual-input-panel {
+  height: 22em;
+  width: 97%;
+  margin-left: 0.8333em;
+}
+
+.left {
+  float: left;
+  margin-right: 0.5833em;
+}
+.left:first-child {
+  margin-left: 1.6667em; 
+}
+
+.right {
+  margin-left: 0.5833em;
+}
+
+div.wicket-modal div.onyx .add-comment-panel-content {
+    height:33.9167em;
+    margin-left: 1.0833em;
+    width: 31.8em;
+}
+
+div.wicket-modal div.onyx h2 {
+	width:28.2500em;
+	margin-left:0.3333em;
+}
+
+div.wicket-modal div.onyx .confirmation-dialog-content {
+  margin-left: 0.8333em; 
+  margin-right: 0.8333em;
+  padding-top: 0.5833em;
+  overflow: auto;
+  height: 5.5833em;
+}
+
+div.wicket-modal div.onyx .long-confirmation-dialog-content {
+  height: 11.1667em;
+  margin-left: 0.8333em; 
+  margin-right: 0.8333em;
+  padding-top: 0.5833em; 
+}
+
+div.wicket-modal div.onyx .long-confirmation-dialog-content p {
+  padding-top: 0em; 
+  margin-top: 0em;
+}
+
+div.wicket-modal div.onyx .instrument-run-panel-content {
+	height:30.9167em;
+}
+
+div.wicket-modal div.onyx .instrument-panel-content {
+	height:15.8333em;
+}
+
+div.wicket-modal div.onyx .instrument-panel-content-edit {
+    height:17.5em;
+}
+
+div.wicket-modal div.onyx .delete-instrument-dialog {
+    height:4.1667em;
+}
+
+div.wicket-modal div.onyx .appointment-update-log-panel-content {
+	height:32.6667em;
+}
