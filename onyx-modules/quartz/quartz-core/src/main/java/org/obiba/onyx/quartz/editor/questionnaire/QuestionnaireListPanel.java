@@ -71,7 +71,7 @@ public class QuestionnaireListPanel extends Panel {
   private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
-  private transient ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private final ModalWindow modalWindow;
 
