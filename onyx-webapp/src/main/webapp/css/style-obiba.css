@@ -1014,7 +1014,8 @@ float:left;
 display:block;
 background:url(../images/tabs/glowtab2.gif) no-repeat right top;
 padding: 0.6667em 1em 0.5em 0.2500em;
-color:#FFFFFF;
+color:#C0C0C0;
+font-weight:bold;
 }
 
 /* Commented Backslash Hack hides rule from IE5-Mac \*/
@@ -1037,12 +1038,12 @@ font-weight:bold;
 }
 
 div.tab-row a:hover{ /*onMouseover style*/
-background-position:0% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+/*background-position:0% -6.8333em; /*Shift background image up to start of 2nd tab image*/
 text-decoration:none;
 }
 
 div.tab-row a:hover span{ /*onMouseover style*/
-background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+/*background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
 }
 
 .maxWidthTextArea {
