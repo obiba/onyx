@@ -49,7 +49,7 @@
         font-size:1.3em;
       }
   		
-      .section {
+      .section, .variables {
         margin-top: 10px;
         margin-left: 10px;
       }
@@ -161,6 +161,17 @@
         float: left;
         padding-left: 5px;
       }  		
+      
+      .variable {
+        border:1px solid #AAAAAA;
+        margin-left:10px;
+        margin-top:10px;
+        padding:10px;
+      }
+      
+      .script {
+        margin-left:20px;
+      }
   	</style>
   	
   	<script type="text/javascript">
@@ -186,6 +197,13 @@ function toggleDetails() {
   }
 }
 
+function toggleVariables() {
+  var els = getElementsByClass(document,'variables','*');
+  for (i=0;i<els.length;i++) {
+    toggle(els[i]);
+  }
+}
+
 function toggle(el) {
 	if ( el.style.display != 'none' ) {
 		el.style.display = 'none';
@@ -202,13 +220,16 @@ function toggle(el) {
   <body>
     <div id="toolbar" class="noprint">
       <label for="toggle">
-        <input id="toggle" onclick="toggleDetails();" checked="checked" type="checkbox">show variables
+        <input id="toggle" onclick="toggleDetails();toggleVariables();" checked="checked" type="checkbox">show variables
       </label>
     </div>
     <div class="questionnaire">
       <div class="title" wicket:id="questionnaire"/>
       <div class="section" wicket:id="sections">
         <div wicket:id="sectionPanel"/>
+      </div>
+      <div class="variables" wicket:id="variables">
+        <div wicket:id="variablePanel"/>
       </div>
     </div>
   </body>

@@ -8,12 +8,17 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.wicket.provider.AllSectionsProvider;
@@ -38,6 +43,76 @@ public class SingleDocumentQuestionnairePage extends WebPage {
         item.add(new SingleDocumentSectionPanel("sectionPanel", item.getModel()));
       }
     });
+
+    add(new DataView<Variable>("variables", new VariablesProvider(model)) {
+      @Override
+      protected void populateItem(Item<Variable> item) {
+        item.add(new SingleDocumentVariablePanel("variablePanel", item.getModel()));
+      }
+    });
+
+  }
+
+  private class VariablesProvider implements IDataProvider<Variable> {
+
+    private IModel<Questionnaire> model;
+
+    public VariablesProvider(IModel<Questionnaire> model) {
+      super();
+      this.model = model;
+    }
+
+    @Override
+    public Iterator<? extends Variable> iterator(int first, int count) {
+      return getVariables().subList(first, first + count).iterator();
+    }
+
+    @Override
+    public IModel<Variable> model(final Variable object) {
+      return new VariableModel(object);
+    }
+
+    @Override
+    public int size() {
+      return getVariables().size();
+    }
+
+    @Override
+    public void detach() {
+      if(model != null) {
+        model.detach();
+      }
+    }
+
+    private List<Variable> getVariables() {
+      return model.getObject().getVariables();
+    }
+
+  }
+
+  private class VariableModel implements IModel<Variable> {
+
+    private Variable object;
+
+    public VariableModel(Variable object) {
+      super();
+      this.object = object;
+    }
+
+    @Override
+    public Variable getObject() {
+      return object;
+    }
+
+    @Override
+    public void setObject(Variable object) {
+      this.object = object;
+    }
+
+    @Override
+    public void detach() {
+
+    }
 
   }
 }
