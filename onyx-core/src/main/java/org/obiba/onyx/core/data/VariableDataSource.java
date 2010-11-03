@@ -41,17 +41,17 @@ public class VariableDataSource implements IDataSource {
   /**
    * Cached datasource name.
    */
-  private String datasourceName;
+  private transient String datasourceName;
 
   /**
    * Cached table name.
    */
-  private String tableName;
+  private transient String tableName;
 
   /**
    * Cached variable name.
    */
-  private String variableName;
+  private transient String variableName;
 
   /**
    * Flag indicating whether path elements have been extracted (only want to do this once).
