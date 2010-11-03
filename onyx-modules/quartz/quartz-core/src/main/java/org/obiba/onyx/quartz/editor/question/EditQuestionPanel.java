@@ -268,8 +268,7 @@ public abstract class EditQuestionPanel extends Panel {
             break;
           }
         }
-
-        onSave(target, form.getModelObject().getElement());
+        if(!form.hasError()) onSave(target, form.getModelObject().getElement());
       }
 
       @Override

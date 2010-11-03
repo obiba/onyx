@@ -136,11 +136,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
       @Override
       protected void respond(AjaxRequestTarget target) {
         try {
-          StringWriter sw = new StringWriter();
-          Node rootNode = populateNode((IQuestionnaireElement) QuestionnaireTreePanel.this.getDefaultModelObject());
-          JsonGenerator gen = new JsonFactory().createJsonGenerator(sw);
-          new ObjectMapper().writeValue(gen, rootNode);
           final RequestCycle requestCycle = RequestCycle.get();
+          String elementId = requestCycle.getRequest().getParameter("id");
+          IQuestionnaireElement element = elements.get(elementId);
+          StringWriter sw = new StringWriter();
+          Node rootNode = populateNode(element == null ? (IQuestionnaireElement) QuestionnaireTreePanel.this.getDefaultModelObject() : element);
+          JsonGenerator gen = new JsonFactory().createJsonGenerator(sw);
+          new ObjectMapper().writeValue(gen, element != null ? rootNode.getChildren() : rootNode);
           requestCycle.setRequestTarget(new StringRequestTarget("application/json", "utf-8", sw.toString()));
         } catch(Exception e) {
           throw new RuntimeException(e);

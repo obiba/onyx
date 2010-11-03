@@ -25,7 +25,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPan
 public class QuestionPreviewPanel extends Panel {
 
   @SpringBean
-  private transient ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   public QuestionPreviewPanel(String id, IModel<EditedQuestion> model, IModel<Questionnaire> questionnaireModel) {
     super(id, model);

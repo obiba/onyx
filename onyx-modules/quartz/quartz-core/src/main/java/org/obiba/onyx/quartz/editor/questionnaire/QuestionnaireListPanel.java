@@ -65,10 +65,10 @@ public class QuestionnaireListPanel extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private transient QuestionnaireBundleManager questionnaireBundleManager;
+  private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
-  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
