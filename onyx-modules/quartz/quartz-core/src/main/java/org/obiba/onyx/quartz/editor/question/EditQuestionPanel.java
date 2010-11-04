@@ -195,7 +195,7 @@ public abstract class EditQuestionPanel extends Panel {
     };
     columnsTab.setVisible(false);
 
-    ITab questionTab = new AbstractTab(new ResourceModel("Question")) {
+    ITab questionTab = new PanelCachingTab(new AbstractTab(new ResourceModel("Question")) {
       @Override
       public Panel getPanel(String panelId) {
         return new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true) {
@@ -208,25 +208,41 @@ public abstract class EditQuestionPanel extends Panel {
           }
         };
       }
-    };
+    });
 
-    tabs.add(new PanelCachingTab(questionTab));
-    tabs.add(new PanelCachingTab(openAnswerTab));
+    tabs.add(questionTab);
+    tabs.add(openAnswerTab);
     tabs.add(categoriesTab);
     tabs.add(rowsTab);
     tabs.add(columnsTab);
-    tabs.add(new AbstractTab(new ResourceModel("Conditions")) {
+    final SavableHidableTab conditionTab = new SavableHidableTab(new ResourceModel("Conditions")) {
+      private ConditionPanel panel;
+
       @Override
       public Panel getPanel(String panelId) {
-        return new ConditionPanel(panelId, questionModel, questionnaireModel);
+        if(panel == null) {
+          panel = new ConditionPanel(panelId, questionModel, questionnaireModel);
+        }
+        return panel;
       }
-    });
-    tabs.add(new AbstractTab(new ResourceModel("Preview")) {
+
       @Override
-      public Panel getPanel(String panelId) {
-        return new QuestionPreviewPanel(panelId, model, questionnaireModel);
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
       }
-    });
+
+      @Override
+      public boolean isVisible() {
+        return true;
+      }
+    };
+    tabs.add(conditionTab);
+    // tabs.add(new AbstractTab(new ResourceModel("Preview")) {
+    // @Override
+    // public Panel getPanel(String panelId) {
+    // return new QuestionPreviewPanel(panelId, model, questionnaireModel);
+    // }
+    // });
 
     setTabsVisibility(editedQuestion.getQuestionType());
 
@@ -242,6 +258,8 @@ public abstract class EditQuestionPanel extends Panel {
           case SINGLE_OPEN_ANSWER:
             openAnswerTab.save(target);
             if(nbCategories == 0 || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
+              tabbedPanel.setSelectedTab(tabs.indexOf(openAnswerTab));
+              target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null).getObject());
             }
             break;
@@ -252,6 +270,8 @@ public abstract class EditQuestionPanel extends Panel {
             question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : null);
             question.setMultiple(questionType == LIST_CHECKBOX);
             if(nbCategories < 2) {
+              tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));
+              target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
             }
             break;
@@ -261,6 +281,8 @@ public abstract class EditQuestionPanel extends Panel {
             question.setMultiple(questionType == ARRAY_CHECKBOX);
             if(question.getQuestions().size() < 2 || nbCategories < 1) {
               form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
+              tabbedPanel.setSelectedTab(tabs.indexOf(question.getQuestions().size() < 2 ? rowsTab : columnsTab));
+              target.addComponent(tabbedPanel);
             }
             break;
 
@@ -268,7 +290,12 @@ public abstract class EditQuestionPanel extends Panel {
             break;
           }
         }
-        if(!form.hasError()) onSave(target, form.getModelObject().getElement());
+
+        conditionTab.save(target);
+
+        if(!form.hasError()) {
+          onSave(target, form.getModelObject().getElement());
+        }
       }
 
       @Override

@@ -210,7 +210,6 @@ public class DefaultOpenAnswerDefinitionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
         QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.4");
         return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element));

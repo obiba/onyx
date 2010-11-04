@@ -1,31 +1,58 @@
 <wicket:panel>
 
-	<div wicket:id="variableWindow" />
+	<br />
 	
-	<form wicket:id="form" autocomplete="off">
+	<div wicket:id="conditionType">
 	
-		<br />
-		<a class="obiba-button" wicket:id="addVariable"><wicket:message key="Variables.add" /></a>
-		<br />	 
-		<br />
-		<span wicket:id="variables" />
+		<input wicket:id="none" type="radio" /> <label wicket:id="noneLabel"></label>
 		
 		<br />
-			
-		<div wicket:id="expressionContainer">
-			<table class="keyValueTable" wicket:id="expressionVisibility">
+
+		<input wicket:id="questionType" type="radio" /> <label wicket:id="questionTypeLabel"></label>
+		<span wicket:id="questionTypeContainer" class="radioContent">
+			<table class="keyValueTable" wicket:id="questionConditionContainer">
 				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="expressionLabel"></label></td>
-					<td class="keyValueTableValueOdd"><textarea wicket:id="expression" cols="60" rows="2"></textarea></td>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="questionLabel"></label></td>
+					<td class="keyValueTableValueOdd"><select wicket:id="question"></select></td>
 				</tr>				
-			</table>		
-		</div>
+				<tr>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="categoryLabel"></label></td>
+					<td class="keyValueTableValueOdd"><select wicket:id="category"></select></td>
+				</tr>				
+			</table>
+			<br />	
+		</span>
 		
-	</form>	
+		<input wicket:id="variableType" type="radio" /> <label wicket:id="variableTypeLabel"></label>
+		<span wicket:id="variableTypeContainer" class="radioContent">
+			<table class="keyValueTable" wicket:id="variableContainer">
+				<tr>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="variableLabel"></label></td>
+					<td class="keyValueTableValueOdd"><select wicket:id="variable"></select></td>
+				</tr>				
+			</table>	
+			<br />
+		</span>
+
+		<input wicket:id="newVariableType" type="radio" /> <label wicket:id="newVariableTypeLabel"></label>
+		<span wicket:id="newVariableTypeContainer" class="radioContent">
+			<table class="keyValueTable" wicket:id="newVariableContainer">
+				<tr>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="scriptLabel"></label></td>
+					<td class="keyValueTableValueOdd"><textarea wicket:id="script" cols="40" rows="4"></textarea></td>
+				</tr>				
+				<tr>
+					<td class="keyValueTableKey" valign="top"><label wicket:id="newVariableNameLabel"></label></td>
+					<td class="keyValueTableValueOdd">
+						<input wicket:id="newVariableName" type="text" size="40" />
+						<br />
+						<span class="help"><wicket:message key="Optional" /></span> 						
+					</td>
+				</tr>				
+			</table>	
+		</span>
 	
-	<wicket:fragment wicket:id="variableAction">
-		<a wicket:id="editLink"><img wicket:id="editImg" /></a>
-		<a wicket:id="deleteLink"><img wicket:id="deleteImg" /></a>
-	</wicket:fragment>	
+	</div>
+	
 	
 </wicket:panel>

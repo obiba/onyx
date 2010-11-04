@@ -280,7 +280,6 @@ public class DefaultQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
         return new DefaultQuestionPanelMock(panelId, new Model(question));
@@ -372,7 +371,6 @@ public class DefaultQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
         return new DefaultQuestionPanelMock(panelId, new Model(question));

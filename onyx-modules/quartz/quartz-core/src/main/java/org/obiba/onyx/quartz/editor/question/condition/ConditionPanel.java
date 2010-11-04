@@ -10,49 +10,47 @@
 package org.obiba.onyx.quartz.editor.question.condition;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.NEW_VARIABLE;
+import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.NONE;
+import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.QUESTION_CATEGORY;
+import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.VARIABLE;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.obiba.magma.Variable;
+import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.wicket.Images;
-import org.obiba.onyx.wicket.panel.OnyxEntityList;
-import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.quartz.editor.question.condition.Condition.Type;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 
 /**
  *
@@ -60,217 +58,270 @@ import org.obiba.wicket.markup.html.table.IColumnProvider;
 @SuppressWarnings("serial")
 public class ConditionPanel extends Panel {
 
-  // private final transient Logger log = LoggerFactory.getLogger(getClass());
+  private final IModel<Questionnaire> questionnaireModel;
 
-  private final ModalWindow variableWindow;
+  private final IModel<Question> questionModel;
 
-  private final OnyxEntityList<VariableDS> variables;
-
-  private final Form<Conditions> form;
-
-  private final WebMarkupContainer expressionContainer;
-
-  private final WebMarkupContainer expressionVisibility;
-
-  private final TextArea<String> expression;
-
-  @SuppressWarnings("unchecked")
   public ConditionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
     super(id);
-    final Conditions conditions = ConditionsFactory.create(questionModel.getObject(), questionnaireModel.getObject());
-    setDefaultModel(new Model<Conditions>(conditions));
+    this.questionModel = questionModel;
+    this.questionnaireModel = questionnaireModel;
 
-    variableWindow = new ModalWindow("variableWindow");
-    variableWindow.setCssClassName("onyx");
-    variableWindow.setInitialWidth(700);
-    variableWindow.setInitialHeight(250);
-    variableWindow.setResizable(true);
-    add(variableWindow);
+    add(CSSPackageResource.getHeaderContribution(ConditionPanel.class, "ConditionPanel.css"));
 
-    add(form = new Form<Conditions>("form", (IModel<Conditions>) getDefaultModel()));
+    Condition condition = new Condition();
 
-    expressionContainer = new WebMarkupContainer("expressionContainer");
-    expressionContainer.setOutputMarkupId(true);
-    form.add(expressionContainer);
+    Question question = questionModel.getObject();
+    final Questionnaire questionnaire = questionnaireModel.getObject();
+    VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
 
-    expressionVisibility = new WebMarkupContainer("expressionVisibility");
-    expressionVisibility.setVisible(conditions.getVariables().size() > 1);
-    expressionContainer.add(expressionVisibility);
+    if(variableDataSource != null) {
+      String tableName = variableDataSource.getTableName();
+      String variableName = variableDataSource.getVariableName();
 
-    expression = new TextArea<String>("expression", new PropertyModel<String>(form.getModel(), "expression"));
-    expression.setLabel(new ResourceModel("Expression"));
-    expression.setRequired(true);
-    expression.add(new AbstractValidator<String>() {
-
-      private final Pattern PATTERN = Pattern.compile("(\\$[\\d]+)");
-
-      @Override
-      protected void onValidate(IValidatable<String> validatable) {
-        String value = validatable.getValue();
-        if(StringUtils.isBlank(value)) return;
-        // check if all defined variables are used
-        if(conditions.getVariables().size() > 1) {
-          List<String> ds = new ArrayList<String>();
-          for(int i = 1; i <= conditions.getVariables().size(); i++) {
-            String variable = "$" + i;
-            ds.add(variable);
-            if(value.indexOf(variable) < 0) {
-              Map<String, Object> vars = new HashMap<String, Object>();
-              vars.put("variable", variable);
-              error(validatable, "UnusedVariable", vars);
-            }
-          }
-          // check if for each expression variable, there is a variable defined
-          List<String> foundVariables = new ArrayList<String>();
-          find(value, foundVariables);
-
-          for(String notFound : (Collection<String>) CollectionUtils.subtract(foundVariables, ds)) {
-            Map<String, Object> vars = new HashMap<String, Object>();
-            vars.put("variable", notFound);
-            error(validatable, "UndefinedVariable", vars);
-          }
+      Variable variable;
+      try {
+        variable = questionnaire.getVariable(variableName);
+        condition.setType(Type.VARIABLE);
+        condition.setVariable(variable);
+      } catch(IllegalArgumentException e) {
+        condition.setType(Type.QUESTION_CATEGORY);
+        if(StringUtils.isNotEmpty(tableName) && !questionnaire.getName().equals(tableName)) {
+          throw new RuntimeException("Cannot create use a Question[" + question + "] condition from another questionnaire: " + variableDataSource);
         }
-
+        int index = variableName.lastIndexOf('.');
+        condition.setQuestion(new QuestionnaireFinder(questionnaire).findQuestion(variableName.substring(0, index)));
+        condition.setCategory(condition.getQuestion().getCategoriesByName().get(variableName.substring(index, variableName.length())));
       }
+    }
 
-      // I'm sure we can do this in a single regex but I didn't find it :-(
-      private void find(String value, List<String> foundVariables) {
-        Matcher matcher = PATTERN.matcher(value);
-        if(matcher.find()) {
-          foundVariables.add(matcher.group(0));
-          String start = value.substring(0, matcher.start(0));
-          String end = value.substring(matcher.end(0), value.length());
-          find(start + end, foundVariables);
-        }
-      }
-    });
+    Model<Condition> model = new Model<Condition>(condition);
+    setDefaultModel(model);
 
-    expressionVisibility.add(expression);
-    expressionVisibility.add(new SimpleFormComponentLabel("expressionLabel", expression));
+    final RadioGroup<Type> conditionType = new RadioGroup<Type>("conditionType", new PropertyModel<Type>(model, "type"));
+    conditionType.setLabel(new ResourceModel("ConditionType")).setRequired(true);
+    add(conditionType);
 
-    SortableDataProvider<VariableDS> variableProvider = new SortableDataProvider<VariableDS>() {
+    final Radio<Type> noneType = new Radio<Type>("none", new Model<Type>(NONE));
+    noneType.setLabel(new ResourceModel("NoCondition"));
+    conditionType.add(noneType).add(new SimpleFormComponentLabel("noneLabel", noneType));
 
+    final Radio<Type> questionType = new Radio<Type>("questionType", new Model<Type>(QUESTION_CATEGORY));
+    questionType.setLabel(new ResourceModel("QuestionType"));
+    conditionType.add(questionType).add(new SimpleFormComponentLabel("questionTypeLabel", questionType));
+
+    final WebMarkupContainer questionTypeContainer = new WebMarkupContainer("questionTypeContainer");
+    questionTypeContainer.setOutputMarkupId(true);
+    conditionType.add(questionTypeContainer);
+
+    final WebMarkupContainer questionConditionContainer = new WebMarkupContainer("questionConditionContainer");
+    questionConditionContainer.setVisible(condition.getType() == QUESTION_CATEGORY);
+    questionTypeContainer.add(questionConditionContainer);
+
+    if(questionnaire.getQuestionnaireCache() == null) {
+      QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+    }
+    List<Question> questions = new ArrayList<Question>(questionnaire.getQuestionnaireCache().getQuestionCache().values());
+    questions.remove(question);
+    Collections.sort(questions, new QuestionnaireElementComparator());
+
+    final DropDownChoice<Question> questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(model, "question"), questions, new QuestionnaireElementNameRenderer()) {
       @Override
-      public Iterator<VariableDS> iterator(int first, int count) {
-        return conditions.getVariables().iterator();
-      }
-
-      @Override
-      public int size() {
-        return conditions.getVariables().size();
-      }
-
-      @Override
-      public IModel<VariableDS> model(VariableDS object) {
-        return new Model<VariableDS>(object);
+      public boolean isRequired() {
+        return conditionType.getModelObject() == QUESTION_CATEGORY;
       }
     };
 
-    form.add(new AjaxLink<Void>("addVariable") {
+    questionName.setLabel(new ResourceModel("Question"));
+    questionConditionContainer.add(questionName).add(new SimpleFormComponentLabel("questionLabel", questionName));
+
+    final List<Category> categories = new ArrayList<Category>();
+    if(questionName.getModelObject() != null) {
+      categories.addAll(questionName.getModelObject().getCategories());
+    }
+
+    final DropDownChoice<Category> categoryName = new DropDownChoice<Category>("category", new PropertyModel<Category>(model, "category"), categories, new QuestionnaireElementNameRenderer()) {
       @Override
-      public void onClick(AjaxRequestTarget target) {
-        variableWindow.setContent(new VariableDSPanel("content", new Model<VariableDS>(new VariableDS()), variableWindow) {
-          @Override
-          public void onSave(AjaxRequestTarget target1, VariableDS variable) {
-            conditions.getVariables().add(variable);
-            variable.setIndex(conditions.getVariables().size());
-            expressionVisibility.setVisible(conditions.getVariables().size() > 1);
-            target1.addComponent(expressionContainer);
-            target1.addComponent(variables);
-          }
-        });
-        variableWindow.show(target);
+      public boolean isRequired() {
+        return conditionType.getModelObject() == QUESTION_CATEGORY;
+      }
+    };
+    categoryName.setLabel(new ResourceModel("Category"));
+    questionConditionContainer.add(categoryName).add(new SimpleFormComponentLabel("categoryLabel", categoryName));
+
+    questionName.add(new OnChangeAjaxBehavior() {
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        if(questionName.getModelObject() != null) {
+          categories.clear();
+          categories.addAll(questionName.getModelObject().getCategories());
+        }
+        target.addComponent(categoryName);
       }
     });
 
-    form.add(variables = new OnyxEntityList<VariableDS>("variables", variableProvider, new VariableDSColumnProvider(), new StringResourceModel("Variables", ConditionPanel.this, null)));
+    Radio<Type> variableType = new Radio<Type>("variableType", new Model<Type>(VARIABLE));
+    variableType.setLabel(new ResourceModel("VariableType"));
+    conditionType.add(variableType).add(new SimpleFormComponentLabel("variableTypeLabel", variableType));
+
+    final WebMarkupContainer variableTypeContainer = new WebMarkupContainer("variableTypeContainer");
+    variableTypeContainer.setOutputMarkupId(true);
+    conditionType.add(variableTypeContainer);
+
+    final WebMarkupContainer variableContainer = new WebMarkupContainer("variableContainer");
+    variableContainer.setVisible(condition.getType() == VARIABLE);
+    variableTypeContainer.add(variableContainer);
+
+    List<Variable> variables = new ArrayList<Variable>(questionnaire.getVariables());
+    Collections.sort(variables, new Comparator<Variable>() {
+      @Override
+      public int compare(Variable o1, Variable o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    });
+
+    IChoiceRenderer<Variable> variableRenderer = new IChoiceRenderer<Variable>() {
+      @Override
+      public Object getDisplayValue(Variable object) {
+        return object.getName();
+      }
+
+      @Override
+      public String getIdValue(Variable object, int index) {
+        return object.getName();
+      }
+    };
+    final DropDownChoice<Variable> variable = new DropDownChoice<Variable>("variable", new PropertyModel<Variable>(model, "variable"), variables, variableRenderer) {
+      @Override
+      public boolean isRequired() {
+        return conditionType.getModelObject() == VARIABLE;
+      }
+    };
+    variable.setLabel(new ResourceModel("Variable"));
+    variableContainer.add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
+
+    Radio<Type> newVariableType = new Radio<Type>("newVariableType", new Model<Type>(NEW_VARIABLE));
+    newVariableType.setLabel(new ResourceModel("NewVariable"));
+    conditionType.add(newVariableType).add(new SimpleFormComponentLabel("newVariableTypeLabel", newVariableType));
+
+    final WebMarkupContainer newVariableTypeContainer = new WebMarkupContainer("newVariableTypeContainer");
+    newVariableTypeContainer.setOutputMarkupId(true);
+    conditionType.add(newVariableTypeContainer);
+
+    final WebMarkupContainer newVariableContainer = new WebMarkupContainer("newVariableContainer");
+    newVariableContainer.setVisible(condition.getType() == NEW_VARIABLE);
+    newVariableTypeContainer.add(newVariableContainer);
+
+    final TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(model, "script")) {
+      @Override
+      public boolean isRequired() {
+        return conditionType.getModelObject() == NEW_VARIABLE;
+      }
+    };
+    script.setLabel(new ResourceModel("Script"));
+    newVariableContainer.add(script).add(new SimpleFormComponentLabel("scriptLabel", script));
+
+    final TextField<String> newVariableName = new TextField<String>("newVariableName", new PropertyModel<String>(model, "newVariableName"));
+    newVariableName.setLabel(new ResourceModel("VariableName"));
+    newVariableName.add(new AbstractValidator<String>() {
+      @Override
+      protected void onValidate(IValidatable<String> validatable) {
+        if(checkIfVariableExists(validatable.getValue())) error(validatable, "VariableAlreadyExists");
+      }
+    });
+    newVariableContainer.add(newVariableName).add(new SimpleFormComponentLabel("newVariableNameLabel", newVariableName));
+
+    conditionType.add(new AjaxFormChoiceComponentUpdatingBehavior() {
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        Type type = conditionType.getModelObject();
+        switch(type) {
+        case NONE:
+          questionName.setModelObject(null);
+          categoryName.setModelObject(null);
+          variable.setModelObject(null);
+          newVariableName.setModelObject(null);
+          script.setModelObject(null);
+          break;
+        case QUESTION_CATEGORY:
+          variable.setModelObject(null);
+          newVariableName.setModelObject(null);
+          script.setModelObject(null);
+          break;
+        case VARIABLE:
+          questionName.setModelObject(null);
+          categoryName.setModelObject(null);
+          newVariableName.setModelObject(null);
+          script.setModelObject(null);
+          break;
+        case NEW_VARIABLE:
+          questionName.setModelObject(null);
+          categoryName.setModelObject(null);
+          variable.setModelObject(null);
+          break;
+
+        }
+        questionConditionContainer.setVisible(type == QUESTION_CATEGORY);
+        variableContainer.setVisible(type == VARIABLE);
+        newVariableContainer.setVisible(type == NEW_VARIABLE);
+        target.addComponent(questionTypeContainer);
+        target.addComponent(variableTypeContainer);
+        target.addComponent(newVariableTypeContainer);
+      }
+    });
 
   }
 
-  private class VariableDSColumnProvider implements IColumnProvider<VariableDS>, Serializable {
-
-    private final List<IColumn<VariableDS>> columns = new ArrayList<IColumn<VariableDS>>();
-
-    public VariableDSColumnProvider() {
-      columns.add(new AbstractColumn<VariableDS>(new StringResourceModel("ID", ConditionPanel.this, null)) {
-        @Override
-        public void populateItem(Item<ICellPopulator<VariableDS>> cellItem, String componentId, IModel<VariableDS> rowModel) {
-          cellItem.add(new Label(componentId, "$" + rowModel.getObject().getIndex()));
-        }
-      });
-      columns.add(new AbstractColumn<VariableDS>(new StringResourceModel("Variable", ConditionPanel.this, null)) {
-        @Override
-        public void populateItem(Item<ICellPopulator<VariableDS>> cellItem, String componentId, IModel<VariableDS> rowModel) {
-          VariableDS ds = rowModel.getObject();
-          cellItem.add(new Label(componentId, isBlank(ds.getScript()) ? ds.getTable() + ":" + ds.getName() : ds.getScript()));
-        }
-      });
-      columns.add(new HeaderlessColumn<VariableDS>() {
-        @Override
-        public void populateItem(Item<ICellPopulator<VariableDS>> cellItem, String componentId, IModel<VariableDS> rowModel) {
-          cellItem.add(new DataSourceAction(componentId, rowModel));
-        }
-      });
-    }
-
-    @Override
-    public List<IColumn<VariableDS>> getAdditionalColumns() {
-      return null;
-    }
-
-    @Override
-    public List<String> getColumnHeaderNames() {
-      return null;
-    }
-
-    @Override
-    public List<IColumn<VariableDS>> getDefaultColumns() {
-      return columns;
-    }
-
-    @Override
-    public List<IColumn<VariableDS>> getRequiredColumns() {
-      return columns;
-    }
-
-  }
-
-  public class DataSourceAction extends Fragment {
-
-    public DataSourceAction(String id, final IModel<VariableDS> model) {
-      super(id, "variableAction", ConditionPanel.this, model);
-
-      Image editImg = new Image("editImg", Images.EDIT);
-      editImg.add(new AttributeModifier("title", true, new ResourceModel("Edit")));
-      add(new AjaxLink<Void>("editLink") {
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          variableWindow.setContent(new VariableDSPanel("content", model, variableWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target1, VariableDS variable) {
-              target1.addComponent(variables);
-            }
-          });
-          variableWindow.show(target);
-        }
-      }.add(editImg));
-
-      Image deleteImg = new Image("deleteImg", Images.DELETE);
-      deleteImg.add(new AttributeModifier("title", true, new ResourceModel("Delete")));
-      add(new AjaxLink<Void>("deleteLink") {
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          List<VariableDS> variableList = form.getModelObject().getVariables();
-          variableList.remove(model.getObject());
-          if(variableList.size() <= 1) {
-            expression.setModelObject(null);
-            expressionVisibility.setVisible(false);
-            target.addComponent(expressionContainer);
-          }
-          target.addComponent(variables);
-        }
-      }.add(deleteImg));
-
+  public void onSave(@SuppressWarnings("unused") AjaxRequestTarget target) {
+    Condition condition = (Condition) getDefaultModelObject();
+    if(condition.getType() == null) return;
+    QuestionnaireBuilder questionnaireBuilder = QuestionnaireBuilder.getInstance(questionnaireModel.getObject());
+    QuestionBuilder questionBuilder = QuestionBuilder.inQuestion(questionnaireBuilder, questionModel.getObject());
+    switch(condition.getType()) {
+    case NONE:
+      break;
+    case QUESTION_CATEGORY:
+      questionBuilder.setCondition(condition.getQuestion().getName(), condition.getCategory().getName());
+      break;
+    case VARIABLE:
+      questionBuilder.setVariableName(condition.getVariable().getName());
+      break;
+    case NEW_VARIABLE:
+      String name = condition.getNewVariableName();
+      questionBuilder.setQuestionnaireVariableCondition(isBlank(name) ? generateVariableName() : name, condition.getScript());
+      break;
     }
   }
+
+  private boolean checkIfVariableExists(String name) {
+    for(Variable v : questionnaireModel.getObject().getVariables()) {
+      if(StringUtils.equalsIgnoreCase(v.getName(), name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Return "variable.questionName"<br>
+   * If this name already exists, return "variable.questionName.1", "variable.questionName.2", etc.
+   * 
+   * @return
+   */
+  private String generateVariableName() {
+    String name = "variable." + questionModel.getObject().getName();
+    int i = 0;
+    boolean exists = true;
+    String newName = null;
+    do {
+      newName = name;
+      if(i > 0) {
+        newName += "." + i;
+      }
+      i++;
+      exists = checkIfVariableExists(newName);
+    } while(exists);
+    return newName;
+  }
+
 }

@@ -181,7 +181,6 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
    * associated to.
    * @param questionCategory
    */
-  @SuppressWarnings("serial")
   private void updateOpenAnswerDefinitionPanel(AjaxRequestTarget target, IModel questionCategoryModel) {
     boolean changed = false;
 

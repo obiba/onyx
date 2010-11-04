@@ -12,9 +12,6 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
@@ -37,7 +34,9 @@ public class QuestionnaireDataSourceConverter {
 
   private static final String GENDER = "gender";
 
-  private static final String ADMIN_PARTICIPANT_GENDER_PATH = "Admin.Participant.gender";
+  private static final String ADMIN_PARTICIPANT_GENDER_NAME = "Admin.Participant.gender";
+
+  private static final String ADMIN_PARTICIPANT_GENDER_PATH = "Participants:Admin.Participant.gender";
 
   // private static Logger logger = LoggerFactory.getLogger(QuestionnaireDataSourceConverter.class);
 
@@ -51,23 +50,25 @@ public class QuestionnaireDataSourceConverter {
     for(Question question : questionnaire.getQuestionnaireCache().getQuestionCache().values()) {
       IDataSource condition = question.getCondition();
       if(condition == null) continue;
-      if(condition instanceof ComputingDataSource) {
+      if(condition instanceof QuestionnaireDataSource) {
+        question.setCondition(convert(condition, question, questionnaire));
+      } else if(condition instanceof ComputingDataSource) {
         ComputingDataSource computingDataSource = (ComputingDataSource) condition;
-        List<IDataSource> dataSources = computingDataSource.getDataSources();
-        for(IDataSource dataSource : new ArrayList<IDataSource>(dataSources)) {
-          IDataSource newDataSource = convert(dataSource, question, questionnaire);
-          if(newDataSource != dataSource) {
-            int index = dataSources.indexOf(dataSource);
-            dataSources.remove(dataSource);
-            dataSources.add(index, newDataSource);
-          }
+        int i = 1;
+        String expression = computingDataSource.getExpression();
+        for(IDataSource dataSource : computingDataSource.getDataSources()) {
+          VariableDataSource variableDataSource = convert(dataSource, question, questionnaire);
+          expression = expression.replaceAll("\\$" + i++, "\\$(" + variableDataSource.getTableName() + ":" + variableDataSource.getVariableName() + ").value()");
         }
+        QuestionBuilder.inQuestion(builder, question).setQuestionnaireVariableCondition(question.getName() + ".condition", expression);
       } else if(condition instanceof ComparingDataSource) {
         ComparingDataSource comparingDataSource = (ComparingDataSource) condition;
         String variableName = null;
+        String variablePath = null;
         String property = ((ParticipantPropertyDataSource) comparingDataSource.getDataSourceLeft()).getProperty();
         if(GENDER.equals(property)) {
-          variableName = ADMIN_PARTICIPANT_GENDER_PATH;
+          variableName = ADMIN_PARTICIPANT_GENDER_NAME;
+          variablePath = ADMIN_PARTICIPANT_GENDER_PATH;
         } else {
           throw new IllegalArgumentException("Unsupported property[ " + property + " for dataSource " + comparingDataSource.getDataSourceLeft() + " for question " + question);
         }
@@ -87,17 +88,17 @@ public class QuestionnaireDataSourceConverter {
           default:
             scriptValue = "'" + value + "'";
           }
-          questionBuilder.setQuestionnaireVariableCondition(variableName, "${'" + variableName + "'}.any(" + scriptValue + ")");
+          questionBuilder.setQuestionnaireVariableCondition(variableName, "${'" + variablePath + "'}.any(" + scriptValue + ")");
         } else {
-          question.setCondition(new VariableDataSource(questionnaire.getName() + ":" + variable.getName()));
+          questionBuilder.setQuestionnaireVariableCondition(variableName);
         }
       }
     }
   }
 
-  private static IDataSource convert(IDataSource dataSource, Question question, Questionnaire questionnaire) {
+  private static VariableDataSource convert(IDataSource dataSource, Question question, Questionnaire questionnaire) {
     if(dataSource instanceof VariableDataSource) {
-      return dataSource; // no conversion
+      return (VariableDataSource) dataSource; // no conversion
     }
     if(dataSource instanceof QuestionnaireDataSource) {
       return convertQuestionnaireDataSource((QuestionnaireDataSource) dataSource, questionnaire);
