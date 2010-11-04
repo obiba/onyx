@@ -49,7 +49,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -57,6 +56,8 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.page.PagePanel;
 import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
+import org.obiba.onyx.quartz.editor.question.EditedQuestion;
+import org.obiba.onyx.quartz.editor.question.QuestionPreviewPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.Node.NodeAttribute;
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
@@ -99,6 +100,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
   private final AbstractDefaultAjaxBehavior addChildBehavior;
 
   private final Label addChildCallback;
+
+  private final AbstractDefaultAjaxBehavior previewBehavior;
+
+  private final Label previewCallback;
 
   private final WebMarkupContainer tree;
 
@@ -176,6 +181,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
     addChildCallback.setOutputMarkupId(true);
     addChildCallback.setEscapeModelStrings(false);
     add(addChildCallback);
+
+    add(previewBehavior = new PreviewBehavior());
+    previewCallback = new Label("previewCallback", "");
+    previewCallback.setOutputMarkupId(true);
+    previewCallback.setEscapeModelStrings(false);
+    add(previewCallback);
+
   }
 
   public abstract void show(Component component, IModel<String> title, AjaxRequestTarget target);
@@ -199,6 +211,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     addChildCallback.setDefaultModelObject("Wicket.QTree.addChild = function(nodeId, type) {\n" + //
     "  wicketAjaxGet('" + addChildBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&type='+ type, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    "\n}");
+
+    previewCallback.setDefaultModelObject("Wicket.QTree.previewNode = function(nodeId) {\n" + //
+    "  wicketAjaxGet('" + previewBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
     "\n}");
   }
 
@@ -439,6 +455,21 @@ public abstract class QuestionnaireTreePanel extends Panel {
     }
   }
 
+  protected class PreviewBehavior extends AbstractDefaultAjaxBehavior {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void respond(AjaxRequestTarget target) {
+      String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
+      IQuestionnaireElement element = elements.get(nodeId);
+      if(element instanceof Question) {
+        IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+        QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), new Model<EditedQuestion>(new EditedQuestion((Question) element)), questionnaireModel);
+        show(questionPreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, null), target);
+      }
+    }
+  }
+
   protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
     @Override
     protected void respond(final AjaxRequestTarget target) {
@@ -555,10 +586,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Question question) {
-      QuestionType questionType = question.getType();
-      if(questionType != QuestionType.ARRAY_CHECKBOX && questionType != QuestionType.ARRAY_RADIO) {
-        children.addAll(question.getQuestions());
-      }
     }
 
     @Override
@@ -594,6 +621,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
     nodeAttribute.setId(addElement(element));
     nodeAttribute.setRel(ClassUtils.getShortClassName(element.getClass()));
     node.setAttr(nodeAttribute);
+    if(element instanceof Question) {
+      node.setState("closed");
+    }
 
     QVisitor questionnaireVisitor = new QVisitor(new ArrayList<IQuestionnaireElement>());
     element.accept(questionnaireVisitor);

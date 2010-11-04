@@ -13,7 +13,7 @@ Wicket.QTree.refreshTree = function(treeId) {
 }
 
 Wicket.QTree.buildTree = function(treeId, jsonUrl) {
-	$("#" + treeId).jstree({
+	$("#" + treeId).jstree({		
 		"json_data" : {
 			"ajax" : {
 				"url" : jsonUrl,
@@ -41,11 +41,12 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 					"valid_children" : [ "Question" ]
 				},
 				"Question" : {
-					"valid_children" : [ "Question" ]
+					"valid_children" : "none"
 				}				
 			}
 		},
-		"contextmenu" : { 
+		"contextmenu" : {
+			"select_node": true,
 			"items": 	
 				function (node) { 
 					var elementId = node.attr("id");
@@ -92,5 +93,8 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 			// see http://groups.google.com/group/jstree/browse_thread/thread/72c504f1212f7258/ff44f4f7d8a57422?lnk=gst&q=move_node#ff44f4f7d8a57422
 			Wicket.QTree.moveNode($(this).attr("id"), data.rslt.np.attr("id"), data.rslt.cp, data.rslt.op.attr("id"));
 		});
-	});
+	})
+	.bind("select_node.jstree", function (e, data) {		
+		Wicket.QTree.previewNode(data.rslt.obj.attr("id"));
+	});	
 }
