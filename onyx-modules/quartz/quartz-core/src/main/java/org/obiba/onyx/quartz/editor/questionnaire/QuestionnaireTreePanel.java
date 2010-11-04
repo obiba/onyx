@@ -55,8 +55,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.page.PagePanel;
+import org.obiba.onyx.quartz.editor.page.PagePreviewPanel;
 import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
-import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionPreviewPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.Node.NodeAttribute;
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
@@ -68,18 +68,18 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class QuestionnaireTreePanel extends Panel {
 
-  private final transient Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   private static final String ID_PREFIX = "element_";
 
   @SpringBean
-  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
-  private transient LocalePropertiesUtils localePropertiesUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   @SpringBean
-  private transient QuestionnaireBundleManager questionnaireBundleManager;
+  private QuestionnaireBundleManager questionnaireBundleManager;
 
   private final Map<String, IQuestionnaireElement> elements = new HashMap<String, IQuestionnaireElement>();
 
@@ -364,6 +364,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
             target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(savedQuestionnaire) + "');");
             show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
           }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+            cancelPanel(target1);
+          }
         };
         show(questionnairePanel, new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null), target);
 
@@ -380,6 +385,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
             target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(section) + "');");
             show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
           }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+            cancelPanel(target1);
+          }
         };
         show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
 
@@ -393,6 +403,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
             // update node name in jsTree
             target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(editedPage) + "');");
             show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
+          }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+            cancelPanel(target1);
           }
         };
         show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
@@ -408,6 +423,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
             target1.addComponent(tree);
             // update node name in jsTree
             target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(question) + "');");
+            show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
+          }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
             show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
           }
         };
@@ -462,10 +482,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
     protected void respond(AjaxRequestTarget target) {
       String nodeId = RequestCycle.get().getRequest().getParameter("nodeId");
       IQuestionnaireElement element = elements.get(nodeId);
+      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       if(element instanceof Question) {
-        IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
-        QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), new Model<EditedQuestion>(new EditedQuestion((Question) element)), questionnaireModel);
-        show(questionPreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, null), target);
+        Question question = (Question) element;
+        QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), new Model<Question>(question), questionnaireModel);
+        show(questionPreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, new Model<Question>(question)), target);
+      } else if(element instanceof Page) {
+        Page page = (Page) element;
+        PagePreviewPanel pagePreviewPanel = new PagePreviewPanel(getShownComponentId(), new Model<Page>(page), questionnaireModel);
+        show(pagePreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, new Model<Page>(page)), target);
       }
     }
   }
@@ -502,6 +527,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
             target1.addComponent(tree);
             show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
           }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+            cancelPanel(target1);
+          }
         };
         show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
 
@@ -517,17 +547,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
             target1.addComponent(tree);
             show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
           }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+            cancelPanel(target1);
+          }
         };
         show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
 
-      } else if(element instanceof IHasQuestion && "question".equals(type)) {
-        final IHasQuestion updatedElement;
-        if(element instanceof Page) {
-          updatedElement = questionnaireFinder.findPage(element.getName());
-        } else {
-          updatedElement = questionnaireFinder.findQuestion(element.getName());
-        }
-
+      } else if(element instanceof Page && "question".equals(type)) {
+        final Page updatedElement = questionnaireFinder.findPage(element.getName());
         EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, Question question) {
@@ -535,12 +564,21 @@ public abstract class QuestionnaireTreePanel extends Panel {
             persist(target1);
             QuestionnaireTreePanel.this.setDefaultModelObject(questionnaire);
             target1.addComponent(tree);
-            show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
+            cancelPanel(target1);
+          }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+            cancelPanel(target1);
           }
         };
         show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), target);
       }
     }
+  }
+
+  private void cancelPanel(AjaxRequestTarget target1) {
+    show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target1);
   }
 
   protected void persitQuestionnaire(AjaxRequestTarget target) {
@@ -620,13 +658,14 @@ public abstract class QuestionnaireTreePanel extends Panel {
     NodeAttribute nodeAttribute = new NodeAttribute();
     nodeAttribute.setId(addElement(element));
     nodeAttribute.setRel(ClassUtils.getShortClassName(element.getClass()));
+
     node.setAttr(nodeAttribute);
-    if(element instanceof Question) {
-      node.setState("closed");
-    }
 
     QVisitor questionnaireVisitor = new QVisitor(new ArrayList<IQuestionnaireElement>());
     element.accept(questionnaireVisitor);
+    if(questionnaireVisitor.getChildren().isEmpty()) {
+      nodeAttribute.setClazz("jstree-leaf");
+    }
     for(IQuestionnaireElement child : questionnaireVisitor.getChildren()) {
       node.getChildren().add(populateNode(child));
     }

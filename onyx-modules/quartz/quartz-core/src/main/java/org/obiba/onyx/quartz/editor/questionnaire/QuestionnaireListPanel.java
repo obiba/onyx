@@ -117,6 +117,11 @@ public class QuestionnaireListPanel extends Panel {
             target1.addComponent(editionPanel.getTree());
             target1.addComponent(questionnaireList);
           }
+
+          @Override
+          public void onCancel(AjaxRequestTarget target1) {
+
+          }
         };
         editionPanel.setRightPanel(rightPanel, new Model<String>(""));
 

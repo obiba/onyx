@@ -13,6 +13,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  *
  */
@@ -60,9 +63,13 @@ public class Node implements Serializable {
     this.children = children;
   }
 
+  @JsonIgnoreProperties(value = "clazz")
   public static class NodeAttribute {
 
     private String id;
+
+    @JsonProperty(value = "class")
+    private String clazz = "";
 
     private String rel;
 
@@ -82,6 +89,12 @@ public class Node implements Serializable {
       this.rel = rel;
     }
 
-  }
+    public String getClazz() {
+      return clazz;
+    }
 
+    public void setClazz(String clazz) {
+      this.clazz = clazz;
+    }
+  }
 }

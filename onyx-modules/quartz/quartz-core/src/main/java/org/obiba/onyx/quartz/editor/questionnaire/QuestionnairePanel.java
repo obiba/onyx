@@ -274,11 +274,14 @@ public abstract class QuestionnairePanel extends Panel {
     form.add(new AjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        onCancel(target);
       }
     }.setDefaultFormProcessing(false));
   }
 
   public abstract void onSave(AjaxRequestTarget target, Questionnaire questionnaire);
+
+  public abstract void onCancel(AjaxRequestTarget target);
 
   public void persist(AjaxRequestTarget target) {
     try {

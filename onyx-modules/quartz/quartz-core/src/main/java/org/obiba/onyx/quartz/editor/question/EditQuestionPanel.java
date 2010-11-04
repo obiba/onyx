@@ -308,12 +308,15 @@ public abstract class EditQuestionPanel extends Panel {
     form.add(new AjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        onCancel(target);
       }
     }.setDefaultFormProcessing(false));
 
   }
 
   public abstract void onSave(AjaxRequestTarget target, Question question);
+
+  public abstract void onCancel(AjaxRequestTarget target);
 
   private void setTabsVisibility(QuestionType questionType) {
     if(questionType == null) return;

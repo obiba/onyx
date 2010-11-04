@@ -105,6 +105,7 @@ public abstract class SectionPanel extends Panel {
     form.add(new AjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        onCancel(target);
       }
     }.setDefaultFormProcessing(false));
   }
@@ -115,6 +116,8 @@ public abstract class SectionPanel extends Panel {
    * @param section
    */
   public abstract void onSave(AjaxRequestTarget target, Section section);
+
+  public abstract void onCancel(AjaxRequestTarget target);
 
   public void persist(AjaxRequestTarget target) {
     try {

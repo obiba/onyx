@@ -64,7 +64,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 							seperator_after : false, 
 							seperator_before : false 
 						}, 
-						"create_question": (elementType != "Page" && elementType != "Question") ? false :{ 
+						"create_question": (elementType != "Page") ? false :{ 
 							label: "Add new Question", 
 							action: function (obj) { Wicket.QTree.addChild(elementId, 'question'); },
 							seperator_after : false, 
