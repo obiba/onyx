@@ -282,6 +282,7 @@ public abstract class QuestionnairePanel extends Panel {
 
   public void persist(AjaxRequestTarget target) {
     try {
+
       questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);

@@ -48,6 +48,7 @@ import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
+import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -193,7 +194,7 @@ public abstract class CategoryWindow extends Panel {
       @Override
       @SuppressWarnings({ "rawtypes", "unchecked" })
       public SortableList<OpenAnswerDefinition>.Button[] getButtons() {
-        SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(new ResourceModel("AddOpenAnswerDefinition")) {
+        SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(new ResourceModel("AddOpenAnswerDefinition"), Images.ADD) {
 
           @Override
           public void callback(AjaxRequestTarget target) {
@@ -255,14 +256,4 @@ public abstract class CategoryWindow extends Panel {
    */
   public abstract void onSave(AjaxRequestTarget target, final QuestionCategory questionCategory);
 
-  public void persist(AjaxRequestTarget target) {
-    try {
-      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
-    } catch(Exception e) {
-      log.error("Cannot persist questionnaire", e);
-      error(e.getMessage());
-      feedbackWindow.setContent(feedbackPanel);
-      feedbackWindow.show(target);
-    }
-  }
 }

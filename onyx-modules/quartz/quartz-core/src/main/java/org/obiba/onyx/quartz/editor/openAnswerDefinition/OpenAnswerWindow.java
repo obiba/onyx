@@ -91,15 +91,4 @@ public abstract class OpenAnswerWindow extends Panel {
    */
   public abstract void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer);
 
-  public void persist(AjaxRequestTarget target) {
-    try {
-      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
-    } catch(Exception e) {
-      log.error("Cannot persist questionnaire", e);
-      error(e.getMessage());
-      feedbackWindow.setContent(feedbackPanel);
-      feedbackWindow.show(target);
-    }
-  }
-
 }

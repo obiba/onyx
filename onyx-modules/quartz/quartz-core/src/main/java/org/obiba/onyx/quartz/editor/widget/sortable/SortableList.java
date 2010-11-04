@@ -20,6 +20,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -163,14 +164,25 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
     private IModel<String> title;
 
-    public Button(IModel<String> title) {
+    private ResourceReference image;
+
+    public Button(IModel<String> title, ResourceReference image) {
       this.title = title;
+      this.image = image;
+    }
+
+    public Button(IModel<String> title) {
+      this(title, null);
     }
 
     public abstract void callback(AjaxRequestTarget target);
 
     public IModel<String> getTitle() {
       return title;
+    }
+
+    public ResourceReference getImage() {
+      return image;
     }
 
   }
@@ -180,14 +192,18 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     public ButtonFragment(String id, IModel<Button> model) {
       super(id, "buttonFragment", SortableList.this, model);
       final Button button = model.getObject();
-      add(new AjaxLink<Void>("button") {
+      AjaxLink<Void> ajaxLink = new AjaxLink<Void>("button") {
         @Override
         public void onClick(AjaxRequestTarget target) {
           button.callback(target);
         }
-      }.add(new Label("buttonLabel", button.getTitle())));
+      };
+      Image image = new Image("buttonImg", button.getImage());
+      image.setVisible(button.getImage() != null);
+      ajaxLink.add(image);
+      ajaxLink.add(new Label("buttonLabel", button.getTitle()));
+      add(ajaxLink);
     }
-
   }
 
 }

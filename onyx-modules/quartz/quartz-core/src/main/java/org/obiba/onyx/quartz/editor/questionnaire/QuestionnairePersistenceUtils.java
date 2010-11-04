@@ -31,6 +31,17 @@ public class QuestionnairePersistenceUtils {
 
   private LocalePropertiesUtils localePropertiesUtils;
 
+  /**
+   * Update questionnaire originally named with this name
+   * @param name
+   * @param questionnaire
+   * @param localeProperties
+   * @throws Exception
+   */
+  public void persist(String name, Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
+
+  }
+
   public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
 
     QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);

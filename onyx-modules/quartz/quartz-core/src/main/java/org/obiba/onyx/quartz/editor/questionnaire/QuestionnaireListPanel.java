@@ -84,7 +84,7 @@ public class QuestionnaireListPanel extends Panel {
     modalWindow.setCssClassName("onyx");
     modalWindow.setInitialWidth(1100);
     modalWindow.setInitialHeight(600);
-    modalWindow.setResizable(true);
+    modalWindow.setResizable(false);
     modalWindow.setTitle(new ResourceModel("Questionnaire"));
     modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       @Override

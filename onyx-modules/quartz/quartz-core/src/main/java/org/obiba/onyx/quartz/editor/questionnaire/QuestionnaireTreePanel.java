@@ -108,8 +108,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private final LocaleProperties localeProperties;
 
-  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
+  private final EditionPanel editionPanel;
+
+  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model, EditionPanel editionPanel) {
     super(id, model);
+    this.editionPanel = editionPanel;
 
     final Questionnaire questionnaire = model.getObject();
     localeProperties = localePropertiesUtils.load(questionnaire);
