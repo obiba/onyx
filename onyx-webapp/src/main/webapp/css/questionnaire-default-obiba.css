@@ -161,7 +161,12 @@ label.label-open {
 }
 
 div.open {
-	float:left;
+	display: inline;
+}
+
+div.open.open-area {
+	display: block;
+	padding-left: 25px;
 }
 
 table.array {

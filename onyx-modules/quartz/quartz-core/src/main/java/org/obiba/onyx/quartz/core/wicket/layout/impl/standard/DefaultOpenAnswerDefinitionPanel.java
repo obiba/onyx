@@ -11,9 +11,11 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -110,6 +112,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         columns = arguments.get(INPUT_SIZE_KEY) != null ? arguments.getInt(INPUT_SIZE_KEY) : null;
       }
       openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString(), columns, rows);
+      if(rows != null && rows > 1 && getOpenAnswerDefinition().getDataType().equals(DataType.TEXT)) {
+        add(new AttributeAppender("class", new Model<String>("open-area"), " "));
+      }
     }
     openField.getField().setOutputMarkupId(true);
     add(openField);
