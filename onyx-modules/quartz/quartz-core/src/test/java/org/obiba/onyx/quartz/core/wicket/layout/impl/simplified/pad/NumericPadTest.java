@@ -132,6 +132,7 @@ public class NumericPadTest {
     questionnaire = createQuestionnaire();
     question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).times(1);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
@@ -247,6 +248,7 @@ public class NumericPadTest {
 
     EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire);
 

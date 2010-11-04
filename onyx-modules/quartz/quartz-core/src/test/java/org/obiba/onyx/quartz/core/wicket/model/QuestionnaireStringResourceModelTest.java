@@ -109,6 +109,7 @@ public class QuestionnaireStringResourceModelTest {
 
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
     // retrieve the current locale and questionnaire.
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
@@ -142,6 +143,7 @@ public class QuestionnaireStringResourceModelTest {
 
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
     // retrieve the current locale and questionnaire.
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
@@ -175,6 +177,7 @@ public class QuestionnaireStringResourceModelTest {
 
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
     // retrieve the current locale and questionnaire.
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 

@@ -13,11 +13,15 @@ import java.util.Locale;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QuestionnaireStringResourceModel extends SpringDetachableModel<String> {
 
@@ -26,6 +30,8 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
   //
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireStringResourceModel.class);
 
   //
   // Instance Variables
@@ -97,7 +103,36 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
 
     // Finally, resolve the string resource using the bundle's message source and the
     // property key.
-    return QuestionnaireStringResourceModelHelper.getMessage(bundle, getLocalizable(), property, stringArgs, locale);
+    String message = QuestionnaireStringResourceModelHelper.getMessage(bundle, getLocalizable(), property, stringArgs, locale);
+
+    return resolveVariableValuesInMessage(message, bundleName);
+  }
+
+  private String resolveVariableValuesInMessage(String message, String tableContext) {
+    if(activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) return message;
+    String msg = message;
+    // Look for variable references and replace by the value as a string
+    try {
+      int refIndex = msg.indexOf("$('");
+      while(refIndex != -1) {
+        int refEndIndex = msg.indexOf("')", refIndex);
+        String path = msg.substring(refIndex + 3, refEndIndex);
+        if(!path.contains(":")) {
+          path = tableContext + ":" + path;
+        }
+        VariableDataSource varDs = new VariableDataSource(path);
+        Data data = varDs.getData(activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant());
+        String dataStr = "";
+        if(data != null && data.getValue() != null) {
+          dataStr = data.getValueAsString();
+        }
+        msg = msg.substring(0, refIndex) + dataStr + msg.substring(refEndIndex + 2, msg.length());
+        refIndex = msg.indexOf("$('");
+      }
+    } catch(Exception e) {
+      log.error("Error while resolving variable values in: " + message, e);
+    }
+    return msg;
   }
 
   //

@@ -128,6 +128,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, "open_label");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "open_unit_label");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
@@ -157,6 +158,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, ": toto");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "open_unit_label");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
@@ -187,6 +189,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, "");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "open_unit_label");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
@@ -217,6 +220,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, "");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
@@ -248,6 +252,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, "");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
@@ -281,6 +286,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, "");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
@@ -315,6 +321,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, "label");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "");
 
+    expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
