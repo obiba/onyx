@@ -356,7 +356,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       @SuppressWarnings("unchecked")
       final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       final IQuestionnaireElement element = elements.get(nodeId);
-      final Questionnaire questionnaire = questionnaireBundleManager.getPersistedBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
+      final Questionnaire questionnaire = questionnaireBundleManager.getBundle(questionnaireModel.getObject().getName()).getQuestionnaire();
       questionnaireModel.setObject(questionnaire);
       final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
       editingElement = true;
