@@ -171,7 +171,7 @@ public class QuestionnaireListPanel extends Panel {
               String str = name;
               try {
                 if(!questionnaire.isConvertedToMagmaVariables()) {
-                  QuestionnaireDataSourceConverter.convertToVariableDataSources(questionnaire);
+                  DataSourceConverter.getInstance(questionnaire).convertToVariableDataSources();
                   questionnaire.setConvertedToMagmaVariables(true);
                   questionnairePersistenceUtils.persist(questionnaire);
                 }

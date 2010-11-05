@@ -63,6 +63,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     this.dataType = dataType;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -87,6 +88,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     this.required = required;
   }
 
+  @Override
   public String getUnit() {
     return unit;
   }
@@ -171,6 +173,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
   }
 
+  @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);
   }
