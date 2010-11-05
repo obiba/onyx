@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class QuestionnaireTreePanel extends Panel {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   private static final String ID_PREFIX = "element_";
 
@@ -113,11 +113,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private final LocaleProperties localeProperties;
 
-  private final EditionPanel editionPanel;
-
-  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model, EditionPanel editionPanel) {
+  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
     super(id, model);
-    this.editionPanel = editionPanel;
 
     final Questionnaire questionnaire = model.getObject();
     localeProperties = localePropertiesUtils.load(questionnaire);

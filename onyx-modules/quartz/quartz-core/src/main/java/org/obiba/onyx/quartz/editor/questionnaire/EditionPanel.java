@@ -48,7 +48,7 @@ public class EditionPanel extends Panel {
     rightPanelContainer.add(rightPanel);
     rightPanelContainer.add(rightPanelTitle = new Label("title"));
 
-    tree = new QuestionnaireTreePanel("tree", model, this) {
+    tree = new QuestionnaireTreePanel("tree", model) {
       @Override
       public void show(Component component, IModel<String> title, AjaxRequestTarget target) {
         setRightPanel(component, title);
