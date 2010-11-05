@@ -6,3 +6,9 @@ img.action {
 	font-weight: normal;
 	font-size: 10px;
 }
+
+.shared {
+	font-size: 10px;
+	font-style: italic;
+	padding-left: 20px;
+}

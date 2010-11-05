@@ -136,7 +136,12 @@ public class CategoryListPanel extends Panel {
 
       @Override
       public Component getItemTitle(@SuppressWarnings("hiding") String id, QuestionCategory questionCategory) {
-        return new Label(id, questionCategory.getName());
+        Category category = questionCategory.getCategory();
+        if(sharedCategories.contains(category)) {
+          String shared = " <span class=\"shared\">" + new StringResourceModel("shared", CategoryListPanel.this, null).getString() + "</span>";
+          return new Label(id, category.getName() + shared).setEscapeModelStrings(false);
+        }
+        return new Label(id, category.getName());
       }
 
       @Override
