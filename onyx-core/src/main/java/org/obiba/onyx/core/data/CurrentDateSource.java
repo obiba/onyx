@@ -87,6 +87,10 @@ public class CurrentDateSource implements IDataSource {
     return this;
   }
 
+  public DateField getField() {
+    return field;
+  }
+
   @Override
   public String toString() {
     String rval = "CurrentDate";

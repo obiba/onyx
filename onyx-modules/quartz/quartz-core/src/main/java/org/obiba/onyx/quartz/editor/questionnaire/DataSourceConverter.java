@@ -57,9 +57,9 @@ public class DataSourceConverter {
 
   private final Questionnaire questionnaire;
 
-  private QuestionnaireBuilder questionnaireBuilder;
+  private final QuestionnaireBuilder questionnaireBuilder;
 
-  private QuestionnaireFinder questionnaireFinder;
+  private final QuestionnaireFinder questionnaireFinder;
 
   // private static Logger logger = LoggerFactory.getLogger(QuestionnaireDataSourceConverter.class);
 
@@ -71,13 +71,13 @@ public class DataSourceConverter {
     this.questionnaire = questionnaire;
     questionnaireBuilder = QuestionnaireBuilder.getInstance(questionnaire);
     questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+    if(questionnaire.getQuestionnaireCache() == null) {
+      questionnaireFinder.buildQuestionnaireCache();
+    }
   }
 
   public void convertToVariableDataSources() {
 
-    if(questionnaire.getQuestionnaireCache() == null) {
-      questionnaireFinder.buildQuestionnaireCache();
-    }
     for(Question question : questionnaire.getQuestionnaireCache().getQuestionCache().values()) {
 
       QuestionBuilder questionBuilder = QuestionBuilder.inQuestion(questionnaireBuilder, question);

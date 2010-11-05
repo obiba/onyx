@@ -1251,6 +1251,10 @@ img.obiba-button {
   -webkit-border-radius: 0.5em;
 }
 
+.obiba-button img {
+	vertical-align: bottom;
+}
+
 div .button-vertical-list{
 	margin-bottom: 1.2500em;
 }
