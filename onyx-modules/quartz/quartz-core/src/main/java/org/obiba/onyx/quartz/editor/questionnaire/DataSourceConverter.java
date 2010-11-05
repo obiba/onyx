@@ -75,7 +75,6 @@ public class DataSourceConverter {
 
   public void convertToVariableDataSources() {
 
-    System.out.println(questionnaire.getName());
     if(questionnaire.getQuestionnaireCache() == null) {
       questionnaireFinder.buildQuestionnaireCache();
     }
@@ -153,12 +152,6 @@ public class DataSourceConverter {
             throw new RuntimeException("Unsupported dataSource[" + dataSourceRight + "] for open answer " + openAnswer.getName() + " in questionnaire " + questionnaire);
           }
           questionnaireBuilder.inOpenAnswerDefinition(openAnswer.getName()).addValidator(comparingDataSource.getComparisonOperator(), variablePath);
-        }
-        if(!openAnswer.getValidationDataSources().isEmpty()) {
-          System.out.println(">> " + openAnswer.getName());
-          for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
-            System.out.println(">>>> " + comparingDataSource.getDataSourceRight());
-          }
         }
       }
     }
