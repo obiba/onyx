@@ -14,6 +14,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 
 /**
  * List of questions.
@@ -29,7 +31,10 @@ public class SingleDocumentQuestionListPanel extends Panel {
 
       @Override
       protected void populateItem(Item<Question> item) {
-        item.add(new SingleDocumentQuestionPanel("questionPanel", item.getModel()));
+        if(item.getModel().getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
+          item.add(new DropDownQuestionPanel("questionPanel", item.getModel()));
+        } else
+          item.add(new SingleDocumentQuestionPanel("questionPanel", item.getModel()));
       }
     });
   }

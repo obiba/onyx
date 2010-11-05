@@ -16,6 +16,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 
 @SuppressWarnings("serial")
 public class QuestionPreviewPanel extends Panel {
@@ -28,6 +30,9 @@ public class QuestionPreviewPanel extends Panel {
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaireModel.getObject());
     activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaireModel.getObject().getLocales().get(0));
     activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-    add(new DefaultQuestionPanel("preview", model));
+    if(model.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
+      add(new DropDownQuestionPanel("preview", model));
+    } else
+      add(new DefaultQuestionPanel("preview", model));
   }
 }

@@ -103,9 +103,11 @@ public class PageQuestionsProvider implements IDataProvider {
         if((dataSource = openAnswer.getDataSource()) != null) {
 
           // Get data from AnswerSource and answer current question (if not already answered).
-          answer = activeQuestionnaireAdministrationService.findAnswer(category);
-          if(answer == null) {
-            activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeInterviewService.getParticipant()));
+          if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+            answer = activeQuestionnaireAdministrationService.findAnswer(category);
+            if(answer == null) {
+              activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeInterviewService.getParticipant()));
+            }
           }
           questionHasAnswers = true;
         }

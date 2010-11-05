@@ -72,20 +72,22 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     add(new EmptyPanel("open"));
 
     // When navigating to previous question
-    CategoryAnswer previousAnswer = null;
-    List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
-    if(categoryAnswers != null && categoryAnswers.size() != 0) {
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      CategoryAnswer previousAnswer = null;
+      List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
+      if(categoryAnswers != null && categoryAnswers.size() != 0) {
 
-      previousAnswer = categoryAnswers.get(0);
+        previousAnswer = categoryAnswers.get(0);
 
-      for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-        if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
-          selectedQuestionCategoryModel = new QuestionnaireModel(questionCategory);
-          break;
+        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+          if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
+            selectedQuestionCategoryModel = new QuestionnaireModel(questionCategory);
+            break;
+          }
         }
-      }
 
-      updateOpenAnswerDefinitionPanel(null, selectedQuestionCategoryModel);
+        updateOpenAnswerDefinitionPanel(null, selectedQuestionCategoryModel);
+      }
     }
 
     questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new LoadableDetachableModel() {
@@ -103,39 +105,41 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     questionCategoriesDropDownChoice.setNullValid(true);
 
     // Set model on submission
-    questionCategoriesDropDownChoice.add(new OnChangeAjaxBehavior() {
+    if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
+      questionCategoriesDropDownChoice.add(new OnChangeAjaxBehavior() {
 
-      @Override
-      protected void onUpdate(final AjaxRequestTarget target) {
+        @Override
+        protected void onUpdate(final AjaxRequestTarget target) {
 
-        log.debug("onUpdate()={}", selectedQuestionCategoryModel != null ? selectedQuestionCategoryModel.getObject() : null);
+          log.debug("onUpdate()={}", selectedQuestionCategoryModel != null ? selectedQuestionCategoryModel.getObject() : null);
 
-        updateOpenAnswerDefinitionPanel(target, selectedQuestionCategoryModel);
+          updateOpenAnswerDefinitionPanel(target, selectedQuestionCategoryModel);
 
-        // Exclusive choice, only one answer per question
-        activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-        if(selectedQuestionCategoryModel != null) {
-          activeQuestionnaireAdministrationService.answer((QuestionCategory) selectedQuestionCategoryModel.getObject());
+          // Exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+          if(selectedQuestionCategoryModel != null) {
+            activeQuestionnaireAdministrationService.answer((QuestionCategory) selectedQuestionCategoryModel.getObject());
+          }
+
+          if(escapeQuestionCategoriesPanel != null) {
+            escapeQuestionCategoriesPanel.setNoSelection();
+            target.addComponent(escapeQuestionCategoriesPanel);
+          }
+
+          updateFeedbackPanel(target);
+
+          fireQuestionCategorySelected(target, getQuestionModel(), selectedQuestionCategoryModel == null ? null : selectedQuestionCategoryModel);
         }
 
-        if(escapeQuestionCategoriesPanel != null) {
-          escapeQuestionCategoriesPanel.setNoSelection();
-          target.addComponent(escapeQuestionCategoriesPanel);
+        @Override
+        protected void onError(final AjaxRequestTarget target, RuntimeException e) {
+          updateFeedbackPanel(target);
+          // Update component
+          target.addComponent(DropDownQuestionCategoriesPanel.this);
         }
 
-        updateFeedbackPanel(target);
-
-        fireQuestionCategorySelected(target, getQuestionModel(), selectedQuestionCategoryModel == null ? null : selectedQuestionCategoryModel);
-      }
-
-      @Override
-      protected void onError(final AjaxRequestTarget target, RuntimeException e) {
-        updateFeedbackPanel(target);
-        // Update component
-        target.addComponent(DropDownQuestionCategoriesPanel.this);
-      }
-
-    });
+      });
+    }
     add(questionCategoriesDropDownChoice);
 
     if(hasEscapeQuestionCategories()) {

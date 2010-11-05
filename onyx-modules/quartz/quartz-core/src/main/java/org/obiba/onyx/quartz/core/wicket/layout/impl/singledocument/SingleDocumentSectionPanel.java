@@ -19,6 +19,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionnaireStyleBehavior;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.provider.AllPagesProvider;
 import org.obiba.onyx.quartz.core.wicket.provider.AllQuestionsProvider;
@@ -78,7 +80,12 @@ public class SingleDocumentSectionPanel extends Panel {
 
         @Override
         protected void populateItem(Item<Question> item) {
-          SingleDocumentQuestionPanel questionPanel = new SingleDocumentQuestionPanel("questionPanel", item.getModel());
+          Panel questionPanel;
+          if(item.getModel().getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
+            questionPanel = new DropDownQuestionPanel("questionPanel", item.getModel());
+          } else
+            questionPanel = new SingleDocumentQuestionPanel("questionPanel", item.getModel());
+
           if(item.getModelObject().getName().indexOf("TIMESTAMP") >= 0) {
             questionPanel.setVisible(false);
           } else {
