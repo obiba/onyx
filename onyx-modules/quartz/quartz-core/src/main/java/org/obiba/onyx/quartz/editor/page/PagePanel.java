@@ -27,6 +27,8 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -60,6 +62,13 @@ public abstract class PagePanel extends Panel {
   public PagePanel(String id, final IModel<Page> model, final IModel<Questionnaire> questionnaireModel) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
+
+    // TODO maybe merge STANDARD_UI with *QuestionPanelFactory class
+    if(Questionnaire.STANDARD_UI.equals(questionnaireModel.getObject().getUiType())) {
+      model.getObject().setUIFactoryName(new DefaultPageLayoutFactory().getBeanName());
+    } else if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
+      model.getObject().setUIFactoryName(new SimplifiedPageLayoutFactory().getBeanName());
+    }
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
