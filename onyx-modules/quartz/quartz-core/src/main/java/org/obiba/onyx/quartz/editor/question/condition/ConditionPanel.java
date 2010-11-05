@@ -27,7 +27,6 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -51,6 +50,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
 import org.obiba.onyx.quartz.editor.question.condition.Condition.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
+import org.obiba.onyx.quartz.editor.utils.VariableRenderer;
 
 /**
  *
@@ -85,6 +85,7 @@ public class ConditionPanel extends Panel {
         condition.setType(Type.VARIABLE);
         condition.setVariable(variable);
       } catch(IllegalArgumentException e) {
+        // not a derived variable
         condition.setType(Type.QUESTION_CATEGORY);
         if(StringUtils.isNotEmpty(tableName) && !questionnaire.getName().equals(tableName)) {
           throw new RuntimeException("Cannot create use a Question[" + question + "] condition from another questionnaire: " + variableDataSource);
@@ -180,18 +181,7 @@ public class ConditionPanel extends Panel {
       }
     });
 
-    IChoiceRenderer<Variable> variableRenderer = new IChoiceRenderer<Variable>() {
-      @Override
-      public Object getDisplayValue(Variable object) {
-        return object.getName();
-      }
-
-      @Override
-      public String getIdValue(Variable object, int index) {
-        return object.getName();
-      }
-    };
-    final DropDownChoice<Variable> variable = new DropDownChoice<Variable>("variable", new PropertyModel<Variable>(model, "variable"), variables, variableRenderer) {
+    final DropDownChoice<Variable> variable = new DropDownChoice<Variable>("variable", new PropertyModel<Variable>(model, "variable"), variables, new VariableRenderer()) {
       @Override
       public boolean isRequired() {
         return conditionType.getModelObject() == VARIABLE;

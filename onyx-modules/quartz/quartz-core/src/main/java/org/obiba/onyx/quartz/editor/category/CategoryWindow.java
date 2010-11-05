@@ -30,7 +30,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -44,7 +43,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
-import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
+import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
@@ -93,7 +92,7 @@ public abstract class CategoryWindow extends Panel {
     openAnswerWindow.setInitialWidth(900);
     openAnswerWindow.setInitialHeight(500);
     openAnswerWindow.setResizable(true);
-    openAnswerWindow.setTitle(new StringResourceModel("OpenAnswerDefinition", CategoryWindow.this, null));
+    openAnswerWindow.setTitle(new ResourceModel("OpenAnswerDefinition"));
     add(openAnswerWindow);
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "category.name"));

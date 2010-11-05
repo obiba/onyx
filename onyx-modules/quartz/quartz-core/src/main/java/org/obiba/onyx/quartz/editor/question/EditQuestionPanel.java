@@ -44,7 +44,7 @@ import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryListPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
-import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerPanel;
+import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.question.array.ArrayRowsPanel;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;

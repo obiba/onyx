@@ -98,7 +98,7 @@ public class QuestionnaireListPanel extends Panel {
     form.add(modalWindow);
     add(form);
 
-    final OnyxEntityList<Questionnaire> questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new StringResourceModel("Questionnaires", QuestionnaireListPanel.this, null));
+    final OnyxEntityList<Questionnaire> questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires"));
     add(questionnaireList);
 
     add(new AjaxLink<Void>("addQuestionnaire") {
@@ -131,7 +131,7 @@ public class QuestionnaireListPanel extends Panel {
     }.add(new Image("img", Images.ADD)));
   }
 
-  protected class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
+  private class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
 
     @Override
     public Iterator<Questionnaire> iterator(int first, int count) {
@@ -160,7 +160,7 @@ public class QuestionnaireListPanel extends Panel {
     private final List<IColumn<Questionnaire>> columns = new ArrayList<IColumn<Questionnaire>>();
 
     public QuestionnaireListColumnProvider() {
-      columns.add(new AbstractColumn<Questionnaire>(new StringResourceModel("Name", QuestionnaireListPanel.this, null), "name") {
+      columns.add(new AbstractColumn<Questionnaire>(new ResourceModel("Name"), "name") {
         @Override
         public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           final Questionnaire questionnaire = rowModel.getObject();
@@ -194,8 +194,8 @@ public class QuestionnaireListPanel extends Panel {
         }
       });
 
-      columns.add(new PropertyColumn<Questionnaire>(new StringResourceModel("Version", QuestionnaireListPanel.this, null), "version", "version"));
-      columns.add(new AbstractColumn<Questionnaire>(new StringResourceModel("Language(s)", QuestionnaireListPanel.this, null)) {
+      columns.add(new PropertyColumn<Questionnaire>(new ResourceModel("Version"), "version", "version"));
+      columns.add(new AbstractColumn<Questionnaire>(new ResourceModel("Language(s)")) {
         @Override
         public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           StringBuilder localeList = new StringBuilder();
@@ -239,7 +239,7 @@ public class QuestionnaireListPanel extends Panel {
 
   }
 
-  public class LinkFragment extends Fragment {
+  private class LinkFragment extends Fragment {
 
     @SuppressWarnings("rawtypes")
     public LinkFragment(String id, final IModel<Questionnaire> rowModel) {
