@@ -66,7 +66,7 @@ public class CategoryListPanel extends Panel {
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private transient LocalePropertiesUtils localePropertiesUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private final ModalWindow categoryWindow;
 

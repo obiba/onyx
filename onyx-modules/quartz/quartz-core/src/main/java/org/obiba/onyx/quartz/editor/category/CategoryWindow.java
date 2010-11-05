@@ -45,34 +45,26 @@ import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswerDefinition.OpenAnswerWindow;
-import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 @SuppressWarnings("serial")
 public abstract class CategoryWindow extends Panel {
 
-  private final transient Logger log = LoggerFactory.getLogger(getClass());
+  // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
-
-  @SpringBean
-  private transient LocalePropertiesUtils localePropertiesUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
   private final Form<QuestionCategory> form;
-
-  private final IModel<Questionnaire> questionnaireModel;
 
   private final SortableList<OpenAnswerDefinition> openAnswerDefinitionList;
 
@@ -82,7 +74,6 @@ public abstract class CategoryWindow extends Panel {
 
   public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
-    this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel == null ? new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject())) : localePropertiesModel;
 
     add(form = new Form<QuestionCategory>("form", model));

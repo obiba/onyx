@@ -61,10 +61,10 @@ public abstract class EditQuestionPanel extends Panel {
   private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private transient LocalePropertiesUtils localePropertiesUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   @SpringBean
-  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   private final FeedbackPanel feedbackPanel;
 

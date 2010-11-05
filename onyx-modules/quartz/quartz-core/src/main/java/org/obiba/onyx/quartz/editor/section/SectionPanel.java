@@ -42,10 +42,10 @@ public abstract class SectionPanel extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private transient QuestionnairePersistenceUtils questionnairePersistenceUtils;
+  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
-  private transient LocalePropertiesUtils localePropertiesUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private final FeedbackPanel feedbackPanel;
 

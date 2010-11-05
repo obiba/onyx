@@ -57,7 +57,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 public class ArrayRowsPanel extends Panel {
 
   @SpringBean
-  private transient LocalePropertiesUtils localePropertiesUtils;
+  private LocalePropertiesUtils localePropertiesUtils;
 
   private final FeedbackPanel feedbackPanel;
 
