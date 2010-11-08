@@ -68,6 +68,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 import org.obiba.onyx.quartz.editor.utils.VariableRenderer;
+import org.obiba.onyx.quartz.editor.utils.VariableUtils;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
@@ -102,20 +103,17 @@ public abstract class ValidationDataSourceWindow extends Panel {
       ComparingDataSource comparingDataSource = model.getObject();
       validator.setOperator(comparingDataSource.getComparisonOperator());
       VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
-      String variableName = variableDataSource.getVariableName();
-      try {
-        validator.setVariable(questionnaire.getVariable(variableName));
-        validator.setType(EXISTING_VARIABLE);
-      } catch(IllegalArgumentException e) {
-        // not a derived variable
-        validator.setType(QUESTION_CATEGORY);
-        String tableName = variableDataSource.getTableName();
-        if(StringUtils.isNotEmpty(tableName) && !questionnaire.getName().equals(tableName)) {
-          throw new RuntimeException("Cannot create use a Question[" + questionModel.getObject() + "] condition from another questionnaire: " + variableDataSource);
+      Variable variable = VariableUtils.findVariable(variableDataSource);
+      if(variable != null) {
+        Question question = VariableUtils.findQuestion(variable, questionnaireFinder);
+        if(question != null) {
+          validator.setType(QUESTION_CATEGORY);
+          validator.setQuestion(question);
+          validator.setCategory(VariableUtils.findCategory(variable, question));
+        } else {
+          validator.setType(EXISTING_VARIABLE);
+          validator.setVariable(variable);
         }
-        int index = variableName.lastIndexOf('.');
-        validator.setQuestion(questionnaireFinder.findQuestion(variableName.substring(0, index)));
-        validator.setCategory(validator.getQuestion().getCategoriesByName().get(variableName.substring(index, variableName.length())));
       }
     }
 

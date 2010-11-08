@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -30,9 +31,15 @@ public class QuestionPreviewPanel extends Panel {
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaireModel.getObject());
     activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaireModel.getObject().getLocales().get(0));
     activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-    if(model.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
-      add(new DropDownQuestionPanel("preview", model));
-    } else
-      add(new DefaultQuestionPanel("preview", model));
+    try {
+      if(model.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
+        add(new DropDownQuestionPanel("preview", model));
+      } else {
+        add(new DefaultQuestionPanel("preview", model));
+      }
+    } catch(Exception e) {
+      // TODO: localize error message
+      add(new Label("preview", "Error while generating the Question preview: " + e.getMessage()));
+    }
   }
 }

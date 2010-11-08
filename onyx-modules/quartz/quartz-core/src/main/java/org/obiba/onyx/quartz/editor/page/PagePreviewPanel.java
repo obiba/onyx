@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.page;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -28,6 +29,11 @@ public class PagePreviewPanel extends Panel {
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaireModel.getObject());
     activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaireModel.getObject().getLocales().get(0));
     activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-    add(new DefaultPageLayout("preview", model));
+    try {
+      add(new DefaultPageLayout("preview", model));
+    } catch(Exception e) {
+      // TODO: localize error message
+      add(new Label("preview", "Error while generating the Page preview: " + e.getMessage()));
+    }
   }
 }

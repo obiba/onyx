@@ -86,12 +86,6 @@ public class QuestionnaireListPanel extends Panel {
     modalWindow.setInitialHeight(600);
     modalWindow.setResizable(false);
     modalWindow.setTitle(new ResourceModel("Questionnaire"));
-    modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-      @Override
-      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        return true; // same as cancel
-      }
-    });
 
     @SuppressWarnings("rawtypes")
     Form<?> form = new Form("form");
@@ -100,6 +94,14 @@ public class QuestionnaireListPanel extends Panel {
 
     final OnyxEntityList<Questionnaire> questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires"));
     add(questionnaireList);
+
+    modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+      @Override
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        target.addComponent(questionnaireList); // reload questionnaire list
+        return true; // same as cancel
+      }
+    });
 
     add(new AjaxLink<Void>("addQuestionnaire") {
       @Override
@@ -115,7 +117,6 @@ public class QuestionnaireListPanel extends Panel {
             persist(target1);
             editionPanel.restoreDefaultRightPanel(target1);
             target1.addComponent(editionPanel.getTree());
-            target1.addComponent(questionnaireList);
           }
 
           @Override

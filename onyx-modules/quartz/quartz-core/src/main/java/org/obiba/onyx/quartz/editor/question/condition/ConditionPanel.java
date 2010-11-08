@@ -51,6 +51,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuil
 import org.obiba.onyx.quartz.editor.question.condition.Condition.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 import org.obiba.onyx.quartz.editor.utils.VariableRenderer;
+import org.obiba.onyx.quartz.editor.utils.VariableUtils;
 
 /**
  *
@@ -73,26 +74,18 @@ public class ConditionPanel extends Panel {
 
     Question question = questionModel.getObject();
     final Questionnaire questionnaire = questionnaireModel.getObject();
-    VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
-
-    if(variableDataSource != null) {
-      String tableName = variableDataSource.getTableName();
-      String variableName = variableDataSource.getVariableName();
-
-      Variable variable;
-      try {
-        variable = questionnaire.getVariable(variableName);
-        condition.setType(Type.VARIABLE);
-        condition.setVariable(variable);
-      } catch(IllegalArgumentException e) {
-        // not a derived variable
-        condition.setType(Type.QUESTION_CATEGORY);
-        if(StringUtils.isNotEmpty(tableName) && !questionnaire.getName().equals(tableName)) {
-          throw new RuntimeException("Cannot create use a Question[" + question + "] condition from another questionnaire: " + variableDataSource);
+    if(question.getCondition() != null) {
+      Variable variable = VariableUtils.findVariable((VariableDataSource) question.getCondition());
+      if(variable != null) {
+        Question questionCondition = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
+        if(questionCondition != null) {
+          condition.setType(Type.QUESTION_CATEGORY);
+          condition.setQuestion(questionCondition);
+          condition.setCategory(VariableUtils.findCategory(variable, questionCondition));
+        } else {
+          condition.setType(Type.VARIABLE);
+          condition.setVariable(variable);
         }
-        int index = variableName.lastIndexOf('.');
-        condition.setQuestion(new QuestionnaireFinder(questionnaire).findQuestion(variableName.substring(0, index)));
-        condition.setCategory(condition.getQuestion().getCategoriesByName().get(variableName.substring(index, variableName.length())));
       }
     }
 
