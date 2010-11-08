@@ -28,10 +28,12 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.target.basic.StringRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -61,6 +63,7 @@ import org.obiba.onyx.quartz.editor.questionnaire.Node.NodeAttribute;
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnNoCallback;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -136,6 +139,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
     final Questionnaire questionnaire = model.getObject();
 
     editingConfirmationDialog = new ConfirmationDialog("editingConfirm");
+    editingConfirmationDialog.setContent(new MultiLineLabel(editingConfirmationDialog.getContentId(), new ResourceModel("CancelChanges")));
     add(editingConfirmationDialog);
 
     localeProperties = localePropertiesUtils.load(questionnaire);
@@ -433,15 +437,18 @@ public abstract class QuestionnaireTreePanel extends Panel {
       if(editingElement) {
         editingConfirmationDialog.setYesButtonCallback(new OnYesCallback() {
           @Override
-          public void onYesButtonClicked(AjaxRequestTarget target1) {
+          public void onYesButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             // cancel current editing and reload model
             reloadModel();
-            preview(target1, element);
+            preview(target, element);
           }
         });
-
-        // TODO: if NO (user want to continue edition), hide context menu and reselect edited node
-
+        editingConfirmationDialog.setNoButtonCallback(new OnNoCallback() {
+          @Override
+          public void onNoButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            // TODO: hide context menu and reselect edited node
+          }
+        });
         editingConfirmationDialog.show(target);
       } else {
         preview(target, element);
