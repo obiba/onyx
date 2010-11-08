@@ -256,7 +256,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       final Questionnaire questionnaire = questionnaireModel.getObject();
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-
+      questionnaireFinder.buildQuestionnaireCache();
       if(element instanceof Section && newParent instanceof IHasSection) {
         Section section = questionnaireFinder.findSection(element.getName());
         final IHasSection newHasSection;
@@ -305,6 +305,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
       final IQuestionnaireElement element = elements.get(nodeId);
       final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+      questionnaireFinder.buildQuestionnaireCache();
       editingElement = true;
       if(element instanceof Questionnaire) {
         QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire), false) {
@@ -403,7 +404,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       final Questionnaire questionnaire = ((IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel()).getObject();
       IQuestionnaireElement element = elements.get(nodeId);
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-
+      questionnaireFinder.buildQuestionnaireCache();
       if(element instanceof Section) {
         Section section = questionnaireFinder.findSection(element.getName());
         Section parentSection = section.getParentSection();
@@ -460,6 +461,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       @SuppressWarnings("unchecked")
       IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+      questionnaireFinder.buildQuestionnaireCache();
       if(element instanceof Question) {
         Question question = questionnaireFinder.findQuestion(element.getName());
         QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), new Model<Question>(question), questionnaireModel);
@@ -485,7 +487,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       final Questionnaire questionnaire = questionnaireModel.getObject();
       final IQuestionnaireElement element = elements.get(nodeId);
       final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-
+      questionnaireFinder.buildQuestionnaireCache();
       editingElement = true;
       if(element instanceof IHasSection && "section".equals(type)) {
         SectionPanel sectionPanel = new SectionPanel(getShownComponentId(), new Model<Section>(new Section(null)), questionnaireModel) {
