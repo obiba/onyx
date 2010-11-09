@@ -65,11 +65,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
-import org.obiba.onyx.quartz.editor.utils.VariableRenderer;
-import org.obiba.onyx.quartz.editor.utils.VariableUtils;
+import org.obiba.onyx.quartz.editor.variable.VariableRenderer;
+import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.ComparisonOperator;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -88,9 +90,12 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
+  private final IModel<Question> questionModel;
+
   public ValidationDataSourceWindow(String id, IModel<ComparingDataSource> model, IModel<OpenAnswerDefinition> openAnswerModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, model);
     this.openAnswerModel = openAnswerModel;
+    this.questionModel = questionModel;
     this.questionnaireModel = questionnaireModel;
 
     add(CSSPackageResource.getHeaderContribution(ValidationDataSourceWindow.class, "ValidationDataSourceWindow.css"));
@@ -156,11 +161,9 @@ public abstract class ValidationDataSourceWindow extends Panel {
     if(questionnaire.getQuestionnaireCache() == null) {
       questionnaireFinder.buildQuestionnaireCache();
     }
-    List<Question> questions = new ArrayList<Question>(questionnaire.getQuestionnaireCache().getQuestionCache().values());
-    questions.remove(questionModel.getObject());
-    Collections.sort(questions, new QuestionnaireElementComparator());
 
-    final DropDownChoice<Question> questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(form.getModel(), "question"), questions, new QuestionnaireElementNameRenderer()) {
+    DataType dataType = openAnswerModel.getObject().getDataType();
+    final DropDownChoice<Question> questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(form.getModel(), "question"), findQuestionsByDataType(dataType), new QuestionnaireElementNameRenderer()) {
       @Override
       public boolean isRequired() {
         return validator.getType() == QUESTION_CATEGORY;
@@ -169,12 +172,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
     questionTypeVisibility.add(questionName.setLabel(new ResourceModel("Question"))).add(new SimpleFormComponentLabel("questionLabel", questionName));
 
-    final List<Category> categories = new ArrayList<Category>();
-    if(questionName.getModelObject() != null) {
-      categories.addAll(questionName.getModelObject().getCategories());
-    }
-
-    final DropDownChoice<Category> categoryName = new DropDownChoice<Category>("category", new PropertyModel<Category>(form.getModel(), "category"), categories, new QuestionnaireElementNameRenderer()) {
+    final DropDownChoice<Category> categoryName = new DropDownChoice<Category>("category", new PropertyModel<Category>(form.getModel(), "category"), findCategoryByDataType(questionName.getModelObject(), dataType), new QuestionnaireElementNameRenderer()) {
       @Override
       public boolean isRequired() {
         return validator.getType() == QUESTION_CATEGORY;
@@ -185,10 +183,6 @@ public abstract class ValidationDataSourceWindow extends Panel {
     questionName.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        if(questionName.getModelObject() != null) {
-          categories.clear();
-          categories.addAll(questionName.getModelObject().getCategories());
-        }
         target.addComponent(categoryName);
       }
     });
@@ -380,4 +374,39 @@ public abstract class ValidationDataSourceWindow extends Panel {
     }
     return false;
   }
+
+  private List<Question> findQuestionsByDataType(DataType dataType) {
+    List<Question> questions = new ArrayList<Question>();
+    QuestionnaireCache questionnaireCache = questionnaireModel.getObject().getQuestionnaireCache();
+    for(Question question : questionnaireCache.getQuestionCache().values()) {
+      if(!question.equals(questionModel.getObject())) {
+        categoryLoop: for(Category category : question.getCategories()) {
+          for(OpenAnswerDefinition openAnswer : category.getOpenAnswerDefinitionsByName().values()) {
+            if(dataType == openAnswer.getDataType()) {
+              questions.add(question);
+              break categoryLoop;
+            }
+          }
+        }
+      }
+    }
+    Collections.sort(questions, new QuestionnaireElementComparator());
+    return questions;
+  }
+
+  private List<Category> findCategoryByDataType(Question question, DataType dataType) {
+    List<Category> categories = new ArrayList<Category>();
+    if(question != null) {
+      for(Category category : question.getCategories()) {
+        for(OpenAnswerDefinition openAnswer : category.getOpenAnswerDefinitionsByName().values()) {
+          if(dataType == openAnswer.getDataType()) {
+            categories.add(category);
+            break;
+          }
+        }
+      }
+    }
+    return categories;
+  }
+
 }

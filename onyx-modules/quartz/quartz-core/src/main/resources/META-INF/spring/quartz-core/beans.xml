@@ -90,7 +90,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<bean id="questionnaireBeanResolver" class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver" />
 
-	<bean id="questionnairePersistenceUtils" class="org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePersistenceUtils">
+	<bean id="questionnairePersistenceUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils">
 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
 		<property name="localePropertiesUtils" ref="localePropertiesUtils" />
 	</bean>

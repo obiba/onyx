@@ -51,6 +51,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocumentQuestionnairePage;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverter;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserException;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.Images;
@@ -171,11 +176,20 @@ public class QuestionnaireListPanel extends Panel {
             public Component getLazyLoadComponent(String componentId1) {
               String str = name;
               try {
+                StructureAnalyser.getInstance(questionnaire).analyze();
                 if(!questionnaire.isConvertedToMagmaVariables()) {
-                  DataSourceConverter.getInstance(questionnaire).convertToVariableDataSources();
+                  DataSourceConverter.getInstance(questionnaire).convert();
                   questionnaire.setConvertedToMagmaVariables(true);
                   questionnairePersistenceUtils.persist(questionnaire);
                 }
+              } catch(StructureAnalyserException e) {
+                log.error("Unsupported questionnaire structure", e);
+                String errorMsg = new StringResourceModel("analyze.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();
+                str += " <img title=\"" + errorMsg + "\" alt=\"" + errorMsg + "\" src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>";
+              } catch(DataSourceConverterException e) {
+                log.error("Cannot convert questionnaire", e);
+                String errorMsg = new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();
+                str += " <img title=\"" + errorMsg + "\" alt=\"" + errorMsg + "\" src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>";
               } catch(Exception e) {
                 log.error("Cannot convert questionnaire", e);
                 String errorMsg = new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();

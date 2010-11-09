@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.questionnaire;
+package org.obiba.onyx.quartz.editor.questionnaire.utils;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -61,8 +61,6 @@ public class DataSourceConverter {
 
   private final QuestionnaireFinder questionnaireFinder;
 
-  // private static Logger logger = LoggerFactory.getLogger(QuestionnaireDataSourceConverter.class);
-
   public static DataSourceConverter getInstance(Questionnaire questionnaire) {
     return new DataSourceConverter(questionnaire);
   }
@@ -76,7 +74,7 @@ public class DataSourceConverter {
     }
   }
 
-  public void convertToVariableDataSources() {
+  public void convert() throws DataSourceConverterException {
 
     for(Question question : questionnaire.getQuestionnaireCache().getQuestionCache().values()) {
 
@@ -98,7 +96,7 @@ public class DataSourceConverter {
           variableName = ADMIN_PARTICIPANT_GENDER_NAME;
           variablePath = ADMIN_PARTICIPANT_GENDER_PATH;
         } else {
-          throw new IllegalArgumentException("Unsupported property[ " + property + " for dataSource " + comparingDataSource.getDataSourceLeft() + " for question " + question);
+          throw new DataSourceConverterException("Unsupported property[ " + property + " for dataSource " + comparingDataSource.getDataSourceLeft() + " for question " + question);
         }
 
         Data data = ((FixedDataSource) comparingDataSource.getDataSourceRight()).getData(null);
@@ -149,7 +147,7 @@ public class DataSourceConverter {
           } else if(dataSourceRight instanceof QuestionnaireDataSource || dataSourceRight instanceof CurrentDateSource || dataSourceRight instanceof VariableDataSource) {
             variablePath = getVariablePath(dataSourceRight);
           } else {
-            throw new RuntimeException("Unsupported dataSource[" + dataSourceRight + "] for open answer " + openAnswer.getName() + " in questionnaire " + questionnaire);
+            throw new DataSourceConverterException("Unsupported dataSource[" + dataSourceRight + "] for open answer " + openAnswer.getName() + " in questionnaire " + questionnaire);
           }
           questionnaireBuilder.inOpenAnswerDefinition(openAnswer.getName()).addValidator(comparingDataSource.getComparisonOperator(), variablePath);
         }
@@ -170,7 +168,7 @@ public class DataSourceConverter {
     case DATE:
       return DateType.get();
     default:
-      throw new RuntimeException("Type[" + dataType + "] is not supported");
+      throw new DataSourceConverterException("Type[" + dataType + "] is not supported");
     }
   }
 
@@ -242,11 +240,11 @@ public class DataSourceConverter {
         }
         break;
       default:
-        throw new RuntimeException("Unsupported dateField for " + currentDateSource);
+        throw new DataSourceConverterException("Unsupported dateField for " + currentDateSource);
       }
       return questionnaire.getName() + ":" + variableName;
     }
-    throw new IllegalArgumentException("DataSource " + dataSource + " was not converted to VariableDataSource");
+    throw new DataSourceConverterException("DataSource " + dataSource + " was not converted to VariableDataSource");
   }
 
 }

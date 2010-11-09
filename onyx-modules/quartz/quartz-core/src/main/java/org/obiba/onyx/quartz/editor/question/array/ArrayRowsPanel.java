@@ -116,7 +116,6 @@ public class ArrayRowsPanel extends Panel {
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public void editItem(Question question, AjaxRequestTarget target) {
         questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override

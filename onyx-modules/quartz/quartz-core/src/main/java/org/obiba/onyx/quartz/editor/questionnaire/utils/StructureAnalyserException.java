@@ -7,25 +7,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.utils;
-
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.obiba.magma.Variable;
+package org.obiba.onyx.quartz.editor.questionnaire.utils;
 
 /**
  *
  */
-public class VariableRenderer implements IChoiceRenderer<Variable> {
+public class StructureAnalyserException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  @Override
-  public Object getDisplayValue(Variable object) {
-    return object.getName();
+  /**
+   * 
+   */
+  public StructureAnalyserException() {
   }
 
-  @Override
-  public String getIdValue(Variable object, int index) {
-    return object.getName();
+  /**
+   * @param arg0
+   */
+  public StructureAnalyserException(String arg0) {
+    super(arg0);
   }
+
+  /**
+   * @param arg0
+   */
+  public StructureAnalyserException(Throwable arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @param arg0
+   * @param arg1
+   */
+  public StructureAnalyserException(String arg0, Throwable arg1) {
+    super(arg0, arg1);
+  }
+
 }

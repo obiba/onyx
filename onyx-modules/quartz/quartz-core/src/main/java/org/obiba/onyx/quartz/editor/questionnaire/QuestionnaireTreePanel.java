@@ -59,6 +59,7 @@ import org.obiba.onyx.quartz.editor.page.PagePreviewPanel;
 import org.obiba.onyx.quartz.editor.question.EditQuestionPanel;
 import org.obiba.onyx.quartz.editor.question.QuestionPreviewPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.JsonNode.JsonNodeAttribute;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
@@ -88,11 +89,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  /**
-   * Mapping of HTML id and QuestionnaireElement. <br>
-   * These IQuestionnaireElement are not the same instances as the QuestionnaireTreePanel.getModelObject() because this
-   * model is reloaded on each save/cancel but this map is populated only on the JStree load.
-   */
   private final Map<String, TreeNode> elements = new HashMap<String, TreeNode>();
 
   private int elementCounter;
@@ -557,7 +553,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
     }
   }
 
-  protected String addElement(TreeNode treeNode) {
+  private String addElement(TreeNode treeNode) {
     String id = ID_PREFIX + elementCounter++;
     elements.put(id, treeNode);
     return id;
