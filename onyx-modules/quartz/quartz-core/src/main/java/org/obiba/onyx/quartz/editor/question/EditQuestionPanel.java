@@ -278,9 +278,7 @@ public abstract class EditQuestionPanel extends Panel {
           case LIST_CHECKBOX:
           case LIST_RADIO:
           case LIST_DROP_DOWN:
-            if(questionType == LIST_DROP_DOWN) {
-              question.setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
-            }
+            question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : new DefaultPageLayoutFactory().getBeanName());
             question.setMultiple(questionType == LIST_CHECKBOX);
             if(nbCategories < 2) {
               tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));
