@@ -58,6 +58,7 @@ import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserException;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
+import org.obiba.onyx.quartz.editor.widget.tooltip.TooltipBehavior;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -174,7 +175,6 @@ public class QuestionnaireListPanel extends Panel {
           cellItem.add(new AjaxLazyLoadPanel(componentId) {
             @Override
             public Component getLazyLoadComponent(String componentId1) {
-              String str = name;
               try {
                 StructureAnalyser.getInstance(questionnaire).analyze();
                 if(!questionnaire.isConvertedToMagmaVariables()) {
@@ -184,25 +184,21 @@ public class QuestionnaireListPanel extends Panel {
                 }
               } catch(StructureAnalyserException e) {
                 log.error("Unsupported questionnaire structure", e);
-                String errorMsg = new StringResourceModel("analyze.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();
-                str += " <img title=\"" + errorMsg + "\" alt=\"" + errorMsg + "\" src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>";
+                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("analyze.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               } catch(DataSourceConverterException e) {
                 log.error("Cannot convert questionnaire", e);
-                String errorMsg = new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();
-                str += " <img title=\"" + errorMsg + "\" alt=\"" + errorMsg + "\" src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>";
+                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               } catch(Exception e) {
                 log.error("Cannot convert questionnaire", e);
-                String errorMsg = new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() }).getString();
-                str += " <img title=\"" + errorMsg + "\" alt=\"" + errorMsg + "\" src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>";
+                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               }
-              return new Label(componentId1, str).setEscapeModelStrings(false);
+              return new Label(componentId1, name);
             }
 
             @Override
             public Component getLoadingComponent(String markupId) {
               String message = new StringResourceModel("converting", QuestionnaireListPanel.this, null).getString();
-              String conversion = "<span class=\"converting\"><img alt=\"" + message + "\" src=\"" + RequestCycle.get().urlFor(AbstractDefaultAjaxBehavior.INDICATOR) + "\"/>" + message + "</span>";
-              return new Label(markupId, name + conversion).setEscapeModelStrings(false);
+              return new Label(markupId, name + "<span class=\"converting\"><img alt=\"" + message + "\" src=\"" + RequestCycle.get().urlFor(AbstractDefaultAjaxBehavior.INDICATOR) + "\"/>" + message + "</span>").setEscapeModelStrings(false);
             }
 
           });
