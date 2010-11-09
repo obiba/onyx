@@ -13,24 +13,37 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class QuestionPreviewPanel extends Panel {
 
+  private transient final Logger logger = LoggerFactory.getLogger(getClass());
+
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
+  @SpringBean
+  private QuestionnaireBundleManager bundleManager;
+
   public QuestionPreviewPanel(String id, IModel<Question> model, IModel<Questionnaire> questionnaireModel) {
     super(id, model);
-    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaireModel.getObject());
-    activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaireModel.getObject().getLocales().get(0));
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+    activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaire.getLocales().get(0));
     activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
+    QuestionnaireBundle bundle = bundleManager.getBundle(questionnaire.getName());
+    bundle.clearMessageSourceCache();
+    questionnaire.setQuestionnaireCache(null);
     try {
       if(model.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
         add(new DropDownQuestionPanel("preview", model));
@@ -38,8 +51,8 @@ public class QuestionPreviewPanel extends Panel {
         add(new DefaultQuestionPanel("preview", model));
       }
     } catch(Exception e) {
-      // TODO: localize error message
-      add(new Label("preview", "Error while generating the Question preview: " + e.getMessage()));
+      logger.error(e.getMessage(), e);
+      add(new Label("preview", "Error while generating the Question preview: " + e.getMessage() + e.getStackTrace()));
     }
   }
 }

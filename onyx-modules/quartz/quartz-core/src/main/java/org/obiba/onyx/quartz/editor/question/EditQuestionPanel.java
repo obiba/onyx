@@ -37,8 +37,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.category.CategoryListPanel;
@@ -95,10 +95,12 @@ public abstract class EditQuestionPanel extends Panel {
     final Question question = questionModel.getObject();
 
     // TODO maybe merge STANDARD_UI with *QuestionPanelFactory class
-    if(Questionnaire.STANDARD_UI.equals(questionnaireModel.getObject().getUiType())) {
-      question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
-    } else if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
-      question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
+    if(StringUtils.isBlank(question.getUIFactoryName())) {
+      if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
+        question.setUIFactoryName(new SimplifiedPageLayoutFactory().getBeanName());
+      } else {
+        question.setUIFactoryName(new DefaultPageLayoutFactory().getBeanName());
+      }
     }
 
     EditedQuestion editedQuestion = null;
@@ -276,7 +278,9 @@ public abstract class EditQuestionPanel extends Panel {
           case LIST_CHECKBOX:
           case LIST_RADIO:
           case LIST_DROP_DOWN:
-            question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : null);
+            if(questionType == LIST_DROP_DOWN) {
+              question.setUIFactoryName(new DropDownQuestionPanelFactory().getBeanName());
+            }
             question.setMultiple(questionType == LIST_CHECKBOX);
             if(nbCategories < 2) {
               tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));

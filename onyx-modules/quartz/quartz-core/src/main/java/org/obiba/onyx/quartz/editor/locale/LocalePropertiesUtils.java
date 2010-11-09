@@ -26,13 +26,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.google.common.collect.ListMultimap;
 
 public class LocalePropertiesUtils {
 
-  // private transient Logger logger = LoggerFactory.getLogger(getClass());
+  private transient final Logger logger = LoggerFactory.getLogger(getClass());
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
@@ -46,6 +48,7 @@ public class LocalePropertiesUtils {
     if(questionnaire.getName() == null) return;
     localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
     QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
+    bundle.clearMessageSourceCache();
     for(IQuestionnaireElement element : elements) {
       List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
       for(Locale locale : localeProperties.getLocales()) {
@@ -54,7 +57,7 @@ public class LocalePropertiesUtils {
           try {
             value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
           } catch(Exception e) {
-            // label not found
+            logger.error(e.getMessage(), e);
           }
           localeProperties.addElementLabels(element, locale, key, value);
         }

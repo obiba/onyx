@@ -65,10 +65,13 @@ public abstract class PagePanel extends Panel {
     final Questionnaire questionnaire = questionnaireModel.getObject();
 
     // TODO maybe merge STANDARD_UI with *QuestionPanelFactory class
-    if(Questionnaire.STANDARD_UI.equals(questionnaire.getUiType())) {
-      model.getObject().setUIFactoryName(new DefaultPageLayoutFactory().getBeanName());
-    } else if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
-      model.getObject().setUIFactoryName(new SimplifiedPageLayoutFactory().getBeanName());
+    final Page page = model.getObject();
+    if(StringUtils.isBlank(page.getUIFactoryName())) {
+      if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
+        page.setUIFactoryName(new SimplifiedPageLayoutFactory().getBeanName());
+      } else {
+        page.setUIFactoryName(new DefaultPageLayoutFactory().getBeanName());
+      }
     }
 
     feedbackPanel = new FeedbackPanel("content");
@@ -86,7 +89,7 @@ public abstract class PagePanel extends Panel {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equals(model.getObject().getName(), validatable.getValue())) {
+        if(!StringUtils.equals(page.getName(), validatable.getValue())) {
           if(QuestionnaireFinder.getInstance(questionnaire).findPage(validatable.getValue()) != null) {
             error(validatable, "PageAlreadyExists");
           }
@@ -96,7 +99,7 @@ public abstract class PagePanel extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaire, model.getObject()));
+    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaire, page));
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     form.add(new AjaxButton("save", form) {
