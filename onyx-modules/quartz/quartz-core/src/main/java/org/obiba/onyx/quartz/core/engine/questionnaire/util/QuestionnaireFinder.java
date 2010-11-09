@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,13 +38,15 @@ import org.slf4j.LoggerFactory;
  * @author Yannick Marcon
  * 
  */
-public class QuestionnaireFinder {
+public class QuestionnaireFinder implements Serializable {
 
-  private static final Logger log = LoggerFactory.getLogger(QuestionnaireFinder.class);
+  private static final long serialVersionUID = 1L;
+
+  private transient static final Logger log = LoggerFactory.getLogger(QuestionnaireFinder.class);
 
   private static long total = 0;
 
-  private Questionnaire questionnaire;
+  private final Questionnaire questionnaire;
 
   public QuestionnaireFinder(Questionnaire questionnaire) {
     this.questionnaire = questionnaire;

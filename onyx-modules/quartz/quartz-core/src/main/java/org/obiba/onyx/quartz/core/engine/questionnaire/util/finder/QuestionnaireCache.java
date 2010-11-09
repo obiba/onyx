@@ -21,6 +21,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
+import org.obiba.onyx.util.data.DataType;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Visit the questionnaire elements and register them by type and name, for caching purpose.
@@ -38,6 +42,8 @@ public class QuestionnaireCache implements IWalkerVisitor {
   private Map<String, OpenAnswerDefinition> openAnswerDefinitionCache = new TreeMap<String, OpenAnswerDefinition>();
 
   private Map<String, Variable> variableCache = new TreeMap<String, Variable>();
+
+  private Multimap<DataType, Question> questionByType = HashMultimap.create();
 
   private Questionnaire questionnaire;
 
@@ -69,6 +75,9 @@ public class QuestionnaireCache implements IWalkerVisitor {
   @Override
   public void visit(QuestionCategory questionCategory) {
     questionCategoryCache.put(questionCategory.getName(), questionCategory);
+    for(OpenAnswerDefinition openAnswer : questionCategory.getCategory().getOpenAnswerDefinitionsByName().values()) {
+      questionByType.put(openAnswer.getDataType(), questionCategory.getQuestion());
+    }
   }
 
   @Override
@@ -112,6 +121,10 @@ public class QuestionnaireCache implements IWalkerVisitor {
 
   public Map<String, Variable> getVariableCache() {
     return variableCache;
+  }
+
+  public Multimap<DataType, Question> getQuestionByType() {
+    return questionByType;
   }
 
 }

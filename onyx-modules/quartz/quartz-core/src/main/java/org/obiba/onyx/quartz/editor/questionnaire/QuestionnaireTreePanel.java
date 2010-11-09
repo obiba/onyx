@@ -458,8 +458,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
       final TreeNode node = elements.get(nodeId);
       final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
       questionnaireFinder.buildQuestionnaireCache();
-      editingElement = true;
       if(node.isHasSection() && "section".equals(type)) {
+        editingElement = true;
         SectionPanel sectionPanel = new SectionPanel(getShownComponentId(), new Model<Section>(new Section(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, Section section) {
@@ -480,6 +480,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
 
       } else if(node.isSection() && "page".equals(type)) {
+        editingElement = true;
         PagePanel pagePanel = new PagePanel(getShownComponentId(), new Model<Page>(new Page(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, Page editedPage) {
@@ -500,6 +501,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
 
       } else if(node.isPage() && "question".equals(type)) {
+        editingElement = true;
         EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel) {
           @Override
           public void onSave(AjaxRequestTarget target1, Question question) {
