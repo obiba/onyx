@@ -32,7 +32,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 			"valid_children" : [ "Questionnaire" ],
 			"types" : {
 				"Questionnaire" : {
-					"valid_children" : [ "Section" ]
+					"valid_children" : [ "Section", "Variables" ]
 				},
 				"Section" : {
 					"valid_children" : [ "Section", "Page" ]
@@ -41,6 +41,12 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 					"valid_children" : [ "Question" ]
 				},
 				"Question" : {
+					"valid_children" : "none"
+				},
+				"Variables" : {
+					"valid_children" : [ "Variable" ]
+				},
+				"Variable" : {
 					"valid_children" : "none"
 				}				
 			}
@@ -70,13 +76,13 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 							seperator_after : false, 
 							seperator_before : false 
 						},
-						"edit": { 
+						"edit": elementType == "Variables" ? false : { 
 							label: "Edit", 
 							action: function (obj) { Wicket.QTree.editElement(elementId); },
 							seperator_after : false, 
 							seperator_before : true 
 						},
-						"delete": { 
+						"delete": elementType == "Variables" ? false : { 
 							label: "Delete", 
 							action: function (obj) { Wicket.QTree.deleteElement(elementId); },
 							seperator_after : false, 

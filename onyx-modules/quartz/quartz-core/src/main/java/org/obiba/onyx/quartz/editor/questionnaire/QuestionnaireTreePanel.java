@@ -576,7 +576,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
     JsonNodeAttribute nodeAttribute = new JsonNodeAttribute();
     nodeAttribute.setId(addElement(treeNode));
     nodeAttribute.setRel(ClassUtils.getShortClassName(treeNode.getClazz()));
-
     jsonNode.setAttr(nodeAttribute);
 
     TreeNodeCollector questionnaireVisitor = new TreeNodeCollector();
@@ -584,9 +583,30 @@ public abstract class QuestionnaireTreePanel extends Panel {
     if(questionnaireVisitor.getChildren().isEmpty()) {
       nodeAttribute.setClazz("jstree-leaf");
     }
+    JsonNode variablesNode = null;
     for(Object child : questionnaireVisitor.getChildren()) {
       if(child instanceof IQuestionnaireElement) {
         jsonNode.getChildren().add(populateNode((IQuestionnaireElement) child));
+      } else if(child instanceof Variable) {
+        if(variablesNode == null) {
+          variablesNode = new JsonNode();
+          variablesNode.setData("[VARIABLES]");
+          variablesNode.setState("closed");
+          JsonNodeAttribute variablesNodeAttribute = new JsonNodeAttribute();
+          variablesNodeAttribute.setRel("Variables");
+          variablesNode.setAttr(variablesNodeAttribute);
+          jsonNode.getChildren().add(variablesNode);
+        }
+        Variable variable = (Variable) child;
+        TreeNode variableTreeNode = new TreeNode(variable.getName(), variable.getClass());
+        JsonNode variableNode = new JsonNode();
+        variableNode.setData("[VARIABLE] " + variable.getName());
+        JsonNodeAttribute variableNodeAttribute = new JsonNodeAttribute();
+        variableNodeAttribute.setId(addElement(variableTreeNode));
+        variableNodeAttribute.setRel("Variable");
+        variableNodeAttribute.setClazz("jstree-leaf");
+        variableNode.setAttr(variableNodeAttribute);
+        variablesNode.getChildren().add(variableNode);
       }
     }
     return jsonNode;

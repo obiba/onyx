@@ -123,7 +123,7 @@ public abstract class QuestionnairePanel extends Panel {
         }
       }
     });
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name).add(new TooltipBehavior(new ResourceModel("Name.Tooltip"))));
 
     TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "version"));
     version.setLabel(new ResourceModel("Version"));
@@ -139,12 +139,12 @@ public abstract class QuestionnairePanel extends Panel {
     Radio<String> standardUiType = new Radio<String>("standard", new Model<String>(Questionnaire.STANDARD_UI));
     standardUiType.setLabel(new ResourceModel("UIType.standard"));
     standardUiType.add(new TooltipBehavior(new ResourceModel("UIType.standard.Tooltip")));
-    uiType.add(standardUiType).add(new SimpleFormComponentLabel("standardLabel", standardUiType));
+    uiType.add(standardUiType).add(new SimpleFormComponentLabel("standardLabel", standardUiType).add(new TooltipBehavior(new ResourceModel("UIType.standard.Tooltip"))));
 
     Radio<String> simplifiedUiType = new Radio<String>("simplified", new Model<String>(Questionnaire.SIMPLIFIED_UI));
     simplifiedUiType.setLabel(new ResourceModel("UIType.simplified"));
     simplifiedUiType.add(new TooltipBehavior(new ResourceModel("UIType.simplified.Tooltip")));
-    uiType.add(simplifiedUiType).add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
+    uiType.add(simplifiedUiType).add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType).add(new TooltipBehavior(new ResourceModel("UIType.simplified.Tooltip"))));
 
     localePropertiesModel = new Model<LocaleProperties>(newQuestionnaire ? localePropertiesUtils.loadForNewQuestionnaire(questionnaire) : localePropertiesUtils.load(questionnaire, questionnaire));
     final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow);

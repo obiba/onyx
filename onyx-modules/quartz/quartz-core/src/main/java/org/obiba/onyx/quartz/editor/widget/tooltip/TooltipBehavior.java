@@ -34,6 +34,12 @@ public class TooltipBehavior extends AttributeModifier {
   }
 
   @Override
+  public void bind(Component component) {
+    super.bind(component);
+    component.setOutputMarkupId(true);
+  }
+
+  @Override
   public void onRendered(Component component) {
     super.onRendered(component);
     component.getResponse().write("<script>\n" + //
