@@ -14,6 +14,7 @@ import java.util.Set;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireMetric;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -40,7 +41,13 @@ public class QuestionnairePageMetricAlgorithm {
     this.questionnaireFinder = new QuestionnaireFinder(questionnaire);
     this.pageMetrics = pageMetrics;
 
-    sectionName = questionnaireFinder.findPage(getPage()).getSection().getName();
+    Page page = questionnaireFinder.findPage(getPage());
+    // ONYX-1342
+    if(page == null) {
+      throw new IllegalStateException("A page has been removed from questionnaire '" + questionnaire.getName() + "' before all interviews were completed and exported: " + getPage());
+    }
+
+    sectionName = page.getSection().getName();
     // Build a Set of this Page's question's name
     pageQuestions = ImmutableSet.copyOf(Iterables.transform(questionnaireFinder.findPage(pageMetrics.getPage()).getQuestions(), new Function<Question, String>() {
       public String apply(Question q) {
