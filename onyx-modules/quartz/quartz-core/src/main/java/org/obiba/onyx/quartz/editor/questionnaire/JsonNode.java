@@ -19,7 +19,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  *
  */
-public class Node implements Serializable {
+public class JsonNode implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -27,15 +27,15 @@ public class Node implements Serializable {
 
   private String state = "open";
 
-  private NodeAttribute attr;
+  private JsonNodeAttribute attr;
 
-  private List<Node> children = new ArrayList<Node>();
+  private List<JsonNode> children = new ArrayList<JsonNode>();
 
-  public NodeAttribute getAttr() {
+  public JsonNodeAttribute getAttr() {
     return attr;
   }
 
-  public void setAttr(NodeAttribute attr) {
+  public void setAttr(JsonNodeAttribute attr) {
     this.attr = attr;
   }
 
@@ -55,16 +55,16 @@ public class Node implements Serializable {
     this.state = state;
   }
 
-  public List<Node> getChildren() {
+  public List<JsonNode> getChildren() {
     return children;
   }
 
-  public void setChildren(List<Node> children) {
+  public void setChildren(List<JsonNode> children) {
     this.children = children;
   }
 
   @JsonIgnoreProperties(value = "clazz")
-  public static class NodeAttribute {
+  public static class JsonNodeAttribute {
 
     private String id;
 

@@ -11,6 +11,9 @@ package org.obiba.onyx.quartz.editor.utils;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchAttributeException;
+import org.obiba.magma.NoSuchValueTableException;
+import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.VariableDataSource;
@@ -28,23 +31,37 @@ public class VariableUtils {
   private static final String CATEGORY_NAME = "categoryName";
 
   public static Variable findVariable(VariableDataSource variableDataSource) {
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      ValueTable valueTable = datasource.getValueTable(variableDataSource.getTableName());
-      if(valueTable != null) return valueTable.getVariable(variableDataSource.getVariableName());
+    try {
+      for(Datasource datasource : MagmaEngine.get().getDatasources()) {
+        ValueTable valueTable = datasource.getValueTable(variableDataSource.getTableName());
+        if(valueTable != null) return valueTable.getVariable(variableDataSource.getVariableName());
+      }
+    } catch(NoSuchValueTableException e) {
+      return null;
+    } catch(NoSuchVariableException e) {
+      return null;
     }
     return null;
   }
 
   public static Question findQuestion(Variable variable, QuestionnaireFinder questionnaireFinder) {
-    if(variable.hasAttribute(QUESTION_NAME)) {
-      return questionnaireFinder.findQuestion(variable.getAttributeStringValue(QUESTION_NAME));
+    try {
+      if(variable.hasAttribute(QUESTION_NAME)) {
+        return questionnaireFinder.findQuestion(variable.getAttributeStringValue(QUESTION_NAME));
+      }
+    } catch(NoSuchAttributeException e) {
+      return null;
     }
     return null;
   }
 
   public static Category findCategory(Variable variable, Question question) {
-    if(variable.hasAttribute(CATEGORY_NAME)) {
-      return question.getCategoriesByName().get(variable.getAttributeStringValue(CATEGORY_NAME));
+    try {
+      if(variable.hasAttribute(CATEGORY_NAME)) {
+        return question.getCategoriesByName().get(variable.getAttributeStringValue(CATEGORY_NAME));
+      }
+    } catch(NoSuchAttributeException e) {
+      return null;
     }
     return null;
   }

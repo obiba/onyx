@@ -61,6 +61,7 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
+import org.obiba.onyx.quartz.editor.widget.tooltip.TooltipBehavior;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -105,13 +106,13 @@ public abstract class QuestionnairePanel extends Panel {
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
+    name.setEnabled(newQuestionnaire);
     name.add(new RequiredFormFieldBehavior());
+    name.add(new TooltipBehavior(new ResourceModel("Name.Tooltip")));
     name.add(new AbstractValidator<String>() {
-
       @Override
       protected void onValidate(final IValidatable<String> validatable) {
         boolean isNewName = Iterables.all(questionnaireBundleManager.bundles(), new Predicate<QuestionnaireBundle>() {
-
           @Override
           public boolean apply(QuestionnaireBundle input) {
             return !input.getName().equals(validatable.getValue());
@@ -121,17 +122,14 @@ public abstract class QuestionnairePanel extends Panel {
           error(validatable, "NameNotAlreadyExistValidator");
         }
       }
-
     });
-    form.add(name);
-    form.add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
 
     TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "version"));
     version.setLabel(new ResourceModel("Version"));
     version.add(new RequiredFormFieldBehavior());
     version.add(new StringValidator.MaximumLengthValidator(20));
-    form.add(version);
-    form.add(new SimpleFormComponentLabel("versionLabel", version));
+    form.add(version).add(new SimpleFormComponentLabel("versionLabel", version));
 
     RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "uiType"));
     uiType.setLabel(new ResourceModel("UIType"));
@@ -140,13 +138,13 @@ public abstract class QuestionnairePanel extends Panel {
 
     Radio<String> standardUiType = new Radio<String>("standard", new Model<String>(Questionnaire.STANDARD_UI));
     standardUiType.setLabel(new ResourceModel("UIType.standard"));
-    uiType.add(standardUiType);
-    uiType.add(new SimpleFormComponentLabel("standardLabel", standardUiType));
+    standardUiType.add(new TooltipBehavior(new ResourceModel("UIType.standard.Tooltip")));
+    uiType.add(standardUiType).add(new SimpleFormComponentLabel("standardLabel", standardUiType));
 
     Radio<String> simplifiedUiType = new Radio<String>("simplified", new Model<String>(Questionnaire.SIMPLIFIED_UI));
     simplifiedUiType.setLabel(new ResourceModel("UIType.simplified"));
-    uiType.add(simplifiedUiType);
-    uiType.add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
+    simplifiedUiType.add(new TooltipBehavior(new ResourceModel("UIType.simplified.Tooltip")));
+    uiType.add(simplifiedUiType).add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
 
     localePropertiesModel = new Model<LocaleProperties>(newQuestionnaire ? localePropertiesUtils.loadForNewQuestionnaire(questionnaire) : localePropertiesUtils.load(questionnaire, questionnaire));
     final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow);
