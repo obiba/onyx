@@ -52,7 +52,8 @@ public class QuestionPreviewPanel extends Panel {
       }
     } catch(Exception e) {
       logger.error(e.getMessage(), e);
-      add(new Label("preview", "Error while generating the Question preview: " + e.getMessage() + e.getStackTrace()));
+      // TODO: localize error message
+      add(new Label("preview", "Error while generating the Question preview: " + e.getMessage()));
     }
   }
 }
