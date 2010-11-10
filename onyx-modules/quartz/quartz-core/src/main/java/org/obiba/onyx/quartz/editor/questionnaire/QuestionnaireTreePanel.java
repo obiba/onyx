@@ -558,12 +558,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     if(node.isQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
-      QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), new Model<Question>(question), questionnaireModel);
-      show(questionPreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, new Model<Question>(question), "Preview: ${name}"), target);
+      Model<Question> questionModel = new Model<Question>(question);
+      QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), questionModel, questionnaireModel);
+      IModel<String> title = new StringResourceModel("ItemPreview", QuestionnaireTreePanel.this, questionModel, new Object[] { new StringResourceModel("Question", QuestionnaireTreePanel.this, null), question.getName() });
+      show(questionPreviewPanel, title, target);
     } else if(node.isPage()) {
       Page page = questionnaireFinder.findPage(node.getName());
-      PagePreviewPanel pagePreviewPanel = new PagePreviewPanel(getShownComponentId(), new Model<Page>(page), questionnaireModel);
-      show(pagePreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, new Model<Page>(page), "Preview: ${name}"), target);
+      Model<Page> pageModel = new Model<Page>(page);
+      PagePreviewPanel pagePreviewPanel = new PagePreviewPanel(getShownComponentId(), pageModel, questionnaireModel);
+      IModel<String> title = new StringResourceModel("ItemPreview", QuestionnaireTreePanel.this, pageModel, new Object[] { new StringResourceModel("Page", QuestionnaireTreePanel.this, null), page.getName() });
+      show(pagePreviewPanel, title, target);
     } else if(node.isVariable()) {
       @SuppressWarnings({ "unchecked", "rawtypes" })
       IModel<Variable> variableModel = new Model((Serializable) questionnaire.getVariable(node.getName()));
@@ -573,7 +577,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           editVariable(nodeId, node, questionnaireModel, target);
         }
       };
-      show(variablePreview, new StringResourceModel("Preview", QuestionnaireTreePanel.this, variableModel, "Preview: ${name}"), target);
+      IModel<String> title = new StringResourceModel("ItemPreview", QuestionnaireTreePanel.this, variableModel, new Object[] { new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), node.getName() });
+      show(variablePreview, title, target);
     } else {
       // preview not supported
       show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target);
