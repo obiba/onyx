@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
@@ -67,6 +66,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElement
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
+import org.obiba.onyx.quartz.editor.variable.ValueTypeRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariableRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.ComparisonOperator;
@@ -246,19 +246,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
     types.add(LocaleType.get());
     types.add(BinaryType.get());
 
-    IChoiceRenderer<ValueType> valueTypeRenderer = new IChoiceRenderer<ValueType>() {
-      @Override
-      public String getIdValue(ValueType valueType, int index) {
-        return valueType.getName();
-      }
-
-      @Override
-      public Object getDisplayValue(ValueType valueType) {
-        return WordUtils.capitalize(valueType.getName());
-      }
-    };
-
-    final DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("valueType", new PropertyModel<ValueType>(form.getModel(), "valueType"), types, valueTypeRenderer) {
+    final DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("valueType", new PropertyModel<ValueType>(form.getModel(), "valueType"), types, new ValueTypeRenderer()) {
       @Override
       public boolean isRequired() {
         return validator.getType() == NEW_VARIABLE;

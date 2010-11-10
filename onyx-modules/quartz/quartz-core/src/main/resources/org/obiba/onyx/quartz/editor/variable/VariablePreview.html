@@ -1,0 +1,23 @@
+<wicket:panel>
+
+	<table class="keyValueTable variable" >
+		<tr>
+			<td class="keyValueTableKey"><wicket:message key="Name" /></td>
+			<td class="keyValueTableValueOdd"><span wicket:id="name" /></td>
+		</tr>			
+		<tr>
+			<td class="keyValueTableKey"><wicket:message key="Type" /></td>
+			<td class="keyValueTableValueOdd"><span wicket:id="type" /></td>
+		</tr>			
+		<tr>
+			<td class="keyValueTableKey" valign="top"><wicket:message key="Script" /></td>
+			<td class="keyValueTableValueOdd"><code wicket:id="script"></code></td>
+		</tr>			
+	</table>
+	
+	<br />
+	<br />
+	
+	<button wicket:id="edit" class="obiba-button ui-corner-all "><img wicket:id="img" /> <wicket:message key="Edit" /></button>
+	
+</wicket:panel>

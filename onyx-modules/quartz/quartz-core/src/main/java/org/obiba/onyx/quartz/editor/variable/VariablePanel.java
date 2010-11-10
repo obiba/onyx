@@ -7,13 +7,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor.section;
+package org.obiba.onyx.quartz.editor.variable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -24,42 +29,56 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.obiba.magma.ValueType;
+import org.obiba.magma.Variable;
+import org.obiba.magma.Variable.Builder;
+import org.obiba.magma.type.BinaryType;
+import org.obiba.magma.type.BooleanType;
+import org.obiba.magma.type.DateTimeType;
+import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DecimalType;
+import org.obiba.magma.type.IntegerType;
+import org.obiba.magma.type.LocaleType;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
-import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
-import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ */
 @SuppressWarnings("serial")
-public abstract class SectionPanel extends Panel {
+public abstract class VariablePanel extends Panel {
 
-  private final transient Logger log = LoggerFactory.getLogger(getClass());
+  private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
-
-  @SpringBean
-  private LocalePropertiesUtils localePropertiesUtils;
 
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<Section> form;
+  private final Form<EditedVariable> form;
 
   private final IModel<Questionnaire> questionnaireModel;
 
-  private final IModel<LocaleProperties> localePropertiesModel;
-
-  public SectionPanel(String id, final IModel<Section> model, final IModel<Questionnaire> questionnaireModel) {
-    super(id, model);
+  public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel) {
+    super(id);
     this.questionnaireModel = questionnaireModel;
+
+    final EditedVariable editedVariable = new EditedVariable();
+    final Variable variable = variableModel.getObject();
+    if(variable != null) {
+      editedVariable.setName(variable.getName());
+      editedVariable.setValueType(variable.getValueType());
+      editedVariable.setScript(variable.getAttributeStringValue("script"));
+    }
+    final IModel<EditedVariable> model = new Model<EditedVariable>(editedVariable);
+    setDefaultModel(model);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -67,31 +86,56 @@ public abstract class SectionPanel extends Panel {
 
     add(feedbackWindow);
 
-    add(form = new Form<Section>("form", model));
+    add(form = new Form<EditedVariable>("form", model));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
-
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equals(model.getObject().getName(), validatable.getValue())) {
-          if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSection(validatable.getValue()) != null) {
-            error(validatable, "SectionAlreadyExists");
+          try {
+            if(questionnaireModel.getObject().getVariable(validatable.getValue()) != null) {
+              error(validatable, "VariableAlreadyExists");
+            }
+          } catch(Exception e) {
+            // do nothing, variable was not found
           }
         }
       }
     });
     form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
 
-    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject()));
-    form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
+    List<ValueType> types = new ArrayList<ValueType>();
+    types.add(IntegerType.get());
+    types.add(DecimalType.get());
+    types.add(BooleanType.get());
+    types.add(DateType.get());
+    types.add(DateTimeType.get());
+    types.add(TextType.get());
+    types.add(LocaleType.get());
+    types.add(BinaryType.get());
+
+    DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("type", new PropertyModel<ValueType>(form.getModel(), "valueType"), types, new ValueTypeRenderer());
+    valueType.add(new RequiredFormFieldBehavior());
+    form.add(valueType.setLabel(new ResourceModel("Type"))).add(new SimpleFormComponentLabel("typeLabel", valueType));
+
+    TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));
+    script.add(new RequiredFormFieldBehavior());
+    form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script));
 
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onSave(target, form.getModelObject());
+        if(variable == null) {
+          // create new variable
+          Builder builder = Variable.Builder.newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
+          builder.addAttribute("script", editedVariable.getScript());
+          onSave(target, builder.build());
+        } else {
+          // TODO update variable
+        }
       }
 
       @Override
@@ -114,19 +158,18 @@ public abstract class SectionPanel extends Panel {
    * @param target
    * @param section
    */
-  public abstract void onSave(AjaxRequestTarget target, Section section);
+  public abstract void onSave(AjaxRequestTarget target, Variable variable);
 
   public abstract void onCancel(AjaxRequestTarget target);
 
   public void persist(AjaxRequestTarget target) {
     try {
-      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
+      questionnairePersistenceUtils.persist(questionnaireModel.getObject());
     } catch(Exception e) {
-      log.error("Cannot persist questionnaire", e);
+      logger.error("Cannot persist questionnaire", e);
       error(e.getMessage());
       feedbackWindow.setContent(feedbackPanel);
       feedbackWindow.show(target);
     }
   }
-
 }

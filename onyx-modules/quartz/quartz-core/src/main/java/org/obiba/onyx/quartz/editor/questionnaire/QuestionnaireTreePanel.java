@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 import static org.apache.commons.lang.ClassUtils.getShortClassName;
 import static org.apache.commons.lang.StringUtils.trimToNull;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,8 @@ import org.obiba.onyx.quartz.editor.question.QuestionPreviewPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.JsonNode.JsonNodeAttribute;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
+import org.obiba.onyx.quartz.editor.variable.VariablePanel;
+import org.obiba.onyx.quartz.editor.variable.VariablePreview;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnNoCallback;
@@ -303,18 +306,18 @@ public abstract class QuestionnaireTreePanel extends Panel {
       if(node.isQuestionnaire()) {
         QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire), false) {
           @Override
-          public void onSave(AjaxRequestTarget target1, @SuppressWarnings("hiding") Questionnaire questionnaire) {
-            persist(target1);
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Questionnaire questionnaire) {
+            persist(target);
             node.setName(questionnaire.getName());
             // update node name in jsTree
-            target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
-            preview(node, target1);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
+            preview(nodeId, node, target);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(questionnairePanel, new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null), target);
@@ -323,18 +326,18 @@ public abstract class QuestionnaireTreePanel extends Panel {
         Section section = questionnaireFinder.findSection(node.getName());
         SectionPanel sectionPanel = new SectionPanel(getShownComponentId(), new Model<Section>(section), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target1, @SuppressWarnings("hiding") Section section) {
-            persist(target1);
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Section section) {
+            persist(target);
             node.setName(section.getName());
             // update node name in jsTree
-            target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
-            preview(node, target1);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
+            preview(nodeId, node, target);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
@@ -342,18 +345,18 @@ public abstract class QuestionnaireTreePanel extends Panel {
         Page page = questionnaireFinder.findPage(node.getName());
         PagePanel pagePanel = new PagePanel(getShownComponentId(), new Model<Page>(page), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target1, @SuppressWarnings("hiding") Page page) {
-            persist(target1);
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Page page) {
+            persist(target);
             node.setName(page.getName());
             // update node name in jsTree
-            target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
-            preview(node, target1);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
+            preview(nodeId, node, target);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
@@ -361,22 +364,24 @@ public abstract class QuestionnaireTreePanel extends Panel {
         Question question = questionnaireFinder.findQuestion(node.getName());
         EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(question), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target1, @SuppressWarnings("hiding") Question question) {
-            persist(target1);
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Question question) {
+            persist(target);
             node.setName(question.getName());
             QuestionnaireTreePanel.this.setDefaultModelObject(questionnaire);
             // update node name in jsTree
-            target1.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
-            preview(node, target1);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + getNodeLabel(node) + "');");
+            preview(nodeId, node, target);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), target);
+      } else if(node.isVariable()) {
+        showVariablePanel(nodeId, node, questionnaireModel, target);
       }
     }
   }
@@ -428,7 +433,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
             // TODO hide context menu
             // cancel current editing and reload model
             reloadModel();
-            preview(node, target);
+            preview(nodeId, node, target);
           }
         });
         editingConfirmationDialog.setNoButtonCallback(new OnNoCallback() {
@@ -439,7 +444,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         });
         editingConfirmationDialog.show(target);
       } else {
-        preview(node, target);
+        preview(nodeId, node, target);
       }
     }
   }
@@ -453,7 +458,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       log.info("Add " + type + " to " + nodeId);
 
       @SuppressWarnings("unchecked")
-      IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+      final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
       final Questionnaire questionnaire = questionnaireModel.getObject();
       final TreeNode node = elements.get(nodeId);
       final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
@@ -462,19 +467,19 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editingElement = true;
         SectionPanel sectionPanel = new SectionPanel(getShownComponentId(), new Model<Section>(new Section(null)), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target1, Section section) {
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Section section) {
             final IHasSection hasSection = node.isSection() ? questionnaireFinder.findSection(node.getName()) : questionnaire;
             hasSection.addSection(section);
-            persist(target1);
-            preview(node, target1);
+            persist(target);
+            preview(nodeId, node, target);
             // TODO just add node to JSTree and do not reload JSTree and add node to element map
-            target1.addComponent(tree);
+            target.addComponent(tree);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), target);
@@ -483,19 +488,19 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editingElement = true;
         PagePanel pagePanel = new PagePanel(getShownComponentId(), new Model<Page>(new Page(null)), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target1, Page editedPage) {
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Page editedPage) {
             questionnaireFinder.findSection(node.getName()).addPage(editedPage);
             questionnaire.addPage(editedPage);
-            persist(target1);
-            preview(node, target1);
+            persist(target);
+            preview(nodeId, node, target);
             // TODO just add node to JSTree and do not reload JSTree and add node to element map
-            target1.addComponent(tree);
+            target.addComponent(tree);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), target);
@@ -504,31 +509,53 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editingElement = true;
         EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel) {
           @Override
-          public void onSave(AjaxRequestTarget target1, Question question) {
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question question) {
             questionnaireFinder.findPage(node.getName()).addQuestion(question);
-            persist(target1);
-            preview(node, target1);
+            persist(target);
+            preview(nodeId, node, target);
             // TODO just add node to JSTree and do not reload JSTree and add node to element map
-            target1.addComponent(tree);
+            target.addComponent(tree);
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             reloadModel();
-            preview(node, target1);
+            preview(nodeId, node, target);
           }
         };
         show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), target);
+      } else if("variable".equals(type)) {
+        editingElement = true;
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        VariablePanel variablePanel = new VariablePanel(getShownComponentId(), new Model(null), questionnaireModel) {
+          @Override
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable variable) {
+            questionnaire.addVariable(variable);
+            persist(target);
+            preview(nodeId, node, target);
+            // TODO just add node to JSTree and do not reload JSTree and add node to element map
+            target.addComponent(tree);
+          }
+
+          @Override
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            reloadModel();
+            preview(nodeId, node, target);
+          }
+        };
+        show(variablePanel, new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), target);
       }
     }
   }
 
-  private void preview(TreeNode node, AjaxRequestTarget target) {
+  private void preview(final String nodeId, final TreeNode node, AjaxRequestTarget target) {
     editingElement = false;
     @SuppressWarnings("unchecked")
-    IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
-    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
     questionnaireFinder.buildQuestionnaireCache();
+
     if(node.isQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
       QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), new Model<Question>(question), questionnaireModel);
@@ -537,11 +564,44 @@ public abstract class QuestionnaireTreePanel extends Panel {
       Page page = questionnaireFinder.findPage(node.getName());
       PagePreviewPanel pagePreviewPanel = new PagePreviewPanel(getShownComponentId(), new Model<Page>(page), questionnaireModel);
       show(pagePreviewPanel, new StringResourceModel("Preview", QuestionnaireTreePanel.this, new Model<Page>(page), "Preview: ${name}"), target);
-
+    } else if(node.isVariable()) {
+      @SuppressWarnings({ "unchecked", "rawtypes" })
+      IModel<Variable> variableModel = new Model((Serializable) questionnaire.getVariable(node.getName()));
+      VariablePreview variablePreview = new VariablePreview(getShownComponentId(), variableModel) {
+        @Override
+        protected void onEdit(@SuppressWarnings("hiding") AjaxRequestTarget target, IModel<Variable> model) {
+          showVariablePanel(nodeId, node, questionnaireModel, target);
+        }
+      };
+      show(variablePreview, new StringResourceModel("Preview", QuestionnaireTreePanel.this, variableModel, "Preview: ${name}"), target);
     } else {
       // preview not supported
       show(new WebMarkupContainer(getShownComponentId()), new Model<String>(""), target);
     }
+  }
+
+  private void showVariablePanel(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final AjaxRequestTarget target) {
+    Variable variable = questionnaireModel.getObject().getVariable(node.getName());
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    VariablePanel variablePanel = new VariablePanel(getShownComponentId(), new Model((Serializable) variable), questionnaireModel) {
+      @Override
+      public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Variable variable) {
+        editingElement = true;
+        persist(target);
+        node.setName(variable.getName());
+        QuestionnaireTreePanel.this.setDefaultModel(questionnaireModel);
+        // update node name in jsTree
+        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '[VARIABLE] " + node.getName() + "');");
+        preview(nodeId, node, target);
+      }
+
+      @Override
+      public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+        reloadModel();
+        preview(nodeId, node, target);
+      }
+    };
+    show(variablePanel, new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), target);
   }
 
   private void persitQuestionnaire(AjaxRequestTarget target) {
@@ -591,16 +651,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
           variablesNode.setData("[VARIABLES]");
           variablesNode.setState("closed");
           JsonNodeAttribute variablesNodeAttribute = new JsonNodeAttribute();
+          variablesNodeAttribute.setId(addElement(new TreeNode("", null)));
           variablesNodeAttribute.setRel("Variables");
           variablesNode.setAttr(variablesNodeAttribute);
           jsonNode.getChildren().add(variablesNode);
         }
         Variable variable = (Variable) child;
-        TreeNode variableTreeNode = new TreeNode(variable.getName(), variable.getClass());
         JsonNode variableNode = new JsonNode();
         variableNode.setData("[VARIABLE] " + variable.getName());
         JsonNodeAttribute variableNodeAttribute = new JsonNodeAttribute();
-        variableNodeAttribute.setId(addElement(variableTreeNode));
+        variableNodeAttribute.setId(addElement(new TreeNode(variable.getName(), variable.getClass())));
         variableNodeAttribute.setRel("Variable");
         variableNodeAttribute.setClazz("jstree-leaf");
         variableNode.setAttr(variableNodeAttribute);

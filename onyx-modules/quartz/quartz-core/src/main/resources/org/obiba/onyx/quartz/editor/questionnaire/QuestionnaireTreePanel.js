@@ -76,6 +76,12 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 							seperator_after : false, 
 							seperator_before : false 
 						},
+						"create_variable": (elementType != "Variables") ? false :{ 
+							label: "Add new Variable", 
+							action: function (obj) { Wicket.QTree.addChild(elementId, 'variable'); },
+							seperator_after : false, 
+							seperator_before : false 
+						},
 						"edit": elementType == "Variables" ? false : { 
 							label: "Edit", 
 							action: function (obj) { Wicket.QTree.editElement(elementId); },

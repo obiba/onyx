@@ -13,6 +13,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasSection;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -65,23 +66,30 @@ public class TreeNode implements Serializable {
   }
 
   public boolean isQuestionnaire() {
-    return Questionnaire.class.equals(getClazz());
+    return getClazz() != null && Questionnaire.class.isAssignableFrom(getClazz());
   }
 
   public boolean isSection() {
-    return Section.class.equals(getClazz());
+    return getClazz() != null && Section.class.isAssignableFrom(getClazz());
   }
 
   public boolean isHasSection() {
-    return IHasSection.class.isAssignableFrom(getClazz());
+    return getClazz() != null && IHasSection.class.isAssignableFrom(getClazz());
   }
 
   public boolean isPage() {
-    return Page.class.equals(getClazz());
+    return getClazz() != null && Page.class.isAssignableFrom(getClazz());
   }
 
   public boolean isQuestion() {
-    return Question.class.equals(getClazz());
+    return getClazz() != null && Question.class.isAssignableFrom(getClazz());
   }
 
+  public boolean isVariable() {
+    return getClazz() != null && Variable.class.isAssignableFrom(getClazz());
+  }
+
+  public boolean isSeparator() {
+    return getClazz() == null;
+  }
 }
