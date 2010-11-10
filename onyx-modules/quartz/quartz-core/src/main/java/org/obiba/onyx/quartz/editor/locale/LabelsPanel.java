@@ -125,7 +125,7 @@ public class LabelsPanel extends Panel {
           }
         };
         tabByLocale.put(locale, tab);
-        tabs.add(tab);
+        tabs.add(new PanelCachingTab(tab));
       }
     }
 
@@ -138,7 +138,7 @@ public class LabelsPanel extends Panel {
     public InputPanel(String id, ListModel<KeyValue> model) {
       super(id, model);
 
-      add(new ListView<KeyValue>("item", model.getObject()) {
+      add(new ListView<KeyValue>("item", model) {
         @Override
         protected void populateItem(ListItem<KeyValue> item) {
           TextArea<String> textArea = new TextArea<String>("textArea", new PropertyModel<String>(item.getModel(), "value"));

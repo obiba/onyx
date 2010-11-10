@@ -56,14 +56,23 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     this(id, Model.ofList(items));
   }
 
-  @SuppressWarnings("unchecked")
+  public SortableList(String id, List<T> items, boolean hideEditButton) {
+    this(id, Model.ofList(items), hideEditButton);
+  }
+
   public SortableList(String id, IModel<? extends List<? extends T>> model) {
+    this(id, model, false);
+  }
+
+  @SuppressWarnings("unchecked")
+  public SortableList(String id, IModel<? extends List<? extends T>> model, final boolean hideEditButton) {
     super(id, model);
 
     add(CSSPackageResource.getHeaderContribution(SortableList.class, "SortableList.css"));
     add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
 
     ListView<T> listView = new ListView<T>("listView", model) {
+
       @Override
       protected void populateItem(ListItem<T> item) {
         item.setOutputMarkupId(true);
@@ -73,12 +82,14 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
         Image editImg = new Image("editImg", Images.EDIT);
         editImg.add(new AttributeModifier("title", true, new ResourceModel("Edit")));
-        item.add(new AjaxLink<Void>("editItem") {
+        AjaxLink<Void> editAjaxLink = new AjaxLink<Void>("editItem") {
           @Override
           public void onClick(AjaxRequestTarget target) {
             editItem(t, target);
           }
-        }.add(editImg));
+        };
+        editAjaxLink.setVisible(!hideEditButton);
+        item.add(editAjaxLink.add(editImg));
 
         Image deleteImg = new Image("deleteImg", Images.DELETE);
         deleteImg.add(new AttributeModifier("title", true, new ResourceModel("Delete")));
@@ -205,5 +216,4 @@ public abstract class SortableList<T extends Serializable> extends Panel {
       add(ajaxLink);
     }
   }
-
 }

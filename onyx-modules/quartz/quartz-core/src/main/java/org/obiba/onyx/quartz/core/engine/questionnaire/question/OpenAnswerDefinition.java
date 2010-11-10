@@ -164,6 +164,12 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
   }
 
+  public void removeDefaultData(Data data) {
+    if(defaultValues != null) {
+      defaultValues.remove(data);
+    }
+  }
+
   public void addDefaultValue(Data data) {
     if(data != null && data.getValue() != null) {
       if(!data.getType().equals(getDataType())) {

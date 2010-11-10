@@ -142,7 +142,7 @@ public class ArrayRowsPanel extends Panel {
 
   }
 
-  public class SimpleAddPanel extends Panel {
+  private class SimpleAddPanel extends Panel {
 
     public SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
@@ -188,7 +188,7 @@ public class ArrayRowsPanel extends Panel {
     }
   }
 
-  public class BulkAddPanel extends Panel {
+  private class BulkAddPanel extends Panel {
 
     public BulkAddPanel(String id, IModel<String> model) {
       super(id, model);

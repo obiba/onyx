@@ -128,7 +128,6 @@ public abstract class CategoryWindow extends Panel {
     form.add(noAnswerCheckBox);
     form.add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
 
-    localePropertiesUtils.load(this.localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, category);
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     LoadableDetachableModel<List<OpenAnswerDefinition>> openAnswerModel = new LoadableDetachableModel<List<OpenAnswerDefinition>>() {

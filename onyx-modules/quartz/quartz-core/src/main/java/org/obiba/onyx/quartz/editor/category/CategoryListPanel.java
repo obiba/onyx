@@ -172,7 +172,7 @@ public class CategoryListPanel extends Panel {
 
   }
 
-  public class SimpleAddPanel extends Panel {
+  private class SimpleAddPanel extends Panel {
 
     private static final int AUTO_COMPLETE_SIZE = 15;
 
@@ -240,7 +240,7 @@ public class CategoryListPanel extends Panel {
     }
   }
 
-  public class BulkAddPanel extends Panel {
+  private class BulkAddPanel extends Panel {
 
     public BulkAddPanel(String id, IModel<String> model) {
       super(id, model);

@@ -15,30 +15,38 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -70,6 +78,8 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
+import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -118,10 +128,23 @@ public class OpenAnswerPanel extends Panel {
 
   private final IModel<Question> questionModel;
 
+  private SortableList<Data> defaultValuesList;
+
+  private FeedbackPanel feedbackPanel;
+
+  private FeedbackWindow feedbackWindow;
+
+  private final IModel<LocaleProperties> localePropertiesModel;
+
+  private LabelsPanel labelsPanel;
+
   public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
     this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
+    this.feedbackPanel = feedbackPanel;
+    this.feedbackWindow = feedbackWindow;
 
     final Question question = questionModel.getObject();
     final OpenAnswerDefinition openAnswer = model.getObject();
@@ -185,7 +208,7 @@ public class OpenAnswerPanel extends Panel {
     add(new SimpleFormComponentLabel("unitLabel", unit));
 
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
-    add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
+    add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));
@@ -315,6 +338,135 @@ public class OpenAnswerPanel extends Panel {
         onSubmit(target);
       }
     });
+
+    final IModel<String> addDefaultValuesModel = new Model<String>();
+
+    List<ITab> tabs = new ArrayList<ITab>();
+    tabs.add(new AbstractTab(new ResourceModel("Add.simple")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        return new SimpleAddPanel(panelId, addDefaultValuesModel);
+      }
+    });
+    tabs.add(new AbstractTab(new ResourceModel("Add.bulk")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        return new BulkAddPanel(panelId, addDefaultValuesModel);
+      }
+    });
+    add(new AjaxTabbedPanel("addTabs", tabs));
+
+    defaultValuesList = new SortableList<Data>("defaultValues", openAnswer.getDefaultValues(), true) {
+
+      @Override
+      public Component getItemTitle(@SuppressWarnings("hiding") String id, Data data) {
+        return new Label(id, data.getValueAsString());
+      }
+
+      @Override
+      public void editItem(Data t, AjaxRequestTarget target) {
+        // TODO Auto-generated method stub
+
+      }
+
+      @Override
+      public void deleteItem(Data data, AjaxRequestTarget target) {
+        ((OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject()).removeDefaultData(data);
+        refreshList(target);
+      }
+
+      @Override
+      public Button[] getButtons() {
+        return null;
+      }
+
+    };
+    add(defaultValuesList);
+
+  }
+
+  private class SimpleAddPanel extends Panel {
+
+    public SimpleAddPanel(String id, IModel<String> model) {
+      super(id, model);
+      Form<String> form = new Form<String>("form", model);
+      add(form);
+      final TextField<String> defaultValue = new TextField<String>("defaultValue", model);
+      defaultValue.setOutputMarkupId(true);
+      defaultValue.setLabel(new ResourceModel("NewDefaultValue"));
+      form.add(defaultValue);
+      form.add(new SimpleFormComponentLabel("defaultValueLabel", defaultValue));
+      AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link") {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
+          OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
+          openAnswerDefinition.setDataType(DataType.valueOf(dataType.getValue()));
+          openAnswerDefinition.addDefaultValue(defaultValue.getModelObject());
+          defaultValue.setModelObject(null);
+
+          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
+          OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow));
+          target.addComponent(labelsPanel);
+          target.addComponent(defaultValue);
+          target.addComponent(defaultValuesList);
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form1) {
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
+        }
+      };
+
+      simpleAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(simpleAddLink);
+    }
+  }
+
+  private class BulkAddPanel extends Panel {
+
+    public BulkAddPanel(String id, IModel<String> model) {
+      super(id, model);
+      Form<String> form = new Form<String>("form", model);
+      add(form);
+      final TextArea<String> defaultValues = new TextArea<String>("defaultValues", model);
+      defaultValues.setOutputMarkupId(true);
+      defaultValues.setLabel(new ResourceModel("NewDefaultValues"));
+      form.add(defaultValues);
+      form.add(new SimpleFormComponentLabel("defaultValuesLabel", defaultValues));
+      AjaxSubmitLink bulkAddLink = new AjaxSubmitLink("bulkAddLink") {
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
+          String[] names = StringUtils.split(defaultValues.getModelObject(), ',');
+          if(names == null) return;
+
+          OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
+          for(String name : new HashSet<String>(Arrays.asList(names))) {
+            Data data = new Data(dataType.getModelObject(), name);
+            openAnswerDefinition.addDefaultValue(data);
+          }
+          defaultValues.setModelObject(null);
+          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
+          labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow);
+          OpenAnswerPanel.this.addOrReplace(labelsPanel);
+          target.addComponent(labelsPanel);
+          target.addComponent(defaultValues);
+          target.addComponent(defaultValuesList);
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form<?> form1) {
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
+        }
+      };
+
+      bulkAddLink.add(new Image("bulkAddImg", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(bulkAddLink);
+    }
   }
 
   /**
