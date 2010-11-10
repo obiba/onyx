@@ -15,10 +15,27 @@
 			</tr>			
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="scriptLabel"></label></td>
-				<td class="keyValueTableValueOdd"><textarea wicket:id="script" cols="40" rows="4"></textarea></td>
+				<td class="keyValueTableValueOdd"><textarea wicket:id="script" cols="60" rows="6"></textarea></td>
 			</tr>			
 		</table>
-			
+		
+		<br />
+		
+		<fieldset>
+			<legend><wicket:message key="HelpTips" /></legend>
+			<wicket:message key="ExistingVariables" />
+			<table>
+				<tr>
+					<td><label wicket:id="tablesLabel"></label></td>
+					<td><label wicket:id="variablesLabel"></label></td>
+				</tr>
+				<tr>
+					<td><select wicket:id="tables" size="10" /></td>
+					<td><select wicket:id="variables" size="10" /></td>
+				</tr>
+			</table>
+		</fieldset>
+				
 		<div class="modal-footer">
 			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
 			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>

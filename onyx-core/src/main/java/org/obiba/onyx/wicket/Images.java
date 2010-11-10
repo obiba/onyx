@@ -24,4 +24,6 @@ public class Images {
 
   public static ResourceReference ERROR = new ResourceReference(Images.class, "error.png");
 
+  public static ResourceReference HELP = new ResourceReference(Images.class, "help.png");
+
 }

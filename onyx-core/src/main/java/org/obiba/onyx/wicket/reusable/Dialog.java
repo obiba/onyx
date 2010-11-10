@@ -136,6 +136,7 @@ public class Dialog extends ModalWindow {
     okButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Ok", this, null)));
     form.add(okButton);
 
+    @SuppressWarnings("rawtypes")
     AjaxLink<?> cancelButton = new AjaxLink("cancel") {
 
       /**
@@ -155,6 +156,7 @@ public class Dialog extends ModalWindow {
     cancelButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Cancel", this, null)));
     form.add(cancelButton);
 
+    @SuppressWarnings("rawtypes")
     AjaxLink<?> yesButton = new AjaxLink("yes") {
 
       /**
@@ -174,6 +176,7 @@ public class Dialog extends ModalWindow {
     yesButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Yes", this, null)));
     form.add(yesButton);
 
+    @SuppressWarnings("rawtypes")
     AjaxLink<?> noButton = new AjaxLink("no") {
 
       /**
@@ -193,6 +196,7 @@ public class Dialog extends ModalWindow {
     noButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.No", this, null)));
     form.add(noButton);
 
+    @SuppressWarnings("rawtypes")
     AjaxLink<?> closeButton = new AjaxLink("close") {
 
       /**
@@ -219,8 +223,7 @@ public class Dialog extends ModalWindow {
     this.setWindowClosedCallback(new WindowClosedCallback() {
       private static final long serialVersionUID = 1L;
 
-      public void onClose(AjaxRequestTarget target, Status status) {
-        // TODO Auto-generated method stub
+      public void onClose(AjaxRequestTarget target, @SuppressWarnings("hiding") Status status) {
       }
     });
 

@@ -37,8 +37,9 @@ public class SyntaxHighlighterBehavior extends AttributeModifier {
     // set default config
     config.put("lineNumbers", false);
     config.put("highlight", false);
-    config.put("prettifyBaseUrl", RequestCycle.get().urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, "prettify")).toString());
-    config.put("baseUrl", RequestCycle.get().urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, ".")).toString());
+    RequestCycle requestCycle = RequestCycle.get();
+    config.put("prettifyBaseUrl", requestCycle.urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, "prettify")).toString());
+    config.put("baseUrl", requestCycle.urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, ".")).toString());
   }
 
   public SyntaxHighlighterBehavior() {
