@@ -9,6 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.widget.syntaxHighlighter;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.RequestCycle;
@@ -25,16 +29,20 @@ public class SyntaxHighlighterBehavior extends AttributeModifier {
 
   private static final long serialVersionUID = 1L;
 
-  public static final String DEFAULT_CONFIG = "{ 'lineNumbers':false, 'highlight': false, " + //
-  "'prettifyBaseUrl': '" + RequestCycle.get().urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, "prettify")) + "', " + //
-  "'baseUrl': '" + RequestCycle.get().urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, ".")) + "' }";
-
-  public SyntaxHighlighterBehavior() {
-    super("class", true, new Model<String>("highlight")); // auto detect language
-  }
+  private Map<String, Object> config = new HashMap<String, Object>();
 
   public SyntaxHighlighterBehavior(IModel<String> language) {
-    super("class", true, new Model<String>("language-" + language.getObject()));
+    super("class", true, new Model<String>(language == null ? "highlight" : "language-" + language.getObject()));
+
+    // set default config
+    config.put("lineNumbers", false);
+    config.put("highlight", false);
+    config.put("prettifyBaseUrl", RequestCycle.get().urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, "prettify")).toString());
+    config.put("baseUrl", RequestCycle.get().urlFor(new ResourceReference(SyntaxHighlighterBehavior.class, ".")).toString());
+  }
+
+  public SyntaxHighlighterBehavior() {
+    this(null); // auto detect language
   }
 
   @Override
@@ -42,7 +50,18 @@ public class SyntaxHighlighterBehavior extends AttributeModifier {
     super.renderHead(response);
     response.renderJavascriptReference(new CompressedResourceReference(SyntaxHighlighterBehavior.class, "scripts/jquery.syntaxhighlighter.min.js"));
     response.renderCSSReference(new CompressedResourceReference(SyntaxHighlighterBehavior.class, "syntaxHighlighter.css"));
-    response.renderJavascript("$.SyntaxHighlighter.init(" + DEFAULT_CONFIG + ");", "SyntaxHighlighter");
+
+    StringBuilder cfg = new StringBuilder();
+    for(Entry<String, Object> entry : config.entrySet()) {
+      if(cfg.length() > 0) cfg.append(", ");
+      cfg.append("'" + entry.getKey() + "': ");
+      if(entry.getValue() instanceof Boolean) {
+        cfg.append(entry.getValue());
+      } else {
+        cfg.append("'" + entry.getValue() + "'");
+      }
+    }
+    response.renderJavascript("$.SyntaxHighlighter.init({ " + cfg + " });", "SyntaxHighlighter");
   }
 
   @Override
@@ -59,6 +78,10 @@ public class SyntaxHighlighterBehavior extends AttributeModifier {
     "  $(\"#" + component.getMarkupId(true) + "\").syntaxHighlight();\n" + //
     "});\n" + //
     "</script>");
+  }
+
+  public Map<String, Object> getConfig() {
+    return config;
   }
 
 }

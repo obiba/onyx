@@ -128,14 +128,9 @@ public abstract class VariablePanel extends Panel {
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        if(variable == null) {
-          // create new variable
-          Builder builder = Variable.Builder.newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
-          builder.addAttribute("script", editedVariable.getScript());
-          onSave(target, builder.build());
-        } else {
-          // TODO update variable
-        }
+        Builder builder = Variable.Builder.newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
+        builder.addAttribute("script", editedVariable.getScript());
+        onSave(target, builder.build());
       }
 
       @Override

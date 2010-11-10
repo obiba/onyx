@@ -381,7 +381,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         };
         show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), target);
       } else if(node.isVariable()) {
-        showVariablePanel(nodeId, node, questionnaireModel, target);
+        editVariable(nodeId, node, questionnaireModel, target);
       }
     }
   }
@@ -570,7 +570,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       VariablePreview variablePreview = new VariablePreview(getShownComponentId(), variableModel) {
         @Override
         protected void onEdit(@SuppressWarnings("hiding") AjaxRequestTarget target, IModel<Variable> model) {
-          showVariablePanel(nodeId, node, questionnaireModel, target);
+          editVariable(nodeId, node, questionnaireModel, target);
         }
       };
       show(variablePreview, new StringResourceModel("Preview", QuestionnaireTreePanel.this, variableModel, "Preview: ${name}"), target);
@@ -580,15 +580,18 @@ public abstract class QuestionnaireTreePanel extends Panel {
     }
   }
 
-  private void showVariablePanel(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final AjaxRequestTarget target) {
-    Variable variable = questionnaireModel.getObject().getVariable(node.getName());
+  private void editVariable(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final AjaxRequestTarget target) {
+    editingElement = true;
+    final Questionnaire questionnaire = questionnaireModel.getObject();
+    final Variable variable = questionnaire.getVariable(node.getName());
     @SuppressWarnings({ "unchecked", "rawtypes" })
     VariablePanel variablePanel = new VariablePanel(getShownComponentId(), new Model((Serializable) variable), questionnaireModel) {
       @Override
-      public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Variable variable) {
-        editingElement = true;
+      public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable newVariable) {
+        questionnaire.removeVariable(variable);
+        questionnaire.addVariable(newVariable);
         persist(target);
-        node.setName(variable.getName());
+        node.setName(newVariable.getName());
         QuestionnaireTreePanel.this.setDefaultModel(questionnaireModel);
         // update node name in jsTree
         target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '[VARIABLE] " + node.getName() + "');");
