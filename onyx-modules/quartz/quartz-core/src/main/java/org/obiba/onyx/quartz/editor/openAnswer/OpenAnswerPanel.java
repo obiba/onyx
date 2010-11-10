@@ -402,9 +402,16 @@ public class OpenAnswerPanel extends Panel {
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           openAnswerDefinition.setDataType(DataType.valueOf(dataType.getValue()));
-          openAnswerDefinition.addDefaultValue(defaultValue.getModelObject());
+          try {
+            openAnswerDefinition.addDefaultValue(defaultValue.getModelObject());
+          } catch(NumberFormatException nfe) {
+            error(nfe.getMessage());
+            return;
+          } catch(IllegalArgumentException iae) {
+            error(iae.getMessage());
+            return;
+          }
           defaultValue.setModelObject(null);
-
           localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
           OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow));
           target.addComponent(labelsPanel);
@@ -444,9 +451,9 @@ public class OpenAnswerPanel extends Panel {
           if(names == null) return;
 
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
+          openAnswerDefinition.setDataType(DataType.valueOf(dataType.getValue()));
           for(String name : new HashSet<String>(Arrays.asList(names))) {
-            Data data = new Data(dataType.getModelObject(), name);
-            openAnswerDefinition.addDefaultValue(data);
+            openAnswerDefinition.addDefaultValue(name);
           }
           defaultValues.setModelObject(null);
           localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
