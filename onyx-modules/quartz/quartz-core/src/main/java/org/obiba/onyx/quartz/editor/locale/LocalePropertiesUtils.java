@@ -48,7 +48,9 @@ public class LocalePropertiesUtils {
     if(questionnaire.getName() == null) return;
     localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
     QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
-    bundle.clearMessageSourceCache();
+    if(bundle != null) {
+      bundle.clearMessageSourceCache();
+    }
     for(IQuestionnaireElement element : elements) {
       List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
       for(Locale locale : localeProperties.getLocales()) {

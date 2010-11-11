@@ -67,13 +67,10 @@ public abstract class CategoryWindow extends Panel {
 
   private final SortableList<OpenAnswerDefinition> openAnswerDefinitionList;
 
-  private final IModel<LocaleProperties> localePropertiesModel;
-
   private final ModalWindow openAnswerWindow;
 
   public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
-    this.localePropertiesModel = localePropertiesModel == null ? new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject())) : localePropertiesModel;
 
     add(form = new Form<QuestionCategory>("form", model));
 
@@ -128,6 +125,7 @@ public abstract class CategoryWindow extends Panel {
     form.add(noAnswerCheckBox);
     form.add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
 
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, category);
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     LoadableDetachableModel<List<OpenAnswerDefinition>> openAnswerModel = new LoadableDetachableModel<List<OpenAnswerDefinition>>() {
