@@ -18,6 +18,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.questionnaire.tree.DefaultRightPanel;
+import org.obiba.onyx.quartz.editor.questionnaire.tree.QuestionnaireTreePanel;
 
 /**
  *
@@ -37,7 +39,7 @@ public class EditionPanel extends Panel {
 
   public EditionPanel(String id, IModel<Questionnaire> model) {
     super(id, model);
-    this.rightPanel = new WebMarkupContainer(RIGHT_PANEL);
+    this.rightPanel = new DefaultRightPanel(RIGHT_PANEL);
 
     add(CSSPackageResource.getHeaderContribution(EditionPanel.class, "EditionPanel.css"));
 
@@ -72,9 +74,7 @@ public class EditionPanel extends Panel {
   }
 
   public void restoreDefaultRightPanel(AjaxRequestTarget target) {
-    WebMarkupContainer component = new WebMarkupContainer(RIGHT_PANEL);
-    component.setOutputMarkupId(true);
-    setRightPanel(component, new Model<String>(""));
+    setRightPanel(new DefaultRightPanel(RIGHT_PANEL), new Model<String>(""));
     target.addComponent(rightPanelContainer);
   }
 

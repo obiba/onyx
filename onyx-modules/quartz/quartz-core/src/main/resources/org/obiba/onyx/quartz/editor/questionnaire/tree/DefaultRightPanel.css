@@ -1,0 +1,15 @@
+.explain {
+	margin-top: -20px;
+}
+
+.explain li {
+	margin-bottom: 8px;
+}
+
+.explain .title {
+	font-weight: bold;
+}
+
+.questionTypeList img {
+	vertical-align: bottom;
+}

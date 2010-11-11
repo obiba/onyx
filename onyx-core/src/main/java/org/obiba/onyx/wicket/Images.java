@@ -26,4 +26,6 @@ public class Images {
 
   public static ResourceReference HELP = new ResourceReference(Images.class, "help.png");
 
+  public static ResourceReference ZOOM = new ResourceReference(Images.class, "zoom.png");
+
 }

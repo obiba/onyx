@@ -141,7 +141,7 @@ public abstract class VariablePanel extends Panel {
     form.add(tablesDropDown.setLabel(new ResourceModel("Tables"))).add(new SimpleFormComponentLabel("tablesLabel", tablesDropDown));
 
     final List<String> tableVariables = new ArrayList<String>();
-    tableVariables.add("                ");
+    findTableVariables(tablesDropDown, tableVariables);
     final DropDownChoice<String> tableVariablesDropDown = new DropDownChoice<String>("variables", new Model<String>(tableVariables.get(0)), tableVariables);
     tableVariablesDropDown.setNullValid(false).setOutputMarkupId(true);
     form.add(tableVariablesDropDown.setLabel(new ResourceModel("Variables"))).add(new SimpleFormComponentLabel("variablesLabel", tableVariablesDropDown));
@@ -149,18 +149,8 @@ public abstract class VariablePanel extends Panel {
     tablesDropDown.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        tableVariables.clear();
-        String selectedTable = tablesDropDown.getModelObject();
-        if(selectedTable == null) {
-          tableVariables.add("                ");
-        } else {
-          ValueTable table = MagmaEngine.get().getDatasource("onyx-datasource").getValueTable(selectedTable);
-          for(Variable v : table.getVariables()) {
-            tableVariables.add(v.getName());
-          }
-          Collections.sort(tableVariables);
-        }
-        tableVariablesDropDown.setModelObject(tableVariables.get(0));
+        findTableVariables(tablesDropDown, tableVariables);
+        tableVariablesDropDown.setModelObject(tableVariables.isEmpty() ? null : tableVariables.get(0));
         target.addComponent(tableVariablesDropDown);
       }
     });
@@ -196,6 +186,18 @@ public abstract class VariablePanel extends Panel {
   public abstract void onSave(AjaxRequestTarget target, Variable variable);
 
   public abstract void onCancel(AjaxRequestTarget target);
+
+  private void findTableVariables(final DropDownChoice<String> tablesDropDown, final List<String> tableVariables) {
+    tableVariables.clear();
+    String selectedTable = tablesDropDown.getModelObject();
+    if(selectedTable != null) {
+      ValueTable table = MagmaEngine.get().getDatasource("onyx-datasource").getValueTable(selectedTable);
+      for(Variable v : table.getVariables()) {
+        tableVariables.add(v.getName());
+      }
+      Collections.sort(tableVariables);
+    }
+  }
 
   public void persist(AjaxRequestTarget target) {
     try {

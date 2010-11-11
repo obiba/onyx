@@ -26,6 +26,7 @@ import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -69,6 +70,8 @@ public class ConditionPanel extends Panel {
     this.questionnaireModel = questionnaireModel;
 
     add(CSSPackageResource.getHeaderContribution(ConditionPanel.class, "ConditionPanel.css"));
+
+    add(new MultiLineLabel("explain", new ResourceModel("Explain")));
 
     Condition condition = new Condition();
 
