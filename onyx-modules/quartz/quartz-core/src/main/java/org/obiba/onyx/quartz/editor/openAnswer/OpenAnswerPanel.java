@@ -138,6 +138,9 @@ public class OpenAnswerPanel extends Panel {
 
   private LabelsPanel labelsPanel;
 
+  @SuppressWarnings("rawtypes")
+  private TextField defaultValue;
+
   public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
@@ -327,9 +330,13 @@ public class OpenAnswerPanel extends Panel {
     dataType.add(new AjaxFormSubmitBehavior("onchange") {
       @Override
       protected void onSubmit(AjaxRequestTarget target) {
+        setFieldType();
+        OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
+        // TODO here
         String value = dataType.getValue(); // use value because model is not set if validation error
         setMinMaxLabels(value == null ? null : DataType.valueOf(value));
         target.addComponent(minMaxContainer);
+        target.addComponent(defaultValuesList);
       }
 
       @Override
@@ -387,30 +394,29 @@ public class OpenAnswerPanel extends Panel {
 
   private class SimpleAddPanel extends Panel {
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
       add(form);
-      final TextField<String> defaultValue = new TextField<String>("defaultValue", model);
+      defaultValue = new TextField("defaultValue", model);
       defaultValue.setOutputMarkupId(true);
       defaultValue.setLabel(new ResourceModel("NewDefaultValue"));
+      setFieldType();
       form.add(defaultValue);
       form.add(new SimpleFormComponentLabel("defaultValueLabel", defaultValue));
       AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link") {
-        @SuppressWarnings("unchecked")
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
-          openAnswerDefinition.setDataType(DataType.valueOf(dataType.getValue()));
-          try {
-            openAnswerDefinition.addDefaultValue(defaultValue.getModelObject());
-          } catch(NumberFormatException nfe) {
-            error(nfe.getMessage());
-            return;
-          } catch(IllegalArgumentException iae) {
-            error(iae.getMessage());
+          String dataTypeValue = dataType.getValue();
+          if(StringUtils.isBlank(dataTypeValue)) {
+            error("Choose Data Type");
             return;
           }
+          DataType dataTypeEnum = DataType.valueOf(dataTypeValue);
+          openAnswerDefinition.setDataType(dataTypeEnum);
+          openAnswerDefinition.addDefaultValue(String.valueOf(defaultValue.getModelObject()));
           defaultValue.setModelObject(null);
           localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
           OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow));
@@ -429,6 +435,19 @@ public class OpenAnswerPanel extends Panel {
       simpleAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(simpleAddLink);
     }
+  }
+
+  private void setFieldType() {
+    if(!isValidStringEnum(dataType.getValue())) return;
+    DataType dataTypeEnum = DataType.valueOf(dataType.getValue());
+    defaultValue.setType(getType(dataTypeEnum));
+  }
+
+  private boolean isValidStringEnum(String value) {
+    for(DataType data : DataType.values()) {
+      if(data.name().equals(value)) return true;
+    }
+    return false;
   }
 
   private class BulkAddPanel extends Panel {
@@ -473,6 +492,21 @@ public class OpenAnswerPanel extends Panel {
 
       bulkAddLink.add(new Image("bulkAddImg", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(bulkAddLink);
+    }
+  }
+
+  private Class<?> getType(DataType dataType) {
+    switch(dataType) {
+    case DATE:
+      return Date.class;
+    case DECIMAL:
+      return Double.class;
+    case INTEGER:
+      return Integer.class;
+    case TEXT:
+      return String.class;
+    default:
+      throw new RuntimeException("Unknown type");
     }
   }
 

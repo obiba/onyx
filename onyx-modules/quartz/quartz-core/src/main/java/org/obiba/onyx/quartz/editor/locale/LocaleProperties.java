@@ -62,6 +62,7 @@ public class LocaleProperties implements Serializable {
       labels = ArrayListMultimap.create();
       elementLabels.put(element, labels);
     }
+    // TODO remove old keyValue before inserting the new one
     final KeyValue keyValue = new KeyValue(key, value);
     Collection<KeyValue> filter = Collections2.filter(labels.get(locale), new Predicate<KeyValue>() {
 
