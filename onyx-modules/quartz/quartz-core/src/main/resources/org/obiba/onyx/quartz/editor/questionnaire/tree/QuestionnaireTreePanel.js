@@ -16,10 +16,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 	$("#" + treeId).jstree({		
 		"json_data" : {
 			"ajax" : {
-				"url" : jsonUrl,
-				"data" : function (n) { 
-					return { id : n.attr ? n.attr("id") : 0 }; 
-				}
+				"url" : jsonUrl
 			}
 		},		
 		"themes" : {

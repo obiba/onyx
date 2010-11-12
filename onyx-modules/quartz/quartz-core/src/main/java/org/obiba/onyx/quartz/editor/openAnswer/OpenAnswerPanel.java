@@ -331,9 +331,21 @@ public class OpenAnswerPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target) {
         setFieldType();
-        OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
-        // TODO here
         String value = dataType.getValue(); // use value because model is not set if validation error
+        // if(value != null) {
+        // OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
+        // for(Data data : openAnswerDefinition.getDefaultValues()) {
+        // switch(DataType.valueOf(value)) {
+        // case TEXT:
+        //
+        // break;
+        //
+        // default:
+        // break;
+        // }
+        //
+        // }
+        // }
         setMinMaxLabels(value == null ? null : DataType.valueOf(value));
         target.addComponent(minMaxContainer);
         target.addComponent(defaultValuesList);

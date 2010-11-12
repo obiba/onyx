@@ -441,8 +441,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
             hasSection.addSection(section);
             persist(target);
             preview(nodeId, node, target);
-            // TODO just add node to JSTree and do not reload JSTree and add node to element map
-            target.addComponent(tree);
+            String json = createNode(section);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + json + ");");
           }
 
           @Override
@@ -457,13 +457,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editingElement = true;
         PagePanel pagePanel = new PagePanel(getShownComponentId(), new Model<Page>(new Page(null)), questionnaireModel) {
           @Override
-          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Page editedPage) {
-            questionnaireFinder.findSection(node.getName()).addPage(editedPage);
-            questionnaire.addPage(editedPage);
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Page page) {
+            questionnaireFinder.findSection(node.getName()).addPage(page);
+            questionnaire.addPage(page);
             persist(target);
             preview(nodeId, node, target);
-            // TODO just add node to JSTree and do not reload JSTree and add node to element map
-            target.addComponent(tree);
+            String json = createNode(page);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + json + ");");
           }
 
           @Override
@@ -482,8 +482,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
             questionnaireFinder.findPage(node.getName()).addQuestion(question);
             persist(target);
             preview(nodeId, node, target);
-            // TODO just add node to JSTree and do not reload JSTree and add node to element map
-            target.addComponent(tree);
+            String json = createNode(question);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + json + ");");
           }
 
           @Override
@@ -514,6 +514,25 @@ public abstract class QuestionnaireTreePanel extends Panel {
         };
         show(variablePanel, new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), target);
       }
+    }
+  }
+
+  private String createNode(IQuestionnaireElement element) {
+    try {
+      StringWriter sw = new StringWriter();
+      JsonNode newNode = new JsonNode();
+      JsonNodeAttribute attr = new JsonNodeAttribute();
+      TreeNode treeNode = new TreeNode(element.getName(), element.getClass());
+      attr.setId(addElement(treeNode));
+      attr.setClazz("jstree-leaf");
+      attr.setRel(ClassUtils.getShortClassName(element.getClass()));
+      newNode.setData(getNodeLabel(treeNode));
+      newNode.setAttr(attr);
+      JsonGenerator gen = new JsonFactory().createJsonGenerator(sw);
+      new ObjectMapper().writeValue(gen, newNode);
+      return sw.toString();
+    } catch(Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
