@@ -11,20 +11,27 @@ package org.obiba.onyx.quartz.editor.question;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -37,6 +44,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.widget.tooltip.TooltipBehavior;
+import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
@@ -50,6 +59,8 @@ public abstract class QuestionPanel extends Panel {
 
   public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType) {
     super(id, model);
+
+    add(CSSPackageResource.getHeaderContribution(QuestionPanel.class, "QuestionPanel.css"));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name"));
@@ -127,6 +138,13 @@ public abstract class QuestionPanel extends Panel {
 
     typeContainer.add(type);
     typeContainer.add(new SimpleFormComponentLabel("typeLabel", type));
+
+    Map<String, Object> tooltipCfg = new HashMap<String, Object>();
+    tooltipCfg.put("delay", 100);
+    tooltipCfg.put("opacity", 100);
+    tooltipCfg.put("showURL", false);
+    tooltipCfg.put("bodyHandler", "function() { return \"<img src='" + RequestCycle.get().urlFor(new ResourceReference(QuestionPanel.class, "labels-with-help.png")) + "' />\"; }");
+    add(new Image("labelsHelp", Images.HELP).add(new TooltipBehavior(new Model<String>(""), tooltipCfg)));
 
     add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow));
   }

@@ -291,13 +291,6 @@ public class QuestionnaireListPanel extends Panel {
         }
       });
 
-      add(new AjaxLink<Questionnaire>("previewLink", rowModel) {
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          modalWindow.setContent(new Panel("contents"));
-          modalWindow.show(target);
-        }
-      });
       add(new Link<Questionnaire>("exportLink", rowModel) {
         @Override
         public void onClick() {

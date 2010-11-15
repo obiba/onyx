@@ -100,7 +100,7 @@ public class OpenAnswerPanel extends Panel {
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  private final DropDownChoice<DataType> dataType;
+  private final DropDownChoice<DataType> dataTypeDropDown;
 
   private final WebMarkupContainer minMaxContainer;
 
@@ -186,7 +186,7 @@ public class OpenAnswerPanel extends Panel {
     List<DataType> typeChoices = new ArrayList<DataType>(Arrays.asList(DataType.values()));
     typeChoices.remove(DataType.BOOLEAN);
     typeChoices.remove(DataType.DATA);
-    dataType = new DropDownChoice<DataType>("dataType", new PropertyModel<DataType>(model, "dataType"), typeChoices, new IChoiceRenderer<DataType>() {
+    dataTypeDropDown = new DropDownChoice<DataType>("dataType", new PropertyModel<DataType>(model, "dataType"), typeChoices, new IChoiceRenderer<DataType>() {
       @Override
       public Object getDisplayValue(DataType type) {
         return new StringResourceModel("DataType." + type, OpenAnswerPanel.this, null).getString();
@@ -198,12 +198,12 @@ public class OpenAnswerPanel extends Panel {
       }
     });
 
-    dataType.setLabel(new ResourceModel("DataType"));
-    dataType.add(new RequiredFormFieldBehavior());
-    dataType.setNullValid(false);
+    dataTypeDropDown.setLabel(new ResourceModel("DataType"));
+    dataTypeDropDown.add(new RequiredFormFieldBehavior());
+    dataTypeDropDown.setNullValid(false);
 
-    add(new SimpleFormComponentLabel("dataTypeLabel", dataType));
-    add(dataType);
+    add(new SimpleFormComponentLabel("dataTypeLabel", dataTypeDropDown));
+    add(dataTypeDropDown);
 
     TextField<String> unit = new TextField<String>("unit", new PropertyModel<String>(model, "unit"));
     unit.setLabel(new ResourceModel("Unit"));
@@ -294,7 +294,7 @@ public class OpenAnswerPanel extends Panel {
     minMaxContainer.add(minimumLabel = new SimpleFormComponentLabel("minimumLabel", minLength));
     minMaxContainer.add(maximumLabel = new SimpleFormComponentLabel("maximumLabel", maxLength));
 
-    setMinMaxLabels(dataType.getModelObject());
+    setMinMaxLabels(dataTypeDropDown.getModelObject());
 
     add(validators = new OnyxEntityList<ComparingDataSource>("validators", new ValidationDataSourcesProvider(), new ValidationDataSourcesColumnProvider(), new ResourceModel("Validators")));
 
@@ -327,11 +327,11 @@ public class OpenAnswerPanel extends Panel {
     });
 
     // submit the whole form instead of just the dataType component
-    dataType.add(new AjaxFormSubmitBehavior("onchange") {
+    dataTypeDropDown.add(new AjaxFormSubmitBehavior("onchange") {
       @Override
       protected void onSubmit(AjaxRequestTarget target) {
         setFieldType();
-        String value = dataType.getValue(); // use value because model is not set if validation error
+        String value = dataTypeDropDown.getValue(); // use value because model is not set if validation error
         // if(value != null) {
         // OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
         // for(Data data : openAnswerDefinition.getDefaultValues()) {
@@ -421,7 +421,7 @@ public class OpenAnswerPanel extends Panel {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
-          String dataTypeValue = dataType.getValue();
+          String dataTypeValue = dataTypeDropDown.getValue();
           if(StringUtils.isBlank(dataTypeValue)) {
             error("Choose Data Type");
             return;
@@ -444,15 +444,16 @@ public class OpenAnswerPanel extends Panel {
         }
       };
 
-      simpleAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      simpleAddLink.add(new Image("img", Images.ADD));
       form.add(simpleAddLink);
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void setFieldType() {
-    if(!isValidStringEnum(dataType.getValue())) return;
-    DataType dataTypeEnum = DataType.valueOf(dataType.getValue());
-    defaultValue.setType(getType(dataTypeEnum));
+    String value = dataTypeDropDown.getValue();
+    if(!isValidStringEnum(value)) return;
+    defaultValue.setType(getType(DataType.valueOf(value)));
   }
 
   private boolean isValidStringEnum(String value) {
@@ -482,7 +483,7 @@ public class OpenAnswerPanel extends Panel {
           if(names == null) return;
 
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
-          openAnswerDefinition.setDataType(DataType.valueOf(dataType.getValue()));
+          openAnswerDefinition.setDataType(DataType.valueOf(dataTypeDropDown.getValue()));
           for(String name : new HashSet<String>(Arrays.asList(names))) {
             openAnswerDefinition.addDefaultValue(name);
           }
