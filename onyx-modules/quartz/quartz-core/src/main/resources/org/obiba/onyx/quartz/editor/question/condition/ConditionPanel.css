@@ -2,6 +2,10 @@
 	margin-left: 25px;
 }
 
+.radioContent img {
+	vertical-align: bottom;
+}
+
 .help {
 	font-size: 10px;
 	font-weight: normal;

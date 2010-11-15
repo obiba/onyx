@@ -72,12 +72,18 @@ public abstract class VariablePanel extends Panel {
   private final IModel<Questionnaire> questionnaireModel;
 
   public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel) {
+    this(id, variableModel, questionnaireModel, null);
+  }
+
+  public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel, ValueType forcedValueType) {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
     final EditedVariable editedVariable = new EditedVariable();
     final Variable variable = variableModel.getObject();
-    if(variable != null) {
+    if(variable == null) {
+      editedVariable.setValueType(forcedValueType);
+    } else {
       editedVariable.setName(variable.getName());
       editedVariable.setValueType(variable.getValueType());
       editedVariable.setScript(variable.getAttributeStringValue("script"));
@@ -124,6 +130,7 @@ public abstract class VariablePanel extends Panel {
 
     DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("type", new PropertyModel<ValueType>(form.getModel(), "valueType"), types, new ValueTypeRenderer());
     valueType.add(new RequiredFormFieldBehavior());
+    valueType.setEnabled(forcedValueType == null);
     form.add(valueType.setLabel(new ResourceModel("Type"))).add(new SimpleFormComponentLabel("typeLabel", valueType));
 
     TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));

@@ -1,5 +1,7 @@
 <wicket:panel>
 
+	<span wicket:id="variableWindow" />
+	
 	<span wicket:id="explain" />
 	
 	<div wicket:id="conditionType">
@@ -24,31 +26,15 @@
 		
 		<input wicket:id="variableType" type="radio" /> <label wicket:id="variableTypeLabel"></label>
 		<span wicket:id="variableTypeContainer">
-			<table class="keyValueTable radioContent" wicket:id="variableContainer">
-				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="variableLabel"></label></td>
-					<td class="keyValueTableValueOdd"><select wicket:id="variable"></select></td>
-				</tr>				
-			</table>	
+			<div class="radioContent" wicket:id="variableContainer">
+				<select wicket:id="variable"></select>
+				<a wicket:id="newVariable"><img wicket:id="newVariableImg" /></a>
+				<span wicket:id="previewVariableVisibility">
+					<a wicket:id="previewVariable"><img wicket:id="previewVariableImg" /></a>
+					<pre wicket:id="previewScript" />
+				</span>
+			</div> 
 			<br />
-		</span>
-
-		<input wicket:id="newVariableType" type="radio" /> <label wicket:id="newVariableTypeLabel"></label>
-		<span wicket:id="newVariableTypeContainer">
-			<table class="keyValueTable radioContent" wicket:id="newVariableContainer">
-				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="scriptLabel"></label></td>
-					<td class="keyValueTableValueOdd"><textarea wicket:id="script" cols="40" rows="4"></textarea></td>
-				</tr>				
-				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="newVariableNameLabel"></label></td>
-					<td class="keyValueTableValueOdd">
-						<input wicket:id="newVariableName" type="text" size="40" />
-						<br />
-						<span class="help"><wicket:message key="Optional" /></span> 						
-					</td>
-				</tr>				
-			</table>	
 		</span>
 	
 	</div>

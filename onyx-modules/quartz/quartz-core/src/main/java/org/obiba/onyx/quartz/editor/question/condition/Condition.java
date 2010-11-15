@@ -23,7 +23,7 @@ public class Condition implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public static enum Type {
-    NONE, QUESTION_CATEGORY, VARIABLE, NEW_VARIABLE;
+    NONE, QUESTION_CATEGORY, VARIABLE;
   }
 
   private Type type = Type.NONE;
