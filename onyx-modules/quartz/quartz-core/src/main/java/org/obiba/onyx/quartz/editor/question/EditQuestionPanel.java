@@ -264,11 +264,10 @@ public abstract class EditQuestionPanel extends Panel {
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
         QuestionType questionType = form.getModelObject().getQuestionType();
         if(questionType != null) {
-          int nbCategories = question.getCategories().size();
           switch(questionType) {
           case SINGLE_OPEN_ANSWER:
             openAnswerTab.save(target);
-            if(nbCategories == 0 || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
+            if(question.getCategories().size() == 0 || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
               tabbedPanel.setSelectedTab(tabs.indexOf(openAnswerTab));
               target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null).getObject());
@@ -280,7 +279,7 @@ public abstract class EditQuestionPanel extends Panel {
           case LIST_DROP_DOWN:
             question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : new DefaultQuestionPanelFactory().getBeanName());
             question.setMultiple(questionType == LIST_CHECKBOX);
-            if(nbCategories < 2) {
+            if(question.getCategories().size() < 2) {
               tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));
               target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
@@ -290,7 +289,7 @@ public abstract class EditQuestionPanel extends Panel {
           case ARRAY_CHECKBOX:
           case ARRAY_RADIO:
             question.setMultiple(questionType == ARRAY_CHECKBOX);
-            if(question.getQuestions().size() < 2 || nbCategories < 1) {
+            if(question.getQuestions().size() < 2 || question.getCategories().size() < 1) {
               form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
               tabbedPanel.setSelectedTab(tabs.indexOf(question.getQuestions().size() < 2 ? rowsTab : columnsTab));
               target.addComponent(tabbedPanel);
