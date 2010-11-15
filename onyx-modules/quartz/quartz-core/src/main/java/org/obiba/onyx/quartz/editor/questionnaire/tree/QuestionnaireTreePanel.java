@@ -440,9 +440,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
             final IHasSection hasSection = node.isSection() ? questionnaireFinder.findSection(node.getName()) : questionnaire;
             hasSection.addSection(section);
             persist(target);
-            preview(nodeId, node, target);
-            String json = createNode(section);
-            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + json + ");");
+            JsonNode jsonNode = createNode(section);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
+            editingElement = false;
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true, -1);");
           }
 
           @Override
@@ -461,9 +462,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
             questionnaireFinder.findSection(node.getName()).addPage(page);
             questionnaire.addPage(page);
             persist(target);
-            preview(nodeId, node, target);
-            String json = createNode(page);
-            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + json + ");");
+            JsonNode jsonNode = createNode(page);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
+            editingElement = false;
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true, -1);");
           }
 
           @Override
@@ -481,9 +483,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question question) {
             questionnaireFinder.findPage(node.getName()).addQuestion(question);
             persist(target);
-            preview(nodeId, node, target);
-            String json = createNode(question);
-            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + json + ");");
+            JsonNode jsonNode = createNode(question);
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
+            editingElement = false;
+            target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true, -1);");
           }
 
           @Override
@@ -517,23 +520,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
     }
   }
 
-  private String createNode(IQuestionnaireElement element) {
-    try {
-      StringWriter sw = new StringWriter();
-      JsonNode newNode = new JsonNode();
-      JsonNodeAttribute attr = new JsonNodeAttribute();
-      TreeNode treeNode = new TreeNode(element.getName(), element.getClass());
-      attr.setId(addElement(treeNode));
-      attr.setClazz("jstree-leaf");
-      attr.setRel(ClassUtils.getShortClassName(element.getClass()));
-      newNode.setData(getNodeLabel(treeNode));
-      newNode.setAttr(attr);
-      JsonGenerator gen = new JsonFactory().createJsonGenerator(sw);
-      new ObjectMapper().writeValue(gen, newNode);
-      return sw.toString();
-    } catch(Exception e) {
-      throw new RuntimeException(e);
-    }
+  private JsonNode createNode(IQuestionnaireElement element) {
+    JsonNode newNode = new JsonNode();
+    JsonNodeAttribute attr = new JsonNodeAttribute();
+    TreeNode treeNode = new TreeNode(element.getName(), element.getClass());
+    attr.setId(addElement(treeNode));
+    attr.setClazz("jstree-leaf");
+    attr.setRel(ClassUtils.getShortClassName(element.getClass()));
+    newNode.setData(getNodeLabel(treeNode));
+    newNode.setAttr(attr);
+    return newNode;
   }
 
   private void preview(final String nodeId, final TreeNode node, AjaxRequestTarget target) {

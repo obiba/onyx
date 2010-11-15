@@ -94,7 +94,10 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 					}
 					return obj; 
 				}
-		 }, 					
+		 }, 
+		"ui" : {
+			"select_limit" : 1
+		},
 		"plugins" : [ "themes", "json_data", "types", "ui", "dnd", "contextmenu" ]
 	})
 	.bind("move_node.jstree", function (e, data) {

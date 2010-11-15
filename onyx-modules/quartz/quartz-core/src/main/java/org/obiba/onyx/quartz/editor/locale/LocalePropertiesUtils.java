@@ -57,7 +57,9 @@ public class LocalePropertiesUtils {
         for(String key : listKeys) {
           String value = null;
           try {
-            value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
+            if(element.getName() != null) {
+              value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
+            }
           } catch(Exception e) {
             logger.error(e.getMessage(), e);
           }

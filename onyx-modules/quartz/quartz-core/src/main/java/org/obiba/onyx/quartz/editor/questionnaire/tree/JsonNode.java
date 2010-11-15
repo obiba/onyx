@@ -10,11 +10,15 @@
 package org.obiba.onyx.quartz.editor.questionnaire.tree;
 
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
@@ -61,6 +65,18 @@ public class JsonNode implements Serializable {
 
   public void setChildren(List<JsonNode> children) {
     this.children = children;
+  }
+
+  @Override
+  public String toString() {
+    try {
+      StringWriter sw = new StringWriter();
+      JsonGenerator gen = new JsonFactory().createJsonGenerator(sw);
+      new ObjectMapper().writeValue(gen, this);
+      return sw.toString();
+    } catch(Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @JsonIgnoreProperties(value = "clazz")
