@@ -60,4 +60,9 @@ public interface QuestionnaireBundleManager {
    */
   File generateBundleZip(String name) throws IOException;
 
+  /**
+   * @param bundle
+   */
+  void cacheBundle(QuestionnaireBundle bundle);
+
 }

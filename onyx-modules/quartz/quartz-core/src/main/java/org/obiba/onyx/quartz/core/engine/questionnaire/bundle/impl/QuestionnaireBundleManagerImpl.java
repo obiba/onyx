@@ -344,7 +344,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     return bundle;
   }
 
-  private void cacheBundle(QuestionnaireBundle bundle) {
+  @Override
+  public void cacheBundle(QuestionnaireBundle bundle) {
     bundleCache.put(bundle.getQuestionnaire().getName(), bundle);
     log.debug("Added bundle " + bundle.getName() + " to the cache");
   }
