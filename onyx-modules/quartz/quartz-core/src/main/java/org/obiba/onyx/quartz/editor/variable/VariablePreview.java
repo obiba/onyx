@@ -12,7 +12,6 @@ package org.obiba.onyx.quartz.editor.variable;
 import org.apache.commons.lang.WordUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -27,14 +26,8 @@ import org.obiba.onyx.wicket.Images;
 @SuppressWarnings("serial")
 public abstract class VariablePreview extends Panel {
 
-  /**
-   * @param id
-   * @param model
-   */
   public VariablePreview(String id, final IModel<Variable> model) {
     super(id, model);
-
-    add(CSSPackageResource.getHeaderContribution(VariablePreview.class, "VariablePreview.css"));
 
     Variable variable = model.getObject();
     add(new Label("name", variable.getName()));

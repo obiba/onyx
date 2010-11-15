@@ -7,15 +7,15 @@
 	 	<table class="keyValueTable">
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="nameLabel">nameLabel</label></td>
-				<td class="keyValueTableValueOdd"><input wicket:id="name" type="text" size="40" /></td>
+				<td><input wicket:id="name" type="text" size="40" /></td>
 		  </tr>	    	
 			<tr>
 		    <td class="keyValueTableKey"><label wicket:id="versionLabel">versionLabel</label></td>
-		    <td class="keyValueTableValueOdd"><input wicket:id="version" type="text" size="40" /></td>
+		    <td><input wicket:id="version" type="text" size="40" /></td>
 		  </tr>
 			<tr>
 				<td valign="top" class="keyValueTableKey"><wicket:message key="UIType" /></td>
-				<td class="keyValueTableValueOdd" wicket:id="uiType">
+				<td wicket:id="uiType">
 					<input wicket:id="standard" type="radio" /><label wicket:id="standardLabel">standardLabel</label>
 					<br />
 					<input wicket:id="simplified" type="radio" /><label wicket:id="simplifiedLabel">simplifiedLabel</label>
@@ -28,7 +28,7 @@
 		 	<table class="keyValueTable">
 			  <tr>
 			   	<td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
-			   	<td class="keyValueTableValueOdd"><div wicket:id="languages"></div></td>
+			   	<td><div wicket:id="languages"></div></td>
 			  </tr>
 			</table>			
 		 	<div wicket:id="labels"></div>

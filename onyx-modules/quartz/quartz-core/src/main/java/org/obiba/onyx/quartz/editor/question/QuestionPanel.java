@@ -63,7 +63,7 @@ public abstract class QuestionPanel extends Panel {
     add(CSSPackageResource.getHeaderContribution(QuestionPanel.class, "QuestionPanel.css"));
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
-    name.setLabel(new ResourceModel("Name"));
+    name.setLabel(new ResourceModel("Name")).add(new TooltipBehavior(new ResourceModel("Name.Tooltip")));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
       @Override
@@ -80,7 +80,7 @@ public abstract class QuestionPanel extends Panel {
     add(new SimpleFormComponentLabel("nameLabel", name));
 
     TextField<String> variable = new TextField<String>("variable", new PropertyModel<String>(model, "element.variableName"));
-    variable.setLabel(new ResourceModel("Variable"));
+    variable.setLabel(new ResourceModel("Variable")).add(new TooltipBehavior(new ResourceModel("Variable.Tooltip")));
     variable.add(new StringValidator.MaximumLengthValidator(20));
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
@@ -115,7 +115,7 @@ public abstract class QuestionPanel extends Panel {
         return type1.name();
       }
     });
-    type.add(new RequiredFormFieldBehavior());
+    type.add(new RequiredFormFieldBehavior()).add(new TooltipBehavior(new ResourceModel("QuestionType.Tooltip")));
     type.setLabel(new ResourceModel("QuestionType"));
     // submit the whole form instead of just the questionType component
     type.add(new AjaxFormSubmitBehavior("onchange") {

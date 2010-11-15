@@ -4,6 +4,11 @@
 	border: 1px solid #111;
 	background-color: #eee;
 	padding: 5px;
-	opacity: 0.85;
+	opacity: 0.95;
 }
-#tooltip h3, #tooltip div { margin: 0; }
+
+#tooltip h3,#tooltip div {
+	margin: 0;
+	font-weight: normal;
+	font-size: 12px;
+}

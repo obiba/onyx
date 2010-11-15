@@ -18,12 +18,14 @@ table.item td.action {
 	list-style-type: none;
 	margin: 10px 0 0 0;
 	padding: 0;
-	width: 90%;
+	width: 100%;
 }
 
 .sortable li {
 	margin: 0 5px 5px 0;
-	padding: 5px;
+	padding: 2px;
+	background: #ECECEC !important;
+	color: #666666 !important;
 }
 
 html>body .sortable li {

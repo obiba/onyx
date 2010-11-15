@@ -115,7 +115,7 @@ public class DataSourceConverter {
           default:
             scriptValue = "'" + value + "'";
           }
-          questionBuilder.setQuestionnaireVariableCondition(variableName, "${'" + variablePath + "'}." + comparingDataSource.getComparisonOperator() + "(" + scriptValue + ")");
+          questionBuilder.setQuestionnaireVariableCondition(variableName, "$('" + variablePath + "')." + comparingDataSource.getComparisonOperator() + "(" + scriptValue + ")");
         } else {
           questionBuilder.setQuestionnaireVariableCondition(variableName);
         }
