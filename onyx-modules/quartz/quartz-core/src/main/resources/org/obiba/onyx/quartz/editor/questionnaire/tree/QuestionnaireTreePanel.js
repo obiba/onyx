@@ -85,7 +85,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 							seperator_after : false, 
 							seperator_before : true 
 						},
-						"delete": elementType == "Variables" ? false : { 
+						"delete": (elementType == "Variables" || elementType == "Questionnaire") ? false : { 
 							label: "Delete", 
 							action: function (obj) { Wicket.QTree.deleteElement(elementId); },
 							seperator_after : false, 

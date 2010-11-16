@@ -3,7 +3,14 @@
  	<div class="edition">
 		<div class="tree"><div wicket:id="tree" /></div>
 		<div class="properties" wicket:id="rightPanelContainer">
-			<h1 class="title"><div wicket:id="title" /></h1>				
+			<h1 class="title">
+				<span wicket:id="title" />
+				<span class="topMenu">
+					<span wicket:id="menu">
+						<a wicket:id="button"><img wicket:id="buttonImg" /></a>
+					</span>
+				</span>						
+			</h1>		
 			<br />
 			<div wicket:id="rightPanel" />
 		</div>

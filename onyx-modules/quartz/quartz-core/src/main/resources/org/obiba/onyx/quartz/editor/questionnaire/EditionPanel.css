@@ -16,3 +16,14 @@
 	overflow: auto;
 	padding-left: 10px;
 }
+
+.edition .topMenu {
+	float: right;
+}
+
+.edition .topMenu a {
+	padding: 0 5px;
+}
+
+.edition .topMenu a img {
+}
