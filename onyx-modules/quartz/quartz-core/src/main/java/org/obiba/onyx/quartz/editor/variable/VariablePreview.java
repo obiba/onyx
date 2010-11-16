@@ -17,7 +17,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.magma.Variable;
-import org.obiba.onyx.quartz.editor.widget.syntaxHighlighter.SyntaxHighlighterBehavior;
+import org.obiba.onyx.quartz.editor.behavior.syntaxHighlighter.SyntaxHighlighterBehavior;
 import org.obiba.onyx.wicket.Images;
 
 /**

@@ -69,10 +69,12 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -130,9 +132,9 @@ public class OpenAnswerPanel extends Panel {
 
   private SortableList<Data> defaultValuesList;
 
-  private FeedbackPanel feedbackPanel;
+  private final FeedbackPanel feedbackPanel;
 
-  private FeedbackWindow feedbackWindow;
+  private final FeedbackWindow feedbackWindow;
 
   private final IModel<LocaleProperties> localePropertiesModel;
 
@@ -141,7 +143,11 @@ public class OpenAnswerPanel extends Panel {
   @SuppressWarnings("rawtypes")
   private TextField defaultValue;
 
-  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  private final VariableNameBehavior variableNameBehavior;
+
+  private TextField<String> variable;
+
+  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
     this.questionnaireModel = questionnaireModel;
@@ -150,6 +156,7 @@ public class OpenAnswerPanel extends Panel {
     this.feedbackWindow = feedbackWindow;
 
     final Question question = questionModel.getObject();
+    final Category category = categoryModel.getObject();
     final OpenAnswerDefinition openAnswer = model.getObject();
 
     validatorWindow = new ModalWindow("validatorWindow");
@@ -177,11 +184,25 @@ public class OpenAnswerPanel extends Panel {
     add(name);
     add(new SimpleFormComponentLabel("nameLabel", name));
 
-    TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
+    variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
     variable.add(new StringValidator.MaximumLengthValidator(20));
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
+
+    if(category == null) {
+      variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null) {
+        @Override
+        protected String generateVariableName(Question parentQuestion, @SuppressWarnings("hiding") Question question, @SuppressWarnings("hiding") Category category, @SuppressWarnings("hiding") String name) {
+          String variableName = super.generateVariableName(parentQuestion, question, category, name);
+          return StringUtils.isBlank(variableName) ? "" : variableName + "." + name;
+        }
+      };
+    } else {
+      variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, category);
+    }
+
+    add(variableNameBehavior);
 
     List<DataType> typeChoices = new ArrayList<DataType>(Arrays.asList(DataType.values()));
     typeChoices.remove(DataType.BOOLEAN);
@@ -422,7 +443,6 @@ public class OpenAnswerPanel extends Panel {
 
       @Override
       public void editItem(Data t, AjaxRequestTarget target) {
-        // TODO Auto-generated method stub
 
       }
 
@@ -566,7 +586,9 @@ public class OpenAnswerPanel extends Panel {
    * @param target
    */
   public void onSave(AjaxRequestTarget target) {
-
+    if(!variableNameBehavior.isVariableNameDefined()) {
+      variable.setModelObject(null);
+    }
   }
 
   @SuppressWarnings("incomplete-switch")

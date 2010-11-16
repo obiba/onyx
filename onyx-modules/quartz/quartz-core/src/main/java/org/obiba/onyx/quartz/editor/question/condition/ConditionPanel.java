@@ -50,13 +50,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.quartz.editor.behavior.syntaxHighlighter.SyntaxHighlighterBehavior;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.question.condition.Condition.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariablePanel;
 import org.obiba.onyx.quartz.editor.variable.VariableRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
-import org.obiba.onyx.quartz.editor.widget.syntaxHighlighter.SyntaxHighlighterBehavior;
-import org.obiba.onyx.quartz.editor.widget.tooltip.TooltipBehavior;
 import org.obiba.onyx.wicket.Images;
 
 import com.google.common.base.Predicate;

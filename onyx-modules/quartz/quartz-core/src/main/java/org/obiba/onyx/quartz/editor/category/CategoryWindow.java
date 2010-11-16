@@ -40,6 +40,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -68,6 +69,8 @@ public abstract class CategoryWindow extends Panel {
   private final SortableList<OpenAnswerDefinition> openAnswerDefinitionList;
 
   private final ModalWindow openAnswerWindow;
+
+  private final VariableNameBehavior variableNameBehavior;
 
   public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
@@ -109,11 +112,13 @@ public abstract class CategoryWindow extends Panel {
     form.add(name);
     form.add(new SimpleFormComponentLabel("nameLabel", name));
 
-    TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"), question.getName()));
+    final TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
     variable.add(new StringValidator.MaximumLengthValidator(20));
     form.add(variable);
     form.add(new SimpleFormComponentLabel("variableLabel", variable));
+
+    add(variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null));
 
     CheckBox escapeCheckBox = new CheckBox("escape", new PropertyModel<Boolean>(model, "category.escape"));
     escapeCheckBox.setLabel(new ResourceModel("EscapeOrMissing"));
@@ -153,7 +158,7 @@ public abstract class CategoryWindow extends Panel {
 
       @Override
       public void editItem(OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
-        openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
+        openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
           @Override
           public void onSave(AjaxRequestTarget target1, OpenAnswerDefinition openAnswer1) {
             refreshList(target1);
@@ -185,7 +190,7 @@ public abstract class CategoryWindow extends Panel {
 
           @Override
           public void callback(AjaxRequestTarget target) {
-            openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
+            openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
               @Override
               public void onSave(AjaxRequestTarget target1, OpenAnswerDefinition openAnswer) {
                 OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
@@ -217,6 +222,9 @@ public abstract class CategoryWindow extends Panel {
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        if(!variableNameBehavior.isVariableNameDefined()) {
+          variable.setModelObject(null);
+        }
         onSave(target, form.getModelObject());
         modalWindow.close(target);
       }

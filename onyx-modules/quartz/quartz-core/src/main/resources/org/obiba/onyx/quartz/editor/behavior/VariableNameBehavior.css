@@ -1,0 +1,8 @@
+input.autoDefined {
+	font-style: italic;
+	color: #C0C0C0;
+}
+
+input.userDefined {
+	font-style: normal;
+}

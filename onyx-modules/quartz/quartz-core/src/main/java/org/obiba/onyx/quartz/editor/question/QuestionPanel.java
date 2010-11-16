@@ -42,9 +42,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
-import org.obiba.onyx.quartz.editor.widget.tooltip.TooltipBehavior;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -57,12 +58,14 @@ public abstract class QuestionPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
+  private final VariableNameBehavior variableNameBehavior;
+
   public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType) {
     super(id, model);
 
     add(CSSPackageResource.getHeaderContribution(QuestionPanel.class, "QuestionPanel.css"));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
+    final TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name")).add(new TooltipBehavior(new ResourceModel("Name.Tooltip")));
     name.add(new RequiredFormFieldBehavior());
     name.add(new AbstractValidator<String>() {
@@ -79,11 +82,13 @@ public abstract class QuestionPanel extends Panel {
     add(name);
     add(new SimpleFormComponentLabel("nameLabel", name));
 
-    TextField<String> variable = new TextField<String>("variable", new PropertyModel<String>(model, "element.variableName"));
+    final TextField<String> variable = new TextField<String>("variable", new PropertyModel<String>(model, "element.variableName"));
     variable.setLabel(new ResourceModel("Variable")).add(new TooltipBehavior(new ResourceModel("Variable.Tooltip")));
     variable.add(new StringValidator.MaximumLengthValidator(20));
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
+
+    add(variableNameBehavior = new VariableNameBehavior(name, variable, model.getObject().getElement().getParentQuestion(), null, null));
 
     // available choices when question type is already set
     List<QuestionType> typeChoices = null;
@@ -152,7 +157,18 @@ public abstract class QuestionPanel extends Panel {
   /**
    * 
    * @param target
+   */
+  public void onSave(AjaxRequestTarget target) {
+    if(!variableNameBehavior.isVariableNameDefined()) {
+      ((EditedQuestion) getDefaultModelObject()).getElement().setVariableName(null);
+    }
+  }
+
+  /**
+   * 
+   * @param target
    * @param questionType
    */
   public abstract void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType);
+
 }

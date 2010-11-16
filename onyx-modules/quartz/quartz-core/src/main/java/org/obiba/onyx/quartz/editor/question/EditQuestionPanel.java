@@ -19,9 +19,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -143,9 +141,10 @@ public abstract class EditQuestionPanel extends Panel {
           } else {
             openAnswerDefinition = categories.get(0).getOpenAnswerDefinition();
           }
-          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(null), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
             @Override
             public void onSave(AjaxRequestTarget target) {
+              super.onSave(target);
               if(categories.isEmpty()) {
                 Category category = new Category(openAnswerDefinition.getName());
                 category.setOpenAnswerDefinition(openAnswerDefinition);
@@ -206,20 +205,37 @@ public abstract class EditQuestionPanel extends Panel {
     };
     columnsTab.setVisible(false);
 
-    ITab questionTab = new PanelCachingTab(new AbstractTab(new ResourceModel("Question")) {
+    final SavableHidableTab questionTab = new SavableHidableTab(new ResourceModel("Question")) {
+
+      private QuestionPanel panel;
+
       @Override
       public Panel getPanel(String panelId) {
-        return new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true) {
-          @Override
-          public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
-            setTabsVisibility(questionType);
-            if(tabbedPanel != null && target != null) {
-              target.addComponent(tabbedPanel);
+        if(panel == null) {
+          panel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true) {
+            @Override
+            public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
+              setTabsVisibility(questionType);
+              if(tabbedPanel != null && target != null) {
+                target.addComponent(tabbedPanel);
+              }
             }
-          }
-        };
+          };
+        }
+        return panel;
       }
-    });
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
+      }
+
+      @Override
+      public boolean isVisible() {
+        return true;
+      }
+
+    };
 
     tabs.add(questionTab);
     tabs.add(openAnswerTab);
@@ -263,6 +279,8 @@ public abstract class EditQuestionPanel extends Panel {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
         QuestionType questionType = form.getModelObject().getQuestionType();
+        questionTab.save(target);
+
         if(questionType != null) {
           switch(questionType) {
           case SINGLE_OPEN_ANSWER:

@@ -54,15 +54,17 @@ public abstract class QuestionWindow extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<EditedQuestion>("form", model));
-    form.add(new QuestionPanel("question", model, questionnaireModel, this.localePropertiesModel, feedbackPanel, feedbackWindow, false) {
+    final QuestionPanel questionPanel = new QuestionPanel("question", model, questionnaireModel, this.localePropertiesModel, feedbackPanel, feedbackWindow, false) {
       @Override
       public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
       }
-    });
+    };
+    form.add(questionPanel);
 
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        questionPanel.onSave(target);
         onSave(target, form.getModelObject());
         modalWindow.close(target);
       }

@@ -14,7 +14,7 @@
 				<td><select wicket:id="type" /></td>
 			</tr>			
 			<tr>
-				<td class="keyValueTableKey"><label wicket:id="scriptLabel"></label></td>
+				<td class="keyValueTableKey" valign="top"><label wicket:id="scriptLabel"></label></td>
 				<td><textarea wicket:id="script" cols="60" rows="6"></textarea></td>
 			</tr>			
 		</table>
@@ -33,7 +33,11 @@
 					<td><select wicket:id="tables" size="10" /></td>
 					<td><select wicket:id="variables" size="10" /></td>
 				</tr>
+				<tr>
+					<td colspan="2"><input wicket:id="selectedVariable" type="text" style="width: 100%" readonly="readonly" /></td>
+				</tr>
 			</table>
+			<br />
 			<wicket:message key="ScriptHelp" /> <a href="http://wiki.obiba.org/confluence/display/OPALDOC/Magma+Javascript+API" target="magma">Magma Javascript API</a>
 		</fieldset>
 				

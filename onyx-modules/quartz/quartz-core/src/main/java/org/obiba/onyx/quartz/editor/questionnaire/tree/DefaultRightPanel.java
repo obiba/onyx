@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
-import org.obiba.onyx.quartz.editor.widget.tooltip.TooltipBehavior;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.wicket.Images;
 
 /**

@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -36,7 +37,7 @@ public abstract class OpenAnswerWindow extends Panel {
 
   private final Form<OpenAnswerDefinition> form;
 
-  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -47,11 +48,13 @@ public abstract class OpenAnswerWindow extends Panel {
 
     add(form = new Form<OpenAnswerDefinition>("form", model));
 
-    form.add(new OpenAnswerPanel("openAnswerPanel", model, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));
+    final OpenAnswerPanel openAnswerPanel = new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+    form.add(openAnswerPanel);
 
     form.add(new AjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+        openAnswerPanel.onSave(target);
         onSave(target, form.getModelObject());
         modalWindow.close(target);
       }
