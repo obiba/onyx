@@ -402,7 +402,7 @@ public class OpenAnswerPanel extends Panel {
             switch(valueOf) {
             case DATE:
               try {
-                data.setTypeAndValue(valueOf, DATE_FORMAT.format(DATE_FORMAT.parse(data.getValueAsString())));
+                data.setTypeAndValue(valueOf, DATE_FORMAT.parse(data.getValueAsString()));
               } catch(ParseException e) {
                 throw new RuntimeException(e);
               }
@@ -418,7 +418,7 @@ public class OpenAnswerPanel extends Panel {
               }
               break;
             case TEXT:
-              data.setTypeAndValue(valueOf, data.getValueAsString());
+              data.setTypeAndValue(valueOf, data.getType() == DataType.DATE ? DATE_FORMAT.format(data.getValue()) : data.getValueAsString());
               break;
             }
           }
@@ -457,7 +457,7 @@ public class OpenAnswerPanel extends Panel {
 
       @Override
       public Component getItemTitle(@SuppressWarnings("hiding") String id, Data data) {
-        return new Label(id, data.getValueAsString());
+        return new Label(id, data.getType() == DataType.DATE ? DATE_FORMAT.format(data.getValue()) : data.getValueAsString());
       }
 
       @Override
@@ -497,6 +497,7 @@ public class OpenAnswerPanel extends Panel {
       AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link") {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
+          if(StringUtils.isBlank((String) defaultValue.getModelObject())) return;
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           String dataTypeValue = dataTypeDropDown.getValue();
           if(StringUtils.isBlank(dataTypeValue)) {
@@ -558,9 +559,45 @@ public class OpenAnswerPanel extends Panel {
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String[] names = StringUtils.split(defaultValues.getModelObject(), ',');
           if(names == null) return;
-
+          String dataTypeValue = dataTypeDropDown.getValue();
+          if(StringUtils.isBlank(dataTypeValue)) {
+            error(new StringResourceModel("ChooseDataType", OpenAnswerPanel.this, null).getObject());
+            return;
+          }
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
-          openAnswerDefinition.setDataType(DataType.valueOf(dataTypeDropDown.getValue()));
+          openAnswerDefinition.setDataType(DataType.valueOf(dataTypeValue));
+          for(String name : new HashSet<String>(Arrays.asList(names))) {
+            DataType valueOf = DataType.valueOf(dataTypeValue);
+            switch(valueOf) {
+            case DATE:
+              try {
+                DATE_FORMAT.parse(name);
+              } catch(ParseException nfe) {
+                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                return;
+              }
+              break;
+            case DECIMAL:
+              try {
+                Double.parseDouble(name);
+              } catch(NumberFormatException nfe) {
+                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                return;
+              }
+              break;
+            case INTEGER:
+              try {
+                Long.parseLong(name);
+              } catch(NumberFormatException nfe) {
+                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                return;
+              }
+              break;
+            case TEXT:
+              break;
+            }
+
+          }
           for(String name : new HashSet<String>(Arrays.asList(names))) {
             openAnswerDefinition.addDefaultValue(name);
           }
