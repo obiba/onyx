@@ -27,7 +27,7 @@ public class JsonNode implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private String data;
+  private Data data;
 
   private String state = "open";
 
@@ -43,11 +43,11 @@ public class JsonNode implements Serializable {
     this.attr = attr;
   }
 
-  public String getData() {
+  public Data getData() {
     return data;
   }
 
-  public void setData(String data) {
+  public void setData(Data data) {
     this.data = data;
   }
 
@@ -79,6 +79,35 @@ public class JsonNode implements Serializable {
     }
   }
 
+  public static class Data {
+
+    private String title;
+
+    private String icon;
+
+    public Data(String title, String icon) {
+      this.title = title;
+      this.icon = icon;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
+    public void setTitle(String title) {
+      this.title = title;
+    }
+
+    public String getIcon() {
+      return icon;
+    }
+
+    public void setIcon(String icon) {
+      this.icon = icon;
+    }
+
+  }
+
   @JsonIgnoreProperties(value = "clazz")
   public static class JsonNodeAttribute {
 
@@ -88,6 +117,16 @@ public class JsonNode implements Serializable {
     private String clazz = "";
 
     private String rel;
+
+    private String title;
+
+    public String getTitle() {
+      return title;
+    }
+
+    public void setTitle(String title) {
+      this.title = title;
+    }
 
     public String getId() {
       return id;

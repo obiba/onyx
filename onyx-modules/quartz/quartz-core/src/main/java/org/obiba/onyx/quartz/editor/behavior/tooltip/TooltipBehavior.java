@@ -76,7 +76,7 @@ public class TooltipBehavior extends AttributeModifier {
     super.onRendered(component);
     component.getResponse().write("<script>\n" + //
     "$(document).ready(function() {\n" + //
-    "  $(\"#" + component.getMarkupId(true) + "\").tooltip({ " + configuration + " });\n" + //
+    "  $('#" + component.getMarkupId(true) + "').tooltip({ " + configuration + " });\n" + //
     "});\n" + //
     "</script>");
   }

@@ -10,21 +10,17 @@
 package org.obiba.onyx.quartz.editor.variable;
 
 import org.apache.commons.lang.WordUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.editor.behavior.syntaxHighlighter.SyntaxHighlighterBehavior;
-import org.obiba.onyx.wicket.Images;
 
 /**
  *
  */
 @SuppressWarnings("serial")
-public abstract class VariablePreview extends Panel {
+public class VariablePreview extends Panel {
 
   public VariablePreview(String id, final IModel<Variable> model) {
     super(id, model);
@@ -36,13 +32,6 @@ public abstract class VariablePreview extends Panel {
     script.add(new SyntaxHighlighterBehavior());
     add(script);
 
-    add(new AjaxLink<Void>("edit") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        onEdit(target, model);
-      }
-    }.add(new Image("img", Images.EDIT)));
   }
 
-  protected abstract void onEdit(AjaxRequestTarget target, IModel<Variable> model);
 }

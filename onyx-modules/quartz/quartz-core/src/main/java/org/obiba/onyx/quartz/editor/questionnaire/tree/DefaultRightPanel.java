@@ -15,15 +15,19 @@ import java.util.Map;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.util.collections.MiniMap;
+import org.apache.wicket.util.template.TextTemplateHeaderContributor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
+import org.obiba.onyx.quartz.editor.QuartzImages;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.wicket.Images;
 
@@ -36,7 +40,21 @@ public class DefaultRightPanel extends Panel {
   public DefaultRightPanel(String id) {
     super(id);
 
-    add(CSSPackageResource.getHeaderContribution(DefaultRightPanel.class, "DefaultRightPanel.css"));
+    IModel<Map<String, Object>> variablesModel = new AbstractReadOnlyModel<Map<String, Object>>() {
+      private Map<String, Object> variables;
+
+      @Override
+      public Map<String, Object> getObject() {
+        if(variables == null) {
+          this.variables = new MiniMap<String, Object>(3);
+          variables.put("sectionImgUrl", RequestCycle.get().urlFor(QuartzImages.SECTION).toString());
+          variables.put("pageImgUrl", RequestCycle.get().urlFor(QuartzImages.PAGE).toString());
+          variables.put("questionImgUrl", RequestCycle.get().urlFor(QuartzImages.QUESTION).toString());
+        }
+        return variables;
+      }
+    };
+    add(TextTemplateHeaderContributor.forCss(DefaultRightPanel.class, "DefaultRightPanel.css", variablesModel));
 
     add(new Label("howToUseTree", new ResourceModel("HowToUseTree.content")).setEscapeModelStrings(false));
     add(new Label("terminology", new ResourceModel("Terminology.content")).setEscapeModelStrings(false));

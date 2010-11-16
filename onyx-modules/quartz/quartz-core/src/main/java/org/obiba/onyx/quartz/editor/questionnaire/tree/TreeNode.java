@@ -13,12 +13,14 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.wicket.ResourceReference;
 import org.obiba.magma.Variable;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IHasSection;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.editor.QuartzImages;
 
 /**
  *
@@ -27,13 +29,36 @@ public class TreeNode implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  public enum NodeType {
+    QUESTIONNAIRE(QuartzImages.QUESTIONNAIRE), SECTION(QuartzImages.SECTION), PAGE(QuartzImages.PAGE), QUESTION(QuartzImages.QUESTION), VARIABLES(QuartzImages.VARIABLES), VARIABLE((QuartzImages.VARIABLE));
+
+    private ResourceReference icon;
+
+    private NodeType(ResourceReference icon) {
+      this.icon = icon;
+    }
+
+    public ResourceReference getIcon() {
+      return icon;
+    }
+
+    public static NodeType get(Class<? extends IQuestionnaireElement> clazz) {
+      if(Questionnaire.class.isAssignableFrom(clazz)) return NodeType.QUESTIONNAIRE;
+      if(Section.class.isAssignableFrom(clazz)) return NodeType.SECTION;
+      if(Page.class.isAssignableFrom(clazz)) return NodeType.PAGE;
+      if(Question.class.isAssignableFrom(clazz)) return NodeType.QUESTION;
+      if(Variable.class.isAssignableFrom(clazz)) return NodeType.VARIABLE;
+      throw new IllegalArgumentException(clazz + " not supported");
+    }
+  }
+
   private String name;
 
-  private Class<?> clazz;
+  private NodeType nodeType;
 
-  public TreeNode(String name, Class<?> clazz) {
+  public TreeNode(String name, NodeType nodeType) {
     this.name = name;
-    this.clazz = clazz;
+    this.nodeType = nodeType;
   }
 
   public String getName() {
@@ -44,12 +69,12 @@ public class TreeNode implements Serializable {
     this.name = name;
   }
 
-  public Class<?> getClazz() {
-    return clazz;
+  public NodeType getNodeType() {
+    return nodeType;
   }
 
-  public void setClazz(Class<?> clazz) {
-    this.clazz = clazz;
+  public void setNodeType(NodeType nodeType) {
+    this.nodeType = nodeType;
   }
 
   @Override
@@ -57,39 +82,39 @@ public class TreeNode implements Serializable {
     if(obj == null || !(obj instanceof TreeNode)) return false;
     if(this == obj) return true;
     TreeNode node = (TreeNode) obj;
-    return new EqualsBuilder().appendSuper(super.equals(obj)).append(name, node.name).append(clazz, node.clazz).isEquals();
+    return new EqualsBuilder().appendSuper(super.equals(obj)).append(name, node.name).append(nodeType, node.nodeType).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(name).append(clazz).toHashCode();
+    return new HashCodeBuilder(17, 37).append(name).append(nodeType).toHashCode();
   }
 
   public boolean isQuestionnaire() {
-    return getClazz() != null && Questionnaire.class.isAssignableFrom(getClazz());
+    return nodeType == NodeType.QUESTIONNAIRE;
   }
 
   public boolean isSection() {
-    return getClazz() != null && Section.class.isAssignableFrom(getClazz());
+    return nodeType == NodeType.SECTION;
   }
 
   public boolean isHasSection() {
-    return getClazz() != null && IHasSection.class.isAssignableFrom(getClazz());
+    return nodeType == NodeType.SECTION || nodeType == NodeType.QUESTIONNAIRE;
   }
 
   public boolean isPage() {
-    return getClazz() != null && Page.class.isAssignableFrom(getClazz());
+    return nodeType == NodeType.PAGE;
   }
 
   public boolean isQuestion() {
-    return getClazz() != null && Question.class.isAssignableFrom(getClazz());
+    return nodeType == NodeType.QUESTION;
   }
 
   public boolean isVariable() {
-    return getClazz() != null && Variable.class.isAssignableFrom(getClazz());
+    return nodeType == NodeType.VARIABLE;
   }
 
-  public boolean isSeparator() {
-    return getClazz() == null;
+  public boolean isVariables() {
+    return nodeType == NodeType.VARIABLES;
   }
 }

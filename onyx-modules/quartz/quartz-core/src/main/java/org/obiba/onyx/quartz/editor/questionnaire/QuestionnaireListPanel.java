@@ -130,7 +130,7 @@ public class QuestionnaireListPanel extends Panel {
 
           }
         };
-        editionPanel.setRightPanel(rightPanel, new Model<String>(""));
+        editionPanel.setRightPanel(rightPanel, new Model<String>(""), null);
 
         modalWindow.setContent(editionPanel);
         modalWindow.show(target);

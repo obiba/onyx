@@ -9,15 +9,25 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.questionnaire.tree.DefaultRightPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.tree.QuestionnaireTreePanel;
 
@@ -37,6 +47,8 @@ public class EditionPanel extends Panel {
 
   private WebMarkupContainer rightPanelContainer;
 
+  private ListView<MenuItem> menu;
+
   public EditionPanel(String id, IModel<Questionnaire> model) {
     super(id, model);
     this.rightPanel = new DefaultRightPanel(RIGHT_PANEL);
@@ -50,10 +62,12 @@ public class EditionPanel extends Panel {
     rightPanelContainer.add(rightPanel);
     rightPanelContainer.add(rightPanelTitle = new Label("title"));
 
+    rightPanelContainer.add(menu = createMenu(null));
+
     tree = new QuestionnaireTreePanel("tree", model) {
       @Override
-      public void show(Component component, IModel<String> title, AjaxRequestTarget target) {
-        setRightPanel(component, title);
+      public void show(Component component, IModel<String> title, List<MenuItem> menuItems, AjaxRequestTarget target) {
+        setRightPanel(component, title, menuItems);
         target.addComponent(rightPanelContainer);
       }
 
@@ -67,19 +81,65 @@ public class EditionPanel extends Panel {
 
   }
 
-  public void setRightPanel(Component component, IModel<String> title) {
+  public void setRightPanel(Component component, IModel<String> title, List<MenuItem> menuItems) {
     rightPanel.replaceWith(component);
     rightPanel = component;
     rightPanelTitle.setDefaultModel(title);
+
+    ListView<MenuItem> newMenu = createMenu(menuItems);
+    menu.replaceWith(newMenu);
+    menu = newMenu;
   }
 
   public void restoreDefaultRightPanel(AjaxRequestTarget target) {
-    setRightPanel(new DefaultRightPanel(RIGHT_PANEL), new Model<String>(""));
+    setRightPanel(new DefaultRightPanel(RIGHT_PANEL), new Model<String>(""), null);
     target.addComponent(rightPanelContainer);
   }
 
   public QuestionnaireTreePanel getTree() {
     return tree;
+  }
+
+  private ListView<MenuItem> createMenu(List<MenuItem> menuItems) {
+    ListView<MenuItem> listView = new ListView<EditionPanel.MenuItem>("menu", menuItems == null ? new ArrayList<MenuItem>() : menuItems) {
+      @Override
+      protected void populateItem(ListItem<MenuItem> item) {
+        final MenuItem menuItem = item.getModelObject();
+        AjaxLink<Void> ajaxLink = new AjaxLink<Void>("button") {
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+            menuItem.onClick(target);
+          }
+        };
+        ajaxLink.add(new Image("buttonImg", menuItem.getImg()));
+        ajaxLink.add(new TooltipBehavior(menuItem.getTitle()));
+        item.add(ajaxLink);
+      }
+    };
+    listView.setVisible(menuItems != null && menuItems.size() > 0);
+    return listView;
+  }
+
+  public static abstract class MenuItem implements Serializable {
+
+    private final ResourceReference img;
+
+    private final IModel<String> title;
+
+    public MenuItem(IModel<String> title, ResourceReference img) {
+      this.img = img;
+      this.title = title;
+    }
+
+    public abstract void onClick(AjaxRequestTarget target);
+
+    public ResourceReference getImg() {
+      return img;
+    }
+
+    public IModel<String> getTitle() {
+      return title;
+    }
   }
 
 }
