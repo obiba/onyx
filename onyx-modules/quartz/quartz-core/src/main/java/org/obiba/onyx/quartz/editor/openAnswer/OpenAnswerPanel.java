@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.openAnswer;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -347,73 +346,93 @@ public class OpenAnswerPanel extends Panel {
       }
     });
 
-    // submit the whole form instead of just the dataType component
-    dataTypeDropDown.add(new AjaxFormSubmitBehavior("onchange") {
+    dataTypeDropDown.add(new OnChangeAjaxBehavior() {
+
+      @SuppressWarnings("incomplete-switch")
       @Override
-      protected void onSubmit(AjaxRequestTarget target) {
+      protected void onUpdate(AjaxRequestTarget target) {
         setFieldType();
         String value = dataTypeDropDown.getValue(); // use value because model is not set if validation error
         DataType valueOf = DataType.valueOf(value);
-        // if(value != null) {
-        // OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
-        // main: for(Data data : openAnswerDefinition.getDefaultValues()) {
-        // switch(valueOf) {
-        // case DATE:
-        // // TODO
-        // break;
-        // case DECIMAL:
-        // try {
-        // Double.parseDouble(data.getValueAsString());
-        // } catch(NumberFormatException nfe) {
-        // error("NumberFormatException");
-        // return;
-        // }
-        // break;
-        // case INTEGER:
-        // try {
-        // Long.parseLong(data.getValueAsString());
-        // } catch(NumberFormatException nfe) {
-        // error("NumberFormatException");
-        // return;
-        // }
-        // break;
-        // case TEXT:
-        // break main;
-        //
-        // default:
-        // throw new RuntimeException("invalid type");
-        // }
-        //
-        // }
-        // for(Data data : openAnswerDefinition.getDefaultValues()) {
-        // switch(valueOf) {
-        // case DATE:
-        // // TODO
-        // break;
-        // case DECIMAL:
-        // data.setTypeAndValue(valueOf, Double.parseDouble(data.getValueAsString()));
-        // break;
-        // case INTEGER:
-        // data.setTypeAndValue(valueOf, Integer.parseInt(data.getValueAsString()));
-        // break;
-        // case TEXT:
-        // data.setTypeAndValue(valueOf, data.getValueAsString());
-        // break;
-        //
-        // default:
-        // throw new RuntimeException("invalid type");
-        // }
-        // }
-        // }
+        if(value != null) {
+          OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
+          for(Data data : openAnswerDefinition.getDefaultValues()) {
+            switch(valueOf) {
+            case DATE:
+              try {
+                DATE_FORMAT.parse(data.getValueAsString());
+              } catch(ParseException nfe) {
+                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                showFeedbackErrorAndReset(target);
+                return;
+              }
+              break;
+            case DECIMAL:
+              try {
+                Double.parseDouble(data.getValueAsString());
+              } catch(NumberFormatException nfe) {
+                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                showFeedbackErrorAndReset(target);
+                return;
+              }
+              break;
+            case INTEGER:
+              if(data.getType() == DataType.DECIMAL) {
+                Double d = data.getValue();
+                if(d != d.longValue()) {
+                  error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                  showFeedbackErrorAndReset(target);
+                  return;
+                }
+              } else {
+                try {
+                  Long.parseLong(data.getValueAsString());
+                } catch(NumberFormatException nfe) {
+                  error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+                  showFeedbackErrorAndReset(target);
+                  return;
+                }
+              }
+              break;
+            case TEXT:
+              break;
+            }
+          }
+          for(Data data : openAnswerDefinition.getDefaultValues()) {
+            switch(valueOf) {
+            case DATE:
+              try {
+                data.setTypeAndValue(valueOf, DATE_FORMAT.format(DATE_FORMAT.parse(data.getValueAsString())));
+              } catch(ParseException e) {
+                throw new RuntimeException(e);
+              }
+              break;
+            case DECIMAL:
+              data.setTypeAndValue(valueOf, Double.parseDouble(data.getValueAsString()));
+              break;
+            case INTEGER:
+              if(data.getType() == DataType.DECIMAL) {
+                data.setTypeAndValue(valueOf, ((Double) data.getValue()).longValue());
+              } else {
+                data.setTypeAndValue(valueOf, Integer.parseInt(data.getValueAsString()));
+              }
+              break;
+            case TEXT:
+              data.setTypeAndValue(valueOf, data.getValueAsString());
+              break;
+            }
+          }
+        }
         setMinMaxLabels(value == null ? null : valueOf);
         target.addComponent(minMaxContainer);
         target.addComponent(defaultValuesList);
       }
 
-      @Override
-      protected void onError(AjaxRequestTarget target) {
-        Session.get().getFeedbackMessages().clear(); // we don't want to validate fields now
-        onSubmit(target);
+      private void showFeedbackErrorAndReset(AjaxRequestTarget target) {
+        dataTypeDropDown.setModelObject(openAnswer.getDefaultValues().get(0).getType());
+        target.addComponent(dataTypeDropDown);
+        OpenAnswerPanel.this.feedbackWindow.setContent(OpenAnswerPanel.this.feedbackPanel);
+        OpenAnswerPanel.this.feedbackWindow.show(target);
       }
     });
 
@@ -481,7 +500,7 @@ public class OpenAnswerPanel extends Panel {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           String dataTypeValue = dataTypeDropDown.getValue();
           if(StringUtils.isBlank(dataTypeValue)) {
-            error("Choose Data Type");
+            error(new StringResourceModel("ChooseDataType", OpenAnswerPanel.this, null).getObject());
             return;
           }
           DataType dataTypeEnum = DataType.valueOf(dataTypeValue);
