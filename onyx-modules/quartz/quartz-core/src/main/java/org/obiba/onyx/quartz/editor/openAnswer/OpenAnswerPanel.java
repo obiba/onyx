@@ -332,21 +332,59 @@ public class OpenAnswerPanel extends Panel {
       protected void onSubmit(AjaxRequestTarget target) {
         setFieldType();
         String value = dataTypeDropDown.getValue(); // use value because model is not set if validation error
+        DataType valueOf = DataType.valueOf(value);
         // if(value != null) {
         // OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
-        // for(Data data : openAnswerDefinition.getDefaultValues()) {
-        // switch(DataType.valueOf(value)) {
+        // main: for(Data data : openAnswerDefinition.getDefaultValues()) {
+        // switch(valueOf) {
+        // case DATE:
+        // // TODO
+        // break;
+        // case DECIMAL:
+        // try {
+        // Double.parseDouble(data.getValueAsString());
+        // } catch(NumberFormatException nfe) {
+        // error("NumberFormatException");
+        // return;
+        // }
+        // break;
+        // case INTEGER:
+        // try {
+        // Long.parseLong(data.getValueAsString());
+        // } catch(NumberFormatException nfe) {
+        // error("NumberFormatException");
+        // return;
+        // }
+        // break;
         // case TEXT:
+        // break main;
         //
+        // default:
+        // throw new RuntimeException("invalid type");
+        // }
+        //
+        // }
+        // for(Data data : openAnswerDefinition.getDefaultValues()) {
+        // switch(valueOf) {
+        // case DATE:
+        // // TODO
+        // break;
+        // case DECIMAL:
+        // data.setTypeAndValue(valueOf, Double.parseDouble(data.getValueAsString()));
+        // break;
+        // case INTEGER:
+        // data.setTypeAndValue(valueOf, Integer.parseInt(data.getValueAsString()));
+        // break;
+        // case TEXT:
+        // data.setTypeAndValue(valueOf, data.getValueAsString());
         // break;
         //
         // default:
-        // break;
-        // }
-        //
+        // throw new RuntimeException("invalid type");
         // }
         // }
-        setMinMaxLabels(value == null ? null : DataType.valueOf(value));
+        // }
+        setMinMaxLabels(value == null ? null : valueOf);
         target.addComponent(minMaxContainer);
         target.addComponent(defaultValuesList);
       }

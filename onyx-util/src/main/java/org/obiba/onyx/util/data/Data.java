@@ -26,6 +26,10 @@ public class Data implements Serializable, Comparable<Data> {
   }
 
   public Data(DataType type, Serializable value) {
+    setTypeAndValue(type, value);
+  }
+
+  public void setTypeAndValue(DataType type, Serializable value) {
     this.type = type;
     setValue(value);
   }
@@ -135,6 +139,7 @@ public class Data implements Serializable, Comparable<Data> {
     return isEqual;
   }
 
+  @Override
   public int compareTo(Data data) {
     int result = -1;
 
