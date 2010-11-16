@@ -27,6 +27,7 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -71,7 +72,7 @@ public abstract class SectionPanel extends Panel {
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
     name.setLabel(new ResourceModel("Name"));
-    name.add(new RequiredFormFieldBehavior());
+    name.add(new RequiredFormFieldBehavior()).add(new TooltipBehavior(new ResourceModel("Name.Tooltip")));
     name.add(new AbstractValidator<String>() {
 
       @Override
