@@ -22,6 +22,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.IHeaderResponse;
@@ -220,7 +221,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   }
 
-  public abstract void show(Component component, IModel<String> title, List<MenuItem> menuItems, AjaxRequestTarget target);
+  public abstract void show(Component component, IModel<String> title, ResourceReference icon, List<MenuItem> menuItems, AjaxRequestTarget target);
 
   public abstract String getShownComponentId();
 
@@ -427,7 +428,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         }
       });
       IModel<String> title = new StringResourceModel("ItemPreview", QuestionnaireTreePanel.this, questionnaireModel, new Object[] { new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null), questionnaire.getName() });
-      show(new Label(getShownComponentId(), new StringResourceModel("ItemPreview.NotSupported", QuestionnaireTreePanel.this, null)), title, menuItems, target);
+      show(new Label(getShownComponentId(), new StringResourceModel("ItemPreview.NotSupported", QuestionnaireTreePanel.this, null)), title, QuartzImages.QUESTIONNAIRE, menuItems, target);
 
     } else if(node.isSection()) {
 
@@ -457,7 +458,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         }
       });
       IModel<String> title = new StringResourceModel("ItemPreview", QuestionnaireTreePanel.this, new Model<Section>(questionnaireFinder.findSection(node.getName())), new Object[] { new StringResourceModel("Section", QuestionnaireTreePanel.this, null), node.getName() });
-      show(new Label(getShownComponentId(), new StringResourceModel("ItemPreview.NotSupported", QuestionnaireTreePanel.this, null)), title, menuItems, target);
+      show(new Label(getShownComponentId(), new StringResourceModel("ItemPreview.NotSupported", QuestionnaireTreePanel.this, null)), title, QuartzImages.SECTION, menuItems, target);
 
     } else if(node.isPage()) {
 
@@ -484,7 +485,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           deleteElement(nodeId, target);
         }
       });
-      show(pagePreviewPanel, title, menuItems, target);
+      show(pagePreviewPanel, title, QuartzImages.PAGE, menuItems, target);
 
     } else if(node.isQuestion()) {
 
@@ -505,7 +506,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           deleteElement(nodeId, target);
         }
       });
-      show(questionPreviewPanel, title, menuItems, target);
+      show(questionPreviewPanel, title, QuartzImages.QUESTION, menuItems, target);
 
     } else if(node.isVariables()) {
 
@@ -516,7 +517,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           addVariable(nodeId, node, questionnaireModel, target);
         }
       });
-      show(new Label(getShownComponentId(), new StringResourceModel("ItemPreview.NotSupported", QuestionnaireTreePanel.this, null)), new Model<String>("Variables"), menuItems, target);
+      show(new Label(getShownComponentId(), new StringResourceModel("ItemPreview.NotSupported", QuestionnaireTreePanel.this, null)), new Model<String>("Variables"), QuartzImages.VARIABLES, menuItems, target);
 
     } else if(node.isVariable()) {
 
@@ -537,7 +538,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           deleteElement(nodeId, target);
         }
       });
-      show(variablePreview, title, menuItems, target);
+      show(variablePreview, title, QuartzImages.VARIABLE, menuItems, target);
 
     }
   }
@@ -561,7 +562,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       }
     };
     IModel<String> title = new Model<String>(new StringResourceModel("Questionnaire", QuestionnaireTreePanel.this, null).getString() + " " + questionnaire.getName());
-    show(questionnairePanel, title, null, target);
+    show(questionnairePanel, title, QuartzImages.QUESTIONNAIRE, null, target);
   }
 
   private void editSection(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
@@ -584,7 +585,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       }
     };
     IModel<String> title = new Model<String>(new StringResourceModel("Section", QuestionnaireTreePanel.this, null).getString() + " " + section.getName());
-    show(sectionPanel, title, null, target);
+    show(sectionPanel, title, QuartzImages.SECTION, null, target);
   }
 
   private void addSection(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
@@ -607,7 +608,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         preview(nodeId, node, target);
       }
     };
-    show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), null, target);
+    show(sectionPanel, new StringResourceModel("Section", QuestionnaireTreePanel.this, null), QuartzImages.SECTION, null, target);
   }
 
   private void editPage(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
@@ -630,7 +631,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       }
     };
     IModel<String> title = new Model<String>(new StringResourceModel("Page", QuestionnaireTreePanel.this, null).getString() + " " + page.getName());
-    show(pagePanel, title, null, target);
+    show(pagePanel, title, QuartzImages.PAGE, null, target);
   }
 
   private void addPage(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
@@ -653,7 +654,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         preview(nodeId, node, target);
       }
     };
-    show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), null, target);
+    show(pagePanel, new StringResourceModel("Page", QuestionnaireTreePanel.this, null), QuartzImages.PAGE, null, target);
   }
 
   private void editQuestion(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
@@ -677,7 +678,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       }
     };
     IModel<String> title = new Model<String>(new StringResourceModel("Question", QuestionnaireTreePanel.this, null).getString() + " " + question.getName());
-    show(questionPanel, title, null, target);
+    show(questionPanel, title, QuartzImages.QUESTION, null, target);
   }
 
   private void addQuestion(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
@@ -699,7 +700,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         preview(nodeId, node, target);
       }
     };
-    show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), null, target);
+    show(questionPanel, new StringResourceModel("Question", QuestionnaireTreePanel.this, null), QuartzImages.QUESTION, null, target);
   }
 
   private void editVariable(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final AjaxRequestTarget target) {
@@ -727,7 +728,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       }
     };
     IModel<String> title = new Model<String>(new StringResourceModel("Variable", QuestionnaireTreePanel.this, null).getString() + " " + variable.getName());
-    show(variablePanel, title, null, target);
+    show(variablePanel, title, QuartzImages.VARIABLE, null, target);
   }
 
   private void addVariable(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final AjaxRequestTarget target) {
@@ -758,7 +759,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         preview(nodeId, node, target);
       }
     };
-    show(variablePanel, new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), null, target);
+    show(variablePanel, new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), QuartzImages.VARIABLE, null, target);
   }
 
   private void deleteElement(String nodeId, AjaxRequestTarget target) {

@@ -89,7 +89,7 @@ public class QuestionnaireListPanel extends Panel {
     modalWindow = new ModalWindow("modalWindow");
     modalWindow.setCssClassName("onyx");
     modalWindow.setInitialWidth(1100);
-    modalWindow.setInitialHeight(600);
+    modalWindow.setInitialHeight(601);
     modalWindow.setResizable(false);
     modalWindow.setTitle(new ResourceModel("Questionnaire"));
 
@@ -130,7 +130,7 @@ public class QuestionnaireListPanel extends Panel {
 
           }
         };
-        editionPanel.setRightPanel(rightPanel, new Model<String>(""), null);
+        editionPanel.setRightPanel(rightPanel, new Model<String>(""), null, null);
 
         modalWindow.setContent(editionPanel);
         modalWindow.show(target);

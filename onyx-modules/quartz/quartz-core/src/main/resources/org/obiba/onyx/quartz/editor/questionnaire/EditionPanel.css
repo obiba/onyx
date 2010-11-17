@@ -1,5 +1,5 @@
 .content {
-	border-top: 0.0833em dotted #666666;;	
+	border-top: 0.0833em dotted #666666;;
 }
 
 .edition {
@@ -31,4 +31,9 @@
 
 .edition .topMenu a img {
 	
+}
+
+.edition .titleIcon {
+	margin-right: 3px;
+	vertical-align: bottom;
 }

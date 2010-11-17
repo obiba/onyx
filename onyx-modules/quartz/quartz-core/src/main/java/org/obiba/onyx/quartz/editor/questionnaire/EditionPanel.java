@@ -52,6 +52,8 @@ public class EditionPanel extends Panel {
 
   private WebMarkupContainer titleContainer;
 
+  private Image titleIcon;
+
   public EditionPanel(String id, IModel<Questionnaire> model) {
     super(id, model);
     this.rightPanel = new DefaultRightPanel(RIGHT_PANEL);
@@ -67,13 +69,14 @@ public class EditionPanel extends Panel {
     rightPanelContainer.add(titleContainer = new WebMarkupContainer("titleContainer"));
     titleContainer.setVisible(false);
 
+    titleContainer.add(titleIcon = new Image("titleIcon"));
     titleContainer.add(rightPanelTitle = new Label("title"));
     titleContainer.add(menu = createMenu(null));
 
     tree = new QuestionnaireTreePanel("tree", model) {
       @Override
-      public void show(Component component, IModel<String> title, List<MenuItem> menuItems, AjaxRequestTarget target) {
-        setRightPanel(component, title, menuItems);
+      public void show(Component component, IModel<String> title, ResourceReference icon, List<MenuItem> menuItems, AjaxRequestTarget target) {
+        setRightPanel(component, title, icon, menuItems);
         target.addComponent(rightPanelContainer);
       }
 
@@ -87,10 +90,11 @@ public class EditionPanel extends Panel {
 
   }
 
-  public void setRightPanel(Component component, IModel<String> title, List<MenuItem> menuItems) {
+  public void setRightPanel(Component component, IModel<String> title, ResourceReference icon, List<MenuItem> menuItems) {
     rightPanel.replaceWith(component);
     rightPanel = component;
     rightPanelTitle.setDefaultModel(title);
+    titleIcon.setImageResourceReference(icon);
     titleContainer.setVisible(title != null && StringUtils.isNotBlank(title.getObject()));
 
     ListView<MenuItem> newMenu = createMenu(menuItems);
@@ -99,7 +103,7 @@ public class EditionPanel extends Panel {
   }
 
   public void restoreDefaultRightPanel(AjaxRequestTarget target) {
-    setRightPanel(new DefaultRightPanel(RIGHT_PANEL), new Model<String>(""), null);
+    setRightPanel(new DefaultRightPanel(RIGHT_PANEL), new Model<String>(""), null, null);
     target.addComponent(rightPanelContainer);
   }
 

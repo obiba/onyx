@@ -41,6 +41,7 @@ public class TooltipBehavior extends AttributeModifier {
 
     if(config.isEmpty()) { // set default config
       config.put("delay", 100);
+      config.put("showURL", false);
     }
 
     StringBuilder cfg = new StringBuilder();
