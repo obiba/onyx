@@ -120,6 +120,12 @@ public class JsonNode implements Serializable {
 
     private String title;
 
+    public JsonNodeAttribute(String id, String rel, String title) {
+      this.id = id;
+      this.rel = rel;
+      this.title = title;
+    }
+
     public String getTitle() {
       return title;
     }

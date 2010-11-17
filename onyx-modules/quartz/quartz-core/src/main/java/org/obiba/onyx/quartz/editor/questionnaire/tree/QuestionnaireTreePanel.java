@@ -386,14 +386,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
   }
 
   private JsonNode createNode(IQuestionnaireElement element, NodeType nodeType) {
-    JsonNode newNode = new JsonNode();
-    JsonNodeAttribute attr = new JsonNodeAttribute();
+    String type = WordUtils.capitalizeFully(nodeType.name());
     TreeNode treeNode = new TreeNode(element.getName(), nodeType);
-    attr.setId(addElement(treeNode));
+    JsonNodeAttribute attr = new JsonNodeAttribute(addElement(treeNode), type, type + " " + element.getName());
     attr.setClazz("jstree-leaf");
-    attr.setRel(WordUtils.capitalizeFully(nodeType.name()));
-    attr.setTitle(WordUtils.capitalizeFully(nodeType.name()) + " " + element.getName());
-
+    JsonNode newNode = new JsonNode();
     newNode.setData(new Data(treeNode.getName(), RequestCycle.get().urlFor(treeNode.getNodeType().getIcon()).toString()));
     newNode.setAttr(attr);
     return newNode;
@@ -735,14 +732,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
         questionnaireModel.getObject().addVariable(variable);
         persist(target);
 
-        JsonNode newNode = new JsonNode();
         TreeNode treeNode = new TreeNode(variable.getName(), NodeType.VARIABLE);
-        JsonNodeAttribute attr = new JsonNodeAttribute();
-        attr.setId(addElement(treeNode));
+        JsonNodeAttribute attr = new JsonNodeAttribute(addElement(treeNode), "Variable", "Variable " + variable.getName());
         attr.setClazz("jstree-leaf");
-        attr.setRel("Variable");
-        attr.setTitle(WordUtils.capitalizeFully(NodeType.VARIABLE.name()) + " " + variable.getName());
 
+        JsonNode newNode = new JsonNode();
         newNode.setData(new Data(treeNode.getName(), RequestCycle.get().urlFor(treeNode.getNodeType().getIcon()).toString()));
         newNode.setAttr(attr);
 
@@ -810,9 +804,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     JsonNode jsonNode = new JsonNode();
     jsonNode.setData(new Data(treeNode.getName(), RequestCycle.get().urlFor(treeNode.getNodeType().getIcon()).toString()));
-    JsonNodeAttribute nodeAttribute = new JsonNodeAttribute();
-    nodeAttribute.setId(addElement(treeNode));
-    nodeAttribute.setRel(WordUtils.capitalizeFully(treeNode.getNodeType().name()));
+    String type = WordUtils.capitalizeFully(treeNode.getNodeType().name());
+    JsonNodeAttribute nodeAttribute = new JsonNodeAttribute(addElement(treeNode), type, type + " " + treeNode.getName());
     jsonNode.setAttr(nodeAttribute);
 
     TreeNodeCollector questionnaireVisitor = new TreeNodeCollector();
@@ -829,18 +822,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
           variablesNode = new JsonNode();
           variablesNode.setData(new Data(NodeType.VARIABLES.name(), RequestCycle.get().urlFor(NodeType.VARIABLES.getIcon()).toString()));
           variablesNode.setState("closed");
-          JsonNodeAttribute variablesNodeAttribute = new JsonNodeAttribute();
-          variablesNodeAttribute.setId(addElement(new TreeNode("", NodeType.VARIABLES)));
-          variablesNodeAttribute.setRel("Variables");
-          variablesNode.setAttr(variablesNodeAttribute);
+          variablesNode.setAttr(new JsonNodeAttribute(addElement(new TreeNode("", NodeType.VARIABLES)), "Variables", "Variables"));
           jsonNode.getChildren().add(variablesNode);
         }
         Variable variable = (Variable) child;
         JsonNode variableNode = new JsonNode();
         variableNode.setData(new Data(variable.getName(), RequestCycle.get().urlFor(NodeType.VARIABLE.getIcon()).toString()));
-        JsonNodeAttribute variableNodeAttribute = new JsonNodeAttribute();
-        variableNodeAttribute.setId(addElement(new TreeNode(variable.getName(), NodeType.VARIABLE)));
-        variableNodeAttribute.setRel("Variable");
+        JsonNodeAttribute variableNodeAttribute = new JsonNodeAttribute(addElement(new TreeNode(variable.getName(), NodeType.VARIABLE)), "Variable", "Variable " + variable.getName());
         variableNodeAttribute.setClazz("jstree-leaf");
         variableNode.setAttr(variableNodeAttribute);
         variablesNode.getChildren().add(variableNode);
