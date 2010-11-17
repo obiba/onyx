@@ -15,10 +15,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -76,6 +78,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
@@ -88,6 +91,9 @@ import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  *
@@ -465,9 +471,24 @@ public class OpenAnswerPanel extends Panel {
 
       }
 
+      @SuppressWarnings("unchecked")
       @Override
-      public void deleteItem(Data data, AjaxRequestTarget target) {
+      public void deleteItem(final Data data, AjaxRequestTarget target) {
         ((OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject()).removeDefaultData(data);
+        for(Locale locale : OpenAnswerPanel.this.localePropertiesModel.getObject().getLocales()) {
+          List<KeyValue> list = OpenAnswerPanel.this.localePropertiesModel.getObject().getElementLabels(openAnswer).get(locale);
+          Collection<KeyValue> toDelete = Collections2.filter(list, new Predicate<KeyValue>() {
+
+            @Override
+            public boolean apply(KeyValue input) {
+              return input.getKey().equals(data.getValue().toString());
+            }
+
+          });
+          list.remove(toDelete.iterator().next());
+        }
+        OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", OpenAnswerPanel.this.localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), OpenAnswerPanel.this.feedbackPanel, OpenAnswerPanel.this.feedbackWindow));
+        target.addComponent(labelsPanel);
         refreshList(target);
       }
 
@@ -497,7 +518,7 @@ public class OpenAnswerPanel extends Panel {
       AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link") {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
-          if(StringUtils.isBlank((String) defaultValue.getModelObject())) return;
+          if(defaultValue.getModelObject() == null) return;
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           String dataTypeValue = dataTypeDropDown.getValue();
           if(StringUtils.isBlank(dataTypeValue)) {
