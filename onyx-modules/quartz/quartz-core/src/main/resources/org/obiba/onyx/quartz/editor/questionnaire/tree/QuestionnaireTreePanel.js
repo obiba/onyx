@@ -98,7 +98,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 		"ui" : {
 			"select_limit" : 1
 		},
-		"plugins" : [ "themes", "json_data", "types", "ui", "dnd", "contextmenu" ]
+		"plugins" : [ "themes", "json_data", "types", "ui", "dnd" /*, "contextmenu" */] // don't use contextmenu because menu does not hide on mout out
 	})
 	.bind("move_node.jstree", function (e, data) {
 		data.rslt.o.each(function (i) {
