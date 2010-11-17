@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -49,6 +50,8 @@ public class EditionPanel extends Panel {
 
   private ListView<MenuItem> menu;
 
+  private WebMarkupContainer titleContainer;
+
   public EditionPanel(String id, IModel<Questionnaire> model) {
     super(id, model);
     this.rightPanel = new DefaultRightPanel(RIGHT_PANEL);
@@ -60,9 +63,12 @@ public class EditionPanel extends Panel {
     add(rightPanelContainer);
 
     rightPanelContainer.add(rightPanel);
-    rightPanelContainer.add(rightPanelTitle = new Label("title"));
 
-    rightPanelContainer.add(menu = createMenu(null));
+    rightPanelContainer.add(titleContainer = new WebMarkupContainer("titleContainer"));
+    titleContainer.setVisible(false);
+
+    titleContainer.add(rightPanelTitle = new Label("title"));
+    titleContainer.add(menu = createMenu(null));
 
     tree = new QuestionnaireTreePanel("tree", model) {
       @Override
@@ -85,6 +91,7 @@ public class EditionPanel extends Panel {
     rightPanel.replaceWith(component);
     rightPanel = component;
     rightPanelTitle.setDefaultModel(title);
+    titleContainer.setVisible(title != null && StringUtils.isNotBlank(title.getObject()));
 
     ListView<MenuItem> newMenu = createMenu(menuItems);
     menu.replaceWith(newMenu);

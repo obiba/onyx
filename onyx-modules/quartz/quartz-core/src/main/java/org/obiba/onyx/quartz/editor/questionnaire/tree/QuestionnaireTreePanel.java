@@ -137,6 +137,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
    */
   private boolean editingElement = false;
 
+  private JsonNode variablesNode;
+
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
@@ -172,6 +174,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
           final RequestCycle requestCycle = RequestCycle.get();
           StringWriter sw = new StringWriter();
           JsonNode rootNode = populateNode((IQuestionnaireElement) QuestionnaireTreePanel.this.getDefaultModelObject());
+          if(variablesNode == null) {
+            createVariablesNode();
+            variablesNode.getAttr().setClazz("jstree-leaf");
+            rootNode.getChildren().add(variablesNode);
+          }
           JsonGenerator gen = new JsonFactory().createJsonGenerator(sw);
           new ObjectMapper().writeValue(gen, rootNode);
           requestCycle.setRequestTarget(new StringRequestTarget("application/json", "utf-8", sw.toString()));
@@ -813,16 +820,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
     if(questionnaireVisitor.getChildren().isEmpty()) {
       nodeAttribute.setClazz("jstree-leaf");
     }
-    JsonNode variablesNode = null;
     for(Object child : questionnaireVisitor.getChildren()) {
       if(child instanceof IQuestionnaireElement) {
         jsonNode.getChildren().add(populateNode((IQuestionnaireElement) child));
       } else if(child instanceof Variable) {
         if(variablesNode == null) {
-          variablesNode = new JsonNode();
-          variablesNode.setData(new Data(NodeType.VARIABLES.name(), RequestCycle.get().urlFor(NodeType.VARIABLES.getIcon()).toString()));
-          variablesNode.setState("closed");
-          variablesNode.setAttr(new JsonNodeAttribute(addElement(new TreeNode("", NodeType.VARIABLES)), "Variables", "Variables"));
+          createVariablesNode();
           jsonNode.getChildren().add(variablesNode);
         }
         Variable variable = (Variable) child;
@@ -835,6 +838,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
       }
     }
     return jsonNode;
+  }
+
+  private void createVariablesNode() {
+    variablesNode = new JsonNode();
+    variablesNode.setData(new Data(NodeType.VARIABLES.name(), RequestCycle.get().urlFor(NodeType.VARIABLES.getIcon()).toString()));
+    variablesNode.setState("closed");
+    variablesNode.setAttr(new JsonNodeAttribute(addElement(new TreeNode("", NodeType.VARIABLES)), "Variables", "Variables"));
   }
 
   private void reloadModel() {

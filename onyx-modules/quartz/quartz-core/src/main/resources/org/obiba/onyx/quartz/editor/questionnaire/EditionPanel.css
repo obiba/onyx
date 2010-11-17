@@ -1,3 +1,7 @@
+.content {
+	border-top: 0.0833em dotted #666666;;	
+}
+
 .edition {
 	float: none;
 	width: 1000px;
@@ -26,4 +30,5 @@
 }
 
 .edition .topMenu a img {
+	
 }

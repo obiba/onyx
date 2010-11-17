@@ -79,7 +79,9 @@ public class JsonNode implements Serializable {
     }
   }
 
-  public static class Data {
+  public static class Data implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String title;
 
@@ -109,7 +111,9 @@ public class JsonNode implements Serializable {
   }
 
   @JsonIgnoreProperties(value = "clazz")
-  public static class JsonNodeAttribute {
+  public static class JsonNodeAttribute implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String id;
 

@@ -13,19 +13,19 @@
 .explain .section {
 	background: transparent url('${sectionImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding-left: 20px;
+	padding: 1px 0 1px 20px;
 }
 
 .explain .page {
 	background: transparent url('${pageImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding-left: 20px;
+	padding: 1px 0 1px 20px;
 }
 
 .explain .question {
 	background: transparent url('${questionImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding-left: 20px;
+	padding: 1px 0 1px 20px;
 }
 
 .questionTypeList img {
