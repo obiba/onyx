@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
-import java.util.List;
-import java.util.Map;
-
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -20,6 +17,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.DataType;
+
+import com.google.common.collect.Multimap;
 
 /**
  * {@link Category} builder, given a {@link Questionnaire} and a current {@link Question}.
@@ -159,7 +158,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @return
    */
   public CategoryBuilder withSharedCategory(String name) {
-    Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
+    Multimap<Category, Question> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
     if(map.keySet().size() > 1) {
       throw invalidSharedCategoryNameUnicityException(name);
     } else if(map.keySet().isEmpty()) {

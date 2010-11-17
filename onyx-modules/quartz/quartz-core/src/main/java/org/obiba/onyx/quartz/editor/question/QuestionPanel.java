@@ -37,7 +37,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -84,7 +83,6 @@ public abstract class QuestionPanel extends Panel {
 
     final TextField<String> variable = new TextField<String>("variable", new PropertyModel<String>(model, "element.variableName"));
     variable.setLabel(new ResourceModel("Variable")).add(new TooltipBehavior(new ResourceModel("Variable.Tooltip")));
-    variable.add(new StringValidator.MaximumLengthValidator(20));
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
 

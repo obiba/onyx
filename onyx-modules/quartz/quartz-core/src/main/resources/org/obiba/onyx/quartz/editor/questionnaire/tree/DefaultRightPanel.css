@@ -28,6 +28,13 @@
 	padding: 1px 0 1px 20px;
 }
 
+.explain .variable {
+	background: transparent url('${variableImgUrl}') no-repeat scroll 0 0;
+	height: 16px;
+	padding: 1px 0 1px 20px;
+}
+
 .questionTypeList img {
 	vertical-align: bottom;
+	cursor: pointer;
 }

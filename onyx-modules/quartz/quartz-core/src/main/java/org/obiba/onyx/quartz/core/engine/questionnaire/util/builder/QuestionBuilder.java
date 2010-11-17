@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
-import java.util.List;
-import java.util.Map;
-
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -31,6 +28,8 @@ import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
+
+import com.google.common.collect.Multimap;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
@@ -311,7 +310,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public CategoryBuilder withSharedCategory(String name) {
-    Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
+    Multimap<Category, Question> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
     if(map.keySet().size() > 1) {
       throw invalidSharedCategoryNameUnicityException(name);
     } else if(map.keySet().isEmpty()) {

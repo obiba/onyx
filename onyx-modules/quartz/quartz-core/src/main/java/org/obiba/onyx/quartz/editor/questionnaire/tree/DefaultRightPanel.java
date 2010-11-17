@@ -46,10 +46,11 @@ public class DefaultRightPanel extends Panel {
       @Override
       public Map<String, Object> getObject() {
         if(variables == null) {
-          this.variables = new MiniMap<String, Object>(3);
+          this.variables = new MiniMap<String, Object>(4);
           variables.put("sectionImgUrl", RequestCycle.get().urlFor(QuartzImages.SECTION).toString());
           variables.put("pageImgUrl", RequestCycle.get().urlFor(QuartzImages.PAGE).toString());
           variables.put("questionImgUrl", RequestCycle.get().urlFor(QuartzImages.QUESTION).toString());
+          variables.put("variableImgUrl", RequestCycle.get().urlFor(QuartzImages.VARIABLE).toString());
         }
         return variables;
       }
@@ -69,14 +70,11 @@ public class DefaultRightPanel extends Panel {
       @Override
       protected void populateItem(ListItem<QuestionType> item) {
         QuestionType type = item.getModelObject();
+        tooltipCfg.put("bodyHandler", "function() { return \"<img src='" + RequestCycle.get().urlFor(new ResourceReference(DefaultRightPanel.class, type + ".png")) + "' />\"; }");
         item.add(new Label("name", new ResourceModel("QuestionType." + type)));
         item.add(new Label("desc", new ResourceModel("QuestionType." + type + ".desc")));
-        item.add(new Image("img", Images.ZOOM));
-
-        tooltipCfg.put("bodyHandler", "function() { return \"<img src='" + RequestCycle.get().urlFor(new ResourceReference(DefaultRightPanel.class, type + ".png")) + "' />\"; }");
-        item.add(new TooltipBehavior(new Model<String>(""), tooltipCfg));
+        item.add(new Image("img", Images.ZOOM).add(new TooltipBehavior(new Model<String>(""), tooltipCfg)));
       }
     });
   }
-
 }

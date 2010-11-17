@@ -33,7 +33,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -114,7 +113,6 @@ public abstract class CategoryWindow extends Panel {
 
     final TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
-    variable.add(new StringValidator.MaximumLengthValidator(20));
     form.add(variable);
     form.add(new SimpleFormComponentLabel("variableLabel", variable));
 

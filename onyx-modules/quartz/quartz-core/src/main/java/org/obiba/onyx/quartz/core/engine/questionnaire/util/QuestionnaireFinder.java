@@ -33,6 +33,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.SectionFinder
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Multimap;
+
 /**
  * Find elements in a {@link Questionnaire}.
  * @author Yannick Marcon
@@ -215,11 +217,10 @@ public class QuestionnaireFinder implements Serializable {
    * @param name
    * @return
    */
-  public Map<Category, List<Question>> findCategories(String name) {
+  public Multimap<Category, Question> findCategories(String name) {
     CategoryFinder finder = new CategoryFinder(name, false);
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
-
     return finder.getQuestionCategories();
   }
 
@@ -239,6 +240,13 @@ public class QuestionnaireFinder implements Serializable {
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
     return new ArrayList<Category>(finder.getQuestionCategories().keySet());
+  }
+
+  public Multimap<Category, Question> findQuestionsByCategory() {
+    CategoryFinder finder = new CategoryFinder();
+    QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+    walker.walk(questionnaire);
+    return finder.getQuestionCategories();
   }
 
   /**

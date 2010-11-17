@@ -191,7 +191,6 @@ public class OpenAnswerPanel extends Panel {
 
     variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
-    variable.add(new StringValidator.MaximumLengthValidator(20));
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
 
@@ -575,7 +574,7 @@ public class OpenAnswerPanel extends Panel {
       form.add(new SimpleFormComponentLabel("defaultValuesLabel", defaultValues));
       AjaxSubmitLink bulkAddLink = new AjaxSubmitLink("bulkAddLink") {
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "incomplete-switch" })
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String[] names = StringUtils.split(defaultValues.getModelObject(), ',');
@@ -588,8 +587,7 @@ public class OpenAnswerPanel extends Panel {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           openAnswerDefinition.setDataType(DataType.valueOf(dataTypeValue));
           for(String name : new HashSet<String>(Arrays.asList(names))) {
-            DataType valueOf = DataType.valueOf(dataTypeValue);
-            switch(valueOf) {
+            switch(DataType.valueOf(dataTypeValue)) {
             case DATE:
               try {
                 DATE_FORMAT.parse(name);

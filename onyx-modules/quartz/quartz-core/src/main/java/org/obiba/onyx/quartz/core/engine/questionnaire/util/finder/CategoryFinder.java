@@ -10,9 +10,8 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.finder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.obiba.magma.Variable;
@@ -24,6 +23,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 /**
  * Class for finding {@link Category}.
  * @author Yannick Marcon
@@ -34,7 +36,7 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
   /**
    * A map for storing the {@link Category} / {@link Question} association.
    */
-  Map<Category, List<Question>> questionCategories = new HashMap<Category, List<Question>>();
+  Multimap<Category, Question> questionCategories = HashMultimap.create();
 
   /**
    * Constructor, for searching all categories with their question association.
@@ -66,17 +68,17 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
    * Get the {@link Category} / {@link Question} association.
    * @return
    */
-  public Map<Category, List<Question>> getQuestionCategories() {
+  public Multimap<Category, Question> getQuestionCategories() {
     return questionCategories;
   }
 
   /**
-   * Look for shared {@link Category}: categories refered by more than one question.
+   * Look for shared {@link Category}: categories referred by more than one question.
    * @return
    */
   public List<Category> getQuestionSharedCategories() {
     List<Category> shared = new ArrayList<Category>();
-    for(Entry<Category, List<Question>> entry : questionCategories.entrySet()) {
+    for(Entry<Category, Collection<Question>> entry : questionCategories.asMap().entrySet()) {
       if(entry.getValue().size() > 1) {
         shared.add(entry.getKey());
       }
@@ -84,33 +86,34 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
     return shared;
   }
 
+  @Override
   public void visit(Questionnaire questionnaire) {
   }
 
+  @Override
   public void visit(Section section) {
   }
 
+  @Override
   public void visit(Page page) {
   }
 
+  @Override
   public void visit(Question question) {
   }
 
+  @Override
   public void visit(QuestionCategory questionCategory) {
     if(getName() == null || visitElement(questionCategory.getCategory())) {
-      if(!questionCategories.containsKey(questionCategory.getCategory())) {
-        ArrayList<Question> questions = new ArrayList<Question>();
-        questions.add(questionCategory.getQuestion());
-        questionCategories.put(questionCategory.getCategory(), questions);
-      } else {
-        questionCategories.get(questionCategory.getCategory()).add(questionCategory.getQuestion());
-      }
+      questionCategories.put(questionCategory.getCategory(), questionCategory.getQuestion());
     }
   }
 
+  @Override
   public void visit(Category category) {
   }
 
+  @Override
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
   }
 

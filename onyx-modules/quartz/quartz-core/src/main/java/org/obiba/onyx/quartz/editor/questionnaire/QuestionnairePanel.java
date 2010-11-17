@@ -52,7 +52,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -129,7 +128,6 @@ public abstract class QuestionnairePanel extends Panel {
     TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "version"));
     version.setLabel(new ResourceModel("Version"));
     version.add(new RequiredFormFieldBehavior());
-    version.add(new StringValidator.MaximumLengthValidator(20));
     form.add(version).add(new SimpleFormComponentLabel("versionLabel", version));
 
     RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "uiType"));

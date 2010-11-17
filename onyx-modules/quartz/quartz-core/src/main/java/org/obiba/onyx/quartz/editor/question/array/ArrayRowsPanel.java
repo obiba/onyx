@@ -38,7 +38,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
-import org.apache.wicket.validation.validator.StringValidator.MaximumLengthValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -152,7 +151,6 @@ public class ArrayRowsPanel extends Panel {
       final TextField<String> questionName = new TextField<String>("question", model);
       questionName.setOutputMarkupId(true);
       questionName.setLabel(new ResourceModel("NewQuestion"));
-      questionName.add(new MaximumLengthValidator(20));
       questionName.add(new AbstractValidator<String>() {
         @Override
         protected void onValidate(IValidatable<String> validatable) {
