@@ -596,10 +596,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
         final IHasSection hasSection = node.isSection() ? questionnaireFinder.findSection(node.getName()) : questionnaireModel.getObject();
         hasSection.addSection(section);
         persist(target);
-        JsonNode jsonNode = createNode(section, NodeType.SECTION);
-        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
         editingElement = false;
-        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true, -1);");
+        JsonNode jsonNode = createNode(section, NodeType.SECTION);
+        String position = hasSection instanceof Questionnaire ? String.valueOf(((Questionnaire) hasSection).getSections().size() - 1) : "last";
+        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), '" + position + "'," + jsonNode.toString() + ");");
+        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
       }
 
       @Override
@@ -642,10 +643,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
         questionnaireFinder.findSection(node.getName()).addPage(page);
         questionnaireModel.getObject().addPage(page);
         persist(target);
+        editingElement = false;
         JsonNode jsonNode = createNode(page, NodeType.PAGE);
         target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
-        editingElement = false;
-        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true, -1);");
+        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
       }
 
       @Override
@@ -688,10 +689,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question question) {
         questionnaireFinder.findPage(node.getName()).addQuestion(question);
         persist(target);
+        editingElement = false;
         JsonNode jsonNode = createNode(question, NodeType.QUESTION);
         target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
-        editingElement = false;
-        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true, -1);");
+        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
       }
 
       @Override
@@ -739,6 +740,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable variable) {
         questionnaireModel.getObject().addVariable(variable);
         persist(target);
+        editingElement = false;
 
         TreeNode treeNode = new TreeNode(variable.getName(), NodeType.VARIABLE);
         JsonNodeAttribute attr = new JsonNodeAttribute(addElement(treeNode), "Variable", "Variable " + variable.getName());
@@ -749,8 +751,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         newNode.setAttr(attr);
 
         target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + newNode.toString() + ");");
-        editingElement = false;
-        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + newNode.getAttr().getId() + "'), true, -1);");
+        target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + newNode.getAttr().getId() + "'), true);");
       }
 
       @Override

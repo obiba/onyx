@@ -40,6 +40,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -108,25 +109,25 @@ public abstract class CategoryWindow extends Panel {
         }
       }
     });
-    form.add(name);
-    form.add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     final TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
-    form.add(variable);
-    form.add(new SimpleFormComponentLabel("variableLabel", variable));
+    form.add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
+    form.add(new HelpTooltipPanel("variableHelp", new ResourceModel("Variable.Tooltip")));
 
     add(variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null));
 
     CheckBox escapeCheckBox = new CheckBox("escape", new PropertyModel<Boolean>(model, "category.escape"));
     escapeCheckBox.setLabel(new ResourceModel("EscapeOrMissing"));
-    form.add(escapeCheckBox);
-    form.add(new SimpleFormComponentLabel("escapeLabel", escapeCheckBox));
+    form.add(escapeCheckBox).add(new SimpleFormComponentLabel("escapeLabel", escapeCheckBox));
+    form.add(new HelpTooltipPanel("escapeHelp", new ResourceModel("EscapeOrMissing.Tooltip")));
 
     CheckBox noAnswerCheckBox = new CheckBox("noAnswer", new PropertyModel<Boolean>(model, "category.noAnswer"));
     noAnswerCheckBox.setLabel(new ResourceModel("NoAnswer"));
-    form.add(noAnswerCheckBox);
-    form.add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
+    form.add(noAnswerCheckBox).add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
+    form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, category);
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));

@@ -76,6 +76,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
@@ -186,13 +187,13 @@ public class OpenAnswerPanel extends Panel {
         }
       }
     });
-    add(name);
-    add(new SimpleFormComponentLabel("nameLabel", name));
+    add(name).add(new SimpleFormComponentLabel("nameLabel", name));
+    add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
-    add(variable);
-    add(new SimpleFormComponentLabel("variableLabel", variable));
+    add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
+    add(new HelpTooltipPanel("variableHelp", new ResourceModel("Variable.Tooltip")));
 
     if(category == null) {
       variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null) {
@@ -227,13 +228,13 @@ public class OpenAnswerPanel extends Panel {
     dataTypeDropDown.add(new RequiredFormFieldBehavior());
     dataTypeDropDown.setNullValid(false);
 
-    add(new SimpleFormComponentLabel("dataTypeLabel", dataTypeDropDown));
-    add(dataTypeDropDown);
+    add(dataTypeDropDown).add(new SimpleFormComponentLabel("dataTypeLabel", dataTypeDropDown));
+    // add(new HelpTooltipPanel("dataTypeHelp", new ResourceModel("DataType.Tooltip")));
 
     TextField<String> unit = new TextField<String>("unit", new PropertyModel<String>(model, "unit"));
     unit.setLabel(new ResourceModel("Unit"));
-    add(unit);
-    add(new SimpleFormComponentLabel("unitLabel", unit));
+    add(unit).add(new SimpleFormComponentLabel("unitLabel", unit));
+    add(new HelpTooltipPanel("unitHelp", new ResourceModel("Unit.Tooltip")));
 
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
     add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
@@ -498,7 +499,7 @@ public class OpenAnswerPanel extends Panel {
 
     };
     add(defaultValuesList);
-
+    add(new HelpTooltipPanel("defaultValuesHelp", new ResourceModel("DefaultValues.Tooltip")));
   }
 
   private class SimpleAddPanel extends Panel {
