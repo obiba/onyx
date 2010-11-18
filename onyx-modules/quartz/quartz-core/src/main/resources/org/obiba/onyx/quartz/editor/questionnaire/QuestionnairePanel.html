@@ -35,13 +35,12 @@
 			  </tr>
 			</table>			
 		 	<div wicket:id="labels"></div>
-		 	<a wicket:id="downloadLocaleProperties"><wicket:message key="DownloadLocaleProperties" /></a>
+		 	<div class="downloadLocales">
+		 		<a wicket:id="downloadLocaleProperties" class="obiba-button ui-corner-all" target="_blank"><img wicket:id="downloadImg"/> <wicket:message key="DownloadLocaleProperties" /></a>
+		 	</div>
 		</fieldset>
 		
-		<div class="modal-footer">
-			<button wicket:id="save" class="obiba-button ui-corner-all "><wicket:message key="Save" /></button>
-			<button wicket:id="cancel" class="obiba-button ui-corner-all"><wicket:message key="Cancel" /></button>
-		</div>				
+		<div wicket:id="saveCancel" class="modal-footer" />
 		
 	</form>
 	

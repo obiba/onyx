@@ -1239,7 +1239,8 @@ A:hover.obiba-button {
 
 button.obiba-button,
 input.obiba-button {
-  padding: 0.1667em 0.4167em 0.0833em 0.4167em;	
+  padding: 0.1667em 0.4167em 0.0833em 0.4167em;
+  cursor: pointer;	
 }
 
 img.obiba-button {
@@ -1253,6 +1254,7 @@ img.obiba-button {
 
 .obiba-button img {
 	vertical-align: bottom;
+	margin-right: 0.1667em; 
 }
 
 div .button-vertical-list{

@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -66,6 +65,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElement
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
+import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.variable.ValueTypeRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariableRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
@@ -298,9 +298,9 @@ public abstract class ValidationDataSourceWindow extends Panel {
       }
     });
 
-    form.add(new AjaxButton("save", form) {
+    form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+      protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         String path = questionnaire.getName() + ":";
         if(validator.getType() == NEW_VARIABLE) {
           String name = validator.getNewVariableName();
@@ -311,23 +311,21 @@ public abstract class ValidationDataSourceWindow extends Panel {
           path += validator.getVariable().getName();
         }
         ComparingDataSource comparingDataSource = new ComparingDataSource(null, validator.getOperator(), new VariableDataSource(path));
-        onSave(target, comparingDataSource);
+        ValidationDataSourceWindow.this.onSave(target, comparingDataSource);
         modalWindow.close(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        modalWindow.close(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
     });
-
-    form.add(new AjaxButton("cancel", form) {
-      @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        modalWindow.close(target);
-      }
-    }.setDefaultFormProcessing(false));
 
   }
 

@@ -31,7 +31,6 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.CSSPackageResource;
@@ -41,6 +40,7 @@ import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -62,7 +62,9 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
+import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
+import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -249,33 +251,34 @@ public abstract class QuestionnairePanel extends Panel {
     };
     form.add(download);
 
-    form.add(new AjaxLink("downloadLocaleProperties") {
-
+    AjaxLink downloadLink = new AjaxLink("downloadLocaleProperties") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         download.initiate(target);
       }
-    });
+    };
+    downloadLink.setVisible(!newQuestionnaire);
+    downloadLink.add(new Image("downloadImg", Images.ZIP));
+    form.add(downloadLink);
 
-    form.add(new AjaxButton("save", form) {
+    form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onSave(target, form.getModelObject());
+      protected void onSave(AjaxRequestTarget target, Form<?> form1) {
+        QuestionnairePanel.this.onSave(target, form.getModelObject());
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        QuestionnairePanel.this.onCancel(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
     });
 
-    form.add(new AjaxButton("cancel", form) {
-      @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onCancel(target);
-      }
-    }.setDefaultFormProcessing(false));
   }
 
   public abstract void onSave(AjaxRequestTarget target, Questionnaire questionnaire);

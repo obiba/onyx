@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.editor.page;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
@@ -34,6 +33,7 @@ import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -103,25 +103,23 @@ public abstract class PagePanel extends Panel {
     localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaire, page));
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
-    form.add(new AjaxButton("save", form) {
+    form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onSave(target, form.getModelObject());
+      protected void onSave(AjaxRequestTarget target, Form<?> form1) {
+        PagePanel.this.onSave(target, form.getModelObject());
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        PagePanel.this.onCancel(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
     });
-
-    form.add(new AjaxButton("cancel", form) {
-      @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onCancel(target);
-      }
-    }.setDefaultFormProcessing(false));
   }
 
   /**

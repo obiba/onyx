@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -47,6 +46,7 @@ import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -174,27 +174,26 @@ public abstract class VariablePanel extends Panel {
       }
     });
 
-    form.add(new AjaxButton("save", form) {
+    form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+      protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         Builder builder = Variable.Builder.newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
         builder.addAttribute("script", editedVariable.getScript());
-        onSave(target, builder.build());
+        VariablePanel.this.onSave(target, builder.build());
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        VariablePanel.this.onCancel(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
     });
 
-    form.add(new AjaxButton("cancel", form) {
-      @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onCancel(target);
-      }
-    }.setDefaultFormProcessing(false));
   }
 
   /**

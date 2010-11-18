@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.editor.question;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -22,6 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -61,27 +61,26 @@ public abstract class QuestionWindow extends Panel {
     };
     form.add(questionPanel);
 
-    form.add(new AjaxButton("save", form) {
+    form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+      protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         questionPanel.onSave(target);
-        onSave(target, form.getModelObject());
+        QuestionWindow.this.onSave(target, form.getModelObject());
         modalWindow.close(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        modalWindow.close(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
     });
 
-    form.add(new AjaxButton("cancel", form) {
-      @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        modalWindow.close(target);
-      }
-    }.setDefaultFormProcessing(false));
   }
 
   public abstract void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion);

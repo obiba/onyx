@@ -290,7 +290,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         page.getSection().removePage(page);
         newParentSection.addPage(page, Math.min(newParentSection.getPages().size(), position));
         persitQuestionnaire(target);
-      } else if(node.isQuestion() && newNode.isPage()) {
+      } else if(node.isQuestion() && newNode.isHasSection()) {
         Question question = questionnaireFinder.findQuestion(node.getName());
         Page newParentPage = questionnaireFinder.findPage(newNode.getName());
         question.getPage().removeQuestion(question);

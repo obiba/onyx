@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -46,6 +45,7 @@ import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.question.array.ArrayRowsPanel;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -275,9 +275,9 @@ public abstract class EditQuestionPanel extends Panel {
 
     form.add(tabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow, tabs));
 
-    form.add(new AjaxButton("save", form) {
+    form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
+      protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         QuestionType questionType = form.getModelObject().getQuestionType();
         questionTab.save(target);
 
@@ -322,23 +322,21 @@ public abstract class EditQuestionPanel extends Panel {
         conditionTab.save(target);
 
         if(!form.hasError()) {
-          onSave(target, form.getModelObject().getElement());
+          EditQuestionPanel.this.onSave(target, form.getModelObject().getElement());
         }
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form2) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        EditQuestionPanel.this.onCancel(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
     });
-
-    form.add(new AjaxButton("cancel", form) {
-      @Override
-      public void onSubmit(AjaxRequestTarget target, Form<?> form2) {
-        onCancel(target);
-      }
-    }.setDefaultFormProcessing(false));
 
   }
 

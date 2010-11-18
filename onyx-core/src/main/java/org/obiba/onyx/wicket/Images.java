@@ -28,4 +28,10 @@ public class Images {
 
   public static ResourceReference ZOOM = new ResourceReference(Images.class, "zoom.png");
 
+  public static ResourceReference ZIP = new ResourceReference(Images.class, "zip.png");
+
+  public static ResourceReference SAVE = new ResourceReference(Images.class, "save.png");
+
+  public static ResourceReference CANCEL = new ResourceReference(Images.class, "cancel.png");
+
 }
