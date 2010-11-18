@@ -181,6 +181,7 @@ public abstract class QuestionnairePanel extends Panel {
     };
 
     final Palette<Locale> localesPalette = new Palette<Locale>("languages", new ListModel<Locale>(questionnaire.getLocales()), localeChoices, renderer, 5, false) {
+      @Override
       protected Recorder<Locale> newRecorderComponent() {
         Recorder<Locale> recorder = super.newRecorderComponent();
         recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {

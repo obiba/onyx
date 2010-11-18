@@ -124,11 +124,11 @@ public class LabelsPanel extends Panel {
             return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)));
           }
         };
-        tabByLocale.put(locale, tab);
-        tabs.add(new PanelCachingTab(tab));
+        PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
+        tabByLocale.put(locale, panelCachingTab);
+        tabs.add(panelCachingTab);
       }
     }
-
     tabbedPanel.setVisible(tabs.size() > 0);
     target.addComponent(tabsContainer);
   }
