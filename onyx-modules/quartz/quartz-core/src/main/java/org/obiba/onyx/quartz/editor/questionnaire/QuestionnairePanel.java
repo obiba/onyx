@@ -34,6 +34,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
@@ -55,7 +56,7 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -97,6 +98,8 @@ public abstract class QuestionnairePanel extends Panel {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
 
+    add(CSSPackageResource.getHeaderContribution(QuestionnairePanel.class, "QuestionnairePanel.css"));
+
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
@@ -108,7 +111,6 @@ public abstract class QuestionnairePanel extends Panel {
     name.setLabel(new ResourceModel("Name"));
     name.setEnabled(newQuestionnaire);
     name.add(new RequiredFormFieldBehavior());
-    name.add(new TooltipBehavior(new ResourceModel("Name.Tooltip")));
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(final IValidatable<String> validatable) {
@@ -123,7 +125,7 @@ public abstract class QuestionnairePanel extends Panel {
         }
       }
     });
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name).add(new TooltipBehavior(new ResourceModel("Name.Tooltip"))));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name)).add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "version"));
     version.setLabel(new ResourceModel("Version"));
@@ -137,13 +139,12 @@ public abstract class QuestionnairePanel extends Panel {
 
     Radio<String> standardUiType = new Radio<String>("standard", new Model<String>(Questionnaire.STANDARD_UI));
     standardUiType.setLabel(new ResourceModel("UIType.standard"));
-    standardUiType.add(new TooltipBehavior(new ResourceModel("UIType.standard.Tooltip")));
-    uiType.add(standardUiType).add(new SimpleFormComponentLabel("standardLabel", standardUiType).add(new TooltipBehavior(new ResourceModel("UIType.standard.Tooltip"))));
+    uiType.add(standardUiType).add(new SimpleFormComponentLabel("standardLabel", standardUiType));
 
     Radio<String> simplifiedUiType = new Radio<String>("simplified", new Model<String>(Questionnaire.SIMPLIFIED_UI));
     simplifiedUiType.setLabel(new ResourceModel("UIType.simplified"));
-    simplifiedUiType.add(new TooltipBehavior(new ResourceModel("UIType.simplified.Tooltip")));
-    uiType.add(simplifiedUiType).add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType).add(new TooltipBehavior(new ResourceModel("UIType.simplified.Tooltip"))));
+    uiType.add(simplifiedUiType).add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
+    form.add(new HelpTooltipPanel("uiHelp", new ResourceModel("UIType.Tooltip")));
 
     localePropertiesModel = new Model<LocaleProperties>(newQuestionnaire ? localePropertiesUtils.loadForNewQuestionnaire(questionnaire) : localePropertiesUtils.load(questionnaire, questionnaire));
     final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow);
