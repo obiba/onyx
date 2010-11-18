@@ -186,6 +186,8 @@ public abstract class QuestionnairePanel extends Panel {
       @Override
       protected Recorder<Locale> newRecorderComponent() {
         Recorder<Locale> recorder = super.newRecorderComponent();
+        recorder.setLabel(new ResourceModel("Languages"));
+        recorder.setRequired(true);
         recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
           @Override
           protected void onUpdate(AjaxRequestTarget target) {
