@@ -119,15 +119,15 @@ public class QuestionnaireListPanel extends Panel {
         final EditionPanel editionPanel = new EditionPanel("content", questionnaireModel);
         QuestionnairePanel rightPanel = new QuestionnairePanel(EditionPanel.RIGHT_PANEL, questionnaireModel, true) {
           @Override
-          public void onSave(AjaxRequestTarget target1, Questionnaire questionnaire) {
-            persist(target1);
-            editionPanel.restoreDefaultRightPanel(target1);
-            target1.addComponent(editionPanel.getTree());
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Questionnaire questionnaire) {
+            persist(target);
+            editionPanel.restoreDefaultRightPanel(target);
+            target.addComponent(editionPanel.getTree());
           }
 
           @Override
-          public void onCancel(AjaxRequestTarget target1) {
-
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            modalWindow.close(target);
           }
         };
         editionPanel.setRightPanel(rightPanel, new Model<String>(""), null, null);
