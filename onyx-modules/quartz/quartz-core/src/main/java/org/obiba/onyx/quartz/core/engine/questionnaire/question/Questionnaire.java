@@ -157,7 +157,7 @@ public class Questionnaire implements IHasSection {
     return false;
   }
 
-  public Variable getVariable(@SuppressWarnings("hiding") String name) {
+  public Variable getVariable(@SuppressWarnings("hiding") String name) throws IllegalArgumentException {
     for(Variable variable : getVariables()) {
       if(variable.getName().equals(name)) {
         return variable;

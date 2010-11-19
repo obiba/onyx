@@ -51,13 +51,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocumentQuestionnairePage;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverter;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserException;
-import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
@@ -132,6 +132,7 @@ public class QuestionnaireListPanel extends Panel {
         };
         editionPanel.setRightPanel(rightPanel, new Model<String>(""), null, null);
 
+        modalWindow.setTitle(newQuestionnaire.getName());
         modalWindow.setContent(editionPanel);
         modalWindow.show(target);
       }
@@ -266,7 +267,7 @@ public class QuestionnaireListPanel extends Panel {
         }
       });
 
-      final AJAXDownload download = new AJAXDownload() {
+      final AjaxDownload download = new AjaxDownload() {
         @Override
         protected IResourceStream getResourceStream() {
           try {

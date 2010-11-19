@@ -56,12 +56,12 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
-import org.obiba.onyx.quartz.editor.utils.AJAXDownload;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.Images;
@@ -212,7 +212,7 @@ public abstract class QuestionnairePanel extends Panel {
 
     form.add(localesPalette);
 
-    final AJAXDownload download = new AJAXDownload() {
+    final AjaxDownload download = new AjaxDownload() {
 
       @Override
       protected IResourceStream getResourceStream() {

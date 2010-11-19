@@ -68,6 +68,8 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class ConditionPanel extends Panel {
 
+  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
+
   private final IModel<Questionnaire> questionnaireModel;
 
   private final IModel<Question> questionModel;
@@ -96,16 +98,27 @@ public class ConditionPanel extends Panel {
     Question question = questionModel.getObject();
     final Questionnaire questionnaire = questionnaireModel.getObject();
     if(question.getCondition() != null) {
-      Variable variable = VariableUtils.findVariable((VariableDataSource) question.getCondition());
-      if(variable != null) {
-        Question questionCondition = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
-        if(questionCondition != null) {
-          condition.setType(Type.QUESTION_CATEGORY);
-          condition.setQuestion(questionCondition);
-          condition.setCategory(VariableUtils.findCategory(variable, questionCondition));
-        } else {
+      VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
+      if(questionnaire.getName().equals(variableDataSource.getTableName())) {
+        try {
           condition.setType(Type.VARIABLE);
-          condition.setVariable(variable);
+          condition.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
+        } catch(IllegalArgumentException e) {
+          // not found in this questionnaire
+        }
+      } else {
+        Variable variable = VariableUtils.findVariable(variableDataSource);
+        if(variable != null) {
+          try {
+            condition.setType(Type.VARIABLE);
+            condition.setVariable(questionnaire.getVariable(variable.getName()));
+          } catch(IllegalArgumentException e) {
+            // not found
+            Question questionCondition = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
+            condition.setType(Type.QUESTION_CATEGORY);
+            condition.setQuestion(questionCondition);
+            condition.setCategory(VariableUtils.findCategory(variable, questionCondition));
+          }
         }
       }
     }
@@ -237,6 +250,7 @@ public class ConditionPanel extends Panel {
           @Override
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable createdVariable) {
             variables.add(createdVariable);
+            questionnaire.addVariable(createdVariable);
             variableDropDown.setModelObject(createdVariable);
             previewLink.setVisible(true);
             previewScript.setDefaultModelObject(createdVariable.getAttributeStringValue("script"));
@@ -297,7 +311,8 @@ public class ConditionPanel extends Panel {
   public void onSave(@SuppressWarnings("unused") AjaxRequestTarget target) {
     Condition condition = (Condition) getDefaultModelObject();
     if(condition.getType() == null) return;
-    QuestionnaireBuilder questionnaireBuilder = QuestionnaireBuilder.getInstance(questionnaireModel.getObject());
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    QuestionnaireBuilder questionnaireBuilder = QuestionnaireBuilder.getInstance(questionnaire);
     QuestionBuilder questionBuilder = QuestionBuilder.inQuestion(questionnaireBuilder, questionModel.getObject());
     switch(condition.getType()) {
     case NONE:
@@ -306,7 +321,7 @@ public class ConditionPanel extends Panel {
       questionBuilder.setCondition(condition.getQuestion().getName(), condition.getCategory().getName());
       break;
     case VARIABLE:
-      questionBuilder.setVariableName(condition.getVariable().getName());
+      questionBuilder.setVariableCondition(questionnaire.getName() + ":" + condition.getVariable().getName());
       break;
     }
   }
