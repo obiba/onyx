@@ -9,28 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.CSSPackageResource;
@@ -40,7 +29,6 @@ import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -50,21 +38,17 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
-import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
-import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -95,7 +79,6 @@ public abstract class QuestionnairePanel extends Panel {
 
   private final Form<Questionnaire> form;
 
-  @SuppressWarnings("rawtypes")
   public QuestionnairePanel(String id, IModel<Questionnaire> model, boolean newQuestionnaire) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
@@ -212,56 +195,57 @@ public abstract class QuestionnairePanel extends Panel {
 
     form.add(localesPalette);
 
-    final AjaxDownload download = new AjaxDownload() {
-
-      @Override
-      protected IResourceStream getResourceStream() {
-        try {
-          QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
-          File tmpFile = File.createTempFile(bundle.getName() + "-locales", ".zip");
-          tmpFile.deleteOnExit();
-
-          OutputStream os = new FileOutputStream(tmpFile);
-          ZipOutputStream zos = new ZipOutputStream(os);
-          byte[] buffer = new byte[1024];
-          for(Locale locale : bundle.getAvailableLanguages()) {
-            ZipEntry zip = new ZipEntry("language_" + locale.getLanguage() + ".properties");
-            zos.putNextEntry(zip);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Properties properties = bundle.getLanguage(locale);
-            properties.store(out, "Languages properties for questionnaire " + bundle.getName() + " for " + locale.getDisplayLanguage());
-            InputStream fis = new ByteArrayInputStream(out.toByteArray());
-            int read = 0;
-            while((read = fis.read(buffer)) != -1) {
-              zos.write(buffer, 0, read);
-            }
-            zos.closeEntry();
-          }
-          zos.close();
-
-          return new ZipResourceStream(tmpFile);
-        } catch(IOException e) {
-          log.error("Cannot persist questionnaire", e);
-          return null;
-        }
-      }
-
-      @Override
-      protected String getFileName() {
-        return questionnaire.getName() + "-locales.zip";
-      }
-    };
-    form.add(download);
-
-    AjaxLink downloadLink = new AjaxLink("downloadLocaleProperties") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        download.initiate(target);
-      }
-    };
-    downloadLink.setVisible(!newQuestionnaire);
-    downloadLink.add(new Image("downloadImg", Images.ZIP));
-    form.add(downloadLink);
+    // final AjaxDownload download = new AjaxDownload() {
+    //
+    // @Override
+    // protected IResourceStream getResourceStream() {
+    // try {
+    // QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
+    // File tmpFile = File.createTempFile(bundle.getName() + "-locales", ".zip");
+    // tmpFile.deleteOnExit();
+    //
+    // OutputStream os = new FileOutputStream(tmpFile);
+    // ZipOutputStream zos = new ZipOutputStream(os);
+    // byte[] buffer = new byte[1024];
+    // for(Locale locale : bundle.getAvailableLanguages()) {
+    // ZipEntry zip = new ZipEntry("language_" + locale.getLanguage() + ".properties");
+    // zos.putNextEntry(zip);
+    // ByteArrayOutputStream out = new ByteArrayOutputStream();
+    // Properties properties = bundle.getLanguage(locale);
+    // properties.store(out, "Languages properties for questionnaire " + bundle.getName() + " for " +
+    // locale.getDisplayLanguage());
+    // InputStream fis = new ByteArrayInputStream(out.toByteArray());
+    // int read = 0;
+    // while((read = fis.read(buffer)) != -1) {
+    // zos.write(buffer, 0, read);
+    // }
+    // zos.closeEntry();
+    // }
+    // zos.close();
+    //
+    // return new ZipResourceStream(tmpFile);
+    // } catch(IOException e) {
+    // log.error("Cannot persist questionnaire", e);
+    // return null;
+    // }
+    // }
+    //
+    // @Override
+    // protected String getFileName() {
+    // return questionnaire.getName() + "-locales.zip";
+    // }
+    // };
+    // form.add(download);
+    //
+    // AjaxLink downloadLink = new AjaxLink("downloadLocaleProperties") {
+    // @Override
+    // public void onClick(AjaxRequestTarget target) {
+    // download.initiate(target);
+    // }
+    // };
+    // downloadLink.setVisible(!newQuestionnaire);
+    // downloadLink.add(new Image("downloadImg", Images.ZIP));
+    // form.add(downloadLink);
 
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override

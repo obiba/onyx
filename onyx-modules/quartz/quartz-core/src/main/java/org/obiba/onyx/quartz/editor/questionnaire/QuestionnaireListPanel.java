@@ -24,6 +24,7 @@ import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -109,7 +110,7 @@ public class QuestionnaireListPanel extends Panel {
       }
     });
 
-    add(new AjaxLink<Void>("addQuestionnaire") {
+    add(new IndicatingAjaxLink<Void>("addQuestionnaire") {
       @Override
       public void onClick(AjaxRequestTarget target) {
 

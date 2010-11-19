@@ -10,7 +10,7 @@
 package org.obiba.onyx.quartz.editor.utils;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
@@ -23,27 +23,33 @@ import org.obiba.onyx.wicket.Images;
 @SuppressWarnings("serial")
 public abstract class SaveCancelPanel extends Panel {
 
+  private boolean saving;
+
   public SaveCancelPanel(String id, Form<?> form) {
     super(id);
-
     add(CSSPackageResource.getHeaderContribution(SaveCancelPanel.class, "SaveCancelPanel.css"));
 
-    add(new AjaxButton("save", form) {
+    add(new IndicatingAjaxButton("save", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
-        onSave(target, form);
+        if(!saving) { // avoid multiple save
+          saving = true;
+          onSave(target, form);
+        }
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         SaveCancelPanel.this.onError(target, form);
+        saving = false;
       }
     }.add(new Image("saveImg", Images.SAVE)));
 
-    add(new AjaxButton("cancel", form) {
+    add(new IndicatingAjaxButton("cancel", form) {
       @Override
       public void onSubmit(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         onCancel(target, form);
+        saving = false;
       }
     }.setDefaultFormProcessing(false).add(new Image("cancelImg", Images.CANCEL)));
   }
