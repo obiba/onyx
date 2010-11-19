@@ -120,7 +120,8 @@ public class Dialog extends ModalWindow {
       protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
         Dialog.this.setStatus(Status.SUCCESS);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
-          ModalWindow.closeCurrent(target);
+          // ModalWindow.closeCurrent(target);
+          close(target);
         }
       }
 
@@ -128,7 +129,8 @@ public class Dialog extends ModalWindow {
       protected void onError(AjaxRequestTarget target, Form<?> form1) {
         Dialog.this.setStatus(Status.ERROR);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
-          ModalWindow.closeCurrent(target);
+          // ModalWindow.closeCurrent(target);
+          close(target);
         }
       }
 
@@ -148,7 +150,8 @@ public class Dialog extends ModalWindow {
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.CANCELLED);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
-          ModalWindow.closeCurrent(target);
+          // ModalWindow.closeCurrent(target);
+          close(target);
         }
       }
 
@@ -159,16 +162,14 @@ public class Dialog extends ModalWindow {
     @SuppressWarnings("rawtypes")
     AjaxLink<?> yesButton = new AjaxLink("yes") {
 
-      /**
-       * 
-       */
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.YES);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
-          ModalWindow.closeCurrent(target);
+          // ModalWindow.closeCurrent(target);
+          close(target);
         }
       }
 
@@ -188,7 +189,8 @@ public class Dialog extends ModalWindow {
       public void onClick(AjaxRequestTarget target) {
         Dialog.this.setStatus(Status.NO);
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
-          ModalWindow.closeCurrent(target);
+          // ModalWindow.closeCurrent(target);
+          close(target);
         }
       }
 
@@ -211,7 +213,8 @@ public class Dialog extends ModalWindow {
           Dialog.this.setStatus(Status.CLOSED);
         }
         if(closeButtonCallback == null || closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus())) {
-          ModalWindow.closeCurrent(target);
+          // ModalWindow.closeCurrent(target);
+          close(target);
         }
       }
 
