@@ -43,12 +43,14 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
@@ -190,6 +192,7 @@ public class CategoryListPanel extends Panel {
       final TextField<String> categoryName = new TextField<String>("category", new Model<String>());
       categoryName.setOutputMarkupId(true);
       categoryName.setLabel(new ResourceModel("NewCategory"));
+      categoryName.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
 
       form.add(categoryName);
       form.add(new SimpleFormComponentLabel("categoryLabel", categoryName));
@@ -239,10 +242,9 @@ public class CategoryListPanel extends Panel {
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String[] names = StringUtils.split(categories.getModelObject(), ',');
           if(names == null) return;
-
           Question question = ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement();
           for(String name : new HashSet<String>(Arrays.asList(names))) {
-            addCategory(question, name);
+            if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) addCategory(question, name);
           }
           categories.setModelObject(null);
           target.addComponent(categories);

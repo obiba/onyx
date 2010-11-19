@@ -32,12 +32,14 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
@@ -98,6 +100,7 @@ public abstract class CategoryWindow extends Panel {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "category.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
+    name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {

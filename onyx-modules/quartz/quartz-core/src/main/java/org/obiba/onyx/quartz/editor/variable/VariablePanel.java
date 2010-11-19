@@ -31,6 +31,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
@@ -45,6 +46,8 @@ import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -102,6 +105,7 @@ public abstract class VariablePanel extends Panel {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
+    name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
@@ -116,7 +120,7 @@ public abstract class VariablePanel extends Panel {
         }
       }
     });
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name)).add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     List<ValueType> types = new ArrayList<ValueType>();
     types.add(IntegerType.get());

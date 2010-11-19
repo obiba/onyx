@@ -38,9 +38,11 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
@@ -150,6 +152,7 @@ public class ArrayRowsPanel extends Panel {
 
       final TextField<String> questionName = new TextField<String>("question", model);
       questionName.setOutputMarkupId(true);
+      questionName.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
       questionName.setLabel(new ResourceModel("NewQuestion"));
       questionName.add(new AbstractValidator<String>() {
         @Override
@@ -203,7 +206,7 @@ public class ArrayRowsPanel extends Panel {
           String[] names = StringUtils.split(questions.getModelObject(), ',');
           if(names == null) return;
           for(String name : new HashSet<String>(Arrays.asList(names))) {
-            addQuestion(name);
+            if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) addQuestion(name);
           }
           questions.setModelObject(null);
           target.addComponent(questions);

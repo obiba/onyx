@@ -23,10 +23,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -72,7 +74,8 @@ public abstract class SectionPanel extends Panel {
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
     name.setLabel(new ResourceModel("Name"));
-    name.add(new RequiredFormFieldBehavior()).add(new TooltipBehavior(new ResourceModel("Name.Tooltip")));
+    name.add(new RequiredFormFieldBehavior());
+    name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
 
       @Override
@@ -84,7 +87,7 @@ public abstract class SectionPanel extends Panel {
         }
       }
     });
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name)).add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject()));
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));

@@ -41,11 +41,13 @@ import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
@@ -99,6 +101,7 @@ public abstract class QuestionnairePanel extends Panel {
     name.setLabel(new ResourceModel("Name"));
     name.setEnabled(newQuestionnaire);
     name.add(new RequiredFormFieldBehavior());
+    name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(final IValidatable<String> validatable) {
