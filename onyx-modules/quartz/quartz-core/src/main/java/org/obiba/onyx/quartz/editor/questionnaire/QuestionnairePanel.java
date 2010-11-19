@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -42,7 +43,9 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
@@ -116,6 +119,20 @@ public abstract class QuestionnairePanel extends Panel {
     version.setLabel(new ResourceModel("Version"));
     version.add(new RequiredFormFieldBehavior());
     form.add(version).add(new SimpleFormComponentLabel("versionLabel", version));
+
+    if(StringUtils.isBlank(questionnaire.getUiType())) {
+      // try to guess UI type from question uiFactoryName
+      QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+      Collection<Question> questions = questionnaire.getQuestionnaireCache().getQuestionCache().values();
+      if(questions.size() > 0) {
+        String uiFactoryName = questions.iterator().next().getUIFactoryName();
+        if("quartz.DefaultQuestionPanelFactory".equals(uiFactoryName)) {
+          questionnaire.setUiType(Questionnaire.STANDARD_UI);
+        } else if("quartz.SimplifiedQuestionPanelFactory".equals(uiFactoryName)) {
+          questionnaire.setUiType(Questionnaire.SIMPLIFIED_UI);
+        }
+      }
+    }
 
     RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "uiType"));
     uiType.setLabel(new ResourceModel("UIType"));
