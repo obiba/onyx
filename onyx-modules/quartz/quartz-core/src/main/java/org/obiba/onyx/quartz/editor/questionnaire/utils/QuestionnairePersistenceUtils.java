@@ -59,7 +59,7 @@ public class QuestionnairePersistenceUtils {
     ((QuestionnaireBundleManagerImpl) writeBundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
     // store xml file
-    QuestionnaireBundle bundle = writeBundleManager.createBundle(builder.getQuestionnaire());
+    QuestionnaireBundle bundle = writeBundleManager.createBundle(builder.getQuestionnaire(), false);
     questionnaireBundleManager.cacheBundle(bundle);
 
     // store locales

@@ -89,6 +89,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -309,12 +310,12 @@ public class OpenAnswerPanel extends Panel {
 
     // TODO validate date
     // PatternValidator datePatternValidator = new PatternValidator("[0-9]4-[0-9]2-[0-9]2");
-    beforeDate = new TextField<String>("beforeDate", new Model<String>(minValue), String.class);
+    beforeDate = new TextField<String>("beforeDate", new Model<String>(maxValue), String.class);
     beforeDate.setLabel(new ResourceModel("Before"));
     // beforeDate.add(datePatternValidator);
     minMaxContainer.add(beforeDate);
 
-    afterDate = new TextField<String>("afterDate", new Model<String>(maxValue), String.class);
+    afterDate = new TextField<String>("afterDate", new Model<String>(minValue), String.class);
     afterDate.setLabel(new ResourceModel("After"));
     // afterDate.add(datePatternValidator);
     minMaxContainer.add(afterDate);
@@ -663,9 +664,67 @@ public class OpenAnswerPanel extends Panel {
    * 
    * @param target
    */
+  @SuppressWarnings("incomplete-switch")
   public void onSave(AjaxRequestTarget target) {
     if(!variableNameBehavior.isVariableNameDefined()) {
       variable.setModelObject(null);
+    }
+    OpenAnswerDefinition opa = (OpenAnswerDefinition) getDefaultModelObject();
+    opa.clearDataValidators();
+    switch(opa.getDataType()) {
+    // TODO incomplete for Date
+    case DATE:
+      try {
+        if(StringUtils.isNotBlank(afterDate.getValue())) {
+          MinimumValidator<Date> minimumValidator = new MinimumValidator<Date>(DATE_FORMAT.parse(afterDate.getValue()));
+          DataValidator dataValidator = new DataValidator(minimumValidator, DataType.DATE);
+          opa.addDataValidator(dataValidator);
+        }
+        if(StringUtils.isNotBlank(beforeDate.getValue())) {
+          MaximumValidator<Date> maximumValidator = new MaximumValidator<Date>(DATE_FORMAT.parse(beforeDate.getValue()));
+          DataValidator dataValidator = new DataValidator(maximumValidator, DataType.DATE);
+          opa.addDataValidator(dataValidator);
+        }
+      } catch(ParseException e) {
+        throw new RuntimeException(e);
+      }
+      break;
+    case DECIMAL:
+      if(StringUtils.isNotBlank(minNumeric.getValue())) {
+        MinimumValidator<Double> minimumValidator = new MinimumValidator<Double>(Double.parseDouble(minNumeric.getValue()));
+        DataValidator dataValidator = new DataValidator(minimumValidator, DataType.DECIMAL);
+        opa.addDataValidator(dataValidator);
+      }
+      if(StringUtils.isNotBlank(maxNumeric.getValue())) {
+        MaximumValidator<Double> maximumValidator = new MaximumValidator<Double>(Double.parseDouble(maxNumeric.getValue()));
+        DataValidator dataValidator = new DataValidator(maximumValidator, DataType.DECIMAL);
+        opa.addDataValidator(dataValidator);
+      }
+      break;
+    case INTEGER:
+      if(StringUtils.isNotBlank(minNumeric.getValue())) {
+        MinimumValidator<Integer> minimumValidator = new MinimumValidator<Integer>(Integer.parseInt(minNumeric.getValue()));
+        DataValidator dataValidator = new DataValidator(minimumValidator, DataType.INTEGER);
+        opa.addDataValidator(dataValidator);
+      }
+      if(StringUtils.isNotBlank(maxNumeric.getValue())) {
+        MaximumValidator<Integer> maximumValidator = new MaximumValidator<Integer>(Integer.parseInt(maxNumeric.getValue()));
+        DataValidator dataValidator = new DataValidator(maximumValidator, DataType.INTEGER);
+        opa.addDataValidator(dataValidator);
+      }
+      break;
+    case TEXT:
+      if(StringUtils.isNotBlank(minLength.getValue())) {
+        StringValidator minimumLengthValidator = StringValidator.minimumLength(Integer.parseInt(minLength.getValue()));
+        DataValidator dataValidator = new DataValidator(minimumLengthValidator, DataType.TEXT);
+        opa.addDataValidator(dataValidator);
+      }
+      if(StringUtils.isNotBlank(maxLength.getValue())) {
+        StringValidator maximumLengthValidator = StringValidator.maximumLength(Integer.parseInt(maxLength.getValue()));
+        DataValidator dataValidator = new DataValidator(maximumLengthValidator, DataType.TEXT);
+        opa.addDataValidator(dataValidator);
+      }
+      break;
     }
   }
 

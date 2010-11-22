@@ -37,7 +37,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -185,7 +184,7 @@ public abstract class QuestionnairePanel extends Panel {
       }
     };
 
-    final Palette<Locale> localesPalette = new Palette<Locale>("languages", new ListModel<Locale>(questionnaire.getLocales()), localeChoices, renderer, 5, false) {
+    final Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(model.getObject(), "locales"), localeChoices, renderer, 5, false) {
       @Override
       protected Recorder<Locale> newRecorderComponent() {
         Recorder<Locale> recorder = super.newRecorderComponent();
@@ -293,7 +292,6 @@ public abstract class QuestionnairePanel extends Panel {
 
   public void persist(AjaxRequestTarget target) {
     try {
-
       questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
       log.error("Cannot persist questionnaire", e);

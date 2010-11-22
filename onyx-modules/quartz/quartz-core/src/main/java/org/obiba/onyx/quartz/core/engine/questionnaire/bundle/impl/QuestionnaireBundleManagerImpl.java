@@ -125,21 +125,22 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     this.applicationContext = applicationContext;
   }
 
-  //
-  // QuestionnaireBundleManager Methods
-  //
-
   @Override
-  public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException {
+  public QuestionnaireBundle createBundle(Questionnaire questionnaire, boolean reloadProperties) throws IOException {
     File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
 
     // Create the bundle object.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider, reloadProperties);
 
     // Serialize it.
     serializeBundle(bundle);
 
     return bundle;
+  }
+
+  @Override
+  public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException {
+    return createBundle(questionnaire, true);
   }
 
   @Override

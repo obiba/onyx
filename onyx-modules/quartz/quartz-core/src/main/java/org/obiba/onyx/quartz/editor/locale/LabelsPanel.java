@@ -74,8 +74,9 @@ public class LabelsPanel extends Panel {
           return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)));
         }
       };
-      tabs.add(new PanelCachingTab(tab));
-      tabByLocale.put(locale, tab);
+      PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
+      tabs.add(panelCachingTab);
+      tabByLocale.put(locale, panelCachingTab);
     }
 
     tabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow, tabs);
@@ -103,17 +104,20 @@ public class LabelsPanel extends Panel {
       ITab tabToRemove = tabByLocale.get(locale);
       int selectedTabIndex = tabbedPanel.getSelectedTab();
       ITab selectedTab = tabs.get(selectedTabIndex);
-      if(tabToRemove == selectedTab || selectedTabIndex >= tabs.size()) {
-        for(int i = 0; i < tabs.size() - 1; i++) {
+      tabs.remove(tabToRemove);
+      tabByLocale.remove(locale);
+
+      if(tabToRemove != selectedTab) {
+        for(int i = 0; i < tabs.size(); i++) {
           ITab tab = tabs.get(i);
-          if(selectedTab != tab) {
+          if(selectedTab == tab) {
             tabbedPanel.setSelectedTab(i);
             break;
           }
         }
+      } else {
+        tabbedPanel.setSelectedTab(0);
       }
-      tabs.remove(tabToRemove);
-      tabByLocale.remove(locale);
     }
 
     for(final Locale locale : localeProperties.getLocales()) {
@@ -148,6 +152,5 @@ public class LabelsPanel extends Panel {
         }
       });
     }
-
   }
 }

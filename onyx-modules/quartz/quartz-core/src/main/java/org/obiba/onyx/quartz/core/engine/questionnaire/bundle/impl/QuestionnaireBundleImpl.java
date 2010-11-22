@@ -66,7 +66,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   // Constructors
   //
 
-  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
+  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider, boolean reloadProperties) {
 
     if(bundleVersionDir == null) {
       throw new IllegalArgumentException("Null bundle version directory");
@@ -105,9 +105,15 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
     this.messageSource = reloadableResourceBundleMessageSource;
 
-    for(Locale locale : getAvailableLanguages()) {
-      if(!this.questionnaire.getLocales().contains(locale)) this.questionnaire.addLocale(locale);
+    if(reloadProperties) {
+      for(Locale locale : getAvailableLanguages()) {
+        if(!this.questionnaire.getLocales().contains(locale)) this.questionnaire.addLocale(locale);
+      }
     }
+  }
+
+  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
+    this(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider, true);
   }
 
   @Override

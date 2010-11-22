@@ -26,6 +26,17 @@ public interface QuestionnaireBundleManager {
   public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException;
 
   /**
+   * Same that createBundle(Questionnaire questionnaire)
+   * 
+   * @param questionnaire
+   * @param reloadProperties Set reloadProperties to false to do not fetch properties files to add to questionnaire
+   * locales.
+   * @return
+   * @throws IOException
+   */
+  QuestionnaireBundle createBundle(Questionnaire questionnaire, boolean reloadProperties) throws IOException;
+
+  /**
    * Returns the latest version of the specified questionnaire bundle.
    * 
    * @param name questionnaire bundle name
@@ -35,7 +46,7 @@ public interface QuestionnaireBundleManager {
 
   /**
    * Returns the latest version of the specified questionnaire bundle. (from xml file, not the cached)
-   *
+   * 
    * @param name
    * @return
    */
