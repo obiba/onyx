@@ -35,7 +35,7 @@ public class AddCommentWindow extends Dialog {
 
   @Override
   public AddCommentWindow setContent(Component component) {
-    component.add(new AttributeModifier("class", true, new Model("obiba-content add-comment-panel-content")));
+    component.add(new AttributeModifier("class", true, new Model<String>("obiba-content add-comment-panel-content")));
     super.setContent(component);
     return this;
   }

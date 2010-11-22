@@ -40,7 +40,7 @@ public class FeedbackWindow extends Dialog {
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setOptions(Dialog.Option.CLOSE_OPTION);
 
-    get("content").add(new AttributeModifier("class", true, new Model("onyx-feedback")));
+    get("content").add(new AttributeModifier("class", true, new Model<String>("onyx-feedback")));
 
     setWindowClosedCallback(new WindowClosedCallback() {
       /**
@@ -60,7 +60,7 @@ public class FeedbackWindow extends Dialog {
     FeedbackPanel feedbackPanel = (FeedbackPanel) component;
     FeedbackMessage feedbackMessage = (feedbackPanel.getFeedbackMessagesModel().getObject()).get(0);
 
-    component.add(new AttributeModifier("class", true, new Model("feedback")));
+    component.add(new AttributeModifier("class", true, new Model<String>("feedback")));
 
     if(feedbackMessage != null) {
       String messageLevel = feedbackMessage.getLevelAsString();
