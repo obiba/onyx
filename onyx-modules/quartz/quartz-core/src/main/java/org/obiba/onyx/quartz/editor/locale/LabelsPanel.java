@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
@@ -147,6 +148,14 @@ public class LabelsPanel extends Panel {
         protected void populateItem(ListItem<KeyValue> item) {
           TextArea<String> textArea = new TextArea<String>("textArea", new PropertyModel<String>(item.getModel(), "value"));
           textArea.setLabel(new Model<String>(item.getModelObject().getKey()));
+          textArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+            }
+
+          });
+
           item.add(textArea);
           item.add(new SimpleFormComponentLabel("label", textArea));
         }

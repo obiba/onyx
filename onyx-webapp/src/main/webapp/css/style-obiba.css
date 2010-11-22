@@ -813,6 +813,8 @@ td.gertTableFormValueOdd {
 
 div.tab-panel {
 	clear:both;
+	border: 1px solid #BFBFBF;
+	margin: 5px;
 }
 
 .requiredField {
