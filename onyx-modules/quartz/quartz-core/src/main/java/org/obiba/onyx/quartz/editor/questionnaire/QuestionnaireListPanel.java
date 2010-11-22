@@ -144,7 +144,7 @@ public class QuestionnaireListPanel extends Panel {
 
     @Override
     public Iterator<Questionnaire> iterator(int first, int count) {
-      Set<QuestionnaireBundle> bundles = questionnaireBundleManager.bundles();
+      Set<QuestionnaireBundle> bundles = questionnaireBundleManager.persistedBundles();
       List<Questionnaire> questionnaires = new ArrayList<Questionnaire>(bundles.size());
       for(QuestionnaireBundle bundle : bundles) {
         questionnaires.add(bundle.getQuestionnaire());
@@ -154,7 +154,7 @@ public class QuestionnaireListPanel extends Panel {
 
     @Override
     public int size() {
-      return questionnaireBundleManager.bundles().size();
+      return questionnaireBundleManager.countQuestionnaires();
     }
 
     @Override

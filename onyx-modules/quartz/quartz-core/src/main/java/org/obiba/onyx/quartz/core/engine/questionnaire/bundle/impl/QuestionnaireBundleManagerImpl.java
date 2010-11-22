@@ -173,6 +173,27 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   @Override
   public Set<QuestionnaireBundle> bundles() {
+    return bundles(false);
+  }
+
+  @Override
+  public Set<QuestionnaireBundle> persistedBundles() {
+    return bundles(true);
+  }
+
+  @Override
+  public int countQuestionnaires() {
+    return rootDir.listFiles(new FileFilter() {
+
+      @Override
+      public boolean accept(File file) {
+        return file.isDirectory() && file.getName().charAt(0) != '.';
+      }
+    }).length;
+  }
+
+  private Set<QuestionnaireBundle> bundles(final boolean persisted) {
+
     final Set<QuestionnaireBundle> bundles = new HashSet<QuestionnaireBundle>();
 
     // Iterate over all bundle directories.
@@ -180,10 +201,13 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
       @Override
       public boolean accept(File file) {
         if(file.isDirectory() && file.getName().charAt(0) != '.') {
-          bundles.add(getBundle(file.getName()));
-          return true;
+          try {
+            bundles.add(persisted ? loadBundle(file.getName()) : getBundle(file.getName()));
+            return true;
+          } catch(IOException ex) {
+            log.error("Failed to load questionnaire bundle " + file.getName());
+          }
         }
-
         return false;
       }
     });

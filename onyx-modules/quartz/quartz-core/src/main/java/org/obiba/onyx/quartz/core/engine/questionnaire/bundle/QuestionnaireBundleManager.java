@@ -53,7 +53,7 @@ public interface QuestionnaireBundleManager {
   public QuestionnaireBundle getPersistedBundle(String name);
 
   /**
-   * Returns the latest versions of all questionnaire bundles.
+   * Returns the latest (in cache) versions of all questionnaire bundles.
    * 
    * @return managed questionnaire bundles
    */
@@ -75,5 +75,17 @@ public interface QuestionnaireBundleManager {
    * @param bundle
    */
   void cacheBundle(QuestionnaireBundle bundle);
+
+  /**
+   * Returns the latest (in persisted files) versions of all questionnaire bundles.
+   * 
+   * @return managed questionnaire bundles
+   */
+  Set<QuestionnaireBundle> persistedBundles();
+
+  /**
+   * @return
+   */
+  int countQuestionnaires();
 
 }
