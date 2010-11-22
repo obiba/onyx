@@ -2,7 +2,15 @@
 	margin-left: 25px;
 }
 
+table#questionConditionContainer {
+	width: 600px;
+}
+
 .help {
 	font-size: 10px;
 	font-weight: normal;
+}
+
+img.preview {
+	cursor: pointer;
 }

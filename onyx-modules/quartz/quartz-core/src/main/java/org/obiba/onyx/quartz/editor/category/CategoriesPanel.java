@@ -51,7 +51,12 @@ public class CategoriesPanel extends Panel {
     layout.add(gridLayout);
     layout.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
 
-    TextField<Integer> nbRowsField = new TextField<Integer>("nbRows", new PropertyModel<Integer>(model, "nbRows"), Integer.class);
+    TextField<Integer> nbRowsField = new TextField<Integer>("nbRows", new PropertyModel<Integer>(model, "nbRows")) {
+      @Override
+      public boolean isRequired() {
+        return model.getObject().getLayout() == Layout.GRID;
+      }
+    };
     gridLayout.setLabel(new ResourceModel("NbRows"));
     add(nbRowsField);
 

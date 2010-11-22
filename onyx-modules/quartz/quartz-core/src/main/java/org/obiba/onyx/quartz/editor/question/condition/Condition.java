@@ -34,10 +34,6 @@ public class Condition implements Serializable {
 
   private Variable variable;
 
-  private String newVariableName;
-
-  private String script;
-
   public Type getType() {
     return type;
   }
@@ -68,22 +64,6 @@ public class Condition implements Serializable {
 
   public void setVariable(Variable variable) {
     this.variable = variable;
-  }
-
-  public String getNewVariableName() {
-    return newVariableName;
-  }
-
-  public void setNewVariableName(String newVariableName) {
-    this.newVariableName = newVariableName;
-  }
-
-  public String getScript() {
-    return script;
-  }
-
-  public void setScript(String script) {
-    this.script = script;
   }
 
 }

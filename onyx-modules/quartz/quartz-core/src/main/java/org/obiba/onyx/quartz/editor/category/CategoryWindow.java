@@ -17,6 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -47,6 +49,7 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
@@ -74,8 +77,14 @@ public abstract class CategoryWindow extends Panel {
 
   private final VariableNameBehavior variableNameBehavior;
 
+  private final IModel<Questionnaire> questionnaireModel;
+
+  private final IModel<LocaleProperties> localePropertiesModel;
+
   public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
+    this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
 
     add(form = new Form<QuestionCategory>("form", model));
 
@@ -159,11 +168,30 @@ public abstract class CategoryWindow extends Panel {
       }
 
       @Override
-      public void editItem(OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
+      public void editItem(final OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
+        final OpenAnswerDefinition original = QuestionnaireElementCloner.cloneOpenAnswerDefinition(openAnswer);
         openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, OpenAnswerDefinition openAnswer1) {
-            refreshList(target1);
+          protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
+          }
+
+          @Override
+          protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
+            rollback(openAnswer, original);
+
+          }
+        });
+        openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {
+          @Override
+          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            rollback(openAnswer, original);
+            return true;
+          }
+        });
+        openAnswerWindow.setWindowClosedCallback(new WindowClosedCallback() {
+          @Override
+          public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            refreshList(target);
           }
         });
         openAnswerWindow.show(target);
@@ -194,7 +222,7 @@ public abstract class CategoryWindow extends Panel {
           public void callback(AjaxRequestTarget target) {
             openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
               @Override
-              public void onSave(AjaxRequestTarget target1, OpenAnswerDefinition openAnswer) {
+              protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
                 OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
                 if(currentOpenAnswer == null) {
                   category.setOpenAnswerDefinition(openAnswer);
@@ -209,7 +237,24 @@ public abstract class CategoryWindow extends Panel {
                     category.setOpenAnswerDefinition(newOpenAnswer);
                   }
                 }
-                refreshList(target1);
+              }
+
+              @Override
+              protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
+                // no special rollback to do for add
+              }
+            });
+            openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {
+              @Override
+              public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+                // no special rollback to do for add
+                return true;
+              }
+            });
+            openAnswerWindow.setWindowClosedCallback(new WindowClosedCallback() {
+              @Override
+              public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+                refreshList(target);
               }
             });
             openAnswerWindow.show(target);
@@ -232,7 +277,8 @@ public abstract class CategoryWindow extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, Form<?> form1) {
+        CategoryWindow.this.onCancel(target, form.getModelObject());
         modalWindow.close(target);
       }
 
@@ -245,11 +291,27 @@ public abstract class CategoryWindow extends Panel {
 
   }
 
-  /**
-   * 
-   * @param target
-   * @param questionCategory
-   */
+  private synchronized void rollback(OpenAnswerDefinition modified, OpenAnswerDefinition original) {
+    Category category = ((QuestionCategory) getDefaultModelObject()).getCategory();
+    if(category.getOpenAnswerDefinition().equals(modified)) { // parent open answer
+      category.setOpenAnswerDefinition(original);
+      for(OpenAnswerDefinition child : modified.getOpenAnswerDefinitions()) {
+        original.addOpenAnswerDefinition(child);
+      }
+    } else {
+      int index = category.getOpenAnswerDefinition().getOpenAnswerDefinitions().indexOf(modified);
+      category.getOpenAnswerDefinition().removeOpenAnswerDefinition(modified);
+      category.getOpenAnswerDefinition().addOpenAnswerDefinition(original, index);
+    }
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    LocaleProperties localeProperties = localePropertiesModel.getObject();
+    localePropertiesUtils.remove(localeProperties, questionnaire, modified);
+    localePropertiesUtils.load(localeProperties, questionnaire, original, original);
+    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+  }
+
   public abstract void onSave(AjaxRequestTarget target, final QuestionCategory questionCategory);
+
+  public abstract void onCancel(AjaxRequestTarget target, final QuestionCategory questionCategory);
 
 }

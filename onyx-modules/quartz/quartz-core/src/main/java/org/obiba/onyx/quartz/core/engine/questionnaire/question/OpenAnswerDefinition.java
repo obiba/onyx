@@ -150,6 +150,12 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
   }
 
+  public void removeValidationDataSource(ComparingDataSource comparingDataSource) {
+    if(comparingDataSource != null) {
+      getValidationDataSources().remove(comparingDataSource);
+    }
+  }
+
   public ComparingDataSource getValidationDataSource(int index) {
     return getValidationDataSources().get(index).clone();
   }
@@ -216,6 +222,13 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   public void addOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
     if(openAnswerDefinition != null) {
       getOpenAnswerDefinitions().add(openAnswerDefinition);
+      openAnswerDefinition.setParentOpenAnswerDefinition(this);
+    }
+  }
+
+  public void addOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition, int index) {
+    if(openAnswerDefinition != null) {
+      getOpenAnswerDefinitions().add(index, openAnswerDefinition);
       openAnswerDefinition.setParentOpenAnswerDefinition(this);
     }
   }

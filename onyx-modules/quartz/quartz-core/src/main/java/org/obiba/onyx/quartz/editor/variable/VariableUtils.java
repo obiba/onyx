@@ -15,11 +15,19 @@ import org.obiba.magma.NoSuchAttributeException;
 import org.obiba.magma.NoSuchValueTableException;
 import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
+import org.obiba.magma.type.BooleanType;
+import org.obiba.magma.type.DateType;
+import org.obiba.magma.type.DecimalType;
+import org.obiba.magma.type.IntegerType;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  *
@@ -64,6 +72,23 @@ public class VariableUtils {
       return null;
     }
     return null;
+  }
+
+  public static ValueType convertToValueType(DataType dataType) {
+    switch(dataType) {
+    case DECIMAL:
+      return DecimalType.get();
+    case INTEGER:
+      return IntegerType.get();
+    case BOOLEAN:
+      return BooleanType.get();
+    case TEXT:
+      return TextType.get();
+    case DATE:
+      return DateType.get();
+    default:
+      throw new DataSourceConverterException("Type[" + dataType + "] is not supported");
+    }
   }
 
 }

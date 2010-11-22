@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -159,7 +159,7 @@ public class OpenAnswerPanel extends Panel {
 
   private TextField<String> variable;
 
-  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
     this.questionnaireModel = questionnaireModel;
@@ -174,7 +174,7 @@ public class OpenAnswerPanel extends Panel {
     validatorWindow = new ModalWindow("validatorWindow");
     validatorWindow.setCssClassName("onyx");
     validatorWindow.setInitialWidth(850);
-    validatorWindow.setInitialHeight(450);
+    validatorWindow.setInitialHeight(200);
     validatorWindow.setResizable(true);
     validatorWindow.setTitle(new ResourceModel("Validator"));
     add(validatorWindow);
@@ -345,30 +345,24 @@ public class OpenAnswerPanel extends Panel {
     final AjaxLink<Void> addValidator = new AjaxLink<Void>("addValidator") {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        validatorWindow.setContent(new ValidationDataSourceWindow("content", new Model<ComparingDataSource>(), model, questionModel, questionnaireModel, validatorWindow) {
-          @Override
-          public void onSave(AjaxRequestTarget target1, ComparingDataSource comparingDataSource) {
-            openAnswer.addValidationDataSource(comparingDataSource);
-            target1.addComponent(validators);
-          }
-        });
-        validatorWindow.show(target);
-      }
-
-      @Override
-      public boolean isEnabled() {
-        return StringUtils.isNotBlank(name.getModelObject());
+        if(dataTypeDropDown.getModelObject() == null) {
+          info(new StringResourceModel("SelectDataTypeFirst", OpenAnswerPanel.this, null).getString());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
+        } else {
+          validatorWindow.setContent(new ValidationDataSourceWindow("content", new Model<ComparingDataSource>(), questionModel, questionnaireModel, dataTypeDropDown.getModelObject(), validatorWindow) {
+            @Override
+            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, ComparingDataSource comparingDataSource) {
+              openAnswer.addValidationDataSource(comparingDataSource);
+              target.addComponent(validators);
+            }
+          });
+          validatorWindow.show(target);
+        }
       }
     };
     addValidator.setOutputMarkupId(true);
     add(addValidator.add(new Image("img", Images.ADD)));
-
-    name.add(new OnChangeAjaxBehavior() {
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        target.addComponent(addValidator);
-      }
-    });
 
     dataTypeDropDown.add(new OnChangeAjaxBehavior() {
 
@@ -605,7 +599,7 @@ public class OpenAnswerPanel extends Panel {
           }
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           openAnswerDefinition.setDataType(DataType.valueOf(dataTypeValue));
-          for(String name : new HashSet<String>(Arrays.asList(names))) {
+          for(String name : names) {
             switch(DataType.valueOf(dataTypeValue)) {
             case DATE:
               try {
@@ -636,7 +630,7 @@ public class OpenAnswerPanel extends Panel {
             }
 
           }
-          for(String name : new HashSet<String>(Arrays.asList(names))) {
+          for(String name : new LinkedHashSet<String>(Arrays.asList(names))) {
             openAnswerDefinition.addDefaultValue(name);
           }
           defaultValues.setModelObject(null);
@@ -890,12 +884,14 @@ public class OpenAnswerPanel extends Panel {
 
       add(new AjaxLink<ComparingDataSource>("editLink", rowModel) {
         @Override
-        @SuppressWarnings("unchecked")
         public void onClick(AjaxRequestTarget target) {
-          validatorWindow.setContent(new ValidationDataSourceWindow("content", rowModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), questionModel, questionnaireModel, validatorWindow) {
+          validatorWindow.setContent(new ValidationDataSourceWindow("content", rowModel, questionModel, questionnaireModel, dataTypeDropDown.getModelObject(), validatorWindow) {
             @Override
-            public void onSave(AjaxRequestTarget target1, @SuppressWarnings("hiding") ComparingDataSource comparingDataSource) {
-              target1.addComponent(validators);
+            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, ComparingDataSource editedComparingDataSource) {
+              OpenAnswerDefinition openAnswer = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
+              openAnswer.removeValidationDataSource(comparingDataSource);
+              openAnswer.addValidationDataSource(editedComparingDataSource);
+              target.addComponent(validators);
             }
           });
           validatorWindow.show(target);
@@ -906,7 +902,7 @@ public class OpenAnswerPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           OpenAnswerDefinition openAnswer = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
-          openAnswer.getValidationDataSources().remove(comparingDataSource);
+          openAnswer.removeValidationDataSource(comparingDataSource);
           target.addComponent(validators);
         }
       }.add(new Image("deleteImg", Images.DELETE).add(new AttributeModifier("title", true, new ResourceModel("Delete")))));

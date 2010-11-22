@@ -381,7 +381,7 @@ public abstract class EditQuestionPanel extends Panel {
       questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
       logger.error("Cannot persist questionnaire", e);
-      error(e.getMessage());
+      error(e.getClass() + ": " + e.getMessage());
       feedbackWindow.setContent(feedbackPanel);
       feedbackWindow.show(target);
     }

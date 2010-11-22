@@ -347,8 +347,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editingConfirmationDialog.setYesButtonCallback(new OnYesCallback() {
           @Override
           public void onYesButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-            // TODO hide context menu
-            // cancel current editing and reload model
             reloadModel();
             preview(nodeId, node, target);
           }
@@ -356,7 +354,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editingConfirmationDialog.setNoButtonCallback(new OnNoCallback() {
           @Override
           public void onNoButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-            // TODO: hide context menu and reselect edited node
           }
         });
         editingConfirmationDialog.show(target);

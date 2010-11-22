@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.editor.openAnswer.validation;
 
 import java.io.Serializable;
 
-import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -25,7 +24,7 @@ public class OpenAnswerValidator implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public static enum Type {
-    QUESTION_CATEGORY, EXISTING_VARIABLE, NEW_VARIABLE;
+    QUESTION_CATEGORY, VARIABLE;
   }
 
   private Type type;
@@ -37,12 +36,6 @@ public class OpenAnswerValidator implements Serializable {
   private Category category;
 
   private Variable variable;
-
-  private String newVariableName;
-
-  private ValueType valueType;
-
-  private String script;
 
   public Type getType() {
     return type;
@@ -82,30 +75,6 @@ public class OpenAnswerValidator implements Serializable {
 
   public void setVariable(Variable variable) {
     this.variable = variable;
-  }
-
-  public String getNewVariableName() {
-    return newVariableName;
-  }
-
-  public void setNewVariableName(String newVariableName) {
-    this.newVariableName = newVariableName;
-  }
-
-  public ValueType getValueType() {
-    return valueType;
-  }
-
-  public void setValueType(ValueType valueType) {
-    this.valueType = valueType;
-  }
-
-  public String getScript() {
-    return script;
-  }
-
-  public void setScript(String script) {
-    this.script = script;
   }
 
 }

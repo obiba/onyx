@@ -29,7 +29,7 @@ public class EditedQuestion extends EditedElement<Question> {
 
   private Layout layout = Layout.SINGLE_COLUMN;
 
-  private int nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
+  private Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
 
   public EditedQuestion(Question element) {
     super(element);
@@ -68,11 +68,11 @@ public class EditedQuestion extends EditedElement<Question> {
     setLayoutInfos();
   }
 
-  public int getNbRows() {
+  public Integer getNbRows() {
     return nbRows;
   }
 
-  public void setNbRows(int nbRows) {
+  public void setNbRows(Integer nbRows) {
     this.nbRows = nbRows;
     setLayoutInfos();
   }

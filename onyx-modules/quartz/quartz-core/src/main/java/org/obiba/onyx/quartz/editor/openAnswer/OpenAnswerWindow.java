@@ -60,7 +60,8 @@ public abstract class OpenAnswerWindow extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, Form<?> form1) {
+        OpenAnswerWindow.this.onCancel(target, form.getModelObject());
         modalWindow.close(target);
       }
 
@@ -73,11 +74,8 @@ public abstract class OpenAnswerWindow extends Panel {
 
   }
 
-  /**
-   * 
-   * @param target
-   * @param openAnswer
-   */
-  public abstract void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer);
+  protected abstract void onSave(AjaxRequestTarget target, OpenAnswerDefinition openAnswer);
+
+  protected abstract void onCancel(AjaxRequestTarget target, OpenAnswerDefinition openAnswer);
 
 }

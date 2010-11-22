@@ -10,8 +10,6 @@
 package org.obiba.onyx.quartz.editor.question.array;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +18,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -117,11 +117,29 @@ public class ArrayRowsPanel extends Panel {
       }
 
       @Override
-      public void editItem(Question question, AjaxRequestTarget target) {
+      public void editItem(final Question question, AjaxRequestTarget target) {
         questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, EditedQuestion editedQuestion) {
+          protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
 
+          }
+
+          @Override
+          protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
+            // no special rollback to do, form was never submitted
+          }
+        });
+        questionWindow.setCloseButtonCallback(new CloseButtonCallback() {
+          @Override
+          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            // no special rollback to do, form was never submitted
+            return true;
+          }
+        });
+        questionWindow.setWindowClosedCallback(new WindowClosedCallback() {
+          @Override
+          public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            refreshList(target);
           }
         });
         questionWindow.show(target);
@@ -205,7 +223,7 @@ public class ArrayRowsPanel extends Panel {
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String[] names = StringUtils.split(questions.getModelObject(), ',');
           if(names == null) return;
-          for(String name : new HashSet<String>(Arrays.asList(names))) {
+          for(String name : names) {
             if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) addQuestion(name);
           }
           questions.setModelObject(null);

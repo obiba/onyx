@@ -14,10 +14,8 @@ import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +24,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -55,6 +55,7 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.utils.AbstractAutoCompleteTextField;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -86,8 +87,14 @@ public class CategoryListPanel extends Panel {
 
   private List<Category> questionnaireCategories;
 
+  private final IModel<Questionnaire> questionnaireModel;
+
+  private final IModel<LocaleProperties> localePropertiesModel;
+
   public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
+    this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
 
@@ -155,11 +162,28 @@ public class CategoryListPanel extends Panel {
       }
 
       @Override
-      public void editItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
+      public void editItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
+        final QuestionCategory original = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory);
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target1, QuestionCategory editedCategory) {
-            refreshList(target1);
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
+          }
+
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
+            rollback(questionCategory, original);
+          }
+        });
+        categoryWindow.setCloseButtonCallback(new CloseButtonCallback() {
+          @Override
+          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            rollback(questionCategory, original);
+            return true;
+          }
+        });
+        categoryWindow.setWindowClosedCallback(new WindowClosedCallback() {
+          @Override
+          public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            refreshList(target);
           }
         });
         categoryWindow.show(target);
@@ -200,7 +224,7 @@ public class CategoryListPanel extends Panel {
       AjaxSubmitLink addLink = new AjaxSubmitLink("link", form) {
         @Override
         @SuppressWarnings("unchecked")
-        protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
+        protected void onSubmit(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
           String name = categoryName.getModelObject();
           if(StringUtils.isBlank(name)) return;
           if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
@@ -214,7 +238,7 @@ public class CategoryListPanel extends Panel {
         }
 
         @Override
-        protected void onError(AjaxRequestTarget target, Form<?> form1) {
+        protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -243,8 +267,10 @@ public class CategoryListPanel extends Panel {
           String[] names = StringUtils.split(categories.getModelObject(), ',');
           if(names == null) return;
           Question question = ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement();
-          for(String name : new HashSet<String>(Arrays.asList(names))) {
-            if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) addCategory(question, name);
+          for(String name : names) {
+            if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) {
+              addCategory(question, name);
+            }
           }
           categories.setModelObject(null);
           target.addComponent(categories);
@@ -388,6 +414,18 @@ public class CategoryListPanel extends Panel {
     QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setCategory(category);
     question.addQuestionCategory(questionCategory);
+  }
+
+  private synchronized void rollback(QuestionCategory modified, QuestionCategory original) {
+    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
+    int index = question.getQuestionCategories().indexOf(modified);
+    question.removeQuestionCategory(modified);
+    question.addQuestionCategory(original, index);
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    LocaleProperties localeProperties = localePropertiesModel.getObject();
+    localePropertiesUtils.remove(localeProperties, questionnaire, modified, modified.getCategory());
+    localePropertiesUtils.load(localeProperties, questionnaire, original, original.getCategory());
+    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 
 }

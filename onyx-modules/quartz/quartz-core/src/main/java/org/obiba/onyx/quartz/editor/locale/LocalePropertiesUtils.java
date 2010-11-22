@@ -48,9 +48,8 @@ public class LocalePropertiesUtils {
     if(questionnaire.getName() == null) return;
     localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
     QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
-    if(bundle != null) {
-      bundle.clearMessageSourceCache();
-    }
+    if(bundle != null) bundle.clearMessageSourceCache();
+
     for(IQuestionnaireElement element : elements) {
       List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
       for(Locale locale : localeProperties.getLocales()) {
@@ -61,11 +60,18 @@ public class LocalePropertiesUtils {
               value = QuestionnaireStringResourceModelHelper.getNonRecursiveResolutionMessage(bundle, element, key, new Object[0], locale);
             }
           } catch(Exception e) {
-            logger.error(e.getMessage(), e);
+            if(logger.isDebugEnabled()) logger.debug(e.getMessage(), e);
           }
           localeProperties.addElementLabels(element, locale, key, value);
         }
       }
+    }
+  }
+
+  public void remove(LocaleProperties localeProperties, Questionnaire questionnaire, IQuestionnaireElement... elements) {
+    if(questionnaire.getName() == null) return;
+    for(IQuestionnaireElement element : elements) {
+      localeProperties.removeElementLabels(element);
     }
   }
 

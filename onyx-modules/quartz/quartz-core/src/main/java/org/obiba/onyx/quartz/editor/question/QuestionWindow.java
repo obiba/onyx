@@ -15,7 +15,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -39,14 +38,9 @@ public abstract class QuestionWindow extends Panel {
 
   private final Form<EditedQuestion> form;
 
-  private final IModel<LocaleProperties> localePropertiesModel;
-
   public QuestionWindow(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
-
-    // TODO
-    this.localePropertiesModel = localePropertiesModel == null ? new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), model.getObject().getElement())) : localePropertiesModel;
-    localePropertiesUtils.load(this.localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject().getElement());
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject().getElement());
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -54,7 +48,7 @@ public abstract class QuestionWindow extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<EditedQuestion>("form", model));
-    final QuestionPanel questionPanel = new QuestionPanel("question", model, questionnaireModel, this.localePropertiesModel, feedbackPanel, feedbackWindow, false) {
+    final QuestionPanel questionPanel = new QuestionPanel("question", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, false) {
       @Override
       public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
       }
@@ -70,7 +64,8 @@ public abstract class QuestionWindow extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, Form<?> form1) {
+        QuestionWindow.this.onCancel(target, form.getModelObject());
         modalWindow.close(target);
       }
 
@@ -83,6 +78,8 @@ public abstract class QuestionWindow extends Panel {
 
   }
 
-  public abstract void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion);
+  protected abstract void onSave(AjaxRequestTarget target, final EditedQuestion editedQuestion);
+
+  protected abstract void onCancel(AjaxRequestTarget target, final EditedQuestion editedQuestion);
 
 }

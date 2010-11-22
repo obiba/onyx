@@ -237,6 +237,20 @@ public class Question implements IHasQuestion {
     }
   }
 
+  public void addQuestionCategory(QuestionCategory questionCategory, int index) {
+    if(questionCategory != null) {
+      getQuestionCategories().add(index, questionCategory);
+      questionCategory.setQuestion(this);
+    }
+  }
+
+  public void removeQuestionCategory(QuestionCategory questionCategory) {
+    if(questionCategory != null) {
+      getQuestionCategories().remove(questionCategory);
+      questionCategory.setQuestion(null);
+    }
+  }
+
   /**
    * Does the question has an escape category.
    * @return

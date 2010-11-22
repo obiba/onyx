@@ -16,13 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
-import org.obiba.magma.type.BooleanType;
-import org.obiba.magma.type.DateType;
-import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
-import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
@@ -37,8 +32,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 
 /**
  *
@@ -137,10 +132,10 @@ public class DataSourceConverter {
 
             if(dataSourceRight instanceof FixedDataSource) {
               Data data = ((FixedDataSource) dataSourceRight).getData(null);
-              questionnaireBuilder.withVariable(variableName, convertToValueType(data.getType()), data.getValueAsString());
+              questionnaireBuilder.withVariable(variableName, VariableUtils.convertToValueType(data.getType()), data.getValueAsString());
             } else if(dataSourceRight instanceof ComputingDataSource) {
               ComputingDataSource computingDataSource = (ComputingDataSource) dataSourceRight;
-              questionnaireBuilder.withVariable(variableName, convertToValueType(computingDataSource.getType()), getConvertedExpression(computingDataSource));
+              questionnaireBuilder.withVariable(variableName, VariableUtils.convertToValueType(computingDataSource.getType()), getConvertedExpression(computingDataSource));
             }
             variablePath = questionnaire.getName() + ":" + variableName;
 
@@ -152,23 +147,6 @@ public class DataSourceConverter {
           questionnaireBuilder.inOpenAnswerDefinition(openAnswer.getName()).addValidator(comparingDataSource.getComparisonOperator(), variablePath);
         }
       }
-    }
-  }
-
-  private ValueType convertToValueType(DataType dataType) {
-    switch(dataType) {
-    case DECIMAL:
-      return DecimalType.get();
-    case INTEGER:
-      return IntegerType.get();
-    case BOOLEAN:
-      return BooleanType.get();
-    case TEXT:
-      return TextType.get();
-    case DATE:
-      return DateType.get();
-    default:
-      throw new DataSourceConverterException("Type[" + dataType + "] is not supported");
     }
   }
 

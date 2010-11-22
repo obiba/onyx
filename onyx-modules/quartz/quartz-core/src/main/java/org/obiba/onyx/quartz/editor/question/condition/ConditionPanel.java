@@ -219,14 +219,10 @@ public class ConditionPanel extends Panel {
     final WebMarkupContainer previewVariableVisibility = new WebMarkupContainer("previewVariableVisibility");
     variableContainer.add(previewVariableVisibility.setOutputMarkupId(true));
 
-    final AjaxLink<Void> previewLink = new AjaxLink<Void>("previewVariable") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-      }
-    };
-    previewLink.setVisible(variableDropDown.getModelObject() != null);
-    previewLink.add(new Image("previewVariableImg", Images.ZOOM)).add(new AttributeModifier("title", true, new ResourceModel("Preview")));
-    previewVariableVisibility.add(previewLink);
+    final Image previewVariable = new Image("previewVariableImg", Images.ZOOM);
+    previewVariable.add(new AttributeModifier("title", true, new ResourceModel("Preview")));
+    previewVariable.setVisible(variableDropDown.getModelObject() != null);
+    previewVariableVisibility.add(previewVariable);
 
     final Label previewScript = new Label("previewScript", variableDropDown.getModelObject() == null ? "" : variableDropDown.getModelObject().getAttributeStringValue("script"));
     previewScript.add(new SyntaxHighlighterBehavior());
@@ -235,11 +231,10 @@ public class ConditionPanel extends Panel {
 
     final Map<String, Object> tooltipCfg = new HashMap<String, Object>();
     tooltipCfg.put("delay", 100);
-    tooltipCfg.put("opacity", 100);
     tooltipCfg.put("showURL", false);
     tooltipCfg.put("top", -30);
     tooltipCfg.put("bodyHandler", "function() { return $(\"#" + previewScript.getMarkupId(true) + "\").html(); }");
-    previewLink.add(new TooltipBehavior(null, tooltipCfg));
+    previewVariable.add(new TooltipBehavior(null, tooltipCfg));
 
     variableContainer.add(new AjaxLink<Void>("newVariable") {
       @Override
@@ -252,7 +247,7 @@ public class ConditionPanel extends Panel {
             variables.add(createdVariable);
             questionnaire.addVariable(createdVariable);
             variableDropDown.setModelObject(createdVariable);
-            previewLink.setVisible(true);
+            previewVariable.setVisible(true);
             previewScript.setDefaultModelObject(createdVariable.getAttributeStringValue("script"));
             variableWindow.close(target);
             target.addComponent(variableDropDown);
@@ -274,7 +269,7 @@ public class ConditionPanel extends Panel {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         Variable variable = variableDropDown.getModelObject();
-        previewLink.setVisible(variable != null);
+        previewVariable.setVisible(variable != null);
         previewScript.setDefaultModelObject(variable == null ? null : variable.getAttributeStringValue("script"));
         target.addComponent(previewVariableVisibility);
       }
