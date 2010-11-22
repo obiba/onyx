@@ -122,6 +122,10 @@ public class OpenAnswerPanel extends Panel {
 
   private final TextField<String> maxNumeric;
 
+  private final TextField<String> minDecimal;
+
+  private final TextField<String> maxDecimal;
+
   private final TextField<String> beforeDate;
 
   private final TextField<String> afterDate;
@@ -297,7 +301,7 @@ public class OpenAnswerPanel extends Panel {
     maxLength.setLabel(new ResourceModel("Maximum.length"));
     minMaxContainer.add(maxLength);
 
-    PatternValidator numericPatternValidator = new PatternValidator("[0-9]*");
+    PatternValidator numericPatternValidator = new PatternValidator("\\d*");
     minNumeric = new TextField<String>("minNumeric", new Model<String>(minValue), String.class);
     minNumeric.setLabel(new ResourceModel("Minimum"));
     minNumeric.add(numericPatternValidator);
@@ -307,6 +311,17 @@ public class OpenAnswerPanel extends Panel {
     maxNumeric.setLabel(new ResourceModel("Maximum"));
     maxNumeric.add(numericPatternValidator);
     minMaxContainer.add(maxNumeric);
+
+    PatternValidator decimalPatternValidator = new PatternValidator("\\d*(\\.\\d+)?");
+    minDecimal = new TextField<String>("minDecimal", new Model<String>(minValue), String.class);
+    minDecimal.setLabel(new ResourceModel("Minimum"));
+    minDecimal.add(decimalPatternValidator);
+    minMaxContainer.add(minDecimal);
+
+    maxDecimal = new TextField<String>("maxDecimal", new Model<String>(maxValue), String.class);
+    maxDecimal.setLabel(new ResourceModel("Maximum"));
+    maxDecimal.add(decimalPatternValidator);
+    minMaxContainer.add(maxDecimal);
 
     // TODO validate date
     // PatternValidator datePatternValidator = new PatternValidator("[0-9]4-[0-9]2-[0-9]2");
@@ -690,13 +705,13 @@ public class OpenAnswerPanel extends Panel {
       }
       break;
     case DECIMAL:
-      if(StringUtils.isNotBlank(minNumeric.getValue())) {
-        MinimumValidator<Double> minimumValidator = new MinimumValidator<Double>(Double.parseDouble(minNumeric.getValue()));
+      if(StringUtils.isNotBlank(minDecimal.getValue())) {
+        MinimumValidator<Double> minimumValidator = new MinimumValidator<Double>(Double.parseDouble(minDecimal.getValue()));
         DataValidator dataValidator = new DataValidator(minimumValidator, DataType.DECIMAL);
         opa.addDataValidator(dataValidator);
       }
-      if(StringUtils.isNotBlank(maxNumeric.getValue())) {
-        MaximumValidator<Double> maximumValidator = new MaximumValidator<Double>(Double.parseDouble(maxNumeric.getValue()));
+      if(StringUtils.isNotBlank(maxDecimal.getValue())) {
+        MaximumValidator<Double> maximumValidator = new MaximumValidator<Double>(Double.parseDouble(maxDecimal.getValue()));
         DataValidator dataValidator = new DataValidator(maximumValidator, DataType.DECIMAL);
         opa.addDataValidator(dataValidator);
       }
@@ -735,7 +750,7 @@ public class OpenAnswerPanel extends Panel {
       setMaximumLabel(maxLength);
       minLength.setVisible(true).setEnabled(false);
       maxLength.setVisible(true).setEnabled(false);
-      clearAndHide(minNumeric, maxNumeric, beforeDate, afterDate);
+      clearAndHide(minNumeric, maxNumeric, minDecimal, maxDecimal, beforeDate, afterDate);
     } else {
       switch(type) {
       case TEXT:
@@ -743,16 +758,22 @@ public class OpenAnswerPanel extends Panel {
         setMaximumLabel(maxLength);
         minLength.setVisible(true).setEnabled(true);
         maxLength.setVisible(true).setEnabled(true);
-        clearAndHide(minNumeric, maxNumeric, beforeDate, afterDate);
+        clearAndHide(minNumeric, maxNumeric, minDecimal, maxDecimal, beforeDate, afterDate);
         break;
 
       case DECIMAL:
+        setMinimumLabel(minDecimal);
+        setMaximumLabel(maxDecimal);
+        minDecimal.setVisible(true);
+        maxDecimal.setVisible(true);
+        clearAndHide(minNumeric, maxNumeric, minLength, maxLength, beforeDate, afterDate);
+        break;
       case INTEGER:
         setMinimumLabel(minNumeric);
         setMaximumLabel(maxNumeric);
         minNumeric.setVisible(true);
         maxNumeric.setVisible(true);
-        clearAndHide(minLength, maxLength, beforeDate, afterDate);
+        clearAndHide(minDecimal, maxDecimal, minLength, maxLength, beforeDate, afterDate);
         break;
 
       case DATE:
@@ -760,7 +781,7 @@ public class OpenAnswerPanel extends Panel {
         setMaximumLabel(afterDate);
         beforeDate.setVisible(true);
         afterDate.setVisible(true);
-        clearAndHide(minLength, maxLength, minNumeric, maxNumeric);
+        clearAndHide(minLength, maxLength, minNumeric, maxNumeric, minDecimal, maxDecimal);
         break;
       }
     }
