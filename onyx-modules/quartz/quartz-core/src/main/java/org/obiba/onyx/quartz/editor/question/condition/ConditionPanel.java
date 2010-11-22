@@ -45,6 +45,7 @@ import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
@@ -76,6 +77,8 @@ public class ConditionPanel extends Panel {
 
   private final ModalWindow variableWindow;
 
+  private DropDownChoice<Question> questionName;
+
   public ConditionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
     super(id);
     this.questionModel = questionModel;
@@ -95,7 +98,7 @@ public class ConditionPanel extends Panel {
 
     Condition condition = new Condition();
 
-    Question question = questionModel.getObject();
+    final Question question = questionModel.getObject();
     final Questionnaire questionnaire = questionnaireModel.getObject();
     if(question.getCondition() != null) {
       VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
@@ -149,11 +152,16 @@ public class ConditionPanel extends Panel {
     if(questionnaire.getQuestionnaireCache() == null) {
       QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
     }
-    List<Question> questions = new ArrayList<Question>(questionnaire.getQuestionnaireCache().getQuestionCache().values());
-    questions.remove(question);
+
+    final List<Question> questions = new ArrayList<Question>(Collections2.filter(questionnaire.getQuestionnaireCache().getQuestionCache().values(), new Predicate<Question>() {
+      @Override
+      public boolean apply(Question q) {
+        return !q.equals(question) && q.getType() != QuestionType.BOILER_PLATE;
+      }
+    }));
     Collections.sort(questions, new QuestionnaireElementComparator());
 
-    final DropDownChoice<Question> questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(model, "question"), questions, new QuestionnaireElementNameRenderer()) {
+    questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(model, "question"), questions, new QuestionnaireElementNameRenderer()) {
       @Override
       public boolean isRequired() {
         return conditionType.getModelObject() == QUESTION_CATEGORY;
@@ -163,11 +171,7 @@ public class ConditionPanel extends Panel {
     questionName.setLabel(new ResourceModel("Question"));
     questionConditionContainer.add(questionName).add(new SimpleFormComponentLabel("questionLabel", questionName));
 
-    final List<Category> categories = new ArrayList<Category>();
-    if(questionName.getModelObject() != null) {
-      categories.addAll(questionName.getModelObject().getCategories());
-    }
-
+    final List<Category> categories = findCategories();
     final DropDownChoice<Category> categoryName = new DropDownChoice<Category>("category", new PropertyModel<Category>(model, "category"), categories, new QuestionnaireElementNameRenderer()) {
       @Override
       public boolean isRequired() {
@@ -180,10 +184,8 @@ public class ConditionPanel extends Panel {
     questionName.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        if(questionName.getModelObject() != null) {
-          categories.clear();
-          categories.addAll(questionName.getModelObject().getCategories());
-        }
+        categories.clear();
+        categories.addAll(findCategories());
         target.addComponent(categoryName);
       }
     });
@@ -301,6 +303,20 @@ public class ConditionPanel extends Panel {
       }
     });
 
+  }
+
+  private List<Category> findCategories() {
+    final List<Category> categories = new ArrayList<Category>();
+    final Question selectedQuestion = questionName.getModelObject();
+    if(selectedQuestion != null) {
+      if(selectedQuestion.getParentQuestion() == null) {
+        categories.addAll(selectedQuestion.getCategories());
+      } else {
+        // get parent categories for array
+        categories.addAll(selectedQuestion.getParentQuestion().getCategories());
+      }
+    }
+    return categories;
   }
 
   public void onSave(@SuppressWarnings("unused") AjaxRequestTarget target) {

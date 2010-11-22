@@ -50,6 +50,7 @@ import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -68,6 +69,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  *
@@ -85,8 +88,11 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
   private final ModalWindow variableWindow;
 
+  private final DataType dataType;
+
   public ValidationDataSourceWindow(String id, IModel<ComparingDataSource> model, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final DataType dataType, final ModalWindow modalWindow) {
     super(id, model);
+    this.dataType = dataType;
 
     final ValueType valueType = VariableUtils.convertToValueType(dataType);
 
@@ -173,11 +179,17 @@ public abstract class ValidationDataSourceWindow extends Panel {
     if(questionnaire.getQuestionnaireCache() == null) {
       QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
     }
-    List<Question> questions = new ArrayList<Question>(questionnaire.getQuestionnaireCache().getQuestionCache().values());
-    questions.remove(questionModel.getObject());
-    Collections.sort(questions, new QuestionnaireElementComparator());
 
-    final DropDownChoice<Question> questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(form.getModel(), "question"), questions, new QuestionnaireElementNameRenderer()) {
+    List<Question> questions = new ArrayList<Question>(questionnaire.getQuestionnaireCache().getQuestionCache().values());
+    Collections.sort(questions, new QuestionnaireElementComparator());
+    final Multimap<Question, Category> questionCategories = LinkedHashMultimap.create();
+    for(Question q : questions) {
+      if(!q.equals(questionModel.getObject()) && q.getType() != QuestionType.BOILER_PLATE) {
+        questionCategories.putAll(q, findCategories(q));
+      }
+    }
+
+    final DropDownChoice<Question> questionName = new DropDownChoice<Question>("question", new PropertyModel<Question>(form.getModel(), "question"), new ArrayList<Question>(questionCategories.keySet()), new QuestionnaireElementNameRenderer()) {
       @Override
       public boolean isRequired() {
         return validationType.getModelObject() == QUESTION_CATEGORY;
@@ -187,10 +199,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
     questionName.setLabel(new ResourceModel("Question"));
     questionConditionContainer.add(questionName).add(new SimpleFormComponentLabel("questionLabel", questionName));
 
-    final List<Category> categories = new ArrayList<Category>();
-    if(questionName.getModelObject() != null) {
-      categories.addAll(questionName.getModelObject().getCategories());
-    }
+    final List<Category> categories = questionName.getModelObject() == null ? new ArrayList<Category>() : new ArrayList<Category>(questionCategories.get(questionName.getModelObject()));
 
     final DropDownChoice<Category> categoryName = new DropDownChoice<Category>("category", new PropertyModel<Category>(form.getModel(), "category"), categories, new QuestionnaireElementNameRenderer()) {
       @Override
@@ -204,10 +213,8 @@ public abstract class ValidationDataSourceWindow extends Panel {
     questionName.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        if(questionName.getModelObject() != null) {
-          categories.clear();
-          categories.addAll(questionName.getModelObject().getCategories());
-        }
+        categories.clear();
+        categories.addAll(questionName.getModelObject() == null ? new ArrayList<Category>() : new ArrayList<Category>(questionCategories.get(questionName.getModelObject())));
         target.addComponent(categoryName);
       }
     });
@@ -355,14 +362,26 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
   protected abstract void onSave(AjaxRequestTarget target, ComparingDataSource comparingDataSource);
 
-  private List<Category> findCategoryByDataType(Question question, DataType dataType) {
-    List<Category> categories = new ArrayList<Category>();
+  private List<Category> findCategories(Question question) {
+    final List<Category> categories = new ArrayList<Category>();
     if(question != null) {
-      for(Category category : question.getCategories()) {
-        for(OpenAnswerDefinition openAnswer : category.getOpenAnswerDefinitionsByName().values()) {
-          if(dataType == openAnswer.getDataType()) {
-            categories.add(category);
-            break;
+      if(question.getParentQuestion() == null) {
+        for(Category category : question.getCategories()) {
+          for(OpenAnswerDefinition openAnswer : category.getOpenAnswerDefinitionsByName().values()) {
+            if(dataType == openAnswer.getDataType()) {
+              categories.add(category);
+              break;
+            }
+          }
+        }
+      } else {
+        // get parent categories for array
+        for(Category category : question.getParentQuestion().getCategories()) {
+          for(OpenAnswerDefinition openAnswer : category.getOpenAnswerDefinitionsByName().values()) {
+            if(dataType == openAnswer.getDataType()) {
+              categories.add(category);
+              break;
+            }
           }
         }
       }

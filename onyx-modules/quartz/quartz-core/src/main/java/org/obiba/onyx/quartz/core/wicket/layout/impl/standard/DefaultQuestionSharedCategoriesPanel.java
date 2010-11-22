@@ -88,7 +88,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
       add(array = new AbstractQuestionArray("array", getDefaultModel(), columns, questionsProvider) {
 
         @Override
-        public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
+        public Component getRowsContent(String id, @SuppressWarnings("hiding") List<IColumn> columns, IDataProvider rows) {
           return new RadioGroupRows(id, columns, rows);
         }
 
