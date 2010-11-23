@@ -66,7 +66,14 @@ public class VariableUtils {
   public static Category findCategory(Variable variable, Question question) {
     try {
       if(variable.hasAttribute(CATEGORY_NAME)) {
-        return question.getCategoriesByName().get(variable.getAttributeStringValue(CATEGORY_NAME));
+        String categoryName = variable.getAttributeStringValue(CATEGORY_NAME);
+        if(question.getQuestionCategories().isEmpty()) {
+          if(question.getParentQuestion() != null) { // get categories from parent (for array)
+            return question.getParentQuestion().getCategoriesByName().get(categoryName);
+          }
+        } else {
+          return question.getCategoriesByName().get(categoryName);
+        }
       }
     } catch(NoSuchAttributeException e) {
       return null;

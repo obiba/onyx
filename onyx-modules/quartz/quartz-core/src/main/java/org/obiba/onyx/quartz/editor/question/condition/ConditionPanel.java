@@ -99,7 +99,13 @@ public class ConditionPanel extends Panel {
     Condition condition = new Condition();
 
     final Question question = questionModel.getObject();
+
     final Questionnaire questionnaire = questionnaireModel.getObject();
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+    if(questionnaire.getQuestionnaireCache() == null) {
+      questionnaireFinder.buildQuestionnaireCache();
+    }
+
     if(question.getCondition() != null) {
       VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
       if(questionnaire.getName().equals(variableDataSource.getTableName())) {
@@ -118,7 +124,7 @@ public class ConditionPanel extends Panel {
             condition.setType(Type.VARIABLE);
           } catch(IllegalArgumentException e) {
             // not found
-            Question questionCondition = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
+            Question questionCondition = VariableUtils.findQuestion(variable, questionnaireFinder);
             condition.setType(Type.QUESTION_CATEGORY);
             condition.setQuestion(questionCondition);
             condition.setCategory(VariableUtils.findCategory(variable, questionCondition));
@@ -150,10 +156,6 @@ public class ConditionPanel extends Panel {
     questionConditionContainer.setVisible(condition.getType() == QUESTION_CATEGORY);
     questionTypeContainer.add(questionConditionContainer);
 
-    if(questionnaire.getQuestionnaireCache() == null) {
-      QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
-    }
-
     final List<Question> questions = new ArrayList<Question>(Collections2.filter(questionnaire.getQuestionnaireCache().getQuestionCache().values(), new Predicate<Question>() {
       @Override
       public boolean apply(Question q) {
@@ -170,6 +172,7 @@ public class ConditionPanel extends Panel {
     };
 
     questionName.setLabel(new ResourceModel("Question"));
+    questionName.setNullValid(false);
     questionConditionContainer.add(questionName).add(new SimpleFormComponentLabel("questionLabel", questionName));
 
     final List<Category> categories = findCategories();
@@ -180,6 +183,7 @@ public class ConditionPanel extends Panel {
       }
     };
     categoryName.setLabel(new ResourceModel("Category"));
+    categoryName.setNullValid(false);
     questionConditionContainer.add(categoryName).add(new SimpleFormComponentLabel("categoryLabel", categoryName));
 
     questionName.add(new OnChangeAjaxBehavior() {
