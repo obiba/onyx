@@ -104,17 +104,18 @@ public class ConditionPanel extends Panel {
       VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
       if(questionnaire.getName().equals(variableDataSource.getTableName())) {
         try {
-          condition.setType(Type.VARIABLE);
           condition.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
+          condition.setType(Type.VARIABLE);
         } catch(IllegalArgumentException e) {
           // not found in this questionnaire
         }
-      } else {
+      }
+      if(condition.getType() == NONE) { // not found yet
         Variable variable = VariableUtils.findVariable(variableDataSource);
         if(variable != null) {
           try {
-            condition.setType(Type.VARIABLE);
             condition.setVariable(questionnaire.getVariable(variable.getName()));
+            condition.setType(Type.VARIABLE);
           } catch(IllegalArgumentException e) {
             // not found
             Question questionCondition = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
@@ -221,7 +222,7 @@ public class ConditionPanel extends Panel {
     final WebMarkupContainer previewVariableVisibility = new WebMarkupContainer("previewVariableVisibility");
     variableContainer.add(previewVariableVisibility.setOutputMarkupId(true));
 
-    final Image previewVariable = new Image("previewVariableImg", Images.ZOOM);
+    final Image previewVariable = new Image("previewVariable", Images.ZOOM);
     previewVariable.add(new AttributeModifier("title", true, new ResourceModel("Preview")));
     previewVariable.setVisible(variableDropDown.getModelObject() != null);
     previewVariableVisibility.add(previewVariable);
@@ -324,9 +325,11 @@ public class ConditionPanel extends Panel {
     if(condition.getType() == null) return;
     Questionnaire questionnaire = questionnaireModel.getObject();
     QuestionnaireBuilder questionnaireBuilder = QuestionnaireBuilder.getInstance(questionnaire);
-    QuestionBuilder questionBuilder = QuestionBuilder.inQuestion(questionnaireBuilder, questionModel.getObject());
+    Question question = questionModel.getObject();
+    QuestionBuilder questionBuilder = QuestionBuilder.inQuestion(questionnaireBuilder, question);
     switch(condition.getType()) {
     case NONE:
+      question.setCondition(null);
       break;
     case QUESTION_CATEGORY:
       questionBuilder.setCondition(condition.getQuestion().getName(), condition.getCategory().getName());

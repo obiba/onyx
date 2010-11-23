@@ -115,17 +115,18 @@ public abstract class ValidationDataSourceWindow extends Panel {
       VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
       if(questionnaire.getName().equals(variableDataSource.getTableName())) {
         try {
-          validator.setType(Type.VARIABLE);
           validator.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
+          validator.setType(Type.VARIABLE);
         } catch(IllegalArgumentException e) {
           // not found in this questionnaire
         }
-      } else {
+      }
+      if(validator.getType() == null) { // not found yet
         Variable variable = VariableUtils.findVariable(variableDataSource);
         if(variable != null) {
           try {
-            validator.setType(Type.VARIABLE);
             validator.setVariable(questionnaire.getVariable(variable.getName()));
+            validator.setType(Type.VARIABLE);
           } catch(IllegalArgumentException e) {
             // not found
             Question question = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));

@@ -600,6 +600,8 @@ public class OpenAnswerPanel extends Panel {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
           openAnswerDefinition.setDataType(DataType.valueOf(dataTypeValue));
           for(String name : names) {
+            name = StringUtils.trimToNull(name);
+            if(name == null) continue;
             switch(DataType.valueOf(dataTypeValue)) {
             case DATE:
               try {

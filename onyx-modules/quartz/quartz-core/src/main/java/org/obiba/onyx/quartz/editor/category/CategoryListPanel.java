@@ -268,6 +268,8 @@ public class CategoryListPanel extends Panel {
           if(names == null) return;
           Question question = ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement();
           for(String name : names) {
+            name = StringUtils.trimToNull(name);
+            if(name == null) continue;
             if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) {
               addCategory(question, name);
             }

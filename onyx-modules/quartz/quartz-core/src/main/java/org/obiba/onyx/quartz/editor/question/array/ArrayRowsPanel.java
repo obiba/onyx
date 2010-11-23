@@ -224,6 +224,8 @@ public class ArrayRowsPanel extends Panel {
           String[] names = StringUtils.split(questions.getModelObject(), ',');
           if(names == null) return;
           for(String name : names) {
+            name = StringUtils.trimToNull(name);
+            if(name == null) continue;
             if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) addQuestion(name);
           }
           questions.setModelObject(null);
