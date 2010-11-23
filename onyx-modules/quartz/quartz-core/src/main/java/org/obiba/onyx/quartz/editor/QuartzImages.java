@@ -16,24 +16,24 @@ import org.apache.wicket.ResourceReference;
  */
 public class QuartzImages {
 
-  public static ResourceReference QUESTIONNAIRE = new ResourceReference(QuartzImages.class, "questionnaire.png");
+  public static final ResourceReference QUESTIONNAIRE = new ResourceReference(QuartzImages.class, "questionnaire.png");
 
-  public static ResourceReference SECTION = new ResourceReference(QuartzImages.class, "section.png");
+  public static final ResourceReference SECTION = new ResourceReference(QuartzImages.class, "section.png");
 
-  public static ResourceReference SECTION_ADD = new ResourceReference(QuartzImages.class, "section_add.png");
+  public static final ResourceReference SECTION_ADD = new ResourceReference(QuartzImages.class, "section_add.png");
 
-  public static ResourceReference PAGE = new ResourceReference(QuartzImages.class, "page.png");
+  public static final ResourceReference PAGE = new ResourceReference(QuartzImages.class, "page.png");
 
-  public static ResourceReference PAGE_ADD = new ResourceReference(QuartzImages.class, "page_add.png");
+  public static final ResourceReference PAGE_ADD = new ResourceReference(QuartzImages.class, "page_add.png");
 
-  public static ResourceReference QUESTION = new ResourceReference(QuartzImages.class, "question.png");
+  public static final ResourceReference QUESTION = new ResourceReference(QuartzImages.class, "question.png");
 
-  public static ResourceReference QUESTION_ADD = new ResourceReference(QuartzImages.class, "question_add.png");
+  public static final ResourceReference QUESTION_ADD = new ResourceReference(QuartzImages.class, "question_add.png");
 
-  public static ResourceReference VARIABLES = new ResourceReference(QuartzImages.class, "variables.png");
+  public static final ResourceReference VARIABLES = new ResourceReference(QuartzImages.class, "variables.png");
 
-  public static ResourceReference VARIABLE = new ResourceReference(QuartzImages.class, "variable.png");
+  public static final ResourceReference VARIABLE = new ResourceReference(QuartzImages.class, "variable.png");
 
-  public static ResourceReference VARIABLE_ADD = new ResourceReference(QuartzImages.class, "variable_add.png");
+  public static final ResourceReference VARIABLE_ADD = new ResourceReference(QuartzImages.class, "variable_add.png");
 
 }
