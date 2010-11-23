@@ -35,6 +35,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -141,8 +142,14 @@ public abstract class CategoryWindow extends Panel {
     form.add(noAnswerCheckBox).add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
     form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, category);
-    form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
+    IModel<? extends IQuestionnaireElement> editPropertyElement = null;
+    if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSharedCategories().contains(category)) {
+      editPropertyElement = new PropertyModel<Category>(model, "category");
+    } else {
+      editPropertyElement = model;
+    }
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), editPropertyElement.getObject());
+    form.add(new LabelsPanel("labels", localePropertiesModel, editPropertyElement, feedbackPanel, feedbackWindow));
 
     LoadableDetachableModel<List<OpenAnswerDefinition>> openAnswerModel = new LoadableDetachableModel<List<OpenAnswerDefinition>>() {
 

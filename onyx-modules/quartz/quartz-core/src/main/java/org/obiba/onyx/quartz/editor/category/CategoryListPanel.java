@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
@@ -52,6 +53,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElement
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.utils.AbstractAutoCompleteTextField;
@@ -60,6 +62,9 @@ import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 /**
@@ -87,9 +92,9 @@ public class CategoryListPanel extends Panel {
 
   private List<Category> questionnaireCategories;
 
-  private final IModel<Questionnaire> questionnaireModel;
+  private IModel<Questionnaire> questionnaireModel;
 
-  private final IModel<LocaleProperties> localePropertiesModel;
+  private IModel<LocaleProperties> localePropertiesModel;
 
   public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
@@ -102,7 +107,7 @@ public class CategoryListPanel extends Panel {
 
     final Question question = model.getObject().getElement();
 
-    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
     questionsByCategory = questionnaireFinder.findQuestionsByCategory();
     questionnaireCategories = new ArrayList<Category>(questionsByCategory.keySet());
     Collections.sort(questionnaireCategories, new QuestionnaireElementComparator());
@@ -142,7 +147,6 @@ public class CategoryListPanel extends Panel {
 
       @Override
       public void onItemPopulation(QuestionCategory questionCategory) {
-        localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory, questionCategory.getCategory());
       }
 
       @Override
@@ -192,7 +196,20 @@ public class CategoryListPanel extends Panel {
       @Override
       @SuppressWarnings("unchecked")
       public void deleteItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
+        boolean isSharedBefore = sharedCategories.contains(questionCategory.getCategory());
         ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
+        questionnaireFinder.buildQuestionnaireCache();
+        boolean isSharedAfter = questionnaireFinder.findSharedCategories().contains(questionCategory.getCategory());
+        if(isSharedBefore && !isSharedAfter) {
+          QuestionCategory otherQuestionCategory = findOnlyOtherOneQuestionCategory(questionCategory.getCategory(), questionCategory);
+          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory, questionCategory.getCategory());
+          ListMultimap<Locale, KeyValue> elementLabelsC = localePropertiesModel.getObject().getElementLabels(questionCategory.getCategory());
+          ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
+          for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+            // we know here that category has only one keyValue which is "label"
+            elementLabelsOtherQC.get(locale).get(0).setValue(elementLabelsC.get(locale).get(0).getValue());
+          }
+        }
         refreshList(target);
       }
 
@@ -311,12 +328,12 @@ public class CategoryListPanel extends Panel {
           Question question = ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement();
           List<String> questionCatNames = new ArrayList<String>(question.getCategories().size());
           for(Category category : question.getCategories()) {
-            questionCatNames.add(category.getName().toUpperCase());
+            questionCatNames.add(category.getName());
           }
           List<CategoryWithQuestions> choices = new ArrayList<CategoryWithQuestions>(AUTO_COMPLETE_SIZE);
           for(Category category : questionnaireCategories) {
-            String name = category.getName().toUpperCase();
-            if(!questionCatNames.contains(name) && name.startsWith(input.toUpperCase())) {
+            String name = category.getName();
+            if(!questionCatNames.contains(name) && name.startsWith(input)) {
               choices.add(new CategoryWithQuestions(category, questionsByCategory.get(category)));
               if(choices.size() == AUTO_COMPLETE_SIZE) break;
             }
@@ -351,9 +368,9 @@ public class CategoryListPanel extends Panel {
             return;
           }
           Category category = categoryWithQuestions.getCategory();
+          sharedCategories.add(category);
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), category);
           categoryNameFinder.setModelObject(null);
-          sharedCategories.add(category);
 
           target.addComponent(categoryNameFinder);
           target.addComponent(categoryList);
@@ -412,10 +429,48 @@ public class CategoryListPanel extends Panel {
     }
   }
 
-  private void addCategory(Question question, Category category) {
-    QuestionCategory questionCategory = new QuestionCategory();
+  private void addCategory(Question question, final Category category) {
+    final QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setCategory(category);
     question.addQuestionCategory(questionCategory);
+
+    // if category become shared we remove label of the other QuestionCategory to use the shared label.
+    if(!sharedCategories.contains(category)) return;
+    QuestionCategory otherQuestionCategory = findOnlyOtherOneQuestionCategory(category, questionCategory);
+    if(otherQuestionCategory == null) return;
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory, category);
+    ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
+    ListMultimap<Locale, KeyValue> elementLabelsC = localePropertiesModel.getObject().getElementLabels(category);
+    for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+      // we know here that category has only one keyValue which is "label"
+      KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
+      elementLabelsC.get(locale).get(0).setValue(kV.getValue());
+      kV.setValue("");
+    }
+  }
+
+  /**
+   * @param category
+   * @param questionCategory
+   * @return QuestionCategory which share category with only questionCategory, return null otherwise
+   */
+  private QuestionCategory findOnlyOtherOneQuestionCategory(final Category category, final QuestionCategory questionCategory) {
+    Multimap<Category, Question> categories = QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findCategories(category.getName());
+    Collection<QuestionCategory> filter = new ArrayList<QuestionCategory>();
+    for(Question findQuestion : categories.get(category)) {
+      List<QuestionCategory> questionCategories = findQuestion.getQuestionCategories();
+      filter.addAll(Collections2.filter(questionCategories, new Predicate<QuestionCategory>() {
+
+        @Override
+        public boolean apply(QuestionCategory input) {
+          return input.getCategory() == category && input != questionCategory;
+        }
+      }));
+    }
+    // Mean we don't have to do anything because shared properties are already done
+    if(filter.size() != 1) return null;
+    QuestionCategory otherQuestionCategory = filter.iterator().next();
+    return otherQuestionCategory;
   }
 
   private synchronized void rollback(QuestionCategory modified, QuestionCategory original) {
