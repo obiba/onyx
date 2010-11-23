@@ -83,6 +83,7 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWindow;
+import org.obiba.onyx.quartz.editor.questionnaire.ValidationPanel;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.util.data.Data;
@@ -375,6 +376,7 @@ public class OpenAnswerPanel extends Panel {
         if(value != null) {
           OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getDefaultModelObject();
           for(Data data : openAnswerDefinition.getDefaultValues()) {
+
             switch(valueOf) {
             case DATE:
               try {
@@ -589,7 +591,7 @@ public class OpenAnswerPanel extends Panel {
       form.add(new SimpleFormComponentLabel("defaultValuesLabel", defaultValues));
       AjaxSubmitLink bulkAddLink = new AjaxSubmitLink("bulkAddLink") {
 
-        @SuppressWarnings({ "unchecked", "incomplete-switch" })
+        @SuppressWarnings("unchecked")
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String[] names = StringUtils.split(defaultValues.getModelObject(), ',');
@@ -604,35 +606,10 @@ public class OpenAnswerPanel extends Panel {
           for(String name : names) {
             name = StringUtils.trimToNull(name);
             if(name == null) continue;
-            switch(DataType.valueOf(dataTypeValue)) {
-            case DATE:
-              try {
-                DATE_FORMAT.parse(name);
-              } catch(ParseException nfe) {
-                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
-                return;
-              }
-              break;
-            case DECIMAL:
-              try {
-                Double.parseDouble(name);
-              } catch(NumberFormatException nfe) {
-                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
-                return;
-              }
-              break;
-            case INTEGER:
-              try {
-                Long.parseLong(name);
-              } catch(NumberFormatException nfe) {
-                error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
-                return;
-              }
-              break;
-            case TEXT:
-              break;
+            if(!ValidationPanel.isValidDefaultValue(DataType.valueOf(dataTypeValue), name)) {
+              error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
+              return;
             }
-
           }
           for(String name : new LinkedHashSet<String>(Arrays.asList(names))) {
             addDefaultValue(openAnswerDefinition, name);
@@ -687,7 +664,7 @@ public class OpenAnswerPanel extends Panel {
     case TEXT:
       return String.class;
     default:
-      throw new RuntimeException("Unknown type");
+      throw new RuntimeException("Unknown dataType " + dataType);
     }
   }
 
@@ -703,8 +680,8 @@ public class OpenAnswerPanel extends Panel {
     OpenAnswerDefinition opa = (OpenAnswerDefinition) getDefaultModelObject();
     opa.clearDataValidators();
     switch(opa.getDataType()) {
-    // TODO incomplete for Date
     case DATE:
+      // TODO incomplete for Date
       try {
         if(StringUtils.isNotBlank(afterDate.getValue())) {
           MinimumValidator<Date> minimumValidator = new MinimumValidator<Date>(DATE_FORMAT.parse(afterDate.getValue()));

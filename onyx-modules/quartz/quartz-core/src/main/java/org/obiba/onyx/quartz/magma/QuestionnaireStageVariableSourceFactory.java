@@ -25,9 +25,9 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.magma.Attribute;
 import org.obiba.magma.AttributeAwareBuilder;
 import org.obiba.magma.Variable;
+import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
-import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
@@ -597,7 +597,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       List<String> validations = new ArrayList<String>();
       if(oad.getDataValidators().size() > 0) {
 
-        for(IDataValidator v : oad.getDataValidators()) {
+        for(IDataValidator<?> v : oad.getDataValidators()) {
           if(v instanceof DataValidator) {
             String validator = validatorToString(((DataValidator) v).getValidator());
             if(validator != null) {

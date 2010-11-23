@@ -40,6 +40,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.VariableDataSource;
@@ -70,6 +71,9 @@ import com.google.common.collect.Collections2;
 public class ConditionPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private VariableUtils variableUtils;
 
   private final IModel<Questionnaire> questionnaireModel;
 
@@ -117,7 +121,7 @@ public class ConditionPanel extends Panel {
         }
       }
       if(condition.getType() == NONE) { // not found yet
-        Variable variable = VariableUtils.findVariable(variableDataSource);
+        Variable variable = variableUtils.findVariable(variableDataSource);
         if(variable != null) {
           try {
             condition.setVariable(questionnaire.getVariable(variable.getName()));

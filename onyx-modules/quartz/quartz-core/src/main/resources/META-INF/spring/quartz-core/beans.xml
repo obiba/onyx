@@ -99,4 +99,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
  		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
  	</bean>
 
+	<bean id="variableUtils" class="org.obiba.onyx.quartz.editor.variable.VariableUtils">
+ 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+ 	</bean>
+
 </beans>

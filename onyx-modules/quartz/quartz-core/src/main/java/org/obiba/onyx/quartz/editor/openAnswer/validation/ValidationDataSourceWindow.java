@@ -43,6 +43,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -79,6 +80,9 @@ import com.google.common.collect.Multimap;
 public abstract class ValidationDataSourceWindow extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private VariableUtils variableUtils;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -122,7 +126,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
         }
       }
       if(validator.getType() == null) { // not found yet
-        Variable variable = VariableUtils.findVariable(variableDataSource);
+        Variable variable = variableUtils.findVariable(variableDataSource);
         if(variable != null) {
           try {
             validator.setVariable(questionnaire.getVariable(variable.getName()));

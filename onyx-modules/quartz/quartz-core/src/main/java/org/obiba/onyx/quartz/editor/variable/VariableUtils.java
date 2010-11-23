@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.variable;
 
-import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchAttributeException;
 import org.obiba.magma.NoSuchValueTableException;
@@ -23,33 +22,48 @@ import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  *
  */
 public class VariableUtils {
 
-  private static final String QUESTION_NAME = "questionName";
+  public static final String ONYX_DATASOURCE = "onyx-datasource";
 
-  private static final String CATEGORY_NAME = "categoryName";
+  public static final String QUESTION_NAME = "questionName";
 
-  public static Variable findVariable(VariableDataSource variableDataSource) {
-    try {
-      for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-        ValueTable valueTable = datasource.getValueTable(variableDataSource.getTableName());
-        if(valueTable != null) return valueTable.getVariable(variableDataSource.getVariableName());
+  public static final String CATEGORY_NAME = "categoryName";
+
+  private QuestionnaireBundleManager questionnaireBundleManager;
+
+  public Variable findVariable(VariableDataSource variableDataSource) {
+    String tableName = variableDataSource.getTableName();
+    String variableName = variableDataSource.getVariableName();
+    QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(tableName);
+    if(bundle == null) {
+      try {
+        ValueTable valueTable = MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(tableName);
+        return valueTable == null ? null : valueTable.getVariable(variableName);
+      } catch(NoSuchValueTableException e) {
+        return null;
+      } catch(NoSuchVariableException e) {
+        return null;
       }
-    } catch(NoSuchValueTableException e) {
-      return null;
-    } catch(NoSuchVariableException e) {
+    }
+    try {
+      return bundle.getQuestionnaire().getVariable(variableName);
+    } catch(IllegalArgumentException e) {
       return null;
     }
-    return null;
   }
 
   public static Question findQuestion(Variable variable, QuestionnaireFinder questionnaireFinder) {
@@ -81,6 +95,10 @@ public class VariableUtils {
     return null;
   }
 
+  public static Iterable<Variable> findVariable(Questionnaire questionnaire) {
+    return MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(questionnaire.getName()).getVariables();
+  }
+
   public static ValueType convertToValueType(DataType dataType) {
     switch(dataType) {
     case DECIMAL:
@@ -96,6 +114,11 @@ public class VariableUtils {
     default:
       throw new DataSourceConverterException("Type[" + dataType + "] is not supported");
     }
+  }
+
+  @Required
+  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
+    this.questionnaireBundleManager = questionnaireBundleManager;
   }
 
 }

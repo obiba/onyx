@@ -82,6 +82,8 @@ public class QuestionnaireListPanel extends Panel {
 
   private final ModalWindow modalWindow;
 
+  private OnyxEntityList<Questionnaire> questionnaireList;
+
   public QuestionnaireListPanel(String id) {
     super(id);
 
@@ -99,16 +101,7 @@ public class QuestionnaireListPanel extends Panel {
     form.add(modalWindow);
     add(form);
 
-    final OnyxEntityList<Questionnaire> questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires"));
-    add(questionnaireList);
-
-    modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-      @Override
-      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        target.addComponent(questionnaireList); // reload questionnaire list
-        return true; // same as cancel
-      }
-    });
+    add(questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires")));
 
     add(new IndicatingAjaxLink<Void>("addQuestionnaire") {
       @Override
@@ -264,6 +257,23 @@ public class QuestionnaireListPanel extends Panel {
         public void onClick(AjaxRequestTarget target) {
           modalWindow.setTitle(questionnaire.getName());
           modalWindow.setContent(new EditionPanel("content", rowModel));
+          modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+            @Override
+            public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+              target.addComponent(questionnaireList); // reload questionnaire list
+              return true; // same as cancel
+            }
+          });
+          modalWindow.show(target);
+        }
+      });
+
+      add(new AjaxLink<Questionnaire>("validateLink", rowModel) {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          modalWindow.setTitle(new StringResourceModel("ValidationResults", QuestionnaireListPanel.this, null, new Object[] { questionnaire.getName() }));
+          modalWindow.setContent(new ValidationPanel("content", rowModel));
+          modalWindow.setCloseButtonCallback(null);
           modalWindow.show(target);
         }
       });
