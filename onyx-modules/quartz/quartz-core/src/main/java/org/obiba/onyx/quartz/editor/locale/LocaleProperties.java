@@ -54,7 +54,14 @@ public class LocaleProperties implements Serializable {
     this.elementLabels = elementLabels;
   }
 
-  public void addElementLabels(IQuestionnaireElement element, Locale locale, String key, String value) {
+  /**
+   * IS NOT IN PUBLIC API (USE ONLY IN LocalePropertiesUtil)
+   * @param element
+   * @param locale
+   * @param key
+   * @param value
+   */
+  protected void addElementLabels(IQuestionnaireElement element, Locale locale, String key, String value) {
     Assert.notNull(element);
     Assert.notNull(locale);
     ListMultimap<Locale, KeyValue> labels = elementLabels.get(element);
@@ -62,9 +69,8 @@ public class LocaleProperties implements Serializable {
       labels = ArrayListMultimap.create();
       elementLabels.put(element, labels);
     }
-    // TODO remove old keyValue before inserting the new one
     final KeyValue keyValue = new KeyValue(key, value);
-    Collection<KeyValue> filter = Collections2.filter(labels.get(locale), new Predicate<KeyValue>() {
+    Collection<KeyValue> collectionEqualKey = Collections2.filter(labels.get(locale), new Predicate<KeyValue>() {
 
       @Override
       public boolean apply(KeyValue input) {
@@ -72,7 +78,7 @@ public class LocaleProperties implements Serializable {
       }
 
     });
-    if(filter.isEmpty()) {
+    if(collectionEqualKey.isEmpty()) {
       labels.put(locale, keyValue);
     }
   }

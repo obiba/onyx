@@ -539,9 +539,11 @@ public class OpenAnswerPanel extends Panel {
           }
           DataType dataTypeEnum = DataType.valueOf(dataTypeValue);
           openAnswerDefinition.setDataType(dataTypeEnum);
-          openAnswerDefinition.addDefaultValue(String.valueOf(defaultValue.getModelObject()));
+          String strValueOf = String.valueOf(defaultValue.getModelObject());
+          addDefaultValue(openAnswerDefinition, strValueOf);
+          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswerDefinition);
+          localePropertiesUtils.updateValue(localePropertiesModel.getObject(), openAnswerDefinition, strValueOf, strValueOf);
           defaultValue.setModelObject(null);
-          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
           OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow));
           target.addComponent(labelsPanel);
           target.addComponent(defaultValue);
@@ -633,10 +635,15 @@ public class OpenAnswerPanel extends Panel {
 
           }
           for(String name : new LinkedHashSet<String>(Arrays.asList(names))) {
-            openAnswerDefinition.addDefaultValue(name);
+            addDefaultValue(openAnswerDefinition, name);
           }
           defaultValues.setModelObject(null);
           localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
+
+          for(String name : new LinkedHashSet<String>(Arrays.asList(names))) {
+            localePropertiesUtils.updateValue(localePropertiesModel.getObject(), openAnswerDefinition, name, name);
+          }
+
           labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow);
           OpenAnswerPanel.this.addOrReplace(labelsPanel);
           target.addComponent(labelsPanel);
@@ -653,6 +660,19 @@ public class OpenAnswerPanel extends Panel {
 
       bulkAddLink.add(new Image("bulkAddImg", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(bulkAddLink);
+    }
+  }
+
+  private void addDefaultValue(OpenAnswerDefinition openAnswerDefinition, final String name) {
+    Collection<Data> collectionEqualName = Collections2.filter(openAnswerDefinition.getDefaultValues(), new Predicate<Data>() {
+
+      @Override
+      public boolean apply(Data input) {
+        return input.getValueAsString().equals(name);
+      }
+    });
+    if(collectionEqualName.isEmpty()) {
+      openAnswerDefinition.addDefaultValue(name);
     }
   }
 

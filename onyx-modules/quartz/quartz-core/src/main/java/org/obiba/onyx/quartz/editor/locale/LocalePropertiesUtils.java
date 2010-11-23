@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 
 public class LocalePropertiesUtils {
@@ -72,6 +74,19 @@ public class LocalePropertiesUtils {
     if(questionnaire.getName() == null) return;
     for(IQuestionnaireElement element : elements) {
       localeProperties.removeElementLabels(element);
+    }
+  }
+
+  public void updateValue(LocaleProperties localeProperties, IQuestionnaireElement element, final String key, String value) {
+    for(Locale locale : localeProperties.getLocales()) {
+      Iterable<KeyValue> iterableEqualKey = Iterables.filter(localeProperties.getElementLabels(element).get(locale), new Predicate<KeyValue>() {
+
+        @Override
+        public boolean apply(KeyValue input) {
+          return input.getKey().equals(key);
+        }
+      });
+      iterableEqualKey.iterator().next().setValue(value);
     }
   }
 
