@@ -178,7 +178,6 @@ public abstract class CategoryWindow extends Panel {
           @Override
           protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
             rollback(openAnswer, original);
-
           }
         });
         openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {

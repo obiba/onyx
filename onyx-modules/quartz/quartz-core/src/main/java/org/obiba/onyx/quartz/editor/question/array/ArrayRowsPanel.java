@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.question.array;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
@@ -36,6 +37,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -70,9 +72,12 @@ public class ArrayRowsPanel extends Panel {
 
   private final IModel<Questionnaire> questionnaireModel;
 
+  private final IModel<LocaleProperties> localePropertiesModel;
+
   public ArrayRowsPanel(String id, IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
 
@@ -118,6 +123,7 @@ public class ArrayRowsPanel extends Panel {
 
       @Override
       public void editItem(final Question question, AjaxRequestTarget target) {
+        final Question originalQuestion = cloneQuestion(question);
         questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override
           protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
@@ -126,13 +132,13 @@ public class ArrayRowsPanel extends Panel {
 
           @Override
           protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
-            // no special rollback to do, form was never submitted
+            roolback(questionParent, question, originalQuestion);
           }
         });
         questionWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
           public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-            // no special rollback to do, form was never submitted
+            roolback(questionParent, question, originalQuestion);
             return true;
           }
         });
@@ -261,4 +267,43 @@ public class ArrayRowsPanel extends Panel {
     }
   }
 
+  private synchronized void roolback(Question questionParent, Question modified, Question original) {
+    int index = questionParent.getQuestions().indexOf(modified);
+    questionParent.removeQuestion(modified);
+    questionParent.addQuestion(original, index);
+
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    LocaleProperties localeProperties = localePropertiesModel.getObject();
+    localePropertiesUtils.remove(localeProperties, questionnaire, modified);
+    localePropertiesUtils.load(localeProperties, questionnaire, original);
+
+    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+  }
+
+  /**
+   * Simple question clone
+   * @param question
+   * @return
+   */
+  private Question cloneQuestion(Question question) {
+    Question clone = new Question(question.getName());
+    clone.setCondition(question.getCondition());
+    clone.setMaxCount(question.getMaxCount());
+    clone.setMinCount(question.getMinCount());
+    clone.setMultiple(question.isMultiple());
+    clone.setNumber(question.getNumber());
+    clone.setPage(question.getPage());
+    clone.setParentQuestion(question.getParentQuestion());
+    clone.setUIFactoryName(question.getUIFactoryName());
+    clone.setVariableName(question.getVariableName());
+    clone.getQuestionCategories().addAll(question.getQuestionCategories());
+    clone.getQuestions().addAll(question.getQuestions());
+    ValueMap uiArgumentsValueMap = question.getUIArgumentsValueMap();
+    if(uiArgumentsValueMap != null) {
+      for(Entry<String, Object> entry : uiArgumentsValueMap.entrySet()) {
+        clone.addUIArgument(entry.getKey(), (String) entry.getValue());
+      }
+    }
+    return clone;
+  }
 }
