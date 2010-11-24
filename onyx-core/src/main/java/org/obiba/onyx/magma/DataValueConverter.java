@@ -11,10 +11,12 @@ package org.obiba.onyx.magma;
 
 import java.io.Serializable;
 
+import org.obiba.magma.MagmaDate;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.type.BinaryType;
+import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.DateTimeType;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -60,16 +62,20 @@ public class DataValueConverter {
 
     ValueType valueType = value.getValueType();
     String dataTypeName = valueType.getName();
+    Serializable data = (Serializable) value.getValue();
     if(valueType == BinaryType.get()) {
       dataTypeName = DataType.DATA.name();
     } else if(valueType == DateTimeType.get()) {
       dataTypeName = DataType.DATE.name();
+    } else if(valueType == DateType.get()) {
+      dataTypeName = DataType.DATE.name();
+      data = ((MagmaDate)value.getValue()).asDate(); 
     }
 
     if(value.isNull()) {
       return null;
     }
 
-    return new Data(DataType.valueOf(dataTypeName.toUpperCase()), (Serializable) value.getValue());
+    return new Data(DataType.valueOf(dataTypeName.toUpperCase()), data);
   }
 }
