@@ -1239,14 +1239,14 @@ A:link.obiba-button,
 A:visited.obiba-button,
 A:active.obiba-button,
 A:hover.obiba-button {
-  padding: 0.2500em 0.4167em 0.1667em 0.4167em;
+  padding: 0.1667em 0.4167em 0.1667em 0.4167em;
   text-decoration: none;
   white-space: nowrap;
 }
 
 button.obiba-button,
 input.obiba-button {
-  padding: 0.1667em 0.4167em 0.0833em 0.4167em;
+  padding: 0.1667em 0.4167em 0.1667em 0.4167em;
   cursor: pointer;	
 }
 
