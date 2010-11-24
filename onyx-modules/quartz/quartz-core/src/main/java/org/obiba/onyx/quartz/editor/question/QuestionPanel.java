@@ -140,7 +140,7 @@ public abstract class QuestionPanel extends Panel {
     typeContainer.add(new HelpTooltipPanel("typeHelp", new ResourceModel("QuestionType.Tooltip")));
 
     add(new HelpTooltipPanel("labelsHelp", new ResourceReference(QuestionPanel.class, "labels-with-help.png")));
-    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow));
+    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow, model.getObject().getElement().getParentQuestion() != null));
   }
 
   /**

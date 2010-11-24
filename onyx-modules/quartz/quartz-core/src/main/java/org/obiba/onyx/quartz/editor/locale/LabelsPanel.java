@@ -58,7 +58,7 @@ public class LabelsPanel extends Panel {
 
   private WebMarkupContainer tabsContainer;
 
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField) {
     super(id, model);
     this.elementModel = elementModel;
     setOutputMarkupId(true);
@@ -72,7 +72,7 @@ public class LabelsPanel extends Panel {
       AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
         @Override
         public Panel getPanel(String panelId) {
-          return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)));
+          return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), onlyLabelField);
         }
       };
       PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
@@ -91,6 +91,10 @@ public class LabelsPanel extends Panel {
     form.setOutputMarkupId(true);
     form.add(tabsContainer);
     add(form);
+  }
+
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+    this(id, model, elementModel, feedbackPanel, feedbackWindow, false);
   }
 
   public void onModelChange(AjaxRequestTarget target) {
@@ -126,7 +130,7 @@ public class LabelsPanel extends Panel {
         AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
           @Override
           public Panel getPanel(String panelId) {
-            return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)));
+            return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), false);
           }
         };
         PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
@@ -140,7 +144,7 @@ public class LabelsPanel extends Panel {
 
   public class InputPanel extends Panel {
 
-    public InputPanel(String id, ListModel<KeyValue> model) {
+    public InputPanel(String id, ListModel<KeyValue> model, final boolean onlyLabelField) {
       super(id, model);
 
       add(new ListView<KeyValue>("item", model) {
@@ -148,6 +152,7 @@ public class LabelsPanel extends Panel {
         protected void populateItem(ListItem<KeyValue> item) {
           TextArea<String> textArea = new TextArea<String>("textArea", new PropertyModel<String>(item.getModel(), "value"));
           textArea.setLabel(new Model<String>(item.getModelObject().getKey()));
+          SimpleFormComponentLabel textAreaLabel = new SimpleFormComponentLabel("label", textArea);
           textArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
             @Override
@@ -157,7 +162,11 @@ public class LabelsPanel extends Panel {
           });
 
           item.add(textArea);
-          item.add(new SimpleFormComponentLabel("label", textArea));
+          item.add(textAreaLabel);
+          if(!item.getModelObject().getKey().equals("label") && onlyLabelField) {
+            textArea.setVisible(false);
+            textAreaLabel.setVisible(false);
+          }
         }
       });
     }
