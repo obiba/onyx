@@ -23,24 +23,27 @@
 					<input wicket:id="simplified" type="radio" /><label wicket:id="simplifiedLabel">simplifiedLabel</label>
 				</td>
 				<td><span wicket:id="uiHelp" /></td>
-			</tr>		  		  			    
-		</table>
-		
-		<fieldset>
-			<legend><wicket:message key="LanguagesProperties" /></legend>
-		 	<table class="keyValueTable">
-			  <tr>
+			</tr>	
+			<tr>
 			   	<td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
 			   	<td><div wicket:id="languages"></div></td>
-			  </tr>
-			</table>			
-		 	<div wicket:id="labels"></div>
-		 	<!-- 
-		 	<div class="downloadLocales">
-		 		<button wicket:id="downloadLocaleProperties" class="obiba-button ui-corner-all"><img wicket:id="downloadImg"/> <wicket:message key="DownloadLocaleProperties" /></button>
-		 	</div>
-		 	 -->
-		</fieldset>
+			 </tr>	  		  			    
+		</table>
+		
+		<table class="keyValueTable">
+			<tr>
+				<td class="keyValueTableKey">
+					<wicket:message key="LanguagesProperties" />
+				</td>			
+			</tr>
+		</table>
+		<div wicket:id="labels"></div>
+	 
+	 	<!-- 
+	 	<div class="downloadLocales">
+	 		<button wicket:id="downloadLocaleProperties" class="obiba-button ui-corner-all"><img wicket:id="downloadImg"/> <wicket:message key="DownloadLocaleProperties" /></button>
+	 	</div>
+	 	 -->
 		
 		<div wicket:id="saveCancel" class="modal-footer" />
 		
