@@ -386,6 +386,11 @@ table.obiba-quartz-array {
 	margin-right:auto;
 }
 
+table.obiba-quartz-array tr.ui-widget-header {
+	background:none repeat scroll 0 0 #FFFFFF;
+	color: #1E1B1D;
+}
+
 .obiba-quartz-array .obiba-label {
 	text-align:right;
 	vertical-align: middle;
