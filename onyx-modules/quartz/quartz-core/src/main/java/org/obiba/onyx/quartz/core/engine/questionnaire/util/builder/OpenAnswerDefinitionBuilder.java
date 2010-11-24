@@ -182,6 +182,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param comparisonOperator
    * @return
    */
+  @Deprecated
   public OpenAnswerDefinitionBuilder addCurrentYearValidator(ComparisonOperator comparisonOperator) {
     element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new CurrentDateSource(Calendar.YEAR)));
     return this;
@@ -193,6 +194,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param data
    * @return
    */
+  @Deprecated
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, Data data) {
     element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new FixedDataSource(data)));
     return this;
@@ -206,6 +208,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @see TimestampSource
    * @see CurrentYearSource
    */
+  @Deprecated
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, IDataSource dataSource) {
     element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, dataSource));
     return this;

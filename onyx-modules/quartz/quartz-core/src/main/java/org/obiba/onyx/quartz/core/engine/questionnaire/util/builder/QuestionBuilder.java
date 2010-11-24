@@ -283,7 +283,9 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param name
    * @param exportName
    * @return
+   * @deprecated export name is not supported any more
    */
+  @Deprecated
   public CategoryBuilder withCategory(String name, String exportName) {
     return withCategory(name).setExportName(exportName);
   }
