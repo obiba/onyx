@@ -1029,23 +1029,23 @@ div.tab-row a:hover span {
 }
 
 div.tab-row .selected a{ /*Selected Tab style*/
-background-position:0 -6.8333em; /*Shift background image up to start of 2nd tab image*/
+background-position:0 -82px; /*Shift background image up to start of 2nd tab image*/
 text-decoration:none;
 }
 
 div.tab-row .selected a span{ /*Selected Tab style*/
-background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+background-position:100% -82px; /*Shift background image up to start of 2nd tab image*/
 color:#FFFFFF;
 font-weight:bold;
 }
 
 div.tab-row a:hover{ /*onMouseover style*/
-/*background-position:0% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+/*background-position:0% -82px; /*Shift background image up to start of 2nd tab image*/
 text-decoration:none;
 }
 
 div.tab-row a:hover span{ /*onMouseover style*/
-/*background-position:100% -6.8333em; /*Shift background image up to start of 2nd tab image*/
+/*background-position:100% -82px; /*Shift background image up to start of 2nd tab image*/
 }
 
 .maxWidthTextArea {
