@@ -19,6 +19,9 @@
 
 .obiba-quartz-boilerplate .ui-widget-header {
 	height:500px;
+	background:none repeat scroll 0 0 transparent;
+    border:medium none;
+    color:#1E1B1D;
 }
 
 .obiba-quartz-question {
@@ -29,6 +32,7 @@
 	border-bottom: 2px solid #999999;
 	font-weight: bold;
 	height:75px;
+	color: #1E1B1D;
 }
 
 .obiba-quartz-question .ui-widget-header .obiba-label {
@@ -42,6 +46,8 @@
 
 .obiba-quartz-question .ui-widget-content {
 	height:420px;
+	background:none repeat scroll 0 0 transparent;
+    border:none;
 }
 
 .obiba-quartz-instructions {
@@ -80,6 +86,11 @@
 	
 }
 
+.obiba-center-vertical-outer.ui-widget-content {
+	border: none;
+	background:none repeat scroll 0 0 transparent;
+}
+
 /***************
  Categories
 ****************/
@@ -99,13 +110,13 @@
 	margin-right: auto;
 }
 
-.obiba-quartz-category img, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
+.obiba-quartz-category img, .obiba-quartz-category.selected img.selected {
   display: inline;
   height: 100px;
   width: 100px;
 }
 
-.obiba-quartz-category img.ui-state-highlight, .obiba-quartz-category.ui-state-highlight img {
+.obiba-quartz-category img.selected, .obiba-quartz-category.selected img {
   display: none;
 }
 
@@ -113,7 +124,7 @@
     padding-bottom: 20px;
 }
 
-.obiba-quartz-regular-image td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+.obiba-quartz-regular-image td.obiba-quartz-category div.obiba-quartz-category.selected {
     background-image: url('../icons/arrow_up.png');
     background-position: bottom center;
     background-repeat: no-repeat;
@@ -140,7 +151,6 @@ a.button, .obiba-quartz-category .top-right {
     overflow:hidden;
     margin-bottom:10px;
     text-decoration: none;
-	color: #000;
     background: transparent url('../icons/button_gray_full.png') no-repeat scroll top right;
 }
 
@@ -187,24 +197,24 @@ a.button {
     background: transparent url('../icons/button_gray_top-left.png') no-repeat;
 }
 
-.obiba-quartz-category.ui-state-highlight a.button, .obiba-quartz-category.ui-state-highlight .top-right {
+.obiba-quartz-category.selected a.button, .obiba-quartz-category.selected .top-right {
 	color: #fff;
     background: transparent url('../icons/button_orange_full.png') no-repeat scroll top right;
 }
 
-.obiba-quartz-category.ui-state-highlight a.button .label-container, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
+.obiba-quartz-category.selected a.button .label-container, .obiba-quartz-category.selected img.selected {
     background: transparent url('../icons/button_orange_top-left.png') no-repeat;
 }
 
-.obiba-quartz-category.ui-state-highlight a.button .description {
+.obiba-quartz-category.selected a.button .description {
     background: transparent url('../icons/button_orange_middle-left.png') no-repeat;
 }
 
-.obiba-quartz-category.ui-state-highlight a.button .foot, .obiba-quartz-category.ui-state-highlight .top-right .foot {
+.obiba-quartz-category.selected a.button .foot, .obiba-quartz-category.selected .top-right .foot {
     background: transparent url('../icons/button_orange_bottom-right.png') no-repeat scroll top right;
 }
 
-.obiba-quartz-category.ui-state-highlight a.button .foot-left, .obiba-quartz-category.ui-state-highlight .top-right .foot .foot-left {
+.obiba-quartz-category.selected a.button .foot-left, .obiba-quartz-category.selected .top-right .foot .foot-left {
     background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
 }
 
@@ -236,14 +246,14 @@ a.button {
 .obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value {
 	border: solid 1px #aaa;
 	height:38px;
-	line-height:1.9;
+	line-height:2.2;
 	margin-left:auto;
 	margin-right:auto;
 	width:70px;
 	cursor:pointer;
 }
 
-.obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value.ui-state-highlight {
+.obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value.selected {
 	background-color: #C65F02;
 	color: #ffffff;
 }
@@ -277,7 +287,7 @@ a.button {
     padding-left: 30px;
 }
 
-.obiba-quartz-regular td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+.obiba-quartz-regular td.obiba-quartz-category div.obiba-quartz-category.selected {
     background-image: url('../icons/arrow.png');
     background-position: 0 9px;
     background-repeat: no-repeat;
@@ -346,7 +356,7 @@ a.button {
     padding-right: 10px;
 }
 
-.obiba-quartz-escape td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+.obiba-quartz-escape td.obiba-quartz-category div.obiba-quartz-category.selected {
     background-image: url('../icons/arrow_up.png');
     background-position: bottom center;
     background-repeat: no-repeat;
@@ -403,7 +413,7 @@ table.obiba-quartz-array {
 	cursor:pointer;
 }
 
-.obiba-quartz-array .obiba-quartz-category .obiba-value.ui-state-highlight {
+.obiba-quartz-array .obiba-quartz-category .obiba-value.selected {
 	background-color: #C65F02;
 	color: #ffffff;
 }
@@ -419,7 +429,7 @@ table.obiba-quartz-array {
 	overflow:visible;
 }
 
-.obiba-quartz-array .obiba-quartz-category.ui-state-highlight a.button .label-container .label {
+.obiba-quartz-array .obiba-quartz-category.selected a.button .label-container .label {
 	background-image:url('../icons/button_check.png');
 	background-color:transparent;
 	background-position:center top;
