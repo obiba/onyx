@@ -154,7 +154,7 @@ public class DataSourceConverter {
     int i = 1;
     String expression = computingDataSource.getExpression();
     for(IDataSource dataSource : computingDataSource.getDataSources()) {
-      expression = expression.replaceAll("\\$" + i++, "\\$(" + getVariablePath(dataSource) + ").value()");
+      expression = expression.replaceAll("\\$" + i++, "\\$('" + getVariablePath(dataSource) + "').value()");
     }
     return expression;
   }
