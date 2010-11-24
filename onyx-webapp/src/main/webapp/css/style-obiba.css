@@ -1109,14 +1109,19 @@ div.tab-row a:hover span{ /*onMouseover style*/
 }
 
 .obiba-box-tab > .obiba-button {
-	-moz-border-radius-bottomleft:0 !important;
-	-moz-border-radius-bottomright:0 !important;
 	background-color:#C0C0C0 !important;
 	border-width:0.0833em 0.0833em 0 !important;
 	color:#888888 !important;
 	font-weight:bold;
 	margin-right:0.5833em;
 	padding:0.1667em 0.8333em 0.0833em !important;
+}
+
+.obiba-box-tab > .obiba-button.ui-corner-all {
+	-moz-border-radius-bottomleft:0 !important;
+	-moz-border-radius-bottomright:0 !important;
+	-webkit-border-bottom-left-radius:0 !important;
+	-webkit-border-bottom-right-radius:0 !important;
 }
 
 .obiba-box-tab > .obiba-button.selected {
