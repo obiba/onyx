@@ -14,7 +14,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.TextField;
@@ -41,7 +41,7 @@ public class VariableNameBehavior extends AbstractBehavior {
 
       variable.setModelObject(generateVariableName(parentQuestion, question, category, name.getModelObject()));
       variable.add(new AttributeModifier("class", true, new Model<String>("autoDefined")));
-      final AjaxEventBehavior updateVariableNameBehavior = new AjaxFormComponentUpdatingBehavior("onkeyup") {
+      final AjaxEventBehavior updateVariableNameBehavior = new OnChangeAjaxBehavior() {
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
           variable.setModelObject(generateVariableName(parentQuestion, question, category, name.getModelObject()));
