@@ -3,6 +3,10 @@ td.valuepressed-value {
   width:60px;
 }
 
+.obiba-numeric-pad a:link {
+  color: #1E1B1D;
+}
+
 .obiba-numeric-pad #valuePressed input {
   border:1px solid #B7B7B7;
   font-weight:bold;
