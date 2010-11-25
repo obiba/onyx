@@ -96,7 +96,8 @@ public class EditedQuestion extends EditedElement<Question> {
         question.addUIArgument(ROW_COUNT_KEY, String.valueOf(nbRows));
         break;
       case SINGLE_COLUMN:
-        question.addUIArgument(ROW_COUNT_KEY, String.valueOf(question.getCategories().size()));
+        // TODO bug here, setLayout is not called only on change.
+        question.addUIArgument(ROW_COUNT_KEY, String.valueOf(question.getCategories().size() == 0 ? ListToGridPermutator.DEFAULT_ROW_COUNT : question.getCategories().size()));
         break;
       }
     }

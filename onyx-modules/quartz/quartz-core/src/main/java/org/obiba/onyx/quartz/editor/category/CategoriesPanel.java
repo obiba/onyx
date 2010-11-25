@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.category;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -36,7 +37,7 @@ public class CategoriesPanel extends Panel {
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    RadioGroup<Layout> layout = new RadioGroup<Layout>("layout", new PropertyModel<Layout>(model, "layout"));
+    final RadioGroup<Layout> layout = new RadioGroup<Layout>("layout", new PropertyModel<Layout>(model, "layout"));
     layout.setLabel(new ResourceModel("Layout"));
     layout.setRequired(true);
     add(layout);
@@ -46,7 +47,7 @@ public class CategoriesPanel extends Panel {
     layout.add(singleColumnLayout);
     layout.add(new SimpleFormComponentLabel("singleColumnLayoutLabel", singleColumnLayout));
 
-    Radio<Layout> gridLayout = new Radio<Layout>("gridLayout", new Model<Layout>(Layout.GRID));
+    final Radio<Layout> gridLayout = new Radio<Layout>("gridLayout", new Model<Layout>(Layout.GRID));
     gridLayout.setLabel(new ResourceModel("Layout.grid"));
     layout.add(gridLayout);
     layout.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
@@ -54,7 +55,7 @@ public class CategoriesPanel extends Panel {
     TextField<Integer> nbRowsField = new TextField<Integer>("nbRows", new PropertyModel<Integer>(model, "nbRows")) {
       @Override
       public boolean isRequired() {
-        return model.getObject().getLayout() == Layout.GRID;
+        return StringUtils.equals(layout.getInput(), gridLayout.getValue());
       }
     };
     gridLayout.setLabel(new ResourceModel("NbRows"));
