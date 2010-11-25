@@ -27,7 +27,7 @@ public class EditedQuestion extends EditedElement<Question> {
 
   private QuestionType questionType;
 
-  private Layout layout = Layout.SINGLE_COLUMN;
+  private Layout layout = null;
 
   private Integer nbRows = ListToGridPermutator.DEFAULT_ROW_COUNT;
 
@@ -45,8 +45,13 @@ public class EditedQuestion extends EditedElement<Question> {
     if(question != null) {
       ValueMap map = question.getUIArgumentsValueMap();
       if(map != null && map.containsKey(ROW_COUNT_KEY)) {
-        layout = Layout.GRID;
-        nbRows = map.getInt(ROW_COUNT_KEY);
+        int rows = map.getInt(ROW_COUNT_KEY);
+        if(question.getQuestionCategories().size() == rows) {
+          layout = Layout.SINGLE_COLUMN;
+        } else {
+          layout = Layout.GRID;
+        }
+        nbRows = rows;
       }
     }
   }
@@ -91,6 +96,7 @@ public class EditedQuestion extends EditedElement<Question> {
         question.addUIArgument(ROW_COUNT_KEY, String.valueOf(nbRows));
         break;
       case SINGLE_COLUMN:
+        question.addUIArgument(ROW_COUNT_KEY, String.valueOf(question.getCategories().size()));
         break;
       }
     }
