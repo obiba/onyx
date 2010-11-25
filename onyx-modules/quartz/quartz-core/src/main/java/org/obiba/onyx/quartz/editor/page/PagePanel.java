@@ -67,7 +67,6 @@ public abstract class PagePanel extends Panel {
     this.questionnaireModel = questionnaireModel;
     final Questionnaire questionnaire = questionnaireModel.getObject();
 
-    // TODO maybe merge STANDARD_UI with *QuestionPanelFactory class
     final Page page = model.getObject();
     if(StringUtils.isBlank(page.getUIFactoryName())) {
       if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {

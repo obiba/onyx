@@ -92,7 +92,6 @@ public abstract class EditQuestionPanel extends Panel {
 
     final Question question = questionModel.getObject();
 
-    // TODO maybe merge STANDARD_UI with *QuestionPanelFactory class
     if(StringUtils.isBlank(question.getUIFactoryName())) {
       if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
         question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
