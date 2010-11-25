@@ -93,7 +93,7 @@ public class ConditionPanel extends Panel {
     variableWindow = new ModalWindow("variableWindow");
     variableWindow.setCssClassName("onyx");
     variableWindow.setInitialWidth(950);
-    variableWindow.setInitialHeight(550);
+    variableWindow.setInitialHeight(540);
     variableWindow.setResizable(true);
     variableWindow.setTitle(new ResourceModel("Variable"));
     add(variableWindow);

@@ -4,11 +4,11 @@ img.action {
 
 .instructions {
 	font-weight: normal;
-	font-size: 10px;
+	font-size: 0.833em;
 }
 
 .shared {
-	font-size: 10px;
+	font-size: 0.833em;
 	font-style: italic;
-	padding-left: 20px;
+	padding-left: 1.667em;
 }

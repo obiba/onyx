@@ -87,6 +87,10 @@ public class LocaleProperties implements Serializable {
     elementLabels.remove(element);
   }
 
+  public boolean hasElementLabels(IQuestionnaireElement element) {
+    return elementLabels.containsKey(element);
+  }
+
   public ListMultimap<Locale, KeyValue> getElementLabels(IQuestionnaireElement element) {
     return elementLabels.get(element);
   }

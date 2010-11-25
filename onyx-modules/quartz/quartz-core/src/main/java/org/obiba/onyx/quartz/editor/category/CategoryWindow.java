@@ -51,6 +51,7 @@ import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
@@ -99,6 +100,20 @@ public abstract class CategoryWindow extends Panel {
     final Question question = questionCategory.getQuestion();
     final Category category = questionCategory.getCategory();
 
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+    // questionnaireFinder.buildQuestionnaireCache();
+    // StringBuilder sharedWithQuestions = new StringBuilder();
+    // List<Category> sharedCategories = questionnaireFinder.findSharedCategories();
+    // for(QuestionCategory qc : questionnaire.getQuestionnaireCache().getQuestionCategoryCache().values()) {
+    // if(sharedCategories.contains(qc.getCategory())) {
+    // if(sharedWithQuestions.length() > 0) sharedWithQuestions.append(", ");
+    // sharedWithQuestions.append(qc.getQuestion().getName());
+    // }
+    // }
+    // add(new Label("sharedWith", new StringResourceModel("sharedWith", this, null, new Object[] {
+    // sharedWithQuestions.toString() })).setVisible(sharedWithQuestions.length() > 0));
+
     openAnswerWindow = new ModalWindow("openAnswerWindow");
     openAnswerWindow.setCssClassName("onyx");
     openAnswerWindow.setInitialWidth(900);
@@ -115,7 +130,6 @@ public abstract class CategoryWindow extends Panel {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equalsIgnoreCase(model.getObject().getCategory().getName(), validatable.getValue())) {
-          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           if(questionnaireFinder.findCategory(validatable.getValue()) != null) {
             error(validatable, "CategoryAlreadyExists");
           }
@@ -143,12 +157,12 @@ public abstract class CategoryWindow extends Panel {
     form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
     IModel<? extends IQuestionnaireElement> editPropertyElement = null;
-    if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSharedCategories().contains(category)) {
+    if(questionnaireFinder.findSharedCategories().contains(category)) {
       editPropertyElement = new PropertyModel<Category>(model, "category");
     } else {
       editPropertyElement = model;
     }
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), editPropertyElement.getObject());
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaire, editPropertyElement.getObject());
     form.add(new LabelsPanel("labels", localePropertiesModel, editPropertyElement, feedbackPanel, feedbackWindow));
 
     LoadableDetachableModel<List<OpenAnswerDefinition>> openAnswerModel = new LoadableDetachableModel<List<OpenAnswerDefinition>>() {
@@ -176,7 +190,7 @@ public abstract class CategoryWindow extends Panel {
 
       @Override
       public void editItem(final OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
-        final OpenAnswerDefinition original = QuestionnaireElementCloner.cloneOpenAnswerDefinition(openAnswer);
+        final OpenAnswerDefinition original = QuestionnaireElementCloner.cloneOpenAnswerDefinition(openAnswer, new CloneSettings(true));
         openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
           @Override
           protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {

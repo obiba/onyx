@@ -32,6 +32,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.quartz.editor.questionnaire.QuestionnairePanel;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
 
@@ -70,6 +71,8 @@ public class DataSourceConverter {
   }
 
   public void convert() throws DataSourceConverterException {
+
+    QuestionnairePanel.guessUIType(questionnaire);
 
     for(Question question : questionnaire.getQuestionnaireCache().getQuestionCache().values()) {
 

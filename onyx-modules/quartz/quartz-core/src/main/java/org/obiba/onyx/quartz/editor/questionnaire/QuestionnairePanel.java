@@ -122,19 +122,8 @@ public abstract class QuestionnairePanel extends Panel {
     version.add(new RequiredFormFieldBehavior());
     form.add(version).add(new SimpleFormComponentLabel("versionLabel", version));
 
-    if(StringUtils.isBlank(questionnaire.getUiType())) {
-      // try to guess UI type from question uiFactoryName
-      QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
-      Collection<Question> questions = questionnaire.getQuestionnaireCache().getQuestionCache().values();
-      if(questions.size() > 0) {
-        String uiFactoryName = questions.iterator().next().getUIFactoryName();
-        if("quartz.DefaultQuestionPanelFactory".equals(uiFactoryName)) {
-          questionnaire.setUiType(Questionnaire.STANDARD_UI);
-        } else if("quartz.SimplifiedQuestionPanelFactory".equals(uiFactoryName)) {
-          questionnaire.setUiType(Questionnaire.SIMPLIFIED_UI);
-        }
-      }
-    }
+    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+    guessUIType(questionnaire);
 
     RadioGroup<String> uiType = new RadioGroup<String>("uiType", new PropertyModel<String>(form.getModel(), "uiType"));
     uiType.setLabel(new ResourceModel("UIType"));
@@ -214,62 +203,15 @@ public abstract class QuestionnairePanel extends Panel {
 
     form.add(localesPalette);
 
-    // final AjaxDownload download = new AjaxDownload() {
-    //
-    // @Override
-    // protected IResourceStream getResourceStream() {
-    // try {
-    // QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
-    // File tmpFile = File.createTempFile(bundle.getName() + "-locales", ".zip");
-    // tmpFile.deleteOnExit();
-    //
-    // OutputStream os = new FileOutputStream(tmpFile);
-    // ZipOutputStream zos = new ZipOutputStream(os);
-    // byte[] buffer = new byte[1024];
-    // for(Locale locale : bundle.getAvailableLanguages()) {
-    // ZipEntry zip = new ZipEntry("language_" + locale.getLanguage() + ".properties");
-    // zos.putNextEntry(zip);
-    // ByteArrayOutputStream out = new ByteArrayOutputStream();
-    // Properties properties = bundle.getLanguage(locale);
-    // properties.store(out, "Languages properties for questionnaire " + bundle.getName() + " for " +
-    // locale.getDisplayLanguage());
-    // InputStream fis = new ByteArrayInputStream(out.toByteArray());
-    // int read = 0;
-    // while((read = fis.read(buffer)) != -1) {
-    // zos.write(buffer, 0, read);
-    // }
-    // zos.closeEntry();
-    // }
-    // zos.close();
-    //
-    // return new ZipResourceStream(tmpFile);
-    // } catch(IOException e) {
-    // log.error("Cannot persist questionnaire", e);
-    // return null;
-    // }
-    // }
-    //
-    // @Override
-    // protected String getFileName() {
-    // return questionnaire.getName() + "-locales.zip";
-    // }
-    // };
-    // form.add(download);
-    //
-    // AjaxLink downloadLink = new AjaxLink("downloadLocaleProperties") {
-    // @Override
-    // public void onClick(AjaxRequestTarget target) {
-    // download.initiate(target);
-    // }
-    // };
-    // downloadLink.setVisible(!newQuestionnaire);
-    // downloadLink.add(new Image("downloadImg", Images.ZIP));
-    // form.add(downloadLink);
-
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
-        QuestionnairePanel.this.onSave(target, form.getModelObject());
+        try {
+          persist(target);
+          QuestionnairePanel.this.onSave(target, form.getModelObject());
+        } catch(Exception e) {
+          log.error("Cannot persist questionnaire", e);
+        }
       }
 
       @Override
@@ -290,14 +232,29 @@ public abstract class QuestionnairePanel extends Panel {
 
   public abstract void onCancel(AjaxRequestTarget target);
 
-  public void persist(AjaxRequestTarget target) {
+  private void persist(AjaxRequestTarget target) throws Exception {
     try {
       questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
-      log.error("Cannot persist questionnaire", e);
       error(e.getMessage());
       feedbackWindow.setContent(feedbackPanel);
       feedbackWindow.show(target);
+      throw e;
+    }
+  }
+
+  public static void guessUIType(Questionnaire questionnaire) {
+    if(StringUtils.isBlank(questionnaire.getUiType())) {
+      // try to guess UI type from question uiFactoryName
+      Collection<Question> questions = questionnaire.getQuestionnaireCache().getQuestionCache().values();
+      if(questions.size() > 0) {
+        String uiFactoryName = questions.iterator().next().getUIFactoryName();
+        if("quartz.DefaultQuestionPanelFactory".equals(uiFactoryName)) {
+          questionnaire.setUiType(Questionnaire.STANDARD_UI);
+        } else if("quartz.SimplifiedQuestionPanelFactory".equals(uiFactoryName)) {
+          questionnaire.setUiType(Questionnaire.SIMPLIFIED_UI);
+        }
+      }
     }
   }
 

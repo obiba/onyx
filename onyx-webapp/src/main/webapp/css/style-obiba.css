@@ -37,7 +37,7 @@ h1.title {
   color:#C65F02;
   font-size:1em;
   font-weight:bold;
-  padding-bottom:2px;
+  padding-bottom: 0.167em;
 }
 
 .required {
@@ -814,7 +814,8 @@ td.gertTableFormValueOdd {
 div.tab-panel {
 	clear:both;
 	border: 1px solid #BFBFBF;
-	margin: 5px;
+	margin: 0.417em;
+	padding: 0.417em;
 }
 
 .requiredField {
@@ -1647,7 +1648,7 @@ ul#interviewMenuBar li > div {
 .menu-right {
   display: block;
   text-align: right;
-  padding-right:5px;
+  padding-right:0.417em;
 }
 
 ul#interviewMenuBar li a {
@@ -1895,11 +1896,11 @@ div.appointment-update-log-panel-content  {
 }
 
 div.stageMenuBar {
-  margin-top: 20px;
+  margin-top: 1.667em;
 }
 
 div.interviewMenuBar {
-  margin-top: 20px;
+  margin-top: 1.667em;
 }
 
 div#essentialAttributes td.keyValueTableKey, div#configuredAttributeGroups td.keyValueTableKey, div.participant-panel-content td.keyValueTableKey {

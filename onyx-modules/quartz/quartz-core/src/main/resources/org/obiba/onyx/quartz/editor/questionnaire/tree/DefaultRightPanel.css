@@ -1,9 +1,9 @@
 .explain {
-	margin-top: -20px;
+	margin-top: -1.667em;
 }
 
 .explain li {
-	margin-bottom: 8px;
+	margin-bottom: 0.667em;
 }
 
 .explain .title {
@@ -13,25 +13,25 @@
 .explain .section {
 	background: transparent url('${sectionImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding: 1px 0 1px 20px;
+	padding: 0.083em 0 0.083em 1.667em;
 }
 
 .explain .page {
 	background: transparent url('${pageImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding: 1px 0 1px 20px;
+	padding: 0.083em 0 0.083em 1.667em;
 }
 
 .explain .question {
 	background: transparent url('${questionImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding: 1px 0 1px 20px;
+	padding: 0.083em 0 0.083em 1.667em;
 }
 
 .explain .variable {
 	background: transparent url('${variableImgUrl}') no-repeat scroll 0 0;
 	height: 16px;
-	padding: 1px 0 1px 20px;
+	padding: 0.083em 0 0.083em 1.667em;
 }
 
 .questionTypeList img {

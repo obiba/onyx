@@ -52,8 +52,6 @@ import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistence
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -61,7 +59,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class VariablePanel extends Panel {
 
-  private transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
@@ -139,7 +137,7 @@ public abstract class VariablePanel extends Panel {
 
     TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));
     script.add(new RequiredFormFieldBehavior());
-    form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script));
+    form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script)).add(new HelpTooltipPanel("scriptHelp", new ResourceModel("Script.Tooltip")));
 
     Set<ValueTable> valueTables = MagmaEngine.get().getDatasource("onyx-datasource").getValueTables();
     List<String> tables = new ArrayList<String>(valueTables.size());
@@ -200,14 +198,9 @@ public abstract class VariablePanel extends Panel {
 
   }
 
-  /**
-   * 
-   * @param target
-   * @param section
-   */
-  public abstract void onSave(AjaxRequestTarget target, Variable variable);
+  protected abstract void onSave(AjaxRequestTarget target, Variable variable);
 
-  public abstract void onCancel(AjaxRequestTarget target);
+  protected abstract void onCancel(AjaxRequestTarget target);
 
   private void findTableVariables(final DropDownChoice<String> tablesDropDown, final List<String> tableVariables) {
     tableVariables.clear();
@@ -221,14 +214,14 @@ public abstract class VariablePanel extends Panel {
     }
   }
 
-  public void persist(AjaxRequestTarget target) {
+  protected void persist(AjaxRequestTarget target) throws Exception {
     try {
       questionnairePersistenceUtils.persist(questionnaireModel.getObject());
     } catch(Exception e) {
-      logger.error("Cannot persist questionnaire", e);
       error(e.getMessage());
       feedbackWindow.setContent(feedbackPanel);
       feedbackWindow.show(target);
+      throw e;
     }
   }
 }

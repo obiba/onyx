@@ -29,7 +29,7 @@ public class JsonNode implements Serializable {
 
   private Data data;
 
-  private String state = "open";
+  private String state = "closed"; // open / closed
 
   private JsonNodeAttribute attr;
 

@@ -34,4 +34,6 @@ public class Images {
 
   public static final ResourceReference CANCEL = new ResourceReference(Images.class, "cancel.png");
 
+  public static final ResourceReference COPY = new ResourceReference(Images.class, "copy.png");
+
 }

@@ -1,5 +1,5 @@
 .sortableList {
-	margin: 5px;
+	margin: 0.417em;
 }
 
 table.item {
@@ -11,19 +11,19 @@ table.item td.name {
 }
 
 table.item td.action {
-	width: 20px;
+	width: 1.667em;
 }
 
 .sortable {
 	list-style-type: none;
-	margin: 10px 0 0 0;
+	margin: 0.833em 0 0 0;
 	padding: 0;
 	width: 100%;
 }
 
 .sortable li {
-	margin: 0 5px 5px 0;
-	padding: 2px;
+	margin: 0 0.417em 0.417em 0;
+	padding: 0.167em;
 	background: #ECECEC !important;
 	color: #666666 !important;
 }

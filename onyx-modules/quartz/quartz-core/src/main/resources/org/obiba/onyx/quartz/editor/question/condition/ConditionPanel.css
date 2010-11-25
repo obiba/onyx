@@ -1,18 +1,9 @@
-.intro {
-	margin-top: 10px;
-}
-
 .radioContent {
-	margin-left: 25px;
+	margin-left: 2.083em;
 }
 
 .radioContent img {
 	vertical-align: bottom;
-}
-
-.help {
-	font-size: 10px;
-	font-weight: normal;
 }
 
 img.preview {

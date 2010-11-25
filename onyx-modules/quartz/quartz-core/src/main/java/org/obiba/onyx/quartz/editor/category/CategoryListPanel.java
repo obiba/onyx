@@ -58,6 +58,7 @@ import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.utils.AbstractAutoCompleteTextField;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -167,7 +168,7 @@ public class CategoryListPanel extends Panel {
 
       @Override
       public void editItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
-        final QuestionCategory original = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory);
+        final QuestionCategory original = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory, new CloneSettings(true));
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {

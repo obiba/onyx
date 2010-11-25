@@ -1,14 +1,9 @@
 .radioContent {
-	margin-left: 25px;
+	margin-left: 2.083em;
 }
 
 table#questionConditionContainer {
 	width: 600px;
-}
-
-.help {
-	font-size: 10px;
-	font-weight: normal;
 }
 
 img.preview {

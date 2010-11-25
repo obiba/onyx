@@ -1,5 +1,5 @@
-img.help {
+img.helpTooltip {
 	cursor: pointer;
-	margin-left: 0 5px;
+	margin-left: 0 0.417em;
 	vertical-align: sub;
 }

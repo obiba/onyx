@@ -49,8 +49,6 @@ import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,7 +56,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class EditQuestionPanel extends Panel {
 
-  private transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
@@ -375,14 +373,14 @@ public abstract class EditQuestionPanel extends Panel {
     }
   }
 
-  public void persist(AjaxRequestTarget target) {
+  protected void persist(AjaxRequestTarget target) throws Exception {
     try {
       questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
-      logger.error("Cannot persist questionnaire", e);
       error(e.getClass() + ": " + e.getMessage());
       feedbackWindow.setContent(feedbackPanel);
       feedbackWindow.show(target);
+      throw e;
     }
   }
 }

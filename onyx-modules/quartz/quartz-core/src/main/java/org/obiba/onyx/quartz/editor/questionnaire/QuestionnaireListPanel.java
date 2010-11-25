@@ -114,7 +114,6 @@ public class QuestionnaireListPanel extends Panel {
         QuestionnairePanel rightPanel = new QuestionnairePanel(EditionPanel.RIGHT_PANEL, questionnaireModel, true) {
           @Override
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Questionnaire questionnaire) {
-            persist(target);
             editionPanel.restoreDefaultRightPanel(target);
             target.addComponent(editionPanel.getTree());
           }

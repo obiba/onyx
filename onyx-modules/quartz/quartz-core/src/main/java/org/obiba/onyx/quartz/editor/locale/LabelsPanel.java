@@ -154,11 +154,9 @@ public class LabelsPanel extends Panel {
           textArea.setLabel(new Model<String>(item.getModelObject().getKey()));
           SimpleFormComponentLabel textAreaLabel = new SimpleFormComponentLabel("label", textArea);
           textArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {
-
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
             }
-
           });
 
           item.add(textArea);

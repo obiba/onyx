@@ -1,0 +1,30 @@
+<wicket:panel>
+
+	<span wicket:id="feedback" />
+	
+	<form wicket:id="form" autocomplete="off" >	
+
+	 	<table class="keyValueTable">
+			<tr>
+				<td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+				<td><input wicket:id="name" type="text" size="40" /> <span wicket:id="nameHelp" /></td>
+			</tr>			
+			<tr>
+		  	<td class="keyValueTableKey" valign="top"><wicket:message key="Categories" /></td>
+		   	<td wicket:id="categories">	
+	 				<input type="radio" wicket:id="copyCategories" /> <label wicket:id="copyCategoriesLabel"></label>
+					<br />
+					<input type="radio" wicket:id="shareCategories" /> <label wicket:id="shareCategoriesLabel"></label> 
+		   	</td>
+		  </tr>	
+			<tr>
+				<td class="keyValueTableKey"><label wicket:id="pageLabel"></label></td>
+				<td><select wicket:id="page"></select> <span wicket:id="pageHelp" /></td>
+			</tr>					
+		</table>				
+				
+		<div wicket:id="saveCancel" class="modal-footer" />				
+	
+	</form>
+
+</wicket:panel>

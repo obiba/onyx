@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.editor.question.array;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
@@ -37,7 +36,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -49,6 +47,8 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionWindow;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -123,7 +123,7 @@ public class ArrayRowsPanel extends Panel {
 
       @Override
       public void editItem(final Question question, AjaxRequestTarget target) {
-        final Question originalQuestion = cloneQuestion(question);
+        final Question originalQuestion = QuestionnaireElementCloner.cloneQuestion(question, new CloneSettings(true, false));
         questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override
           protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
@@ -280,30 +280,4 @@ public class ArrayRowsPanel extends Panel {
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 
-  /**
-   * Simple question clone
-   * @param question
-   * @return
-   */
-  private Question cloneQuestion(Question question) {
-    Question clone = new Question(question.getName());
-    clone.setCondition(question.getCondition());
-    clone.setMaxCount(question.getMaxCount());
-    clone.setMinCount(question.getMinCount());
-    clone.setMultiple(question.isMultiple());
-    clone.setNumber(question.getNumber());
-    clone.setPage(question.getPage());
-    clone.setParentQuestion(question.getParentQuestion());
-    clone.setUIFactoryName(question.getUIFactoryName());
-    clone.setVariableName(question.getVariableName());
-    clone.getQuestionCategories().addAll(question.getQuestionCategories());
-    clone.getQuestions().addAll(question.getQuestions());
-    ValueMap uiArgumentsValueMap = question.getUIArgumentsValueMap();
-    if(uiArgumentsValueMap != null) {
-      for(Entry<String, Object> entry : uiArgumentsValueMap.entrySet()) {
-        clone.addUIArgument(entry.getKey(), (String) entry.getValue());
-      }
-    }
-    return clone;
-  }
 }

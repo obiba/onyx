@@ -38,13 +38,11 @@ import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistence
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public abstract class PagePanel extends Panel {
 
-  private final transient Logger log = LoggerFactory.getLogger(getClass());
+  // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
@@ -124,23 +122,18 @@ public abstract class PagePanel extends Panel {
     });
   }
 
-  /**
-   * 
-   * @param target
-   * @param page
-   */
-  public abstract void onSave(AjaxRequestTarget target, Page page);
+  protected abstract void onSave(AjaxRequestTarget target, Page page);
 
-  public abstract void onCancel(AjaxRequestTarget target);
+  protected abstract void onCancel(AjaxRequestTarget target);
 
-  public void persist(AjaxRequestTarget target) {
+  protected void persist(AjaxRequestTarget target) throws Exception {
     try {
       questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
     } catch(Exception e) {
-      log.error("Cannot persist questionnaire", e);
       error(e.getMessage());
       feedbackWindow.setContent(feedbackPanel);
       feedbackWindow.show(target);
+      throw e;
     }
   }
 

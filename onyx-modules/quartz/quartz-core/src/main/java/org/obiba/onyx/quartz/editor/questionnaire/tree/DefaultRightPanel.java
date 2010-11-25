@@ -63,8 +63,9 @@ public class DefaultRightPanel extends Panel {
 
     final Map<String, Object> tooltipCfg = new HashMap<String, Object>();
     tooltipCfg.put("delay", 100);
-    tooltipCfg.put("opacity", 100);
     tooltipCfg.put("showURL", false);
+    tooltipCfg.put("positionLeft", true);
+    tooltipCfg.put("left", 300);
 
     add(new ListView<QuestionType>("questionTypeList", Arrays.asList(QuestionType.values())) {
       @Override
