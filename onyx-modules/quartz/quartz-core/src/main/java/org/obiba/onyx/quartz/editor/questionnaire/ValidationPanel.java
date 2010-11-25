@@ -39,8 +39,6 @@ import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.IDataValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,7 +49,7 @@ public class ValidationPanel extends Panel {
   // TODO: localize date format
   public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-  private final transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private VariableUtils variableUtils;
@@ -87,13 +85,13 @@ public class ValidationPanel extends Panel {
   }
 
   public void validate() {
-    logger.info(">>> validateVariables");
+    // logger.info(">>> validateVariables");
     validateVariables();
 
-    logger.info(">>> validateOpenAnswerValidators");
+    // logger.info(">>> validateOpenAnswerValidators");
     validateOpenAnswerValidators();
 
-    logger.info(">>> validateDefaultValues");
+    // logger.info(">>> validateDefaultValues");
     validateDefaultValues();
     //
     // logger.info(">>> validateLocales");
@@ -128,18 +126,21 @@ public class ValidationPanel extends Panel {
     Questionnaire questionnaire = (Questionnaire) getDefaultModelObject();
     for(OpenAnswerDefinition openAnswer : questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().values()) {
       DataType dataType = openAnswer.getDataType();
-      ValueType valueType = VariableUtils.convertToValueType(dataType);
-      for(IDataValidator<?> validator : openAnswer.getDataValidators()) {
-        if(!dataType.equals(validator.getDataType())) {
-          error(openAnswer, "OpenAnswerTypeDifferentFromDataValidator", dataType, openAnswer.getName(), validator.getDataType());
+      if(dataType == null) {
+        error(openAnswer, "UndefinedOpenAnswerType", openAnswer.getName());
+      } else {
+        ValueType valueType = VariableUtils.convertToValueType(dataType);
+        for(IDataValidator<?> validator : openAnswer.getDataValidators()) {
+          if(!dataType.equals(validator.getDataType())) {
+            error(openAnswer, "OpenAnswerTypeDifferentFromDataValidator", dataType, openAnswer.getName(), validator.getDataType());
+          }
         }
-      }
-
-      for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
-        VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
-        Variable variable = variableUtils.findVariable(variableDataSource);
-        if(!valueType.equals(variable.getValueType())) {
-          error(openAnswer, "OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
+        for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
+          VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
+          Variable variable = variableUtils.findVariable(variableDataSource);
+          if(!valueType.equals(variable.getValueType())) {
+            error(openAnswer, "OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
+          }
         }
       }
     }
