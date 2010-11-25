@@ -36,4 +36,6 @@ public class Images {
 
   public static final ResourceReference COPY = new ResourceReference(Images.class, "copy.png");
 
+  public static final ResourceReference UPLOAD = new ResourceReference(Images.class, "upload.png");
+
 }

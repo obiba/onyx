@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.bundle;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -87,5 +88,19 @@ public interface QuestionnaireBundleManager {
    * @return
    */
   int countQuestionnaires();
+
+  /**
+   * @param inputStream
+   * @return
+   */
+  Questionnaire load(InputStream inputStream);
+
+  /**
+   * @param questionnaire
+   * @param localeProperties
+   * @return
+   * @throws IOException
+   */
+  QuestionnaireBundle createBundle(Questionnaire questionnaire, File... localeProperties) throws IOException;
 
 }

@@ -229,6 +229,7 @@ public class CategoryListPanel extends Panel {
     public SimpleAddPanel(String id) {
       super(id);
       Form<String> form = new Form<String>("form");
+      form.setMultiPart(false);
       add(form);
 
       final TextField<String> categoryName = new TextField<String>("category", new Model<String>());
@@ -272,6 +273,7 @@ public class CategoryListPanel extends Panel {
     public BulkAddPanel(String id) {
       super(id);
       Form<String> form = new Form<String>("form");
+      form.setMultiPart(false);
       add(form);
       final TextArea<String> categories = new TextArea<String>("categories", new Model<String>());
       categories.setOutputMarkupId(true);
@@ -316,6 +318,7 @@ public class CategoryListPanel extends Panel {
     public AddExistingPanel(String id) {
       super(id);
       Form<String> form = new Form<String>("form");
+      form.setMultiPart(false);
       add(form);
 
       final AbstractAutoCompleteTextField<CategoryWithQuestions> categoryNameFinder = new AbstractAutoCompleteTextField<CategoryWithQuestions>("category", new Model<CategoryWithQuestions>()) {

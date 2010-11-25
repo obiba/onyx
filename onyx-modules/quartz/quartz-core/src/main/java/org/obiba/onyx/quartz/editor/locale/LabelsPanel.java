@@ -88,6 +88,7 @@ public class LabelsPanel extends Panel {
     tabsContainer.add(tabbedPanel);
 
     Form<LocaleProperties> form = new Form<LocaleProperties>("form", model);
+    form.setMultiPart(false);
     form.setOutputMarkupId(true);
     form.add(tabsContainer);
     add(form);

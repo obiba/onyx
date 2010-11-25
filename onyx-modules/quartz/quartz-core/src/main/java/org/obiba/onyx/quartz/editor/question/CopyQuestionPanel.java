@@ -97,8 +97,8 @@ public abstract class CopyQuestionPanel extends Panel {
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
-    @SuppressWarnings("rawtypes")
-    Form<?> form = new Form("form");
+    Form<?> form = new Form<Void>("form");
+    form.setMultiPart(false);
 
     final Question question = model.getObject();
     String newName = new StringResourceModel("CopyOf", CopyQuestionPanel.this, null, new Object[] { question.getName() }).getString();

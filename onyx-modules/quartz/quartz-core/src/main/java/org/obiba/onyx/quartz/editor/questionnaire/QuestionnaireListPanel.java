@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
+import static org.obiba.onyx.wicket.Images.ERROR;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,6 +84,8 @@ public class QuestionnaireListPanel extends Panel {
 
   private final ModalWindow modalWindow;
 
+  private final ModalWindow uploadWindow;
+
   private OnyxEntityList<Questionnaire> questionnaireList;
 
   public QuestionnaireListPanel(String id) {
@@ -96,9 +100,17 @@ public class QuestionnaireListPanel extends Panel {
     modalWindow.setResizable(false);
     modalWindow.setTitle(new ResourceModel("Questionnaire"));
 
-    @SuppressWarnings("rawtypes")
-    Form<?> form = new Form("form");
+    uploadWindow = new ModalWindow("uploadWindow");
+    uploadWindow.setCssClassName("onyx");
+    uploadWindow.setInitialWidth(500);
+    uploadWindow.setInitialHeight(150);
+    uploadWindow.setResizable(false);
+    uploadWindow.setTitle(new ResourceModel("UploadQuestionnaire"));
+
+    Form<?> form = new Form<Void>("form");
+    form.setMultiPart(false);
     form.add(modalWindow);
+    form.add(uploadWindow);
     add(form);
 
     add(questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires")));
@@ -129,7 +141,25 @@ public class QuestionnaireListPanel extends Panel {
         modalWindow.setContent(editionPanel);
         modalWindow.show(target);
       }
-    }.add(new Image("img", Images.ADD)));
+    }.add(new Image("addImg", Images.ADD)));
+
+    AjaxLink<?> uploadLink = new AjaxLink<Void>("uploadQuestionnaire") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        uploadWindow.setContent(new UploadQuestionnairePanel("content", uploadWindow) {
+          @Override
+          protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            target.addComponent(questionnaireList);
+          }
+        });
+        uploadWindow.show(target);
+      }
+    };
+    // TODO fix multipart request error when editing after an upload
+    uploadLink.setVisible(false);
+    uploadLink.add(new Image("uploadImg", Images.UPLOAD));
+    add(uploadLink);
+
   }
 
   private class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
@@ -178,13 +208,13 @@ public class QuestionnaireListPanel extends Panel {
                 }
               } catch(StructureAnalyserException e) {
                 log.error("Unsupported questionnaire structure", e);
-                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("analyze.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
+                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("analyze.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               } catch(DataSourceConverterException e) {
                 log.error("Cannot convert questionnaire", e);
-                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
+                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               } catch(Exception e) {
                 log.error("Cannot convert questionnaire", e);
-                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(Images.ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
+                return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               }
               return new Label(componentId1, name);
             }

@@ -37,6 +37,8 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class VariableUtils {
 
+  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
+
   public static final String ONYX_DATASOURCE = "onyx-datasource";
 
   public static final String QUESTION_NAME = "questionName";
@@ -46,24 +48,26 @@ public class VariableUtils {
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   public Variable findVariable(VariableDataSource variableDataSource) {
+    Variable variable = null;
     String tableName = variableDataSource.getTableName();
     String variableName = variableDataSource.getVariableName();
-    QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(tableName);
-    if(bundle == null) {
-      try {
-        ValueTable valueTable = MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(tableName);
-        return valueTable == null ? null : valueTable.getVariable(variableName);
-      } catch(NoSuchValueTableException e) {
-        return null;
-      } catch(NoSuchVariableException e) {
-        return null;
+
+    try {
+      ValueTable valueTable = MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(tableName);
+      variable = valueTable == null ? null : valueTable.getVariable(variableName);
+    } catch(NoSuchValueTableException e) {
+    } catch(NoSuchVariableException e) {
+    }
+    if(variable == null) {
+      QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(tableName);
+      if(bundle != null) {
+        try {
+          variable = bundle.getQuestionnaire().getVariable(variableName);
+        } catch(IllegalArgumentException e) {
+        }
       }
     }
-    try {
-      return bundle.getQuestionnaire().getVariable(variableName);
-    } catch(IllegalArgumentException e) {
-      return null;
-    }
+    return variable;
   }
 
   public static Question findQuestion(Variable variable, QuestionnaireFinder questionnaireFinder) {

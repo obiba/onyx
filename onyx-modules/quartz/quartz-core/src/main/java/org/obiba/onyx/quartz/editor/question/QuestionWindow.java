@@ -48,6 +48,7 @@ public abstract class QuestionWindow extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<EditedQuestion>("form", model));
+    form.setMultiPart(false);
     final QuestionPanel questionPanel = new QuestionPanel("question", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, false) {
       @Override
       public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {

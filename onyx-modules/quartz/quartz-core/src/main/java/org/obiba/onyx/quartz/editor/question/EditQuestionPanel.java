@@ -121,6 +121,7 @@ public abstract class EditQuestionPanel extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<EditedQuestion>("form", model));
+    form.setMultiPart(false);
 
     final List<ITab> tabs = new ArrayList<ITab>();
 

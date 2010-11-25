@@ -1,7 +1,8 @@
 <wicket:panel>
 
 	<form wicket:id="form" autocomplete="off" class="obiba-content" >
-		<div wicket:id="modalWindow" style="overflow:auto"/>
+		<div wicket:id="modalWindow" style="overflow:auto" />
+		<div wicket:id="uploadWindow" />
 	</form>
 	
 	<div class="obiba-content-region ui-corner-all">
@@ -9,7 +10,8 @@
 	  <br />
 	  <span wicket:id="questionnaires" />
 	  <br />
-	  <a class="obiba-button" wicket:id="addQuestionnaire"><img wicket:id="img" class="add" /> <wicket:message key="CreateQuestionnaire" /></a>    
+	  <a class="obiba-button" wicket:id="addQuestionnaire"><img wicket:id="addImg" class="add" /> <wicket:message key="CreateQuestionnaire" /></a>    
+	  <a class="obiba-button" wicket:id="uploadQuestionnaire"><img wicket:id="uploadImg" class="add" /> <wicket:message key="UploadQuestionnaire" /></a>
 	</div>
 	
 	<wicket:fragment wicket:id="linkFragment">

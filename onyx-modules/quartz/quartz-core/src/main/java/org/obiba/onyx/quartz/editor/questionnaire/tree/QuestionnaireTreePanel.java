@@ -533,7 +533,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           editQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target);
         }
       });
-      menuItems.add(new MenuItem(new StringResourceModel("Copy.Question", QuestionnaireTreePanel.this, null), Images.COPY) {
+      menuItems.add(new MenuItem(new StringResourceModel("Copy", QuestionnaireTreePanel.this, null), Images.COPY) {
         @Override
         public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
           copyQuestionWindow.setTitle(new StringResourceModel("Question.Copy", QuestionnaireTreePanel.this, null, new Object[] { question.getName() }));

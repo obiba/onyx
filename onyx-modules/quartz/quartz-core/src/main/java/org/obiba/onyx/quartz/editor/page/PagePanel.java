@@ -81,6 +81,7 @@ public abstract class PagePanel extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<Page>("form", model));
+    form.setMultiPart(false);
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"), String.class);
     name.setLabel(new ResourceModel("Name"));

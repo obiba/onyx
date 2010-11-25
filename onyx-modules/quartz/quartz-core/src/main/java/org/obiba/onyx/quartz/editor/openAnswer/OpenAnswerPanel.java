@@ -522,6 +522,7 @@ public class OpenAnswerPanel extends Panel {
     public SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
+      form.setMultiPart(false);
       add(form);
       defaultValue = new TextField("defaultValue", model);
       defaultValue.setOutputMarkupId(true);
@@ -583,6 +584,7 @@ public class OpenAnswerPanel extends Panel {
     public BulkAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
+      form.setMultiPart(false);
       add(form);
       final TextArea<String> defaultValues = new TextArea<String>("defaultValues", model);
       defaultValues.setOutputMarkupId(true);

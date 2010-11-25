@@ -47,6 +47,7 @@ public abstract class OpenAnswerWindow extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<OpenAnswerDefinition>("form", model));
+    form.setMultiPart(false);
 
     final OpenAnswerPanel openAnswerPanel = new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
     form.add(openAnswerPanel);

@@ -16,6 +16,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -37,6 +39,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.Assert;
 
 /**
  * A file system based implementation of <code>QuestionnaireBundleManager</code>.
@@ -136,6 +139,18 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     serializeBundle(bundle);
 
     return bundle;
+  }
+
+  @Override
+  public QuestionnaireBundle createBundle(Questionnaire questionnaire, File... localeProperties) throws IOException {
+    Assert.notNull(questionnaire);
+    Assert.notNull(localeProperties);
+    File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
+    bundleVersionDir.mkdirs();
+    for(File file : localeProperties) {
+      FileUtil.copyFile(file, bundleVersionDir);
+    }
+    return createBundle(questionnaire, true);
   }
 
   @Override
@@ -352,7 +367,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
     try {
       fis = new FileInputStream(new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml"));
-      questionnaire = QuestionnaireStreamer.fromBundle(fis, applicationContext);
+      questionnaire = load(fis);
     } finally {
       if(fis != null) {
         try {
@@ -367,6 +382,11 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider);
 
     return bundle;
+  }
+
+  @Override
+  public Questionnaire load(InputStream inputStream) {
+    return QuestionnaireStreamer.fromBundle(inputStream, applicationContext);
   }
 
   @Override

@@ -89,6 +89,7 @@ public abstract class CategoryWindow extends Panel {
     this.localePropertiesModel = localePropertiesModel;
 
     add(form = new Form<QuestionCategory>("form", model));
+    form.setMultiPart(false);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

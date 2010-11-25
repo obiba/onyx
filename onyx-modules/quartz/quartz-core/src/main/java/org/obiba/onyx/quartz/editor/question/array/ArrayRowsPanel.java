@@ -172,6 +172,7 @@ public class ArrayRowsPanel extends Panel {
     public SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
+      form.setMultiPart(false);
       add(form);
 
       final TextField<String> questionName = new TextField<String>("question", model);
@@ -218,6 +219,7 @@ public class ArrayRowsPanel extends Panel {
     public BulkAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
+      form.setMultiPart(false);
       add(form);
       final TextArea<String> questions = new TextArea<String>("questions", model);
       questions.setOutputMarkupId(true);

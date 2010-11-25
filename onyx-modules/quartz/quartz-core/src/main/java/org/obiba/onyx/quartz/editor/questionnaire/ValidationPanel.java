@@ -29,7 +29,6 @@ import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -39,6 +38,8 @@ import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.IDataValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,13 +50,10 @@ public class ValidationPanel extends Panel {
   // TODO: localize date format
   public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
+  private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
   private VariableUtils variableUtils;
-
-  // @SpringBean
-  // private QuestionnaireBundleManager questionnaireBundleManager;
 
   private final List<IModel<String>> errors = new ArrayList<IModel<String>>();
 
@@ -85,20 +83,13 @@ public class ValidationPanel extends Panel {
   }
 
   public void validate() {
-    // logger.info(">>> validateVariables");
     validateVariables();
-
-    // logger.info(">>> validateOpenAnswerValidators");
     validateOpenAnswerValidators();
-
-    // logger.info(">>> validateDefaultValues");
     validateDefaultValues();
-    //
-    // logger.info(">>> validateLocales");
-    // validateLocales();
+    // TODO validate missing locale prop
   }
 
-  private void error(IQuestionnaireElement element, String messageKey, Object... params) {
+  private void error(String messageKey, Object... params) {
     errors.add(new StringResourceModel(messageKey, ValidationPanel.this, null, params));
   }
 
@@ -109,12 +100,12 @@ public class ValidationPanel extends Panel {
         String questionName = variable.getAttributeStringValue(VariableUtils.QUESTION_NAME);
         Question question = questionnaireFinder.findQuestion(questionName);
         if(question == null) {
-          error(null, "QuestionNotFound", questionName, variable.getName());
+          error("QuestionNotFound", questionName, variable.getName());
         } else {
           if(variable.hasAttribute(VariableUtils.CATEGORY_NAME)) {
             Category category = VariableUtils.findCategory(variable, question);
             if(category == null) {
-              error(null, "CategoryNotFound", variable.getAttributeStringValue(VariableUtils.CATEGORY_NAME), variable.getName());
+              error("CategoryNotFound", variable.getAttributeStringValue(VariableUtils.CATEGORY_NAME), variable.getName());
             }
           }
         }
@@ -127,19 +118,21 @@ public class ValidationPanel extends Panel {
     for(OpenAnswerDefinition openAnswer : questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().values()) {
       DataType dataType = openAnswer.getDataType();
       if(dataType == null) {
-        error(openAnswer, "UndefinedOpenAnswerType", openAnswer.getName());
+        error("UndefinedOpenAnswerType", openAnswer.getName());
       } else {
         ValueType valueType = VariableUtils.convertToValueType(dataType);
         for(IDataValidator<?> validator : openAnswer.getDataValidators()) {
           if(!dataType.equals(validator.getDataType())) {
-            error(openAnswer, "OpenAnswerTypeDifferentFromDataValidator", dataType, openAnswer.getName(), validator.getDataType());
+            error("OpenAnswerTypeDifferentFromDataValidator", dataType, openAnswer.getName(), validator.getDataType());
           }
         }
         for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
           VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
           Variable variable = variableUtils.findVariable(variableDataSource);
-          if(!valueType.equals(variable.getValueType())) {
-            error(openAnswer, "OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
+          // check variable type only for variable that are not a reference to a question category (because they are
+          // always boolean)
+          if(!variable.hasAttribute(VariableUtils.CATEGORY_NAME) && !valueType.equals(variable.getValueType())) {
+            error("OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
           }
         }
       }
@@ -152,16 +145,11 @@ public class ValidationPanel extends Panel {
       DataType dataType = openAnswer.getDataType();
       for(Data data : openAnswer.getDefaultValues()) {
         if(!isValidDefaultValue(dataType, data.getValueAsString())) {
-          error(openAnswer, "DefaultValueCannotBeCastToOpenAnswerType", data.getValueAsString(), openAnswer.getName(), dataType);
+          error("DefaultValueCannotBeCastToOpenAnswerType", data.getValueAsString(), openAnswer.getName(), dataType);
         }
       }
     }
   }
-
-  // private void validateLocales() {
-  // Questionnaire questionnaire = (Questionnaire) getDefaultModelObject();
-  // QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaire.getName());
-  // }
 
   public static boolean isValidDefaultValue(DataType dataType, String value) {
     switch(dataType) {

@@ -150,6 +150,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
     add(feedbackWindow);
 
     add(form = new Form<OpenAnswerValidator>("form", new Model<OpenAnswerValidator>(validator)));
+    form.setMultiPart(false);
 
     IChoiceRenderer<ComparisonOperator> operatorRenderer = new IChoiceRenderer<ComparisonOperator>() {
       @Override
