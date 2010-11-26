@@ -25,25 +25,15 @@
 				<td><span wicket:id="uiHelp" /></td>
 			</tr>	
 			<tr>
-			   	<td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
-			   	<td><div wicket:id="languages"></div></td>
-			 </tr>	  		  			    
+			  <td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
+				<td><div wicket:id="languages"></div></td>
+			</tr>	  		  			    
 		</table>
 		
-		<table class="keyValueTable">
-			<tr>
-				<td class="keyValueTableKey">
-					<wicket:message key="LanguagesProperties" />
-				</td>			
-			</tr>
-		</table>
-		<div wicket:id="labels"></div>
-	 
-	 	<!-- 
-	 	<div class="downloadLocales">
-	 		<button wicket:id="downloadLocaleProperties" class="obiba-button ui-corner-all"><img wicket:id="downloadImg"/> <wicket:message key="DownloadLocaleProperties" /></button>
-	 	</div>
-	 	 -->
+		<fieldset>
+			<legend><wicket:message key="LanguagesProperties" /></legend>		
+			<div wicket:id="labels"></div>
+		</fieldset>
 		
 		<div wicket:id="saveCancel" class="modal-footer" />
 		
