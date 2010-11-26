@@ -59,6 +59,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public class ArrayRowsPanel extends Panel {
 
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 

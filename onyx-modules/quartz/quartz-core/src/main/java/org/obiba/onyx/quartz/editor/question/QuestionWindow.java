@@ -29,6 +29,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public abstract class QuestionWindow extends Panel {
 
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 

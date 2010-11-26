@@ -81,6 +81,8 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private VariableUtils variableUtils;
 
