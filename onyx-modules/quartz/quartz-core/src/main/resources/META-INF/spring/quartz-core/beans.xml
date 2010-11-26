@@ -103,4 +103,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
  		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
  	</bean>
 
+	<bean id="onyxSettings" class=" org.obiba.onyx.quartz.editor.OnyxSettings">
+ 		<property name="dateFormatStr" value="${org.obiba.onyx.dateFormat}" />
+ 	</bean>
+
 </beans>

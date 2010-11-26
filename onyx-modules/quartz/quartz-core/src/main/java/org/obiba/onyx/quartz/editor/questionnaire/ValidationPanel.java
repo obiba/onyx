@@ -9,9 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +32,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.OnyxSettings;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.IDataValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -47,10 +44,10 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class ValidationPanel extends Panel {
 
-  // TODO: localize date format
-  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final transient Logger logger = LoggerFactory.getLogger(getClass());
+  @SpringBean
+  private OnyxSettings onyxSettings;
 
   @SpringBean
   private VariableUtils variableUtils;
@@ -151,11 +148,11 @@ public class ValidationPanel extends Panel {
     }
   }
 
-  public static boolean isValidDefaultValue(DataType dataType, String value) {
+  public boolean isValidDefaultValue(DataType dataType, String value) {
     switch(dataType) {
     case DATE:
       try {
-        DATE_FORMAT.parse(value);
+        onyxSettings.getDateFormat().parse(value);
       } catch(ParseException nfe) {
         return false;
       }

@@ -12,7 +12,6 @@ package org.obiba.onyx.quartz.editor.openAnswer;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -75,6 +74,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.editor.OnyxSettings;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
@@ -105,11 +105,14 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class OpenAnswerPanel extends Panel {
 
-  // TODO: localize date format
-  public final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
+
+  @SpringBean
+  private OnyxSettings onyxSettings;
+
+  @SpringBean
+  private ValidationPanel validationPanel;
 
   private final DropDownChoice<DataType> dataTypeDropDown;
 
@@ -261,8 +264,8 @@ public class OpenAnswerPanel extends Panel {
         Object minimum = rangeValidator.getMinimum();
         Object maximum = rangeValidator.getMaximum();
         if(dataValidator.getDataType() == DataType.DATE) {
-          if(minimum != null) minValue = DATE_FORMAT.format((Date) minimum);
-          if(maximum != null) maxValue = DATE_FORMAT.format((Date) maximum);
+          if(minimum != null) minValue = onyxSettings.getDateFormat().format((Date) minimum);
+          if(maximum != null) maxValue = onyxSettings.getDateFormat().format((Date) maximum);
         } else {
           if(minimum != null) minValue = String.valueOf(minimum);
           if(maximum != null) maxValue = String.valueOf(maximum);
@@ -273,7 +276,7 @@ public class OpenAnswerPanel extends Panel {
       } else if(validator instanceof MaximumValidator<?>) {
         Object maximum = ((MaximumValidator<?>) validator).getMaximum();
         if(dataValidator.getDataType() == DataType.DATE) {
-          if(maximum != null) maxValue = DATE_FORMAT.format((Date) maximum);
+          if(maximum != null) maxValue = onyxSettings.getDateFormat().format((Date) maximum);
         } else {
           if(maximum != null) maxValue = String.valueOf(maximum);
         }
@@ -283,7 +286,7 @@ public class OpenAnswerPanel extends Panel {
       } else if(validator instanceof MinimumValidator<?>) {
         Object minimum = ((MinimumValidator<?>) validator).getMinimum();
         if(dataValidator.getDataType() == DataType.DATE) {
-          if(minimum != null) minValue = DATE_FORMAT.format((Date) minimum);
+          if(minimum != null) minValue = onyxSettings.getDateFormat().format((Date) minimum);
         } else {
           if(minimum != null) minValue = String.valueOf(minimum);
         }
@@ -380,7 +383,7 @@ public class OpenAnswerPanel extends Panel {
             switch(valueOf) {
             case DATE:
               try {
-                DATE_FORMAT.parse(data.getValueAsString());
+                onyxSettings.getDateFormat().parse(data.getValueAsString());
               } catch(ParseException nfe) {
                 error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
                 showFeedbackErrorAndReset(target);
@@ -422,7 +425,7 @@ public class OpenAnswerPanel extends Panel {
             switch(valueOf) {
             case DATE:
               try {
-                data.setTypeAndValue(valueOf, DATE_FORMAT.parse(data.getValueAsString()));
+                data.setTypeAndValue(valueOf, onyxSettings.getDateFormat().parse(data.getValueAsString()));
               } catch(ParseException e) {
                 throw new RuntimeException(e);
               }
@@ -438,7 +441,7 @@ public class OpenAnswerPanel extends Panel {
               }
               break;
             case TEXT:
-              data.setTypeAndValue(valueOf, data.getType() == DataType.DATE ? DATE_FORMAT.format(data.getValue()) : data.getValueAsString());
+              data.setTypeAndValue(valueOf, data.getType() == DataType.DATE ? onyxSettings.getDateFormat().format(data.getValue()) : data.getValueAsString());
               break;
             }
           }
@@ -477,7 +480,7 @@ public class OpenAnswerPanel extends Panel {
 
       @Override
       public Component getItemTitle(@SuppressWarnings("hiding") String id, Data data) {
-        return new Label(id, data.getType() == DataType.DATE ? DATE_FORMAT.format(data.getValue()) : data.getValueAsString());
+        return new Label(id, data.getType() == DataType.DATE ? onyxSettings.getDateFormat().format(data.getValue()) : data.getValueAsString());
       }
 
       @Override
@@ -608,7 +611,7 @@ public class OpenAnswerPanel extends Panel {
           for(String name : names) {
             name = StringUtils.trimToNull(name);
             if(name == null) continue;
-            if(!ValidationPanel.isValidDefaultValue(DataType.valueOf(dataTypeValue), name)) {
+            if(!validationPanel.isValidDefaultValue(DataType.valueOf(dataTypeValue), name)) {
               error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
               return;
             }
@@ -685,13 +688,14 @@ public class OpenAnswerPanel extends Panel {
     case DATE:
       // TODO incomplete for Date
       try {
+        DateFormat dateFormat = onyxSettings.getDateFormat();
         if(StringUtils.isNotBlank(afterDate.getValue())) {
-          MinimumValidator<Date> minimumValidator = new MinimumValidator<Date>(DATE_FORMAT.parse(afterDate.getValue()));
+          MinimumValidator<Date> minimumValidator = new MinimumValidator<Date>(dateFormat.parse(afterDate.getValue()));
           DataValidator dataValidator = new DataValidator(minimumValidator, DataType.DATE);
           opa.addDataValidator(dataValidator);
         }
         if(StringUtils.isNotBlank(beforeDate.getValue())) {
-          MaximumValidator<Date> maximumValidator = new MaximumValidator<Date>(DATE_FORMAT.parse(beforeDate.getValue()));
+          MaximumValidator<Date> maximumValidator = new MaximumValidator<Date>(dateFormat.parse(beforeDate.getValue()));
           DataValidator dataValidator = new DataValidator(maximumValidator, DataType.DATE);
           opa.addDataValidator(dataValidator);
         }

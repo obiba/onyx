@@ -897,7 +897,6 @@ public class DefaultQuestionPanelTest {
       out.flush();
       out.close();
     } catch(IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
