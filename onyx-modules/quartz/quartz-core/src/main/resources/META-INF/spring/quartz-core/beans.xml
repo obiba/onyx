@@ -107,4 +107,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
  		<property name="dateFormatStr" value="${org.obiba.onyx.dateFormat}" />
  	</bean>
 
+	<bean id="openAnswerUtils" class=" org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils">
+ 		<property name="onyxSettings" ref="onyxSettings" />
+ 	</bean>
+
+
 </beans>

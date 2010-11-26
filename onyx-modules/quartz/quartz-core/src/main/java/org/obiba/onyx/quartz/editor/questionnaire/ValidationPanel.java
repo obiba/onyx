@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.editor.OnyxSettings;
+import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -47,7 +46,7 @@ public class ValidationPanel extends Panel {
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
-  private OnyxSettings onyxSettings;
+  private OpenAnswerUtils openAnswerUtils;
 
   @SpringBean
   private VariableUtils variableUtils;
@@ -141,44 +140,11 @@ public class ValidationPanel extends Panel {
     for(OpenAnswerDefinition openAnswer : questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().values()) {
       DataType dataType = openAnswer.getDataType();
       for(Data data : openAnswer.getDefaultValues()) {
-        if(!isValidDefaultValue(dataType, data.getValueAsString())) {
+        if(!openAnswerUtils.isValidDefaultValue(dataType, data.getValueAsString())) {
           error("DefaultValueCannotBeCastToOpenAnswerType", data.getValueAsString(), openAnswer.getName(), dataType);
         }
       }
     }
-  }
-
-  public boolean isValidDefaultValue(DataType dataType, String value) {
-    switch(dataType) {
-    case DATE:
-      try {
-        onyxSettings.getDateFormat().parse(value);
-      } catch(ParseException nfe) {
-        return false;
-      }
-      break;
-    case DECIMAL:
-      try {
-        Double.parseDouble(value);
-      } catch(NumberFormatException nfe) {
-        return false;
-      }
-      break;
-    case INTEGER:
-      try {
-        Long.parseLong(value);
-      } catch(NumberFormatException nfe) {
-        return false;
-      }
-      break;
-    case TEXT:
-      break;
-    case BOOLEAN:
-      break;
-    case DATA:
-      break;
-    }
-    return true;
   }
 
 }

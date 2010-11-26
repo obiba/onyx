@@ -83,7 +83,6 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWindow;
-import org.obiba.onyx.quartz.editor.questionnaire.ValidationPanel;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.util.data.Data;
@@ -112,7 +111,7 @@ public class OpenAnswerPanel extends Panel {
   private OnyxSettings onyxSettings;
 
   @SpringBean
-  private ValidationPanel validationPanel;
+  private OpenAnswerUtils openAnswerUtils;
 
   private final DropDownChoice<DataType> dataTypeDropDown;
 
@@ -611,7 +610,7 @@ public class OpenAnswerPanel extends Panel {
           for(String name : names) {
             name = StringUtils.trimToNull(name);
             if(name == null) continue;
-            if(!validationPanel.isValidDefaultValue(DataType.valueOf(dataTypeValue), name)) {
+            if(!openAnswerUtils.isValidDefaultValue(DataType.valueOf(dataTypeValue), name)) {
               error(new StringResourceModel("InvalidCastType", OpenAnswerPanel.this, null).getObject());
               return;
             }
