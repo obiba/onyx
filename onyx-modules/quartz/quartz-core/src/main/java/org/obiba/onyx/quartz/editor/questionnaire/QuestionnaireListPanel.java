@@ -68,23 +68,24 @@ import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("serial")
 public class QuestionnaireListPanel extends Panel {
+
+  private static final long serialVersionUID = 1L;
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+      justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+      justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+      justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
@@ -113,15 +114,18 @@ public class QuestionnaireListPanel extends Panel {
     uploadWindow.setResizable(false);
     uploadWindow.setTitle(new ResourceModel("UploadQuestionnaire"));
 
+    add(uploadWindow);
+
     Form<?> form = new Form<Void>("form");
     form.setMultiPart(false);
     form.add(modalWindow);
-    form.add(uploadWindow);
     add(form);
 
     add(questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires")));
 
     add(new IndicatingAjaxLink<Void>("addQuestionnaire") {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void onClick(AjaxRequestTarget target) {
 
@@ -130,6 +134,8 @@ public class QuestionnaireListPanel extends Panel {
         Model<Questionnaire> questionnaireModel = new Model<Questionnaire>(newQuestionnaire);
         final EditionPanel editionPanel = new EditionPanel("content", questionnaireModel);
         QuestionnairePanel rightPanel = new QuestionnairePanel(EditionPanel.RIGHT_PANEL, questionnaireModel, true) {
+          private static final long serialVersionUID = 1L;
+
           @Override
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Questionnaire questionnaire) {
             editionPanel.restoreDefaultRightPanel(target);
@@ -150,9 +156,13 @@ public class QuestionnaireListPanel extends Panel {
     }.add(new Image("addImg", Images.ADD)));
 
     AjaxLink<?> uploadLink = new AjaxLink<Void>("uploadQuestionnaire") {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void onClick(AjaxRequestTarget target) {
         uploadWindow.setContent(new UploadQuestionnairePanel("content", uploadWindow) {
+          private static final long serialVersionUID = 1L;
+
           @Override
           protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             target.addComponent(questionnaireList);
@@ -161,14 +171,14 @@ public class QuestionnaireListPanel extends Panel {
         uploadWindow.show(target);
       }
     };
-    // TODO fix multipart request error when editing after an upload
-    uploadLink.setVisible(false);
     uploadLink.add(new Image("uploadImg", Images.UPLOAD));
     add(uploadLink);
 
   }
 
   private class QuestionnaireProvider extends SortableDataProvider<Questionnaire> {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public Iterator<Questionnaire> iterator(int first, int count) {
@@ -194,15 +204,21 @@ public class QuestionnaireListPanel extends Panel {
 
   private class QuestionnaireListColumnProvider implements IColumnProvider<Questionnaire>, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final List<IColumn<Questionnaire>> columns = new ArrayList<IColumn<Questionnaire>>();
 
     public QuestionnaireListColumnProvider() {
       columns.add(new AbstractColumn<Questionnaire>(new ResourceModel("Name"), "name") {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           final Questionnaire questionnaire = rowModel.getObject();
           final String name = questionnaire.getName();
           cellItem.add(new AjaxLazyLoadPanel(componentId) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Component getLazyLoadComponent(String componentId1) {
               try {
@@ -237,6 +253,8 @@ public class QuestionnaireListPanel extends Panel {
 
       columns.add(new PropertyColumn<Questionnaire>(new ResourceModel("Version"), "version", "version"));
       columns.add(new AbstractColumn<Questionnaire>(new ResourceModel("Language(s)")) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           StringBuilder localeList = new StringBuilder();
@@ -250,6 +268,8 @@ public class QuestionnaireListPanel extends Panel {
       });
 
       columns.add(new HeaderlessColumn<Questionnaire>() {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           cellItem.add(new LinkFragment(componentId, rowModel));
@@ -282,17 +302,23 @@ public class QuestionnaireListPanel extends Panel {
 
   private class LinkFragment extends Fragment {
 
+    private static final long serialVersionUID = 1L;
+
     @SuppressWarnings("rawtypes")
     public LinkFragment(String id, final IModel<Questionnaire> rowModel) {
       super(id, "linkFragment", QuestionnaireListPanel.this, rowModel);
       final Questionnaire questionnaire = rowModel.getObject();
 
       add(new AjaxLink<Questionnaire>("editLink", rowModel) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void onClick(AjaxRequestTarget target) {
           modalWindow.setTitle(questionnaire.getName());
           modalWindow.setContent(new EditionPanel("content", rowModel));
           modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
               target.addComponent(questionnaireList); // reload questionnaire list
@@ -303,7 +329,26 @@ public class QuestionnaireListPanel extends Panel {
         }
       });
 
+      add(new AjaxLink<Questionnaire>("uploadLink", rowModel) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          uploadWindow.setContent(new UploadQuestionnairePanel("content", uploadWindow, rowModel) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+              target.addComponent(questionnaireList);
+            }
+          });
+          uploadWindow.show(target);
+        }
+      });
+
       add(new AjaxLink<Questionnaire>("validateLink", rowModel) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void onClick(AjaxRequestTarget target) {
           modalWindow.setTitle(new StringResourceModel("ValidationResults", QuestionnaireListPanel.this, null, new Object[] { questionnaire.getName() }));
@@ -314,6 +359,8 @@ public class QuestionnaireListPanel extends Panel {
       });
 
       final AjaxDownload download = new AjaxDownload() {
+        private static final long serialVersionUID = 1L;
+
         @Override
         protected IResourceStream getResourceStream() {
           try {
@@ -332,6 +379,8 @@ public class QuestionnaireListPanel extends Panel {
       add(download);
 
       add(new AjaxLink("downloadLink") {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void onClick(AjaxRequestTarget target) {
           download.initiate(target);
@@ -339,6 +388,8 @@ public class QuestionnaireListPanel extends Panel {
       });
 
       add(new Link<Questionnaire>("exportLink", rowModel) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void onClick() {
           activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);

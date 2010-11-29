@@ -28,7 +28,9 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -54,9 +56,9 @@ public abstract class UploadQuestionnairePanel extends Panel {
 
   private static final byte[] BUFFER = new byte[BUFFER_SIZE];
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Needs to be be re-initialized upon deserialization")
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   private final FeedbackPanel feedbackPanel;
@@ -66,7 +68,13 @@ public abstract class UploadQuestionnairePanel extends Panel {
   private FileUploadField zipFile;
 
   public UploadQuestionnairePanel(String id, final ModalWindow uploadWindow) {
+    this(id, uploadWindow, null);
+  }
+
+  public UploadQuestionnairePanel(String id, final ModalWindow uploadWindow, IModel<Questionnaire> questionnaireModel) {
     super(id);
+
+    final Questionnaire updatedQuestionnaire = questionnaireModel == null ? null : questionnaireModel.getObject();
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -82,12 +90,12 @@ public abstract class UploadQuestionnairePanel extends Panel {
       protected void onSubmit() {
         FileUpload zip = zipFile.getFileUpload();
         if(zip == null) {
-          error(getLocalizer().getString("NoFileUploaded", UploadQuestionnairePanel.this));
+          error(getLocalizer().getString("Error.NoFileUploaded", UploadQuestionnairePanel.this));
           return;
         }
         String clientFileName = zip.getClientFileName();
         if(!clientFileName.endsWith(".zip")) {
-          error(getLocalizer().getString("NotAZipFile", UploadQuestionnairePanel.this));
+          error(getLocalizer().getString("Error.NotAZipFile", UploadQuestionnairePanel.this));
           return;
         }
         try {
@@ -106,11 +114,22 @@ public abstract class UploadQuestionnairePanel extends Panel {
                   out.write(BUFFER, 0, n);
                 }
                 questionnaire = questionnaireBundleManager.load(new ByteArrayInputStream(out.toByteArray()));
-                out.close();
+                try {
+                  out.close();
+                } catch(Exception e) {
+                }
 
-                for(QuestionnaireBundle bundle : questionnaireBundleManager.bundles()) {
-                  if(questionnaire.getName().equals(bundle.getName())) {
-                    error(getLocalizer().getString("AlreadyExists", UploadQuestionnairePanel.this));
+                if(updatedQuestionnaire == null) {
+                  for(QuestionnaireBundle bundle : questionnaireBundleManager.bundles()) {
+                    if(questionnaire.getName().equals(bundle.getName())) {
+                      error(getLocalizer().getString("AlreadyExists", UploadQuestionnairePanel.this));
+                      error(new StringResourceModel("Error.QuestionnaireAlreadyExists", UploadQuestionnairePanel.this, null, new Object[] { questionnaire.getName() }).getString());
+                      return;
+                    }
+                  }
+                } else {
+                  if(!questionnaire.getName().equals(updatedQuestionnaire.getName())) {
+                    error(new StringResourceModel("Error.NameDifferentFromQuestionnaireToUpdate", UploadQuestionnairePanel.this, null, new Object[] { questionnaire.getName(), updatedQuestionnaire.getName() }).getString());
                     return;
                   }
                 }
@@ -123,14 +142,17 @@ public abstract class UploadQuestionnairePanel extends Panel {
                   out.write(BUFFER, 0, n);
                 }
                 localeProperties.add(tmp);
-                out.close();
+                try {
+                  out.close();
+                } catch(Exception e) {
+                }
               }
               zis.closeEntry();
             }
           }
 
           if(questionnaire == null) {
-            error(getLocalizer().getString("MissingFile", UploadQuestionnairePanel.this) + ": questionnaire.xml");
+            error(new StringResourceModel("Error.MissingFile", UploadQuestionnairePanel.this, null, new Object[] { "questionnaire.xml" }).getString());
           } else {
             for(Locale locale : questionnaire.getLocales()) {
               final String fileName = "language_" + locale.getLanguage() + ".properties";
@@ -140,7 +162,7 @@ public abstract class UploadQuestionnairePanel extends Panel {
                 };
               });
               if(localeFile == null) {
-                error(getLocalizer().getString("MissingFile", UploadQuestionnairePanel.this) + ": " + fileName);
+                error(new StringResourceModel("Error.MissingFile", UploadQuestionnairePanel.this, null, new Object[] { fileName }).getString());
               }
               if(hasError()) return;
             }
@@ -149,7 +171,7 @@ public abstract class UploadQuestionnairePanel extends Panel {
 
         } catch(IOException e) {
           log.error("IOException", e);
-          error(getLocalizer().getString("CannotReadFile", UploadQuestionnairePanel.this) + ": " + e.getMessage());
+          error(getLocalizer().getString("Error.CannotReadFile", UploadQuestionnairePanel.this) + ": " + e.getMessage());
         }
       }
     };

@@ -962,7 +962,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  private class TreeNodeCollector implements org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor {
+  private static class TreeNodeCollector implements org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor {
 
     private List children = new ArrayList();
 

@@ -1,8 +1,9 @@
 <wicket:panel>
 
+	<div wicket:id="uploadWindow" />
+	
 	<form wicket:id="form" autocomplete="off" class="obiba-content" >
 		<div wicket:id="modalWindow" style="overflow:auto" />
-		<div wicket:id="uploadWindow" />
 	</form>
 	
 	<div class="obiba-content-region ui-corner-all">
@@ -16,6 +17,7 @@
 	
 	<wicket:fragment wicket:id="linkFragment">
 		<a wicket:id="editLink"><wicket:message key="Edit" /></a>
+		<a wicket:id="uploadLink"><wicket:message key="Upload" /></a>
 		<a wicket:id="validateLink"><wicket:message key="Validate" /></a>
 		<a wicket:id="downloadLink"><wicket:message key="Download" /></a>
 		<a wicket:id="exportLink" target="export"><wicket:message key="Export" /></a>
