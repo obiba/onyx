@@ -54,8 +54,12 @@ public class LocaleProperties implements Serializable {
     this.elementLabels = elementLabels;
   }
 
+  public void addElementLabel(IQuestionnaireElement element, ListMultimap<Locale, KeyValue> elementLabel) {
+    elementLabels.put(element, elementLabel);
+  }
+
   /**
-   * IS NOT IN PUBLIC API (USE ONLY IN LocalePropertiesUtil)
+   * IS NOT IN PUBLIC API (be careful when use (because don't overwrite label when already exists)
    * @param element
    * @param locale
    * @param key
@@ -141,6 +145,10 @@ public class LocaleProperties implements Serializable {
 
     public void setValue(String value) {
       this.value = value;
+    }
+
+    public KeyValue duplicate() {
+      return new KeyValue(key, value);
     }
 
     @Override

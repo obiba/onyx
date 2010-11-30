@@ -40,6 +40,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -59,6 +60,7 @@ import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.utils.AbstractAutoCompleteTextField;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -76,8 +78,7 @@ public class CategoryListPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -88,8 +89,6 @@ public class CategoryListPanel extends Panel {
   private final FeedbackWindow feedbackWindow;
 
   private SortableList<QuestionCategory> categoryList;
-
-  private List<Category> sharedCategories;
 
   private Multimap<Category, Question> questionsByCategory;
 
@@ -114,8 +113,6 @@ public class CategoryListPanel extends Panel {
     questionsByCategory = questionnaireFinder.findQuestionsByCategory();
     questionnaireCategories = new ArrayList<Category>(questionsByCategory.keySet());
     Collections.sort(questionnaireCategories, new QuestionnaireElementComparator());
-
-    sharedCategories = questionnaireFinder.findSharedCategories();
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
@@ -146,16 +143,25 @@ public class CategoryListPanel extends Panel {
     });
     add(new AjaxTabbedPanel("addTabs", tabs));
 
-    categoryList = new SortableList<QuestionCategory>("categories", question.getQuestionCategories()) {
+    LoadableDetachableModel<List<QuestionCategory>> questionCategoryModel = new LoadableDetachableModel<List<QuestionCategory>>() {
+
+      @Override
+      protected List<QuestionCategory> load() {
+        return question.getQuestionCategories();
+      }
+    };
+
+    categoryList = new SortableList<QuestionCategory>("categories", questionCategoryModel) {
 
       @Override
       public void onItemPopulation(QuestionCategory questionCategory) {
       }
 
       @Override
-      public Component getItemTitle(@SuppressWarnings("hiding") String id, QuestionCategory questionCategory) {
+      public Component getItemTitle(@SuppressWarnings("hiding") String id, final QuestionCategory questionCategory) {
         Category category = questionCategory.getCategory();
-        if(sharedCategories.contains(category)) {
+
+        if(isShared(questionCategory)) {
           StringBuilder sb = new StringBuilder();
           for(Question q : questionsByCategory.get(category)) {
             if(q.getName().equals(question.getName())) continue;
@@ -170,10 +176,22 @@ public class CategoryListPanel extends Panel {
 
       @Override
       public void editItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
-        final QuestionCategory original = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory, new CloneSettings(true));
+        final ElementClone<QuestionCategory> original = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory, new CloneSettings(true), localePropertiesModel.getObject());
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
+            Collection<QuestionCategory> others = findOtherQuestionCategories(questionCategory.getCategory(), questionCategory);
+            if(!others.isEmpty()) {
+              ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
+              for(QuestionCategory other : others) {
+                localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), other);
+                ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(other);
+                for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+                  List<KeyValue> list = elementLabelsOtherQC.get(locale);
+                  list.get(0).setValue(elementLabelsQC.get(locale).get(0).getValue());
+                }
+              }
+            }
           }
 
           public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
@@ -198,21 +216,8 @@ public class CategoryListPanel extends Panel {
 
       @Override
       @SuppressWarnings("unchecked")
-      public void deleteItem(QuestionCategory questionCategory, AjaxRequestTarget target) {
-        boolean isSharedBefore = sharedCategories.contains(questionCategory.getCategory());
+      public void deleteItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
         ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
-        questionnaireFinder.buildQuestionnaireCache();
-        boolean isSharedAfter = questionnaireFinder.findSharedCategories().contains(questionCategory.getCategory());
-        if(isSharedBefore && !isSharedAfter) {
-          QuestionCategory otherQuestionCategory = findOnlyOtherOneQuestionCategory(questionCategory.getCategory(), questionCategory);
-          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory, questionCategory.getCategory());
-          ListMultimap<Locale, KeyValue> elementLabelsC = localePropertiesModel.getObject().getElementLabels(questionCategory.getCategory());
-          ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
-          for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-            // we know here that category has only one keyValue which is "label"
-            elementLabelsOtherQC.get(locale).get(0).setValue(elementLabelsC.get(locale).get(0).getValue());
-          }
-        }
         refreshList(target);
       }
 
@@ -224,6 +229,41 @@ public class CategoryListPanel extends Panel {
     };
     add(categoryList);
 
+  }
+
+  /**
+   * Return true is category associated to the given questionCategory is shared, false otherwise. we use this method if
+   * question associated to questionCategory is not yet linked to the questionnaire.
+   * (QuestionnaireFinder.findSharedCategories do not contains yet the category)
+   * 
+   * @param question
+   * @param questionCategory
+   * @param category
+   * @return
+   */
+  private boolean isShared(final QuestionCategory questionCategory) {
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    questionnaireFinder.buildQuestionnaireCache();
+    Multimap<Category, Question> categoriesFilterName = questionnaireFinder.findCategories(questionCategory.getCategory().getName());
+    Collection<Category> categories = Collections2.filter(categoriesFilterName.keySet(), new Predicate<Category>() {
+
+      @Override
+      public boolean apply(Category input) {
+        return input == questionCategory.getCategory();
+      }
+    });
+    if(categoriesFilterName.isEmpty() || categories.isEmpty()) {
+      return false;
+    }
+    Collection<Question> questions = categoriesFilterName.get(categories.iterator().next());
+    Collection<Question> otherQuestions = Collections2.filter(questions, new Predicate<Question>() {
+
+      @Override
+      public boolean apply(Question input) {
+        return input != questionCategory.getQuestion();
+      }
+    });
+    return !otherQuestions.isEmpty();
   }
 
   private class SimpleAddPanel extends Panel {
@@ -374,7 +414,6 @@ public class CategoryListPanel extends Panel {
             return;
           }
           Category category = categoryWithQuestions.getCategory();
-          sharedCategories.add(category);
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), category);
           categoryNameFinder.setModelObject(null);
 
@@ -435,23 +474,25 @@ public class CategoryListPanel extends Panel {
     }
   }
 
-  private void addCategory(Question question, final Category category) {
+  private void addCategory(final Question question, final Category category) {
     final QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setCategory(category);
     question.addQuestionCategory(questionCategory);
 
-    // if category become shared we remove label of the other QuestionCategory to use the shared label.
-    if(!sharedCategories.contains(category)) return;
-    QuestionCategory otherQuestionCategory = findOnlyOtherOneQuestionCategory(category, questionCategory);
-    if(otherQuestionCategory == null) return;
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory, category);
-    ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
-    ListMultimap<Locale, KeyValue> elementLabelsC = localePropertiesModel.getObject().getElementLabels(category);
-    for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-      // we know here that category has only one keyValue which is "label"
-      KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
-      elementLabelsC.get(locale).get(0).setValue(kV.getValue());
-      kV.setValue("");
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
+
+    Collection<QuestionCategory> otherQuestionCategories = findOtherQuestionCategories(category, questionCategory);
+    if(!otherQuestionCategories.isEmpty()) {
+      QuestionCategory otherQuestionCategory = otherQuestionCategories.iterator().next();
+      localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory);
+
+      ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
+      ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
+      for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+        // we suppose that we have only one property in questionCategory : "label", then we use get(0)
+        KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
+        elementLabelsQC.get(locale).get(0).setValue(kV.getValue());
+      }
     }
   }
 
@@ -460,7 +501,7 @@ public class CategoryListPanel extends Panel {
    * @param questionCategory
    * @return QuestionCategory which share category with only questionCategory, return null otherwise
    */
-  private QuestionCategory findOnlyOtherOneQuestionCategory(final Category category, final QuestionCategory questionCategory) {
+  private Collection<QuestionCategory> findOtherQuestionCategories(final Category category, final QuestionCategory questionCategory) {
     Multimap<Category, Question> categories = QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findCategories(category.getName());
     Collection<QuestionCategory> filter = new ArrayList<QuestionCategory>();
     for(Question findQuestion : categories.get(category)) {
@@ -473,22 +514,18 @@ public class CategoryListPanel extends Panel {
         }
       }));
     }
-    // Mean we don't have to do anything because shared properties are already done
-    if(filter.size() != 1) return null;
-    QuestionCategory otherQuestionCategory = filter.iterator().next();
-    return otherQuestionCategory;
+    return filter;
   }
 
-  private synchronized void rollback(QuestionCategory modified, QuestionCategory original) {
+  private synchronized void rollback(QuestionCategory modified, ElementClone<QuestionCategory> original) {
     Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
     int index = question.getQuestionCategories().indexOf(modified);
     question.removeQuestionCategory(modified);
-    question.addQuestionCategory(original, index);
+    question.addQuestionCategory(original.getElement(), index);
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified, modified.getCategory());
-    localePropertiesUtils.load(localeProperties, questionnaire, original, original.getCategory());
+    localePropertiesModel.getObject().addElementLabel(original.getElement(), original.getLocaleProperties().getElementLabels(original.getElement()));
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
-
 }

@@ -35,7 +35,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -103,7 +102,7 @@ public abstract class CategoryWindow extends Panel {
 
     Questionnaire questionnaire = questionnaireModel.getObject();
     final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-    // questionnaireFinder.buildQuestionnaireCache();
+    questionnaireFinder.buildQuestionnaireCache();
     // StringBuilder sharedWithQuestions = new StringBuilder();
     // List<Category> sharedCategories = questionnaireFinder.findSharedCategories();
     // for(QuestionCategory qc : questionnaire.getQuestionnaireCache().getQuestionCategoryCache().values()) {
@@ -157,14 +156,8 @@ public abstract class CategoryWindow extends Panel {
     form.add(noAnswerCheckBox).add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
     form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
-    IModel<? extends IQuestionnaireElement> editPropertyElement = null;
-    if(questionnaireFinder.findSharedCategories().contains(category)) {
-      editPropertyElement = new PropertyModel<Category>(model, "category");
-    } else {
-      editPropertyElement = model;
-    }
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaire, editPropertyElement.getObject());
-    form.add(new LabelsPanel("labels", localePropertiesModel, editPropertyElement, feedbackPanel, feedbackWindow));
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaire, model.getObject());
+    form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     LoadableDetachableModel<List<OpenAnswerDefinition>> openAnswerModel = new LoadableDetachableModel<List<OpenAnswerDefinition>>() {
 

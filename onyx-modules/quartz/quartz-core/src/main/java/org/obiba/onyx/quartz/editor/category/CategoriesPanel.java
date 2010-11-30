@@ -58,7 +58,7 @@ public class CategoriesPanel extends Panel {
         return StringUtils.equals(layout.getInput(), gridLayout.getValue());
       }
     };
-    gridLayout.setLabel(new ResourceModel("NbRows"));
+    nbRowsField.setLabel(new ResourceModel("NbRows"));
     add(nbRowsField);
 
     add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));

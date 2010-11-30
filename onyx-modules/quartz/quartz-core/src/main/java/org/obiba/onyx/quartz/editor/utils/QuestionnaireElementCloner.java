@@ -9,16 +9,26 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.utils;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.IDataValidator;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  *
@@ -57,8 +67,25 @@ public class QuestionnaireElementCloner {
         clone.addUIArgument(entry.getKey(), (String) entry.getValue());
       }
     }
-
     return clone;
+  }
+
+  public static ElementClone<QuestionCategory> cloneQuestionCategory(QuestionCategory questionCategory, CloneSettings settings, LocaleProperties localeProperties) {
+    ListMultimap<Locale, KeyValue> elementLabel = localeProperties.getElementLabels(questionCategory);
+    ListMultimap<Locale, KeyValue> elementLabelClone = ArrayListMultimap.create();
+    if(elementLabel != null) {
+      for(Locale locale : localeProperties.getLocales()) {
+        List<KeyValue> keyValues = elementLabel.get(locale);
+        for(KeyValue keyValue : keyValues) {
+          elementLabelClone.put(locale, keyValue.duplicate());
+        }
+      }
+    }
+    LocaleProperties localePropertiesClone = new LocaleProperties();
+    localePropertiesClone.setLocales(new ArrayList<Locale>(localeProperties.getLocales()));
+    QuestionCategory clone = cloneQuestionCategory(questionCategory, settings);
+    localePropertiesClone.addElementLabel(clone, elementLabelClone);
+    return new ElementClone<QuestionCategory>(clone, localePropertiesClone);
   }
 
   public static QuestionCategory cloneQuestionCategory(QuestionCategory questionCategory, CloneSettings settings) {
@@ -85,7 +112,6 @@ public class QuestionnaireElementCloner {
         cloneOpenAnswer.addOpenAnswerDefinition(cloneOpenAnswerDefinition(child, settings));
       }
     }
-
     return clone;
   }
 
@@ -114,7 +140,39 @@ public class QuestionnaireElementCloner {
         clone.addVariableName(entry.getKey(), entry.getValue());
       }
     }
+
     return clone;
+  }
+
+  public static class ElementClone<T extends IQuestionnaireElement> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private T element;
+
+    private LocaleProperties localeProperties;
+
+    public ElementClone(T element, LocaleProperties localeProperties) {
+      this.element = element;
+      this.localeProperties = localeProperties;
+    }
+
+    public T getElement() {
+      return element;
+    }
+
+    public void setElement(T element) {
+      this.element = element;
+    }
+
+    public LocaleProperties getLocaleProperties() {
+      return localeProperties;
+    }
+
+    public void setLocaleProperties(LocaleProperties localeProperties) {
+      this.localeProperties = localeProperties;
+    }
+
   }
 
   public static class CloneSettings {
