@@ -49,6 +49,7 @@ import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 import org.obiba.onyx.quartz.editor.question.QuestionWindow;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -59,8 +60,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public class ArrayRowsPanel extends Panel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -125,7 +125,7 @@ public class ArrayRowsPanel extends Panel {
 
       @Override
       public void editItem(final Question question, AjaxRequestTarget target) {
-        final Question originalQuestion = QuestionnaireElementCloner.cloneQuestion(question, new CloneSettings(true, false));
+        final ElementClone<Question> originalQuestion = QuestionnaireElementCloner.clone(question, new CloneSettings(true, false), localePropertiesModel.getObject());
         questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override
           protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
@@ -134,13 +134,13 @@ public class ArrayRowsPanel extends Panel {
 
           @Override
           protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
-            roolback(questionParent, question, originalQuestion);
+            rollback(questionParent, question, originalQuestion);
           }
         });
         questionWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
           public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-            roolback(questionParent, question, originalQuestion);
+            rollback(questionParent, question, originalQuestion);
             return true;
           }
         });
@@ -271,15 +271,15 @@ public class ArrayRowsPanel extends Panel {
     }
   }
 
-  private synchronized void roolback(Question questionParent, Question modified, Question original) {
+  private synchronized void rollback(Question questionParent, Question modified, ElementClone<Question> original) {
     int index = questionParent.getQuestions().indexOf(modified);
     questionParent.removeQuestion(modified);
-    questionParent.addQuestion(original, index);
+    questionParent.addQuestion(original.getElement(), index);
 
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified);
-    localePropertiesUtils.load(localeProperties, questionnaire, original);
+    localePropertiesUtils.load(localeProperties, questionnaire, original.getElement());
 
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }

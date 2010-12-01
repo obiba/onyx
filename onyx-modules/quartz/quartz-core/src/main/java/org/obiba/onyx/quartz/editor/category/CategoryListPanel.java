@@ -40,7 +40,6 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -143,15 +142,7 @@ public class CategoryListPanel extends Panel {
     });
     add(new AjaxTabbedPanel("addTabs", tabs));
 
-    LoadableDetachableModel<List<QuestionCategory>> questionCategoryModel = new LoadableDetachableModel<List<QuestionCategory>>() {
-
-      @Override
-      protected List<QuestionCategory> load() {
-        return question.getQuestionCategories();
-      }
-    };
-
-    categoryList = new SortableList<QuestionCategory>("categories", questionCategoryModel) {
+    categoryList = new SortableList<QuestionCategory>("categories", question.getQuestionCategories()) {
 
       @Override
       public void onItemPopulation(QuestionCategory questionCategory) {
@@ -176,7 +167,7 @@ public class CategoryListPanel extends Panel {
 
       @Override
       public void editItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
-        final ElementClone<QuestionCategory> original = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory, new CloneSettings(true), localePropertiesModel.getObject());
+        final ElementClone<QuestionCategory> original = QuestionnaireElementCloner.clone(questionCategory, new CloneSettings(true), localePropertiesModel.getObject());
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
@@ -522,10 +513,11 @@ public class CategoryListPanel extends Panel {
     int index = question.getQuestionCategories().indexOf(modified);
     question.removeQuestionCategory(modified);
     question.addQuestionCategory(original.getElement(), index);
+    QuestionnaireElementCloner.copy(original.getElement().getCategory(), modified.getCategory(), new CloneSettings(true));
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified, modified.getCategory());
-    localePropertiesModel.getObject().addElementLabel(original.getElement(), original.getLocaleProperties().getElementLabels(original.getElement()));
+    QuestionnaireElementCloner.mergeProperties(localePropertiesModel.getObject(), original);
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 }

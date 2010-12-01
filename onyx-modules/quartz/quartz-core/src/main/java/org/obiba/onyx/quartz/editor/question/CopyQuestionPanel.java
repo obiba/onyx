@@ -46,6 +46,7 @@ import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -68,13 +69,11 @@ public abstract class CopyQuestionPanel extends Panel {
     COPY, SHARE;
   }
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -178,20 +177,20 @@ public abstract class CopyQuestionPanel extends Panel {
   private Question copyQuestion(LocaleProperties localeProperties) {
     Question question = (Question) getDefaultModelObject();
 
-    CloneSettings cloneSettings = new CloneSettings(false, true);
-    Question copy = QuestionnaireElementCloner.cloneQuestion(question, cloneSettings);
-    copy.setName(name.getModelObject());
-    copyLabels(localeProperties, question, copy);
-
-    copy.getQuestionCategories().clear();
+    localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), question);
+    ElementClone<Question> questionCopy = QuestionnaireElementCloner.clone(question, new CloneSettings(false, true), localeProperties);
+    questionCopy.getElement().setName(name.getModelObject());
+    QuestionnaireElementCloner.mergeProperties(localeProperties, questionCopy);
+    questionCopy.getElement().getQuestionCategories().clear();
     switch(categories.getModelObject()) {
     case COPY:
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-        QuestionCategory questionCategoryCopy = QuestionnaireElementCloner.cloneQuestionCategory(questionCategory, cloneSettings);
-        copy.addQuestionCategory(questionCategoryCopy);
-        copyLabels(localeProperties, questionCategory, questionCategoryCopy);
+        localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), questionCategory);
+        ElementClone<QuestionCategory> questionCategoryCopy = QuestionnaireElementCloner.clone(questionCategory, new CloneSettings(false, false, true), localeProperties);
+        questionCopy.getElement().addQuestionCategory(questionCategoryCopy.getElement());
+        QuestionnaireElementCloner.mergeProperties(localeProperties, questionCategoryCopy);
         for(OpenAnswerDefinition openAnswer : questionCategory.getCategory().getOpenAnswerDefinitionsByName().values()) {
-          OpenAnswerDefinition openAnswerCopy = questionCategoryCopy.getCategory().getOpenAnswerDefinitionsByName().get(openAnswer.getName());
+          OpenAnswerDefinition openAnswerCopy = questionCategoryCopy.getElement().getCategory().getOpenAnswerDefinitionsByName().get(openAnswer.getName());
           copyLabels(localeProperties, openAnswer, openAnswerCopy);
         }
       }
@@ -202,12 +201,12 @@ public abstract class CopyQuestionPanel extends Panel {
         QuestionCategory questionCategoryCopy = new QuestionCategory();
         questionCategoryCopy.setExportName(questionCategory.getExportName());
         questionCategoryCopy.setCategory(questionCategory.getCategory());
-        copy.addQuestionCategory(questionCategoryCopy);
+        questionCopy.getElement().addQuestionCategory(questionCategoryCopy);
         copyLabels(localeProperties, questionCategory, questionCategoryCopy);
       }
     }
 
-    return copy;
+    return questionCopy.getElement();
   }
 
   private void copyLabels(LocaleProperties localeProperties, IQuestionnaireElement original, IQuestionnaireElement copy) {

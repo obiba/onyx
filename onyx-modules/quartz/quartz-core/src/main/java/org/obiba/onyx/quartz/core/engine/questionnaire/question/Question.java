@@ -59,6 +59,9 @@ public class Question implements IHasQuestion {
 
   private String variableName;
 
+  public Question() {
+  }
+
   public Question(String name) {
     this.name = name;
   }

@@ -38,6 +38,9 @@ public class Category implements Serializable, IQuestionnaireElement {
     this.noAnswer = noAnswer;
   }
 
+  public Category() {
+  }
+
   public Category(String name) {
     this.name = name;
   }

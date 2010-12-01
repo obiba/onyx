@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -30,48 +31,87 @@ import org.obiba.onyx.wicket.data.IDataValidator;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-/**
- *
- */
 public class QuestionnaireElementCloner {
 
   /**
-   * Simple question clone
-   * @param question
+   * Return a clone of given element, clone contains element and his LocaleProperties
+   * @param questionCategory
+   * @param settings
+   * @param localeProperties
    * @return
    */
-  public static Question cloneQuestion(Question question, CloneSettings settings) {
-    Question clone = new Question(question.getName());
-    clone.setCondition(question.getCondition());
-    clone.setMaxCount(question.getMaxCount());
-    clone.setMinCount(question.getMinCount());
-    clone.setMultiple(question.isMultiple());
-    clone.setNumber(question.getNumber());
-    clone.setPage(question.getPage());
-    clone.setParentQuestion(question.getParentQuestion());
-    clone.setUIFactoryName(question.getUIFactoryName());
-    if(settings.isCloneVariableName()) clone.setVariableName(question.getVariableName());
-    clone.getQuestionCategories().addAll(question.getQuestionCategories());
+  public static ElementClone<QuestionCategory> clone(QuestionCategory questionCategory, CloneSettings settings, LocaleProperties localeProperties) {
+    return createElementClone(questionCategory, clone(questionCategory, settings), localeProperties);
+  }
 
-    if(settings.isCloneChildQuestion()) {
-      for(Question child : question.getQuestions()) {
-        clone.addQuestion(cloneQuestion(child, settings));
-      }
-    } else {
-      clone.getQuestions().addAll(question.getQuestions());
-    }
+  /**
+   * Return a clone of given element, clone contains element and his LocaleProperties
+   * @param openAnswer
+   * @param settings
+   * @param localeProperties
+   * @return
+   */
+  public static ElementClone<OpenAnswerDefinition> clone(OpenAnswerDefinition openAnswer, CloneSettings settings, LocaleProperties localeProperties) {
+    return createElementClone(openAnswer, clone(openAnswer, settings), localeProperties);
+  }
 
-    ValueMap uiArgumentsValueMap = question.getUIArgumentsValueMap();
-    if(uiArgumentsValueMap != null) {
-      for(Entry<String, Object> entry : uiArgumentsValueMap.entrySet()) {
-        clone.addUIArgument(entry.getKey(), (String) entry.getValue());
-      }
-    }
+  /**
+   * Return a clone of given element, clone contains element and his LocaleProperties
+   * @param question
+   * @param settings
+   * @param localeProperties
+   * @return
+   */
+  public static ElementClone<Question> clone(Question question, CloneSettings settings, LocaleProperties localeProperties) {
+    return createElementClone(question, clone(question, settings), localeProperties);
+  }
+
+  /**
+   * Add properties of clone into given localeProperties
+   * @param localeProperties
+   * @param clone
+   */
+  public static void mergeProperties(LocaleProperties localeProperties, ElementClone<? extends IQuestionnaireElement> clone) {
+    localeProperties.addElementLabel(clone.getElement(), clone.getLocaleProperties().getElementLabels(clone.getElement()));
+  }
+
+  private static Question clone(Question question, CloneSettings settings) {
+    Question clone = new Question();
+    copy(question, clone, settings);
     return clone;
   }
 
-  public static ElementClone<QuestionCategory> cloneQuestionCategory(QuestionCategory questionCategory, CloneSettings settings, LocaleProperties localeProperties) {
-    ListMultimap<Locale, KeyValue> elementLabel = localeProperties.getElementLabels(questionCategory);
+  private static void copy(Question from, Question to, CloneSettings settings) {
+    to.setName(from.getName());
+    to.setCondition(from.getCondition());
+    to.setMaxCount(from.getMaxCount());
+    to.setMinCount(from.getMinCount());
+    to.setMultiple(from.isMultiple());
+    to.setNumber(from.getNumber());
+    to.setPage(from.getPage());
+    to.setParentQuestion(from.getParentQuestion());
+    to.setUIFactoryName(from.getUIFactoryName());
+    if(settings.isCloneVariableName()) to.setVariableName(from.getVariableName());
+    to.getQuestionCategories().addAll(from.getQuestionCategories());
+
+    if(settings.isCloneChildQuestion()) {
+      for(Question child : from.getQuestions()) {
+        to.addQuestion(clone(child, settings));
+      }
+    } else {
+      to.getQuestions().addAll(from.getQuestions());
+    }
+
+    ValueMap uiArgumentsValueMap = from.getUIArgumentsValueMap();
+    if(uiArgumentsValueMap != null) {
+      for(Entry<String, Object> entry : uiArgumentsValueMap.entrySet()) {
+        to.addUIArgument(entry.getKey(), (String) entry.getValue());
+      }
+    }
+  }
+
+  private static <T extends IQuestionnaireElement> ElementClone<T> createElementClone(T element, T elementCloned, LocaleProperties localeProperties) {
+    ListMultimap<Locale, KeyValue> elementLabel = localeProperties.getElementLabels(element);
     ListMultimap<Locale, KeyValue> elementLabelClone = ArrayListMultimap.create();
     if(elementLabel != null) {
       for(Locale locale : localeProperties.getLocales()) {
@@ -83,67 +123,87 @@ public class QuestionnaireElementCloner {
     }
     LocaleProperties localePropertiesClone = new LocaleProperties();
     localePropertiesClone.setLocales(new ArrayList<Locale>(localeProperties.getLocales()));
-    QuestionCategory clone = cloneQuestionCategory(questionCategory, settings);
-    localePropertiesClone.addElementLabel(clone, elementLabelClone);
-    return new ElementClone<QuestionCategory>(clone, localePropertiesClone);
+    localePropertiesClone.addElementLabel(elementCloned, elementLabelClone);
+    return new ElementClone<T>(elementCloned, localePropertiesClone);
   }
 
-  public static QuestionCategory cloneQuestionCategory(QuestionCategory questionCategory, CloneSettings settings) {
+  private static QuestionCategory clone(QuestionCategory questionCategory, CloneSettings settings) {
     QuestionCategory clone = new QuestionCategory();
-    clone.setQuestion(questionCategory.getQuestion());
-    clone.setExportName(questionCategory.getExportName());
-
-    Category category = questionCategory.getCategory();
-    Category cloneCategory = new Category(category.getName());
-    clone.setCategory(cloneCategory);
-    cloneCategory.setEscape(category.isEscape());
-    cloneCategory.setNoAnswer(category.isNoAnswer());
-    if(settings.isCloneVariableName()) {
-      for(Entry<String, String> entry : category.getVariableNames().entrySet()) {
-        cloneCategory.addVariableName(entry.getKey(), entry.getValue());
-      }
-    }
-
-    OpenAnswerDefinition openAnswer = category.getOpenAnswerDefinition();
-    if(openAnswer != null) {
-      OpenAnswerDefinition cloneOpenAnswer = cloneOpenAnswerDefinition(openAnswer, settings);
-      cloneCategory.setOpenAnswerDefinition(cloneOpenAnswer);
-      for(OpenAnswerDefinition child : openAnswer.getOpenAnswerDefinitions()) {
-        cloneOpenAnswer.addOpenAnswerDefinition(cloneOpenAnswerDefinition(child, settings));
-      }
-    }
+    copy(questionCategory, clone, settings);
     return clone;
   }
 
-  public static OpenAnswerDefinition cloneOpenAnswerDefinition(OpenAnswerDefinition openAnswer, CloneSettings settings) {
-    OpenAnswerDefinition clone = new OpenAnswerDefinition(openAnswer.getName(), openAnswer.getDataType());
-    clone.setDataSource(openAnswer.getDataSource());
-    clone.setRequired(openAnswer.isRequired());
-    clone.setUnit(openAnswer.getUnit());
-    for(IDataValidator<?> validator : openAnswer.getDataValidators()) {
-      clone.addDataValidator(validator);
+  private static void copy(QuestionCategory from, QuestionCategory to, CloneSettings settings) {
+    to.setQuestion(from.getQuestion());
+    to.setExportName(from.getExportName());
+    Category category = new Category();
+    to.setCategory(category);
+    copy(from.getCategory(), category, settings);
+  }
+
+  public static void copy(Category from, Category to, CloneSettings settings) {
+    to.setName(from.getName());
+    to.setEscape(from.isEscape());
+    to.setNoAnswer(from.isNoAnswer());
+    if(settings.isCloneVariableName()) {
+      for(Entry<String, String> entry : from.getVariableNames().entrySet()) {
+        to.addVariableName(entry.getKey(), entry.getValue());
+      }
     }
-    ValueMap uiArgumentsValueMap = openAnswer.getUIArgumentsValueMap();
+
+    OpenAnswerDefinition openAnswer = from.getOpenAnswerDefinition();
+    if(openAnswer != null) {
+      OpenAnswerDefinition cloneOpenAnswer = clone(openAnswer, settings);
+      to.setOpenAnswerDefinition(cloneOpenAnswer);
+      for(OpenAnswerDefinition child : openAnswer.getOpenAnswerDefinitions()) {
+        cloneOpenAnswer.addOpenAnswerDefinition(clone(child, settings));
+      }
+    }
+  }
+
+  private static OpenAnswerDefinition clone(OpenAnswerDefinition openAnswer, CloneSettings settings) {
+    OpenAnswerDefinition clone = new OpenAnswerDefinition();
+    copy(openAnswer, clone, settings);
+    return clone;
+  }
+
+  private static void copy(OpenAnswerDefinition from, OpenAnswerDefinition to, CloneSettings settings) {
+    if(!settings.isRenameOpenAnswer()) {
+      to.setName(from.getName());
+    } else {
+      to.setName(from.getName() + UUID.randomUUID());
+    }
+    to.setDataType(from.getDataType());
+    to.setDataSource(from.getDataSource());
+    to.setRequired(from.isRequired());
+    to.setUnit(from.getUnit());
+    for(IDataValidator<?> validator : from.getDataValidators()) {
+      to.addDataValidator(validator);
+    }
+    ValueMap uiArgumentsValueMap = from.getUIArgumentsValueMap();
     if(uiArgumentsValueMap != null) {
       for(Entry<String, Object> entry : uiArgumentsValueMap.entrySet()) {
-        clone.addUIArgument(entry.getKey(), (String) entry.getValue());
+        to.addUIArgument(entry.getKey(), (String) entry.getValue());
       }
     }
-    for(ComparingDataSource dataSource : openAnswer.getValidationDataSources()) {
-      clone.addValidationDataSource(dataSource);
+    for(ComparingDataSource dataSource : from.getValidationDataSources()) {
+      to.addValidationDataSource(dataSource);
     }
-    for(Data data : openAnswer.getDefaultValues()) {
-      clone.addDefaultValue(data);
+    for(Data data : from.getDefaultValues()) {
+      to.addDefaultValue(data);
     }
     if(settings.isCloneVariableName()) {
-      for(Entry<String, String> entry : openAnswer.getVariableNames().entrySet()) {
-        clone.addVariableName(entry.getKey(), entry.getValue());
+      for(Entry<String, String> entry : from.getVariableNames().entrySet()) {
+        to.addVariableName(entry.getKey(), entry.getValue());
       }
     }
-
-    return clone;
   }
 
+  /**
+   * Represents an IQuestionnaireElement and his own LocaleProperties
+   * 
+   * @param <T>
+   */
   public static class ElementClone<T extends IQuestionnaireElement> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -179,15 +239,22 @@ public class QuestionnaireElementCloner {
 
     private boolean cloneVariableName = true;
 
-    private boolean cloneChildQuestion;
+    private boolean cloneChildQuestion = false;
+
+    private boolean renameOpenAnswer = false;
 
     public CloneSettings(boolean cloneVariableName) {
-      this(cloneVariableName, false);
+      this(cloneVariableName, false, false);
     }
 
     public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion) {
+      this(cloneVariableName, cloneChildQuestion, false);
+    }
+
+    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer) {
       this.cloneVariableName = cloneVariableName;
       this.cloneChildQuestion = cloneChildQuestion;
+      this.renameOpenAnswer = renameOpenAnswer;
     }
 
     public boolean isCloneVariableName() {
@@ -206,6 +273,13 @@ public class QuestionnaireElementCloner {
       this.cloneChildQuestion = cloneChildQuestion;
     }
 
-  }
+    public boolean isRenameOpenAnswer() {
+      return renameOpenAnswer;
+    }
 
+    public void setRenameOpenAnswer(boolean renameOpenAnswer) {
+      this.renameOpenAnswer = renameOpenAnswer;
+    }
+
+  }
 }

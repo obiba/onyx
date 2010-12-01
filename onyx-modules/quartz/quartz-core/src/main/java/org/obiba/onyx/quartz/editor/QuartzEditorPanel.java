@@ -17,8 +17,8 @@ import org.obiba.onyx.quartz.editor.questionnaire.QuestionnaireListPanel;
 @SuppressWarnings("serial")
 public class QuartzEditorPanel extends Panel {
 
-  /** allows letter, numbers, dashes and underscores */
-  public static final Pattern ELEMENT_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-]*$");
+  /** allows letter, numbers and underscores */
+  public static final Pattern ELEMENT_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9_]+");
 
   public QuartzEditorPanel(String id) {
     super(id);

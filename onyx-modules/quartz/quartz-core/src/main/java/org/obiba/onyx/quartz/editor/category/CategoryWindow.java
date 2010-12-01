@@ -51,6 +51,7 @@ import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
@@ -184,7 +185,7 @@ public abstract class CategoryWindow extends Panel {
 
       @Override
       public void editItem(final OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
-        final OpenAnswerDefinition original = QuestionnaireElementCloner.cloneOpenAnswerDefinition(openAnswer, new CloneSettings(true));
+        final ElementClone<OpenAnswerDefinition> original = QuestionnaireElementCloner.clone(openAnswer, new CloneSettings(true), localePropertiesModel.getObject());
         openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
           @Override
           protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
@@ -305,22 +306,22 @@ public abstract class CategoryWindow extends Panel {
 
   }
 
-  private synchronized void rollback(OpenAnswerDefinition modified, OpenAnswerDefinition original) {
+  private synchronized void rollback(OpenAnswerDefinition modified, ElementClone<OpenAnswerDefinition> original) {
     Category category = ((QuestionCategory) getDefaultModelObject()).getCategory();
-    if(category.getOpenAnswerDefinition().equals(modified)) { // parent open answer
-      category.setOpenAnswerDefinition(original);
+    if(category.getOpenAnswerDefinition()==modified) { // parent open answer
+      category.setOpenAnswerDefinition(original.getElement());
       for(OpenAnswerDefinition child : modified.getOpenAnswerDefinitions()) {
-        original.addOpenAnswerDefinition(child);
+        original.getElement().addOpenAnswerDefinition(child);
       }
     } else {
       int index = category.getOpenAnswerDefinition().getOpenAnswerDefinitions().indexOf(modified);
       category.getOpenAnswerDefinition().removeOpenAnswerDefinition(modified);
-      category.getOpenAnswerDefinition().addOpenAnswerDefinition(original, index);
+      category.getOpenAnswerDefinition().addOpenAnswerDefinition(original.getElement(), index);
     }
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified);
-    localePropertiesUtils.load(localeProperties, questionnaire, original, original);
+    QuestionnaireElementCloner.mergeProperties(localePropertiesModel.getObject(), original);
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 
