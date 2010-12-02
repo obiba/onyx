@@ -514,10 +514,10 @@ public class CategoryListPanel extends Panel {
     question.removeQuestionCategory(modified);
     question.addQuestionCategory(original.getElement(), index);
     QuestionnaireElementCloner.copy(original.getElement().getCategory(), modified.getCategory(), new CloneSettings(true));
+    original.getElement().setCategory(modified.getCategory());
     Questionnaire questionnaire = questionnaireModel.getObject();
-    LocaleProperties localeProperties = localePropertiesModel.getObject();
-    localePropertiesUtils.remove(localeProperties, questionnaire, modified, modified.getCategory());
-    QuestionnaireElementCloner.mergeProperties(localePropertiesModel.getObject(), original);
+    localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaire, modified, modified.getCategory());
+    QuestionnaireElementCloner.addProperties(original, localePropertiesModel.getObject());
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 }

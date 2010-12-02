@@ -63,6 +63,8 @@ import com.google.common.collect.Iterables;
 @SuppressWarnings("serial")
 public abstract class CopyQuestionPanel extends Panel {
 
+  public static final String COPY_OF = "CopyOf";
+
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   private enum CategoryAction {
@@ -104,7 +106,7 @@ public abstract class CopyQuestionPanel extends Panel {
     form.setMultiPart(false);
 
     final Question question = model.getObject();
-    String newName = new StringResourceModel("CopyOf", CopyQuestionPanel.this, null, new Object[] { question.getName() }).getString();
+    String newName = new StringResourceModel(COPY_OF, CopyQuestionPanel.this, null, new Object[] { question.getName() }).getString();
     name = new TextField<String>("name", new Model<String>(newName));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
@@ -180,7 +182,7 @@ public abstract class CopyQuestionPanel extends Panel {
     localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), question);
     ElementClone<Question> questionCopy = QuestionnaireElementCloner.clone(question, new CloneSettings(false, true), localeProperties);
     questionCopy.getElement().setName(name.getModelObject());
-    QuestionnaireElementCloner.mergeProperties(localeProperties, questionCopy);
+    QuestionnaireElementCloner.addProperties(questionCopy, localeProperties);
     questionCopy.getElement().getQuestionCategories().clear();
     switch(categories.getModelObject()) {
     case COPY:
@@ -188,9 +190,18 @@ public abstract class CopyQuestionPanel extends Panel {
         localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), questionCategory);
         ElementClone<QuestionCategory> questionCategoryCopy = QuestionnaireElementCloner.clone(questionCategory, new CloneSettings(false, false, true), localeProperties);
         questionCopy.getElement().addQuestionCategory(questionCategoryCopy.getElement());
-        QuestionnaireElementCloner.mergeProperties(localeProperties, questionCategoryCopy);
-        for(OpenAnswerDefinition openAnswer : questionCategory.getCategory().getOpenAnswerDefinitionsByName().values()) {
-          OpenAnswerDefinition openAnswerCopy = questionCategoryCopy.getElement().getCategory().getOpenAnswerDefinitionsByName().get(openAnswer.getName());
+        QuestionnaireElementCloner.addProperties(questionCategoryCopy, localeProperties);
+
+        for(final OpenAnswerDefinition openAnswer : questionCategory.getCategory().getOpenAnswerDefinitionsByName().values()) {
+          String key = Iterables.find(questionCategoryCopy.getElement().getCategory().getOpenAnswerDefinitionsByName().keySet(), new Predicate<String>() {
+
+            @Override
+            public boolean apply(String inputKey) {
+              return inputKey.startsWith("_" + openAnswer.getName() + "_");
+            }
+
+          });
+          OpenAnswerDefinition openAnswerCopy = questionCategoryCopy.getElement().getCategory().getOpenAnswerDefinitionsByName().get(key);
           copyLabels(localeProperties, openAnswer, openAnswerCopy);
         }
       }

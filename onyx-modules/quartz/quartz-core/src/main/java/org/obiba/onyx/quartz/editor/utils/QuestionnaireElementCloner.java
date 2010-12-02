@@ -68,10 +68,10 @@ public class QuestionnaireElementCloner {
 
   /**
    * Add properties of clone into given localeProperties
-   * @param localeProperties
    * @param clone
+   * @param localeProperties
    */
-  public static void mergeProperties(LocaleProperties localeProperties, ElementClone<? extends IQuestionnaireElement> clone) {
+  public static void addProperties(ElementClone<? extends IQuestionnaireElement> clone, LocaleProperties localeProperties) {
     localeProperties.addElementLabel(clone.getElement(), clone.getLocaleProperties().getElementLabels(clone.getElement()));
   }
 
@@ -171,7 +171,7 @@ public class QuestionnaireElementCloner {
     if(!settings.isRenameOpenAnswer()) {
       to.setName(from.getName());
     } else {
-      to.setName(from.getName() + UUID.randomUUID());
+      to.setName("_" + from.getName() + "_" + UUID.randomUUID().toString().replace("-", "_"));
     }
     to.setDataType(from.getDataType());
     to.setDataSource(from.getDataSource());

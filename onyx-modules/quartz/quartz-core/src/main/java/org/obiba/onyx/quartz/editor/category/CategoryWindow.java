@@ -164,15 +164,15 @@ public abstract class CategoryWindow extends Panel {
 
       @Override
       protected List<OpenAnswerDefinition> load() {
-        List<OpenAnswerDefinition> list = new ArrayList<OpenAnswerDefinition>();
         if(category.getOpenAnswerDefinition() != null) {
           if(CollectionUtils.isEmpty(category.getOpenAnswerDefinition().getOpenAnswerDefinitions())) {
+            List<OpenAnswerDefinition> list = new ArrayList<OpenAnswerDefinition>();
             list.add(category.getOpenAnswerDefinition());
-          } else {
-            list.addAll(category.getOpenAnswerDefinition().getOpenAnswerDefinitions());
+            return list;
           }
+          return category.getOpenAnswerDefinition().getOpenAnswerDefinitions();
         }
-        return list;
+        return new ArrayList<OpenAnswerDefinition>();
       }
     };
 
@@ -308,7 +308,7 @@ public abstract class CategoryWindow extends Panel {
 
   private synchronized void rollback(OpenAnswerDefinition modified, ElementClone<OpenAnswerDefinition> original) {
     Category category = ((QuestionCategory) getDefaultModelObject()).getCategory();
-    if(category.getOpenAnswerDefinition()==modified) { // parent open answer
+    if(category.getOpenAnswerDefinition() == modified) { // parent open answer
       category.setOpenAnswerDefinition(original.getElement());
       for(OpenAnswerDefinition child : modified.getOpenAnswerDefinitions()) {
         original.getElement().addOpenAnswerDefinition(child);
@@ -321,7 +321,7 @@ public abstract class CategoryWindow extends Panel {
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified);
-    QuestionnaireElementCloner.mergeProperties(localePropertiesModel.getObject(), original);
+    QuestionnaireElementCloner.addProperties(original, localePropertiesModel.getObject());
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 
