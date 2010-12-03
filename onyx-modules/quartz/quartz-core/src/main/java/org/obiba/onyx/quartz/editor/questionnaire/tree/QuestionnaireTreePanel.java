@@ -92,18 +92,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private static final String ID_PREFIX = "element_";
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 

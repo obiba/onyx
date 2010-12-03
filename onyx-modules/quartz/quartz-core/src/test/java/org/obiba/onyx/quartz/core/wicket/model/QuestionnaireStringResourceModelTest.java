@@ -92,7 +92,7 @@ public class QuestionnaireStringResourceModelTest {
     messageSource.addMessage("Questionnaire.Questionnaire.label", locale, "Test questionnaire label");
     messageSource.addMessage("Questionnaire.Questionnaire.description", locale, "Test questionnaire description with arguments: {0}, {1}");
     messageSource.addMessage("QuestionCategory.Q1.DONT_KNOW.label", locale, "${Category.DONT_KNOW.label}");
-    messageSource.addMessage("Category.DONT_KNOW.label", locale, "Don''t know");
+    messageSource.addMessage("Category.DONT_KNOW.label", locale, "Don't know");
 
     propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
 

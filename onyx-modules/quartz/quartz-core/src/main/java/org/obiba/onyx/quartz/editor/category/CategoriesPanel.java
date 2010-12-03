@@ -39,8 +39,12 @@ public class CategoriesPanel extends Panel {
 
     final RadioGroup<Layout> layout = new RadioGroup<Layout>("layout", new PropertyModel<Layout>(model, "layout"));
     layout.setLabel(new ResourceModel("Layout"));
-    layout.setRequired(true);
     add(layout);
+
+    Radio<Layout> defaultColumnLayout = new Radio<Layout>("defaultColumnLayout", new Model<Layout>(null));
+    defaultColumnLayout.setLabel(new ResourceModel("Layout.default"));
+    layout.add(defaultColumnLayout);
+    layout.add(new SimpleFormComponentLabel("defaultColumnLayoutLabel", defaultColumnLayout));
 
     Radio<Layout> singleColumnLayout = new Radio<Layout>("singleColumnLayout", new Model<Layout>(Layout.SINGLE_COLUMN));
     singleColumnLayout.setLabel(new ResourceModel("Layout.single"));
