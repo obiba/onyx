@@ -113,7 +113,7 @@ public class LocalePropertiesUtils {
         for(KeyValue keyValue : keyValueList) {
           String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(element, keyValue.getKey());
           String value = keyValue.getValue();
-          properties.setProperty(fullKey, value != null ? value : "");
+          properties.setProperty(fullKey, value != null ? value.replaceAll("\n", "<br/>") : "");
         }
       }
       mapLocaleProperties.put(locale, properties);
