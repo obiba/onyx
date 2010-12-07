@@ -4,12 +4,14 @@
 		<table class="keyValueTable">
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="categoryLabel"></label></td>
+				<td class="keyValueTableKey">
+					<input wicket:id="category" type="text" size="40" autocomplete="off" />
+				</td>
 				<td>
-					<input wicket:id="category" type="text" size="40" autocomplete="off" /> 
-					<a wicket:id="link"><img wicket:id="img" class="action" /></a>
+					<button style="background-color:transparent;border-color:transparent;" type="button" wicket:id="addButton"><img wicket:id="img" class="action" /></button>
 				</td>
 			</tr>	
 		</table>		
 	</form>
-
+	
 </wicket:panel>

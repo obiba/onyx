@@ -28,7 +28,9 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -104,18 +106,15 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class OpenAnswerPanel extends Panel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OnyxSettings onyxSettings;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OpenAnswerUtils openAnswerUtils;
 
@@ -197,7 +196,8 @@ public class OpenAnswerPanel extends Panel {
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-          if(questionnaireFinder.findOpenAnswerDefinition(validatable.getValue()) != null) {
+          boolean contains = category.getOpenAnswerDefinitionsByName().keySet().contains(validatable.getValue());
+          if(contains || questionnaireFinder.findOpenAnswerDefinition(validatable.getValue()) != null) {
             error(validatable, "OpenAnswerAlreadyExists");
           }
         }
@@ -538,7 +538,7 @@ public class OpenAnswerPanel extends Panel {
       setFieldType();
       form.add(defaultValue);
       form.add(new SimpleFormComponentLabel("defaultValueLabel", defaultValue));
-      AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link") {
+      AjaxButton simpleAddButton = new AjaxButton("addButton", form) {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           if(defaultValue.getModelObject() == null) return;
@@ -567,10 +567,14 @@ public class OpenAnswerPanel extends Panel {
           feedbackWindow.show(target);
         }
       };
-
-      simpleAddLink.add(new Image("img", Images.ADD));
-      form.add(simpleAddLink);
+      defaultValue.add(new AttributeAppender("onkeypress", true, new Model<String>(buildPressEnterScript(simpleAddButton)), " "));
+      simpleAddButton.add(new Image("img", Images.ADD));
+      form.add(simpleAddButton);
     }
+  }
+
+  private String buildPressEnterScript(AjaxButton addButton) {
+    return "if (event.keyCode == 13) {document.getElementById('" + addButton.getMarkupId() + "').click(); return false;} else {return true;};";
   }
 
   @SuppressWarnings("unchecked")

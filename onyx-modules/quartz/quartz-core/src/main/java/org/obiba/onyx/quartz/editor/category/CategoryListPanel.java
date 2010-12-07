@@ -23,7 +23,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
@@ -273,9 +275,9 @@ public class CategoryListPanel extends Panel {
       form.add(categoryName);
       form.add(new SimpleFormComponentLabel("categoryLabel", categoryName));
 
-      AjaxSubmitLink addLink = new AjaxSubmitLink("link", form) {
-        @Override
+      AjaxButton addButton = new AjaxButton("addButton", form) {
         @SuppressWarnings("unchecked")
+        @Override
         protected void onSubmit(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
           String name = categoryName.getModelObject();
           if(StringUtils.isBlank(name)) return;
@@ -294,10 +296,11 @@ public class CategoryListPanel extends Panel {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
-      };
 
-      addLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
-      form.add(addLink);
+      };
+      categoryName.add(new AttributeAppender("onkeypress", true, new Model<String>(buildPressEnterScript(addButton)), " "));
+      addButton.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(addButton);
     }
   }
 
@@ -390,7 +393,7 @@ public class CategoryListPanel extends Panel {
       form.add(categoryNameFinder);
       form.add(new SimpleFormComponentLabel("categoryLabel", categoryNameFinder));
 
-      AjaxSubmitLink addLink = new AjaxSubmitLink("link", form) {
+      AjaxButton addButton = new AjaxButton("addButton", form) {
         @SuppressWarnings("unchecked")
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
@@ -419,8 +422,9 @@ public class CategoryListPanel extends Panel {
         }
       };
 
-      addLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
-      form.add(addLink);
+      categoryNameFinder.add(new AttributeAppender("onkeypress", true, new Model<String>(buildPressEnterScript(addButton)), " "));
+      addButton.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(addButton);
     }
 
     private class CategoryWithQuestions implements Serializable {
@@ -448,6 +452,10 @@ public class CategoryListPanel extends Panel {
         return category.getName() + " (" + StringUtils.abbreviate(sb.toString(), 50) + ")";
       }
     }
+  }
+
+  private String buildPressEnterScript(AjaxButton addButton) {
+    return "if (event.keyCode == 13) {document.getElementById('" + addButton.getMarkupId() + "').click(); return false;} else {return true;};";
   }
 
   private boolean checkIfCategoryAlreadyExists(Question question, String name) {
@@ -513,7 +521,7 @@ public class CategoryListPanel extends Panel {
     int index = question.getQuestionCategories().indexOf(modified);
     question.removeQuestionCategory(modified);
     question.addQuestionCategory(original.getElement(), index);
-    QuestionnaireElementCloner.copy(original.getElement().getCategory(), modified.getCategory(), new CloneSettings(true));
+    QuestionnaireElementCloner.copy(original.getElement().getCategory(), modified.getCategory(), new CloneSettings(true, false, false, false));
     original.getElement().setCategory(modified.getCategory());
     Questionnaire questionnaire = questionnaireModel.getObject();
     localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaire, modified, modified.getCategory());

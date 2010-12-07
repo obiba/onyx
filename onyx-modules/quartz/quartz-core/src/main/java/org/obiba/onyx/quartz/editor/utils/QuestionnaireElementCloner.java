@@ -153,11 +153,17 @@ public class QuestionnaireElementCloner {
 
     OpenAnswerDefinition openAnswer = from.getOpenAnswerDefinition();
     if(openAnswer != null) {
-      OpenAnswerDefinition cloneOpenAnswer = clone(openAnswer, settings);
-      to.setOpenAnswerDefinition(cloneOpenAnswer);
-      for(OpenAnswerDefinition child : openAnswer.getOpenAnswerDefinitions()) {
-        cloneOpenAnswer.addOpenAnswerDefinition(clone(child, settings));
+      if(settings.isCloneChildOpenAnswer()) {
+        OpenAnswerDefinition cloneOpenAnswer = clone(openAnswer, settings);
+        to.setOpenAnswerDefinition(cloneOpenAnswer);
+        for(OpenAnswerDefinition child : openAnswer.getOpenAnswerDefinitions()) {
+          cloneOpenAnswer.addOpenAnswerDefinition(clone(child, settings));
+        }
+      } else {
+        to.setOpenAnswerDefinition(openAnswer);
       }
+    } else {
+      to.setOpenAnswerDefinition(openAnswer);
     }
   }
 
@@ -243,6 +249,11 @@ public class QuestionnaireElementCloner {
 
     private boolean renameOpenAnswer = false;
 
+    /**
+     * used to clone open answer of a category
+     */
+    private boolean cloneChildOpenAnswer = true;
+
     public CloneSettings(boolean cloneVariableName) {
       this(cloneVariableName, false, false);
     }
@@ -255,6 +266,13 @@ public class QuestionnaireElementCloner {
       this.cloneVariableName = cloneVariableName;
       this.cloneChildQuestion = cloneChildQuestion;
       this.renameOpenAnswer = renameOpenAnswer;
+    }
+
+    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer, boolean cloneChildOpenAnswer) {
+      this.cloneVariableName = cloneVariableName;
+      this.cloneChildQuestion = cloneChildQuestion;
+      this.renameOpenAnswer = renameOpenAnswer;
+      this.cloneChildOpenAnswer = cloneChildOpenAnswer;
     }
 
     public boolean isCloneVariableName() {
@@ -281,5 +299,12 @@ public class QuestionnaireElementCloner {
       this.renameOpenAnswer = renameOpenAnswer;
     }
 
+    public boolean isCloneChildOpenAnswer() {
+      return cloneChildOpenAnswer;
+    }
+
+    public void setCloneChildOpenAnswer(boolean cloneChildOpenAnswer) {
+      this.cloneChildOpenAnswer = cloneChildOpenAnswer;
+    }
   }
 }
