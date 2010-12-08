@@ -281,13 +281,9 @@ public class ArrayRowsPanel extends Panel {
     int index = questionParent.getQuestions().indexOf(modified);
     questionParent.removeQuestion(modified);
     questionParent.addQuestion(original.getElement(), index);
-
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified);
     localePropertiesUtils.load(localeProperties, questionnaire, original.getElement());
-
-    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
-
 }

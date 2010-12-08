@@ -325,7 +325,6 @@ public abstract class CategoryWindow extends Panel {
     LocaleProperties localeProperties = localePropertiesModel.getObject();
     localePropertiesUtils.remove(localeProperties, questionnaire, modified);
     QuestionnaireElementCloner.addProperties(original, localePropertiesModel.getObject());
-    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 
   public abstract void onSave(AjaxRequestTarget target, final QuestionCategory questionCategory);

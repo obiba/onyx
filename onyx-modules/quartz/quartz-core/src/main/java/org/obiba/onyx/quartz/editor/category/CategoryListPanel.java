@@ -236,7 +236,7 @@ public class CategoryListPanel extends Panel {
    */
   private boolean isShared(final QuestionCategory questionCategory) {
     QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-    questionnaireFinder.buildQuestionnaireCache();
+    questionnaireModel.getObject().setQuestionnaireCache(null);
     Multimap<Category, Question> categoriesFilterName = questionnaireFinder.findCategories(questionCategory.getCategory().getName());
     Collection<Category> categories = Collections2.filter(categoriesFilterName.keySet(), new Predicate<Category>() {
 
@@ -526,6 +526,5 @@ public class CategoryListPanel extends Panel {
     Questionnaire questionnaire = questionnaireModel.getObject();
     localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaire, modified, modified.getCategory());
     QuestionnaireElementCloner.addProperties(original, localePropertiesModel.getObject());
-    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
   }
 }
