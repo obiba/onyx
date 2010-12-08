@@ -94,8 +94,8 @@ public abstract class CopyQuestionPanel extends Panel {
     this.questionnaireModel = questionnaireModel;
 
     final Questionnaire questionnaire = questionnaireModel.getObject();
+    questionnaire.setQuestionnaireCache(null);
     final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-    questionnaireFinder.buildQuestionnaireCache();
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -150,7 +150,7 @@ public abstract class CopyQuestionPanel extends Panel {
         pageDropDown.getModelObject().addQuestion(copy);
         try {
           questionnairePersistenceUtils.persist(questionnaire, localeProperties);
-          QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+          questionnaire.setQuestionnaireCache(null);
           CopyQuestionPanel.this.onSave(target, copy);
           modalWindow.close(target);
         } catch(Exception e) {

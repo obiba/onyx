@@ -167,6 +167,8 @@ public class OpenAnswerPanel extends Panel {
 
   private TextField<String> variable;
 
+  private String initialName;
+
   public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
@@ -187,6 +189,7 @@ public class OpenAnswerPanel extends Panel {
     validatorWindow.setTitle(new ResourceModel("Validator"));
     add(validatorWindow);
 
+    initialName = model.getObject().getName();
     final TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
@@ -194,11 +197,16 @@ public class OpenAnswerPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
-          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-          boolean contains = (category != null && category.getOpenAnswerDefinitionsByName().keySet().contains(validatable.getValue()));
-          if(contains || questionnaireFinder.findOpenAnswerDefinition(validatable.getValue()) != null) {
-            error(validatable, "OpenAnswerAlreadyExists");
+        if(!StringUtils.equalsIgnoreCase(initialName, validatable.getValue())) {
+          if(category != null) {
+            Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
+            boolean alreadyContains = (openAnswerDefinitionsByName.containsKey(validatable.getValue()) && openAnswerDefinitionsByName.get(validatable.getValue()) != openAnswer);
+            QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+            questionnaireModel.getObject().setQuestionnaireCache(null);
+            OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder.findOpenAnswerDefinition(validatable.getValue());
+            if(alreadyContains || findOpenAnswerDefinition != null && findOpenAnswerDefinition != openAnswer) {
+              error(validatable, "OpenAnswerAlreadyExists");
+            }
           }
         }
       }

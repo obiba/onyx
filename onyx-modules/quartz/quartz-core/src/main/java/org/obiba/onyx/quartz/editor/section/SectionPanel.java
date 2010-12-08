@@ -42,13 +42,11 @@ public abstract class SectionPanel extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -83,7 +81,8 @@ public abstract class SectionPanel extends Panel {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equals(model.getObject().getName(), validatable.getValue())) {
-          if(QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findSection(validatable.getValue()) != null) {
+          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+          if(questionnaireFinder.findSection(validatable.getValue()) != null) {
             error(validatable, "SectionAlreadyExists");
           }
         }

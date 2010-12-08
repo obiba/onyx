@@ -64,12 +64,15 @@ public abstract class QuestionPanel extends Panel {
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     initialName = model.getObject().getElement().getName();
+
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equals(initialName, validatable.getValue())) {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-          if(questionnaireFinder.findQuestion(validatable.getValue()) != null) {
+          questionnaireModel.getObject().setQuestionnaireCache(null);
+          Question findQuestion = questionnaireFinder.findQuestion(validatable.getValue());
+          if(findQuestion != null && findQuestion != model.getObject().getElement()) {
             error(validatable, "QuestionAlreadyExists");
           }
         }

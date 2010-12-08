@@ -177,6 +177,7 @@ public class QuestionnaireElementCloner {
     if(!settings.isRenameOpenAnswer()) {
       to.setName(from.getName());
     } else {
+      // TODO UUID to ensure unique name (other solution ?)
       to.setName("_" + from.getName() + "_" + UUID.randomUUID().toString().replace("-", "_"));
     }
     to.setDataType(from.getDataType());

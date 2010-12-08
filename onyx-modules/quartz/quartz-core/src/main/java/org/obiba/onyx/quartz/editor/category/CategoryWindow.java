@@ -83,6 +83,8 @@ public abstract class CategoryWindow extends Panel {
 
   private final IModel<LocaleProperties> localePropertiesModel;
 
+  private final String initialName;
+
   public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
@@ -101,9 +103,6 @@ public abstract class CategoryWindow extends Panel {
     final Question question = questionCategory.getQuestion();
     final Category category = questionCategory.getCategory();
 
-    Questionnaire questionnaire = questionnaireModel.getObject();
-    final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-    questionnaireFinder.buildQuestionnaireCache();
     // StringBuilder sharedWithQuestions = new StringBuilder();
     // List<Category> sharedCategories = questionnaireFinder.findSharedCategories();
     // for(QuestionCategory qc : questionnaire.getQuestionnaireCache().getQuestionCategoryCache().values()) {
@@ -122,16 +121,20 @@ public abstract class CategoryWindow extends Panel {
     openAnswerWindow.setResizable(true);
     openAnswerWindow.setTitle(new ResourceModel("OpenAnswerDefinition"));
     add(openAnswerWindow);
-
+    initialName = model.getObject().getCategory().getName();
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "category.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
+
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(model.getObject().getCategory().getName(), validatable.getValue())) {
-          if(questionnaireFinder.findCategory(validatable.getValue()) != null) {
+        if(!StringUtils.equalsIgnoreCase(initialName, validatable.getValue())) {
+          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+          questionnaireModel.getObject().setQuestionnaireCache(null);
+          Category findCategory = questionnaireFinder.findCategory(validatable.getValue());
+          if(findCategory != null && findCategory != category) {
             error(validatable, "CategoryAlreadyExists");
           }
         }
@@ -157,7 +160,7 @@ public abstract class CategoryWindow extends Panel {
     form.add(noAnswerCheckBox).add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
     form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaire, model.getObject());
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject());
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
     LoadableDetachableModel<List<OpenAnswerDefinition>> openAnswerModel = new LoadableDetachableModel<List<OpenAnswerDefinition>>() {

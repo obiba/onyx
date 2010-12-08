@@ -15,6 +15,7 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionT
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -58,13 +59,11 @@ public abstract class EditQuestionPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
@@ -148,7 +147,8 @@ public abstract class EditQuestionPanel extends Panel {
             public void onSave(AjaxRequestTarget target) {
               super.onSave(target);
               if(categories.isEmpty()) {
-                Category category = new Category(openAnswerDefinition.getName());
+                // TODO UUID to ensure unique name (other solution ?)
+                Category category = new Category(openAnswerDefinition.getName() + UUID.randomUUID().toString().replace("-", "_"));
                 category.setOpenAnswerDefinition(openAnswerDefinition);
                 QuestionCategory questionCategory = new QuestionCategory();
                 questionCategory.setCategory(category);
