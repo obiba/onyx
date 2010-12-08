@@ -42,10 +42,13 @@ public class VariableNameBehavior extends AbstractBehavior {
       variable.setModelObject(generateVariableName(parentQuestion, question, category, name.getModelObject()));
       variable.add(new AttributeModifier("class", true, new Model<String>("autoDefined")));
       final AjaxEventBehavior updateVariableNameBehavior = new OnChangeAjaxBehavior() {
+
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
-          variable.setModelObject(generateVariableName(parentQuestion, question, category, name.getModelObject()));
-          target.addComponent(variable);
+          if(!variableNameDefined) {
+            variable.setModelObject(generateVariableName(parentQuestion, question, category, name.getModelObject()));
+            target.addComponent(variable);
+          }
         }
       };
       name.add(updateVariableNameBehavior);
@@ -57,8 +60,6 @@ public class VariableNameBehavior extends AbstractBehavior {
           variable.add(new AttributeModifier("class", true, new Model<String>("userDefined")));
           variableNameDefined = true;
           target.addComponent(variable);
-          name.remove(updateVariableNameBehavior);
-          variable.remove(this);
         }
 
         @Override

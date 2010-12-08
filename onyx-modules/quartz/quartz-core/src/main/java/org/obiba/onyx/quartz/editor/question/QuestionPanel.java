@@ -54,6 +54,8 @@ public abstract class QuestionPanel extends Panel {
 
   private final VariableNameBehavior variableNameBehavior;
 
+  private final String initialName;
+
   public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType) {
     super(id, model);
 
@@ -61,10 +63,11 @@ public abstract class QuestionPanel extends Panel {
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
+    initialName = model.getObject().getElement().getName();
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equals(model.getObject().getElement().getName(), validatable.getValue())) {
+        if(!StringUtils.equals(initialName, validatable.getValue())) {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           if(questionnaireFinder.findQuestion(validatable.getValue()) != null) {
             error(validatable, "QuestionAlreadyExists");
