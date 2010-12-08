@@ -16,7 +16,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
@@ -195,7 +197,7 @@ public class ArrayRowsPanel extends Panel {
       form.add(questionName);
       form.add(new SimpleFormComponentLabel("questionLabel", questionName));
 
-      AjaxSubmitLink simpleAddLink = new AjaxSubmitLink("link", form) {
+      AjaxButton simpleAddButton = new AjaxButton("simpleAddButton", form) {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           addQuestion(questionName.getModelObject());
@@ -210,10 +212,14 @@ public class ArrayRowsPanel extends Panel {
           feedbackWindow.show(target);
         }
       };
-
-      simpleAddLink.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
-      form.add(simpleAddLink);
+      questionName.add(new AttributeAppender("onkeypress", true, new Model<String>(buildPressEnterScript(simpleAddButton)), " "));
+      simpleAddButton.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      form.add(simpleAddButton);
     }
+  }
+
+  private String buildPressEnterScript(AjaxButton addButton) {
+    return "if (event.keyCode == 13) {document.getElementById('" + addButton.getMarkupId() + "').click(); return false;} else {return true;};";
   }
 
   private class BulkAddPanel extends Panel {

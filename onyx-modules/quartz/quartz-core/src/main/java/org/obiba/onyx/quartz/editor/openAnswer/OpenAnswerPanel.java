@@ -196,7 +196,7 @@ public class OpenAnswerPanel extends Panel {
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equalsIgnoreCase(model.getObject().getName(), validatable.getValue())) {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-          boolean contains = category.getOpenAnswerDefinitionsByName().keySet().contains(validatable.getValue());
+          boolean contains = (category != null && category.getOpenAnswerDefinitionsByName().keySet().contains(validatable.getValue()));
           if(contains || questionnaireFinder.findOpenAnswerDefinition(validatable.getValue()) != null) {
             error(validatable, "OpenAnswerAlreadyExists");
           }
