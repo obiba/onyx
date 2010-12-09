@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.editor.question.array;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,6 +56,9 @@ import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClon
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  *
@@ -261,10 +265,18 @@ public class ArrayRowsPanel extends Panel {
     }
   }
 
-  private boolean checkIfQuestionAlreadyExists(String name) {
+  private boolean checkIfQuestionAlreadyExists(final String name) {
     questionnaireModel.getObject().setQuestionnaireCache(null); // invalidate cache
     QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-    if(questionnaireFinder.findQuestion(name) != null) {
+    Question parent = ((EditedQuestion) getDefaultModelObject()).getElement();
+    Collection<Question> sameNameQuestions = Collections2.filter(parent.getQuestions(), new Predicate<Question>() {
+
+      @Override
+      public boolean apply(Question input) {
+        return input.getName().equals(name);
+      }
+    });
+    if(!sameNameQuestions.isEmpty() || questionnaireFinder.findQuestion(name) != null) {
       return true;
     }
     return false;

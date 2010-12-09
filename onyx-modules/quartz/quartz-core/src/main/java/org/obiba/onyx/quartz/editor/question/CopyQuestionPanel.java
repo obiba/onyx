@@ -94,8 +94,8 @@ public abstract class CopyQuestionPanel extends Panel {
     this.questionnaireModel = questionnaireModel;
 
     final Questionnaire questionnaire = questionnaireModel.getObject();
-    questionnaire.setQuestionnaireCache(null);
     final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+    questionnaire.setQuestionnaireCache(null);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");

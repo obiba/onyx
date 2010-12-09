@@ -120,7 +120,7 @@ public class QuestionnaireDataSource implements IDataSource {
 
       if(questionnaireBundle != null) {
         QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireBundle.getQuestionnaire());
-
+        questionnaireBundle.getQuestionnaire().setQuestionnaireCache(null);
         if(questionnaireFinder != null) {
           OpenAnswerDefinition openAnswerDefinitionObject = questionnaireFinder.findOpenAnswerDefinition(openAnswerDefinition);
           return (openAnswerDefinitionObject != null) ? openAnswerDefinitionObject.getUnit() : null;

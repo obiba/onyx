@@ -111,6 +111,7 @@ public class CategoryListPanel extends Panel {
     final Question question = model.getObject().getElement();
 
     final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    questionnaireModel.getObject().setQuestionnaireCache(null);
     questionsByCategory = questionnaireFinder.findQuestionsByCategory();
     questionnaireCategories = new ArrayList<Category>(questionsByCategory.keySet());
     Collections.sort(questionnaireCategories, new QuestionnaireElementComparator());
@@ -501,7 +502,9 @@ public class CategoryListPanel extends Panel {
    * @return QuestionCategory which share category with only questionCategory, return null otherwise
    */
   private Collection<QuestionCategory> findOtherQuestionCategories(final Category category, final QuestionCategory questionCategory) {
-    Multimap<Category, Question> categories = QuestionnaireFinder.getInstance(questionnaireModel.getObject()).findCategories(category.getName());
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    questionnaireModel.getObject().setQuestionnaireCache(null);
+    Multimap<Category, Question> categories = questionnaireFinder.findCategories(category.getName());
     Collection<QuestionCategory> filter = new ArrayList<QuestionCategory>();
     for(Question findQuestion : categories.get(category)) {
       List<QuestionCategory> questionCategories = findQuestion.getQuestionCategories();
