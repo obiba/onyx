@@ -1,7 +1,5 @@
 <wicket:panel>
-
-	<script type="text/javascript" wicket:id="toArrayCallback"></script>
-	
+		
 	<div class="sortableList">
 
 		<span wicket:id="buttons">
@@ -9,6 +7,7 @@
 		</span>
 		
 		<ul wicket:id="listContainer" class="sortable">
+		<wicket:container wicket:id="sortableJs"></wicket:container>
 			<li wicket:id="listView" class="ui-state-default">
 				<table class="item">
 					<tr>

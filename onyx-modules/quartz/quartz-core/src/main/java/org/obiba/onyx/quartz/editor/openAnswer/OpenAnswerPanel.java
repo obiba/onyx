@@ -461,7 +461,7 @@ public class OpenAnswerPanel extends Panel {
         }
         setMinMaxLabels(value == null ? null : valueOf);
         target.addComponent(minMaxContainer);
-        target.addComponent(defaultValuesList);
+        defaultValuesList.refreshList(target);
       }
 
       private void showFeedbackErrorAndReset(AjaxRequestTarget target) {
@@ -566,7 +566,7 @@ public class OpenAnswerPanel extends Panel {
           OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", localePropertiesModel, (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow));
           target.addComponent(labelsPanel);
           target.addComponent(defaultValue);
-          target.addComponent(defaultValuesList);
+          defaultValuesList.refreshList(target);
         }
 
         @Override
@@ -647,7 +647,7 @@ public class OpenAnswerPanel extends Panel {
           OpenAnswerPanel.this.addOrReplace(labelsPanel);
           target.addComponent(labelsPanel);
           target.addComponent(defaultValues);
-          target.addComponent(defaultValuesList);
+          defaultValuesList.refreshList(target);
         }
 
         @Override

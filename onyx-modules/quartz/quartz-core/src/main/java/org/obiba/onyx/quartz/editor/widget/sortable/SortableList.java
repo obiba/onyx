@@ -27,7 +27,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.IHeaderResponse;
-import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
@@ -35,9 +34,13 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.util.collections.MiniMap;
+import org.apache.wicket.util.template.JavaScriptTemplate;
+import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.obiba.onyx.wicket.Images;
 import org.springframework.util.StringUtils;
 
@@ -69,7 +72,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     super(id, model);
 
     add(CSSPackageResource.getHeaderContribution(SortableList.class, "SortableList.css"));
-    add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
+    // add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
 
     ListView<T> listView = new ListView<T>("listView", model) {
 
@@ -104,15 +107,41 @@ public abstract class SortableList<T extends Serializable> extends Panel {
       }
     };
 
-    listContainer = new WebMarkupContainer("listContainer");
+    listContainer = new WebMarkupContainer("listContainer") {
+      protected void onBeforeRender() {
+        super.onBeforeRender();
+
+        final IModel<Map<String, Object>> variablesModel = new AbstractReadOnlyModel<Map<String, Object>>() {
+          private Map<String, Object> variables;
+
+          @Override
+          public Map<String, Object> getObject() {
+            if(variables == null) {
+              this.variables = new MiniMap<String, Object>(3);
+              variables.put("listMarkupId", listContainer.getMarkupId());
+              variables.put("callbackUrl", toArrayBehavior.getCallbackUrl());
+            }
+            return variables;
+          }
+        };
+        PackagedTextTemplate jsTemplate = new PackagedTextTemplate(SortableList.class, "SortableList.js");
+        final Label myScript = new Label("sortableJs", new JavaScriptTemplate(jsTemplate).asString(variablesModel.getObject()));
+        myScript.setEscapeModelStrings(false);
+
+        listContainer.addOrReplace(myScript);
+      };
+    };
+    listContainer.add(toArrayBehavior = new ToArrayBehavior());
     listContainer.setOutputMarkupId(true);
     listContainer.add(listView);
     add(listContainer);
 
+    // add(TextTemplateHeaderContributor.forJavaScript(SortableList.class, "SortableList.js", variablesModel));
+
     listContainer.add(new AbstractBehavior() {
       @Override
       public void renderHead(IHeaderResponse response) {
-        response.renderOnLoadJavascript("Wicket.Sortable.create('" + listContainer.getMarkupId() + "')");
+        response.renderOnLoadJavascript("Wicket.Sortable.create" + listContainer.getMarkupId() + "('" + listContainer.getMarkupId() + "')");
       }
     });
 
@@ -121,24 +150,11 @@ public abstract class SortableList<T extends Serializable> extends Panel {
         item.add(new ButtonFragment("button", item.getModel()));
       }
     });
-
-    add(toArrayBehavior = new ToArrayBehavior());
-    toArrayCallback = new Label("toArrayCallback", "");
-    toArrayCallback.setOutputMarkupId(true);
-    toArrayCallback.setEscapeModelStrings(false);
-    add(toArrayCallback);
+    listContainer.addOrReplace(new WebMarkupContainer("sortableJs"));
   }
 
   public void refreshList(AjaxRequestTarget target) {
     target.addComponent(listContainer);
-  }
-
-  @Override
-  protected void onBeforeRender() {
-    super.onBeforeRender();
-    toArrayCallback.setDefaultModelObject("Wicket.Sortable.toStringArray = function(items) {\n" + //
-    "  wicketAjaxGet('" + toArrayBehavior.getCallbackUrl(true) + "&items='+ items, function() { }, function() { alert('Cannot communicate with server...'); });" + //
-    "\n}");
   }
 
   protected class ToArrayBehavior extends AbstractDefaultAjaxBehavior {
@@ -150,7 +166,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
       List<T> modelList = (List<T>) SortableList.this.getDefaultModelObject();
       modelList.clear();
       for(String markupId : StringUtils.commaDelimitedListToStringArray(items)) {
-        modelList.add(itemByMarkupId.get(markupId));
+        if(org.apache.commons.lang.StringUtils.isNotBlank(markupId)) modelList.add(itemByMarkupId.get(markupId));
       }
     }
   }
