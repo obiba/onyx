@@ -207,7 +207,7 @@ public class ArrayRowsPanel extends Panel {
           addQuestion(questionName.getModelObject());
           questionName.setModelObject(null);
           target.addComponent(questionName);
-          target.addComponent(questionList);
+          questionList.refreshList(target);
         }
 
         @Override
@@ -250,7 +250,7 @@ public class ArrayRowsPanel extends Panel {
           }
           questions.setModelObject(null);
           target.addComponent(questions);
-          target.addComponent(questionList);
+          questionList.refreshList(target);
         }
 
         @Override
