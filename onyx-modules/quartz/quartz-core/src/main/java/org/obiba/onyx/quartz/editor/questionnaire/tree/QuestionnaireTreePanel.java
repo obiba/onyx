@@ -921,12 +921,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
     } else if(node.isPage()) {
       Page page = questionnaireFinder.findPage(node.getName());
       page.getSection().removePage(page);
-    } else if(node.isNoBoilerPlateQuestion()) {
+    } else if(node.isAnyQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
-      question.getPage().removeQuestion(question);
-    } else {
-      Question question = questionnaireFinder.findQuestion(node.getName());
-      question.getParentQuestion().removeQuestion(question);
+      if(question.getParentQuestion() != null) {
+        question.getParentQuestion().removeQuestion(question);
+      } else {
+        question.getPage().removeQuestion(question);
+      }
     }
     try {
       persitQuestionnaire(target);
