@@ -305,7 +305,7 @@ public class Question implements IHasQuestion {
   @Override
   public void removeQuestion(Question question) {
     if(question != null && getQuestions().remove(question)) {
-      question.setPage(null);
+      question.setParentQuestion(null);
     }
   }
 

@@ -289,7 +289,7 @@ public class CategoryListPanel extends Panel {
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name);
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
-          target.addComponent(categoryList);
+          categoryList.refreshList(target);
         }
 
         @Override
@@ -333,7 +333,7 @@ public class CategoryListPanel extends Panel {
           }
           categories.setModelObject(null);
           target.addComponent(categories);
-          target.addComponent(categoryList);
+          categoryList.refreshList(target);
         }
 
         @Override
@@ -413,7 +413,7 @@ public class CategoryListPanel extends Panel {
           categoryNameFinder.setModelObject(null);
 
           target.addComponent(categoryNameFinder);
-          target.addComponent(categoryList);
+          categoryList.refreshList(target);
         }
 
         @Override

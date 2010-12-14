@@ -18,6 +18,7 @@ import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.editor.QuartzImages;
@@ -30,7 +31,7 @@ public class TreeNode implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public enum NodeType {
-    QUESTIONNAIRE(QuartzImages.QUESTIONNAIRE), SECTION(QuartzImages.SECTION), PAGE(QuartzImages.PAGE), QUESTION(QuartzImages.QUESTION), VARIABLES(QuartzImages.VARIABLES), VARIABLE((QuartzImages.VARIABLE));
+    QUESTIONNAIRE(QuartzImages.QUESTIONNAIRE), SECTION(QuartzImages.SECTION), PAGE(QuartzImages.PAGE), QUESTION(QuartzImages.QUESTION), QUESTIONBOILERPLATE(QuartzImages.QUESTION), VARIABLES(QuartzImages.VARIABLES), VARIABLE((QuartzImages.VARIABLE));
 
     private ResourceReference icon;
 
@@ -42,13 +43,18 @@ public class TreeNode implements Serializable {
       return icon;
     }
 
-    public static NodeType get(Class<? extends IQuestionnaireElement> clazz) {
-      if(Questionnaire.class.isAssignableFrom(clazz)) return NodeType.QUESTIONNAIRE;
-      if(Section.class.isAssignableFrom(clazz)) return NodeType.SECTION;
-      if(Page.class.isAssignableFrom(clazz)) return NodeType.PAGE;
-      if(Question.class.isAssignableFrom(clazz)) return NodeType.QUESTION;
-      if(Variable.class.isAssignableFrom(clazz)) return NodeType.VARIABLE;
-      throw new IllegalArgumentException(clazz + " not supported");
+    public static NodeType get(IQuestionnaireElement element) {
+      if(element.getClass().isAssignableFrom(Questionnaire.class)) return NodeType.QUESTIONNAIRE;
+      if(element.getClass().isAssignableFrom(Section.class)) return NodeType.SECTION;
+      if(element.getClass().isAssignableFrom(Page.class)) return NodeType.PAGE;
+      if(element.getClass().isAssignableFrom(Question.class)) {
+        if(((Question) element).getType() == QuestionType.BOILER_PLATE) {
+          return NodeType.QUESTIONBOILERPLATE;
+        }
+        return NodeType.QUESTION;
+      }
+      if(element.getClass().isAssignableFrom(Variable.class)) return NodeType.VARIABLE;
+      throw new IllegalArgumentException(element + " not supported");
     }
   }
 
@@ -106,8 +112,16 @@ public class TreeNode implements Serializable {
     return nodeType == NodeType.PAGE;
   }
 
-  public boolean isQuestion() {
+  public boolean isAnyQuestion() {
+    return isNoBoilerPlateQuestion() || isQuestionBoilerPlate();
+  }
+
+  public boolean isNoBoilerPlateQuestion() {
     return nodeType == NodeType.QUESTION;
+  }
+
+  public boolean isQuestionBoilerPlate() {
+    return nodeType == NodeType.QUESTIONBOILERPLATE;
   }
 
   public boolean isVariable() {

@@ -220,6 +220,7 @@ public abstract class CopyQuestionPanel extends Panel {
     return questionCopy.getElement();
   }
 
+  // TODO merge with QuestionnaireElementCloner
   private void copyLabels(LocaleProperties localeProperties, IQuestionnaireElement original, IQuestionnaireElement copy) {
     localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), original, copy);
     for(Entry<Locale, KeyValue> entry : localeProperties.getElementLabels(original).entries()) {

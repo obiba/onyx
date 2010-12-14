@@ -113,17 +113,19 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private final Label moveCallback;
 
-  private final AbstractDefaultAjaxBehavior editBehavior;
+  // Available when context menu will be OK
 
-  private final Label editCallback;
+  // private final AbstractDefaultAjaxBehavior editBehavior;
 
-  private final AbstractDefaultAjaxBehavior deleteBehavior;
+  // private final Label editCallback;
 
-  private final Label deleteCallback;
+  // private final AbstractDefaultAjaxBehavior deleteBehavior;
 
-  private final AbstractDefaultAjaxBehavior addChildBehavior;
+  // private final Label deleteCallback;
 
-  private final Label addChildCallback;
+  // private final AbstractDefaultAjaxBehavior addChildBehavior;
+
+  // private final Label addChildCallback;
 
   private final AbstractDefaultAjaxBehavior previewBehavior;
 
@@ -212,23 +214,23 @@ public abstract class QuestionnaireTreePanel extends Panel {
     moveCallback.setEscapeModelStrings(false);
     add(moveCallback);
 
-    add(editBehavior = new EditBehavior());
-    editCallback = new Label("editCallback", "");
-    editCallback.setOutputMarkupId(true);
-    editCallback.setEscapeModelStrings(false);
-    add(editCallback);
+    // add(editBehavior = new EditBehavior());
+    // editCallback = new Label("editCallback", "");
+    // editCallback.setOutputMarkupId(true);
+    // editCallback.setEscapeModelStrings(false);
+    // add(editCallback);
+    //
+    // add(deleteBehavior = new DeleteBehavior());
+    // deleteCallback = new Label("deleteCallback", "");
+    // deleteCallback.setOutputMarkupId(true);
+    // deleteCallback.setEscapeModelStrings(false);
+    // add(deleteCallback);
 
-    add(deleteBehavior = new DeleteBehavior());
-    deleteCallback = new Label("deleteCallback", "");
-    deleteCallback.setOutputMarkupId(true);
-    deleteCallback.setEscapeModelStrings(false);
-    add(deleteCallback);
-
-    add(addChildBehavior = new AddChildBehavior());
-    addChildCallback = new Label("addChildCallback", "");
-    addChildCallback.setOutputMarkupId(true);
-    addChildCallback.setEscapeModelStrings(false);
-    add(addChildCallback);
+    // add(addChildBehavior = new AddChildBehavior());
+    // addChildCallback = new Label("addChildCallback", "");
+    // addChildCallback.setOutputMarkupId(true);
+    // addChildCallback.setEscapeModelStrings(false);
+    // add(addChildCallback);
 
     add(previewBehavior = new PreviewBehavior());
     previewCallback = new Label("previewCallback", "");
@@ -239,7 +241,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
   }
 
   private String findNodeId(IQuestionnaireElement element) {
-    NodeType elementType = NodeType.get(element.getClass());
+    NodeType elementType = NodeType.get(element);
     for(Entry<String, TreeNode> entry : elements.entrySet()) {
       TreeNode treeNode = entry.getValue();
       if(elementType == treeNode.getNodeType() && treeNode.getName().equals(element.getName())) {
@@ -260,17 +262,21 @@ public abstract class QuestionnaireTreePanel extends Panel {
     "  wicketAjaxGet('" + moveBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&newParentId='+ newParentId +'&newPosition='+ newPosition +'&previousParentId='+ previousParentId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
     "\n}");
 
-    editCallback.setDefaultModelObject("Wicket.QTree.editElement = function(nodeId) {\n" + //
-    "  wicketAjaxGet('" + editBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
-    "\n}");
+    // editCallback.setDefaultModelObject("Wicket.QTree.editElement = function(nodeId) {\n" + //
+    // "  wicketAjaxGet('" + editBehavior.getCallbackUrl(true) +
+    // "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    // "\n}");
 
-    deleteCallback.setDefaultModelObject("Wicket.QTree.deleteElement = function(nodeId) {\n" + //
-    "  wicketAjaxGet('" + deleteBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
-    "\n}");
+    // deleteCallback.setDefaultModelObject("Wicket.QTree.deleteElement = function(nodeId) {\n" + //
+    // "  wicketAjaxGet('" + deleteBehavior.getCallbackUrl(true) +
+    // "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
+    // "\n}");
 
-    addChildCallback.setDefaultModelObject("Wicket.QTree.addChild = function(nodeId, type) {\n" + //
-    "  wicketAjaxGet('" + addChildBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId +'&type='+ type, function() { }, function() { alert('Cannot communicate with server...'); });" + //
-    "\n}");
+    // addChildCallback.setDefaultModelObject("Wicket.QTree.addChild = function(nodeId, type) {\n" + //
+    // "  wicketAjaxGet('" + addChildBehavior.getCallbackUrl(true) +
+    // "&nodeId='+ nodeId +'&type='+ type, function() { }, function() { alert('Cannot communicate with server...'); });"
+    // + //
+    // "\n}");
 
     previewCallback.setDefaultModelObject("Wicket.QTree.previewNode = function(nodeId) {\n" + //
     "  wicketAjaxGet('" + previewBehavior.getCallbackUrl(true) + "&nodeId='+ nodeId, function() { }, function() { alert('Cannot communicate with server...'); });" + //
@@ -326,11 +332,29 @@ public abstract class QuestionnaireTreePanel extends Panel {
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
         }
-      } else if(node.isQuestion() && newNode.isPage()) {
+      } else if(node.isAnyQuestion() && newNode.isPage()) {
         Question question = questionnaireFinder.findQuestion(node.getName());
         Page newParentPage = questionnaireFinder.findPage(newNode.getName());
-        question.getPage().removeQuestion(question);
+        if(question.getParentQuestion() != null) {
+          question.getParentQuestion().removeQuestion(question);
+        } else {
+          question.getPage().removeQuestion(question);
+        }
         newParentPage.addQuestion(question, Math.min(position, newParentPage.getQuestions().size()));
+        try {
+          persitQuestionnaire(target);
+        } catch(Exception e) {
+          log.error("Cannot persist questionnaire", e);
+        }
+      } else if(node.isQuestionBoilerPlate() && newNode.isQuestionBoilerPlate()) {
+        Question question = questionnaireFinder.findQuestion(node.getName());
+        Question newParentQuestion = questionnaireFinder.findQuestion(newNode.getName());
+        if(question.getParentQuestion() != null) {
+          question.getParentQuestion().removeQuestion(question);
+        } else {
+          question.getPage().removeQuestion(question);
+        }
+        newParentQuestion.addQuestion(question, Math.min(position, newParentQuestion.getQuestions().size()));
         try {
           persitQuestionnaire(target);
         } catch(Exception e) {
@@ -360,7 +384,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         editSection(nodeId, node, questionnaireModel, questionnaireFinder, target);
       } else if(node.isPage()) {
         editPage(nodeId, node, questionnaireModel, questionnaireFinder, target);
-      } else if(node.isQuestion()) {
+      } else if(node.isAnyQuestion()) {
         editQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target);
       } else if(node.isVariable()) {
         editVariable(nodeId, node, questionnaireModel, target);
@@ -403,36 +427,41 @@ public abstract class QuestionnaireTreePanel extends Panel {
     }
   }
 
-  protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
-    @Override
-    protected void respond(final AjaxRequestTarget target) {
-      Request request = RequestCycle.get().getRequest();
-      final String nodeId = request.getParameter("nodeId");
-      String type = request.getParameter("type");
-      log.info("Add " + type + " to " + nodeId);
+  /**
+   * Available when context menu will be OK
+   */
+  // protected class AddChildBehavior extends AbstractDefaultAjaxBehavior {
+  // @Override
+  // protected void respond(final AjaxRequestTarget target) {
+  // Request request = RequestCycle.get().getRequest();
+  // final String nodeId = request.getParameter("nodeId");
+  // String type = request.getParameter("type");
+  // log.info("Add " + type + " to " + nodeId);
+  //
+  // @SuppressWarnings("unchecked")
+  // final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>)
+  // QuestionnaireTreePanel.this.getDefaultModel();
+  // final Questionnaire questionnaire = questionnaireModel.getObject();
+  // final TreeNode node = elements.get(nodeId);
+  // final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
+  // questionnaire.setQuestionnaireCache(null);
+  // if(node.isHasSection() && "section".equals(type)) {
+  // addSection(nodeId, node, questionnaireModel, questionnaireFinder, target);
+  // } else if(node.isSection() && "page".equals(type)) {
+  // addPage(nodeId, node, questionnaireModel, questionnaireFinder, target);
+  // } else if(node.isPage() && "question".equals(type)) {
+  // addQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target);
+  // } else if("variable".equals(type)) {
+  // addVariable(nodeId, node, questionnaireModel, target);
+  // }
+  // }
+  // }
 
-      @SuppressWarnings("unchecked")
-      final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
-      final Questionnaire questionnaire = questionnaireModel.getObject();
-      final TreeNode node = elements.get(nodeId);
-      final QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-      questionnaire.setQuestionnaireCache(null);
-      if(node.isHasSection() && "section".equals(type)) {
-        addSection(nodeId, node, questionnaireModel, questionnaireFinder, target);
-      } else if(node.isSection() && "page".equals(type)) {
-        addPage(nodeId, node, questionnaireModel, questionnaireFinder, target);
-      } else if(node.isPage() && "question".equals(type)) {
-        addQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target);
-      } else if("variable".equals(type)) {
-        addVariable(nodeId, node, questionnaireModel, target);
-      }
-    }
-  }
-
-  private JsonNode createNode(IQuestionnaireElement element, NodeType nodeType) {
-    String type = WordUtils.capitalizeFully(nodeType.name());
+  private JsonNode createNode(IQuestionnaireElement element) {
+    NodeType nodeType = NodeType.get(element);
+    String typeStr = WordUtils.capitalizeFully(nodeType.name());
     TreeNode treeNode = new TreeNode(element.getName(), nodeType);
-    JsonNodeAttribute attr = new JsonNodeAttribute(addElement(treeNode), type, type + " " + element.getName());
+    JsonNodeAttribute attr = new JsonNodeAttribute(addElement(treeNode), typeStr, typeStr + " " + element.getName());
     attr.setClazz("jstree-leaf");
     JsonNode newNode = new JsonNode();
     newNode.setData(new Data(treeNode.getName(), RequestCycle.get().urlFor(treeNode.getNodeType().getIcon()).toString()));
@@ -522,8 +551,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       });
       show(pagePreviewPanel, title, QuartzImages.PAGE, menuItems, target);
 
-    } else if(node.isQuestion()) {
-
+    } else if(node.isAnyQuestion()) {
       final Question question = questionnaireFinder.findQuestion(node.getName());
       final Model<Question> questionModel = new Model<Question>(question);
       QuestionPreviewPanel questionPreviewPanel = new QuestionPreviewPanel(getShownComponentId(), questionModel, questionnaireModel);
@@ -535,29 +563,29 @@ public abstract class QuestionnaireTreePanel extends Panel {
           editQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target);
         }
       });
-      menuItems.add(new MenuItem(new StringResourceModel("Copy", QuestionnaireTreePanel.this, null), Images.COPY) {
-        @Override
-        public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-          copyQuestionWindow.setTitle(new StringResourceModel("Question.Copy", QuestionnaireTreePanel.this, null, new Object[] { question.getName() }));
-          CopyQuestionPanel copyQuestionPanel = new CopyQuestionPanel("content", questionModel, questionnaireModel, copyQuestionWindow) {
-            @Override
-            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question newQuestion) {
-              // add question to tree
-              JsonNode jsonNode = createNode(newQuestion, NodeType.QUESTION);
-              target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + findNodeId(newQuestion.getPage()) + "'), 'last'," + jsonNode.toString() + ");");
-              target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
-            }
-          };
-          copyQuestionWindow.setContent(copyQuestionPanel);
-          copyQuestionWindow.show(target);
-        }
-      });
-
       if(question.getType() == QuestionType.BOILER_PLATE) {
         menuItems.add(new MenuItem(new StringResourceModel("Add.Question", QuestionnaireTreePanel.this, null), QuartzImages.QUESTION_ADD) {
           @Override
           public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             addQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target, QuestionType.BOILER_PLATE);
+          }
+        });
+      } else {
+        menuItems.add(new MenuItem(new StringResourceModel("Copy", QuestionnaireTreePanel.this, null), Images.COPY) {
+          @Override
+          public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            copyQuestionWindow.setTitle(new StringResourceModel("Question.Copy", QuestionnaireTreePanel.this, null, new Object[] { question.getName() }));
+            CopyQuestionPanel copyQuestionPanel = new CopyQuestionPanel("content", questionModel, questionnaireModel, copyQuestionWindow) {
+              @Override
+              protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question newQuestion) {
+                // add question to tree
+                JsonNode jsonNode = createNode(newQuestion);
+                target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + findNodeId(newQuestion.getPage()) + "'), 'last'," + jsonNode.toString() + ");");
+                target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
+              }
+            };
+            copyQuestionWindow.setContent(copyQuestionPanel);
+            copyQuestionWindow.show(target);
           }
         });
       }
@@ -678,7 +706,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persist(target);
           editingElement = false;
-          JsonNode jsonNode = createNode(section, NodeType.SECTION);
+          JsonNode jsonNode = createNode(section);
           String position = hasSection instanceof Questionnaire ? String.valueOf(((Questionnaire) hasSection).getSections().size() - 1) : "last";
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), '" + position + "'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
@@ -733,7 +761,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persist(target);
           editingElement = false;
-          JsonNode jsonNode = createNode(page, NodeType.PAGE);
+          JsonNode jsonNode = createNode(page);
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
@@ -792,7 +820,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persist(target);
           editingElement = false;
-          JsonNode jsonNode = createNode(question, NodeType.QUESTION);
+          JsonNode jsonNode = createNode(question);
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
@@ -893,9 +921,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
     } else if(node.isPage()) {
       Page page = questionnaireFinder.findPage(node.getName());
       page.getSection().removePage(page);
-    } else if(node.isQuestion()) {
+    } else if(node.isNoBoilerPlateQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
       question.getPage().removeQuestion(question);
+    } else {
+      Question question = questionnaireFinder.findQuestion(node.getName());
+      question.getParentQuestion().removeQuestion(question);
     }
     try {
       persitQuestionnaire(target);
@@ -926,7 +957,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private JsonNode populateNode(IQuestionnaireElement element) {
 
-    TreeNode treeNode = new TreeNode(element.getName(), NodeType.get(element.getClass()));
+    TreeNode treeNode = new TreeNode(element.getName(), NodeType.get(element));
 
     JsonNode jsonNode = new JsonNode();
     jsonNode.setData(new Data(treeNode.getName(), RequestCycle.get().urlFor(treeNode.getNodeType().getIcon()).toString()));

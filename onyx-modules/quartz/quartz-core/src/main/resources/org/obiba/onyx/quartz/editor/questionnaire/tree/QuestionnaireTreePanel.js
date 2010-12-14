@@ -35,10 +35,13 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 					"valid_children" : [ "Section", "Page" ]
 				},
 				"Page" : {
-					"valid_children" : [ "Question" ]
+					"valid_children" : [ "Question", "Questionboilerplate" ]
 				},
 				"Question" : {
-					"valid_children" : [ "Question" ]
+					"valid_children" : [ "none" ]
+				},
+				"Questionboilerplate" : {
+					"valid_children" : [ "Questionboilerplate" ]
 				},
 				"Variables" : {
 					"valid_children" : [ "Variable" ]
