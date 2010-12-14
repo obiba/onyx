@@ -106,7 +106,7 @@ public class Question implements IHasQuestion {
   }
 
   public boolean isBoilerPlate() {
-    return (!hasCategories() && !hasSubQuestions() && (getParentQuestion() == null || !getParentQuestion().hasCategories()));
+    return (!hasCategories() && (getParentQuestion() == null || !getParentQuestion().hasCategories()));
   }
 
   public boolean hasSubQuestions() {

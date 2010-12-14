@@ -87,7 +87,7 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final HidableTab columnsTab;
 
-  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
+  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final QuestionType... forceAllowedType) {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
@@ -214,7 +214,7 @@ public abstract class EditQuestionPanel extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true) {
+          panel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true, forceAllowedType) {
             @Override
             public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
               setTabsVisibility(questionType);
@@ -266,12 +266,6 @@ public abstract class EditQuestionPanel extends Panel {
       }
     };
     tabs.add(conditionTab);
-    // tabs.add(new AbstractTab(new ResourceModel("Preview")) {
-    // @Override
-    // public Panel getPanel(String panelId) {
-    // return new QuestionPreviewPanel(panelId, model, questionnaireModel);
-    // }
-    // });
 
     setTabsVisibility(editedQuestion.getQuestionType());
 
@@ -339,7 +333,6 @@ public abstract class EditQuestionPanel extends Panel {
         feedbackWindow.show(target);
       }
     });
-
   }
 
   public abstract void onSave(AjaxRequestTarget target, Question question);

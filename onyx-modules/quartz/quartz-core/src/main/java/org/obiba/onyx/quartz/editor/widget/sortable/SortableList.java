@@ -53,8 +53,6 @@ public abstract class SortableList<T extends Serializable> extends Panel {
 
   private AbstractDefaultAjaxBehavior toArrayBehavior;
 
-  private Label toArrayCallback;
-
   public SortableList(String id, List<T> items) {
     this(id, Model.ofList(items));
   }
@@ -108,6 +106,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     };
 
     listContainer = new WebMarkupContainer("listContainer") {
+      @Override
       protected void onBeforeRender() {
         super.onBeforeRender();
 
@@ -117,7 +116,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
           @Override
           public Map<String, Object> getObject() {
             if(variables == null) {
-              this.variables = new MiniMap<String, Object>(3);
+              this.variables = new MiniMap<String, Object>(2);
               variables.put("listMarkupId", listContainer.getMarkupId());
               variables.put("callbackUrl", toArrayBehavior.getCallbackUrl());
             }
@@ -127,16 +126,13 @@ public abstract class SortableList<T extends Serializable> extends Panel {
         PackagedTextTemplate jsTemplate = new PackagedTextTemplate(SortableList.class, "SortableList.js");
         final Label myScript = new Label("sortableJs", new JavaScriptTemplate(jsTemplate).asString(variablesModel.getObject()));
         myScript.setEscapeModelStrings(false);
-
         listContainer.addOrReplace(myScript);
-      };
+      }
     };
     listContainer.add(toArrayBehavior = new ToArrayBehavior());
     listContainer.setOutputMarkupId(true);
     listContainer.add(listView);
     add(listContainer);
-
-    // add(TextTemplateHeaderContributor.forJavaScript(SortableList.class, "SortableList.js", variablesModel));
 
     listContainer.add(new AbstractBehavior() {
       @Override
@@ -146,6 +142,7 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     });
 
     add(new ListView<Button>("buttons", getButtons() == null ? Collections.EMPTY_LIST : Arrays.asList(getButtons())) {
+      @Override
       protected void populateItem(ListItem<Button> item) {
         item.add(new ButtonFragment("button", item.getModel()));
       }

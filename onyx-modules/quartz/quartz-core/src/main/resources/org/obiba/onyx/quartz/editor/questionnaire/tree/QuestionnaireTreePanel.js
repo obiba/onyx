@@ -38,7 +38,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 					"valid_children" : [ "Question" ]
 				},
 				"Question" : {
-					"valid_children" : "none"
+					"valid_children" : [ "Question" ]
 				},
 				"Variables" : {
 					"valid_children" : [ "Variable" ]

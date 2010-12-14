@@ -52,6 +52,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -426,7 +427,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
         addVariable(nodeId, node, questionnaireModel, target);
       }
     }
-
   }
 
   private JsonNode createNode(IQuestionnaireElement element, NodeType nodeType) {
@@ -552,6 +552,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
           copyQuestionWindow.show(target);
         }
       });
+
+      if(question.getType() == QuestionType.BOILER_PLATE) {
+        menuItems.add(new MenuItem(new StringResourceModel("Add.Question", QuestionnaireTreePanel.this, null), QuartzImages.QUESTION_ADD) {
+          @Override
+          public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            addQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target, QuestionType.BOILER_PLATE);
+          }
+        });
+      }
       menuItems.add(new MenuItem(new StringResourceModel("Delete", QuestionnaireTreePanel.this, null), Images.DELETE) {
         @Override
         public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
@@ -769,12 +778,17 @@ public abstract class QuestionnaireTreePanel extends Panel {
     show(questionPanel, title, QuartzImages.QUESTION, null, target);
   }
 
-  private void addQuestion(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target) {
+  private void addQuestion(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target, final QuestionType... forceAllowedType) {
     editingElement = true;
-    EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel) {
+    EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel, forceAllowedType) {
       @Override
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question question) {
-        questionnaireFinder.findPage(node.getName()).addQuestion(question);
+        questionnaireFinder.getQuestionnaire().setQuestionnaireCache(null);
+        if(forceAllowedType.length == 0) {
+          questionnaireFinder.findPage(node.getName()).addQuestion(question);
+        } else {
+          questionnaireFinder.findQuestion(node.getName()).addQuestion(question);
+        }
         try {
           persist(target);
           editingElement = false;
@@ -981,6 +995,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Question question) {
+      if(question.getType() == QuestionType.BOILER_PLATE) {
+        children.addAll(question.getQuestions());
+      }
     }
 
     @Override

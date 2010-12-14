@@ -56,7 +56,7 @@ public abstract class QuestionPanel extends Panel {
 
   private final String initialName;
 
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType) {
+  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType, QuestionType... forceAllowedType) {
     super(id, model);
 
     final TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
@@ -93,19 +93,23 @@ public abstract class QuestionPanel extends Panel {
     // available choices when question type is already set
     List<QuestionType> typeChoices = null;
     if(useQuestionType) {
-      QuestionType questionType = model.getObject().getQuestionType();
-      if(questionType == null) {
-        typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
-      } else {
-        if(questionType == QuestionType.BOILER_PLATE) {
-          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.BOILER_PLATE));
-        } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
-          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
-        } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
-          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
-        } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
-          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+      if(forceAllowedType.length == 0) {
+        QuestionType questionType = model.getObject().getQuestionType();
+        if(questionType == null) {
+          typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
+        } else {
+          if(questionType == QuestionType.BOILER_PLATE) {
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.BOILER_PLATE));
+          } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
+          } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
+          } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+          }
         }
+      } else {
+        typeChoices = new ArrayList<QuestionType>(Arrays.asList(forceAllowedType));
       }
     }
 
