@@ -94,6 +94,7 @@ public class QuestionnaireElementCloner {
     to.setMultiple(from.isMultiple());
     to.setNumber(from.getNumber());
     to.setPage(from.getPage());
+    to.setParentQuestion(from.getParentQuestion());
     to.setUIFactoryName(from.getUIFactoryName());
     if(settings.isCloneVariableName()) to.setVariableName(from.getVariableName());
     to.getQuestionCategories().addAll(from.getQuestionCategories());
