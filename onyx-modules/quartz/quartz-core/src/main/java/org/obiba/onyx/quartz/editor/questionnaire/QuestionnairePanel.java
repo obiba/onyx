@@ -37,6 +37,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -66,18 +67,15 @@ public abstract class QuestionnairePanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -89,7 +87,7 @@ public abstract class QuestionnairePanel extends Panel {
 
   private final Form<Questionnaire> form;
 
-  public QuestionnairePanel(String id, IModel<Questionnaire> model, boolean newQuestionnaire) {
+  public QuestionnairePanel(String id, final IModel<Questionnaire> model, boolean newQuestionnaire) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
 
@@ -180,12 +178,13 @@ public abstract class QuestionnairePanel extends Panel {
     };
 
     final Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(model.getObject(), "locales"), localeChoices, renderer, 5, false) {
+
       @Override
       protected Recorder<Locale> newRecorderComponent() {
         Recorder<Locale> recorder = super.newRecorderComponent();
         recorder.setLabel(new ResourceModel("Languages"));
-        recorder.setRequired(true);
         recorder.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
           @Override
           protected void onUpdate(AjaxRequestTarget target) {
             LocaleProperties localeProperties = localePropertiesModel.getObject();
@@ -213,6 +212,12 @@ public abstract class QuestionnairePanel extends Panel {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         try {
+          if(model.getObject().getLocales().isEmpty()) {
+            error(new StringResourceModel("LanguagesRequired", QuestionnairePanel.this, null).getString());
+            feedbackWindow.setContent(feedbackPanel);
+            feedbackWindow.show(target);
+            return;
+          }
           persist(target);
           QuestionnairePanel.this.onSave(target, form.getModelObject());
         } catch(Exception e) {

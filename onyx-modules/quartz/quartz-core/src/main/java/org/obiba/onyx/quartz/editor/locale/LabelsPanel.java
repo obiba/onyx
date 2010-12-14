@@ -137,6 +137,7 @@ public class LabelsPanel extends Panel {
         PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
         tabByLocale.put(locale, panelCachingTab);
         tabs.add(panelCachingTab);
+        if(tabs.size() == 1) tabbedPanel.setSelectedTab(0);
       }
     }
     tabbedPanel.setVisible(tabs.size() > 0);

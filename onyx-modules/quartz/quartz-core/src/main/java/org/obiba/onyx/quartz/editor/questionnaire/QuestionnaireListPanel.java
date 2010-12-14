@@ -56,8 +56,8 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocume
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserException;
@@ -74,18 +74,15 @@ public class QuestionnaireListPanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
