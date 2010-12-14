@@ -56,7 +56,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocume
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverter;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
@@ -224,7 +224,7 @@ public class QuestionnaireListPanel extends Panel {
               try {
                 StructureAnalyser.getInstance(questionnaire).analyze();
                 if(!questionnaire.isConvertedToMagmaVariables()) {
-                  DataSourceConverter.getInstance(questionnaire).convert();
+                  QuestionnaireConverter.getInstance(questionnaire).convert();
                   questionnaire.setConvertedToMagmaVariables(true);
                   questionnairePersistenceUtils.persist(questionnaire);
                 }

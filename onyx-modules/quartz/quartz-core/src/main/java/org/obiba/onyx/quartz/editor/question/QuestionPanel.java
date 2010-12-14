@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.question;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +45,9 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 /**
  *
  */
@@ -67,12 +71,19 @@ public abstract class QuestionPanel extends Panel {
 
     name.add(new AbstractValidator<String>() {
       @Override
-      protected void onValidate(IValidatable<String> validatable) {
+      protected void onValidate(final IValidatable<String> validatable) {
         if(!StringUtils.equals(initialName, validatable.getValue())) {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           questionnaireModel.getObject().setQuestionnaireCache(null);
           Question findQuestion = questionnaireFinder.findQuestion(validatable.getValue());
-          if(findQuestion != null && findQuestion != model.getObject().getElement()) {
+          Collection<Question> sameNameQuestions = Collections2.filter(model.getObject().getElement().getQuestions(), new Predicate<Question>() {
+
+            @Override
+            public boolean apply(Question input) {
+              return input.getName().equals(validatable.getValue());
+            }
+          });
+          if(findQuestion != null && findQuestion != model.getObject().getElement() || !sameNameQuestions.isEmpty()) {
             error(validatable, "QuestionAlreadyExists");
           }
         }

@@ -276,7 +276,7 @@ public class ArrayRowsPanel extends Panel {
         return input.getName().equals(name);
       }
     });
-    if(!sameNameQuestions.isEmpty() || questionnaireFinder.findQuestion(name) != null) {
+    if(parent.getName().equals(name) || !sameNameQuestions.isEmpty() || questionnaireFinder.findQuestion(name) != null) {
       return true;
     }
     return false;

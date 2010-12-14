@@ -93,8 +93,6 @@ public class QuestionnaireElementCloner {
     to.setMinCount(from.getMinCount());
     to.setMultiple(from.isMultiple());
     to.setNumber(from.getNumber());
-    to.setPage(from.getPage());
-    to.setParentQuestion(from.getParentQuestion());
     to.setUIFactoryName(from.getUIFactoryName());
     if(settings.isCloneVariableName()) to.setVariableName(from.getVariableName());
     to.getQuestionCategories().addAll(from.getQuestionCategories());
@@ -332,5 +330,6 @@ public class QuestionnaireElementCloner {
     public void setRenameQuestion(boolean renameQuestion) {
       this.renameQuestion = renameQuestion;
     }
+
   }
 }

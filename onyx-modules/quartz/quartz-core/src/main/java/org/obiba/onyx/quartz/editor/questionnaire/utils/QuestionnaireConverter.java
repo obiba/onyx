@@ -39,7 +39,7 @@ import org.obiba.onyx.util.data.Data;
 /**
  *
  */
-public class DataSourceConverter {
+public class QuestionnaireConverter {
 
   private static final String GENDER = "gender";
 
@@ -57,11 +57,11 @@ public class DataSourceConverter {
 
   private final QuestionnaireFinder questionnaireFinder;
 
-  public static DataSourceConverter getInstance(Questionnaire questionnaire) {
-    return new DataSourceConverter(questionnaire);
+  public static QuestionnaireConverter getInstance(Questionnaire questionnaire) {
+    return new QuestionnaireConverter(questionnaire);
   }
 
-  private DataSourceConverter(Questionnaire questionnaire) {
+  private QuestionnaireConverter(Questionnaire questionnaire) {
     this.questionnaire = questionnaire;
     questionnaireBuilder = QuestionnaireBuilder.getInstance(questionnaire);
     questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
