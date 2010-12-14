@@ -563,29 +563,28 @@ public abstract class QuestionnaireTreePanel extends Panel {
           editQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target);
         }
       });
+      menuItems.add(new MenuItem(new StringResourceModel("Copy", QuestionnaireTreePanel.this, null), Images.COPY) {
+        @Override
+        public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+          copyQuestionWindow.setTitle(new StringResourceModel("Question.Copy", QuestionnaireTreePanel.this, null, new Object[] { question.getName() }));
+          CopyQuestionPanel copyQuestionPanel = new CopyQuestionPanel("content", questionModel, questionnaireModel, copyQuestionWindow) {
+            @Override
+            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question newQuestion) {
+              // add question to tree
+              JsonNode jsonNode = createNode(newQuestion);
+              target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + findNodeId(newQuestion.getPage()) + "'), 'last'," + jsonNode.toString() + ");");
+              target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
+            }
+          };
+          copyQuestionWindow.setContent(copyQuestionPanel);
+          copyQuestionWindow.show(target);
+        }
+      });
       if(question.getType() == QuestionType.BOILER_PLATE) {
         menuItems.add(new MenuItem(new StringResourceModel("Add.Question", QuestionnaireTreePanel.this, null), QuartzImages.QUESTION_ADD) {
           @Override
           public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             addQuestion(nodeId, node, questionnaireModel, questionnaireFinder, target, QuestionType.BOILER_PLATE);
-          }
-        });
-      } else {
-        menuItems.add(new MenuItem(new StringResourceModel("Copy", QuestionnaireTreePanel.this, null), Images.COPY) {
-          @Override
-          public void onClick(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-            copyQuestionWindow.setTitle(new StringResourceModel("Question.Copy", QuestionnaireTreePanel.this, null, new Object[] { question.getName() }));
-            CopyQuestionPanel copyQuestionPanel = new CopyQuestionPanel("content", questionModel, questionnaireModel, copyQuestionWindow) {
-              @Override
-              protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question newQuestion) {
-                // add question to tree
-                JsonNode jsonNode = createNode(newQuestion);
-                target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + findNodeId(newQuestion.getPage()) + "'), 'last'," + jsonNode.toString() + ");");
-                target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
-              }
-            };
-            copyQuestionWindow.setContent(copyQuestionPanel);
-            copyQuestionWindow.show(target);
           }
         });
       }

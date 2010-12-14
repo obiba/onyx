@@ -180,7 +180,7 @@ public abstract class CopyQuestionPanel extends Panel {
     Question question = (Question) getDefaultModelObject();
 
     localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), question);
-    ElementClone<Question> questionCopy = QuestionnaireElementCloner.clone(question, new CloneSettings(false, true), localeProperties);
+    ElementClone<Question> questionCopy = QuestionnaireElementCloner.clone(question, new CloneSettings(false, true, false, true, true), localeProperties);
     questionCopy.getElement().setName(name.getModelObject());
     QuestionnaireElementCloner.addProperties(questionCopy, localeProperties);
     questionCopy.getElement().getQuestionCategories().clear();
@@ -216,7 +216,6 @@ public abstract class CopyQuestionPanel extends Panel {
         copyLabels(localeProperties, questionCategory, questionCategoryCopy);
       }
     }
-
     return questionCopy.getElement();
   }
 

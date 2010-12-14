@@ -82,14 +82,18 @@ public class QuestionnaireElementCloner {
   }
 
   private static void copy(Question from, Question to, CloneSettings settings) {
-    to.setName(from.getName());
+    if(!settings.isRenameQuestion()) {
+      to.setName(from.getName());
+    } else {
+      // TODO UUID to ensure unique name (other solution ?)
+      to.setName("_" + from.getName() + "_" + UUID.randomUUID().toString().replace("-", "_"));
+    }
     to.setCondition(from.getCondition());
     to.setMaxCount(from.getMaxCount());
     to.setMinCount(from.getMinCount());
     to.setMultiple(from.isMultiple());
     to.setNumber(from.getNumber());
     to.setPage(from.getPage());
-    to.setParentQuestion(from.getParentQuestion());
     to.setUIFactoryName(from.getUIFactoryName());
     if(settings.isCloneVariableName()) to.setVariableName(from.getVariableName());
     to.getQuestionCategories().addAll(from.getQuestionCategories());
@@ -99,7 +103,9 @@ public class QuestionnaireElementCloner {
         to.addQuestion(clone(child, settings));
       }
     } else {
-      to.getQuestions().addAll(from.getQuestions());
+      for(Question child : from.getQuestions()) {
+        to.addQuestion(child);
+      }
     }
 
     ValueMap uiArgumentsValueMap = from.getUIArgumentsValueMap();
@@ -255,6 +261,8 @@ public class QuestionnaireElementCloner {
      */
     private boolean cloneChildOpenAnswer = true;
 
+    private boolean renameQuestion = false;
+
     public CloneSettings(boolean cloneVariableName) {
       this(cloneVariableName, false, false);
     }
@@ -274,6 +282,14 @@ public class QuestionnaireElementCloner {
       this.cloneChildQuestion = cloneChildQuestion;
       this.renameOpenAnswer = renameOpenAnswer;
       this.cloneChildOpenAnswer = cloneChildOpenAnswer;
+    }
+
+    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer, boolean cloneChildOpenAnswer, boolean renameQuestion) {
+      this.cloneVariableName = cloneVariableName;
+      this.cloneChildQuestion = cloneChildQuestion;
+      this.renameOpenAnswer = renameOpenAnswer;
+      this.cloneChildOpenAnswer = cloneChildOpenAnswer;
+      this.renameQuestion = renameQuestion;
     }
 
     public boolean isCloneVariableName() {
@@ -306,6 +322,14 @@ public class QuestionnaireElementCloner {
 
     public void setCloneChildOpenAnswer(boolean cloneChildOpenAnswer) {
       this.cloneChildOpenAnswer = cloneChildOpenAnswer;
+    }
+
+    public boolean isRenameQuestion() {
+      return renameQuestion;
+    }
+
+    public void setRenameQuestion(boolean renameQuestion) {
+      this.renameQuestion = renameQuestion;
     }
   }
 }
