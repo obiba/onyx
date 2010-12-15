@@ -270,7 +270,7 @@ public class OpenAnswerPanel extends Panel {
     // ui Arguments
     String sizeStr = null;
     ValueMap uiArgumentsValueMap = openAnswer.getUIArgumentsValueMap();
-    if(uiArgumentsValueMap.containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY)) {
+    if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY)) {
       sizeStr = uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY).toString();
     }
     sizeField = new TextField<String>("size", new Model<String>(sizeStr));
