@@ -12,9 +12,12 @@ package org.obiba.onyx.quartz.editor.question;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -27,6 +30,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -67,7 +71,8 @@ public abstract class QuestionPanel extends Panel {
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
-    initialName = model.getObject().getElement().getName();
+    final Question question = model.getObject().getElement();
+    initialName = question.getName();
 
     name.add(new AbstractValidator<String>() {
       @Override
@@ -76,14 +81,14 @@ public abstract class QuestionPanel extends Panel {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           questionnaireModel.getObject().setQuestionnaireCache(null);
           Question findQuestion = questionnaireFinder.findQuestion(validatable.getValue());
-          Collection<Question> sameNameQuestions = Collections2.filter(model.getObject().getElement().getQuestions(), new Predicate<Question>() {
+          Collection<Question> sameNameQuestions = Collections2.filter(question.getQuestions(), new Predicate<Question>() {
 
             @Override
             public boolean apply(Question input) {
               return input.getName().equals(validatable.getValue());
             }
           });
-          if(findQuestion != null && findQuestion != model.getObject().getElement() || !sameNameQuestions.isEmpty()) {
+          if(findQuestion != null && findQuestion != question || !sameNameQuestions.isEmpty()) {
             error(validatable, "QuestionAlreadyExists");
           }
         }
@@ -99,7 +104,7 @@ public abstract class QuestionPanel extends Panel {
     add(new SimpleFormComponentLabel("variableLabel", variable));
     add(new HelpTooltipPanel("variableHelp", new ResourceModel("Variable.Tooltip")));
 
-    add(variableNameBehavior = new VariableNameBehavior(name, variable, model.getObject().getElement().getParentQuestion(), null, null));
+    add(variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), null, null));
 
     // available choices when question type is already set
     List<QuestionType> typeChoices = null;
@@ -160,8 +165,17 @@ public abstract class QuestionPanel extends Panel {
     typeContainer.add(new SimpleFormComponentLabel("typeLabel", type));
     typeContainer.add(new HelpTooltipPanel("typeHelp", new ResourceModel("QuestionType.Tooltip")));
 
-    add(new HelpTooltipPanel("labelsHelp", new ResourceReference(QuestionPanel.class, "labels-with-help.png")));
-    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow, model.getObject().getElement().getParentQuestion() != null));
+    add(new HelpTooltipPanel("labelsHelp", new Model<String>(new StringResourceModel("LanguagesProperties.Tooltip", this, null).getString() + "<br /><img align=\"center\" src=\"" + RequestCycle.get().urlFor(new ResourceReference(QuestionPanel.class, "labels-with-help.png")) + "\" />")));
+
+    Map<String, IModel<String>> labelsTooltips = new HashMap<String, IModel<String>>();
+    labelsTooltips.put("label", new ResourceModel("Question.Tooltip.label"));
+    labelsTooltips.put("instructions", new ResourceModel("Question.Tooltip.instructions"));
+    labelsTooltips.put("caption", new ResourceModel("Question.Tooltip.caption"));
+    labelsTooltips.put("help", new ResourceModel("Question.Tooltip.help"));
+    labelsTooltips.put("specifications", new ResourceModel("Question.Tooltip.specifications"));
+    labelsTooltips.put("categoryOrder", new ResourceModel("Question.Tooltip.categoryOrder"));
+
+    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow, question.getParentQuestion() != null, labelsTooltips));
   }
 
   /**

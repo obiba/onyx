@@ -59,11 +59,13 @@ public abstract class EditQuestionPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
@@ -167,15 +169,30 @@ public abstract class EditQuestionPanel extends Panel {
     };
     openAnswerTab.setVisible(false);
 
-    categoriesTab = new HidableTab(new ResourceModel("Categories")) {
+    categoriesTab = new SavableHidableTab(new ResourceModel("Categories")) {
       private CategoriesPanel panel;
 
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target) {
+              adjustLayout();
+            }
+          };
         }
         return panel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
+      }
+
+      @Override
+      public boolean isVisible() {
+        return true;
       }
 
     };

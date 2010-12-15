@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -143,8 +145,21 @@ public abstract class QuestionnairePanel extends Panel {
     uiType.add(simplifiedUiType).add(new SimpleFormComponentLabel("simplifiedLabel", simplifiedUiType));
     form.add(new HelpTooltipPanel("uiHelp", new ResourceModel("UIType.Tooltip")));
 
+    form.add(new HelpTooltipPanel("labelsHelp", new ResourceModel("LanguagesProperties.Tooltip")));
+
+    Map<String, IModel<String>> labelsTooltips = new HashMap<String, IModel<String>>();
+    labelsTooltips.put("label", new ResourceModel("Questionnaire.Tooltip.label"));
+    labelsTooltips.put("description", new ResourceModel("Questionnaire.Tooltip.description"));
+    labelsTooltips.put("labelNext", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+    labelsTooltips.put("labelPrevious", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+    labelsTooltips.put("labelStart", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+    labelsTooltips.put("labelFinish", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+    labelsTooltips.put("labelInterrupt", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+    labelsTooltips.put("labelResume", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+    labelsTooltips.put("labelCancel", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
+
     localePropertiesModel = new Model<LocaleProperties>(newQuestionnaire ? localePropertiesUtils.loadForNewQuestionnaire(questionnaire) : localePropertiesUtils.load(questionnaire, questionnaire));
-    final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow);
+    final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, false, labelsTooltips);
     form.add(labelsPanel);
 
     final Locale userLocale = Session.get().getLocale();

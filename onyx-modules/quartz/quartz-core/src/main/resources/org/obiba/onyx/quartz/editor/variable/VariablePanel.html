@@ -4,26 +4,33 @@
 	
 	<form wicket:id="form" autocomplete="off" >
 	
-		<table class="keyValueTable">
+		<table class="keyValueTable variable">
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
-				<td><input wicket:id="name" type="text" size="40" /> <span wicket:id="nameHelp" /></td>
+				<td class="input"><input wicket:id="name" type="text" size="40" /></td>
+				<td><span wicket:id="nameHelp" /></td>
 			</tr>			
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="typeLabel"></label></td>
-				<td><select wicket:id="type" /></td>
+				<td class="input"><select wicket:id="type" /></td>
+				<td> </td>		
 			</tr>			
 			<tr>
 				<td class="keyValueTableKey" valign="top"><label wicket:id="scriptLabel"></label></td>
-				<td valign="top"><textarea wicket:id="script" cols="60" rows="6"></textarea> <span wicket:id="scriptHelp" /></td>
+				<td class="input">
+					<textarea wicket:id="script" cols="60" rows="6"></textarea>
+					<br />
+					<wicket:message key="ScriptHelp" /> <a href="http://wiki.obiba.org/confluence/display/OPALDOC/Magma+Javascript+API" target="magma">Magma Javascript API</a>
+				</td>
+				<td><span wicket:id="scriptHelp" /></td>				
 			</tr>			
 		</table>
 		
 		<br />
 		
 		<fieldset>
-			<legend><wicket:message key="HelpTips" /></legend>
-			<wicket:message key="ExistingVariables" />
+			<legend><wicket:message key="ExistingVariables" /></legend>
+			<wicket:message key="Explain" />
 			<table>
 				<tr>
 					<td><label wicket:id="tablesLabel"></label></td>
@@ -34,11 +41,12 @@
 					<td><select wicket:id="variables" size="10" /></td>
 				</tr>
 				<tr>
-					<td colspan="2"><input wicket:id="selectedVariable" type="text" style="width: 100%" readonly="readonly" /></td>
+					<td colspan="2">
+						<wicket:message key="FullVariableName" /><br />
+						<input wicket:id="selectedVariable" type="text" style="width: 100%" readonly="readonly" />
+					</td>
 				</tr>
 			</table>
-			<br />
-			<wicket:message key="ScriptHelp" /> <a href="http://wiki.obiba.org/confluence/display/OPALDOC/Magma+Javascript+API" target="magma">Magma Javascript API</a>
 		</fieldset>
 				
 		<div wicket:id="saveCancel" class="modal-footer" />	

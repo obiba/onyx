@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -81,6 +82,8 @@ public abstract class VariablePanel extends Panel {
   public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel, ValueType forcedValueType) {
     super(id);
     this.questionnaireModel = questionnaireModel;
+
+    add(CSSPackageResource.getHeaderContribution(VariablePanel.class, "VariablePanel.css"));
 
     final EditedVariable editedVariable = new EditedVariable();
     final Variable variable = variableModel.getObject();

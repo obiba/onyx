@@ -1,0 +1,8 @@
+table.variable td {
+	vertical-align: top;
+	text-align: left;
+}
+
+table.variable td.input {
+	width: 5.417em;
+}

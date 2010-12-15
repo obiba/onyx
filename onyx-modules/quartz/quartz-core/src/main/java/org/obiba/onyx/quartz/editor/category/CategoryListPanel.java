@@ -79,7 +79,8 @@ public class CategoryListPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -530,4 +531,5 @@ public class CategoryListPanel extends Panel {
     localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaire, modified, modified.getCategory());
     QuestionnaireElementCloner.addProperties(original, localePropertiesModel.getObject());
   }
+
 }

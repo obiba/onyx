@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.editor.category;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -30,7 +31,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
  *
  */
 @SuppressWarnings("serial")
-public class CategoriesPanel extends Panel {
+public abstract class CategoriesPanel extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
@@ -67,5 +68,11 @@ public class CategoriesPanel extends Panel {
 
     add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));
   }
+
+  protected void adjustLayout() {
+    // TODO
+  }
+
+  public abstract void onSave(AjaxRequestTarget target);
 
 }

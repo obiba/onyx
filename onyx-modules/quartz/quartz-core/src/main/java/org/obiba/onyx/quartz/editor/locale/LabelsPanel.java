@@ -17,12 +17,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -36,6 +38,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.util.ListModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -58,10 +61,19 @@ public class LabelsPanel extends Panel {
 
   private WebMarkupContainer tabsContainer;
 
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField) {
+  private final Map<String, IModel<String>> tooltips;
+
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+    this(id, model, elementModel, feedbackPanel, feedbackWindow, false, null);
+  }
+
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField, Map<String, IModel<String>> tooltips) {
     super(id, model);
     this.elementModel = elementModel;
+    this.tooltips = tooltips;
     setOutputMarkupId(true);
+
+    add(CSSPackageResource.getHeaderContribution(LabelsPanel.class, "LabelsPanel.css"));
 
     LocaleProperties localeProperties = (LocaleProperties) getDefaultModelObject();
     final ListMultimap<Locale, KeyValue> elementLabels = localeProperties.getElementLabels(elementModel.getObject());
@@ -92,10 +104,6 @@ public class LabelsPanel extends Panel {
     form.setOutputMarkupId(true);
     form.add(tabsContainer);
     add(form);
-  }
-
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
-    this(id, model, elementModel, feedbackPanel, feedbackWindow, false);
   }
 
   public void onModelChange(AjaxRequestTarget target) {
@@ -153,7 +161,8 @@ public class LabelsPanel extends Panel {
         @Override
         protected void populateItem(ListItem<KeyValue> item) {
           TextArea<String> textArea = new TextArea<String>("textArea", new PropertyModel<String>(item.getModel(), "value"));
-          textArea.setLabel(new Model<String>(item.getModelObject().getKey()));
+          String label = item.getModelObject().getKey();
+          textArea.setLabel(new Model<String>(label));
           SimpleFormComponentLabel textAreaLabel = new SimpleFormComponentLabel("label", textArea);
           textArea.add(new AjaxFormComponentUpdatingBehavior("onblur") {
             @Override
@@ -161,11 +170,21 @@ public class LabelsPanel extends Panel {
             }
           });
 
+          Component tooltip = null;
+          if(tooltips != null && tooltips.containsKey(label)) {
+            tooltip = new HelpTooltipPanel("tooltip", tooltips.get(label));
+          } else {
+            tooltip = new WebMarkupContainer("tooltip").setVisible(false);
+          }
+
           item.add(textArea);
           item.add(textAreaLabel);
-          if(!item.getModelObject().getKey().equals("label") && onlyLabelField) {
+          item.add(tooltip);
+
+          if(!label.equals("label") && onlyLabelField) {
             textArea.setVisible(false);
             textAreaLabel.setVisible(false);
+            tooltip.setVisible(false);
           }
         }
       });
