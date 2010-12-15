@@ -176,12 +176,7 @@ public abstract class EditQuestionPanel extends Panel {
           panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
         }
         return panel;
-      }
-
-      @Override
-      public boolean isVisible() {
-        return true;
-      }
+      } 
 
     };
     categoriesTab.setVisible(false);
