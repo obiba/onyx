@@ -24,6 +24,8 @@ public class Role extends AbstractEntity implements Comparable<Role> {
 
   public static final Role SYSTEM_ADMINISTRATOR = new Role("SYSTEM_ADMINISTRATOR");
 
+  public static final Role QUESTIONNAIRE_EDITOR = new Role("QUESTIONNAIRE_EDITOR");
+
   public static final Role PARTICIPANT_MANAGER = new Role("PARTICIPANT_MANAGER");
 
   public static final Role DATA_COLLECTION_OPERATOR = new Role("DATA_COLLECTION_OPERATOR");

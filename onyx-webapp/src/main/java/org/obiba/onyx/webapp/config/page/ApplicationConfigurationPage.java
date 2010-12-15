@@ -243,6 +243,7 @@ public class ApplicationConfigurationPage extends BasePage {
 
       // set up the roles
       Role adminRole = userService.createRole(Role.SYSTEM_ADMINISTRATOR);
+      Role editorRole = userService.createRole(Role.QUESTIONNAIRE_EDITOR);
       Role partManagerRole = userService.createRole(Role.PARTICIPANT_MANAGER);
       Role dataCollectionRole = userService.createRole(Role.DATA_COLLECTION_OPERATOR);
 
@@ -250,6 +251,7 @@ public class ApplicationConfigurationPage extends BasePage {
       User user = model.getUser();
       user.setPassword(User.digest(user.getPassword()));
       user.addRole(adminRole);
+      user.addRole(editorRole);
       user.addRole(partManagerRole);
       user.addRole(dataCollectionRole);
       user.setDeleted(false);

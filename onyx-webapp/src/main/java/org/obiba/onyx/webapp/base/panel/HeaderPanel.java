@@ -44,9 +44,7 @@ public class HeaderPanel extends Panel {
       }
     });
 
-    add(new AdminLink("admin") {
-
-    });
+    add(new AdminLink("admin"));
 
     Link<?> helpLink = new Link("help") {
 
@@ -86,8 +84,8 @@ public class HeaderPanel extends Panel {
 
   }
 
-  @AuthorizeAction(action = "RENDER", roles = { "SYSTEM_ADMINISTRATOR" })
-  private abstract class AdminLink extends Link<Object> {
+  @AuthorizeAction(action = "RENDER", roles = { "SYSTEM_ADMINISTRATOR", "QUESTIONNAIRE_EDITOR" })
+  private class AdminLink extends Link<Object> {
 
     public AdminLink(String id) {
       super(id);

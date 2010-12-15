@@ -16,6 +16,8 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -35,7 +37,7 @@ import org.obiba.onyx.webapp.user.panel.UserSearchPanel;
  * 
  */
 @SuppressWarnings("serial")
-@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "QUESTIONNAIRE_EDITOR" })
 public class AdministrationPage extends BasePage {
 
   @SpringBean
@@ -47,13 +49,11 @@ public class AdministrationPage extends BasePage {
 
     links = new ArrayList<AjaxLink<?>>();
 
-    @SuppressWarnings("rawtypes")
-    AjaxLink<?> userTab = new AjaxLink("userTab") {
+    AjaxLink<?> userTab = new AdminTab("userTab") {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
-        replaceContent(target, new UserSearchPanel(getContentId()));
-        activateLink(this, target);
+      public Component getComponent() {
+        return new UserSearchPanel(getContentId());
       }
 
     };
@@ -61,13 +61,11 @@ public class AdministrationPage extends BasePage {
     add(userTab);
     links.add(userTab);
 
-    @SuppressWarnings("rawtypes")
-    AjaxLink<?> dataTab = new AjaxLink("dataTab") {
+    AjaxLink<?> dataTab = new AdminTab("dataTab") {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
-        replaceContent(target, new DataManagementPanel(getContentId()));
-        activateLink(this, target);
+      public Component getComponent() {
+        return new DataManagementPanel(getContentId());
       }
 
     };
@@ -75,32 +73,27 @@ public class AdministrationPage extends BasePage {
     add(dataTab);
     links.add(dataTab);
 
-    @SuppressWarnings("rawtypes")
-    AjaxLink<?> editorTab = new AjaxLink("editorTab") {
+    AjaxLink<?> editorTab = new EditorTab("editorTab") {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
+      public Component getComponent() {
         for(Module module : moduleRegistry.getModules()) {
           Component editorComponent = module.getEditorPanel(getContentId());
-          if(editorComponent != null) {
-            replaceContent(target, editorComponent);
-            activateLink(this, target);
-            break;
-          }
+          if(editorComponent != null) return editorComponent;
         }
+        return null;
       }
+
     };
     editorTab.setOutputMarkupId(true);
     add(editorTab);
     links.add(editorTab);
 
-    @SuppressWarnings("rawtypes")
-    AjaxLink<?> devTab = new AjaxLink("devTab") {
+    AjaxLink<?> devTab = new AdminTab("devTab") {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
-        replaceContent(target, new DevelopersPanel(getContentId()));
-        activateLink(this, target);
+      public Component getComponent() {
+        return new DevelopersPanel(getContentId());
       }
 
       @Override
@@ -112,11 +105,14 @@ public class AdministrationPage extends BasePage {
     add(devTab);
     links.add(devTab);
 
-    // First screen displayed is user tab
-    Component content = new UserSearchPanel(getContentId());
-    content.setOutputMarkupId(true);
-    add(content);
-    userTab.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all selected")));
+    // Display first permitted tab
+    for(AjaxLink<?> link : links) {
+      if(link.isActionAuthorized(new Action(Action.RENDER))) {
+        add(((Link) link).getComponent());
+        link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all selected")));
+        break;
+      }
+    }
 
   }
 
@@ -130,17 +126,52 @@ public class AdministrationPage extends BasePage {
 
   private void activateLink(AjaxLink<?> selectedLink, AjaxRequestTarget target) {
     for(AjaxLink<?> link : links) {
-      if(link != selectedLink) {
-        link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all")));
-      } else {
-        link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all selected")));
-      }
+      link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all" + (link == selectedLink ? " selected" : ""))));
       target.addComponent(link);
     }
   }
 
   private String getContentId() {
     return "administrationContent";
+  }
+
+  private interface Link {
+
+    Component getComponent();
+
+  }
+
+  @AuthorizeAction(action = "RENDER", roles = { "SYSTEM_ADMINISTRATOR" })
+  private abstract class AdminTab extends AjaxLink<Object> implements Link {
+
+    public AdminTab(String id) {
+      super(id);
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      replaceContent(target, getComponent());
+      activateLink(this, target);
+    }
+
+    public abstract Component getComponent();
+
+  }
+
+  @AuthorizeAction(action = "RENDER", roles = { "QUESTIONNAIRE_EDITOR" })
+  private abstract class EditorTab extends AjaxLink<Object> implements Link {
+
+    public EditorTab(String id) {
+      super(id);
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      replaceContent(target, getComponent());
+      activateLink(this, target);
+    }
+
+    public abstract Component getComponent();
   }
 
 }

@@ -37,7 +37,7 @@ import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
-@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "QUESTIONNAIRE_EDITOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class HomePage extends BasePage {
 
   @SpringBean

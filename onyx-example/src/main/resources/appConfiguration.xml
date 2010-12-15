@@ -25,6 +25,9 @@
           <name>SYSTEM_ADMINISTRATOR</name>
         </role>
         <role>
+          <name>QUESTIONNAIRE_EDITOR</name>
+        </role>
+        <role>
           <name>PARTICIPANT_MANAGER</name>
         </role>
         <role>
@@ -96,6 +99,9 @@ AHIKRdw0D1V6UDqFg8mwuVXTLuPoRG+DOxWohWqdUzW6Pkvluf7ydYbjoOKHs5iJ
     <role>
       <name>SYSTEM_ADMINISTRATOR</name>
     </role>
+		<role>
+			<name>QUESTIONNAIRE_EDITOR</name>
+		</role>
     <role>
       <name>PARTICIPANT_MANAGER</name>
     </role>
