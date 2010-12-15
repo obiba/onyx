@@ -19,6 +19,10 @@
 			<td valign="top" class="keyValueTableKey"><label wicket:id="unitLabel"></label></td>
 			<td><input wicket:id="unit" type="text" size="40" autocomplete="off" /> <span wicket:id="unitHelp" /></td>
 		</tr>
+		<tr>
+			<td valign="top" class="keyValueTableKey"><label wicket:id="sizeLabel"></label></td>
+			<td><input wicket:id="size" type="text" size="2" autocomplete="off" /></td>
+		</tr>		
 	</table>
 	
 	<br/>
@@ -39,12 +43,16 @@
 	<br />		
 	
 	<fieldset>
-		<legend><wicket:message key="Validation" /></legend>	
+		<legend><wicket:message key="Validation" /></legend>
 	
 		<table class="keyValueTable">
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel"></label></td>
 				<td><input wicket:id="required" type="checkbox" /></td>
+			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="patternLabel"></label></td>
+				<td><input wicket:id="patternValidator" type="text" /></td>			
 			</tr>
 		</table>
 		

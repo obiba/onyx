@@ -61,6 +61,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -76,6 +77,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.OnyxSettings;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
@@ -169,6 +171,10 @@ public class OpenAnswerPanel extends Panel {
 
   private String initialName;
 
+  private TextField<String> patternField;
+
+  private TextField<String> sizeField;
+
   public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
@@ -260,6 +266,19 @@ public class OpenAnswerPanel extends Panel {
     add(unit).add(new SimpleFormComponentLabel("unitLabel", unit));
     add(new HelpTooltipPanel("unitHelp", new ResourceModel("Unit.Tooltip")));
 
+    PatternValidator numericPatternValidator = new PatternValidator("\\d*");
+    // ui Arguments
+    String sizeStr = null;
+    ValueMap uiArgumentsValueMap = openAnswer.getUIArgumentsValueMap();
+    if(uiArgumentsValueMap.containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY)) {
+      sizeStr = uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY).toString();
+    }
+    sizeField = new TextField<String>("size", new Model<String>(sizeStr));
+    sizeField.add(numericPatternValidator);
+    sizeField.setLabel(new ResourceModel("SizeLabel"));
+    add(new SimpleFormComponentLabel("sizeLabel", sizeField));
+    add(sizeField);
+
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
     add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 
@@ -269,7 +288,7 @@ public class OpenAnswerPanel extends Panel {
     add(new SimpleFormComponentLabel("requiredLabel", requiredCheckBox));
 
     // min/max validators
-    String maxValue = null, minValue = null;
+    String maxValue = null, minValue = null, patternValue = null;
     for(IDataValidator<?> dataValidator : openAnswer.getDataValidators()) {
       IValidator<?> validator = dataValidator.getValidator();
       if(validator instanceof RangeValidator<?>) {
@@ -303,8 +322,15 @@ public class OpenAnswerPanel extends Panel {
         } else {
           if(minimum != null) minValue = String.valueOf(minimum);
         }
+      } else if(validator instanceof PatternValidator) {
+        patternValue = ((PatternValidator) validator).getPattern().toString();
       }
     }
+
+    patternField = new TextField<String>("patternValidator", new Model<String>(patternValue));
+    patternField.setLabel(new ResourceModel("PatternLabel"));
+    add(new SimpleFormComponentLabel("patternLabel", patternField));
+    add(patternField);
 
     minMaxContainer = new WebMarkupContainer("minMaxContainer");
     minMaxContainer.setOutputMarkupId(true);
@@ -318,7 +344,6 @@ public class OpenAnswerPanel extends Panel {
     maxLength.setLabel(new ResourceModel("Maximum.length"));
     minMaxContainer.add(maxLength);
 
-    PatternValidator numericPatternValidator = new PatternValidator("\\d*");
     minNumeric = new TextField<String>("minNumeric", new Model<String>(minValue), String.class);
     minNumeric.setLabel(new ResourceModel("Minimum"));
     minNumeric.add(numericPatternValidator);
@@ -699,8 +724,19 @@ public class OpenAnswerPanel extends Panel {
     if(!variableNameBehavior.isVariableNameDefined()) {
       variable.setModelObject(null);
     }
+
     OpenAnswerDefinition opa = (OpenAnswerDefinition) getDefaultModelObject();
+    // TODO use a specific model instead of use onSave Method
+    opa.clearUIArgument();
+    if(StringUtils.isNotBlank(sizeField.getValue())) {
+      opa.addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY, sizeField.getValue());
+    }
+
+    // TODO use a specific model instead of use onSave Method
     opa.clearDataValidators();
+    if(StringUtils.isNotBlank(patternField.getValue())) {
+      opa.addDataValidator(new DataValidator(new PatternValidator(patternField.getValue()), opa.getDataType()));
+    }
     switch(opa.getDataType()) {
     case DATE:
       // TODO incomplete for Date

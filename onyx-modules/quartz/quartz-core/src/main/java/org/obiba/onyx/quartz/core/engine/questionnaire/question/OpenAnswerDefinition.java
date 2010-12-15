@@ -126,6 +126,12 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     uIArguments.add(new String[] { key, value });
   }
 
+  public void clearUIArgument() {
+    if(uIArguments != null) {
+      uIArguments.clear();
+    }
+  }
+
   public List<IDataValidator<?>> getDataValidators() {
     return validators != null ? validators : (validators = new ArrayList<IDataValidator<?>>());
   }
