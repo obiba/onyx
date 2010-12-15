@@ -70,7 +70,6 @@ public class EditedQuestion extends EditedElement<Question> {
 
   public void setLayout(Layout layout) {
     this.layout = layout;
-    setLayoutInfos();
   }
 
   public Integer getNbRows() {
@@ -79,7 +78,6 @@ public class EditedQuestion extends EditedElement<Question> {
 
   public void setNbRows(Integer nbRows) {
     this.nbRows = nbRows;
-    setLayoutInfos();
   }
 
   @Override
@@ -87,7 +85,7 @@ public class EditedQuestion extends EditedElement<Question> {
     return "question: " + getElement() + ", questionType: " + questionType + ", layout: " + layout + ", nbRows: " + nbRows;
   }
 
-  private void setLayoutInfos() {
+  public void setLayoutInfos() {
     Question question = getElement();
     question.clearUIArguments();
     if(layout != null) {

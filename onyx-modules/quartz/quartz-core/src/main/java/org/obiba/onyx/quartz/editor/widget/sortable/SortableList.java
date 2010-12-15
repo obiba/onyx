@@ -124,9 +124,9 @@ public abstract class SortableList<T extends Serializable> extends Panel {
           }
         };
         PackagedTextTemplate jsTemplate = new PackagedTextTemplate(SortableList.class, "SortableList.js");
-        final Label myScript = new Label("sortableJs", new JavaScriptTemplate(jsTemplate).asString(variablesModel.getObject()));
-        myScript.setEscapeModelStrings(false);
-        listContainer.addOrReplace(myScript);
+        final Label jsScript = new Label("sortableJs", new JavaScriptTemplate(jsTemplate).asString(variablesModel.getObject()));
+        jsScript.setEscapeModelStrings(false);
+        listContainer.addOrReplace(jsScript);
       }
     };
     listContainer.add(toArrayBehavior = new ToArrayBehavior());
