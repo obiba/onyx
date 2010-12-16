@@ -184,20 +184,20 @@ public abstract class CopyQuestionPanel extends Panel {
     questionCopy.getElement().setName(name.getModelObject());
     QuestionnaireElementCloner.addProperties(questionCopy, localeProperties);
     questionCopy.getElement().getQuestionCategories().clear();
+    for(final Question subQuestion : question.getQuestions()) {
+      localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), subQuestion);
+      Question questionFind = Iterables.find(questionCopy.getElement().getQuestions(), new Predicate<Question>() {
+
+        @Override
+        public boolean apply(Question inputQuestion) {
+          return inputQuestion.getName().startsWith("_" + subQuestion.getName() + "_");
+        }
+
+      });
+      copyLabels(localeProperties, subQuestion, questionFind);
+    }
     switch(categories.getModelObject()) {
     case COPY:
-      for(final Question subQuestion : question.getQuestions()) {
-        localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), subQuestion);
-        Question questionFind = Iterables.find(questionCopy.getElement().getQuestions(), new Predicate<Question>() {
-
-          @Override
-          public boolean apply(Question inputQuestion) {
-            return inputQuestion.getName().startsWith("_" + subQuestion.getName() + "_");
-          }
-
-        });
-        copyLabels(localeProperties, subQuestion, questionFind);
-      }
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
         localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), questionCategory);
         ElementClone<QuestionCategory> questionCategoryCopy = QuestionnaireElementCloner.clone(questionCategory, new CloneSettings(false, false, true), localeProperties);
