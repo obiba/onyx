@@ -122,6 +122,7 @@ public class ConditionPanel extends Panel {
       }
       if(condition.getType() == NONE) { // not found yet
         Variable variable = variableUtils.findVariable(variableDataSource);
+        // TODO variable always null for newly created question http://jira.obiba.org/jira/browse/ONYX-1437
         if(variable != null) {
           try {
             condition.setVariable(questionnaire.getVariable(variable.getName()));

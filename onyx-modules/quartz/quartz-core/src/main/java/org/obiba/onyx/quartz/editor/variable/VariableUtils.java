@@ -28,7 +28,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverterException;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -116,7 +116,7 @@ public class VariableUtils {
     case DATE:
       return DateType.get();
     default:
-      throw new DataSourceConverterException("Type[" + dataType + "] is not supported");
+      throw new QuestionnaireConverterException("Type[" + dataType + "] is not supported");
     }
   }
 

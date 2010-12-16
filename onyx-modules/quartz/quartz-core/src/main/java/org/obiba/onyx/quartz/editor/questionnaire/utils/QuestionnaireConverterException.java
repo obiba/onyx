@@ -12,27 +12,27 @@ package org.obiba.onyx.quartz.editor.questionnaire.utils;
 /**
  *
  */
-public class DataSourceConverterException extends RuntimeException {
+public class QuestionnaireConverterException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
   /**
    * 
    */
-  public DataSourceConverterException() {
+  public QuestionnaireConverterException() {
   }
 
   /**
    * @param arg0
    */
-  public DataSourceConverterException(String arg0) {
+  public QuestionnaireConverterException(String arg0) {
     super(arg0);
   }
 
   /**
    * @param arg0
    */
-  public DataSourceConverterException(Throwable arg0) {
+  public QuestionnaireConverterException(Throwable arg0) {
     super(arg0);
   }
 
@@ -40,7 +40,7 @@ public class DataSourceConverterException extends RuntimeException {
    * @param arg0
    * @param arg1
    */
-  public DataSourceConverterException(String arg0, Throwable arg1) {
+  public QuestionnaireConverterException(String arg0, Throwable arg1) {
     super(arg0, arg1);
   }
 

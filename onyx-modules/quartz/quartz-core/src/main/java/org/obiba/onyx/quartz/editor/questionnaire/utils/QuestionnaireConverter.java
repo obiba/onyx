@@ -11,6 +11,8 @@ package org.obiba.onyx.quartz.editor.questionnaire.utils;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory.ONYX_ADMIN_PREFIX;
+import static org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory.PARTICIPANT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +43,11 @@ import org.obiba.onyx.util.data.Data;
  */
 public class QuestionnaireConverter {
 
-  private static final String GENDER = "gender";
+  // private static final String GENDER = "gender";
 
-  private static final String ADMIN_PARTICIPANT_GENDER_NAME = "Admin.Participant.gender";
+  // private static final String ADMIN_PARTICIPANT_GENDER_NAME = "Admin.Participant.gender";
 
-  private static final String ADMIN_PARTICIPANT_GENDER_PATH = "Participants:Admin.Participant.gender";
+  // private static final String ADMIN_PARTICIPANT_GENDER_PATH = "Participants:Admin.Participant.gender";
 
   private static final String DATE_YEAR_NAME = "Date.Now.Year";
 
@@ -70,7 +72,7 @@ public class QuestionnaireConverter {
     }
   }
 
-  public void convert() throws DataSourceConverterException {
+  public void convert() throws QuestionnaireConverterException {
 
     QuestionnairePanel.guessUIType(questionnaire);
 
@@ -90,11 +92,17 @@ public class QuestionnaireConverter {
         String variableName = null;
         String variablePath = null;
         String property = ((ParticipantPropertyDataSource) comparingDataSource.getDataSourceLeft()).getProperty();
-        if(GENDER.equals(property)) {
-          variableName = ADMIN_PARTICIPANT_GENDER_NAME;
-          variablePath = ADMIN_PARTICIPANT_GENDER_PATH;
+        if("gender".equals(property)) {
+          variableName = ONYX_ADMIN_PREFIX + "." + PARTICIPANT + ".gender";
+          variablePath = "Participants:" + variableName;
+        } else if("birthYear".equals(property)) {
+          variableName = ONYX_ADMIN_PREFIX + "." + PARTICIPANT + ".birthYear";
+          variablePath = "Participants:" + variableName;
+        } else if("age".equals(property)) {
+          variableName = ONYX_ADMIN_PREFIX + "." + PARTICIPANT + ".age";
+          variablePath = "Participants:" + variableName;
         } else {
-          throw new DataSourceConverterException("Unsupported property[ " + property + " for dataSource " + comparingDataSource.getDataSourceLeft() + " for question " + question);
+          throw new QuestionnaireConverterException("Unsupported property[ " + property + " for dataSource " + comparingDataSource.getDataSourceLeft() + " for question " + question);
         }
 
         Data data = ((FixedDataSource) comparingDataSource.getDataSourceRight()).getData(null);
@@ -142,10 +150,10 @@ public class QuestionnaireConverter {
             }
             variablePath = questionnaire.getName() + ":" + variableName;
 
-          } else if(dataSourceRight instanceof QuestionnaireDataSource || dataSourceRight instanceof CurrentDateSource || dataSourceRight instanceof VariableDataSource) {
+          } else if(dataSourceRight instanceof QuestionnaireDataSource || dataSourceRight instanceof CurrentDateSource || dataSourceRight instanceof VariableDataSource || dataSourceRight instanceof ParticipantPropertyDataSource) {
             variablePath = getVariablePath(dataSourceRight);
           } else {
-            throw new DataSourceConverterException("Unsupported dataSource[" + dataSourceRight + "] for open answer " + openAnswer.getName() + " in questionnaire " + questionnaire);
+            throw new QuestionnaireConverterException("Unsupported dataSource[" + dataSourceRight + "] for open answer " + openAnswer.getName() + " in questionnaire " + questionnaire);
           }
           questionnaireBuilder.inOpenAnswerDefinition(openAnswer.getName()).addValidator(comparingDataSource.getComparisonOperator(), variablePath);
         }
@@ -173,6 +181,18 @@ public class QuestionnaireConverter {
       if(isNotBlank(questionnaireDataSource.getCategory())) path.append("." + questionnaireDataSource.getCategory());
       if(isNotBlank(questionnaireDataSource.getOpenAnswerDefinition())) path.append("." + questionnaireDataSource.getOpenAnswerDefinition());
       return path.toString();
+    }
+    if(dataSource instanceof ParticipantPropertyDataSource) {
+      String property = ((ParticipantPropertyDataSource) dataSource).getProperty();
+      if("gender".equals(property)) {
+        return "Participants:" + ONYX_ADMIN_PREFIX + "." + PARTICIPANT + ".gender";
+      } else if("birthYear".equals(property)) {
+        return "Participants:" + ONYX_ADMIN_PREFIX + "." + PARTICIPANT + ".birthYear";
+      } else if("age".equals(property)) {
+        return "Participants:" + ONYX_ADMIN_PREFIX + "." + PARTICIPANT + ".age";
+      } else {
+        throw new QuestionnaireConverterException("Unsupported property[ " + property + " for dataSource " + dataSource);
+      }
     }
     if(dataSource instanceof CurrentDateSource) {
       CurrentDateSource currentDateSource = (CurrentDateSource) dataSource;
@@ -221,11 +241,11 @@ public class QuestionnaireConverter {
         }
         break;
       default:
-        throw new DataSourceConverterException("Unsupported dateField for " + currentDateSource);
+        throw new QuestionnaireConverterException("Unsupported dateField for " + currentDateSource);
       }
       return questionnaire.getName() + ":" + variableName;
     }
-    throw new DataSourceConverterException("DataSource " + dataSource + " was not converted to VariableDataSource");
+    throw new QuestionnaireConverterException("DataSource " + dataSource + " was not converted to VariableDataSource");
   }
 
 }

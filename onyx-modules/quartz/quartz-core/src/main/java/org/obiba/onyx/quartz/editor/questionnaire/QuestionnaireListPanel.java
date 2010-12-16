@@ -56,7 +56,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocume
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.DataSourceConverterException;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverterException;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
@@ -228,7 +228,7 @@ public class QuestionnaireListPanel extends Panel {
               } catch(StructureAnalyserException e) {
                 log.error("Unsupported questionnaire structure", e);
                 return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("analyze.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
-              } catch(DataSourceConverterException e) {
+              } catch(QuestionnaireConverterException e) {
                 log.error("Cannot convert questionnaire", e);
                 return new Label(componentId1, name + " <img src=\"" + RequestCycle.get().urlFor(ERROR) + "\"/>").setEscapeModelStrings(false).add(new TooltipBehavior(new StringResourceModel("converting.error", QuestionnaireListPanel.this, null, new Object[] { e.getMessage() })));
               } catch(Exception e) {
