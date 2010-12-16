@@ -56,6 +56,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.QuartzImages;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -636,22 +640,22 @@ public abstract class QuestionnaireTreePanel extends Panel {
     QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire), false) {
       @Override
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Questionnaire questionnaire) {
-        // TOD can't do this for the moment
-        // QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
-        // for(Page page : questionnaire.getQuestionnaireCache().getPageCache().values()) {
-        // if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
-        // page.setUIFactoryName(new SimplifiedPageLayoutFactory().getBeanName());
-        // } else {
-        // page.setUIFactoryName(new DefaultPageLayoutFactory().getBeanName());
-        // }
-        // }
-        // for(Question question : questionnaire.getQuestionnaireCache().getQuestionCache().values()) {
-        // if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
-        // question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
-        // } else {
-        // question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
-        // }
-        // }
+        questionnaire.setQuestionnaireCache(null);
+        QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+        for(Page page : questionnaire.getQuestionnaireCache().getPageCache().values()) {
+          if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
+            page.setUIFactoryName(new SimplifiedPageLayoutFactory().getBeanName());
+          } else {
+            page.setUIFactoryName(new DefaultPageLayoutFactory().getBeanName());
+          }
+        }
+        for(Question question : questionnaire.getQuestionnaireCache().getQuestionCache().values()) {
+          if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
+            question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
+          } else {
+            question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
+          }
+        }
         node.setName(questionnaire.getName());
         // update node name in jsTree
         target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");

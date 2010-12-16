@@ -30,13 +30,11 @@ public class QuestionPreviewPanel extends Panel {
 
   private transient final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager bundleManager;
 
@@ -50,10 +48,15 @@ public class QuestionPreviewPanel extends Panel {
     bundle.clearMessageSourceCache();
     questionnaire.setQuestionnaireCache(null);
     try {
+      // if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
+      // add(new SimplifiedQuestionPanel("preview", model));
+      // } else {
       if(model.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
         add(new DropDownQuestionPanel("preview", model));
       } else {
         add(new DefaultQuestionPanel("preview", model));
+        // }
+
       }
     } catch(Exception e) {
       logger.error(e.getMessage(), e);
@@ -61,5 +64,4 @@ public class QuestionPreviewPanel extends Panel {
     }
 
   }
-
 }

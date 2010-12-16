@@ -119,7 +119,13 @@ public abstract class QuestionPanel extends Panel {
           } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
             typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
           } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
+            List<QuestionType> asList = null;
+            if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
+              asList = Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_RADIO);
+            } else {
+              asList = Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO);
+            }
+            typeChoices = new ArrayList<QuestionType>(asList);
           } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
             typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
           }

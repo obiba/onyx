@@ -233,8 +233,8 @@ public abstract class QuestionnairePanel extends Panel {
             feedbackWindow.show(target);
             return;
           }
-          persist(target);
           QuestionnairePanel.this.onSave(target, form.getModelObject());
+          persist(target);
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
         }
