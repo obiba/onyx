@@ -43,40 +43,36 @@ public class AdministrationPage extends BasePage {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
-  private List<AjaxLink<?>> links;
+  private List<AjaxLink<?>> links = new ArrayList<AjaxLink<?>>();
 
   public AdministrationPage() {
-
-    links = new ArrayList<AjaxLink<?>>();
 
     AjaxLink<?> userTab = new AdminTab("userTab") {
 
       @Override
-      public Component getComponent() {
+      public Component getTabComponent() {
         return new UserSearchPanel(getContentId());
       }
 
     };
-    userTab.setOutputMarkupId(true);
-    add(userTab);
+    add(userTab.setOutputMarkupId(true));
     links.add(userTab);
 
     AjaxLink<?> dataTab = new AdminTab("dataTab") {
 
       @Override
-      public Component getComponent() {
+      public Component getTabComponent() {
         return new DataManagementPanel(getContentId());
       }
 
     };
-    dataTab.setOutputMarkupId(true);
-    add(dataTab);
+    add(dataTab.setOutputMarkupId(true));
     links.add(dataTab);
 
     AjaxLink<?> editorTab = new EditorTab("editorTab") {
 
       @Override
-      public Component getComponent() {
+      public Component getTabComponent() {
         for(Module module : moduleRegistry.getModules()) {
           Component editorComponent = module.getEditorPanel(getContentId());
           if(editorComponent != null) return editorComponent;
@@ -85,14 +81,13 @@ public class AdministrationPage extends BasePage {
       }
 
     };
-    editorTab.setOutputMarkupId(true);
-    add(editorTab);
+    add(editorTab.setOutputMarkupId(true));
     links.add(editorTab);
 
     AjaxLink<?> devTab = new AdminTab("devTab") {
 
       @Override
-      public Component getComponent() {
+      public Component getTabComponent() {
         return new DevelopersPanel(getContentId());
       }
 
@@ -101,14 +96,14 @@ public class AdministrationPage extends BasePage {
         return ((OnyxApplication) WebApplication.get()).isDevelopmentMode();
       }
     };
-    devTab.setOutputMarkupId(true);
-    add(devTab);
+    add(devTab.setOutputMarkupId(true));
     links.add(devTab);
 
     // Display first permitted tab
     for(AjaxLink<?> link : links) {
       if(link.isActionAuthorized(new Action(Action.RENDER))) {
-        add(((Link) link).getComponent());
+        Component tabComponent = ((Link) link).getTabComponent();
+        add(tabComponent.setOutputMarkupId(true));
         link.add(new AttributeModifier("class", true, new Model<String>("obiba-button ui-corner-all selected")));
         break;
       }
@@ -137,7 +132,7 @@ public class AdministrationPage extends BasePage {
 
   private interface Link {
 
-    Component getComponent();
+    Component getTabComponent();
 
   }
 
@@ -150,11 +145,12 @@ public class AdministrationPage extends BasePage {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      replaceContent(target, getComponent());
+      Component component = getTabComponent();
+      replaceContent(target, component);
       activateLink(this, target);
     }
 
-    public abstract Component getComponent();
+    public abstract Component getTabComponent();
 
   }
 
@@ -167,11 +163,12 @@ public class AdministrationPage extends BasePage {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-      replaceContent(target, getComponent());
+      Component component = getTabComponent();
+      replaceContent(target, component);
       activateLink(this, target);
     }
 
-    public abstract Component getComponent();
+    public abstract Component getTabComponent();
   }
 
 }

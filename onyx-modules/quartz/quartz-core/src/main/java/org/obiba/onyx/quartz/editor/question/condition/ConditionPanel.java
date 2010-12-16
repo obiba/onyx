@@ -108,9 +108,7 @@ public class ConditionPanel extends Panel {
 
     final Questionnaire questionnaire = questionnaireModel.getObject();
     QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
-    if(questionnaire.getQuestionnaireCache() == null) {
-      questionnaireFinder.buildQuestionnaireCache();
-    }
+    questionnaireFinder.buildQuestionnaireCache(); // need a fresh cache
 
     if(question.getCondition() != null) {
       VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
