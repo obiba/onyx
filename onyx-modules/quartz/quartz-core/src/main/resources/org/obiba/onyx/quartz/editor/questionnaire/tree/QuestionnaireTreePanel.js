@@ -104,7 +104,7 @@ Wicket.QTree.buildTree = function(treeId, jsonUrl) {
 		"crrm" : {
 			"move" : {
 				"check_move" : function (m) {
-					if (m.o[0].getAttribute("rel") == "Variable") {
+					if (m.o[0].getAttribute("rel") == "Variable" || m.o[0].getAttribute("rel") == "Variables") {
 						return false;
 					}
 					return true;
