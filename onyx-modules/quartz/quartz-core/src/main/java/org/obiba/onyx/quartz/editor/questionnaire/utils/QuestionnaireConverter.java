@@ -50,6 +50,8 @@ public class QuestionnaireConverter {
 
   // private static final String ADMIN_PARTICIPANT_GENDER_PATH = "Participants:Admin.Participant.gender";
 
+  private static final String DATE_NAME = "Date.Now";
+
   private static final String DATE_YEAR_NAME = "Date.Now.Year";
 
   private static final String DATE_MONTH_NAME = "Date.Now.Month";
@@ -205,51 +207,58 @@ public class QuestionnaireConverter {
     if(dataSource instanceof CurrentDateSource) {
       CurrentDateSource currentDateSource = (CurrentDateSource) dataSource;
       String variableName = null;
-      switch(currentDateSource.getField()) {
-      case YEAR:
-        variableName = DATE_YEAR_NAME;
+      if(currentDateSource.getField() == null) {
+        variableName = DATE_NAME;
         if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().year().value()");
+          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().value()");
         }
-        break;
-      case MONTH:
-        variableName = DATE_MONTH_NAME;
-        if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().month().value()");
+      } else {
+        switch(currentDateSource.getField()) {
+        case YEAR:
+          variableName = DATE_YEAR_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().year().value()");
+          }
+          break;
+        case MONTH:
+          variableName = DATE_MONTH_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().month().value()");
+          }
+          break;
+        case DAY_OF_YEAR:
+          variableName = DATE_MONTH_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().dayOfYear().value()");
+          }
+          break;
+        case DAY_OF_MONTH:
+          variableName = DATE_MONTH_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().dayOfMonth().value()");
+          }
+          break;
+        case DAY_OF_WEEK:
+          variableName = DATE_MONTH_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().dayOfWeek().value()");
+          }
+          break;
+        case WEEK_OF_MONTH:
+          variableName = DATE_MONTH_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().weekOfMonth().value()");
+          }
+          break;
+        case WEEK_OF_YEAR:
+          variableName = DATE_MONTH_NAME;
+          if(questionnaireFinder.findVariable(variableName) == null) {
+            questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().weekOfYear().value()");
+          }
+          break;
+        default:
+          throw new QuestionnaireConverterException("Unsupported dateField for " + currentDateSource);
         }
-        break;
-      case DAY_OF_YEAR:
-        variableName = DATE_MONTH_NAME;
-        if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().dayOfYear().value()");
-        }
-        break;
-      case DAY_OF_MONTH:
-        variableName = DATE_MONTH_NAME;
-        if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().dayOfMonth().value()");
-        }
-        break;
-      case DAY_OF_WEEK:
-        variableName = DATE_MONTH_NAME;
-        if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().dayOfWeek().value()");
-        }
-        break;
-      case WEEK_OF_MONTH:
-        variableName = DATE_MONTH_NAME;
-        if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().weekOfMonth().value()");
-        }
-        break;
-      case WEEK_OF_YEAR:
-        variableName = DATE_MONTH_NAME;
-        if(questionnaireFinder.findVariable(variableName) == null) {
-          questionnaireBuilder.withVariable(variableName, IntegerType.get(), "now().weekOfYear().value()");
-        }
-        break;
-      default:
-        throw new QuestionnaireConverterException("Unsupported dateField for " + currentDateSource);
       }
       return questionnaire.getName() + ":" + variableName;
     }
