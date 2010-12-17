@@ -246,6 +246,7 @@ public class QuestionnaireElementCloner {
 
   }
 
+  // TODO use flags
   public static class CloneSettings {
 
     private boolean cloneVariableName = true;
