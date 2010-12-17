@@ -313,14 +313,18 @@ public abstract class QuestionnaireTreePanel extends Panel {
         } else {
           newHasSection = questionnaire;
         }
+        int fromIndex;
         if(section.getParentSection() == null) {
+          fromIndex = questionnaire.getSections().indexOf(section);
           questionnaire.removeSection(section);
         } else {
+          fromIndex = section.getSections().indexOf(section);
           section.getParentSection().removeSection(section);
         }
         if(newHasSection instanceof Questionnaire) {
           section.setParentSection(null);
         }
+        if(fromIndex < position) position--;
         newHasSection.addSection(section, Math.min(newHasSection.getSections().size(), position));
         try {
           persitQuestionnaire(target);
@@ -330,7 +334,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
       } else if(node.isPage() && newNode.isSection()) {
         Page page = questionnaireFinder.findPage(node.getName());
         Section newParentSection = questionnaireFinder.findSection(newNode.getName());
+        int fromIndex = page.getSection().getPages().indexOf(page);
         page.getSection().removePage(page);
+        if(fromIndex < position) position--;
         newParentSection.addPage(page, Math.min(newParentSection.getPages().size(), position));
         try {
           persitQuestionnaire(target);
@@ -340,11 +346,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
       } else if(node.isAnyQuestion() && newNode.isPage()) {
         Question question = questionnaireFinder.findQuestion(node.getName());
         Page newParentPage = questionnaireFinder.findPage(newNode.getName());
+        int fromIndex;
         if(question.getParentQuestion() != null) {
+          fromIndex = question.getParentQuestion().getQuestions().indexOf(question);
           question.getParentQuestion().removeQuestion(question);
         } else {
+          fromIndex = question.getPage().getQuestions().indexOf(question);
           question.getPage().removeQuestion(question);
         }
+        if(fromIndex < position) position--;
         newParentPage.addQuestion(question, Math.min(position, newParentPage.getQuestions().size()));
         try {
           persitQuestionnaire(target);
@@ -354,11 +364,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
       } else if(node.isQuestionBoilerPlate() && newNode.isQuestionBoilerPlate()) {
         Question question = questionnaireFinder.findQuestion(node.getName());
         Question newParentQuestion = questionnaireFinder.findQuestion(newNode.getName());
+        int fromIndex;
         if(question.getParentQuestion() != null) {
+          fromIndex = question.getParentQuestion().getQuestions().indexOf(question);
           question.getParentQuestion().removeQuestion(question);
         } else {
+          fromIndex = question.getPage().getQuestions().indexOf(question);
           question.getPage().removeQuestion(question);
         }
+        if(fromIndex < position) position--;
         newParentQuestion.addQuestion(question, Math.min(position, newParentQuestion.getQuestions().size()));
         try {
           persitQuestionnaire(target);

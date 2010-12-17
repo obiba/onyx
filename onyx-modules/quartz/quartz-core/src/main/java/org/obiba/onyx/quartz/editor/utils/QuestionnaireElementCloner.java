@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -85,8 +84,8 @@ public class QuestionnaireElementCloner {
     if(!settings.isRenameQuestion()) {
       to.setName(from.getName());
     } else {
-      // TODO UUID to ensure unique name (other solution ?)
-      to.setName("_" + from.getName() + "_" + UUID.randomUUID().toString().replace("-", "_"));
+      // TODO currentTimeMillis to ensure unique name (other solution ?)
+      to.setName("_" + from.getName() + "_" + System.currentTimeMillis());
     }
     to.setCondition(from.getCondition());
     to.setMaxCount(from.getMaxCount());
@@ -182,8 +181,8 @@ public class QuestionnaireElementCloner {
     if(!settings.isRenameOpenAnswer()) {
       to.setName(from.getName());
     } else {
-      // TODO UUID to ensure unique name (other solution ?)
-      to.setName("_" + from.getName() + "_" + UUID.randomUUID().toString().replace("-", "_"));
+      // TODO currentTimeMillis to ensure unique name (other solution ?)
+      to.setName("_" + from.getName() + "_" + System.currentTimeMillis());
     }
     to.setDataType(from.getDataType());
     to.setDataSource(from.getDataSource());
