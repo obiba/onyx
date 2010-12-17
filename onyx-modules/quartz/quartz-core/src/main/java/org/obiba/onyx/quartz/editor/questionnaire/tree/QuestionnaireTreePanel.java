@@ -60,6 +60,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLa
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.QuartzImages;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -653,7 +654,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
             question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
           } else {
-            question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
+            if(!question.getUIFactoryName().equals(new DropDownQuestionPanelFactory().getBeanName())) {
+              question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
+            }
           }
         }
         node.setName(questionnaire.getName());
