@@ -249,7 +249,8 @@ public abstract class CategoryWindow extends Panel {
                     currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
                   } else {
                     OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
-                    newOpenAnswer.setName(category.getName());
+                    // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
+                    newOpenAnswer.setName(category.getName() + System.currentTimeMillis());
                     newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
                     newOpenAnswer.addOpenAnswerDefinition(openAnswer);
                     category.setOpenAnswerDefinition(newOpenAnswer);
