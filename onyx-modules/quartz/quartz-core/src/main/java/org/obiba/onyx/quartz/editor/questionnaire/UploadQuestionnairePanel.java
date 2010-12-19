@@ -57,8 +57,7 @@ public abstract class UploadQuestionnairePanel extends Panel {
   private static final byte[] BUFFER = new byte[BUFFER_SIZE];
 
   @SpringBean
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Needs to be be re-initialized upon deserialization")
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   private final FeedbackPanel feedbackPanel;
@@ -122,7 +121,6 @@ public abstract class UploadQuestionnairePanel extends Panel {
                 if(updatedQuestionnaire == null) {
                   for(QuestionnaireBundle bundle : questionnaireBundleManager.bundles()) {
                     if(questionnaire.getName().equals(bundle.getName())) {
-                      error(getLocalizer().getString("AlreadyExists", UploadQuestionnairePanel.this));
                       error(new StringResourceModel("Error.QuestionnaireAlreadyExists", UploadQuestionnairePanel.this, null, new Object[] { questionnaire.getName() }).getString());
                       return;
                     }
