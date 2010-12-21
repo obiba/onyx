@@ -56,8 +56,8 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocume
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverterException;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverterException;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserException;
@@ -145,9 +145,17 @@ public class QuestionnaireListPanel extends Panel {
           }
         };
         editionPanel.setRightPanel(rightPanel, new Model<String>(""), null, null);
-
         modalWindow.setTitle(newQuestionnaire.getName());
         modalWindow.setContent(editionPanel);
+        modalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+            target.addComponent(questionnaireList); // reload questionnaire list
+            return true; // same as cancel
+          }
+        });
         modalWindow.show(target);
       }
     }.add(new Image("addImg", Images.ADD)));

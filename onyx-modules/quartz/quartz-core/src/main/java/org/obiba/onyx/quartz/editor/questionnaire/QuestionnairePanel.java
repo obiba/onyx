@@ -117,7 +117,7 @@ public abstract class QuestionnairePanel extends Panel {
           }
         });
         if(!isNewName && !validatable.getValue().equals(questionnaire.getName())) {
-          error(validatable, "NameNotAlreadyExistValidator");
+          error(validatable, "NameAlreadyExist");
         }
       }
     });
