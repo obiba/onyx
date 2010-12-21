@@ -36,6 +36,7 @@ import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.IDataValidator;
+import org.springframework.util.CollectionUtils;
 
 /**
  *
@@ -114,23 +115,25 @@ public class ValidationPanel extends Panel {
   private void validateOpenAnswerValidators() {
     Questionnaire questionnaire = (Questionnaire) getDefaultModelObject();
     for(OpenAnswerDefinition openAnswer : questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().values()) {
-      DataType dataType = openAnswer.getDataType();
-      if(dataType == null) {
-        error("UndefinedOpenAnswerType", openAnswer.getName());
-      } else {
-        ValueType valueType = VariableUtils.convertToValueType(dataType);
-        for(IDataValidator<?> validator : openAnswer.getDataValidators()) {
-          if(!dataType.equals(validator.getDataType())) {
-            error("OpenAnswerTypeDifferentFromDataValidator", dataType, openAnswer.getName(), validator.getDataType());
+      if(CollectionUtils.isEmpty(openAnswer.getOpenAnswerDefinitions())) {
+        DataType dataType = openAnswer.getDataType();
+        if(dataType == null) {
+          error("UndefinedOpenAnswerType", openAnswer.getName());
+        } else {
+          ValueType valueType = VariableUtils.convertToValueType(dataType);
+          for(IDataValidator<?> validator : openAnswer.getDataValidators()) {
+            if(!dataType.equals(validator.getDataType())) {
+              error("OpenAnswerTypeDifferentFromDataValidator", dataType, openAnswer.getName(), validator.getDataType());
+            }
           }
-        }
-        for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
-          VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
-          Variable variable = variableUtils.findVariable(variableDataSource);
-          // check variable type only for variable that are not a reference to a question category (because they are
-          // always boolean)
-          if(variable != null && !variable.hasAttribute(VariableUtils.CATEGORY_NAME) && !valueType.equals(variable.getValueType())) {
-            error("OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
+          for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
+            VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
+            Variable variable = variableUtils.findVariable(variableDataSource);
+            // check variable type only for variable that are not a reference to a question category (because they are
+            // always boolean)
+            if(variable != null && !variable.hasAttribute(VariableUtils.CATEGORY_NAME) && !valueType.equals(variable.getValueType())) {
+              error("OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
+            }
           }
         }
       }
