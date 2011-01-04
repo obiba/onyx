@@ -154,10 +154,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
    */
   private boolean editingElement = false;
 
+  public boolean isNewQuestionnaire = false;
+
   private JsonNode variablesNode;
 
-  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
+  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model, boolean isNewQuestionnaire) {
     super(id, model);
+    this.isNewQuestionnaire = isNewQuestionnaire;
     final Questionnaire questionnaire = model.getObject();
 
     editingConfirmationDialog = new ConfirmationDialog("editingConfirm");
@@ -319,12 +322,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
           questionnaire.removeSection(section);
         } else {
           fromIndex = section.getSections().indexOf(section);
+          if(fromIndex < position && newHasSection == section.getParentSection()) position--;
           section.getParentSection().removeSection(section);
         }
         if(newHasSection instanceof Questionnaire) {
           section.setParentSection(null);
         }
-        if(fromIndex < position) position--;
         newHasSection.addSection(section, Math.min(newHasSection.getSections().size(), position));
         try {
           persitQuestionnaire(target);
@@ -335,8 +338,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
         Page page = questionnaireFinder.findPage(node.getName());
         Section newParentSection = questionnaireFinder.findSection(newNode.getName());
         int fromIndex = page.getSection().getPages().indexOf(page);
+        if(fromIndex < position && newParentSection == page.getSection()) position--;
         page.getSection().removePage(page);
-        if(fromIndex < position) position--;
         newParentSection.addPage(page, Math.min(newParentSection.getPages().size(), position));
         try {
           persitQuestionnaire(target);
@@ -352,9 +355,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           question.getParentQuestion().removeQuestion(question);
         } else {
           fromIndex = question.getPage().getQuestions().indexOf(question);
+          if(fromIndex < position && newParentPage == question.getPage()) position--;
           question.getPage().removeQuestion(question);
         }
-        if(fromIndex < position) position--;
         newParentPage.addQuestion(question, Math.min(position, newParentPage.getQuestions().size()));
         try {
           persitQuestionnaire(target);
@@ -367,12 +370,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
         int fromIndex;
         if(question.getParentQuestion() != null) {
           fromIndex = question.getParentQuestion().getQuestions().indexOf(question);
+          if(fromIndex < position && newParentQuestion == question.getParentQuestion()) position--;
           question.getParentQuestion().removeQuestion(question);
         } else {
           fromIndex = question.getPage().getQuestions().indexOf(question);
           question.getPage().removeQuestion(question);
         }
-        if(fromIndex < position) position--;
         newParentQuestion.addQuestion(question, Math.min(position, newParentQuestion.getQuestions().size()));
         try {
           persitQuestionnaire(target);
@@ -489,6 +492,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
   }
 
   private void preview(final String nodeId, final TreeNode node, AjaxRequestTarget target) {
+    if(isNewQuestionnaire) return;
     editingElement = false;
     @SuppressWarnings("unchecked")
     final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
@@ -941,6 +945,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
     } else if(node.isPage()) {
       Page page = questionnaireFinder.findPage(node.getName());
       page.getSection().removePage(page);
+      questionnaire.removePage(page);
     } else if(node.isAnyQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
       if(question.getParentQuestion() != null) {
@@ -974,6 +979,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
     String id = ID_PREFIX + elementCounter++;
     elements.put(id, treeNode);
     return id;
+  }
+
+  public void setNewQuestionnaire(boolean isNewQuestionnaire) {
+    this.isNewQuestionnaire = isNewQuestionnaire;
   }
 
   private JsonNode populateNode(IQuestionnaireElement element) {

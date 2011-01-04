@@ -129,7 +129,7 @@ public class QuestionnaireListPanel extends Panel {
         Questionnaire newQuestionnaire = new Questionnaire(new StringResourceModel("NewQuestionnaire", QuestionnaireListPanel.this, null).getString(), "1.0");
         newQuestionnaire.setConvertedToMagmaVariables(true);
         Model<Questionnaire> questionnaireModel = new Model<Questionnaire>(newQuestionnaire);
-        final EditionPanel editionPanel = new EditionPanel("content", questionnaireModel);
+        final EditionPanel editionPanel = new EditionPanel("content", questionnaireModel, true);
         QuestionnairePanel rightPanel = new QuestionnairePanel(EditionPanel.RIGHT_PANEL, questionnaireModel, true) {
           private static final long serialVersionUID = 1L;
 
@@ -137,6 +137,7 @@ public class QuestionnaireListPanel extends Panel {
           public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Questionnaire questionnaire) {
             editionPanel.restoreDefaultRightPanel(target);
             target.addComponent(editionPanel.getTree());
+            editionPanel.setNewQuestionnaire(false);
           }
 
           @Override

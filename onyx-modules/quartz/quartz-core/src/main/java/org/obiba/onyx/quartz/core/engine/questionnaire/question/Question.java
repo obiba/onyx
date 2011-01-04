@@ -77,6 +77,7 @@ public class Question implements IHasQuestion {
     this.page = page;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -106,7 +107,14 @@ public class Question implements IHasQuestion {
   }
 
   public boolean isBoilerPlate() {
-    return (!hasCategories() && (getParentQuestion() == null || !getParentQuestion().hasCategories()));
+    return (!hasCategories() && subQuestionsAreBoilerPlate() && (getParentQuestion() == null || !getParentQuestion().hasCategories()));
+  }
+
+  public boolean subQuestionsAreBoilerPlate() {
+    for(Question subQuestion : getQuestions()) {
+      if(!subQuestion.isBoilerPlate()) return false;
+    }
+    return true;
   }
 
   public boolean hasSubQuestions() {
