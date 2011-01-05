@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire.utils;
 
+import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.spring.SpringContextScanningDatasource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
@@ -30,17 +33,6 @@ public class QuestionnairePersistenceUtils {
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   private LocalePropertiesUtils localePropertiesUtils;
-
-  /**
-   * Update questionnaire originally named with this name
-   * @param name
-   * @param questionnaire
-   * @param localeProperties
-   * @throws Exception
-   */
-  public void persist(String name, Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
-
-  }
 
   public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
 
@@ -64,6 +56,8 @@ public class QuestionnairePersistenceUtils {
 
     // store locales
     if(localeProperties != null) localePropertiesUtils.persist(bundle, localeProperties);
+
+    reloadVariables(questionnaire);
   }
 
   public void persist(Questionnaire questionnaire) throws Exception {
@@ -80,4 +74,16 @@ public class QuestionnairePersistenceUtils {
     this.localePropertiesUtils = localePropertiesUtils;
   }
 
+  public void reloadVariables(Questionnaire questionnaire) {
+    if(questionnaire == null) throw new IllegalArgumentException("questionnaire cannot be null");
+    this.reloadVariables(questionnaire.getName());
+  }
+
+  public void reloadVariables(String questionnaire) {
+    if(questionnaire == null) throw new IllegalArgumentException("questionnaire cannot be null");
+    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
+    if(onyxDatasource instanceof SpringContextScanningDatasource) {
+      ((SpringContextScanningDatasource) onyxDatasource).reloadValueTable(questionnaire);
+    }
+  }
 }
