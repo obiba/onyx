@@ -321,7 +321,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           fromIndex = questionnaire.getSections().indexOf(section);
           questionnaire.removeSection(section);
         } else {
-          fromIndex = section.getSections().indexOf(section);
+          fromIndex = section.getParentSection().getSections().indexOf(section);
           if(fromIndex < position && newHasSection == section.getParentSection()) position--;
           section.getParentSection().removeSection(section);
         }
