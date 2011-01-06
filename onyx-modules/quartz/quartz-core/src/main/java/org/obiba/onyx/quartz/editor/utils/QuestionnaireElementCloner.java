@@ -150,6 +150,7 @@ public class QuestionnaireElementCloner {
     to.setEscape(from.isEscape());
     to.setNoAnswer(from.isNoAnswer());
     if(settings.isCloneVariableName()) {
+      to.clearVariableNames();
       for(Entry<String, String> entry : from.getVariableNames().entrySet()) {
         to.addVariableName(entry.getKey(), entry.getValue());
       }
