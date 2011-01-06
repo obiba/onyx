@@ -365,17 +365,14 @@ public class OpenAnswerPanel extends Panel {
     maxDecimal.add(decimalPatternValidator);
     minMaxContainer.add(maxDecimal);
 
-    // TODO put this more generic
     String patternStr = onyxSettings.getDateFormat().toPattern();
-    if(patternStr.equals("yyyy-MM-dd")) {
-    } else if(patternStr.equals("dd-MM-yyyy")) {
-    }
+
     beforeDate = new TextField<String>("beforeDate", new Model<String>(maxValue), String.class);
-    beforeDate.setLabel(new ResourceModel("Before"));
+    beforeDate.setLabel(new Model<String>(new StringResourceModel("Before", OpenAnswerPanel.this, null).getObject() + " (" + patternStr + ")"));
     minMaxContainer.add(beforeDate);
 
     afterDate = new TextField<String>("afterDate", new Model<String>(minValue), String.class);
-    afterDate.setLabel(new ResourceModel("After"));
+    afterDate.setLabel(new Model<String>(new StringResourceModel("After", OpenAnswerPanel.this, null).getObject() + " (" + patternStr + ")"));
     minMaxContainer.add(afterDate);
 
     minMaxContainer.add(minimumLabel = new SimpleFormComponentLabel("minimumLabel", minLength));
