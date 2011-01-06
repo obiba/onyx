@@ -56,6 +56,7 @@ public abstract class OpenAnswerWindow extends Panel {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         openAnswerPanel.onSave(target);
+        if(form.hasError()) return;
         OpenAnswerWindow.this.onSave(target, form.getModelObject());
         modalWindow.close(target);
       }
