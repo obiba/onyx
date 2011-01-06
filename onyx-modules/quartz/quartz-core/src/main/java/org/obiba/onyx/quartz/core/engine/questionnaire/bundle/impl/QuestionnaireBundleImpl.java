@@ -25,7 +25,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +56,6 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
   private MessageSource messageSource;
 
-  private IPropertyKeyProvider propertyKeyProvider;
-
   /** Used to handle the language bundles which can be handled like any other localized resource */
   private LocalizedResourceLoader messageBundleLoader;
 
@@ -66,7 +63,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   // Constructors
   //
 
-  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider, boolean reloadProperties) {
+  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, boolean reloadProperties) {
 
     if(bundleVersionDir == null) {
       throw new IllegalArgumentException("Null bundle version directory");
@@ -76,13 +73,8 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
       throw new IllegalArgumentException("Null questionnaire");
     }
 
-    if(propertyKeyProvider == null) {
-      throw new IllegalArgumentException("Null property key provider");
-    }
-
     this.bundleVersionDir = bundleVersionDir;
     this.questionnaire = questionnaire;
-    this.propertyKeyProvider = propertyKeyProvider;
 
     this.messageBundleLoader = new LocalizedResourceLoader();
     this.messageBundleLoader.setResourceName(LANGUAGE_FILE_BASENAME);
@@ -112,8 +104,8 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     }
   }
 
-  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
-    this(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider, true);
+  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire) {
+    this(resourceLoader, bundleVersionDir, questionnaire, true);
   }
 
   @Override
@@ -147,7 +139,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, propertyKeyProvider, fos = new FileOutputStream(new File(bundleVersionDir, getPath(locale))));
+      QuestionnaireStreamer.storeLanguage(questionnaire, locale, language, questionnaire.getPropertyKeyProvider(), fos = new FileOutputStream(new File(bundleVersionDir, getPath(locale))));
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
@@ -211,8 +203,8 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     }
 
     if(language == null) {
-      QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(getQuestionnaire());
-      language = builder.getProperties(propertyKeyProvider);
+      QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(questionnaire);
+      language = builder.getProperties(questionnaire.getPropertyKeyProvider());
     }
 
     return language;
@@ -230,7 +222,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
   @Override
   public String getPropertyKey(IQuestionnaireElement localizable, String property) {
-    return propertyKeyProvider.getPropertyKey(localizable, property);
+    return questionnaire.getPropertyKeyProvider().getPropertyKey(localizable, property);
   }
 
   //
