@@ -365,16 +365,17 @@ public class OpenAnswerPanel extends Panel {
     maxDecimal.add(decimalPatternValidator);
     minMaxContainer.add(maxDecimal);
 
-    // TODO validate date
-    // PatternValidator datePatternValidator = new PatternValidator("[0-9]4-[0-9]2-[0-9]2");
+    // TODO put this more generic
+    String patternStr = onyxSettings.getDateFormat().toPattern();
+    if(patternStr.equals("yyyy-MM-dd")) {
+    } else if(patternStr.equals("dd-MM-yyyy")) {
+    }
     beforeDate = new TextField<String>("beforeDate", new Model<String>(maxValue), String.class);
     beforeDate.setLabel(new ResourceModel("Before"));
-    // beforeDate.add(datePatternValidator);
     minMaxContainer.add(beforeDate);
 
     afterDate = new TextField<String>("afterDate", new Model<String>(minValue), String.class);
     afterDate.setLabel(new ResourceModel("After"));
-    // afterDate.add(datePatternValidator);
     minMaxContainer.add(afterDate);
 
     minMaxContainer.add(minimumLabel = new SimpleFormComponentLabel("minimumLabel", minLength));
@@ -753,7 +754,10 @@ public class OpenAnswerPanel extends Panel {
           opa.addDataValidator(dataValidator);
         }
       } catch(ParseException e) {
-        throw new RuntimeException(e);
+        error(new StringResourceModel("InvalidDate", OpenAnswerPanel.this, null).getObject());
+        OpenAnswerPanel.this.feedbackWindow.setContent(OpenAnswerPanel.this.feedbackPanel);
+        OpenAnswerPanel.this.feedbackWindow.show(target);
+        return;
       }
       break;
     case DECIMAL:
@@ -829,8 +833,8 @@ public class OpenAnswerPanel extends Panel {
         break;
 
       case DATE:
-        setMinimumLabel(beforeDate);
-        setMaximumLabel(afterDate);
+        setMinimumLabel(afterDate);
+        setMaximumLabel(beforeDate);
         beforeDate.setVisible(true);
         afterDate.setVisible(true);
         clearAndHide(minLength, maxLength, minNumeric, maxNumeric, minDecimal, maxDecimal);

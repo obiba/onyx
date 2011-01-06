@@ -9,24 +9,20 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Required;
 
-/**
- *
- */
 public class OnyxSettings {
 
-  private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   @Required
   public void setDateFormatStr(String dateFormat) {
     this.dateFormat = new SimpleDateFormat(dateFormat);
   }
 
-  public DateFormat getDateFormat() {
+  public SimpleDateFormat getDateFormat() {
     return dateFormat;
   }
 

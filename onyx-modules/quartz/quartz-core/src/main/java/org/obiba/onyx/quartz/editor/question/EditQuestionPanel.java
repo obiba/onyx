@@ -145,6 +145,7 @@ public abstract class EditQuestionPanel extends Panel {
             @Override
             public void onSave(AjaxRequestTarget target) {
               super.onSave(target);
+              if(form.hasError()) return;
               if(categories.isEmpty()) {
                 // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
                 Category category = new Category(openAnswerDefinition.getName() + System.currentTimeMillis());
@@ -280,6 +281,7 @@ public abstract class EditQuestionPanel extends Panel {
           switch(questionType) {
           case SINGLE_OPEN_ANSWER:
             openAnswerTab.save(target);
+            if(form.hasError()) return;
             if(question.getCategories().size() == 0 || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
               tabbedPanel.setSelectedTab(tabs.indexOf(openAnswerTab));
               target.addComponent(tabbedPanel);
@@ -316,10 +318,11 @@ public abstract class EditQuestionPanel extends Panel {
 
         conditionTab.save(target);
 
-        if(!form.hasError()) {
-          ((EditedQuestion) EditQuestionPanel.this.getDefaultModelObject()).setLayoutInfos();
-          EditQuestionPanel.this.onSave(target, form.getModelObject().getElement());
-        }
+        if(form.hasError()) return;
+
+        ((EditedQuestion) EditQuestionPanel.this.getDefaultModelObject()).setLayoutInfos();
+        EditQuestionPanel.this.onSave(target, form.getModelObject().getElement());
+
       }
 
       @Override
