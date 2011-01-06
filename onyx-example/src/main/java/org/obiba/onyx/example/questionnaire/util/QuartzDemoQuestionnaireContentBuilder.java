@@ -159,24 +159,6 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("WEIGHT_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("WEIGHT_BIRTH").withSharedCategory(DNK, "99");
 
-    builder.inSection("QUESTION_TYPES").withSection("MULTI_PARTS").withPage("9").withQuestion("DATE_OF_BIRTH").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ComputingDataSource(DataType.INTEGER, "$1-40").addDataSource(new CurrentDateSource(DateField.YEAR))).addValidator(ComparisonOperator.ge, new ComputingDataSource(DataType.INTEGER, "$1-70").addDataSource(new CurrentDateSource(DateField.YEAR)));
-    builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "88");
-    builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "99");
-    builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_MONTH", DropDownQuestionPanelFactory.class).withCategory("01").setExportName("1");
-    builder.inQuestion("DOB_MONTH").withCategory("02").setExportName("2");
-    builder.inQuestion("DOB_MONTH").withCategory("03").setExportName("3");
-    builder.inQuestion("DOB_MONTH").withCategory("04").setExportName("4");
-    builder.inQuestion("DOB_MONTH").withCategory("05").setExportName("5");
-    builder.inQuestion("DOB_MONTH").withCategory("06").setExportName("6");
-    builder.inQuestion("DOB_MONTH").withCategory("07").setExportName("7");
-    builder.inQuestion("DOB_MONTH").withCategory("08").setExportName("8");
-    builder.inQuestion("DOB_MONTH").withCategory("09").setExportName("9");
-    builder.inQuestion("DOB_MONTH").withCategory("10").setExportName("10");
-    builder.inQuestion("DOB_MONTH").withCategory("11").setExportName("11");
-    builder.inQuestion("DOB_MONTH").withCategory("12").setExportName("12");
-    builder.inQuestion("DOB_MONTH").withSharedCategory(PNA, "88");
-    builder.inQuestion("DOB_MONTH").withSharedCategory(DNK, "99");
-
     builder.inSection("QUESTION_TYPES").withSection("SHARED_CAT").withPage("10").withQuestion("ALLERGIES_KIND").withSharedCategory(N, "0");
     builder.inQuestion("ALLERGIES_KIND").withSharedCategory(Y, "1");
     builder.inQuestion("ALLERGIES_KIND").withSharedCategory(PNA, "8");
@@ -202,6 +184,11 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inSection("ANS_VALIDATION").withSection("X_VAL").withPage("14").withQuestion("PARTICIPANT_AGE").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new RangeValidator(40, 70)).setSize(2);
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
+
+    builder.inPage("14").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ComputingDataSource(DataType.INTEGER, "$1-40").addDataSource(new CurrentDateSource(DateField.YEAR))).addValidator(ComparisonOperator.ge, new ComputingDataSource(DataType.INTEGER, "$1-70").addDataSource(new CurrentDateSource(DateField.YEAR)));
+    builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "88");
+    builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "99");
+
     builder.inPage("14").withQuestion("STARTED_SMOKING_AGE").withSharedCategory(OPEN_0_PARTICIPANT).withOpenAnswerDefinition(OPEN_0_PARTICIPANT, DataType.INTEGER).addValidator(new MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
     builder.inQuestion("STARTED_SMOKING_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("STARTED_SMOKING_AGE").withSharedCategory(DNK, "99");
