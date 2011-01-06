@@ -832,7 +832,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private void addQuestion(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target, final QuestionType... forceAllowedType) {
     editingElement = true;
-    EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel, forceAllowedType) {
+    Question newQuestion = new Question(null);
+    newQuestion.setMinCount(1);
+    EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(newQuestion), questionnaireModel, forceAllowedType) {
       @Override
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question question) {
         questionnaireFinder.getQuestionnaire().setQuestionnaireCache(null);
