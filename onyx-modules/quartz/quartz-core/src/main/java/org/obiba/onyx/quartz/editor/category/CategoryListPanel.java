@@ -79,8 +79,7 @@ public class CategoryListPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -213,6 +212,7 @@ public class CategoryListPanel extends Panel {
       @SuppressWarnings("unchecked")
       public void deleteItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
         ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
+        localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
         refreshList(target);
       }
 
@@ -287,7 +287,7 @@ public class CategoryListPanel extends Panel {
             error(new StringResourceModel("CategoryAlreadyExists", CategoryListPanel.this, null).getObject());
             return;
           }
-          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name);
+          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name, false);
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
           categoryList.refreshList(target);
@@ -329,7 +329,7 @@ public class CategoryListPanel extends Panel {
             name = StringUtils.trimToNull(name);
             if(name == null) continue;
             if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) {
-              addCategory(question, name);
+              addCategory(question, name, false);
             }
           }
           categories.setModelObject(null);
@@ -410,7 +410,7 @@ public class CategoryListPanel extends Panel {
             return;
           }
           Category category = categoryWithQuestions.getCategory();
-          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), category);
+          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), category, true);
           categoryNameFinder.setModelObject(null);
 
           target.addComponent(categoryNameFinder);
@@ -469,30 +469,32 @@ public class CategoryListPanel extends Panel {
     return false;
   }
 
-  private void addCategory(Question question, String name) {
+  private void addCategory(Question question, String name, boolean shared) {
     if(StringUtils.isNotBlank(name) && !checkIfCategoryAlreadyExists(question, name)) {
-      addCategory(question, new Category(name));
+      addCategory(question, new Category(name), shared);
     }
   }
 
-  private void addCategory(final Question question, final Category category) {
+  private void addCategory(final Question question, final Category category, boolean shared) {
     final QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setCategory(category);
     question.addQuestionCategory(questionCategory);
 
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
+    if(shared) {
+      localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
 
-    Collection<QuestionCategory> otherQuestionCategories = findOtherQuestionCategories(category, questionCategory);
-    if(!otherQuestionCategories.isEmpty()) {
-      QuestionCategory otherQuestionCategory = otherQuestionCategories.iterator().next();
-      localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory);
+      Collection<QuestionCategory> otherQuestionCategories = findOtherQuestionCategories(category, questionCategory);
+      if(!otherQuestionCategories.isEmpty()) {
+        QuestionCategory otherQuestionCategory = otherQuestionCategories.iterator().next();
+        localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory);
 
-      ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
-      ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
-      for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-        // we suppose that we have only one property in questionCategory : "label", then we use get(0)
-        KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
-        elementLabelsQC.get(locale).get(0).setValue(kV.getValue());
+        ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
+        ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
+        for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+          // we suppose that we have only one property in questionCategory : "label", then we use get(0)
+          KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
+          elementLabelsQC.get(locale).get(0).setValue(kV.getValue());
+        }
       }
     }
   }

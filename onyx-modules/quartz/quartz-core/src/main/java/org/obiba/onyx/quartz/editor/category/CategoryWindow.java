@@ -103,17 +103,6 @@ public abstract class CategoryWindow extends Panel {
     final Question question = questionCategory.getQuestion();
     final Category category = questionCategory.getCategory();
 
-    // StringBuilder sharedWithQuestions = new StringBuilder();
-    // List<Category> sharedCategories = questionnaireFinder.findSharedCategories();
-    // for(QuestionCategory qc : questionnaire.getQuestionnaireCache().getQuestionCategoryCache().values()) {
-    // if(sharedCategories.contains(qc.getCategory())) {
-    // if(sharedWithQuestions.length() > 0) sharedWithQuestions.append(", ");
-    // sharedWithQuestions.append(qc.getQuestion().getName());
-    // }
-    // }
-    // add(new Label("sharedWith", new StringResourceModel("sharedWith", this, null, new Object[] {
-    // sharedWithQuestions.toString() })).setVisible(sharedWithQuestions.length() > 0));
-
     openAnswerWindow = new ModalWindow("openAnswerWindow");
     openAnswerWindow.setCssClassName("onyx");
     openAnswerWindow.setInitialWidth(900);
@@ -228,6 +217,7 @@ public abstract class CategoryWindow extends Panel {
         } else {
           category.setOpenAnswerDefinition(null);
         }
+        localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswerToRemove);
         refreshList(target);
       }
 
