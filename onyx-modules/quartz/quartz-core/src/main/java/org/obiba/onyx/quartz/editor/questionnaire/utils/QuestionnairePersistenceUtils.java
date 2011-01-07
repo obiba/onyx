@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire.utils;
 
-import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.spring.SpringContextScanningDatasource;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageManager;
@@ -61,30 +58,14 @@ public class QuestionnairePersistenceUtils {
     StageManager stageManager = quartzModule.getStageManager();
     Stage stage = stageManager.getStage(questionnaire.getName());
     if(stage == null) {
-      stage = new Stage();
-      stage.setModule(QuartzModule.MODULE_NAME);
-      stage.setName(questionnaire.getName());
-      stageManager.addStage(stageManager.getStages().size(), stage);
+      quartzModule.addStage(stageManager.getStages().size(), new Stage(quartzModule, questionnaire.getName()));
+    } else {
+      quartzModule.stageChanged(stage);
     }
-
-    reloadVariables(questionnaire);
   }
 
   public void persist(Questionnaire questionnaire) throws Exception {
     persist(questionnaire, null);
-  }
-
-  public void reloadVariables(Questionnaire questionnaire) {
-    if(questionnaire == null) throw new IllegalArgumentException("questionnaire cannot be null");
-    this.reloadVariables(questionnaire.getName());
-  }
-
-  public void reloadVariables(String questionnaire) {
-    if(questionnaire == null) throw new IllegalArgumentException("questionnaire cannot be null");
-    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
-    if(onyxDatasource instanceof SpringContextScanningDatasource) {
-      ((SpringContextScanningDatasource) onyxDatasource).reloadValueTable(questionnaire);
-    }
   }
 
   @Required

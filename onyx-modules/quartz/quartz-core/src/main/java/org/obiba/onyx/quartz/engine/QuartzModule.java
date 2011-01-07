@@ -14,8 +14,11 @@ import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.spring.BeanValueTableFactoryBean;
+import org.obiba.magma.spring.SpringContextScanningDatasource;
 import org.obiba.magma.spring.ValueTableFactoryBean;
 import org.obiba.magma.spring.ValueTableFactoryBeanProvider;
 import org.obiba.magma.support.VariableEntityProvider;
@@ -190,34 +193,32 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     return sources.build();
   }
 
-  //
-  // ValueTableFactoryBeanProvider Methods
-  //
-
   @Override
   public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
-    Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
+    Set<ValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
 
     for(Stage stage : getStages()) {
-      BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
-      b.setValueTableName(stage.getName());
-      b.setValueSetBeanResolver(beanResolver);
-      b.setVariableEntityProvider(variableEntityProvider);
-
-      QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
-      QuestionnaireStageVariableSourceFactory questionnaireVariableFactory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
-
-      PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
-      customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
-
-      CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
-      compositeFactory.addFactory(questionnaireVariableFactory).addFactory(customVariableFactory);
-      b.setVariableValueSourceFactory(compositeFactory);
-
-      tableFactoryBeans.add(b);
+      tableFactoryBeans.add(newValueTable(stage));
     }
 
     return tableFactoryBeans;
+  }
+
+  public void stageChanged(Stage stage) {
+    if(stage == null) throw new IllegalArgumentException("questionnaire cannot be null");
+    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
+    if(onyxDatasource instanceof SpringContextScanningDatasource) {
+      ((SpringContextScanningDatasource) onyxDatasource).reloadValueTable(stage.getName());
+    }
+  }
+
+  public void addStage(int index, Stage stage) {
+    if(stage == null) throw new IllegalArgumentException("stage cannot be null");
+    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
+    if(onyxDatasource instanceof SpringContextScanningDatasource) {
+      ((SpringContextScanningDatasource) onyxDatasource).addValueTable(newValueTable(stage));
+      stageManager.addStage(index, stage);
+    }
   }
 
   @Override
@@ -267,6 +268,24 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
   @Required
   public void setStageManager(StageManager stageManager) {
     this.stageManager = stageManager;
+  }
+
+  private ValueTableFactoryBean newValueTable(Stage stage) {
+    BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
+    b.setValueTableName(stage.getName());
+    b.setValueSetBeanResolver(beanResolver);
+    b.setVariableEntityProvider(variableEntityProvider);
+
+    QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
+    QuestionnaireStageVariableSourceFactory questionnaireVariableFactory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
+
+    PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
+    customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
+
+    CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
+    compositeFactory.addFactory(questionnaireVariableFactory).addFactory(customVariableFactory);
+    b.setVariableValueSourceFactory(compositeFactory);
+    return b;
   }
 
 }
