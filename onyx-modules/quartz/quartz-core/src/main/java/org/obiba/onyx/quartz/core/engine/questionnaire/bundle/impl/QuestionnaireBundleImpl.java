@@ -139,7 +139,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      QuestionnaireStreamer.storeLanguage(questionnaire, locale, language, questionnaire.getPropertyKeyProvider(), fos = new FileOutputStream(new File(bundleVersionDir, getPath(locale))));
+      QuestionnaireStreamer.storeLanguage(questionnaire, locale, language, fos = new FileOutputStream(new File(bundleVersionDir, getPath(locale))));
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {

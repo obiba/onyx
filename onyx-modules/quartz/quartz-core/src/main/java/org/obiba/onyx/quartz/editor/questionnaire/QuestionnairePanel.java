@@ -69,15 +69,18 @@ public abstract class QuestionnairePanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -227,16 +230,20 @@ public abstract class QuestionnairePanel extends Panel {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         try {
-          if(model.getObject().getLocales().isEmpty()) {
+          if(questionnaire.getLocales().isEmpty()) {
             error(new StringResourceModel("LanguagesRequired", QuestionnairePanel.this, null).getString());
             feedbackWindow.setContent(feedbackPanel);
             feedbackWindow.show(target);
             return;
           }
-          QuestionnairePanel.this.onSave(target, form.getModelObject());
-          persist(target);
+          prepareSave(target, questionnaire);
+          questionnairePersistenceUtils.persist(questionnaire, localePropertiesModel.getObject());
+          QuestionnairePanel.this.onSave(target, questionnaire);
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -254,20 +261,11 @@ public abstract class QuestionnairePanel extends Panel {
 
   }
 
+  public abstract void prepareSave(AjaxRequestTarget target, Questionnaire questionnaire);
+
   public abstract void onSave(AjaxRequestTarget target, Questionnaire questionnaire);
 
   public abstract void onCancel(AjaxRequestTarget target);
-
-  private void persist(AjaxRequestTarget target) throws Exception {
-    try {
-      questionnairePersistenceUtils.persist(form.getModelObject(), localePropertiesModel.getObject());
-    } catch(Exception e) {
-      error(e.getMessage());
-      feedbackWindow.setContent(feedbackPanel);
-      feedbackWindow.show(target);
-      throw e;
-    }
-  }
 
   public static void guessUIType(Questionnaire questionnaire) {
     if(StringUtils.isBlank(questionnaire.getUiType())) {

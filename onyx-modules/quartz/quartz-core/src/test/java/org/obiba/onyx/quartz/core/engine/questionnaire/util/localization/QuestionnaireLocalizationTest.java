@@ -18,12 +18,8 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestCase {
-
-  @Autowired(required = true)
-  private IPropertyKeyProvider propertyKeyProvider;
 
   private static final String YES = "YES";
 
@@ -49,6 +45,8 @@ public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestC
     builder.withSection("S2").withSection("S2_1").withPage("P4");
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
+
+    IPropertyKeyProvider propertyKeyProvider = builder.getQuestionnaire().getPropertyKeyProvider();
 
     Assert.assertEquals("Questionnaire.HealthQuestionnaire.tata", propertyKeyProvider.getPropertyKey(builder.getQuestionnaire(), "tata"));
     Assert.assertEquals("Section.S1.tata", propertyKeyProvider.getPropertyKey(builder.inSection("S1").getElement(), "tata"));

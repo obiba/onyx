@@ -87,8 +87,7 @@ public class ModuleRegistry {
       Set<Stage> set = new TreeSet<Stage>(this.stageOrderingStrategy);
       set.addAll(this.stages.values());
       return new ArrayList<Stage>(set);
-    } else {
-      return new ArrayList<Stage>(this.stages.values());
     }
+    return new ArrayList<Stage>(this.stages.values());
   }
 }

@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
-import java.util.List;
-
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.slf4j.Logger;
@@ -41,9 +39,7 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
       return true;
     }
 
-    List<Stage> moduleStage = module.getStages();
-
-    for(Stage oneStage : moduleStage) {
+    for(Stage oneStage : module.getStages()) {
       if(!stage.equals(oneStage)) {
         IStageExecution stageExecution = activeInterviewService.getStageExecution(oneStage.getName());
 
@@ -67,9 +63,7 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
       return true;
     }
 
-    List<Stage> moduleStage = module.getStages();
-
-    for(Stage oneStage : moduleStage) {
+    for(Stage oneStage : module.getStages()) {
 
       if(!stage.equals(oneStage)) {
         if(oneStage.getName().equals(stageName)) {

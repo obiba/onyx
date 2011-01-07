@@ -29,7 +29,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -49,7 +48,6 @@ import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -62,18 +60,11 @@ public abstract class VariablePanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
-  @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
-
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
   private final Form<EditedVariable> form;
-
-  private final IModel<Questionnaire> questionnaireModel;
 
   public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel) {
     this(id, variableModel, questionnaireModel, null);
@@ -81,7 +72,6 @@ public abstract class VariablePanel extends Panel {
 
   public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel, ValueType forcedValueType) {
     super(id);
-    this.questionnaireModel = questionnaireModel;
 
     add(CSSPackageResource.getHeaderContribution(VariablePanel.class, "VariablePanel.css"));
 
@@ -219,14 +209,4 @@ public abstract class VariablePanel extends Panel {
     }
   }
 
-  protected void persist(AjaxRequestTarget target) throws Exception {
-    try {
-      questionnairePersistenceUtils.persist(questionnaireModel.getObject());
-    } catch(Exception e) {
-      error(e.getMessage());
-      feedbackWindow.setContent(feedbackPanel);
-      feedbackWindow.show(target);
-      throw e;
-    }
-  }
 }

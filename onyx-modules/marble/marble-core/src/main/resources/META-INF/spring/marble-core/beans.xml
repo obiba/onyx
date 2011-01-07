@@ -7,8 +7,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <tx:annotation-driven transaction-manager="transactionManager" />
 
   <bean class="org.obiba.onyx.marble.engine.MarbleModule">
-    <property name="stages">
-      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+    <property name="stageManager">
+      <bean class="org.obiba.onyx.engine.StageManagerImpl">
         <property name="stageDescriptor" value="${org.obiba.onyx.marble.path}/stages.xml" />
       </bean>
     </property>

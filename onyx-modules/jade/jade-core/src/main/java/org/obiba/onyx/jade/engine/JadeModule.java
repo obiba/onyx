@@ -23,6 +23,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
@@ -40,6 +41,7 @@ import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -57,8 +59,6 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
 
   private InstrumentRunService instrumentRunService;
 
-  private List<Stage> stages;
-
   private InstrumentRunBeanResolver beanResolver;
 
   private VariableEntityProvider variableEntityProvider;
@@ -66,6 +66,8 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
   private OnyxAttributeHelper attributeHelper;
 
   private CustomVariablesRegistry customVariablesRegistry;
+
+  private StageManager stageManager;
 
   public String getName() {
     return "jade";
@@ -142,12 +144,13 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
     return exec;
   }
 
-  public List<Stage> getStages() {
-    return stages;
+  @Override
+  public StageManager getStageManager() {
+    return stageManager;
   }
 
-  public void setStages(List<Stage> stages) {
-    this.stages = stages;
+  public List<Stage> getStages() {
+    return stageManager.getStages();
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -219,20 +222,28 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
   // Methods
   //
 
+  @Required
   public void setBeanResolver(InstrumentRunBeanResolver beanResolver) {
     this.beanResolver = beanResolver;
   }
 
+  @Required
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
   }
 
+  @Required
   public void setAttributeHelper(OnyxAttributeHelper attributeHelper) {
     this.attributeHelper = attributeHelper;
   }
 
+  @Required
   public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
     this.customVariablesRegistry = customVariablesRegistry;
   }
 
+  @Required
+  public void setStageManager(StageManager stageManager) {
+    this.stageManager = stageManager;
+  }
 }

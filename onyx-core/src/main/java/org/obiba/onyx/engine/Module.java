@@ -89,4 +89,9 @@ public interface Module {
    */
   public void delete(Participant participant);
 
+  /**
+   * @return
+   */
+  StageManager getStageManager();
+
 }

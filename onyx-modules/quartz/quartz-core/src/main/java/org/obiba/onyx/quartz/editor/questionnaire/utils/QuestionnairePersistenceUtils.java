@@ -12,6 +12,9 @@ package org.obiba.onyx.quartz.editor.questionnaire.utils;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.spring.SpringContextScanningDatasource;
+import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -19,6 +22,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.engine.QuartzModule;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -31,6 +35,8 @@ public class QuestionnairePersistenceUtils {
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   private LocalePropertiesUtils localePropertiesUtils;
+
+  private ModuleRegistry moduleRegistry;
 
   public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
 
@@ -50,21 +56,22 @@ public class QuestionnairePersistenceUtils {
     // store locales
     if(localeProperties != null) localePropertiesUtils.persist(bundle, localeProperties);
 
+    // create Stage if needed
+    QuartzModule quartzModule = (QuartzModule) moduleRegistry.getModule(QuartzModule.MODULE_NAME);
+    StageManager stageManager = quartzModule.getStageManager();
+    Stage stage = stageManager.getStage(questionnaire.getName());
+    if(stage == null) {
+      stage = new Stage();
+      stage.setModule(QuartzModule.MODULE_NAME);
+      stage.setName(questionnaire.getName());
+      stageManager.addStage(stageManager.getStages().size(), stage);
+    }
+
     reloadVariables(questionnaire);
   }
 
   public void persist(Questionnaire questionnaire) throws Exception {
     persist(questionnaire, null);
-  }
-
-  @Required
-  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
-    this.questionnaireBundleManager = questionnaireBundleManager;
-  }
-
-  @Required
-  public void setLocalePropertiesUtils(LocalePropertiesUtils localePropertiesUtils) {
-    this.localePropertiesUtils = localePropertiesUtils;
   }
 
   public void reloadVariables(Questionnaire questionnaire) {
@@ -79,4 +86,20 @@ public class QuestionnairePersistenceUtils {
       ((SpringContextScanningDatasource) onyxDatasource).reloadValueTable(questionnaire);
     }
   }
+
+  @Required
+  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
+    this.questionnaireBundleManager = questionnaireBundleManager;
+  }
+
+  @Required
+  public void setLocalePropertiesUtils(LocalePropertiesUtils localePropertiesUtils) {
+    this.localePropertiesUtils = localePropertiesUtils;
+  }
+
+  @Required
+  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    this.moduleRegistry = moduleRegistry;
+  }
+
 }

@@ -14,9 +14,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -110,7 +109,12 @@ public class RubyModuleTest {
   @Before
   public void setUp() {
     // Create RubyModule (object under test).
-    rubyModule = new RubyModule();
+
+    rubyModule = new RubyModule() {
+      public java.util.List<Stage> getStages() {
+        return Arrays.asList(firstStage, secondStage);
+      }
+    };
 
     //
     // Create domain objects for tests.
@@ -169,11 +173,6 @@ public class RubyModuleTest {
     applicationContextMock.putBean("rubyCompletedState", rubyCompletedState);
     AbstractStageState rubyNotApplicableState = new RubyNotApplicableState();
     applicationContextMock.putBean("rubyNotApplicableState", rubyNotApplicableState);
-
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(firstStage);
-    stages.add(secondStage);
-    rubyModule.setStages(stages);
 
     moduleRegistry = new ModuleRegistry();
     moduleRegistry.registerModule(rubyModule);
@@ -488,14 +487,15 @@ public class RubyModuleTest {
   //
 
   private void testInitialState(Boolean dependencySatisfied, String expectedInitialState) {
-    RubyModule rubyModule = new RubyModule();
+    rubyModule = new RubyModule() {
+      public java.util.List<Stage> getStages() {
+        return Arrays.asList(firstStage);
+      }
+    };
+
     rubyModule.setApplicationContext(applicationContextMock);
 
     ((StageDependencyConditionMock) firstStage.getStageDependencyCondition()).setDependencySatisfied(dependencySatisfied);
-
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(firstStage);
-    rubyModule.setStages(stages);
 
     StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, firstStage);
     StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
@@ -549,6 +549,7 @@ public class RubyModuleTest {
   //
 
   private static class StageDependencyConditionMock implements StageDependencyCondition {
+
     private Boolean dependencySatisfied;
 
     private Set<String> stageDependencies;
@@ -569,12 +570,5 @@ public class RubyModuleTest {
       this.dependencySatisfied = dependencySatisfied;
     }
 
-    public void addStageDependency(String stageName) {
-      stageDependencies.add(stageName);
-    }
-
-    public void removeStageDependency(String stageName) {
-      stageDependencies.remove(stageName);
-    }
   }
 }

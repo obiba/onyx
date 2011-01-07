@@ -11,8 +11,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="stages">
-      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+    <property name="stageManager">
+      <bean class="org.obiba.onyx.engine.StageManagerImpl">
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />
       </bean>
     </property>
