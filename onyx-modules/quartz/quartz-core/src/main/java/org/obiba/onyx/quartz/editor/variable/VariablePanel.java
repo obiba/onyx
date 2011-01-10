@@ -150,7 +150,7 @@ public abstract class VariablePanel extends Panel {
     tableVariablesDropDown.setNullValid(false).setOutputMarkupId(true);
     form.add(tableVariablesDropDown.setLabel(new ResourceModel("Variables"))).add(new SimpleFormComponentLabel("variablesLabel", tableVariablesDropDown));
 
-    final TextField<String> selectedVariable = new TextField<String>("selectedVariable", new Model<String>(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + "." + tableVariablesDropDown.getModelObject()));
+    final TextField<String> selectedVariable = new TextField<String>("selectedVariable", new Model<String>(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject()));
     form.add(selectedVariable.setOutputMarkupId(true));
 
     tablesDropDown.add(new OnChangeAjaxBehavior() {
@@ -158,7 +158,7 @@ public abstract class VariablePanel extends Panel {
       protected void onUpdate(AjaxRequestTarget target) {
         findTableVariables(tablesDropDown, tableVariables);
         tableVariablesDropDown.setModelObject(tableVariables.isEmpty() ? null : tableVariables.get(0));
-        selectedVariable.setDefaultModelObject(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + "." + tableVariablesDropDown.getModelObject());
+        selectedVariable.setDefaultModelObject(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
         target.addComponent(tableVariablesDropDown);
         target.addComponent(selectedVariable);
       }
@@ -166,7 +166,7 @@ public abstract class VariablePanel extends Panel {
     tableVariablesDropDown.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        selectedVariable.setDefaultModelObject(tablesDropDown.getModelObject() + "." + tableVariablesDropDown.getModelObject());
+        selectedVariable.setDefaultModelObject(tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
         target.addComponent(selectedVariable);
       }
     });
