@@ -98,18 +98,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private static final String ID_PREFIX = "element_";
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
@@ -676,7 +673,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
             question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
           } else {
-            if(!question.getUIFactoryName().equals(new DropDownQuestionPanelFactory().getBeanName())) {
+            if(!new DropDownQuestionPanelFactory().getBeanName().equals(question.getUIFactoryName())) {
               question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
             }
           }
@@ -1073,8 +1070,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Section section) {
-      children.addAll(section.getSections());
       children.addAll(section.getPages());
+      children.addAll(section.getSections());
     }
 
     @Override

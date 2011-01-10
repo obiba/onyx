@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -46,7 +47,6 @@ import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -98,7 +98,7 @@ public abstract class VariablePanel extends Panel {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
-    name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
+    name.add(new PatternValidator(Pattern.compile("[a-zA-Z0-9_\\-\\.]+")));
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
