@@ -23,7 +23,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.slf4j.Logger;
@@ -53,7 +52,7 @@ public class LocalePropertiesUtils {
     if(bundle != null) bundle.clearMessageSourceCache();
 
     for(IQuestionnaireElement element : elements) {
-      List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(element);
+      List<String> listKeys = questionnaire.getPropertyKeyProvider().getProperties(element);
       for(Locale locale : localeProperties.getLocales()) {
         for(String key : listKeys) {
           String value = null;
@@ -93,7 +92,7 @@ public class LocalePropertiesUtils {
   public LocaleProperties loadForNewQuestionnaire(Questionnaire questionnaire) {
     LocaleProperties localeProperties = new LocaleProperties();
     localeProperties.setLocales(new ArrayList<Locale>(questionnaire.getLocales()));
-    List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaire);
+    List<String> listKeys = questionnaire.getPropertyKeyProvider().getProperties(questionnaire);
     for(Locale locale : localeProperties.getLocales()) {
       for(String key : listKeys) {
         localeProperties.addElementLabels(questionnaire, locale, key, null);
@@ -102,8 +101,7 @@ public class LocalePropertiesUtils {
     return localeProperties;
   }
 
-  private Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties) {
-    DefaultPropertyKeyProviderImpl defaultPropertyKeyProviderImpl = new DefaultPropertyKeyProviderImpl();
+  private Map<Locale, Properties> toLocalePropertiesMap(LocaleProperties localeProperties, Questionnaire questionnaire) {
     Map<Locale, Properties> mapLocaleProperties = new HashMap<Locale, Properties>();
     for(Locale locale : localeProperties.getLocales()) {
       Properties properties = new Properties();
@@ -111,7 +109,7 @@ public class LocalePropertiesUtils {
         IQuestionnaireElement element = entry.getKey();
         List<KeyValue> keyValueList = entry.getValue().get(locale);
         for(KeyValue keyValue : keyValueList) {
-          String fullKey = defaultPropertyKeyProviderImpl.getPropertyKey(element, keyValue.getKey());
+          String fullKey = questionnaire.getPropertyKeyProvider().getPropertyKey(element, keyValue.getKey());
           String value = keyValue.getValue();
           properties.setProperty(fullKey, value != null ? value.replaceAll("\n", "<br/>") : "");
         }
@@ -129,7 +127,7 @@ public class LocalePropertiesUtils {
     for(Locale localeToDelete : deletedLocales) {
       bundle.deleteLanguage(localeToDelete);
     }
-    Map<Locale, Properties> localePropertiesMap = toLocalePropertiesMap(localeProperties);
+    Map<Locale, Properties> localePropertiesMap = toLocalePropertiesMap(localeProperties, bundle.getQuestionnaire());
     if(localePropertiesMap.entrySet().isEmpty()) {
       for(Locale locale : questionnaireLocales) {
         bundle.updateLanguage(locale, new Properties());

@@ -68,6 +68,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -180,10 +181,7 @@ public class CategoryListPanel extends Panel {
               for(QuestionCategory other : others) {
                 localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), other);
                 ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(other);
-                for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-                  List<KeyValue> list = elementLabelsOtherQC.get(locale);
-                  list.get(0).setValue(elementLabelsQC.get(locale).get(0).getValue());
-                }
+                copyLabels(elementLabelsQC, elementLabelsOtherQC);
               }
             }
           }
@@ -490,11 +488,27 @@ public class CategoryListPanel extends Panel {
 
         ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
         ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
-        for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-          // we suppose that we have only one property in questionCategory : "label", then we use get(0)
-          KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
-          elementLabelsQC.get(locale).get(0).setValue(kV.getValue());
-        }
+        copyLabels(elementLabelsOtherQC, elementLabelsQC);
+      }
+    }
+  }
+
+  /**
+   * @param from
+   * @param to
+   */
+  private void copyLabels(ListMultimap<Locale, KeyValue> from, ListMultimap<Locale, KeyValue> to) {
+    for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+      for(final KeyValue kv : from.get(locale)) {
+        KeyValue findKey = Iterables.find(to.get(locale), new Predicate<KeyValue>() {
+
+          @Override
+          public boolean apply(KeyValue input) {
+            return kv.getKey().equals(input.getKey());
+          }
+
+        });
+        findKey.setValue(kv.getValue());
       }
     }
   }
