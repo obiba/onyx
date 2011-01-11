@@ -2,20 +2,29 @@
 
 	<table class="keyValueTable">
 		<tr>
-	  	<td class="keyValueTableKey" valign="top"><wicket:message key="Layout" /></td>
-	   	<td>	
-	   		<span wicket:id="layout">
-	   				<input type="radio" wicket:id="defaultColumnLayout" /> <label wicket:id="defaultColumnLayoutLabel"></label>
-	   				<br />
-	 				<input type="radio" wicket:id="singleColumnLayout" /> <label wicket:id="singleColumnLayoutLabel"></label>
-					<br />
-					<input type="radio" wicket:id="gridLayout" /> <label wicket:id="gridLayoutLabel"></label> 
-	  		</span>
-				<input wicket:id="nbRows" type="text" size="1" /> <wicket:message key="Rows" />
-	   	</td>
-	  </tr>
+			<td class="keyValueTableKey" valign="top"><wicket:message
+				key="Layout" /></td>
+			<td><span wicket:id="layout"> <input type="radio"
+				wicket:id="defaultColumnLayout" /> <label
+				wicket:id="defaultColumnLayoutLabel"></label> <br />
+			<input type="radio" wicket:id="singleColumnLayout" /> <label
+				wicket:id="singleColumnLayoutLabel"></label> <br />
+			<input type="radio" wicket:id="gridLayout" /> <label
+				wicket:id="gridLayoutLabel"></label> </span> <input wicket:id="nbRows"
+				type="text" size="1" /> <wicket:message key="Rows" /></td>
+		</tr>
+		<tr>
+			<td class="keyValueTableKey"><label wicket:id="minCountLabel"></label>
+			</td>
+			<td><input type="text" size="1" wicket:id="minCountTextField" /></td>
+		</tr>
+		<tr>
+			<td class="keyValueTableKey"><label wicket:id="maxCountLabel"></label>
+			</td>
+			<td><input type="text" size="1" wicket:id="maxCountTextField" /></td>
+		</tr>
 	</table>
 
 	<div wicket:id="categories" />
-	
+
 </wicket:panel>

@@ -134,6 +134,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(ComputingDataSource.class, "expression");
 
     xstream.alias("valueMap", ValueMap.class);
+    xstream.omitField(Questionnaire.class, "pages");
   }
 
   /**

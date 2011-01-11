@@ -25,10 +25,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.obiba.core.util.FileUtil;
+import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireWalker;
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -361,6 +370,9 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     try {
       fis = new FileInputStream(new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml"));
       questionnaire = load(fis);
+      questionnaire.getPages().clear();
+      QuestionnaireWalker questionnaireWalker = new QuestionnaireWalker(new PageWalkerVisitor(questionnaire));
+      questionnaireWalker.walk(questionnaire, true);
     } finally {
       if(fis != null) {
         try {
@@ -376,6 +388,53 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
     return bundle;
   }
+
+  public class PageWalkerVisitor implements IWalkerVisitor {
+
+    private Questionnaire questionnaire;
+
+    public PageWalkerVisitor(Questionnaire questionnaire) {
+      this.questionnaire = questionnaire;
+    }
+
+    @Override
+    public void visit(Variable variable) {
+    }
+
+    @Override
+    public void visit(OpenAnswerDefinition openAnswerDefinition) {
+    }
+
+    @Override
+    public void visit(Category category) {
+    }
+
+    @Override
+    public void visit(QuestionCategory questionCategory) {
+    }
+
+    @Override
+    public void visit(Question question) {
+    }
+
+    @Override
+    public void visit(Page page) {
+      questionnaire.addPage(page);
+    }
+
+    @Override
+    public void visit(Section section) {
+    }
+
+    @Override
+    public void visit(Questionnaire currentQuestionnaire) {
+    }
+
+    @Override
+    public boolean visiteMore() {
+      return true;
+    }
+  };
 
   @Override
   public Questionnaire load(InputStream inputStream) {
