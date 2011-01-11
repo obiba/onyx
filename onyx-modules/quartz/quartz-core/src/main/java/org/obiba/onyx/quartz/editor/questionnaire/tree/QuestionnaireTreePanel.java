@@ -154,10 +154,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
    */
   private boolean editingElement = false;
 
+  public boolean isNewQuestionnaire = false;
+
   private JsonNode variablesNode;
 
-  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model) {
+  public QuestionnaireTreePanel(String id, IModel<Questionnaire> model, boolean isNewQuestionnaire) {
     super(id, model);
+    this.isNewQuestionnaire = isNewQuestionnaire;
     final Questionnaire questionnaire = model.getObject();
 
     editingConfirmationDialog = new ConfirmationDialog("editingConfirm");
@@ -318,13 +321,13 @@ public abstract class QuestionnaireTreePanel extends Panel {
           fromIndex = questionnaire.getSections().indexOf(section);
           questionnaire.removeSection(section);
         } else {
-          fromIndex = section.getSections().indexOf(section);
+          fromIndex = section.getParentSection().getSections().indexOf(section);
+          if(fromIndex < position && newHasSection == section.getParentSection()) position--;
           section.getParentSection().removeSection(section);
         }
         if(newHasSection instanceof Questionnaire) {
           section.setParentSection(null);
         }
-        if(fromIndex < position) position--;
         newHasSection.addSection(section, Math.min(newHasSection.getSections().size(), position));
         try {
           persitQuestionnaire(target);
@@ -335,8 +338,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
         Page page = questionnaireFinder.findPage(node.getName());
         Section newParentSection = questionnaireFinder.findSection(newNode.getName());
         int fromIndex = page.getSection().getPages().indexOf(page);
+        if(fromIndex < position && newParentSection == page.getSection()) position--;
         page.getSection().removePage(page);
-        if(fromIndex < position) position--;
         newParentSection.addPage(page, Math.min(newParentSection.getPages().size(), position));
         try {
           persitQuestionnaire(target);
@@ -352,9 +355,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           question.getParentQuestion().removeQuestion(question);
         } else {
           fromIndex = question.getPage().getQuestions().indexOf(question);
+          if(fromIndex < position && newParentPage == question.getPage()) position--;
           question.getPage().removeQuestion(question);
         }
-        if(fromIndex < position) position--;
         newParentPage.addQuestion(question, Math.min(position, newParentPage.getQuestions().size()));
         try {
           persitQuestionnaire(target);
@@ -367,12 +370,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
         int fromIndex;
         if(question.getParentQuestion() != null) {
           fromIndex = question.getParentQuestion().getQuestions().indexOf(question);
+          if(fromIndex < position && newParentQuestion == question.getParentQuestion()) position--;
           question.getParentQuestion().removeQuestion(question);
         } else {
           fromIndex = question.getPage().getQuestions().indexOf(question);
           question.getPage().removeQuestion(question);
         }
-        if(fromIndex < position) position--;
         newParentQuestion.addQuestion(question, Math.min(position, newParentQuestion.getQuestions().size()));
         try {
           persitQuestionnaire(target);
@@ -489,6 +492,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
   }
 
   private void preview(final String nodeId, final TreeNode node, AjaxRequestTarget target) {
+    if(isNewQuestionnaire) return;
     editingElement = false;
     @SuppressWarnings("unchecked")
     final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
@@ -653,8 +657,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
   private void editQuestionnaire(final String nodeId, final TreeNode node, final Questionnaire questionnaire, final AjaxRequestTarget target) {
     editingElement = true;
     QuestionnairePanel questionnairePanel = new QuestionnairePanel(getShownComponentId(), new Model<Questionnaire>(questionnaire), false) {
+
       @Override
-      public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Questionnaire questionnaire) {
+      public void prepareSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Questionnaire questionnaire) {
         questionnaire.setQuestionnaireCache(null);
         QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
         for(Page page : questionnaire.getQuestionnaireCache().getPageCache().values()) {
@@ -668,13 +673,17 @@ public abstract class QuestionnaireTreePanel extends Panel {
           if(Questionnaire.SIMPLIFIED_UI.equals(questionnaire.getUiType())) {
             question.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
           } else {
-            if(!question.getUIFactoryName().equals(new DropDownQuestionPanelFactory().getBeanName())) {
+            if(!new DropDownQuestionPanelFactory().getBeanName().equals(question.getUIFactoryName())) {
               question.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
             }
           }
         }
-        node.setName(questionnaire.getName());
+      }
+
+      @Override
+      public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Questionnaire questionnaire) {
         // update node name in jsTree
+        node.setName(questionnaire.getName());
         target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
         preview(nodeId, node, target);
       }
@@ -696,13 +705,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
       @Override
       protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Section section) {
         try {
-          persist(target);
+          questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
           node.setName(section.getName());
           // update node name in jsTree
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
           preview(nodeId, node, target);
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -724,7 +736,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         final IHasSection hasSection = node.isSection() ? questionnaireFinder.findSection(node.getName()) : questionnaireModel.getObject();
         hasSection.addSection(section);
         try {
-          persist(target);
+          questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
           editingElement = false;
           JsonNode jsonNode = createNode(section);
           String position = hasSection instanceof Questionnaire ? String.valueOf(((Questionnaire) hasSection).getSections().size() - 1) : "last";
@@ -732,6 +744,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -751,13 +766,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
       @Override
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") Page page) {
         try {
-          persist(target);
+          questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
           node.setName(page.getName());
           // update node name in jsTree
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
           preview(nodeId, node, target);
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -779,13 +797,16 @@ public abstract class QuestionnaireTreePanel extends Panel {
         questionnaireFinder.findSection(node.getName()).addPage(page);
         questionnaireModel.getObject().addPage(page);
         try {
-          persist(target);
+          questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
           editingElement = false;
           JsonNode jsonNode = createNode(page);
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -828,7 +849,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private void addQuestion(final String nodeId, final TreeNode node, final IModel<Questionnaire> questionnaireModel, final QuestionnaireFinder questionnaireFinder, final AjaxRequestTarget target, final QuestionType... forceAllowedType) {
     editingElement = true;
-    EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(new Question(null)), questionnaireModel, forceAllowedType) {
+    Question newQuestion = new Question(null);
+    newQuestion.setMinCount(1);
+    EditQuestionPanel questionPanel = new EditQuestionPanel(getShownComponentId(), new Model<Question>(newQuestion), questionnaireModel, forceAllowedType) {
       @Override
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Question question) {
         questionnaireFinder.getQuestionnaire().setQuestionnaireCache(null);
@@ -868,7 +891,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         questionnaire.removeVariable(variable);
         questionnaire.addVariable(newVariable);
         try {
-          persist(target);
+          questionnairePersistenceUtils.persist(questionnaireModel.getObject());
           node.setName(newVariable.getName());
           QuestionnaireTreePanel.this.setDefaultModel(questionnaireModel);
           // update node name in jsTree
@@ -876,6 +899,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           preview(nodeId, node, target);
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -897,7 +923,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable variable) {
         questionnaireModel.getObject().addVariable(variable);
         try {
-          persist(target);
+          questionnairePersistenceUtils.persist(questionnaireModel.getObject());
           editingElement = false;
 
           TreeNode treeNode = new TreeNode(variable.getName(), NodeType.VARIABLE);
@@ -912,6 +938,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + newNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
           log.error("Cannot persist questionnaire", e);
+          error("Cannot persist questionnaire: " + e.getMessage());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
         }
       }
 
@@ -941,6 +970,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
     } else if(node.isPage()) {
       Page page = questionnaireFinder.findPage(node.getName());
       page.getSection().removePage(page);
+      questionnaire.removePage(page);
     } else if(node.isAnyQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
       if(question.getParentQuestion() != null) {
@@ -974,6 +1004,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
     String id = ID_PREFIX + elementCounter++;
     elements.put(id, treeNode);
     return id;
+  }
+
+  public void setNewQuestionnaire(boolean isNewQuestionnaire) {
+    this.isNewQuestionnaire = isNewQuestionnaire;
   }
 
   private JsonNode populateNode(IQuestionnaireElement element) {
@@ -1036,8 +1070,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
     @Override
     public void visit(Section section) {
-      children.addAll(section.getSections());
       children.addAll(section.getPages());
+      children.addAll(section.getSections());
     }
 
     @Override

@@ -46,12 +46,11 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
 
     if(stageExecution.isCompleted() == false) {
       return null;
-    } else {
-      return true;
     }
+    return true;
   }
 
-  public boolean isDependentOn(Stage stage, String stageName) {
+  public boolean isDependentOn(Stage stage, @SuppressWarnings("hiding") String stageName) {
     return this.stageName.equals(stageName);
   }
 

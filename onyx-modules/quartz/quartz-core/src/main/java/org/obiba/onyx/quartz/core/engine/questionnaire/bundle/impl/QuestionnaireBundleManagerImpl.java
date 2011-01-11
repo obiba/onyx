@@ -29,7 +29,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +64,6 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   private Map<String, QuestionnaireBundle> bundleCache;
 
   private ResourceLoader resourceLoader;
-
-  private IPropertyKeyProvider propertyKeyProvider;
 
   private ApplicationContext applicationContext;
 
@@ -119,10 +116,6 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     }
   }
 
-  public void setPropertyKeyProvider(IPropertyKeyProvider propertyKeyProvider) {
-    this.propertyKeyProvider = propertyKeyProvider;
-  }
-
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
@@ -133,7 +126,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
 
     // Create the bundle object.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider, reloadProperties);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, reloadProperties);
 
     // Serialize it.
     serializeBundle(bundle);
@@ -379,7 +372,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     }
 
     // Create the bundle.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire);
 
     return bundle;
   }

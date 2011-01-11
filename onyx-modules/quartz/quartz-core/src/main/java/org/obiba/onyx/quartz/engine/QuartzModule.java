@@ -14,8 +14,11 @@ import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.spring.BeanValueTableFactoryBean;
+import org.obiba.magma.spring.SpringContextScanningDatasource;
 import org.obiba.magma.spring.ValueTableFactoryBean;
 import org.obiba.magma.spring.ValueTableFactoryBeanProvider;
 import org.obiba.magma.support.VariableEntityProvider;
@@ -24,6 +27,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
@@ -40,6 +44,7 @@ import org.obiba.onyx.quartz.magma.QuestionnaireStageVariableSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -47,6 +52,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 public class QuartzModule implements Module, ValueTableFactoryBeanProvider, ApplicationContextAware {
+
+  public static final String MODULE_NAME = "quartz";
 
   private static final Logger log = LoggerFactory.getLogger(QuartzModule.class);
 
@@ -56,7 +63,7 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   private QuestionnaireParticipantService questionnaireParticipantService;
 
-  private List<Stage> stages;
+  private StageManager stageManager;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
@@ -68,13 +75,13 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   @Override
   public String getName() {
-    return "quartz";
+    return MODULE_NAME;
   }
 
   @Override
   public void initialize(WebApplication application) {
     log.info("initialize");
-    for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
+    for(Iterator<Stage> iter = getStages().iterator(); iter.hasNext();) {
       Stage stage = iter.next();
       QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(stage.getName());
       if(bundle == null) {
@@ -92,28 +99,7 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   @Override
   public List<Stage> getStages() {
-    return stages;
-  }
-
-  public void setStages(List<Stage> stages) {
-    this.stages = stages;
-  }
-
-  @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
-  }
-
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
-    this.activeInterviewService = activeInterviewService;
-  }
-
-  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
-    this.questionnaireBundleManager = questionnaireBundleManager;
-  }
-
-  public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
-    this.questionnaireParticipantService = questionnaireParticipantService;
+    return stageManager.getStages();
   }
 
   @Override
@@ -199,7 +185,7 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   public Set<VariableValueSource> createSources() {
     ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
-    for(Stage stage : stages) {
+    for(Stage stage : getStages()) {
       QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
       QuestionnaireStageVariableSourceFactory factory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
       sources.addAll(factory.createSources());
@@ -207,48 +193,99 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     return sources.build();
   }
 
-  //
-  // ValueTableFactoryBeanProvider Methods
-  //
-
   @Override
   public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
-    Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
+    Set<ValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
 
-    for(Stage stage : stages) {
-      BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
-      b.setValueTableName(stage.getName());
-      b.setValueSetBeanResolver(beanResolver);
-      b.setVariableEntityProvider(variableEntityProvider);
-
-      QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
-      QuestionnaireStageVariableSourceFactory questionnaireVariableFactory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
-
-      PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
-      customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
-
-      CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
-      compositeFactory.addFactory(questionnaireVariableFactory).addFactory(customVariableFactory);
-      b.setVariableValueSourceFactory(compositeFactory);
-
-      tableFactoryBeans.add(b);
+    for(Stage stage : getStages()) {
+      tableFactoryBeans.add(newValueTable(stage));
     }
 
     return tableFactoryBeans;
   }
 
+  public void stageChanged(Stage stage) {
+    if(stage == null) throw new IllegalArgumentException("questionnaire cannot be null");
+    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
+    if(onyxDatasource instanceof SpringContextScanningDatasource) {
+      ((SpringContextScanningDatasource) onyxDatasource).reloadValueTable(stage.getName());
+    }
+  }
+
+  public void addStage(int index, Stage stage) {
+    if(stage == null) throw new IllegalArgumentException("stage cannot be null");
+    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
+    if(onyxDatasource instanceof SpringContextScanningDatasource) {
+      ((SpringContextScanningDatasource) onyxDatasource).addValueTable(newValueTable(stage));
+      stageManager.addStage(index, stage);
+    }
+  }
+
+  @Override
+  public StageManager getStageManager() {
+    return stageManager;
+  }
+
   //
   // Methods
   //
+  @Required
   public void setBeanResolver(QuestionnaireBeanResolver beanResolver) {
     this.beanResolver = beanResolver;
   }
 
+  @Required
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
   }
 
+  @Required
   public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
     this.customVariablesRegistry = customVariablesRegistry;
   }
+
+  @Override
+  @Required
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  @Required
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
+
+  @Required
+  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
+    this.questionnaireBundleManager = questionnaireBundleManager;
+  }
+
+  @Required
+  public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
+    this.questionnaireParticipantService = questionnaireParticipantService;
+  }
+
+  @Required
+  public void setStageManager(StageManager stageManager) {
+    this.stageManager = stageManager;
+  }
+
+  private ValueTableFactoryBean newValueTable(Stage stage) {
+    BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
+    b.setValueTableName(stage.getName());
+    b.setValueSetBeanResolver(beanResolver);
+    b.setVariableEntityProvider(variableEntityProvider);
+
+    QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
+    QuestionnaireStageVariableSourceFactory questionnaireVariableFactory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
+
+    PrebuiltVariableValueSourceFactory customVariableFactory = new PrebuiltVariableValueSourceFactory();
+    customVariableFactory.addVariableValueSources(customVariablesRegistry.getVariables(b.getValueTableName()));
+
+    CompositeVariableValueSourceFactory compositeFactory = new CompositeVariableValueSourceFactory();
+    compositeFactory.addFactory(questionnaireVariableFactory).addFactory(customVariableFactory);
+    b.setVariableValueSourceFactory(compositeFactory);
+    return b;
+  }
+
 }

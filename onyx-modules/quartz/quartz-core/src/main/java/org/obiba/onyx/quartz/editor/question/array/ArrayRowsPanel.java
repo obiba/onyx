@@ -45,6 +45,8 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
@@ -285,7 +287,14 @@ public class ArrayRowsPanel extends Panel {
   private void addQuestion(String name) {
     if(StringUtils.isNotBlank(name) && !checkIfQuestionAlreadyExists(name)) {
       Question parent = ((EditedQuestion) ArrayRowsPanel.this.getDefaultModelObject()).getElement();
-      parent.addQuestion(new Question(name));
+      Question newQuestion = new Question(name);
+      if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
+        newQuestion.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
+      } else {
+        newQuestion.setUIFactoryName(new DefaultQuestionPanelFactory().getBeanName());
+      }
+      newQuestion.setMinCount(1);
+      parent.addQuestion(newQuestion);
     }
   }
 

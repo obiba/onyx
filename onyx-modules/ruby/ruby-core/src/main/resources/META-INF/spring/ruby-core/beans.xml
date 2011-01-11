@@ -22,8 +22,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="stages">
-      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+    <property name="stageManager">
+      <bean class="org.obiba.onyx.engine.StageManagerImpl">
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/ruby/stages.xml" />
       </bean>
     </property>

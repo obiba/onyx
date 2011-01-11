@@ -26,6 +26,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
@@ -41,6 +42,7 @@ import org.obiba.onyx.marble.magma.ConsentVariableValueSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -56,7 +58,7 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
 
   private ConsentService consentService;
 
-  private List<Stage> stages;
+  private StageManager stageManager;
 
   private Map<String, String> variableToFieldMap = new HashMap<String, String>();
 
@@ -101,22 +103,33 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
   public void shutdown(WebApplication application) {
   }
 
+  @Override
   public List<Stage> getStages() {
-    return stages;
+    return stageManager.getStages();
   }
 
+  @Override
+  public StageManager getStageManager() {
+    return stageManager;
+  }
+
+  @Override
+  @Required
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
 
+  @Override
   public Component getWorkstationPanel(String id) {
     return null;
   }
 
+  @Override
   public Component getEditorPanel(String id) {
     return null;
   }
 
+  @Override
   public boolean isInteractive() {
     return false;
   }
@@ -132,7 +145,7 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
   public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
     Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
 
-    for(Stage stage : stages) {
+    for(Stage stage : getStages()) {
       BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
       b.setValueTableName(stage.getName());
       b.setValueSetBeanResolver(beanResolver);
@@ -158,22 +171,27 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
   // Methods
   //
 
-  public void setStages(List<Stage> stages) {
-    this.stages = stages;
+  @Required
+  public void setStageManager(StageManager stageManager) {
+    this.stageManager = stageManager;
   }
 
+  @Required
   public void setConsentService(ConsentService consentService) {
     this.consentService = consentService;
   }
 
+  @Required
   public void setBeanResolver(ConsentBeanResolver beanResolver) {
     this.beanResolver = beanResolver;
   }
 
+  @Required
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
   }
 
+  @Required
   public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
     this.customVariablesRegistry = customVariablesRegistry;
   }

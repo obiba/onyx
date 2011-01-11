@@ -7,23 +7,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.editor;
+package org.obiba.onyx.engine;
 
-import java.text.SimpleDateFormat;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Required;
+/**
+ *
+ */
+public interface StageManager {
 
-public class OnyxSettings {
+  List<Stage> getStages();
 
-  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  Stage getStage(String name);
 
-  @Required
-  public void setDateFormatStr(String dateFormat) {
-    this.dateFormat = new SimpleDateFormat(dateFormat);
-  }
-
-  public SimpleDateFormat getDateFormat() {
-    return dateFormat;
-  }
+  void addStage(int index, Stage stage);
 
 }

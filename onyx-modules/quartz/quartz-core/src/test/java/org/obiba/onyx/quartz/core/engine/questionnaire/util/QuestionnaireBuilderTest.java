@@ -26,15 +26,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
-
-  @Autowired(required = true)
-  private IPropertyKeyProvider propertyKeyProvider;
 
   private static final String YES = "YES";
 
@@ -207,7 +202,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
-    Properties localizationProperties = builder.getProperties(propertyKeyProvider);
+    Properties localizationProperties = builder.getProperties(builder.getQuestionnaire().getPropertyKeyProvider());
     Assert.assertTrue(localizationProperties.containsKey("Questionnaire.HealthQuestionnaire.description"));
     Assert.assertTrue(localizationProperties.containsKey("Section.S1.label"));
     Assert.assertTrue(localizationProperties.containsKey("Section.S1_1.label"));

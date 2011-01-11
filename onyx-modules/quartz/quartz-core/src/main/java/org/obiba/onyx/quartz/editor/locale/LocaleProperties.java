@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.springframework.util.Assert;
 
 import com.google.common.base.Predicate;
@@ -101,7 +100,7 @@ public class LocaleProperties implements Serializable {
 
   public void addLocale(Questionnaire questionnaire, Locale locale) {
     if(!locales.contains(locale)) locales.add(locale);
-    List<String> listKeys = new DefaultPropertyKeyProviderImpl().getProperties(questionnaire);
+    List<String> listKeys = questionnaire.getPropertyKeyProvider().getProperties(questionnaire);
     for(String key : listKeys) {
       addElementLabels(questionnaire, locale, key, null);
     }

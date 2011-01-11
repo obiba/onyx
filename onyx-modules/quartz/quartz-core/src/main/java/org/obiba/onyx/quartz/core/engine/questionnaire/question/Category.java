@@ -119,4 +119,8 @@ public class Category implements Serializable, IQuestionnaireElement {
     return variableNames != null ? variableNames : (variableNames = new HashMap<String, String>());
   }
 
+  public void clearVariableNames() {
+    if(variableNames != null) variableNames.clear();
+  }
+
 }

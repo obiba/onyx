@@ -68,6 +68,7 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -79,8 +80,7 @@ public class CategoryListPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -181,10 +181,7 @@ public class CategoryListPanel extends Panel {
               for(QuestionCategory other : others) {
                 localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), other);
                 ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(other);
-                for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-                  List<KeyValue> list = elementLabelsOtherQC.get(locale);
-                  list.get(0).setValue(elementLabelsQC.get(locale).get(0).getValue());
-                }
+                copyLabels(elementLabelsQC, elementLabelsOtherQC);
               }
             }
           }
@@ -213,6 +210,7 @@ public class CategoryListPanel extends Panel {
       @SuppressWarnings("unchecked")
       public void deleteItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
         ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
+        localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
         refreshList(target);
       }
 
@@ -287,7 +285,7 @@ public class CategoryListPanel extends Panel {
             error(new StringResourceModel("CategoryAlreadyExists", CategoryListPanel.this, null).getObject());
             return;
           }
-          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name);
+          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name, false);
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
           categoryList.refreshList(target);
@@ -329,7 +327,7 @@ public class CategoryListPanel extends Panel {
             name = StringUtils.trimToNull(name);
             if(name == null) continue;
             if(QuartzEditorPanel.ELEMENT_NAME_PATTERN.matcher(name).matches()) {
-              addCategory(question, name);
+              addCategory(question, name, false);
             }
           }
           categories.setModelObject(null);
@@ -410,7 +408,7 @@ public class CategoryListPanel extends Panel {
             return;
           }
           Category category = categoryWithQuestions.getCategory();
-          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), category);
+          addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), category, true);
           categoryNameFinder.setModelObject(null);
 
           target.addComponent(categoryNameFinder);
@@ -469,30 +467,48 @@ public class CategoryListPanel extends Panel {
     return false;
   }
 
-  private void addCategory(Question question, String name) {
+  private void addCategory(Question question, String name, boolean shared) {
     if(StringUtils.isNotBlank(name) && !checkIfCategoryAlreadyExists(question, name)) {
-      addCategory(question, new Category(name));
+      addCategory(question, new Category(name), shared);
     }
   }
 
-  private void addCategory(final Question question, final Category category) {
+  private void addCategory(final Question question, final Category category, boolean shared) {
     final QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setCategory(category);
     question.addQuestionCategory(questionCategory);
 
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
+    if(shared) {
+      localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
 
-    Collection<QuestionCategory> otherQuestionCategories = findOtherQuestionCategories(category, questionCategory);
-    if(!otherQuestionCategories.isEmpty()) {
-      QuestionCategory otherQuestionCategory = otherQuestionCategories.iterator().next();
-      localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory);
+      Collection<QuestionCategory> otherQuestionCategories = findOtherQuestionCategories(category, questionCategory);
+      if(!otherQuestionCategories.isEmpty()) {
+        QuestionCategory otherQuestionCategory = otherQuestionCategories.iterator().next();
+        localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), otherQuestionCategory);
 
-      ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
-      ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
-      for(Locale locale : localePropertiesModel.getObject().getLocales()) {
-        // we suppose that we have only one property in questionCategory : "label", then we use get(0)
-        KeyValue kV = elementLabelsOtherQC.get(locale).get(0);
-        elementLabelsQC.get(locale).get(0).setValue(kV.getValue());
+        ListMultimap<Locale, KeyValue> elementLabelsOtherQC = localePropertiesModel.getObject().getElementLabels(otherQuestionCategory);
+        ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
+        copyLabels(elementLabelsOtherQC, elementLabelsQC);
+      }
+    }
+  }
+
+  /**
+   * @param from
+   * @param to
+   */
+  private void copyLabels(ListMultimap<Locale, KeyValue> from, ListMultimap<Locale, KeyValue> to) {
+    for(Locale locale : localePropertiesModel.getObject().getLocales()) {
+      for(final KeyValue kv : from.get(locale)) {
+        KeyValue findKey = Iterables.find(to.get(locale), new Predicate<KeyValue>() {
+
+          @Override
+          public boolean apply(KeyValue input) {
+            return kv.getKey().equals(input.getKey());
+          }
+
+        });
+        findKey.setValue(kv.getValue());
       }
     }
   }

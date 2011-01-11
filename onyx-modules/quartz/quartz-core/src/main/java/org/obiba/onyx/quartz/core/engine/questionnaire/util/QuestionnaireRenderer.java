@@ -37,7 +37,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocumentQuestionnairePage;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
@@ -67,7 +66,6 @@ public class QuestionnaireRenderer {
   public QuestionnaireRenderer(File bundles, File outputDir) {
     this.outputDir = outputDir;
     QuestionnaireBundleManagerImpl mgr = new QuestionnaireBundleManagerImpl(bundles);
-    mgr.setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
     mgr.setResourceLoader(new PathMatchingResourcePatternResolver());
     try {
       mgr.afterPropertiesSet();

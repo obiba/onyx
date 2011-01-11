@@ -15,6 +15,7 @@ import static org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory.ONYX_ADMI
 import static org.obiba.onyx.magma.OnyxAdminVariableValueSourceFactory.PARTICIPANT;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -168,10 +169,12 @@ public class QuestionnaireConverter {
   }
 
   private String getConvertedExpression(ComputingDataSource computingDataSource, Question question) {
-    int i = 1;
     String expression = computingDataSource.getExpression();
-    for(IDataSource dataSource : computingDataSource.getDataSources()) {
-      expression = expression.replaceAll("\\$" + i++, "\\$('" + getVariablePath(dataSource, question) + "').value()");
+    List<IDataSource> list = computingDataSource.getDataSources();
+    Collections.reverse(list); // reverse to replace $10 before $1...
+    int i = list.size();
+    for(IDataSource dataSource : list) {
+      expression = expression.replaceAll("\\$" + i--, "\\$('" + getVariablePath(dataSource, question) + "').value()");
     }
     return expression;
   }

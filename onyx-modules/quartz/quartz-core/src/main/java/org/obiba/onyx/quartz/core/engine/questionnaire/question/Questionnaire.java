@@ -16,6 +16,10 @@ import java.util.Locale;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyNamingStrategy;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.runtime.Version;
 
 public class Questionnaire implements IHasSection {
@@ -207,6 +211,17 @@ public class Questionnaire implements IHasSection {
   @Override
   public String toString() {
     return getName();
+  }
+
+  public IPropertyKeyProvider getPropertyKeyProvider() {
+    if(Questionnaire.SIMPLIFIED_UI.equals(getUiType())) {
+      SimplifiedUIPropertyKeyProviderImpl provider = new SimplifiedUIPropertyKeyProviderImpl();
+      provider.setPropertyKeyNamingStrategy(new DefaultPropertyKeyNamingStrategy());
+      return provider;
+    }
+    DefaultPropertyKeyProviderImpl provider = new DefaultPropertyKeyProviderImpl();
+    provider.setPropertyKeyNamingStrategy(new DefaultPropertyKeyNamingStrategy());
+    return provider;
   }
 
 }

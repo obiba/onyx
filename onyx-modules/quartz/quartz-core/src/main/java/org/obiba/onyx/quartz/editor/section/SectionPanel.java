@@ -32,7 +32,6 @@ import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -42,11 +41,8 @@ public abstract class SectionPanel extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
-  @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
-
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -56,13 +52,10 @@ public abstract class SectionPanel extends Panel {
 
   private final Form<Section> form;
 
-  private final IModel<Questionnaire> questionnaireModel;
-
-  private final IModel<LocaleProperties> localePropertiesModel;
+  protected final IModel<LocaleProperties> localePropertiesModel;
 
   public SectionPanel(String id, final IModel<Section> model, final IModel<Questionnaire> questionnaireModel) {
     super(id, model);
-    this.questionnaireModel = questionnaireModel;
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -116,16 +109,5 @@ public abstract class SectionPanel extends Panel {
   protected abstract void onSave(AjaxRequestTarget target, Section section);
 
   protected abstract void onCancel(AjaxRequestTarget target);
-
-  protected void persist(AjaxRequestTarget target) throws Exception {
-    try {
-      questionnairePersistenceUtils.persist(questionnaireModel.getObject(), localePropertiesModel.getObject());
-    } catch(Exception e) {
-      error(e.getMessage());
-      feedbackWindow.setContent(feedbackPanel);
-      feedbackWindow.show(target);
-      throw e;
-    }
-  }
 
 }

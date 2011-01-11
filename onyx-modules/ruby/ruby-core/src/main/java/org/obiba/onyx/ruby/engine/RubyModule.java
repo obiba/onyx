@@ -25,6 +25,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
@@ -41,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -79,7 +81,7 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
 
   private ParticipantTubeRegistrationService participantTubeRegistrationService;
 
-  private List<Stage> stages;
+  private StageManager stageManager;
 
   private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
@@ -95,11 +97,12 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
   //
   // Module Methods
   //
-
+  @Required
   public void setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap) {
     this.tubeRegistrationConfigurationMap = tubeRegistrationConfigurationMap;
   }
 
+  @Required
   public void setParticipantTubeRegistrationService(ParticipantTubeRegistrationService participantTubeRegistrationService) {
     this.participantTubeRegistrationService = participantTubeRegistrationService;
   }
@@ -108,12 +111,19 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
     return "ruby";
   }
 
+  @Override
   public List<Stage> getStages() {
-    return stages;
+    return stageManager.getStages();
   }
 
-  public void setStages(List<Stage> stages) {
-    this.stages = stages;
+  @Override
+  public StageManager getStageManager() {
+    return stageManager;
+  }
+
+  @Required
+  public void setStageManager(StageManager stageManager) {
+    this.stageManager = stageManager;
   }
 
   public void initialize(WebApplication application) {
@@ -300,18 +310,22 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
     }
   }
 
+  @Override
   public Component getWorkstationPanel(String id) {
     return null;
   }
 
+  @Override
   public Component getEditorPanel(String id) {
     return null;
   }
 
+  @Override
   public boolean isInteractive() {
     return false;
   }
 
+  @Override
   public void delete(Participant participant) {
     participantTubeRegistrationService.deleteAllParticipantTubeRegistrations(participant);
   }
@@ -328,7 +342,7 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
   public Set<? extends ValueTableFactoryBean> getValueTableFactoryBeans() {
     Set<BeanValueTableFactoryBean> tableFactoryBeans = Sets.newHashSet();
 
-    for(Stage stage : stages) {
+    for(Stage stage : getStages()) {
       BeanValueTableFactoryBean b = new BeanValueTableFactoryBean();
       b.setValueTableName(stage.getName());
       b.setValueSetBeanResolver(beanResolver);
@@ -354,15 +368,17 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
   //
   // Methods
   //
-
+  @Required
   public void setBeanResolver(TubeValueSetBeanResolver beanResolver) {
     this.beanResolver = beanResolver;
   }
 
+  @Required
   public void setVariableEntityProvider(VariableEntityProvider variableEntityProvider) {
     this.variableEntityProvider = variableEntityProvider;
   }
 
+  @Required
   public void setCustomVariablesRegistry(CustomVariablesRegistry customVariablesRegistry) {
     this.customVariablesRegistry = customVariablesRegistry;
   }

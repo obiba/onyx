@@ -55,6 +55,10 @@ public class EditionPanel extends Panel {
   private Image titleIcon;
 
   public EditionPanel(String id, IModel<Questionnaire> model) {
+    this(id, model, false);
+  }
+
+  public EditionPanel(String id, IModel<Questionnaire> model, boolean isNewQuestionnaire) {
     super(id, model);
     this.rightPanel = new DefaultRightPanel(RIGHT_PANEL);
 
@@ -73,7 +77,7 @@ public class EditionPanel extends Panel {
     titleContainer.add(rightPanelTitle = new Label("title"));
     titleContainer.add(menu = createMenu(null));
 
-    tree = new QuestionnaireTreePanel("tree", model) {
+    tree = new QuestionnaireTreePanel("tree", model, isNewQuestionnaire) {
       @Override
       public void show(Component component, IModel<String> title, ResourceReference icon, List<MenuItem> menuItems, AjaxRequestTarget target) {
         setRightPanel(component, title, icon, menuItems);
@@ -88,6 +92,10 @@ public class EditionPanel extends Panel {
     tree.setOutputMarkupId(true);
     add(tree);
 
+  }
+
+  public void setNewQuestionnaire(boolean isNewQuestionnaire) {
+    tree.setNewQuestionnaire(isNewQuestionnaire);
   }
 
   public void setRightPanel(Component component, IModel<String> title, ResourceReference icon, List<MenuItem> menuItems) {

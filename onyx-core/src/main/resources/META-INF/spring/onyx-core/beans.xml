@@ -10,7 +10,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <import resource="version.xml" />
   <import resource="batch.xml" />
   <import resource="magma.xml" />
-
+  
   <bean name="version" class="org.obiba.runtime.Version" primary="true">
     <constructor-arg value="${project.version}-b${buildNumber}" />
   </bean>

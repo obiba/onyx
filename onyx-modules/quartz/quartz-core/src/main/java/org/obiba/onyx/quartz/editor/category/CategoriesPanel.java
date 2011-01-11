@@ -37,35 +37,45 @@ public class CategoriesPanel extends Panel {
   public CategoriesPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    final RadioGroup<Layout> layout = new RadioGroup<Layout>("layout", new PropertyModel<Layout>(model, "layout"));
-    layout.setLabel(new ResourceModel("Layout"));
-    add(layout);
+    final RadioGroup<Layout> radioLayout = new RadioGroup<Layout>("layout", new PropertyModel<Layout>(model, "layout"));
+    radioLayout.setLabel(new ResourceModel("Layout"));
+    add(radioLayout);
 
     Radio<Layout> defaultColumnLayout = new Radio<Layout>("defaultColumnLayout", new Model<Layout>(null));
     defaultColumnLayout.setLabel(new ResourceModel("Layout.default"));
-    layout.add(defaultColumnLayout);
-    layout.add(new SimpleFormComponentLabel("defaultColumnLayoutLabel", defaultColumnLayout));
+    radioLayout.add(defaultColumnLayout);
+    radioLayout.add(new SimpleFormComponentLabel("defaultColumnLayoutLabel", defaultColumnLayout));
 
     Radio<Layout> singleColumnLayout = new Radio<Layout>("singleColumnLayout", new Model<Layout>(Layout.SINGLE_COLUMN));
     singleColumnLayout.setLabel(new ResourceModel("Layout.single"));
-    layout.add(singleColumnLayout);
-    layout.add(new SimpleFormComponentLabel("singleColumnLayoutLabel", singleColumnLayout));
+    radioLayout.add(singleColumnLayout);
+    radioLayout.add(new SimpleFormComponentLabel("singleColumnLayoutLabel", singleColumnLayout));
 
     final Radio<Layout> gridLayout = new Radio<Layout>("gridLayout", new Model<Layout>(Layout.GRID));
     gridLayout.setLabel(new ResourceModel("Layout.grid"));
-    layout.add(gridLayout);
-    layout.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
+    radioLayout.add(gridLayout);
+    radioLayout.add(new SimpleFormComponentLabel("gridLayoutLabel", gridLayout));
 
     TextField<Integer> nbRowsField = new TextField<Integer>("nbRows", new PropertyModel<Integer>(model, "nbRows")) {
       @Override
       public boolean isRequired() {
-        return StringUtils.equals(layout.getInput(), gridLayout.getValue());
+        return StringUtils.equals(radioLayout.getInput(), gridLayout.getValue());
       }
     };
     nbRowsField.setLabel(new ResourceModel("NbRows"));
     add(nbRowsField);
 
+    TextField<Integer> minCountTextField = new TextField<Integer>("minCountTextField", new PropertyModel<Integer>(model.getObject().getElement(), "minCount"));
+    TextField<Integer> maxCountTextField = new TextField<Integer>("maxCountTextField", new PropertyModel<Integer>(model.getObject().getElement(), "maxCount"));
+
+    minCountTextField.setLabel(new ResourceModel("minCountLabel"));
+    SimpleFormComponentLabel minCountLabelComponent = new SimpleFormComponentLabel("minCountLabel", minCountTextField);
+
+    maxCountTextField.setLabel(new ResourceModel("maxCountLabel"));
+    SimpleFormComponentLabel maxCountLabelComponent = new SimpleFormComponentLabel("maxCountLabel", maxCountTextField);
+
+    add(minCountTextField, maxCountTextField, minCountLabelComponent, maxCountLabelComponent);
+
     add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));
   }
-
 }

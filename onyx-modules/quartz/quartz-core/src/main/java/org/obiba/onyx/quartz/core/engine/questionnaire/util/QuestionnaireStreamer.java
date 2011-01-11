@@ -17,6 +17,7 @@ import java.util.Properties;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.Variable;
 import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -35,7 +36,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputStreamPropertyKeyWriterImpl;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
@@ -135,6 +135,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(ComputingDataSource.class, "expression");
 
     xstream.alias("valueMap", ValueMap.class);
+    xstream.omitField(Questionnaire.class, "pages");
   }
 
   /**
@@ -144,7 +145,59 @@ public class QuestionnaireStreamer {
    */
   public static Questionnaire fromBundle(InputStream inputStream, ApplicationContext applicationContext) {
     QuestionnaireStreamer streamer = new QuestionnaireStreamer(applicationContext);
-    return (Questionnaire) streamer.xstream.fromXML(inputStream);
+    Questionnaire questionnaire = (Questionnaire) streamer.xstream.fromXML(inputStream);
+    questionnaire.getPages().clear();
+    QuestionnaireWalker questionnaireWalker = new QuestionnaireWalker(new PageWalkerVisitor(questionnaire));
+    questionnaireWalker.walk(questionnaire, true);
+
+    return questionnaire;
+  }
+
+  public static class PageWalkerVisitor implements IWalkerVisitor {
+
+    private Questionnaire questionnaire;
+
+    public PageWalkerVisitor(Questionnaire questionnaire) {
+      this.questionnaire = questionnaire;
+    }
+
+    @Override
+    public void visit(Variable variable) {
+    }
+
+    @Override
+    public void visit(OpenAnswerDefinition openAnswerDefinition) {
+    }
+
+    @Override
+    public void visit(Category category) {
+    }
+
+    @Override
+    public void visit(QuestionCategory questionCategory) {
+    }
+
+    @Override
+    public void visit(Question question) {
+    }
+
+    @Override
+    public void visit(Page page) {
+      questionnaire.addPage(page);
+    }
+
+    @Override
+    public void visit(Section section) {
+    }
+
+    @Override
+    public void visit(Questionnaire currentQuestionnaire) {
+    }
+
+    @Override
+    public boolean visiteMore() {
+      return true;
+    }
   }
 
   /**
@@ -176,8 +229,8 @@ public class QuestionnaireStreamer {
    * @param language
    * @param writer
    */
-  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, IPropertyKeyWriter writer) {
-    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(propertyKeyProvider, writer);
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyWriter writer) {
+    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(questionnaire.getPropertyKeyProvider(), writer);
   }
 
   /**
@@ -188,8 +241,8 @@ public class QuestionnaireStreamer {
    * @param language language
    * @param outputStream output stream
    */
-  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, OutputStream outputStream) {
-    storeLanguage(questionnaire, locale, language, propertyKeyProvider, new OutputStreamPropertyKeyWriterImpl(language, outputStream));
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, OutputStream outputStream) {
+    storeLanguage(questionnaire, locale, language, new OutputStreamPropertyKeyWriterImpl(language, outputStream));
   }
 
 }

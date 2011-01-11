@@ -19,6 +19,15 @@
   </stage>
 
   <stage>
+    <name>HealthQuestionnaireAssisted</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
     <name>QuartzDemoQuestionnaire</name>
     <module>quartz</module>
     <stageDependencyCondition class="variableCondition">

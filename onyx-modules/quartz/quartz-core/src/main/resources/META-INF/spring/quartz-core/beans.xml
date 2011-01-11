@@ -6,15 +6,15 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
-
+	
 	<bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
 		<property name="activeInterviewService" ref="activeInterviewService" />
 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
-		<property name="stages">
-			<bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
-				<property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml" />
-			</bean>
-		</property>
+    <property name="stageManager">
+      <bean class="org.obiba.onyx.engine.StageManagerImpl">
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml" />
+      </bean>
+    </property>
 		<property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
 		<property name="beanResolver" ref="questionnaireBeanResolver" />
 		<property name="variableEntityProvider">
@@ -27,17 +27,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="customVariablesRegistry" ref="customVariablesRegistry" />
 	</bean>
 
-	<bean id="propertyKeyNamingStrategy" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyNamingStrategy" />
-
-	<bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
-		scope="prototype">
-		<property name="propertyKeyNamingStrategy" ref="propertyKeyNamingStrategy" />
-	</bean>
-
 	<bean id="questionnaireBundleManager" class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
 		<constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires" />
-		<property name="propertyKeyProvider" ref="propertyKeyProvider" />
 	</bean>
+
 	<bean id="quartzWaitingState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzWaitingState"
 		scope="prototype" />
 
@@ -93,6 +86,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="questionnairePersistenceUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils">
 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
 		<property name="localePropertiesUtils" ref="localePropertiesUtils" />
+    <property name="moduleRegistry" ref="moduleRegistry" />
 	</bean>
 
 	<bean id="localePropertiesUtils" class="org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils">

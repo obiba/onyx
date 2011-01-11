@@ -127,7 +127,7 @@ public class QuestionnaireStringResourceModelTest {
     replay(questionnaireBundleMock);
 
     QuestionnaireStringResourceModel model = new QuestionnaireStringResourceModel(localizable, property);
-    String stringResource = (String) model.getObject();
+    String stringResource = model.getObject();
 
     verify(activeQuestionnaireAdministrationServiceMock);
     verify(questionnaireBundleManagerMock);
@@ -161,7 +161,7 @@ public class QuestionnaireStringResourceModelTest {
     replay(questionnaireBundleMock);
 
     QuestionnaireStringResourceModel model = new QuestionnaireStringResourceModel(localizable, "description", "firstarg", "secondarg");
-    String stringResource = (String) model.getObject();
+    String stringResource = model.getObject();
 
     verify(activeQuestionnaireAdministrationServiceMock);
     verify(questionnaireBundleManagerMock);
@@ -195,7 +195,7 @@ public class QuestionnaireStringResourceModelTest {
     replay(questionnaireBundleMock);
 
     QuestionnaireStringResourceModel model = new QuestionnaireStringResourceModel(localizable, "label");
-    String stringResource = (String) model.getObject();
+    String stringResource = model.getObject();
 
     verify(activeQuestionnaireAdministrationServiceMock);
     verify(questionnaireBundleManagerMock);

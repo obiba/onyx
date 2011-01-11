@@ -55,7 +55,11 @@ public class MapModel<T> implements IModel<T> {
 
   @Override
   public void setObject(T object) {
-    map.put(expression, object);
+    if(object == null) {
+      map.remove(expression);
+    } else {
+      map.put(expression, object);
+    }
   }
 
   @Override

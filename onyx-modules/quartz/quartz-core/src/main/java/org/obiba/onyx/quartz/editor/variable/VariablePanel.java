@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -29,7 +30,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -47,9 +47,7 @@ import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
-import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -62,18 +60,11 @@ public abstract class VariablePanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
-  @SpringBean
-  private QuestionnairePersistenceUtils questionnairePersistenceUtils;
-
   private final FeedbackPanel feedbackPanel;
 
   private final FeedbackWindow feedbackWindow;
 
   private final Form<EditedVariable> form;
-
-  private final IModel<Questionnaire> questionnaireModel;
 
   public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel) {
     this(id, variableModel, questionnaireModel, null);
@@ -81,7 +72,6 @@ public abstract class VariablePanel extends Panel {
 
   public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel, ValueType forcedValueType) {
     super(id);
-    this.questionnaireModel = questionnaireModel;
 
     add(CSSPackageResource.getHeaderContribution(VariablePanel.class, "VariablePanel.css"));
 
@@ -108,7 +98,7 @@ public abstract class VariablePanel extends Panel {
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
-    name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
+    name.add(new PatternValidator(Pattern.compile("[a-zA-Z0-9_\\-\\.]+")));
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
@@ -160,7 +150,7 @@ public abstract class VariablePanel extends Panel {
     tableVariablesDropDown.setNullValid(false).setOutputMarkupId(true);
     form.add(tableVariablesDropDown.setLabel(new ResourceModel("Variables"))).add(new SimpleFormComponentLabel("variablesLabel", tableVariablesDropDown));
 
-    final TextField<String> selectedVariable = new TextField<String>("selectedVariable", new Model<String>(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + "." + tableVariablesDropDown.getModelObject()));
+    final TextField<String> selectedVariable = new TextField<String>("selectedVariable", new Model<String>(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject()));
     form.add(selectedVariable.setOutputMarkupId(true));
 
     tablesDropDown.add(new OnChangeAjaxBehavior() {
@@ -168,7 +158,7 @@ public abstract class VariablePanel extends Panel {
       protected void onUpdate(AjaxRequestTarget target) {
         findTableVariables(tablesDropDown, tableVariables);
         tableVariablesDropDown.setModelObject(tableVariables.isEmpty() ? null : tableVariables.get(0));
-        selectedVariable.setDefaultModelObject(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + "." + tableVariablesDropDown.getModelObject());
+        selectedVariable.setDefaultModelObject(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
         target.addComponent(tableVariablesDropDown);
         target.addComponent(selectedVariable);
       }
@@ -176,7 +166,7 @@ public abstract class VariablePanel extends Panel {
     tableVariablesDropDown.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        selectedVariable.setDefaultModelObject(tablesDropDown.getModelObject() + "." + tableVariablesDropDown.getModelObject());
+        selectedVariable.setDefaultModelObject(tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
         target.addComponent(selectedVariable);
       }
     });
@@ -219,14 +209,4 @@ public abstract class VariablePanel extends Panel {
     }
   }
 
-  protected void persist(AjaxRequestTarget target) throws Exception {
-    try {
-      questionnairePersistenceUtils.persist(questionnaireModel.getObject());
-    } catch(Exception e) {
-      error(e.getMessage());
-      feedbackWindow.setContent(feedbackPanel);
-      feedbackWindow.show(target);
-      throw e;
-    }
-  }
 }

@@ -22,12 +22,6 @@
     <property name="interviewManager" ref="interviewManager" />
   </bean>
 
-  <bean id="propertyKeyNamingStrategy" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyNamingStrategy" />
-
-  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl" scope="prototype">
-    <property name="propertyKeyNamingStrategy" ref="propertyKeyNamingStrategy" />
-  </bean>
-
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
     <property name="userSessionService" ref="userSessionService" />
   </bean>
@@ -60,7 +54,6 @@
 
   <bean id="questionnaireBundleManager" class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
     <constructor-arg value="classpath:/questionnaires" />
-    <property name="propertyKeyProvider" ref="propertyKeyProvider" />
   </bean>
 
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
