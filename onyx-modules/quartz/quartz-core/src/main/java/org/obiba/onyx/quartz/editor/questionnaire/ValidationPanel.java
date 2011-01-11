@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.editor.questionnaire;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -26,7 +27,6 @@ import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -82,7 +82,7 @@ public class ValidationPanel extends Panel {
   }
 
   public void validate() {
-    validateVariables();
+    validateQuestionCondition();
     validateOpenAnswerValidators();
     validateDefaultValues();
     // TODO validate missing locale prop
@@ -92,21 +92,13 @@ public class ValidationPanel extends Panel {
     errors.add(new StringResourceModel(messageKey, ValidationPanel.this, null, params));
   }
 
-  private void validateVariables() {
-    Questionnaire questionnaire = (Questionnaire) getDefaultModelObject();
-    for(Variable variable : VariableUtils.findVariable(questionnaire)) {
-      if(variable.hasAttribute(VariableUtils.QUESTION_NAME)) {
-        String questionName = variable.getAttributeStringValue(VariableUtils.QUESTION_NAME);
-        Question question = questionnaireFinder.findQuestion(questionName);
-        if(question == null) {
-          error("QuestionNotFound", questionName, variable.getName());
-        } else {
-          if(variable.hasAttribute(VariableUtils.CATEGORY_NAME)) {
-            Category category = VariableUtils.findCategory(variable, question);
-            if(category == null) {
-              error("CategoryNotFound", variable.getAttributeStringValue(VariableUtils.CATEGORY_NAME), variable.getName());
-            }
-          }
+  private void validateQuestionCondition() {
+    Map<String, Question> questions = questionnaireFinder.getQuestionnaire().getQuestionnaireCache().getQuestionCache();
+    for(Question question : questions.values()) {
+      if(question.getCondition() instanceof VariableDataSource) {
+        Variable variable = variableUtils.findVariable((VariableDataSource) question.getCondition());
+        if(variable == null) {
+          error("QuestionNotFound", question.getName(), question.getCondition());
         }
       }
     }

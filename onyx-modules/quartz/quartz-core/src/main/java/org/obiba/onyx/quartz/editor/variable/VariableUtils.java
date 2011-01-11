@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.variable;
 
-import java.util.Collections;
-
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchAttributeException;
 import org.obiba.magma.NoSuchValueTableException;
@@ -102,12 +100,7 @@ public class VariableUtils {
   }
 
   public static Iterable<Variable> findVariable(Questionnaire questionnaire) {
-    // TODO fix ONYX-1436
-    try {
-      return MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(questionnaire.getName()).getVariables();
-    } catch(NoSuchValueTableException e) {
-      return Collections.emptyList();
-    }
+    return MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(questionnaire.getName()).getVariables();
   }
 
   public static ValueType convertToValueType(DataType dataType) {
