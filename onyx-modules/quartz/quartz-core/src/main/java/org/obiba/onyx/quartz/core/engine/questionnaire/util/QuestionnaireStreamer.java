@@ -17,6 +17,7 @@ import java.util.Properties;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.Variable;
 import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -144,7 +145,59 @@ public class QuestionnaireStreamer {
    */
   public static Questionnaire fromBundle(InputStream inputStream, ApplicationContext applicationContext) {
     QuestionnaireStreamer streamer = new QuestionnaireStreamer(applicationContext);
-    return (Questionnaire) streamer.xstream.fromXML(inputStream);
+    Questionnaire questionnaire = (Questionnaire) streamer.xstream.fromXML(inputStream);
+    questionnaire.getPages().clear();
+    QuestionnaireWalker questionnaireWalker = new QuestionnaireWalker(new PageWalkerVisitor(questionnaire));
+    questionnaireWalker.walk(questionnaire, true);
+
+    return questionnaire;
+  }
+
+  public static class PageWalkerVisitor implements IWalkerVisitor {
+
+    private Questionnaire questionnaire;
+
+    public PageWalkerVisitor(Questionnaire questionnaire) {
+      this.questionnaire = questionnaire;
+    }
+
+    @Override
+    public void visit(Variable variable) {
+    }
+
+    @Override
+    public void visit(OpenAnswerDefinition openAnswerDefinition) {
+    }
+
+    @Override
+    public void visit(Category category) {
+    }
+
+    @Override
+    public void visit(QuestionCategory questionCategory) {
+    }
+
+    @Override
+    public void visit(Question question) {
+    }
+
+    @Override
+    public void visit(Page page) {
+      questionnaire.addPage(page);
+    }
+
+    @Override
+    public void visit(Section section) {
+    }
+
+    @Override
+    public void visit(Questionnaire currentQuestionnaire) {
+    }
+
+    @Override
+    public boolean visiteMore() {
+      return true;
+    }
   }
 
   /**
