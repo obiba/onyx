@@ -100,12 +100,19 @@ public class CategoryListPanel extends Panel {
 
   private IModel<LocaleProperties> localePropertiesModel;
 
+  private final MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel;
+
   public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+    this(id, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, null);
+  }
+
+  public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
+    this.multipleChoiceCategoryHeaderPanel = multipleChoiceCategoryHeaderPanel;
 
     add(CSSPackageResource.getHeaderContribution(CategoryListPanel.class, "CategoryListPanel.css"));
 
@@ -153,7 +160,7 @@ public class CategoryListPanel extends Panel {
       }
 
       @Override
-      public Component getItemTitle(@SuppressWarnings("hiding") String id, final QuestionCategory questionCategory) {
+      public Component getItemTitle(String id, final QuestionCategory questionCategory) {
         Category category = questionCategory.getCategory();
 
         if(isShared(questionCategory)) {
@@ -174,7 +181,7 @@ public class CategoryListPanel extends Panel {
         final ElementClone<QuestionCategory> original = QuestionnaireElementCloner.clone(questionCategory, new CloneSettings(true), localePropertiesModel.getObject());
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
-          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
+          public void onSave(AjaxRequestTarget target, QuestionCategory questionCategory) {
             Collection<QuestionCategory> others = findOtherQuestionCategories(questionCategory.getCategory(), questionCategory);
             if(!others.isEmpty()) {
               ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
@@ -186,20 +193,20 @@ public class CategoryListPanel extends Panel {
             }
           }
 
-          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
+          public void onCancel(AjaxRequestTarget target, QuestionCategory questionCategory) {
             rollback(questionCategory, original);
           }
         });
         categoryWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
-          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+          public boolean onCloseButtonClicked(AjaxRequestTarget target) {
             rollback(questionCategory, original);
             return true;
           }
         });
         categoryWindow.setWindowClosedCallback(new WindowClosedCallback() {
           @Override
-          public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+          public void onClose(AjaxRequestTarget target) {
             refreshList(target);
           }
         });
@@ -211,7 +218,7 @@ public class CategoryListPanel extends Panel {
       public void deleteItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
         ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
         localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
-        refreshList(target);
+        refreshListAndNoAnswerListIfExist(categoryList, target);
       }
 
       @Override
@@ -278,7 +285,7 @@ public class CategoryListPanel extends Panel {
       AjaxButton addButton = new AjaxButton("addButton", form) {
         @SuppressWarnings("unchecked")
         @Override
-        protected void onSubmit(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
           String name = categoryName.getModelObject();
           if(StringUtils.isBlank(name)) return;
           if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
@@ -288,11 +295,11 @@ public class CategoryListPanel extends Panel {
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name, false);
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
-          categoryList.refreshList(target);
+          refreshListAndNoAnswerListIfExist(categoryList, target);
         }
 
         @Override
-        protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+        protected void onError(AjaxRequestTarget target, Form<?> form) {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -332,7 +339,7 @@ public class CategoryListPanel extends Panel {
           }
           categories.setModelObject(null);
           target.addComponent(categories);
-          categoryList.refreshList(target);
+          refreshListAndNoAnswerListIfExist(categoryList, target);
         }
 
         @Override
@@ -412,7 +419,7 @@ public class CategoryListPanel extends Panel {
           categoryNameFinder.setModelObject(null);
 
           target.addComponent(categoryNameFinder);
-          categoryList.refreshList(target);
+          refreshListAndNoAnswerListIfExist(categoryList, target);
         }
 
         @Override
@@ -534,6 +541,11 @@ public class CategoryListPanel extends Panel {
       }));
     }
     return filter;
+  }
+
+  private void refreshListAndNoAnswerListIfExist(SortableList<QuestionCategory> categoryList, AjaxRequestTarget target) {
+    categoryList.refreshList(target);
+    if(multipleChoiceCategoryHeaderPanel != null) multipleChoiceCategoryHeaderPanel.refreshDropDownNoAnswer(target);
   }
 
   private synchronized void rollback(QuestionCategory modified, ElementClone<QuestionCategory> original) {

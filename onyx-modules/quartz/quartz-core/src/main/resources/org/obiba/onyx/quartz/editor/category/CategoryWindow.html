@@ -4,27 +4,22 @@
 	
 	<div wicket:id="openAnswerWindow" />
 	
-	<!-- p wicket:id="sharedWith"> </p-->
-
 	<form wicket:id="form" autocomplete="off" >	
 	
 		<table class="keyValueTable">
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
-				<td><input wicket:id="name" type="text" size="40" autocomplete="off" /> <span wicket:id="nameHelp" /></td>
+				<td><input wicket:id="name" type="text" size="40" autocomplete="off" /> <span wicket:id="nameHelp"></span></td>
 			</tr>
 			<tr>
 				<td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
-				<td><input wicket:id="variable" type="text" size="40" autocomplete="off" /> <span wicket:id="variableHelp" /></td>
+				<td><input wicket:id="variable" type="text" size="40" autocomplete="off" /> <span wicket:id="variableHelp"></span></td>
 			</tr>				
 			<tr>
 				<td valign="top" class="keyValueTableKey"><label wicket:id="escapeLabel"></label></td>
-				<td><input wicket:id="escape" type="checkbox" /> <span wicket:id="escapeHelp" /></td>
+				<td><input wicket:id="escape" type="checkbox" /> <span wicket:id="escapeHelp"></span></td>
 			</tr>
-			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="noAnswerLabel"></label></td>
-				<td><input wicket:id="noAnswer" type="checkbox" /> <span wicket:id="noAnswerHelp" /></td>
-			</tr>				
+						
 		</table>
 		
 		<br />
@@ -36,9 +31,9 @@
 		
 		<br />
 	
-		<div wicket:id="openAnswerDefinitionList" />
+		<div wicket:id="openAnswerDefinitionList"></div>
 
-		<div wicket:id="saveCancel" class="modal-footer" />			
+		<div wicket:id="saveCancel" class="modal-footer"></div>			
 	
 	</form>		
 

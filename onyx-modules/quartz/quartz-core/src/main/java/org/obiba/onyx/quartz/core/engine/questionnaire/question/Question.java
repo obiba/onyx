@@ -411,6 +411,13 @@ public class Question implements IHasQuestion {
     return null;
   }
 
+  public void setNoAnswerCategory(Category category) {
+    for(Category oneCategory : getCategories()) {
+      oneCategory.setNoAnswer(false);
+    }
+    if(category != null) category.setNoAnswer(true);
+  }
+
   public Category getNoAnswerCategory() {
     for(Category category : getCategories()) {
       if(category.isNoAnswer()) {

@@ -1,0 +1,29 @@
+<wicket:panel>
+	<form wicket:id="form">
+	<table>
+		<tr>
+			<td valign="top" class="keyValueTableKey"><label
+				wicket:id="requiredAnswerLabel"></label></td>
+			<td><input wicket:id="requiredAnswer" type="checkbox" /></td>
+		</tr>
+		<tr>
+			<td valign="top" class="keyValueTableKey"><label
+				wicket:id="noAnswerLabel"></label></td>
+			<td><select wicket:id="noAnswerCategoryDropDown"></select> <span
+				wicket:id="noAnswerHelp"></span></td>
+		</tr>
+		<tr>
+			<td class="keyValueTableKey"><label wicket:id="minCountLabel"></label>
+			</td>
+			<td><input type="text" size="1" wicket:id="minCountTextField" />
+			<span wicket:id="minHelp"></span></td>
+		</tr>
+		<tr>
+			<td class="keyValueTableKey"><label wicket:id="maxCountLabel"></label>
+			</td>
+			<td><input type="text" size="1" wicket:id="maxCountTextField" />
+			<span wicket:id="maxHelp"></span></td>
+		</tr>
+	</table>
+	</form>
+</wicket:panel>
