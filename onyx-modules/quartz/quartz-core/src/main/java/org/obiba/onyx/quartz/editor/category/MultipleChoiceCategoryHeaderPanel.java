@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -29,8 +30,11 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireSharedCategory;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.question.EditedQuestion;
 
@@ -41,68 +45,111 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  private DropDownChoice<Category> noAnswerCategoryDropDown;
+  private DropDownChoice<QuestionCategory> noAnswerCategoryDropDown;
 
   private TextField<Integer> minCountTextField;
 
+  private TextField<Integer> maxCountTextField;
+
   private CheckBox requiredAnswer;
 
-  private Category previousNoAnswerCategory;
+  private QuestionCategory previousOrFirstNoAnswerQuestionCategory;
 
-  private Integer previousMinValue;
+  private Integer previousOrFirstMinValue;
+
+  private IModel<Questionnaire> questionnaireModel;
+
+  private IModel<QuestionCategory> noAnswerCategoryModel;
+
+  private EditedQuestion editedQuestion;
+
+  private Question question;
 
   @SuppressWarnings("serial")
-  public MultipleChoiceCategoryHeaderPanel(String id, final IModel<EditedQuestion> model) {
+  public MultipleChoiceCategoryHeaderPanel(String id, final IModel<Questionnaire> questionnaireModel, final IModel<EditedQuestion> model) {
     super(id, model);
+    this.questionnaireModel = questionnaireModel;
 
     final Form<Question> form = new Form<Question>("form", new Model<Question>(model.getObject().getElement()));
 
-    final Question question = model.getObject().getElement();
+    editedQuestion = model.getObject();
+    question = model.getObject().getElement();
 
-    requiredAnswer = new CheckBox("requiredAnswer", new Model<Boolean>(question.getMinCount() > 0));
-    requiredAnswer.setLabel(new ResourceModel("RequiredAnswer"));
-    form.add(requiredAnswer).add(new SimpleFormComponentLabel("requiredAnswerLabel", requiredAnswer));
-
-    IModel<List<Category>> choices = new LoadableDetachableModel<List<Category>>() {
+    LoadableDetachableModel<List<QuestionCategory>> choices = new LoadableDetachableModel<List<QuestionCategory>>() {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected List<Category> load() {
-        return question.getCategories();
+      protected List<QuestionCategory> load() {
+        List<QuestionCategory> missingQuestionCategories = question.getMissingQuestionCategories();
+        List<QuestionCategory> correctQuestionCategories = new ArrayList<QuestionCategory>();
+        for(QuestionCategory questionCategory : missingQuestionCategories) {
+          boolean noAnswer = questionCategory.getCategory().isNoAnswer();
+          boolean sharedIfLink = QuestionnaireSharedCategory.isSharedIfLink(questionCategory, questionnaireModel.getObject());
+          if(!sharedIfLink || noAnswer) {
+            correctQuestionCategories.add(questionCategory);
+          }
+        }
+        return correctQuestionCategories;
       }
     };
-    IModel<Category> noAnswerCategoryModel = new Model<Category>(question.getNoAnswerCategory()) {
+
+    requiredAnswer = new CheckBox("requiredAnswer", new LoadableDetachableModel<Boolean>() {
 
       @Override
-      public void setObject(Category category) {
-        super.setObject(category);
-        question.setNoAnswerCategory(category);
+      protected Boolean load() {
+        return question.getMinCount() == null ? false : question.getMinCount() > 0;
+      }
+    });
+
+    requiredAnswer.setLabel(new ResourceModel("RequiredAnswer"));
+    requiredAnswer.setOutputMarkupId(true);
+    form.add(requiredAnswer).add(new SimpleFormComponentLabel("requiredAnswerLabel", requiredAnswer));
+
+    noAnswerCategoryModel = new Model<QuestionCategory>() {
+
+      public QuestionCategory getObject() {
+        return question.getNoAnswerQuestionCategory();
+      }
+
+      @Override
+      public void setObject(QuestionCategory questionCategory) {
+        super.setObject(questionCategory);
+        question.setNoAnswerCategory(questionCategory == null ? null : questionCategory.getCategory());
       }
     };
-    IChoiceRenderer<Category> choicesRenderer = new ChoiceRenderer<Category>("name");
-    noAnswerCategoryDropDown = new DropDownChoice<Category>("noAnswerCategoryDropDown", noAnswerCategoryModel, choices, choicesRenderer);
-    noAnswerCategoryDropDown.setNullValid(true);
+    IChoiceRenderer<QuestionCategory> choicesRenderer = new ChoiceRenderer<QuestionCategory>("category.name");
+    noAnswerCategoryDropDown = new DropDownChoice<QuestionCategory>("noAnswerCategoryDropDown", noAnswerCategoryModel, choices, choicesRenderer);
     noAnswerCategoryDropDown.setOutputMarkupId(true);
+    noAnswerCategoryDropDown.setNullValid(true);
     noAnswerCategoryDropDown.setLabel(new ResourceModel("NoAnswer"));
     noAnswerCategoryDropDown.add(new OnChangeAjaxBehavior() {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        // Do nothing, is it only to ajax submit when we change value in dropdown
+        // Do nothing, it is only to ajax update model when we change value in dropdown
       }
 
     });
+
     form.add(noAnswerCategoryDropDown).add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCategoryDropDown));
 
     form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
     minCountTextField = new TextField<Integer>("minCountTextField", new PropertyModel<Integer>(question, "minCount"));
-    final TextField<Integer> maxCountTextField = new TextField<Integer>("maxCountTextField", new PropertyModel<Integer>(question, "maxCount"));
-
+    minCountTextField.setOutputMarkupId(true);
+    previousOrFirstMinValue = minCountTextField.getModelObject();
     minCountTextField.setLabel(new ResourceModel("Min"));
+    minCountTextField.add(new OnChangeAjaxBehavior() {
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        // Do nothing, it is only to ajax update model when we change value
+      }
+    });
     SimpleFormComponentLabel minCountLabelComponent = new SimpleFormComponentLabel("minCountLabel", minCountTextField);
 
+    maxCountTextField = new TextField<Integer>("maxCountTextField", new PropertyModel<Integer>(question, "maxCount"));
     maxCountTextField.setLabel(new ResourceModel("Max"));
     SimpleFormComponentLabel maxCountLabelComponent = new SimpleFormComponentLabel("maxCountLabel", maxCountTextField);
 
@@ -116,9 +163,7 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        updateEnability();
-        target.addComponent(noAnswerCategoryDropDown);
-        target.addComponent(minCountTextField);
+        clickRequired(target);
       }
     });
 
@@ -134,6 +179,10 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
         if(requiredAnswer.getModelObject() && min != null && min <= 0) {
           form.error(new StringResourceModel("MinMustBeMoreZero", MultipleChoiceCategoryHeaderPanel.this, null).getObject());
         }
+        if(isSingleChoice()) {
+          minCountTextField.setModelObject(requiredAnswer.getModelObject() ? 1 : null);
+          minCountTextField.setEnabled(false);
+        }
       }
 
       @Override
@@ -141,28 +190,65 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
         return null;
       }
     });
-
-    updateEnability();
-
     add(form);
+    refresh(null);
   }
 
-  private void updateEnability() {
+  /**
+   * @return
+   */
+  private boolean isSingleChoice() {
+    return editedQuestion.getQuestionType() == QuestionType.LIST_RADIO || editedQuestion.getQuestionType() == QuestionType.ARRAY_RADIO;
+  }
+
+  private void clickRequired(AjaxRequestTarget target) {
     boolean required = requiredAnswer.getModelObject();
     noAnswerCategoryDropDown.setEnabled(!required);
     minCountTextField.setEnabled(required);
     if(required) {
-      previousNoAnswerCategory = noAnswerCategoryDropDown.getModelObject();
+      previousOrFirstNoAnswerQuestionCategory = noAnswerCategoryDropDown.getModelObject();
       noAnswerCategoryDropDown.setModelObject(null);
-      minCountTextField.setModelObject(previousMinValue);
+      minCountTextField.setModelObject(previousOrFirstMinValue);
     } else {
-      previousMinValue = minCountTextField.getConvertedInput();
-      minCountTextField.setModelObject(0);
-      noAnswerCategoryDropDown.setModelObject(previousNoAnswerCategory);
+      previousOrFirstMinValue = minCountTextField.getModelObject();
+      minCountTextField.setModelObject(null);
+      noAnswerCategoryDropDown.setModelObject(previousOrFirstNoAnswerQuestionCategory);
+    }
+    if(isSingleChoice()) {
+      minCountTextField.setModelObject(requiredAnswer.getModelObject() ? 1 : null);
+      minCountTextField.setEnabled(false);
+    }
+
+    target.addComponent(noAnswerCategoryDropDown);
+    target.addComponent(minCountTextField);
+  }
+
+  public void refresh(AjaxRequestTarget target) {
+    QuestionCategory noAnswerQuestionCategory = noAnswerCategoryModel.getObject();
+    if(noAnswerQuestionCategory != null && QuestionnaireSharedCategory.isSharedIfLink(noAnswerQuestionCategory, questionnaireModel.getObject())) {
+      noAnswerCategoryDropDown.setEnabled(false);
+      requiredAnswer.setEnabled(false);
+      minCountTextField.setEnabled(false);
+      noAnswerCategoryDropDown.setModelObject(noAnswerQuestionCategory);
+      minCountTextField.setModelObject(null);
+    } else {
+      requiredAnswer.setEnabled(true);
+      boolean minSupZero = question.getMinCount() == null ? false : question.getMinCount() > 0;
+      noAnswerCategoryDropDown.setEnabled(!minSupZero);
+      minCountTextField.setEnabled(minSupZero);
+      noAnswerCategoryDropDown.setModelObject(noAnswerQuestionCategory);
+    }
+    if(isSingleChoice()) {
+      minCountTextField.setModelObject(requiredAnswer.getModelObject() ? 1 : null);
+      minCountTextField.setEnabled(false);
+      maxCountTextField.setModelObject(1);
+      maxCountTextField.setEnabled(false);
+    }
+    if(target != null) {
+      target.addComponent(requiredAnswer);
+      target.addComponent(noAnswerCategoryDropDown);
+      target.addComponent(minCountTextField);
     }
   }
 
-  public void refreshDropDownNoAnswer(AjaxRequestTarget target) {
-    target.addComponent(noAnswerCategoryDropDown);
-  }
 }

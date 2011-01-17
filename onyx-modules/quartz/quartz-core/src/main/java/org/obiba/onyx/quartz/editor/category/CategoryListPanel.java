@@ -53,6 +53,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireSharedCategory;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
@@ -102,11 +103,7 @@ public class CategoryListPanel extends Panel {
 
   private final MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel;
 
-  public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
-    this(id, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, null);
-  }
-
-  public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel) {
+  public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel;
@@ -163,7 +160,7 @@ public class CategoryListPanel extends Panel {
       public Component getItemTitle(String id, final QuestionCategory questionCategory) {
         Category category = questionCategory.getCategory();
 
-        if(isShared(questionCategory)) {
+        if(QuestionnaireSharedCategory.isSharedIfLink(questionCategory, questionnaireModel.getObject())) {
           StringBuilder sb = new StringBuilder();
           for(Question q : questionsByCategory.get(category)) {
             if(q.getName().equals(question.getName())) continue;
@@ -191,6 +188,7 @@ public class CategoryListPanel extends Panel {
                 copyLabels(elementLabelsQC, elementLabelsOtherQC);
               }
             }
+            multipleChoiceCategoryHeaderPanel.refresh(target);
           }
 
           public void onCancel(AjaxRequestTarget target, QuestionCategory questionCategory) {
@@ -218,7 +216,7 @@ public class CategoryListPanel extends Panel {
       public void deleteItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
         ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement().getQuestionCategories().remove(questionCategory);
         localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaireModel.getObject(), questionCategory);
-        refreshListAndNoAnswerListIfExist(categoryList, target);
+        refreshListAndNoAnswerPanel(categoryList, target);
       }
 
       @Override
@@ -229,41 +227,6 @@ public class CategoryListPanel extends Panel {
     };
     add(categoryList);
 
-  }
-
-  /**
-   * Return true is category associated to the given questionCategory is shared, false otherwise. we use this method if
-   * question associated to questionCategory is not yet linked to the questionnaire.
-   * (QuestionnaireFinder.findSharedCategories do not contains yet the category)
-   * 
-   * @param question
-   * @param questionCategory
-   * @param category
-   * @return
-   */
-  private boolean isShared(final QuestionCategory questionCategory) {
-    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-    questionnaireModel.getObject().setQuestionnaireCache(null);
-    Multimap<Category, Question> categoriesFilterName = questionnaireFinder.findCategories(questionCategory.getCategory().getName());
-    Collection<Category> categories = Collections2.filter(categoriesFilterName.keySet(), new Predicate<Category>() {
-
-      @Override
-      public boolean apply(Category input) {
-        return input == questionCategory.getCategory();
-      }
-    });
-    if(categoriesFilterName.isEmpty() || categories.isEmpty()) {
-      return false;
-    }
-    Collection<Question> questions = categoriesFilterName.get(categories.iterator().next());
-    Collection<Question> otherQuestions = Collections2.filter(questions, new Predicate<Question>() {
-
-      @Override
-      public boolean apply(Question input) {
-        return input != questionCategory.getQuestion();
-      }
-    });
-    return !otherQuestions.isEmpty();
   }
 
   private class SimpleAddPanel extends Panel {
@@ -295,7 +258,7 @@ public class CategoryListPanel extends Panel {
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name, false);
           categoryName.setModelObject(null);
           target.addComponent(categoryName);
-          refreshListAndNoAnswerListIfExist(categoryList, target);
+          refreshListAndNoAnswerPanel(categoryList, target);
         }
 
         @Override
@@ -339,7 +302,7 @@ public class CategoryListPanel extends Panel {
           }
           categories.setModelObject(null);
           target.addComponent(categories);
-          refreshListAndNoAnswerListIfExist(categoryList, target);
+          refreshListAndNoAnswerPanel(categoryList, target);
         }
 
         @Override
@@ -419,7 +382,7 @@ public class CategoryListPanel extends Panel {
           categoryNameFinder.setModelObject(null);
 
           target.addComponent(categoryNameFinder);
-          refreshListAndNoAnswerListIfExist(categoryList, target);
+          refreshListAndNoAnswerPanel(categoryList, target);
         }
 
         @Override
@@ -543,9 +506,9 @@ public class CategoryListPanel extends Panel {
     return filter;
   }
 
-  private void refreshListAndNoAnswerListIfExist(SortableList<QuestionCategory> categoryList, AjaxRequestTarget target) {
+  private void refreshListAndNoAnswerPanel(SortableList<QuestionCategory> categoryList, AjaxRequestTarget target) {
     categoryList.refreshList(target);
-    if(multipleChoiceCategoryHeaderPanel != null) multipleChoiceCategoryHeaderPanel.refreshDropDownNoAnswer(target);
+    multipleChoiceCategoryHeaderPanel.refresh(target);
   }
 
   private synchronized void rollback(QuestionCategory modified, ElementClone<QuestionCategory> original) {

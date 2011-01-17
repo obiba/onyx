@@ -37,8 +37,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
+import org.obiba.onyx.quartz.editor.category.CategoriesArrayPanel;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
-import org.obiba.onyx.quartz.editor.category.CategoryListPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerPanel;
@@ -195,12 +195,12 @@ public abstract class EditQuestionPanel extends Panel {
     rowsTab.setVisible(false);
 
     columnsTab = new HidableTab(new ResourceModel("Columns(categories)")) {
-      private CategoryListPanel panel;
+      private CategoriesArrayPanel panel;
 
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new CategoryListPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+          panel = new CategoriesArrayPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
         }
         return panel;
       }
