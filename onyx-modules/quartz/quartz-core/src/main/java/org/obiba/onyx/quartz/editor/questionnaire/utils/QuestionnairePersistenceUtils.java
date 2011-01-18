@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire.utils;
 
-import org.obiba.onyx.engine.ModuleRegistry;
-import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -19,7 +16,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.UniqueQuestionnaireElementNameBuilder;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
-import org.obiba.onyx.quartz.engine.QuartzModule;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -33,7 +29,7 @@ public class QuestionnairePersistenceUtils {
 
   private LocalePropertiesUtils localePropertiesUtils;
 
-  private ModuleRegistry moduleRegistry;
+  private QuestionnaireRegister questionnaireRegister;
 
   public void persist(Questionnaire questionnaire, LocaleProperties localeProperties) throws Exception {
 
@@ -53,15 +49,7 @@ public class QuestionnairePersistenceUtils {
     // store locales
     if(localeProperties != null) localePropertiesUtils.persist(bundle, localeProperties);
 
-    // create Stage if needed
-    QuartzModule quartzModule = (QuartzModule) moduleRegistry.getModule(QuartzModule.MODULE_NAME);
-    StageManager stageManager = quartzModule.getStageManager();
-    Stage stage = stageManager.getStage(questionnaire.getName());
-    if(stage == null) {
-      quartzModule.addStage(stageManager.getStages().size(), new Stage(quartzModule, questionnaire.getName()));
-    } else {
-      quartzModule.stageChanged(stage);
-    }
+    questionnaireRegister.register(questionnaire);
   }
 
   public void persist(Questionnaire questionnaire) throws Exception {
@@ -79,8 +67,8 @@ public class QuestionnairePersistenceUtils {
   }
 
   @Required
-  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
-    this.moduleRegistry = moduleRegistry;
+  public void setQuestionnaireRegister(QuestionnaireRegister questionnaireRegister) {
+    this.questionnaireRegister = questionnaireRegister;
   }
 
 }
