@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.editor.category;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -65,9 +66,12 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
 
   private Question question;
 
+  private LoadableDetachableModel<List<QuestionCategory>> choices;
+
   @SuppressWarnings("serial")
   public MultipleChoiceCategoryHeaderPanel(String id, final IModel<Questionnaire> questionnaireModel, final IModel<EditedQuestion> model) {
     super(id, model);
+    setOutputMarkupId(true);
     this.questionnaireModel = questionnaireModel;
 
     final Form<Question> form = new Form<Question>("form", new Model<Question>(model.getObject().getElement()));
@@ -75,7 +79,7 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
     editedQuestion = model.getObject();
     question = model.getObject().getElement();
 
-    LoadableDetachableModel<List<QuestionCategory>> choices = new LoadableDetachableModel<List<QuestionCategory>>() {
+    choices = new LoadableDetachableModel<List<QuestionCategory>>() {
 
       private static final long serialVersionUID = 1L;
 
@@ -88,22 +92,20 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
           boolean sharedIfLink = QuestionnaireSharedCategory.isSharedIfLink(questionCategory, questionnaireModel.getObject());
           if(!sharedIfLink || noAnswer) {
             correctQuestionCategories.add(questionCategory);
+            if(sharedIfLink && noAnswer) {
+              correctQuestionCategories.clear();
+              correctQuestionCategories.add(questionCategory);
+              return correctQuestionCategories;
+            }
           }
         }
         return correctQuestionCategories;
       }
     };
 
-    requiredAnswer = new CheckBox("requiredAnswer", new LoadableDetachableModel<Boolean>() {
-
-      @Override
-      protected Boolean load() {
-        return question.getMinCount() == null ? false : question.getMinCount() > 0;
-      }
-    });
+    requiredAnswer = new CheckBox("requiredAnswer", new Model<Boolean>());
 
     requiredAnswer.setLabel(new ResourceModel("RequiredAnswer"));
-    requiredAnswer.setOutputMarkupId(true);
     form.add(requiredAnswer).add(new SimpleFormComponentLabel("requiredAnswerLabel", requiredAnswer));
 
     noAnswerCategoryModel = new Model<QuestionCategory>() {
@@ -120,7 +122,6 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
     };
     IChoiceRenderer<QuestionCategory> choicesRenderer = new ChoiceRenderer<QuestionCategory>("category.name");
     noAnswerCategoryDropDown = new DropDownChoice<QuestionCategory>("noAnswerCategoryDropDown", noAnswerCategoryModel, choices, choicesRenderer);
-    noAnswerCategoryDropDown.setOutputMarkupId(true);
     noAnswerCategoryDropDown.setNullValid(true);
     noAnswerCategoryDropDown.setLabel(new ResourceModel("NoAnswer"));
     noAnswerCategoryDropDown.add(new OnChangeAjaxBehavior() {
@@ -137,7 +138,6 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
     form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
 
     minCountTextField = new TextField<Integer>("minCountTextField", new PropertyModel<Integer>(question, "minCount"));
-    minCountTextField.setOutputMarkupId(true);
     previousOrFirstMinValue = minCountTextField.getModelObject();
     minCountTextField.setLabel(new ResourceModel("Min"));
     minCountTextField.add(new OnChangeAjaxBehavior() {
@@ -170,18 +170,14 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
     form.add(new IFormValidator() {
 
       @Override
-      public void validate(Form<?> form) {
+      public void validate(@SuppressWarnings("hiding") Form<?> form) {
         Integer min = minCountTextField.getConvertedInput();
         Integer max = maxCountTextField.getConvertedInput();
         if(min != null && max != null && min > max) {
           form.error(new StringResourceModel("MinInfMax", MultipleChoiceCategoryHeaderPanel.this, null).getObject());
         }
-        if(requiredAnswer.getModelObject() && min != null && min <= 0) {
+        if(BooleanUtils.isTrue(requiredAnswer.getModelObject()) && min != null && min <= 0) {
           form.error(new StringResourceModel("MinMustBeMoreZero", MultipleChoiceCategoryHeaderPanel.this, null).getObject());
-        }
-        if(isSingleChoice()) {
-          minCountTextField.setModelObject(requiredAnswer.getModelObject() ? 1 : null);
-          minCountTextField.setEnabled(false);
         }
       }
 
@@ -191,14 +187,13 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
       }
     });
     add(form);
-    refresh(null);
   }
 
   /**
    * @return
    */
   private boolean isSingleChoice() {
-    return editedQuestion.getQuestionType() == QuestionType.LIST_RADIO || editedQuestion.getQuestionType() == QuestionType.ARRAY_RADIO;
+    return editedQuestion.getQuestionType() == QuestionType.LIST_RADIO || editedQuestion.getQuestionType() == QuestionType.LIST_DROP_DOWN || editedQuestion.getQuestionType() == QuestionType.ARRAY_RADIO;
   }
 
   private void clickRequired(AjaxRequestTarget target) {
@@ -215,7 +210,7 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
       noAnswerCategoryDropDown.setModelObject(previousOrFirstNoAnswerQuestionCategory);
     }
     if(isSingleChoice()) {
-      minCountTextField.setModelObject(requiredAnswer.getModelObject() ? 1 : null);
+      minCountTextField.setModelObject(BooleanUtils.isTrue(requiredAnswer.getModelObject()) ? 1 : null);
       minCountTextField.setEnabled(false);
     }
 
@@ -223,10 +218,18 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
     target.addComponent(minCountTextField);
   }
 
-  public void refresh(AjaxRequestTarget target) {
-    QuestionCategory noAnswerQuestionCategory = noAnswerCategoryModel.getObject();
+  @Override
+  protected void onBeforeRender() {
+    super.onBeforeRender();
+    QuestionCategory noAnswerQuestionCategory = null;
+    List<QuestionCategory> choiceList = choices.getObject();
+    if(choiceList.size() == 1 && QuestionnaireSharedCategory.isSharedIfLink(choiceList.iterator().next(), questionnaireModel.getObject())) {
+      noAnswerQuestionCategory = choiceList.iterator().next();
+    } else {
+      noAnswerQuestionCategory = noAnswerCategoryModel.getObject();
+    }
     if(noAnswerQuestionCategory != null && QuestionnaireSharedCategory.isSharedIfLink(noAnswerQuestionCategory, questionnaireModel.getObject())) {
-      noAnswerCategoryDropDown.setEnabled(false);
+      noAnswerCategoryDropDown.setNullValid(false);
       requiredAnswer.setEnabled(false);
       minCountTextField.setEnabled(false);
       noAnswerCategoryDropDown.setModelObject(noAnswerQuestionCategory);
@@ -235,20 +238,18 @@ public class MultipleChoiceCategoryHeaderPanel extends Panel {
       requiredAnswer.setEnabled(true);
       boolean minSupZero = question.getMinCount() == null ? false : question.getMinCount() > 0;
       noAnswerCategoryDropDown.setEnabled(!minSupZero);
+      noAnswerCategoryDropDown.setNullValid(true);
       minCountTextField.setEnabled(minSupZero);
       noAnswerCategoryDropDown.setModelObject(noAnswerQuestionCategory);
+      requiredAnswer.setModelObject(minSupZero);
     }
     if(isSingleChoice()) {
-      minCountTextField.setModelObject(requiredAnswer.getModelObject() ? 1 : null);
+      minCountTextField.setModelObject(BooleanUtils.isTrue(requiredAnswer.getModelObject()) ? 1 : null);
       minCountTextField.setEnabled(false);
       maxCountTextField.setModelObject(1);
       maxCountTextField.setEnabled(false);
-    }
-    if(target != null) {
-      target.addComponent(requiredAnswer);
-      target.addComponent(noAnswerCategoryDropDown);
-      target.addComponent(minCountTextField);
+    } else {
+      maxCountTextField.setEnabled(true);
     }
   }
-
 }

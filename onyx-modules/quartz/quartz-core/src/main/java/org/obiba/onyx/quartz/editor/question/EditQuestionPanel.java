@@ -299,6 +299,12 @@ public abstract class EditQuestionPanel extends Panel {
               target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
             }
+            if(questionType == QuestionType.LIST_RADIO || questionType == QuestionType.LIST_DROP_DOWN) {
+              if(question.getMinCount() != null && (question.getMinCount() != 0 || question.getMinCount() != 1)) {
+                question.setMinCount(1);
+              }
+              question.setMaxCount(1);
+            }
             break;
 
           case ARRAY_CHECKBOX:

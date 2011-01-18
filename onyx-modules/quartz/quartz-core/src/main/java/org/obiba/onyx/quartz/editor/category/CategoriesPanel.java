@@ -65,9 +65,8 @@ public class CategoriesPanel extends Panel {
     nbRowsField.setLabel(new ResourceModel("NbRows"));
     add(nbRowsField);
 
-    MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel = new MultipleChoiceCategoryHeaderPanel("headerMultipleChoice", questionnaireModel, model);
-    add(multipleChoiceCategoryHeaderPanel);
+    add(new MultipleChoiceCategoryHeaderPanel("headerMultipleChoice", questionnaireModel, model));
 
-    add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, multipleChoiceCategoryHeaderPanel));
+    add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, this));
   }
 }

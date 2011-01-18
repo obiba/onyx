@@ -23,10 +23,9 @@ public class CategoriesArrayPanel extends Panel {
   public CategoriesArrayPanel(String id, IModel<EditedQuestion> model, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel = new MultipleChoiceCategoryHeaderPanel("headerMultipleChoice", questionnaireModel, model);
-    add(multipleChoiceCategoryHeaderPanel);
+    add(new MultipleChoiceCategoryHeaderPanel("headerMultipleChoice", questionnaireModel, model));
 
-    add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, multipleChoiceCategoryHeaderPanel));
+    add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, this));
   }
 
 }

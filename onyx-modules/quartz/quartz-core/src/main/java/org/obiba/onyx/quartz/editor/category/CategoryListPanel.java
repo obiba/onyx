@@ -101,15 +101,15 @@ public class CategoryListPanel extends Panel {
 
   private IModel<LocaleProperties> localePropertiesModel;
 
-  private final MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel;
+  private final Panel parentPanel;
 
-  public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel) {
+  public CategoryListPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final Panel parentPanel) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
-    this.multipleChoiceCategoryHeaderPanel = multipleChoiceCategoryHeaderPanel;
+    this.parentPanel = parentPanel;
 
     add(CSSPackageResource.getHeaderContribution(CategoryListPanel.class, "CategoryListPanel.css"));
 
@@ -157,7 +157,7 @@ public class CategoryListPanel extends Panel {
       }
 
       @Override
-      public Component getItemTitle(String id, final QuestionCategory questionCategory) {
+      public Component getItemTitle(@SuppressWarnings("hiding") String id, final QuestionCategory questionCategory) {
         Category category = questionCategory.getCategory();
 
         if(QuestionnaireSharedCategory.isSharedIfLink(questionCategory, questionnaireModel.getObject())) {
@@ -174,11 +174,11 @@ public class CategoryListPanel extends Panel {
       }
 
       @Override
-      public void editItem(final QuestionCategory questionCategory, AjaxRequestTarget target) {
+      public void editItem(final QuestionCategory questionCategory, final AjaxRequestTarget target) {
         final ElementClone<QuestionCategory> original = QuestionnaireElementCloner.clone(questionCategory, new CloneSettings(true), localePropertiesModel.getObject());
         categoryWindow.setContent(new CategoryWindow("content", new Model<QuestionCategory>(questionCategory), questionnaireModel, localePropertiesModel, categoryWindow) {
           @Override
-          public void onSave(AjaxRequestTarget target, QuestionCategory questionCategory) {
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") QuestionCategory questionCategory) {
             Collection<QuestionCategory> others = findOtherQuestionCategories(questionCategory.getCategory(), questionCategory);
             if(!others.isEmpty()) {
               ListMultimap<Locale, KeyValue> elementLabelsQC = localePropertiesModel.getObject().getElementLabels(questionCategory);
@@ -188,24 +188,24 @@ public class CategoryListPanel extends Panel {
                 copyLabels(elementLabelsQC, elementLabelsOtherQC);
               }
             }
-            multipleChoiceCategoryHeaderPanel.refresh(target);
           }
 
-          public void onCancel(AjaxRequestTarget target, QuestionCategory questionCategory) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, QuestionCategory questionCategory) {
             rollback(questionCategory, original);
           }
         });
         categoryWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
-          public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             rollback(questionCategory, original);
             return true;
           }
         });
         categoryWindow.setWindowClosedCallback(new WindowClosedCallback() {
           @Override
-          public void onClose(AjaxRequestTarget target) {
+          public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             refreshList(target);
+            refreshListAndNoAnswerPanel(categoryList, target);
           }
         });
         categoryWindow.show(target);
@@ -248,7 +248,7 @@ public class CategoryListPanel extends Panel {
       AjaxButton addButton = new AjaxButton("addButton", form) {
         @SuppressWarnings("unchecked")
         @Override
-        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+        protected void onSubmit(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
           String name = categoryName.getModelObject();
           if(StringUtils.isBlank(name)) return;
           if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
@@ -262,7 +262,7 @@ public class CategoryListPanel extends Panel {
         }
 
         @Override
-        protected void onError(AjaxRequestTarget target, Form<?> form) {
+        protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -506,9 +506,12 @@ public class CategoryListPanel extends Panel {
     return filter;
   }
 
-  private void refreshListAndNoAnswerPanel(SortableList<QuestionCategory> categoryList, AjaxRequestTarget target) {
+  @SuppressWarnings("unchecked")
+  private void refreshListAndNoAnswerPanel(@SuppressWarnings("hiding") SortableList<QuestionCategory> categoryList, AjaxRequestTarget target) {
     categoryList.refreshList(target);
-    multipleChoiceCategoryHeaderPanel.refresh(target);
+    MultipleChoiceCategoryHeaderPanel multipleChoiceCategoryHeaderPanel = new MultipleChoiceCategoryHeaderPanel("headerMultipleChoice", questionnaireModel, (IModel<EditedQuestion>) getDefaultModel());
+    parentPanel.addOrReplace(multipleChoiceCategoryHeaderPanel);
+    target.addComponent(multipleChoiceCategoryHeaderPanel);
   }
 
   private synchronized void rollback(QuestionCategory modified, ElementClone<QuestionCategory> original) {
