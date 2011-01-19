@@ -144,11 +144,6 @@ public abstract class CategoryWindow extends Panel {
     form.add(escapeCheckBox).add(new SimpleFormComponentLabel("escapeLabel", escapeCheckBox));
     form.add(new HelpTooltipPanel("escapeHelp", new ResourceModel("EscapeOrMissing.Tooltip")));
 
-    CheckBox noAnswerCheckBox = new CheckBox("noAnswer", new PropertyModel<Boolean>(model, "category.noAnswer"));
-    noAnswerCheckBox.setLabel(new ResourceModel("NoAnswer"));
-    form.add(noAnswerCheckBox).add(new SimpleFormComponentLabel("noAnswerLabel", noAnswerCheckBox));
-    form.add(new HelpTooltipPanel("noAnswerHelp", new ResourceModel("NoAnswer.Tooltip")));
-
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject());
     form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
 

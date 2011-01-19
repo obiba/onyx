@@ -93,7 +93,7 @@ public class Stage {
   }
 
   private void validateConclusionStageDoesNotHaveDependencies() {
-    if(interviewConclusion && stageDependencyCondition != null) {
+    if(interviewConclusion && stageDependencyCondition != null && !(stageDependencyCondition instanceof FinalDependencyCondition)) {
       String message = "The StageDependencyCondition [" + stageDependencyCondition + "] was found for the conclusion stage [" + name + "]. It will be ignored. Please remove the StageDependencyCondition from the [" + name + "] configuration. Conclusion stages must not contain a StageDependencyCondition.";
       throw new IllegalArgumentException(message);
     }

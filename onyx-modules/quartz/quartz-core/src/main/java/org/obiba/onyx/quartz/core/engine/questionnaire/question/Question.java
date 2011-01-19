@@ -233,6 +233,20 @@ public class Question implements IHasQuestion {
     return categories;
   }
 
+  /**
+   * Get the underlying Missing {@link Category} list.
+   * @return
+   */
+  public List<QuestionCategory> getMissingQuestionCategories() {
+    List<QuestionCategory> questionCategories = new ArrayList<QuestionCategory>();
+    for(QuestionCategory questionCategory : getQuestionCategories()) {
+      if(questionCategory.getCategory().isEscape()) {
+        questionCategories.add(questionCategory);
+      }
+    }
+    return questionCategories;
+  }
+
   public Map<String, Category> getCategoriesByName() {
     Map<String, Category> categories = new HashMap<String, Category>();
     for(QuestionCategory questionCategory : getQuestionCategories()) {
@@ -409,6 +423,13 @@ public class Question implements IHasQuestion {
       }
     }
     return null;
+  }
+
+  public void setNoAnswerCategory(Category category) {
+    for(Category oneCategory : getCategories()) {
+      oneCategory.setNoAnswer(false);
+    }
+    if(category != null) category.setNoAnswer(true);
   }
 
   public Category getNoAnswerCategory() {

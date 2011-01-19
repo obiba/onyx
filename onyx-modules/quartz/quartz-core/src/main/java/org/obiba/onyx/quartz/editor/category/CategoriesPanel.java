@@ -65,17 +65,8 @@ public class CategoriesPanel extends Panel {
     nbRowsField.setLabel(new ResourceModel("NbRows"));
     add(nbRowsField);
 
-    TextField<Integer> minCountTextField = new TextField<Integer>("minCountTextField", new PropertyModel<Integer>(model.getObject().getElement(), "minCount"));
-    TextField<Integer> maxCountTextField = new TextField<Integer>("maxCountTextField", new PropertyModel<Integer>(model.getObject().getElement(), "maxCount"));
+    add(new MultipleChoiceCategoryHeaderPanel("headerMultipleChoice", questionnaireModel, model));
 
-    minCountTextField.setLabel(new ResourceModel("minCountLabel"));
-    SimpleFormComponentLabel minCountLabelComponent = new SimpleFormComponentLabel("minCountLabel", minCountTextField);
-
-    maxCountTextField.setLabel(new ResourceModel("maxCountLabel"));
-    SimpleFormComponentLabel maxCountLabelComponent = new SimpleFormComponentLabel("maxCountLabel", maxCountTextField);
-
-    add(minCountTextField, maxCountTextField, minCountLabelComponent, maxCountLabelComponent);
-
-    add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow));
+    add(new CategoryListPanel("categories", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, this));
   }
 }

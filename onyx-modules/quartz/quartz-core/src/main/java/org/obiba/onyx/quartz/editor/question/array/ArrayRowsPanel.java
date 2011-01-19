@@ -122,12 +122,13 @@ public class ArrayRowsPanel extends Panel {
 
     questionList = new SortableList<Question>("questions", questionParent.getQuestions()) {
 
+      @Override
       public void onItemPopulation(Question question) {
         localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), question);
       }
 
       @Override
-      public Component getItemTitle(@SuppressWarnings("hiding") String id, Question question) {
+      public Component getItemTitle(String id, Question question) {
         return new Label(id, question.getName());
       }
 
@@ -136,25 +137,25 @@ public class ArrayRowsPanel extends Panel {
         final ElementClone<Question> originalQuestion = QuestionnaireElementCloner.clone(question, new CloneSettings(true, false), localePropertiesModel.getObject());
         questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
           @Override
-          protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
+          protected void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
 
           }
 
           @Override
-          protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, EditedQuestion editedQuestion) {
+          protected void onCancel(AjaxRequestTarget target, EditedQuestion editedQuestion) {
             rollback(questionParent, question, originalQuestion);
           }
         });
         questionWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
-          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+          public boolean onCloseButtonClicked(AjaxRequestTarget target) {
             rollback(questionParent, question, originalQuestion);
             return true;
           }
         });
         questionWindow.setWindowClosedCallback(new WindowClosedCallback() {
           @Override
-          public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+          public void onClose(AjaxRequestTarget target) {
             refreshList(target);
           }
         });

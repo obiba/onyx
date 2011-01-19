@@ -36,6 +36,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireRegister;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
@@ -59,6 +60,9 @@ public abstract class UploadQuestionnairePanel extends Panel {
   @SpringBean
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Needs to be be re-initialized upon deserialization")
   private QuestionnaireBundleManager questionnaireBundleManager;
+
+  @SpringBean
+  private QuestionnaireRegister questionnaireRegister;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -157,7 +161,7 @@ public abstract class UploadQuestionnairePanel extends Panel {
               File localeFile = Iterables.find(localeProperties, new Predicate<File>() {
                 public boolean apply(File file) {
                   return file.getName().equals(fileName);
-                };
+                }
               });
               if(localeFile == null) {
                 error(new StringResourceModel("Error.MissingFile", UploadQuestionnairePanel.this, null, new Object[] { fileName }).getString());
@@ -165,6 +169,7 @@ public abstract class UploadQuestionnairePanel extends Panel {
               if(hasError()) return;
             }
             questionnaireBundleManager.createBundle(questionnaire, localeProperties.toArray(new File[localeProperties.size()]));
+            questionnaireRegister.register(questionnaire);
           }
 
         } catch(IOException e) {
@@ -196,7 +201,6 @@ public abstract class UploadQuestionnairePanel extends Panel {
         feedbackWindow.show(target);
       }
     });
-
   }
 
   protected abstract void onSave(AjaxRequestTarget target);

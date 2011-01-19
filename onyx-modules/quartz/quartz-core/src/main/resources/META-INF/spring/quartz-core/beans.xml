@@ -86,7 +86,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="questionnairePersistenceUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils">
 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
 		<property name="localePropertiesUtils" ref="localePropertiesUtils" />
-    <property name="moduleRegistry" ref="moduleRegistry" />
+    	<property name="questionnaireRegister" ref="questionnaireRegister" />
+	</bean>
+	
+	<bean id="questionnaireRegister" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireRegister">
+		<property name="moduleRegistry" ref="moduleRegistry" />
 	</bean>
 
 	<bean id="localePropertiesUtils" class="org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils">
