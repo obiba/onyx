@@ -158,6 +158,10 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private JsonNode variablesNode;
 
+  private String previewingNodeId = null;
+
+  private TreeNode previewingNode = null;
+
   public QuestionnaireTreePanel(String id, IModel<Questionnaire> model, boolean isNewQuestionnaire) {
     super(id, model);
     this.isNewQuestionnaire = isNewQuestionnaire;
@@ -387,6 +391,9 @@ public abstract class QuestionnaireTreePanel extends Panel {
           log.error("Cannot persist questionnaire", e);
         }
       }
+      if(previewingNodeId != null && previewingNode != null) {
+        preview(previewingNodeId, previewingNode, target);
+      }
     }
   }
 
@@ -497,6 +504,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private void preview(final String nodeId, final TreeNode node, AjaxRequestTarget target) {
     if(isNewQuestionnaire) return;
+    previewingNodeId = nodeId;
+    previewingNode = node;
     editingElement = false;
     @SuppressWarnings("unchecked")
     final IModel<Questionnaire> questionnaireModel = (IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel();
