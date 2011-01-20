@@ -8,7 +8,7 @@
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx</artifactId>
   <packaging>pom</packaging>
-  <version>1.8.1</version>
+  <version>1.8-SNAPSHOT</version>
 
   <licenses>
     <license>
@@ -820,8 +820,8 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.obiba.org/onyx/tags/releases/1.8.1</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/tags/releases/1.8.1</developerConnection>
+    <connection>scm:svn:http://svn.obiba.org/onyx/branches/onyx-1.8.x</connection>
+    <developerConnection>scm:svn:https://svn.obiba.org/onyx/branches/onyx-1.8.x</developerConnection>
   </scm>
 
   <properties>
