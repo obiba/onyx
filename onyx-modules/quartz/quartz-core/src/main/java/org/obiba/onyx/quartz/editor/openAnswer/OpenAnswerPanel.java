@@ -771,12 +771,12 @@ public class OpenAnswerPanel extends Panel {
       break;
     case INTEGER:
       if(StringUtils.isNotBlank(minNumeric.getValue())) {
-        MinimumValidator<Integer> minimumValidator = new MinimumValidator<Integer>(Integer.parseInt(minNumeric.getValue()));
+        MinimumValidator<Long> minimumValidator = new MinimumValidator<Long>(Long.parseLong(minNumeric.getValue()));
         DataValidator dataValidator = new DataValidator(minimumValidator, DataType.INTEGER);
         opa.addDataValidator(dataValidator);
       }
       if(StringUtils.isNotBlank(maxNumeric.getValue())) {
-        MaximumValidator<Integer> maximumValidator = new MaximumValidator<Integer>(Integer.parseInt(maxNumeric.getValue()));
+        MaximumValidator<Long> maximumValidator = new MaximumValidator<Long>(Long.parseLong(maxNumeric.getValue()));
         DataValidator dataValidator = new DataValidator(maximumValidator, DataType.INTEGER);
         opa.addDataValidator(dataValidator);
       }
