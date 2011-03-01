@@ -991,6 +991,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
       } else {
         question.getPage().removeQuestion(question);
       }
+    } else if(node.isVariable()) {
+      questionnaire.removeVariable(questionnaire.getVariable(node.getName()));
     }
     try {
       persitQuestionnaire(target);
