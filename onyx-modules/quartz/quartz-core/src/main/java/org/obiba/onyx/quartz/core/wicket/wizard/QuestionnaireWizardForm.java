@@ -345,7 +345,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     Questionnaire questionnaire = activeQuestionnaireAdministrationService.getQuestionnaire();
     String description = getQuestionnaireDescription(questionnaire);
 
-    return (questionnaire.getLocales().size() > 1) && (description != null && description.trim().length() != 0);
+    return (questionnaire.getLocales().size() > 1) || (description != null && description.trim().length() != 0);
   }
 
   private String getQuestionnaireDescription(Questionnaire questionnaire) {
