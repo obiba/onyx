@@ -44,6 +44,8 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.obiba.magma.Variable;
+import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -56,6 +58,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
@@ -78,6 +81,7 @@ import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistence
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
 import org.obiba.onyx.quartz.editor.variable.VariablePanel;
 import org.obiba.onyx.quartz.editor.variable.VariablePreview;
+import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
@@ -86,6 +90,7 @@ import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Model is reloaded only on cancel. <br>
@@ -94,21 +99,32 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public abstract class QuestionnaireTreePanel extends Panel {
 
+  /**
+   * 
+   */
+  private static final String PERSIST_ERROR = "Cannot persist questionnaire or reload quartz module ";
+
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   private static final String ID_PREFIX = "element_";
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
+
+  @SpringBean
+  private VariableUtils variableUtils;
 
   private final Map<String, TreeNode> elements = new HashMap<String, TreeNode>();
 
@@ -340,7 +356,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persitQuestionnaire(target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
+          log.error(PERSIST_ERROR, e);
         }
       } else if(node.isPage() && newNode.isSection()) {
         Page page = questionnaireFinder.findPage(node.getName());
@@ -352,7 +368,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persitQuestionnaire(target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
+          log.error(PERSIST_ERROR, e);
         }
       } else if(node.isAnyQuestion() && newNode.isPage()) {
         Question question = questionnaireFinder.findQuestion(node.getName());
@@ -370,7 +386,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persitQuestionnaire(target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
+          log.error(PERSIST_ERROR, e);
         }
       } else if(node.isQuestionBoilerPlate() && newNode.isQuestionBoilerPlate()) {
         Question question = questionnaireFinder.findQuestion(node.getName());
@@ -388,7 +404,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
         try {
           persitQuestionnaire(target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
+          log.error(PERSIST_ERROR, e);
         }
       }
       if(previewingNodeId != null && previewingNode != null) {
@@ -724,8 +740,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
           preview(nodeId, node, target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
-          error("Cannot persist questionnaire: " + e.getMessage());
+          log.error(PERSIST_ERROR, e);
+          error(PERSIST_ERROR + e.getMessage());
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -756,8 +772,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), '" + position + "'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
-          error("Cannot persist questionnaire: " + e.getMessage());
+          log.error(PERSIST_ERROR, e);
+          error(PERSIST_ERROR + e.getMessage());
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -785,8 +801,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
           preview(nodeId, node, target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
-          error("Cannot persist questionnaire: " + e.getMessage());
+          log.error(PERSIST_ERROR, e);
+          error(PERSIST_ERROR + e.getMessage());
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -816,8 +832,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
-          error("Cannot persist questionnaire: " + e.getMessage());
+          log.error(PERSIST_ERROR, e);
+          error(PERSIST_ERROR + e.getMessage());
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -846,7 +862,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
           preview(nodeId, node, target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
+          log.error(PERSIST_ERROR, e);
         }
       }
 
@@ -880,7 +896,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + jsonNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + jsonNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
+          log.error(PERSIST_ERROR, e);
         }
       }
 
@@ -911,8 +927,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('rename_node', $('#" + nodeId + "'), '" + node.getName() + "');");
           preview(nodeId, node, target);
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
-          error("Cannot persist questionnaire: " + e.getMessage());
+          log.error(PERSIST_ERROR, e);
+          error(PERSIST_ERROR + e.getMessage());
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -950,8 +966,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('create_node', $('#" + nodeId + "'), 'last'," + newNode.toString() + ");");
           target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('select_node', $('#" + newNode.getAttr().getId() + "'), true);");
         } catch(Exception e) {
-          log.error("Cannot persist questionnaire", e);
-          error("Cannot persist questionnaire: " + e.getMessage());
+          log.error(PERSIST_ERROR, e);
+          error(PERSIST_ERROR + e.getMessage());
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.show(target);
         }
@@ -980,10 +996,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
       } else {
         parentSection.removeSection(section);
       }
+      removeFromTreeJS(nodeId, target);
     } else if(node.isPage()) {
       Page page = questionnaireFinder.findPage(node.getName());
       page.getSection().removePage(page);
       questionnaire.removePage(page);
+      removeFromTreeJS(nodeId, target);
     } else if(node.isAnyQuestion()) {
       Question question = questionnaireFinder.findQuestion(node.getName());
       if(question.getParentQuestion() != null) {
@@ -991,17 +1009,78 @@ public abstract class QuestionnaireTreePanel extends Panel {
       } else {
         question.getPage().removeQuestion(question);
       }
+      removeFromTreeJS(nodeId, target);
     } else if(node.isVariable()) {
-      questionnaire.removeVariable(questionnaire.getVariable(node.getName()));
+      Variable variable = questionnaire.getVariable(node.getName());
+      questionnaireFinder.buildQuestionnaireCache();
+      QuestionnaireCache questionnaireCache = questionnaire.getQuestionnaireCache();
+      IQuestionnaireElement usedInQuestion = findUsedInQuestion(variable, questionnaireCache);
+      IQuestionnaireElement usedInOpenAnswer = findUsedInOpenAnswer(variable, questionnaireCache);
+      if(usedInQuestion == null && usedInOpenAnswer == null) {
+        questionnaire.removeVariable(variable);
+        removeFromTreeJS(nodeId, target);
+      } else {
+        Object item = usedInQuestion != null ? usedInQuestion.getName() : usedInOpenAnswer.getName();
+        error(new StringResourceModel("VariableUsed", QuestionnaireTreePanel.this, null, new Object[] { item }).getObject());
+        feedbackWindow.setContent(feedbackPanel);
+        feedbackWindow.show(target);
+      }
     }
     try {
       persitQuestionnaire(target);
-      elements.remove(nodeId);
-      // remove node from jsTree
-      target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('delete_node', $('#" + nodeId + "'));");
     } catch(Exception e) {
-      log.error("Cannot persist questionnaire", e);
+      log.error(PERSIST_ERROR, e);
     }
+  }
+
+  /**
+   * remove node from jsTree
+   * @param nodeId
+   * @param target
+   */
+  private void removeFromTreeJS(String nodeId, AjaxRequestTarget target) {
+    elements.remove(nodeId);
+    target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('delete_node', $('#" + nodeId + "'));");
+  }
+
+  /**
+   * Return item where variable is used in
+   * @param variable
+   * @param questionnaireCache
+   * @return
+   */
+  private IQuestionnaireElement findUsedInQuestion(Variable variable, QuestionnaireCache questionnaireCache) {
+    Map<String, Question> questions = questionnaireCache.getQuestionCache();
+    for(Question question : questions.values()) {
+      if(question.getCondition() instanceof VariableDataSource) {
+        Variable variableFound = variableUtils.findVariable((VariableDataSource) question.getCondition());
+        if(variableFound.equals(variable)) {
+          return question;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Return item where variable is used in
+   * @param variable
+   * @param questionnaireCache
+   * @return
+   */
+  private IQuestionnaireElement findUsedInOpenAnswer(Variable variable, QuestionnaireCache questionnaireCache) {
+    for(OpenAnswerDefinition openAnswer : questionnaireCache.getOpenAnswerDefinitionCache().values()) {
+      if(CollectionUtils.isEmpty(openAnswer.getOpenAnswerDefinitions())) {
+        for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
+          VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
+          Variable variableFound = variableUtils.findVariable(variableDataSource);
+          if(variableFound.equals(variable)) {
+            return openAnswer;
+          }
+        }
+      }
+    }
+    return null;
   }
 
   private void persitQuestionnaire(AjaxRequestTarget target) throws Exception {

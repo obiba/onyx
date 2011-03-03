@@ -38,19 +38,18 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.springframework.util.CollectionUtils;
 
-/**
- *
- */
 @SuppressWarnings("serial")
 public class ValidationPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OpenAnswerUtils openAnswerUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private VariableUtils variableUtils;
 
@@ -73,6 +72,7 @@ public class ValidationPanel extends Panel {
     add(new Label("explain", new ResourceModel("Explain")).setEscapeModelStrings(false));
 
     add(new ListView<IModel<String>>("item", errors) {
+      @Override
       protected void populateItem(ListItem<IModel<String>> item) {
         item.add(new Label("error", item.getModelObject()));
       }
@@ -98,7 +98,7 @@ public class ValidationPanel extends Panel {
       if(question.getCondition() instanceof VariableDataSource) {
         Variable variable = variableUtils.findVariable((VariableDataSource) question.getCondition());
         if(variable == null) {
-          error("QuestionNotFound", question.getName(), question.getCondition());
+          error("VariableNotFound", question.getCondition(), question.getName());
         }
       }
     }
@@ -123,7 +123,9 @@ public class ValidationPanel extends Panel {
             Variable variable = variableUtils.findVariable(variableDataSource);
             // check variable type only for variable that are not a reference to a question category (because they are
             // always boolean)
-            if(variable != null && !variable.hasAttribute(VariableUtils.CATEGORY_NAME) && !valueType.equals(variable.getValueType())) {
+            if(variable == null) {
+              error("VariableNotFound", variableDataSource, openAnswer.getName());
+            } else if(!variable.hasAttribute(VariableUtils.CATEGORY_NAME) && !valueType.equals(variable.getValueType())) {
               error("OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
             }
           }
