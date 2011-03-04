@@ -30,9 +30,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextAction;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.EvaluatorException;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
@@ -95,7 +101,7 @@ public abstract class VariablePanel extends Panel {
 
     add(form = new Form<EditedVariable>("form", model));
 
-    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
+    final TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(Pattern.compile("[a-zA-Z0-9_\\-\\.]+")));
@@ -132,6 +138,23 @@ public abstract class VariablePanel extends Panel {
 
     TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));
     script.add(new RequiredFormFieldBehavior());
+    script.add(new IValidator<String>() {
+
+      @Override
+      public void validate(final IValidatable<String> validatable) {
+        try {
+          ContextFactory.getGlobal().call(new ContextAction() {
+            @Override
+            public Object run(Context cx) {
+              return cx.compileString(validatable.getValue(), name.getConvertedInput(), 1, null);
+            }
+          });
+        } catch(EvaluatorException e) {
+          form.error(new StringResourceModel("BadScript", VariablePanel.this, null).getObject());
+        }
+      }
+    });
+
     form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script)).add(new HelpTooltipPanel("scriptHelp", new ResourceModel("Script.Tooltip")));
 
     Set<ValueTable> valueTables = MagmaEngine.get().getDatasource("onyx-datasource").getValueTables();
