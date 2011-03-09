@@ -84,7 +84,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   private IPropertyKeyProvider propertyKeyProvider = new SimplifiedUIPropertyKeyProviderImpl();
 
-  private ImmutableSet.Builder<VariableValueSource> builder;
+  private ImmutableSet.Builder<VariableValueSource> vvsSetBuilder;
 
   private QuestionnaireVariableNameResolver variableNameResolver;
 
@@ -96,15 +96,13 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   @Override
   public Set<VariableValueSource> createSources() {
-    if(builder == null) {
-      builder = new ImmutableSet.Builder<VariableValueSource>();
-      variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
-      buildQuestionnaireRun();
-      buildQuestionnaireMetric();
-      buildQuestionnaireVariables();
-      variableNameResolver = null;
-    }
-    return builder.build();
+    vvsSetBuilder = new ImmutableSet.Builder<VariableValueSource>();
+    variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
+    buildQuestionnaireRun();
+    buildQuestionnaireMetric();
+    buildQuestionnaireVariables();
+    variableNameResolver = null;
+    return vvsSetBuilder.build();
   }
 
   protected void buildQuestionnaireVariables() {
@@ -184,7 +182,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     factory.setProperties(ImmutableSet.of("questionnaireVersion", "locale", "timeStart", "timeEnd", "user.login"));
     factory.setPropertyNameToVariableName(ImmutableMap.of("questionnaireVersion", "version", "user.login", "user"));
     factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new LocalizableBuilderVisitor(questionnaire)));
-    builder.addAll(factory.createSources());
+    vvsSetBuilder.addAll(factory.createSources());
   }
 
   protected void buildQuestionnaireMetric() {
@@ -193,7 +191,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     factory.setProperties(ImmutableSet.of("section", "page", "duration", "questionCount", "missingCount"));
     factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new VariableUnitBuilderVisitor(ImmutableMap.of("duration", "s"))));
     factory.setOccurrenceGroup("QuestionnaireMetric");
-    builder.addAll(factory.createSources());
+    vvsSetBuilder.addAll(factory.createSources());
   }
 
   /**
@@ -235,7 +233,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     public void build() {
       Variable.Builder varBuilder = Variable.Builder.sameAs(variable);
       varBuilder.accept(this);
-      builder.add(new JavascriptVariableValueSource(varBuilder.build()));
+      vvsSetBuilder.add(new JavascriptVariableValueSource(varBuilder.build()));
     }
   }
 
@@ -285,7 +283,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         factory.setProperties(properties);
         factory.setPrefix(variableName(question));
         factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionCommentAttributesBuilderVisitor(question)));
-        builder.addAll(factory.createSources());
+        vvsSetBuilder.addAll(factory.createSources());
       }
 
     }
@@ -293,7 +291,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     private void buildParentPlaceholderVariable() {
       Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), "Participant");
       questionVariable.accept(new QuestionAttributesBuilderVisitor(question, true, false)).accept(new QuestionBuilderVisitor(question));
-      builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
+      vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
     }
 
     private void buildCategoricalVariable() {
@@ -314,9 +312,9 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
       // List<CategoryAnswer> when the variable is repeatable.
       if(question.isBoilerPlate() == false) {
-        builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
+        vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
       } else {
-        builder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
+        vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
       }
 
       for(QuestionCategory questionCategory : categories) {
@@ -329,7 +327,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // The script test whether the Question variable has this category amongst its answers
       Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), "Participant").extend(JavascriptVariableBuilder.class).setScript("$('" + variableName(question) + "').any('" + questionCategory.getCategory().getName() + "')");
       categoryVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
-      builder.add(new JavascriptVariableValueSource(categoryVariable.build()));
+      vvsSetBuilder.add(new JavascriptVariableValueSource(categoryVariable.build()));
 
       // Build variable(s) from the open answer(s) of this category
       if(questionCategory.hasOpenAnswerDefinition()) {
@@ -346,7 +344,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       Variable.Builder openAnswerVariable = Variable.Builder.newVariable(variableName(question, questionCategory, oad), DataTypes.valueTypeFor(oad.getDataType()), "Participant");
       openAnswerVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
       BeanPropertyVariableValueSource valueSource = new BeanPropertyVariableValueSource(openAnswerVariable.build(), OpenAnswer.class, "data.value");
-      builder.add(valueSource);
+      vvsSetBuilder.add(valueSource);
     }
   }
 
