@@ -144,7 +144,7 @@ public class DataValueConverterTest {
     assertThat((byte[]) data.getValue(), is(binaryData));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testValueToDataSequence() throws Exception {
     List<Value> values = new ArrayList<Value>(3);
     values.add(ValueType.Factory.newValue(TextType.get(), "valueOne"));
@@ -152,6 +152,8 @@ public class DataValueConverterTest {
     values.add(ValueType.Factory.newValue(TextType.get(), "valueThree"));
 
     Value value = ValueType.Factory.newSequence(TextType.get(), values);
-    DataValueConverter.valueToData(value);
+    Data data = DataValueConverter.valueToData(value);
+    assertThat(data.getType(), equalTo(DataType.TEXT));
+    assertThat((String) data.getValue(), is("\"valueOne\",\"valueTwo\",\"valueThree\""));
   }
 }
