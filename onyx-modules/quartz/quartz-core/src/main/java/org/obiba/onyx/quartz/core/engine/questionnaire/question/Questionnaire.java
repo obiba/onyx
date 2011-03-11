@@ -10,6 +10,8 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -134,6 +136,17 @@ public class Questionnaire implements IHasSection {
     if(page != null) {
       getPages().remove(page);
     }
+  }
+
+  public List<Variable> getSortedVariables() {
+    Collections.sort(getVariables(), new Comparator<Variable>() {
+
+      @Override
+      public int compare(Variable o1, Variable o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    });
+    return variables;
   }
 
   public List<Variable> getVariables() {
