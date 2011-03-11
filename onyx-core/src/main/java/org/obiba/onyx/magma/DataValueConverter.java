@@ -16,8 +16,8 @@ import org.obiba.magma.Value;
 import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.type.BinaryType;
-import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.DateTimeType;
+import org.obiba.magma.type.DateType;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -58,7 +58,13 @@ public class DataValueConverter {
    * Data object
    */
   public static Data valueToData(Value value) {
-    if(value.isSequence()) throw new UnsupportedOperationException("Cannot convert a ValueSequence object to a Data object.");
+    if(value.isNull()) {
+      return null;
+    }
+
+    if(value.isSequence()) {
+      return new Data(DataType.TEXT, value.toString());
+    }
 
     ValueType valueType = value.getValueType();
     String dataTypeName = valueType.getName();
@@ -69,11 +75,7 @@ public class DataValueConverter {
       dataTypeName = DataType.DATE.name();
     } else if(valueType == DateType.get()) {
       dataTypeName = DataType.DATE.name();
-      data = ((MagmaDate)value.getValue()).asDate(); 
-    }
-
-    if(value.isNull()) {
-      return null;
+      data = ((MagmaDate) value.getValue()).asDate();
     }
 
     return new Data(DataType.valueOf(dataTypeName.toUpperCase()), data);
