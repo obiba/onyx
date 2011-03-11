@@ -85,7 +85,7 @@ public class SingleDocumentQuestionnairePage extends WebPage {
     }
 
     private List<Variable> getVariables() {
-      return model.getObject().getVariables();
+      return model.getObject().getSortedVariables();
     }
 
   }
