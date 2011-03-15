@@ -31,6 +31,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -53,7 +54,9 @@ import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -65,6 +68,9 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 public abstract class VariablePanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private VariableValidationUtils variableValidationUtils;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -133,7 +139,12 @@ public abstract class VariablePanel extends Panel {
 
     DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("type", new PropertyModel<ValueType>(form.getModel(), "valueType"), types, new ValueTypeRenderer());
     valueType.add(new RequiredFormFieldBehavior());
-    valueType.setEnabled(forcedValueType == null);
+
+    QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+    questionnaireFinder.buildQuestionnaireCache();
+    boolean usedInQuestion = variableValidationUtils.findUsedInQuestion(variable, questionnaireModel.getObject().getQuestionnaireCache()) == null;
+    valueType.setEnabled((forcedValueType == null) ? usedInQuestion : false);
+
     form.add(valueType.setLabel(new ResourceModel("Type"))).add(new SimpleFormComponentLabel("typeLabel", valueType));
 
     TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));

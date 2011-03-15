@@ -100,6 +100,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="variableUtils" class="org.obiba.onyx.quartz.editor.variable.VariableUtils">
  		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
  	</bean>
+ 	
+ 	<bean id="variableValidationUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils">
+ 		<property name="variableUtils" ref="variableUtils" />
+ 	</bean>
 
 	<bean id="onyxSettings" class=" org.obiba.onyx.quartz.editor.OnyxSettings">
  		<property name="dateFormatStr" value="${org.obiba.onyx.dateFormat}" />
@@ -108,6 +112,5 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="openAnswerUtils" class=" org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils">
  		<property name="onyxSettings" ref="onyxSettings" />
  	</bean>
-
 
 </beans>
