@@ -44,8 +44,6 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.obiba.magma.Variable;
-import org.obiba.onyx.core.data.ComparingDataSource;
-import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -78,10 +76,10 @@ import org.obiba.onyx.quartz.editor.questionnaire.tree.JsonNode.Data;
 import org.obiba.onyx.quartz.editor.questionnaire.tree.JsonNode.JsonNodeAttribute;
 import org.obiba.onyx.quartz.editor.questionnaire.tree.TreeNode.NodeType;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils;
 import org.obiba.onyx.quartz.editor.section.SectionPanel;
 import org.obiba.onyx.quartz.editor.variable.VariablePanel;
 import org.obiba.onyx.quartz.editor.variable.VariablePreview;
-import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.quartz.editor.widget.jsTree.JsTreeBehavior;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
@@ -90,7 +88,6 @@ import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Model is reloaded only on cancel. <br>
@@ -108,20 +105,23 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private static final String ID_PREFIX = "element_";
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
-  private VariableUtils variableUtils;
+  private VariableValidationUtils variableValidationUtils;
 
   private final Map<String, TreeNode> elements = new HashMap<String, TreeNode>();
 
@@ -1011,8 +1011,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
       Variable variable = questionnaire.getVariable(node.getName());
       questionnaireFinder.buildQuestionnaireCache();
       QuestionnaireCache questionnaireCache = questionnaire.getQuestionnaireCache();
-      IQuestionnaireElement usedInQuestion = findUsedInQuestion(variable, questionnaireCache);
-      IQuestionnaireElement usedInOpenAnswer = findUsedInOpenAnswer(variable, questionnaireCache);
+      Question usedInQuestion = variableValidationUtils.findUsedInQuestion(variable, questionnaireCache);
+      OpenAnswerDefinition usedInOpenAnswer = variableValidationUtils.findUsedInOpenAnswer(variable, questionnaireCache);
       if(usedInQuestion == null && usedInOpenAnswer == null) {
         questionnaire.removeVariable(variable);
         removeFromTreeJS(nodeId, target);
@@ -1038,46 +1038,6 @@ public abstract class QuestionnaireTreePanel extends Panel {
   private void removeFromTreeJS(String nodeId, AjaxRequestTarget target) {
     elements.remove(nodeId);
     target.appendJavascript("$('#" + tree.getMarkupId(true) + "').jstree('delete_node', $('#" + nodeId + "'));");
-  }
-
-  /**
-   * Return item where variable is used in
-   * @param variable
-   * @param questionnaireCache
-   * @return
-   */
-  private IQuestionnaireElement findUsedInQuestion(Variable variable, QuestionnaireCache questionnaireCache) {
-    Map<String, Question> questions = questionnaireCache.getQuestionCache();
-    for(Question question : questions.values()) {
-      if(question.getCondition() instanceof VariableDataSource) {
-        Variable variableFound = variableUtils.findVariable((VariableDataSource) question.getCondition());
-        if(variableFound.equals(variable)) {
-          return question;
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Return item where variable is used in
-   * @param variable
-   * @param questionnaireCache
-   * @return
-   */
-  private IQuestionnaireElement findUsedInOpenAnswer(Variable variable, QuestionnaireCache questionnaireCache) {
-    for(OpenAnswerDefinition openAnswer : questionnaireCache.getOpenAnswerDefinitionCache().values()) {
-      if(CollectionUtils.isEmpty(openAnswer.getOpenAnswerDefinitions())) {
-        for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
-          VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
-          Variable variableFound = variableUtils.findVariable(variableDataSource);
-          if(variableFound.equals(variable)) {
-            return openAnswer;
-          }
-        }
-      }
-    }
-    return null;
   }
 
   private void persitQuestionnaire(AjaxRequestTarget target) throws Exception {
