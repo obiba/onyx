@@ -43,9 +43,9 @@ import com.google.common.collect.Maps;
  * 
  * <p>
  * Another {@code MessageSource} is created by finding all the bundles named "META-INF/messages" on the classpath. This
- * allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's {@code
- * parent}. This allows overriding the default messages by re-defining the same kay in the bundles in the configuration
- * files.
+ * allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's
+ * {@code parent}. This allows overriding the default messages by re-defining the same kay in the bundles in the
+ * configuration files.
  * <p>
  * Extra bundles may be configured using the {@code extraBasenames} property.
  */
@@ -86,8 +86,8 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
 
     Set<String> basenames = new TreeSet<String>();
     if(this.resourceLoader instanceof ResourcePatternResolver) {
-      findBasenames(basenames, onyxConfigPath, MESSAGES_PROPERTIES_SUFFIX);
-      findBasenames(basenames, onyxConfigPath, MESSAGES_XML_SUFFIX);
+      findBasenames(basenames, MESSAGES_PROPERTIES_SUFFIX);
+      findBasenames(basenames, MESSAGES_XML_SUFFIX);
     }
     if(extraBasenames != null) {
       basenames.addAll(extraBasenames);
@@ -110,13 +110,13 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     return true;
   }
 
-  protected void findBasenames(Set<String> basenames, String pathPrefix, String suffix) throws IOException {
+  protected void findBasenames(Set<String> basenames, String suffix) throws IOException {
     ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
 
     // Find all files that match "pathPrefix/**/MESSAGES_BASENAME*suffix"
     // For example, this will find "WEB-INF/config/myModule/messages_en.properties"
 
-    String resourcePattern = pathPrefix + "**/" + MESSAGES_BUNDLENAME + "*" + suffix;
+    String resourcePattern = onyxConfigPath + "**/" + MESSAGES_BUNDLENAME + "*" + suffix;
     String resourcePatternParent = onyxConfigPath + MESSAGES_BUNDLENAME + "*" + suffix;
 
     log.debug("Finding resources that match pattern {}", resourcePattern);
@@ -125,7 +125,7 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     messageResources.addAll(Arrays.asList(resolver.getResources(resourcePatternParent)));
 
     for(Resource resource : messageResources) {
-      String basename = resolveBasename(pathPrefix, resource);
+      String basename = resolveBasename(resource);
       log.debug("Basename for bundle resource {} resolved as {}", resource.getDescription(), basename);
       if(basename != null) {
         basenames.add(basename);
@@ -133,7 +133,7 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     }
   }
 
-  protected String resolveBasename(String pathPrefix, Resource bundleResource) {
+  protected String resolveBasename(Resource bundleResource) {
 
     // Resource#getFilename() does not return the full path. As such, we must get the underlying File instance.
     // Since all Resource instances are not File instances, this will only work with resources on the filesystem.
@@ -153,19 +153,14 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     }
     StringBuilder basename = new StringBuilder(filename);
 
-    int rootDirIndex = basename.lastIndexOf(pathPrefix);
-    // Remove everything before pathPrefix
-    if(rootDirIndex > 0) {
-      basename.delete(0, rootDirIndex);
-    }
-
     // Find the last part that fits the bundle's name
     int basenameIndex = basename.lastIndexOf(MESSAGES_BUNDLENAME);
     int length = basename.length();
 
     // Delete anything appearing after the bundle's name
     basename.delete(basenameIndex + MESSAGES_BUNDLENAME.length(), length);
-    return basename.toString();
+
+    return "file:" + basename.toString();
   }
 
   protected MessageSource loadJarBundles() throws IOException {
