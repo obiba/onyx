@@ -108,15 +108,18 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class OpenAnswerPanel extends Panel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OnyxSettings onyxSettings;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OpenAnswerUtils openAnswerUtils;
 
@@ -204,15 +207,16 @@ public class OpenAnswerPanel extends Panel {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equalsIgnoreCase(initialName, validatable.getValue())) {
+          boolean alreadyContains = false;
           if(category != null) {
             Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
-            boolean alreadyContains = (openAnswerDefinitionsByName.containsKey(validatable.getValue()) && openAnswerDefinitionsByName.get(validatable.getValue()) != openAnswer);
-            QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-            questionnaireModel.getObject().setQuestionnaireCache(null);
-            OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder.findOpenAnswerDefinition(validatable.getValue());
-            if(alreadyContains || findOpenAnswerDefinition != null && findOpenAnswerDefinition != openAnswer) {
-              error(validatable, "OpenAnswerAlreadyExists");
-            }
+            alreadyContains = (openAnswerDefinitionsByName.containsKey(validatable.getValue()) && openAnswerDefinitionsByName.get(validatable.getValue()) != openAnswer);
+          }
+          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
+          questionnaireModel.getObject().setQuestionnaireCache(null);
+          OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder.findOpenAnswerDefinition(validatable.getValue());
+          if(alreadyContains || findOpenAnswerDefinition != null && findOpenAnswerDefinition != openAnswer) {
+            error(validatable, "OpenAnswerAlreadyExists");
           }
         }
       }
@@ -228,9 +232,14 @@ public class OpenAnswerPanel extends Panel {
     if(category == null) {
       variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null) {
         @Override
-        protected String generateVariableName(Question parentQuestion, @SuppressWarnings("hiding") Question question, @SuppressWarnings("hiding") Category category, @SuppressWarnings("hiding") String name) {
-          String variableName = super.generateVariableName(parentQuestion, question, category, name);
-          return StringUtils.isBlank(variableName) ? "" : variableName + "." + name;
+        @SuppressWarnings("hiding")
+        protected String generateVariableName(Question parentQuestion, Question question, Category category, String name) {
+          if(StringUtils.isBlank(name)) return "";
+          String variableName = (parentQuestion == null ? "" : parentQuestion.getName() + ".");
+          if(question != null) {
+            variableName += question.getName() + "." + question.getName() + ".";
+          }
+          return variableName + StringUtils.trimToEmpty(name);
         }
       };
     } else {

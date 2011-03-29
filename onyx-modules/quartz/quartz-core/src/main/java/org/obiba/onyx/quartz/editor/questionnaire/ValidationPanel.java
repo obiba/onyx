@@ -10,8 +10,10 @@
 package org.obiba.onyx.quartz.editor.questionnaire;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -31,6 +33,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireWalker;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.OpenAnswerDefinitionFinder;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.util.data.Data;
@@ -85,7 +89,7 @@ public class ValidationPanel extends Panel {
     validateQuestionCondition();
     validateOpenAnswerValidators();
     validateDefaultValues();
-    // TODO validate missing locale prop
+    validateDuplicateOpenAnswerName();
   }
 
   private void error(String messageKey, Object... params) {
@@ -146,4 +150,23 @@ public class ValidationPanel extends Panel {
     }
   }
 
+  private void validateDuplicateOpenAnswerName() {
+    Questionnaire questionnaire = (Questionnaire) getDefaultModelObject();
+    Set<String> duplicates = new HashSet<String>();
+    for(OpenAnswerDefinition openAnswer : questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().values()) {
+      OpenAnswerDefinitionFinder finder = new OpenAnswerDefinitionFinder(openAnswer.getName(), false);
+      QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+      walker.walk(questionnaire);
+      Set<OpenAnswerDefinition> elementSet = new HashSet<OpenAnswerDefinition>();
+      for(OpenAnswerDefinition op : finder.getElements()) {
+        elementSet.add(op);
+      }
+      if(elementSet.size() > 1) {
+        duplicates.add(elementSet.iterator().next().getName());
+      }
+    }
+    if(duplicates.size() > 0) {
+      error("DuplicateOpenAnswerName", duplicates.toString());
+    }
+  }
 }
