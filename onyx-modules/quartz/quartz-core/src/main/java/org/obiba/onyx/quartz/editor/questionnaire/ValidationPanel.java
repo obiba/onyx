@@ -158,14 +158,12 @@ public class ValidationPanel extends Panel {
       QuestionnaireWalker walker = new QuestionnaireWalker(finder);
       walker.walk(questionnaire);
       Set<OpenAnswerDefinition> elementSet = new HashSet<OpenAnswerDefinition>();
-      for(OpenAnswerDefinition op : finder.getElements()) {
-        elementSet.add(op);
-      }
+      elementSet.addAll(finder.getElements());
       if(elementSet.size() > 1) {
         duplicates.add(elementSet.iterator().next().getName());
       }
     }
-    if(duplicates.size() > 0) {
+    if(!duplicates.isEmpty()) {
       error("DuplicateOpenAnswerName", duplicates.toString());
     }
   }
