@@ -58,11 +58,13 @@ public abstract class EditQuestionPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
@@ -135,24 +137,26 @@ public abstract class EditQuestionPanel extends Panel {
       public Panel getPanel(String panelId) {
         final OpenAnswerDefinition openAnswerDefinition;
         if(panel == null) {
-          final List<Category> categories = question.getCategories();
-          if(categories.isEmpty()) {
+          Category firstCategory = null;
+          if(question.getCategories().isEmpty()) {
             openAnswerDefinition = new OpenAnswerDefinition();
           } else {
-            openAnswerDefinition = categories.get(0).getOpenAnswerDefinition();
+            firstCategory = question.getCategories().get(0);
+            openAnswerDefinition = firstCategory.getOpenAnswerDefinition();
           }
-          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(null), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(firstCategory), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
             @Override
             public void onSave(AjaxRequestTarget target) {
               super.onSave(target);
               if(form.hasError()) return;
-              if(categories.isEmpty()) {
-                // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
-                Category category = new Category(openAnswerDefinition.getName() + System.currentTimeMillis());
+              if(question.getCategories().isEmpty()) {
+                Category category = new Category(question.getName());
                 category.setOpenAnswerDefinition(openAnswerDefinition);
                 QuestionCategory questionCategory = new QuestionCategory();
                 questionCategory.setCategory(category);
                 question.addQuestionCategory(questionCategory);
+              } else {
+                question.getCategories().get(0).setName(question.getName());
               }
             }
           };

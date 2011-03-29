@@ -117,7 +117,7 @@ public abstract class QuestionPanel extends Panel {
           if(questionType == QuestionType.BOILER_PLATE) {
             typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.BOILER_PLATE));
           } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER));
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER, QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
           } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
             List<QuestionType> asList = null;
             if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
