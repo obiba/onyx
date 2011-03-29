@@ -235,6 +235,9 @@ public class OpenAnswerPanel extends Panel {
         @SuppressWarnings("hiding")
         protected String generateVariableName(Question parentQuestion, Question question, Category category, String name) {
           if(StringUtils.isBlank(name)) return "";
+          if(category != null) {
+            return super.generateVariableName(parentQuestion, question, category, name);
+          }
           String variableName = (parentQuestion == null ? "" : parentQuestion.getName() + ".");
           if(question != null) {
             variableName += question.getName() + "." + question.getName() + ".";

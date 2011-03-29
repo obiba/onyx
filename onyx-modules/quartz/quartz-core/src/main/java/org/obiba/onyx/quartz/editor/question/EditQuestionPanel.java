@@ -286,7 +286,7 @@ public abstract class EditQuestionPanel extends Panel {
           case SINGLE_OPEN_ANSWER:
             openAnswerTab.save(target);
             if(form.hasError()) return;
-            if(question.getCategories().size() == 0 || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
+            if(question.getCategories().isEmpty() || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
               tabbedPanel.setSelectedTab(tabs.indexOf(openAnswerTab));
               target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null).getObject());
