@@ -17,7 +17,7 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
 
-final public class StageModel extends SpringDetachableModel {
+final public class StageModel extends SpringDetachableModel<Stage> {
 
   private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ final public class StageModel extends SpringDetachableModel {
   }
 
   @Override
-  protected Object load() {
+  protected Stage load() {
     return this.moduleRegistry.getStage(stageName);
   }
 }

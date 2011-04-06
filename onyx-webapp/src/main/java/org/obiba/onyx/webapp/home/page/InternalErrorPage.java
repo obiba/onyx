@@ -12,15 +12,15 @@ package org.obiba.onyx.webapp.home.page;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.obiba.onyx.webapp.base.page.BasePage;
 
-public class ErrorPage extends HomePage {
+public class InternalErrorPage extends BasePage {
 
-  public ErrorPage() {
+  public InternalErrorPage() {
     super();
 
     FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
     feedbackPanel.get("feedbackul").add(new AttributeModifier("class", true, new Model("page-feedback ui-corner-all")));
     replace(feedbackPanel);
-
   }
 }

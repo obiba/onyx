@@ -9,43 +9,20 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.stage.page;
 
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
+import org.apache.wicket.Session;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.engine.Stage;
 
 /**
  * 
  */
-public class InvalidStagePage extends BasePage {
+public class InvalidStagePage extends InternalErrorStagePage {
 
-  private StageMenuBar menuBar;
-
-  @SuppressWarnings("serial")
+  @SuppressWarnings("unchecked")
   public InvalidStagePage(final StagePage stagePage) {
-    super();
-
-    //
-    // Modify header.
-    //
-    remove("header");
-    add(new EmptyPanel("header"));
-
-    //
-    // Modify menu bar.
-    //
-    remove("menuBar");
-    menuBar = new StageMenuBar("menuBar", stagePage.getDefaultModel());
-    add(menuBar);
-
-    add(new Link("link") {
-
-      @Override
-      public void onClick() {
-        setResponsePage(stagePage);
-      }
-
-    });
+    super(stagePage, (IModel<Stage>) stagePage.getDefaultModel());
+    Session.get().error(new StringResourceModel("NoUseOfNavigatorBackForward", this, null).getObject());
   }
 
 }
