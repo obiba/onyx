@@ -24,6 +24,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.magma.Attribute;
 import org.obiba.magma.AttributeAwareBuilder;
+import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.VariableValueSource;
@@ -231,9 +232,28 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     public void build() {
-      Variable.Builder varBuilder = Variable.Builder.sameAs(variable);
+      Variable.Builder varBuilder = sameAs(variable);
       varBuilder.accept(this);
       vvsSetBuilder.add(new JavascriptVariableValueSource(varBuilder.build()));
+    }
+
+    /**
+     * Copy the variable explicitly to make sure the value type is not corrupted.
+     * @param variable
+     * @return
+     */
+    public Variable.Builder sameAs(Variable variable) {
+      Variable.Builder b = Variable.Builder.newVariable(variable.getName(), ValueType.Factory.forName(variable.getValueType().getName()), variable.getEntityType()).unit(variable.getUnit()).mimeType(variable.getMimeType()).referencedEntityType(variable.getReferencedEntityType());
+      if(variable.isRepeatable()) {
+        b.repeatable().occurrenceGroup(variable.getOccurrenceGroup());
+      }
+      for(Attribute a : variable.getAttributes()) {
+        b.addAttribute(a);
+      }
+      for(org.obiba.magma.Category c : variable.getCategories()) {
+        b.addCategory(c);
+      }
+      return b;
     }
   }
 
