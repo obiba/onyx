@@ -32,7 +32,7 @@ import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
 
   private static final Logger log = LoggerFactory.getLogger(StagePage.class);
@@ -43,7 +43,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
   private HistoryAjaxBehavior historyAjaxBehavior;
 
   @SuppressWarnings("serial")
-  public StagePage(IModel stageModel) {
+  public StagePage(final IModel<Stage> stageModel) {
     super();
     setDefaultModel(stageModel);
 
@@ -77,7 +77,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
             setResponsePage(InterviewPage.class);
           } else {
             log.debug("STAY in stage");
-            setResponsePage(new StagePage(StagePage.this.getDefaultModel()));
+            setResponsePage(new StagePage(stageModel));
           }
         }
 
@@ -97,16 +97,6 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
         public void onAjaxHistoryEvent(final AjaxRequestTarget target, final String componentId) {
           log.info("onAjaxHistoryEvent.component={}", componentId);
           setResponsePage(new InvalidStagePage(StagePage.this));
-          // if(componentId != null && componentId.length() > 0) {
-          // visitChildren(new Component.IVisitor() {
-          //
-          // public Object component(Component component) {
-          // if(component.getId().equals(componentId)) {
-          // log.info("component.class={}", component.getClass().getName());
-          // if(component instanceof AjaxLink) {
-          // ((AjaxLink) component).onClick(target);
-          // } else if(component instanceof AjaxButton) {
-          // }
         }
 
       };
