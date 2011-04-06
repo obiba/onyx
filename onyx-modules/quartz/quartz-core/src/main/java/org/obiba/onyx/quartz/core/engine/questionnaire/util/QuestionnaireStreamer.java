@@ -26,6 +26,7 @@ import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.DateModifier;
 import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -133,6 +134,9 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(ComputingDataSource.class, "dataType");
     xstream.useAttributeFor(ComputingDataSource.class, "unit");
     xstream.useAttributeFor(ComputingDataSource.class, "expression");
+
+    xstream.alias("variableDataSource", VariableDataSource.class);
+    xstream.useAttributeFor(VariableDataSource.class, "path");
 
     xstream.alias("valueMap", ValueMap.class);
     xstream.omitField(Questionnaire.class, "pages");
