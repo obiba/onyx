@@ -175,6 +175,8 @@ public class OpenAnswerPanel extends Panel {
 
   private TextField<String> sizeField;
 
+  private TextField<String> rowsField;
+
   public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionModel = questionModel;
@@ -287,6 +289,16 @@ public class OpenAnswerPanel extends Panel {
     sizeField.setLabel(new ResourceModel("SizeLabel"));
     add(new SimpleFormComponentLabel("sizeLabel", sizeField));
     add(sizeField);
+
+    String rowsStr = null;
+    if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS)) {
+      rowsStr = uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS).toString();
+    }
+    rowsField = new TextField<String>("rows", new Model<String>(rowsStr));
+    rowsField.add(numericPatternValidator);
+    rowsField.setLabel(new ResourceModel("RowsLabel"));
+    add(new SimpleFormComponentLabel("rowsLabel", rowsField));
+    add(rowsField);
 
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
     add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
@@ -739,6 +751,9 @@ public class OpenAnswerPanel extends Panel {
     opa.clearUIArgument();
     if(StringUtils.isNotBlank(sizeField.getValue())) {
       opa.addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY, sizeField.getValue());
+    }
+    if(StringUtils.isNotBlank(rowsField.getValue())) {
+      opa.addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS, rowsField.getValue());
     }
 
     // TODO use a specific model instead of use onSave Method
