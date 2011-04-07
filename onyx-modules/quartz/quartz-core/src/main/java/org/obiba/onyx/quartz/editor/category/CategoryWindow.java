@@ -223,7 +223,9 @@ public abstract class CategoryWindow extends Panel {
 
           @Override
           public void callback(AjaxRequestTarget target) {
-            openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(new OpenAnswerDefinition()), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
+            OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition();
+            openAnswerDefinition.setRequired(true);
+            openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
               @Override
               protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
                 OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
