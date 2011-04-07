@@ -102,34 +102,47 @@ public class AnswerCountValidator<T> implements INullAcceptingValidator<T> {
 
           if(questionCategory != null && questionCategory.getCategory().getOpenAnswerDefinition() != null) {
             OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
-            if(openAnswerDefinition.isRequired()) {
-              List<OpenAnswer> openAnswers = activeQuestionnaireAdministrationService.findOpenAnswers(question, questionCategory.getCategory());
-              if(openAnswers.size() == 0) {
-                // at least one open answer is required
-                ValidationError error = newValidationError(question);
-                error.addMessageKey(KEY_PREFIX + ".Required");
-                validatable.error(error);
-              } else if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) {
-                // check child open answer requiredness
-                for(OpenAnswerDefinition childOpenAnswerDefinition : openAnswerDefinition.getOpenAnswerDefinitions()) {
-                  if(childOpenAnswerDefinition.isRequired()) {
-                    boolean found = false;
-                    for(OpenAnswer openAnswer : openAnswers) {
-                      if(openAnswer.getOpenAnswerDefinitionName().equals(childOpenAnswerDefinition.getName())) {
-                        found = true;
-                        break;
-                      }
-                    }
-                    if(!found) {
-                      ValidationError error = newValidationError(question);
-                      error.addMessageKey(KEY_PREFIX + ".OpenRequired");
-                      error.setVariable("open", QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, childOpenAnswerDefinition).getObject());
-                      validatable.error(error);
-                    }
-                  }
-                }
-              }
+            if(openAnswerDefinition.getOpenAnswerDefinitions().size() == 0) {
+              validateSingleOpenAnswer(validatable, question, questionCategory, openAnswerDefinition);
+            } else {
+              validateMultipleOpenAnswer(validatable, question, questionCategory, openAnswerDefinition);
             }
+          }
+        }
+      }
+    }
+  }
+
+  private void validateSingleOpenAnswer(IValidatable<T> validatable, Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+    if(openAnswerDefinition.isRequired()) {
+      List<OpenAnswer> openAnswers = activeQuestionnaireAdministrationService.findOpenAnswers(question, questionCategory.getCategory());
+      if(openAnswers.size() == 0) {
+        // at least one open answer is required
+        ValidationError error = newValidationError(question);
+        error.addMessageKey(KEY_PREFIX + ".Required");
+        validatable.error(error);
+      }
+    }
+  }
+
+  private void validateMultipleOpenAnswer(IValidatable<T> validatable, Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+    if(openAnswerDefinition.hasRequiredChild()) {
+      List<OpenAnswer> openAnswers = activeQuestionnaireAdministrationService.findOpenAnswers(question, questionCategory.getCategory());
+      // check child open answer requiredness
+      for(OpenAnswerDefinition childOpenAnswerDefinition : openAnswerDefinition.getOpenAnswerDefinitions()) {
+        if(childOpenAnswerDefinition.isRequired()) {
+          boolean found = false;
+          for(OpenAnswer openAnswer : openAnswers) {
+            if(openAnswer.getOpenAnswerDefinitionName().equals(childOpenAnswerDefinition.getName())) {
+              found = true;
+              break;
+            }
+          }
+          if(!found) {
+            ValidationError error = newValidationError(question);
+            error.addMessageKey(KEY_PREFIX + ".OpenRequired");
+            error.setVariable("open", QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, childOpenAnswerDefinition).getObject());
+            validatable.error(error);
           }
         }
       }
