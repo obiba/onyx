@@ -22,7 +22,7 @@ public class EditedVariable implements Serializable {
 
   private String name;
 
-  private ValueType valueType;
+  private String valueType;
 
   private String script;
 
@@ -35,11 +35,11 @@ public class EditedVariable implements Serializable {
   }
 
   public ValueType getValueType() {
-    return valueType;
+    return ValueType.Factory.forName(valueType);
   }
 
   public void setValueType(ValueType valueType) {
-    this.valueType = valueType;
+    this.valueType = valueType.getName();
   }
 
   public String getScript() {

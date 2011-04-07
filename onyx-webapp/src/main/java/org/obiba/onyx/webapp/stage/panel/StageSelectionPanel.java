@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -32,7 +33,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -56,7 +56,6 @@ public abstract class StageSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 6282742572162384139L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(StageSelectionPanel.class);
 
   @SpringBean(name = "activeInterviewService")
@@ -116,8 +115,6 @@ public abstract class StageSelectionPanel extends Panel {
     Stage interactiveStage = activeInterviewService.getInteractiveStage();
     if(interactiveStage != null) {
       log.warn("Wrong status for stage {}", interactiveStage.getName());
-      String stageDescription = (String) new MessageSourceResolvableStringModel(interactiveStage.getDescription()).getObject();
-      feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stageDescription))));
     }
   }
 
@@ -127,20 +124,20 @@ public abstract class StageSelectionPanel extends Panel {
 
   abstract public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
-  private class StageProvider extends SortableDataProvider {
+  private class StageProvider extends SortableDataProvider<Stage> {
 
     private static final long serialVersionUID = 6022606267778864539L;
 
     public StageProvider() {
     }
 
-    public Iterator iterator(int first, int count) {
+    public Iterator<Stage> iterator(int first, int count) {
       List<Stage> stages = moduleRegistry.listStages();
       return stages.iterator();
     }
 
-    public IModel model(Object object) {
-      return new StageModel(moduleRegistry, (Stage) object);
+    public IModel<Stage> model(Stage object) {
+      return new StageModel(moduleRegistry, object);
     }
 
     public int size() {
@@ -149,18 +146,20 @@ public abstract class StageSelectionPanel extends Panel {
 
   }
 
-  private class StageListColumnProvider implements IColumnProvider, Serializable {
+  private class StageListColumnProvider implements IColumnProvider<Stage>, Serializable {
 
     private static final long serialVersionUID = -9121583835345457007L;
 
-    private List<IColumn> columns = new ArrayList<IColumn>();
+    private List<IColumn<Stage>> columns = new ArrayList<IColumn<Stage>>();
 
-    private List<IColumn> additional = new ArrayList<IColumn>();
+    private List<IColumn<Stage>> additional = new ArrayList<IColumn<Stage>>();
 
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
-      columns.add(new AbstractColumn(new Model("#")) {
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+
+      columns.add(new AbstractColumn<Stage>(new Model<String>("#")) {
+        @Override
+        public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
           // cellItem represents the cell (td). It's index is the column's index.
           // To obtain the row's index, we must find the cell's parent Item class.
           // See
@@ -172,56 +171,61 @@ public abstract class StageSelectionPanel extends Panel {
         }
       });
 
-      columns.add(new AbstractColumn(new ResourceModel("Name")) {
+      columns.add(new AbstractColumn<Stage>(new ResourceModel("Name")) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-
-          cellItem.add(new Label(componentId, new MessageSourceResolvableStringModel(new PropertyModel(rowModel, "description"))));
+        @Override
+        public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
+          cellItem.add(new Label(componentId, new MessageSourceResolvableStringModel(new PropertyModel<String>(rowModel, "description"))));
         }
 
       });
 
-      columns.add(new AbstractColumn(new ResourceModel("Status")) {
+      columns.add(new AbstractColumn<Stage>(new ResourceModel("Status")) {
 
-        public void populateItem(Item cellItem, String componentId, final IModel rowModel) {
+        @Override
+        public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
           cellItem.add(new StageStatusFragment(componentId, rowModel));
         }
 
       });
 
-      columns.add(new AbstractColumn(new ResourceModel("Start")) {
+      columns.add(new AbstractColumn<Stage>(new ResourceModel("Start")) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        @Override
+        public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
           cellItem.add(new Label(componentId, new StartTimeModel(rowModel)));
         }
 
       });
 
-      columns.add(new AbstractColumn(new ResourceModel("End")) {
+      columns.add(new AbstractColumn<Stage>(new ResourceModel("End")) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        @Override
+        public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
           cellItem.add(new Label(componentId, new EndTimeModel(rowModel)));
         }
 
       });
 
       if(activeInterviewService.getInterview().getStatus().equals(InterviewStatus.IN_PROGRESS)) {
-        columns.add(new AbstractColumn(new ResourceModel("Actions")) {
+        columns.add(new AbstractColumn<Stage>(new ResourceModel("Actions")) {
 
-          public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          @Override
+          public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
             cellItem.add(new ActionsPanel(componentId, rowModel, modal));
           }
 
         });
       }
 
-      columns.add(new AbstractColumn(new ResourceModel("Log")) {
+      columns.add(new AbstractColumn<Stage>(new ResourceModel("Log")) {
 
         List<Action> interviewComments;
 
         List<Action> interviewActions;
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        @Override
+        public void populateItem(Item<ICellPopulator<Stage>> cellItem, String componentId, IModel<Stage> rowModel) {
           Stage stage = (Stage) rowModel.getObject();
 
           final String stageName = stage.getName();
@@ -289,7 +293,7 @@ public abstract class StageSelectionPanel extends Panel {
 
     }
 
-    public List<IColumn> getAdditionalColumns() {
+    public List<IColumn<Stage>> getAdditionalColumns() {
       return additional;
     }
 
@@ -297,11 +301,11 @@ public abstract class StageSelectionPanel extends Panel {
       return null;
     }
 
-    public List<IColumn> getDefaultColumns() {
+    public List<IColumn<Stage>> getDefaultColumns() {
       return columns;
     }
 
-    public List<IColumn> getRequiredColumns() {
+    public List<IColumn<Stage>> getRequiredColumns() {
       return columns;
     }
 
@@ -315,13 +319,13 @@ public abstract class StageSelectionPanel extends Panel {
      * @param id
      * @param model
      */
-    public StageStatusFragment(String id, IModel model) {
+    public StageStatusFragment(String id, IModel<Stage> model) {
       super(id, "stageStatusFragment", StageSelectionPanel.this, model);
-      Label statusLabel = new Label("status", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.message")));
+      Label statusLabel = new Label("status", new MessageSourceResolvableStringModel(new PropertyModel<String>(this, "stageExecution.message")));
       add(statusLabel);
       addCssClasses();
 
-      add(new Label("statusReason", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.reasonMessage"))) {
+      add(new Label("statusReason", new MessageSourceResolvableStringModel(new PropertyModel<String>(this, "stageExecution.reasonMessage"))) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -338,6 +342,7 @@ public abstract class StageSelectionPanel extends Panel {
       return activeInterviewService.getStageExecution(stage);
     }
 
+    @SuppressWarnings("unused")
     public String getStageState() {
       IStageExecution stageExec = getStageExecution();
       return "obiba-state-" + stageExec.getMessage().getDefaultMessage().toLowerCase();
@@ -345,25 +350,25 @@ public abstract class StageSelectionPanel extends Panel {
 
     private void addCssClasses() {
       // Add the generic obiba-state class.
-      add(new AttributeAppender("class", new Model("obiba-state"), " "));
+      add(new AttributeAppender("class", new Model<String>("obiba-state"), " "));
 
       // Add the specific obiba-state-* class based on the state execution's state.
-      add(new AttributeAppender("class", new PropertyModel(this, "stageState"), " "));
+      add(new AttributeAppender("class", new PropertyModel<String>(this, "stageState"), " "));
     }
   }
 
-  private class StartTimeModel extends Model {
+  private class StartTimeModel extends Model<String> {
 
     private static final long serialVersionUID = 1L;
 
-    private IModel stageModel;
+    private IModel<Stage> stageModel;
 
-    public StartTimeModel(IModel stageModel) {
+    public StartTimeModel(IModel<Stage> stageModel) {
       this.stageModel = stageModel;
     }
 
-    public Serializable getObject() {
-      Stage stage = (Stage) stageModel.getObject();
+    public String getObject() {
+      Stage stage = stageModel.getObject();
       IStageExecution stageExec = activeInterviewService.getStageExecution(stage);
       Date startTime = stageExec.getStartTime();
 
@@ -377,17 +382,17 @@ public abstract class StageSelectionPanel extends Panel {
     }
   }
 
-  private class EndTimeModel extends Model {
+  private class EndTimeModel extends Model<String> {
 
     private static final long serialVersionUID = 1L;
 
-    private IModel stageModel;
+    private IModel<Stage> stageModel;
 
-    public EndTimeModel(IModel stageModel) {
+    public EndTimeModel(IModel<Stage> stageModel) {
       this.stageModel = stageModel;
     }
 
-    public Serializable getObject() {
+    public String getObject() {
       Stage stage = (Stage) stageModel.getObject();
       IStageExecution stageExec = activeInterviewService.getStageExecution(stage);
       Date startTime = stageExec.getStartTime();

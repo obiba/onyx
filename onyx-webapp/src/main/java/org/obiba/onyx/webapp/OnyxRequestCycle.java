@@ -57,20 +57,24 @@ class OnyxRequestCycle extends WebRequestCycle {
       }
     }
 
-    return super.onRuntimeException(page, e);
+    return newErrorPage(page, e.getMessage());
   }
 
   @SuppressWarnings("unchecked")
   private Page newErrorPage(Page page, String... messages) {
+    Session.get().cleanupFeedbackMessages();
+    for(String msg : messages) {
+      Session.get().error(msg);
+    }
+    Session.get().dirty();
+
     Page rpage;
     if(page instanceof StagePage) {
       rpage = new InternalErrorStagePage(new InterviewPage(), (IModel<Stage>) page.getDefaultModel());
     } else {
       rpage = new InternalErrorPage();
     }
-    for(String msg : messages) {
-      Session.get().error(msg);
-    }
+
     return rpage;
   }
 }
