@@ -20,7 +20,7 @@ public class InternalErrorPage extends BasePage {
     super();
 
     FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
-    feedbackPanel.get("feedbackul").add(new AttributeModifier("class", true, new Model("page-feedback ui-corner-all")));
+    feedbackPanel.get("feedbackul").add(new AttributeModifier("class", true, new Model<String>("page-feedback ui-corner-all")));
     replace(feedbackPanel);
   }
 }
