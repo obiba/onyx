@@ -58,13 +58,11 @@ public abstract class EditQuestionPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
@@ -140,6 +138,7 @@ public abstract class EditQuestionPanel extends Panel {
           Category firstCategory = null;
           if(question.getCategories().isEmpty()) {
             openAnswerDefinition = new OpenAnswerDefinition();
+            openAnswerDefinition.setRequired(true);
           } else {
             firstCategory = question.getCategories().get(0);
             openAnswerDefinition = firstCategory.getOpenAnswerDefinition();
