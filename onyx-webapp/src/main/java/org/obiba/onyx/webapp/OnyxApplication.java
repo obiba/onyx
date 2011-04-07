@@ -33,6 +33,7 @@ import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
 import org.obiba.onyx.webapp.config.page.ApplicationConfigurationPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
+import org.obiba.onyx.webapp.home.page.InternalErrorPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.runtime.Version;
 import org.obiba.wicket.application.ISpringWebApplication;
@@ -199,6 +200,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
+    getApplicationSettings().setInternalErrorPage(InternalErrorPage.class);
 
     log.info("Onyx Web Application [{}] v{} has started", getServletContext().getContextPath(), this.getVersion());
   }
