@@ -51,7 +51,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireElementComparator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.CategoryByQuestionsComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireSharedCategory;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
@@ -120,7 +120,7 @@ public class CategoryListPanel extends Panel {
     questionnaireModel.getObject().setQuestionnaireCache(null);
     questionsByCategory = questionnaireFinder.findQuestionsByCategory();
     questionnaireCategories = new ArrayList<Category>(questionsByCategory.keySet());
-    Collections.sort(questionnaireCategories, new QuestionnaireElementComparator());
+    Collections.sort(questionnaireCategories, new CategoryByQuestionsComparator(questionsByCategory));
 
     categoryWindow = new ModalWindow("categoryWindow");
     categoryWindow.setCssClassName("onyx");
@@ -334,8 +334,7 @@ public class CategoryListPanel extends Panel {
         @Override
         protected List<CategoryWithQuestions> getChoiceList(String input) {
           if(StringUtils.isBlank(input)) {
-            List<CategoryWithQuestions> emptyList = Collections.emptyList();
-            return emptyList;
+            return Collections.emptyList();
           }
           Question question = ((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement();
           List<String> questionCatNames = new ArrayList<String>(question.getCategories().size());

@@ -11,10 +11,12 @@
 			</tr>			
 			<tr>
 		  	<td class="keyValueTableKey" valign="top"><wicket:message key="Categories" /></td>
-		   	<td wicket:id="categories">	
+		   	<td>
+		   		<div wicket:id="categories">	
 	 				<input type="radio" wicket:id="copyCategories" /> <label wicket:id="copyCategoriesLabel"></label>
 					<br />
 					<input type="radio" wicket:id="shareCategories" /> <label wicket:id="shareCategoriesLabel"></label> 
+				</div>
 		   	</td>
 		  </tr>	
 			<tr>
@@ -23,7 +25,7 @@
 			</tr>					
 		</table>				
 				
-		<div wicket:id="saveCancel" class="modal-footer" />				
+		<div wicket:id="saveCancel" class="modal-footer" />
 	
 	</form>
 
