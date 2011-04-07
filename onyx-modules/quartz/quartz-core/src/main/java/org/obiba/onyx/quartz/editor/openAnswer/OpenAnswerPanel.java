@@ -108,18 +108,15 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class OpenAnswerPanel extends Panel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OnyxSettings onyxSettings;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OpenAnswerUtils openAnswerUtils;
 
@@ -341,6 +338,7 @@ public class OpenAnswerPanel extends Panel {
 
     patternField = new TextField<String>("patternValidator", new Model<String>(patternValue));
     patternField.setLabel(new ResourceModel("PatternLabel"));
+    patternField.setOutputMarkupId(true);
     add(new SimpleFormComponentLabel("patternLabel", patternField));
     add(patternField);
 
@@ -496,6 +494,7 @@ public class OpenAnswerPanel extends Panel {
         }
         setMinMaxLabels(value == null ? null : valueOf);
         target.addComponent(minMaxContainer);
+        target.addComponent(patternField);
         defaultValuesList.refreshList(target);
       }
 
@@ -810,6 +809,7 @@ public class OpenAnswerPanel extends Panel {
 
   @SuppressWarnings("incomplete-switch")
   private void setMinMaxLabels(DataType type) {
+    patternField.setEnabled(false);
     if(type == null) {
       setMinimumLabel(minLength);
       setMaximumLabel(maxLength);
@@ -821,6 +821,7 @@ public class OpenAnswerPanel extends Panel {
       case TEXT:
         setMinimumLabel(minLength);
         setMaximumLabel(maxLength);
+        patternField.setEnabled(true);
         minLength.setVisible(true).setEnabled(true);
         maxLength.setVisible(true).setEnabled(true);
         clearAndHide(minNumeric, maxNumeric, minDecimal, maxDecimal, beforeDate, afterDate);
