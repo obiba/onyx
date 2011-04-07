@@ -71,11 +71,13 @@ public abstract class CopyQuestionPanel extends Panel {
     COPY, SHARE;
   }
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -123,7 +125,7 @@ public abstract class CopyQuestionPanel extends Panel {
     form.add(new SimpleFormComponentLabel("nameLabel", name));
     form.add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
-    categories = new RadioGroup<CategoryAction>("categories", new Model<CategoryAction>());
+    categories = new RadioGroup<CategoryAction>("categories", new Model<CategoryAction>(CategoryAction.SHARE));
     categories.setLabel(new ResourceModel("Categories")).setRequired(true);
     form.add(categories);
 
