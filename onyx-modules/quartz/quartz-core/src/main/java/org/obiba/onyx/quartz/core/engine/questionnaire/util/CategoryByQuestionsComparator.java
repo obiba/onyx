@@ -31,7 +31,7 @@ public class CategoryByQuestionsComparator implements Comparator<Category> {
   public int compare(Category o1, Category o2) {
     Integer size1 = map.get(o1).size();
     Integer size2 = map.get(o2).size();
-    if(size1 != size2) return size2.compareTo(size1);
+    if(!size1.equals(size2)) return size2.compareTo(size1);
     return o1.getName().compareTo(o2.getName());
   }
 }
