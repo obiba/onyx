@@ -9,18 +9,27 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
+import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -38,30 +47,86 @@ public abstract class QuestionWindow extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<EditedQuestion> form;
+  private Form<EditedQuestion> form;
 
-  public QuestionWindow(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  private SavableHidableTab conditionTab;
+
+  private SavableHidableTab questionTab;
+
+  public QuestionWindow(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject().getElement());
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
-    add(form = new Form<EditedQuestion>("form", model));
-    form.setMultiPart(false);
-    final QuestionPanel questionPanel = new QuestionPanel("question", model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, false) {
+    questionTab = new SavableHidableTab(new ResourceModel("Question")) {
+      private QuestionPanel questionPanel;
+
       @Override
-      public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
+      public Panel getPanel(String panelId) {
+        if(questionPanel == null) {
+          questionPanel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, false) {
+            @Override
+            public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
+            }
+          };
+        }
+        return questionPanel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        questionPanel.onSave(target);
+      }
+
+      @Override
+      public boolean isVisible() {
+        return true;
       }
     };
-    form.add(questionPanel);
+
+    conditionTab = new SavableHidableTab(new ResourceModel("Conditions")) {
+      private ConditionPanel panel;
+
+      @Override
+      public Panel getPanel(String panelId) {
+        if(panel == null) {
+          panel = new ConditionPanel(panelId, new Model<Question>(model.getObject().getElement()), questionnaireModel);
+        }
+        return panel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
+      }
+
+      @Override
+      public boolean isVisible() {
+        return true;
+      }
+    };
+
+    form = new Form<EditedQuestion>("form", model);
+    form.setMultiPart(false);
+    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject().getElement());
+
+    List<ITab> tabs = new ArrayList<ITab>();
+    tabs.add(questionTab);
+    tabs.add(conditionTab);
+
+    AjaxSubmitTabbedPanel ajaxSubmitTabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow, tabs);
+    add(ajaxSubmitTabbedPanel);
+    form.add(ajaxSubmitTabbedPanel);
+    add(form);
 
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
-        questionPanel.onSave(target);
+        questionTab.save(target);
+        conditionTab.save(target);
         QuestionWindow.this.onSave(target, form.getModelObject());
         modalWindow.close(target);
       }

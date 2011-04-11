@@ -88,6 +88,13 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     this.required = required;
   }
 
+  public boolean hasRequiredChild() {
+    for(OpenAnswerDefinition child : getOpenAnswerDefinitions()) {
+      if(child.isRequired()) return true;
+    }
+    return false;
+  }
+
   @Override
   public String getUnit() {
     return unit;
