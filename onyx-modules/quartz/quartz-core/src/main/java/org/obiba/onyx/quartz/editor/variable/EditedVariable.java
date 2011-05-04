@@ -35,11 +35,18 @@ public class EditedVariable implements Serializable {
   }
 
   public ValueType getValueType() {
-    return ValueType.Factory.forName(valueType);
+    if(valueType != null) {
+      return ValueType.Factory.forName(valueType);
+    }
+    return null;
   }
 
   public void setValueType(ValueType valueType) {
-    this.valueType = valueType.getName();
+    if(valueType != null) {
+      this.valueType = valueType.getName();
+    } else {
+      this.valueType = null;
+    }
   }
 
   public String getScript() {

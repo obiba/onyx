@@ -221,6 +221,11 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     }
   }
 
+  public void removeStage(Stage stage) {
+    // TODO remove also table in magma
+    stageManager.removeStage(stage);
+  }
+
   @Override
   public StageManager getStageManager() {
     return stageManager;

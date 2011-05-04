@@ -99,7 +99,18 @@ public class StageManagerImpl implements ApplicationContextAware, InitializingBe
   public void addStage(int index, Stage stage) {
     if(getStages() == null) stages = new LinkedList<Stage>();
     stages.add(index, stage);
+    write();
+  }
 
+  @Override
+  public void removeStage(Stage stage) {
+    if(getStages() != null) {
+      stages.remove(stage);
+      write();
+    }
+  }
+
+  private void write() {
     try {
       Writer writer = new FileWriter(stageDescriptor.getFile());
       try {

@@ -39,6 +39,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
+import org.springframework.util.FileSystemUtils;
 
 /**
  * A file system based implementation of <code>QuestionnaireBundleManager</code>.
@@ -144,6 +145,13 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
       FileUtil.copyFile(file, bundleVersionDir);
     }
     return createBundle(questionnaire, true);
+  }
+
+  @Override
+  public void deleteBundle(Questionnaire questionnaire) {
+    if(!FileSystemUtils.deleteRecursively(new File(rootDir, questionnaire.getName()))) {
+      log.error("Fail to delete questionnaire in file system");
+    }
   }
 
   @Override

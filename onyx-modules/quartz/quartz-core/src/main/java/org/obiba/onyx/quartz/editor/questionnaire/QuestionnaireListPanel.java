@@ -36,9 +36,11 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColu
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -64,6 +66,8 @@ import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserExcepti
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
+import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +96,8 @@ public class QuestionnaireListPanel extends Panel {
 
   private OnyxEntityList<Questionnaire> questionnaireList;
 
+  private ConfirmationDialog deleteConfirm;
+
   public QuestionnaireListPanel(String id) {
     super(id);
 
@@ -109,7 +115,6 @@ public class QuestionnaireListPanel extends Panel {
     uploadWindow.setInitialWidth(500);
     uploadWindow.setInitialHeight(150);
     uploadWindow.setResizable(false);
-    uploadWindow.setTitle(new ResourceModel("UploadQuestionnaire"));
 
     add(uploadWindow);
 
@@ -119,6 +124,9 @@ public class QuestionnaireListPanel extends Panel {
     add(form);
 
     add(questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires")));
+
+    add(deleteConfirm = new ConfirmationDialog("deleteConfirm"));
+    deleteConfirm.setContent(new MultiLineLabel(deleteConfirm.getContentId(), new ResourceModel("DeleteQuestionnaireConfirmInfos")));
 
     add(new IndicatingAjaxLink<Void>("addQuestionnaire") {
       private static final long serialVersionUID = 1L;
@@ -171,6 +179,7 @@ public class QuestionnaireListPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        uploadWindow.setTitle(new ResourceModel("UploadNewQuestionnaire"));
         uploadWindow.setContent(new UploadQuestionnairePanel("content", uploadWindow) {
           private static final long serialVersionUID = 1L;
 
@@ -345,6 +354,7 @@ public class QuestionnaireListPanel extends Panel {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
+          uploadWindow.setTitle(new ResourceModel("UploadQuestionnaire"));
           uploadWindow.setContent(new UploadQuestionnairePanel("content", uploadWindow, rowModel) {
             private static final long serialVersionUID = 1L;
 
@@ -398,17 +408,50 @@ public class QuestionnaireListPanel extends Panel {
         }
       });
 
-      add(new Link<Questionnaire>("exportLink", rowModel) {
+      add(new AjaxLink("deleteLink") {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void onClick() {
-          activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
-          activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaire.getLocales().get(0));
-          activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-          setResponsePage(new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(questionnaire)));
+        public void onClick(AjaxRequestTarget target) {
+          deleteConfirm.setYesButtonCallback(new OnYesCallback() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("hiding")
+            @Override
+            public void onYesButtonClicked(AjaxRequestTarget target) {
+              questionnairePersistenceUtils.delete(questionnaire);
+              target.addComponent(questionnaireList);
+            }
+          });
+          deleteConfirm.show(target);
         }
       });
+
+      Loop links = new Loop("exportLinks", questionnaire.getLocales().size()) {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void populateItem(final LoopItem item) {
+          final Locale language = questionnaire.getLocales().get(item.getIteration());
+          Link<Questionnaire> link = new Link<Questionnaire>("exportLink", rowModel) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick() {
+              activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+              activeQuestionnaireAdministrationService.setDefaultLanguage(language);
+              activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
+              setResponsePage(new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(questionnaire)));
+            }
+          };
+          item.add(link);
+          link.add(new Label("labelLink", language.getDisplayLanguage()));
+        }
+      };
+      add(links);
     }
   }
 }
