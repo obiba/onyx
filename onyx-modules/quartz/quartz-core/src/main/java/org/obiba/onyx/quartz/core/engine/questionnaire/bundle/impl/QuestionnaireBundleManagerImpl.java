@@ -338,6 +338,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     int bufferSize = 1024;
     byte[] buffer = new byte[bufferSize];
     for(File file : getBundleDir(bundle).listFiles()) {
+      if(file.isDirectory()) continue;
       BufferedInputStream in = new BufferedInputStream(new FileInputStream(file), bufferSize);
       out.putNextEntry(new ZipEntry(file.getName()));
       int count;
