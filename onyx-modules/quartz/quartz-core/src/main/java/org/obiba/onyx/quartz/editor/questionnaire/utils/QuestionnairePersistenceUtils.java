@@ -56,6 +56,11 @@ public class QuestionnairePersistenceUtils {
     persist(questionnaire, null);
   }
 
+  public void delete(Questionnaire questionnaire) {
+    questionnaireBundleManager.deleteBundle(questionnaire);
+    questionnaireRegister.unregister(questionnaire);
+  }
+
   @Required
   public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
     this.questionnaireBundleManager = questionnaireBundleManager;

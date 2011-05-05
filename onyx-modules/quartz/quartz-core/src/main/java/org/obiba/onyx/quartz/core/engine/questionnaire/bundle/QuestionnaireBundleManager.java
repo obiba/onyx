@@ -103,4 +103,9 @@ public interface QuestionnaireBundleManager {
    */
   QuestionnaireBundle createBundle(Questionnaire questionnaire, File... localeProperties) throws IOException;
 
+  /**
+   * @param questionnaire
+   */
+  void deleteBundle(Questionnaire questionnaire);
+
 }

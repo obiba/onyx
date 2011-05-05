@@ -13,44 +13,26 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayout;
+import org.obiba.onyx.quartz.editor.PreviewPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
-public class PagePreviewPanel extends Panel {
+public class PagePreviewPanel extends PreviewPanel<Page> {
 
-  private transient final Logger logger = LoggerFactory.getLogger(getClass());
-
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
-  @SpringBean
-  private QuestionnaireBundleManager bundleManager;
+  private static final Logger logger = LoggerFactory.getLogger(PagePreviewPanel.class);
 
   public PagePreviewPanel(String id, final IModel<Page> model, IModel<Questionnaire> questionnaireModel) {
-    super(id, model);
-    Questionnaire questionnaire = questionnaireModel.getObject();
-    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
-    activeQuestionnaireAdministrationService.setDefaultLanguage(questionnaire.getLocales().get(0));
-    activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
+    super(id, model, questionnaireModel);
 
-    QuestionnaireBundle bundle = bundleManager.getBundle(questionnaire.getName());
-    bundle.clearMessageSourceCache();
-    questionnaire.setQuestionnaireCache(null);
     try {
       // if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
       // add(new SimplifiedPageLayout("preview", model));
       // } else {
-      add(new DefaultPageLayout("preview", model));
+      add(previewLayout = createPreviewLayout(model));
       // }
     } catch(Exception e) {
       logger.error(e.getMessage(), e);
@@ -58,4 +40,9 @@ public class PagePreviewPanel extends Panel {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public Panel createPreviewLayout(IModel<?> model) {
+    return new DefaultPageLayout("preview", (IModel<Page>) model);
+  }
 }

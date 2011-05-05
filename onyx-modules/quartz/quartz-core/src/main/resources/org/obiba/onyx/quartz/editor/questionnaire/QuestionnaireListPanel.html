@@ -2,6 +2,8 @@
 
 	<div wicket:id="uploadWindow" />
 	
+	<div wicket:id="deleteConfirm" />
+	
 	<form wicket:id="form" autocomplete="off" class="obiba-content" >
 		<div wicket:id="modalWindow" style="overflow:auto" />
 	</form>
@@ -12,7 +14,7 @@
 	  <span wicket:id="questionnaires" />
 	  <br />
 	  <a class="obiba-button" wicket:id="addQuestionnaire"><img wicket:id="addImg" class="add" /> <wicket:message key="CreateQuestionnaire" /></a>    
-	  <a class="obiba-button" wicket:id="uploadQuestionnaire"><img wicket:id="uploadImg" class="add" /> <wicket:message key="UploadQuestionnaire" /></a>
+	  <a class="obiba-button" wicket:id="uploadQuestionnaire"><img wicket:id="uploadImg" class="add" /> <wicket:message key="UploadNewQuestionnaire" /></a>
 	</div>
 	
 	<wicket:fragment wicket:id="linkFragment">
@@ -20,7 +22,11 @@
 		<a wicket:id="uploadLink"><wicket:message key="Upload" /></a>
 		<a wicket:id="validateLink"><wicket:message key="Validate" /></a>
 		<a wicket:id="downloadLink"><wicket:message key="Download" /></a>
-		<a wicket:id="exportLink" target="export"><wicket:message key="Export" /></a>
+		<a wicket:id="deleteLink"><wicket:message key="Delete" /></a>
+		<wicket:message key="Export" />
+		<span wicket:id="exportLinks">
+			<a wicket:id="exportLink" target="export"><span wicket:id="labelLink" /></a>
+		</span>
 	</wicket:fragment>
 
 </wicket:panel>

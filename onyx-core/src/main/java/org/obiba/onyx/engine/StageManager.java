@@ -22,4 +22,6 @@ public interface StageManager {
 
   void addStage(int index, Stage stage);
 
+  void removeStage(Stage stage);
+
 }

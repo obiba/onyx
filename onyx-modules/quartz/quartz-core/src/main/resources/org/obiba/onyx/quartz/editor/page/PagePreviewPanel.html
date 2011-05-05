@@ -1,5 +1,10 @@
 <wicket:panel>
 
-	<div wicket:id="preview" />
+	<span wicket:id="previewLanguageContainer">
+		<wicket:message key="PreviewLanguageLabel" /> : <select wicket:id="languageChoice"></select>
+		<hr />
+	</span>
+	
+	<div wicket:id="preview"></div>
 
 </wicket:panel>
