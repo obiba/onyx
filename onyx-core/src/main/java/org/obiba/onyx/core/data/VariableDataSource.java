@@ -15,6 +15,7 @@ import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.support.MagmaEngineVariableResolver;
@@ -76,7 +77,7 @@ public class VariableDataSource implements IDataSource {
     return DataValueConverter.valueToData(value);
   }
 
-  private Value getValue(Participant participant) {
+  public Value getValue(Participant participant) {
     VariableEntity entity = new VariableEntityBean("Participant", participant.getBarcode());
     ValueTable table = resolveTable();
     ValueSet valueSet = table.getValueSet(entity);
@@ -86,10 +87,7 @@ public class VariableDataSource implements IDataSource {
 
   @Override
   public String getUnit() {
-    ValueTable table = resolveTable();
-    String magmaVariableUnit = getVariableValueSource(table).getVariable().getUnit();
-
-    return magmaVariableUnit;
+    return getVariable().getUnit();
   }
 
   @Override
@@ -135,6 +133,11 @@ public class VariableDataSource implements IDataSource {
       log.error("[ONYX MAGMA MATCH FAILURE] No Magma variable found for the following name: {}", variableName);
       throw e;
     }
+  }
+
+  public Variable getVariable() {
+    ValueTable table = resolveTable();
+    return getVariableValueSource(table).getVariable();
   }
 
   public String getTableName() {
