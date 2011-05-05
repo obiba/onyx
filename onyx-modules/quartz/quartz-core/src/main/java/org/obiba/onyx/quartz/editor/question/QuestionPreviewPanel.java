@@ -31,7 +31,7 @@ public class QuestionPreviewPanel extends PreviewPanel<Question> {
     super(id, model, questionnaireModel);
 
     try {
-      add(createPreviewLayout(model));
+      add(previewLayout = createPreviewLayout(model));
     } catch(Exception e) {
       logger.error(e.getMessage(), e);
       add(new MultiLineLabel("preview", new StringResourceModel("Error", this, null, new Object[] { e.getMessage() })));

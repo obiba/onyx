@@ -222,8 +222,12 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
   }
 
   public void removeStage(Stage stage) {
-    // TODO remove also table in magma
-    stageManager.removeStage(stage);
+    if(stage == null) throw new IllegalArgumentException("stage cannot be null");
+    Datasource onyxDatasource = MagmaEngine.get().getDatasource("onyx-datasource");
+    if(onyxDatasource instanceof SpringContextScanningDatasource) {
+      ((SpringContextScanningDatasource) onyxDatasource).dropValueTable(stage.getName());
+      stageManager.removeStage(stage);
+    }
   }
 
   @Override

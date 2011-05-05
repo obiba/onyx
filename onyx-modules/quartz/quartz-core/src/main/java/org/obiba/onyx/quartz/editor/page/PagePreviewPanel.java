@@ -32,7 +32,7 @@ public class PagePreviewPanel extends PreviewPanel<Page> {
       // if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
       // add(new SimplifiedPageLayout("preview", model));
       // } else {
-      add(createPreviewLayout(model));
+      add(previewLayout = createPreviewLayout(model));
       // }
     } catch(Exception e) {
       logger.error(e.getMessage(), e);
