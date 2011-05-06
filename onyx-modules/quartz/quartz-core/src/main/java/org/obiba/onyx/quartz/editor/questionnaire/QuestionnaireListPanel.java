@@ -410,7 +410,7 @@ public class QuestionnaireListPanel extends Panel {
         }
       });
 
-      AjaxLink deleteAjaxLink = new AjaxLink("deleteLink") {
+      add(new AjaxLink("deleteLink") {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -428,9 +428,12 @@ public class QuestionnaireListPanel extends Panel {
           });
           deleteConfirm.show(target);
         }
-      };
-      deleteAjaxLink.setVisible(!questionnaireRegister.isConclusionQuestionnaire(questionnaire));
-      add(deleteAjaxLink);
+
+        @Override
+        public boolean isEnabled() {
+          return !questionnaireRegister.isConclusionQuestionnaire(questionnaire);
+        }
+      });
 
       Loop links = new Loop("exportLinks", questionnaire.getLocales().size()) {
 
