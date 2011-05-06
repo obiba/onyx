@@ -39,8 +39,8 @@ public class QuestionnaireRegister {
     StageManager stageManager = quartzModule.getStageManager();
     Stage stage = stageManager.getStage(questionnaire.getName());
     if(stage != null) {
-      quartzModule.removeStage(stage);
       moduleRegistry.unregisterModule(QuartzModule.MODULE_NAME);
+      quartzModule.removeStage(stage);
       moduleRegistry.registerModule(quartzModule);
     }
   }
