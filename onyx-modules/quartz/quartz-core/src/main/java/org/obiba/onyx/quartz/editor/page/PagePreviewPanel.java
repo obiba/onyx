@@ -14,8 +14,13 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayout;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.quartz.editor.PreviewPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +48,14 @@ public class PagePreviewPanel extends PreviewPanel<Page> {
   @SuppressWarnings("unchecked")
   @Override
   public Panel createPreviewLayout(IModel<?> model) {
-    return new DefaultPageLayout("preview", (IModel<Page>) model);
+    return new DefaultPageLayout("preview", (IModel<Page>) model) {
+      @Override
+      protected QuestionPanel createQuestionPanel(String panelId, Question question, IModel<Question> questionModel) {
+        if(questionModel.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
+          return new DropDownQuestionPanel("preview", questionModel);
+        }
+        return new DefaultQuestionPanel("preview", questionModel);
+      }
+    };
   }
 }

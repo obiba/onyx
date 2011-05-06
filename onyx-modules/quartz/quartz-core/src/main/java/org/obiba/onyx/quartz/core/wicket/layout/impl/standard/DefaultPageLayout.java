@@ -90,12 +90,16 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
       protected void populateItem(Item item) {
         Question question = (Question) item.getModelObject();
 
-        QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
+        QuestionPanel panel = createQuestionPanel("question", question, item.getModel());
         item.add(panel);
       }
 
     });
     questionsView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+  }
+
+  protected QuestionPanel createQuestionPanel(String panelId, Question question, IModel<Question> questionModel) {
+    return questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel(panelId, questionModel);
   }
 
   private boolean isEmptyString(String str) {
