@@ -26,8 +26,8 @@ public class QuestionnaireRegister {
     Stage stage = stageManager.getStage(questionnaire.getName());
     if(stage == null) {
       // create Stage if needed
-      moduleRegistry.unregisterModule(QuartzModule.MODULE_NAME);
       quartzModule.addStage(stageManager.getStages().size(), new Stage(quartzModule, questionnaire.getName()));
+      moduleRegistry.unregisterModule(QuartzModule.MODULE_NAME);
       moduleRegistry.registerModule(quartzModule);
     } else {
       quartzModule.stageChanged(stage);
@@ -39,8 +39,8 @@ public class QuestionnaireRegister {
     StageManager stageManager = quartzModule.getStageManager();
     Stage stage = stageManager.getStage(questionnaire.getName());
     if(stage != null) {
-      moduleRegistry.unregisterModule(QuartzModule.MODULE_NAME);
       quartzModule.removeStage(stage);
+      moduleRegistry.unregisterModule(QuartzModule.MODULE_NAME);
       moduleRegistry.registerModule(quartzModule);
     }
   }
