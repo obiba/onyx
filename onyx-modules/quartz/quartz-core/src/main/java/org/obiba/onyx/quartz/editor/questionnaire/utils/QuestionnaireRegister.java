@@ -16,6 +16,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.engine.QuartzModule;
 import org.springframework.beans.factory.annotation.Required;
 
+//class is becoming more than only register... probably rename soon
 public class QuestionnaireRegister {
 
   private ModuleRegistry moduleRegistry;
@@ -43,6 +44,13 @@ public class QuestionnaireRegister {
       quartzModule.removeStage(stage);
       moduleRegistry.registerModule(quartzModule);
     }
+  }
+
+  public boolean isConclusionQuestionnaire(Questionnaire questionnaire) {
+    QuartzModule quartzModule = (QuartzModule) moduleRegistry.getModule(QuartzModule.MODULE_NAME);
+    StageManager stageManager = quartzModule.getStageManager();
+    Stage stage = stageManager.getStage(questionnaire.getName());
+    return stage.isInterviewConclusion();
   }
 
   @Required
