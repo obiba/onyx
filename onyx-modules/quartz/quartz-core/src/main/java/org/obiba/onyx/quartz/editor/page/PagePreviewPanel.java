@@ -52,9 +52,9 @@ public class PagePreviewPanel extends PreviewPanel<Page> {
       @Override
       protected QuestionPanel createQuestionPanel(String panelId, Question question, IModel<Question> questionModel) {
         if(questionModel.getObject().getUIFactoryName().contains(DropDownQuestionPanelFactory.class.getSimpleName())) {
-          return new DropDownQuestionPanel("preview", questionModel);
+          return new DropDownQuestionPanel(panelId, questionModel);
         }
-        return new DefaultQuestionPanel("preview", questionModel);
+        return new DefaultQuestionPanel(panelId, questionModel);
       }
     };
   }
