@@ -61,6 +61,7 @@ import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverterException;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
+import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireRegister;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyser;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.StructureAnalyserException;
 import org.obiba.onyx.quartz.editor.utils.ZipResourceStream;
@@ -78,20 +79,17 @@ public class QuestionnaireListPanel extends Panel {
 
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Needs to be be re-initialized upon deserialization")
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean
+  private QuestionnaireRegister questionnaireRegister;
 
   private final ModalWindow modalWindow;
 
@@ -429,6 +427,11 @@ public class QuestionnaireListPanel extends Panel {
             }
           });
           deleteConfirm.show(target);
+        }
+
+        @Override
+        public boolean isEnabled() {
+          return !questionnaireRegister.isConclusionQuestionnaire(questionnaire);
         }
       });
 
