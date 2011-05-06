@@ -181,6 +181,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
     final Questionnaire questionnaire = model.getObject();
 
     editingConfirmationDialog = new ConfirmationDialog("editingConfirm");
+    editingConfirmationDialog.setTitle(new StringResourceModel("ConfirmCancel", this, null));
     editingConfirmationDialog.setContent(new MultiLineLabel(editingConfirmationDialog.getContentId(), new ResourceModel("CancelChanges")));
     add(editingConfirmationDialog);
 

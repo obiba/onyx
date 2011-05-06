@@ -129,6 +129,7 @@ public class QuestionnaireListPanel extends Panel {
     add(questionnaireList = new OnyxEntityList<Questionnaire>("questionnaires", new QuestionnaireProvider(), new QuestionnaireListColumnProvider(), new ResourceModel("Questionnaires")));
 
     add(deleteConfirm = new ConfirmationDialog("deleteConfirm"));
+    deleteConfirm.setTitle(new StringResourceModel("ConfirmDelete", this, null));
     deleteConfirm.setContent(new MultiLineLabel(deleteConfirm.getContentId(), new ResourceModel("DeleteQuestionnaireConfirmInfos")));
 
     add(new IndicatingAjaxLink<Void>("addQuestionnaire") {
