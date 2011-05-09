@@ -58,20 +58,16 @@ public class DefaultInstrumentRunServiceImplTest extends BaseDefaultSpringContex
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @Dataset
   public void getInstrumentRun_ThrowsExceptionWhenInstrumentTypeNameIsNull() {
-    Participant participant = persistenceManager.get(Participant.class, 1l);
-    defaultInstrumentRunService.getInstrumentRun(participant, null);
+    defaultInstrumentRunService.getInstrumentRun(new Participant(), null);
   }
 
   /**
    * Instrument name is not null, but instrument does not exist.
    */
   @Test(expected = IllegalArgumentException.class)
-  @Dataset
   public void getInstrumentRun_ThrowsExceptionWhenInstrumentTypeNameDoesNotExist() {
-    Participant participant = persistenceManager.get(Participant.class, 1l);
-    defaultInstrumentRunService.getInstrumentRun(participant, "FakeInstrument");
+    defaultInstrumentRunService.getInstrumentRun(new Participant(), "FakeInstrument");
   }
 
   @Test(expected = IllegalArgumentException.class)

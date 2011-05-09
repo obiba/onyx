@@ -6,8 +6,6 @@
     <property name="properties">
       <value>
         <![CDATA[
-          hibernate.generate_statistics true
-          hibernate.cache.use_structured_entries true
           hibernate.cache.use_query_cache=true
           hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
         ]]>
