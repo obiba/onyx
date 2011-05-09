@@ -21,7 +21,8 @@ import junit.framework.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
@@ -47,9 +48,14 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
 
   private ApplicationContext applicationContextMock;
 
-  @BeforeClass
-  public static void initMagmaEngine() {
+  @Before
+  public void before() {
     new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+  }
+
+  @After
+  public void after() {
+    MagmaEngine.get().shutdown();
   }
 
   @Test
