@@ -161,7 +161,13 @@ public abstract class VariablePanel extends Panel {
             }
           });
         } catch(EvaluatorException e) {
-          form.error(new StringResourceModel("BadScript", VariablePanel.this, null).getObject());
+          String errorMsg;
+          if(e.columnNumber() > 0) {
+            errorMsg = new StringResourceModel("BadScript.withColumn", VariablePanel.this, null, new Object[] { e.details(), e.lineNumber(), e.columnNumber() }).getObject();
+          } else {
+            errorMsg = new StringResourceModel("BadScript", VariablePanel.this, null, new Object[] { e.details(), e.lineNumber() }).getObject();
+          }
+          form.error(errorMsg);
         }
       }
     });

@@ -26,6 +26,9 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.DbUnitAwareTestExecutionListener;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.js.MagmaJsExtension;
+import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.engine.Stage;
@@ -117,6 +120,8 @@ public abstract class AbstractQuestionnaireTest {
    */
   @Before
   public void setUp() {
+    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+
     initContext();
     initWicketTester();
     initQuestionnaireStage();
@@ -129,6 +134,8 @@ public abstract class AbstractQuestionnaireTest {
   public void tearDown() {
     interviewManager.releaseInterview();
     destroyUIFactoryRegistries();
+    MagmaEngine.get().shutdown();
+
   }
 
   private void initContext() {

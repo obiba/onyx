@@ -18,6 +18,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.util.FileUtil;
+import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.js.MagmaJsExtension;
+import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -33,6 +36,8 @@ public class QuestionnaireBundleManagerImplTest {
 
   @Before
   public void setUp() throws IOException {
+    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+
     // Create the root directory for the bundle manager tests. If it exists
     // already, delete it to start clean.
     rootDirectory = new File("target", "bundleManagerImpl-test");
@@ -55,6 +60,8 @@ public class QuestionnaireBundleManagerImplTest {
     if(rootDirectory != null && rootDirectory.exists()) {
       FileUtil.delete(rootDirectory);
     }
+    MagmaEngine.get().shutdown();
+
   }
 
   @Test
