@@ -15,6 +15,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.hibernate.SessionFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PagingClause;
@@ -57,6 +58,11 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
     instrumentServiceHibernateImpl.setPersistenceManager(persistenceManager);
     instrumentServiceHibernateImpl.setInstrumentTypes(instrumentTypes);
     instrumentServiceHibernateImpl.setSessionFactory(factory);
+  }
+
+  @After
+  public void flush() {
+    super.flushCache();
   }
 
   @Test
@@ -144,7 +150,6 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   @Dataset
   public void updateInstrumentTest() {
     Instrument instrument = instrumentServiceHibernateImpl.getInstrumentByBarcode("sta01");
-    instrument.setBarcode("sta01");
     instrument.setModel("newModel STA");
 
     instrumentServiceHibernateImpl.updateInstrument(instrument);
