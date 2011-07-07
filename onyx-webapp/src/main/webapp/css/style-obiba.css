@@ -85,6 +85,7 @@ div.banner {
 	float: left;
 	text-align: right;
 	font-size: 0.9167em;
+	height:16px;
 }
 
 #logo {
@@ -137,11 +138,13 @@ div.banner {
   color: #FFFFFF;
   font-family: arial, verdana, sans-serif;
   font-weight: bold;
+  text-align: center;
+  clear:both;
 }
 
 #menuWrapper {
-  margin-left: auto;
-  margin-right: auto;
+  display: inline-block;
+  margin: 0px auto;
 }
 
 #menuBar .obiba-menu .obiba-menu-item {
@@ -172,6 +175,11 @@ div.banner {
 }
 
 #contentWrapper {
+  position:absolute;
+  top:0px;
+  bottom:2.3000em;
+  left:0px;
+  right:0px;
   margin-left:1.2500em;
   margin-right:1.2500em;
   clear:both;
@@ -377,6 +385,10 @@ text-align:center;
 }
 
 #pageFooter {
+  position:absolute;
+  bottom:0px;
+  right:0px;
+  left:0px;
   clear: both;
   color: #000000;
   height: 2.3000em;
@@ -1640,28 +1652,18 @@ ul#interviewMenuBar li > div {
 }
 
 .menu-center {
-  display: block;
   float: left;
   padding-left:4.2500em !important;
 }
 
 .menu-right {
-  display: block;
-  text-align: right;
+  float: right;
   padding-right:0.417em;
 }
 
 ul#interviewMenuBar li a {
-  bottom:0.1667em;
-  display:inline;
-  font-size:1.1667em;
-  padding-bottom:0;
-  padding-left:0;
-  padding-right:0;
-  padding-top:0;
-  position:relative;
-  /*left:1.2500em;*/
-  text-align:right;
+  /* reset adxmenu */
+  padding:0;
 }
 
 ul#interviewMenuBar li a span {

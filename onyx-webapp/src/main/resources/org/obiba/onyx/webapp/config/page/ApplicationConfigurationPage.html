@@ -4,12 +4,13 @@
   </header>
   <body>
     <wicket:extend>
+    <div style="display:inline-block;">
       <form wicket:id="configurationForm" autocomplete="false">
         <p>
           <wicket:message key="InitConfigFormMsg" />
         </p>
 
-        <fieldset style="width: 33.3333em;">
+        <fieldset>
           <legend>
             <wicket:message key="CreateAppConfigurationLegend" />
           </legend>
@@ -53,7 +54,7 @@
 
         <br />
 
-        <fieldset style="width: 33.3333em;">
+        <fieldset>
           <legend>
             <wicket:message key="CreateParticipantIdentifierLegend" />
           </legend>
@@ -85,7 +86,7 @@
         </fieldset>
 
         <br />
-        <fieldset style="width: 33.3333em;">
+        <fieldset>
           <legend>
             <wicket:message key="CreateAdminLegend" />
           </legend>
@@ -115,12 +116,12 @@
             </tr>
             <tr>
               <td>
-                <label for="login">
+                <label for="username">
                   <wicket:message key="login" />
                 </label>
               </td>
               <td>
-                <input wicket:id="login" id="login" type="text" size="20" />
+                <input wicket:id="username" id="username" type="text" size="20" />
                 <br />
               </td>
             </tr>
@@ -182,7 +183,7 @@
           </table>
         </fieldset>
 
-        <fieldset style="width: 33.3333em;"  wicket:id="exportDestinationCertificatesGroup">
+        <fieldset  wicket:id="exportDestinationCertificatesGroup">
           <legend>
             <wicket:message key="ExportDestinationCertificates" />
           </legend>
@@ -215,6 +216,7 @@
         </p>
 
       </form>
+    </div>
     </wicket:extend>
   </body>
 </html>

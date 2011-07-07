@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.obiba.core.spring.xstream.InjectingReflectionProviderWrapper;
+import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -112,7 +114,8 @@ public class StageManagerImpl implements ApplicationContextAware, InitializingBe
 
   private void write() {
     try {
-      Writer writer = new FileWriter(stageDescriptor.getFile());
+      File tmp = File.createTempFile("stages", ".tmp");
+      Writer writer = new FileWriter(tmp);
       try {
         xstream.toXML(stages, writer);
       } finally {
@@ -120,6 +123,10 @@ public class StageManagerImpl implements ApplicationContextAware, InitializingBe
           writer.close();
         } catch(Exception e) {
         }
+      }
+      FileUtil.copyFile(tmp, stageDescriptor.getFile());
+      if(tmp.delete()) {
+        // ignore
       }
     } catch(IOException e) {
       throw new RuntimeException("Cannot write stages", e);

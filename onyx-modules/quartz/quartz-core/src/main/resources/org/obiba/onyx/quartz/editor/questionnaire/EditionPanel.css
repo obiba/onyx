@@ -3,22 +3,26 @@
 }
 
 .edition {
-	float: none;
-	width: 1000px;
+	position: relative;
+	height: 600px;
 }
 
 .edition .tree {
-	float: left;
-	width: 300px;
-	height: 600px;
+	position: absolute;
+	left: 0;
+	width: 30%;
+	top: 0;
+	bottom: 0;
 	overflow: auto;
 }
 
 .edition .properties {
-	width: 770px;
-	height: 600px;
+	position: absolute;
+	left: 31%;
+	right: 0;
+	top: 0;
+	bottom: 0;
 	overflow: auto;
-	padding-left: 0.417em;
 }
 
 .edition .topMenu {

@@ -9,17 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
-import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchValueTableException;
+import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.magma.DataValueConverter;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -36,9 +36,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
 
   private static final Logger log = LoggerFactory.getLogger(VariableStageDependencyCondition.class);
 
-  private static final String PARTICIPANT_TABLE_NAME = "Participants";
-
-  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
+  private transient MagmaInstanceProvider magmaInstanceProvider;
 
   private String stageName;
 
@@ -72,43 +70,44 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       }
     }
 
-    // Get the Participant ValueTable.
-    ValueTable onyxParticipantTable = null;
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      onyxParticipantTable = datasource.getValueTable(PARTICIPANT_TABLE_NAME);
-    }
-
-    // Get the stage's ValueTable.
-    ValueTable stageTable = null;
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      stageTable = datasource.getValueTable(stageName);
-    }
-
-    // Get the currently interviewed participant's ValueSet.
-    VariableEntity entity = new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, activeInterviewService.getParticipant().getBarcode());
-    ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
-
-    // Get the condition value.
-    String magmaVariableName = variablePath.replaceFirst("Onyx.", "");
-    VariableValueSource variableValueSource = stageTable.getVariableValueSource(magmaVariableName);
-    Value conditionValue = variableValueSource.getValue(valueSet);
     Boolean rval = null;
 
-    log.debug("Testing variable: {} {} {}", new Object[] { magmaVariableName, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
-    if(!conditionValue.isNull()) {
-      if(conditionValue.isSequence()) {
-        // apply an OR among the data of the variable
-        for(Value partialConditionValue : conditionValue.asSequence().getValues()) {
-          Data partialConditionData = DataValueConverter.valueToData(partialConditionValue);
-          rval = compare(partialConditionData);
-          if(rval != null && rval) {
-            break;
+    try {
+      // Get the stage's ValueTable.
+      ValueTable stageTable = magmaInstanceProvider.getValueTable(stageName);
+      String magmaVariableName = variablePath.replaceFirst("Onyx.", "");
+      VariableValueSource variableValueSource = stageTable.getVariableValueSource(magmaVariableName);
+
+      log.debug("Testing variable: {} {} {}", new Object[] { magmaVariableName, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
+
+      // Get the currently interviewed participant's ValueSet.
+      VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant().getBarcode());
+      if(stageTable.hasValueSet(entity)) {
+        ValueSet valueSet = stageTable.getValueSet(entity);
+
+        // Get the condition value.
+        Value conditionValue = variableValueSource.getValue(valueSet);
+
+        if(!conditionValue.isNull()) {
+          if(conditionValue.isSequence()) {
+            // apply an OR among the data of the variable
+            for(Value partialConditionValue : conditionValue.asSequence().getValues()) {
+              Data partialConditionData = DataValueConverter.valueToData(partialConditionValue);
+              rval = compare(partialConditionData);
+              if(rval != null && rval) {
+                break;
+              }
+            }
+          } else {
+            Data conditionData = DataValueConverter.valueToData(conditionValue);
+            rval = compare(conditionData);
           }
         }
-      } else {
-        Data conditionData = DataValueConverter.valueToData(conditionValue);
-        rval = compare(conditionData);
       }
+    } catch(NoSuchValueTableException e) {
+      log.error("Stage {} depends on a stage that does not exist: {}", stage.getName(), stageName);
+    } catch(NoSuchVariableException e) {
+      log.error("Stage {} depends on a variable that does not exist: {}", stage.getName(), variablePath);
     }
 
     // we need a comparison, by default variable data is false
@@ -168,6 +167,10 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
 
   public void setData(Data data) {
     this.data = data;
+  }
+
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
   }
 
   @Override
