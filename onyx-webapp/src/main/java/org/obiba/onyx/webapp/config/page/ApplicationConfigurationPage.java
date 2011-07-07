@@ -119,7 +119,7 @@ public class ApplicationConfigurationPage extends BasePage {
       administratorFirstName.add(new RequiredFormFieldBehavior());
       add(administratorFirstName.add(StringValidator.maximumLength(30)));
 
-      TextField administratorUserLogin = new TextField("login", new PropertyModel(model, "user.login"));
+      TextField administratorUserLogin = new TextField("username", new PropertyModel(model, "user.login"));
       administratorUserLogin.add(new RequiredFormFieldBehavior());
       add(administratorUserLogin.add(StringValidator.maximumLength(30)));
 
