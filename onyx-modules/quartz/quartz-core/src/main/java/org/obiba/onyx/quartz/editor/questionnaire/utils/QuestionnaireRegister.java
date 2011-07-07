@@ -14,25 +14,31 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.engine.QuartzModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 //class is becoming more than only register... probably rename soon
 public class QuestionnaireRegister {
 
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireRegister.class);
+
   private ModuleRegistry moduleRegistry;
 
-  public void register(Questionnaire questionnaire) {
+  public Stage register(Questionnaire questionnaire) {
     QuartzModule quartzModule = (QuartzModule) moduleRegistry.getModule(QuartzModule.MODULE_NAME);
     StageManager stageManager = quartzModule.getStageManager();
     Stage stage = stageManager.getStage(questionnaire.getName());
     if(stage == null) {
       // create Stage if needed
-      quartzModule.addStage(stageManager.getStages().size(), new Stage(quartzModule, questionnaire.getName()));
+      stage = new Stage(quartzModule, questionnaire.getName());
+      quartzModule.addStage(stageManager.getStages().size(), stage);
       moduleRegistry.unregisterModule(QuartzModule.MODULE_NAME);
       moduleRegistry.registerModule(quartzModule);
     } else {
       quartzModule.stageChanged(stage);
     }
+    return stage;
   }
 
   public void unregister(Questionnaire questionnaire) {
@@ -50,6 +56,10 @@ public class QuestionnaireRegister {
     QuartzModule quartzModule = (QuartzModule) moduleRegistry.getModule(QuartzModule.MODULE_NAME);
     StageManager stageManager = quartzModule.getStageManager();
     Stage stage = stageManager.getStage(questionnaire.getName());
+    if(stage == null) {
+      log.warn("No stage defined for questionnare {}. Registering one now...", questionnaire.getName());
+      stage = register(questionnaire);
+    }
     return stage.isInterviewConclusion();
   }
 
