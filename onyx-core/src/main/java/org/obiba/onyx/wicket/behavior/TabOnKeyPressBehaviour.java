@@ -11,7 +11,7 @@ public class TabOnKeyPressBehaviour extends AttributeAppender {
   private static final long serialVersionUID = 166184606547790618L;
 
   public TabOnKeyPressBehaviour(Component component) {
-    super("onKeyPress", true, new Model("return tabSubmitForm(event, '" + component.getMarkupId() + "');"), " ");
+    super("onkeydown", true, new Model("return tabSubmitForm(event, '" + component.getMarkupId() + "');"), " ");
   }
 
   public void renderHead(IHeaderResponse response) {
