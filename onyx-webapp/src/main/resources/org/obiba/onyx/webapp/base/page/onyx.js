@@ -178,12 +178,6 @@ NavigationUtil.finish = function() {
 }
 
 NavigationUtil.closeWindow = function() {
-  var closeButton = $('input.obiba-button-close');
-  if (closeButton) {
-    closeButton.click();
-  }
-}
-NavigationUtil.closeWindow = function() {
   var cancelButton = $('input.obiba-button-cancel');
   var closeButton = $('input.obiba-button-close');  
   if(closeButton.size()>0) {
@@ -284,6 +278,15 @@ $(document).ready(function () {
 });
 
 //////////////////////////////////////////////////////////////////////
+// Bind 'escape' key to close an opened dialog window
+//////////////////////////////////////////////////////////////////////
+$(document).ready(function() {
+  $(document).bind('keydown', 'esc', function(evt) { 
+    NavigationUtil.closeWindow();
+  });                         
+});
+
+//////////////////////////////////////////////////////////////////////
 // Edit Sample Dialog Styling
 //////////////////////////////////////////////////////////////////////
 function styleSelectedTubeRemark() { 
@@ -293,77 +296,62 @@ function styleSelectedTubeRemark() {
 
 function addOnyxWizardBehavior() {
   /* Navigation hotkeys */
-  $(document).bind('keydown', {combi:'-', disableInInput: true}, 
+  $(document).bind('keydown', '-', 
 					function(evt) {
-          				NavigationUtil.previous();
-        			}, 
-        			function(evt, jTarget, elem) {
-          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
-   			  				Wicket.Window.get() != null) {
-                			return true;
-          				}        
-        			});
+            if(Wicket.Window.get() == null) {
+              NavigationUtil.previous();
+              return false;
+            }
+            return true;
+          });
 		
-  $(document).bind('keydown', {combi:'+', disableInInput: true}, 
+  $(document).bind('keydown', '+', 
   					function(evt) { 
-  						NavigationUtil.next();
-        			}, 
-        			function(evt, jTarget, elem) {
-          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
-   			  				Wicket.Window.get() != null) {
-                			return true;
-          				}        
-        			});
+              if(Wicket.Window.get() == null) {
+                NavigationUtil.next();
+                return false;
+              }
+              return true;
+      			});
         			
   $(document).bind('keydown', 'home',
-                    function (evt){ 
-                      NavigationUtil.begin(); 
-                      return false; 
+                    function (evt) { 
+                      if(Wicket.Window.get() == null) {
+                        NavigationUtil.begin();
+                        return false; 
+                      }
+                      return true;
                     }
                   );
 
-        			
   $(document).bind('keydown', 'end',
                     function (evt){ 
-                      NavigationUtil.end(); 
-                      return false; 
+                      if(Wicket.Window.get() == null) {
+                        NavigationUtil.end(); 
+                        return false;
+                      }
+                      return true;
                     }
                   );
         			
-  $(document).bind('keydown', {combi:'f', disableInInput: true}, 
-  					function(evt) { 
-  						NavigationUtil.finish();
-        			}, 
-        			function(evt, jTarget, elem) {
-          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				|| elem.is("input[type=text]") || elem.is("textarea")||
-   			  				Wicket.Window.get() != null) {
-                			return true;
-          				}        
-        			});
+  $(document).bind('keydown', 'f', 
+  					function(evt) {
+              if(Wicket.Window.get() == null) {
+                NavigationUtil.finish();
+                return false;
+              }
+         			return true;
+       			});
         			
-  $(document).bind('keydown', {combi:'a', disableInInput: true}, 
+  $(document).bind('keydown', 'a', 
   					function(evt) { 
-  						NavigationUtil.admin();
-        			}, 
-        			function(evt, jTarget, elem) {
-          				if (jTarget.is("input[type=text]") || jTarget.is("textarea")
-   			  				||  elem.is("input[type=text]") || elem.is("textarea")||
-   			  				Wicket.Window.get() != null ) {
-                			return true;
-          				}        
-        			}); 
-        			
-  $(document).bind('keydown', {combi:'esc', disableInInput: true}, 
-  					function(evt) { 
-  						NavigationUtil.closeWindow();
-        			},
-        			function(evt, jTarget, elem) {
-          				return false;        
-        			});        			       			
-		
+              if(Wicket.Window.get() == null) {
+                NavigationUtil.admin();
+                return false;
+              }
+              return true;
+            });
+
   WindowUtil.attachEvent("load", Resizer.resizeWizard);
   WindowUtil.attachEvent("resize", Resizer.resizeWizard);
 }
