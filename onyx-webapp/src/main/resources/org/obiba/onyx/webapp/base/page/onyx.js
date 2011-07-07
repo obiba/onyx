@@ -76,25 +76,6 @@ Resizer.resize  = function(id, offsetBottom) {
 	}
 }
 
-// Resize the content wrapper to fill the window.
-Resizer.resizeContentWrapper = function() {
-    var pageHeader = $('.ui-layout-north');
-    var pageHeaderHeight = 43;
-    if (pageHeader) {
-      pageHeaderHeight = pageHeader.height();
-    }
-
-    var pageFooter = $('#pageFooter');
-    var pageFooterHeight = 40;
-    if (pageFooter) {
-      pageFooterHeight = pageFooter.height();
-    }
-    //alert('header='+pageHeaderHeight+' footer='+pageFooterHeight);
-	Resizer.resize('contentWrapper', pageHeaderHeight + pageFooterHeight + 7);
-}
-WindowUtil.attachEvent("load", Resizer.resizeContentWrapper);
-WindowUtil.attachEvent("resize", Resizer.resizeContentWrapper);
-
 // Resize the participantAndBarcodeAssignmentWrapper, based on the current size of the content wrapper.
 Resizer.resizeParticipantAndBarcodeAssignmentWrapper = function() {
   var participantAndBarcodeAssignmentWrapper = $('#participantAndBarcodeAssignmentWrapper');
@@ -105,8 +86,6 @@ Resizer.resizeParticipantAndBarcodeAssignmentWrapper = function() {
     }
   }
 }
-WindowUtil.attachEvent("load", Resizer.resizeParticipantAndBarcodeAssignmentWrapper);
-WindowUtil.attachEvent("resize", Resizer.resizeParticipantAndBarcodeAssignmentWrapper);
 
 Resizer.resizeWizard = function() {
 	var wizardFooter = $('#wizardFooter');
@@ -127,27 +106,16 @@ Resizer.resizeWizard = function() {
 	//alert("wizardContent.height: "+wizardContent.height());
 }
 
-Resizer.resizeMenu = function() {
-    var menuWrapper = $('#menuWrapper');
-    if (menuWrapper) {
-	    var menuItems = $('#menuWrapper .obiba-menu li');   
-	    if (menuItems.length != 0) {	        
-	        var menuWidth = 0;	        
-	        for (var i=0; i<menuItems.length; i++) {
-	            computedWidth = document.defaultView.getComputedStyle(menuItems[i], "").getPropertyValue("width");
-	            if (computedWidth.indexOf('px') != -1) {
-	                menuWidth += parseFloat(computedWidth.substring(0, computedWidth.length-2));
-	            }
-	        }
-	        menuWrapper.width(Math.ceil(menuWidth) + 'px');
-        }
-    }
-}
-WindowUtil.attachEvent("load", Resizer.resizeMenu);
-
 Resizer.resizeConsentFrame = function() {
     Resizer.resize('consentFrame',180);
 }
+
+Resizer.resizeAll = function() {
+  Resizer.resizeParticipantAndBarcodeAssignmentWrapper();
+}
+
+WindowUtil.attachEvent('load', Resizer.resizeAll);
+WindowUtil.attachEvent('resize', Resizer.resizeAll);
 
 function resizeModalFeedback() {
 	var feedback = $('div.wicket-modal div.onyx ul.feedback');
@@ -290,8 +258,8 @@ var baseLayoutSettings = {
 		spacing_closed:0
 	},
 	north: {
-	    minSize: 43,
-		size: "auto"
+    minSize: 44,
+		size: 44
 	}
 }
 
