@@ -36,7 +36,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
 
   private static final Logger log = LoggerFactory.getLogger(VariableStageDependencyCondition.class);
 
-  private MagmaInstanceProvider magmaInstanceProvider;
+  private transient MagmaInstanceProvider magmaInstanceProvider;
 
   private String stageName;
 
