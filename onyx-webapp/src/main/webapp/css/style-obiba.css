@@ -89,9 +89,9 @@ div.banner {
 }
 
 #logo {
-  float: left;
-  margin-left: 4.1667em;
-  margin-top: 0.6667em;
+  position:absolute;
+  left: 4.1667em;
+  top: 0.6667em;
 }
 
 #pageHeader2 {
