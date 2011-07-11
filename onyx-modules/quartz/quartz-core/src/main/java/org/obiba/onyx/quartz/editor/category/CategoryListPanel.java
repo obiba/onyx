@@ -81,8 +81,7 @@ public class CategoryListPanel extends Panel {
 
   // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -254,7 +253,7 @@ public class CategoryListPanel extends Panel {
           String name = categoryName.getModelObject();
           if(StringUtils.isBlank(name)) return;
           if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
-            error(new StringResourceModel("CategoryAlreadyExists", CategoryListPanel.this, null).getObject());
+            error(new StringResourceModel("CategoryAlreadyExistsForThisQuestion", CategoryListPanel.this, null).getObject());
             return;
           }
           addCategory(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name, false);
@@ -375,7 +374,7 @@ public class CategoryListPanel extends Panel {
           }
           String name = categoryWithQuestions.getCategory().getName();
           if(checkIfCategoryAlreadyExists(((IModel<EditedQuestion>) CategoryListPanel.this.getDefaultModel()).getObject().getElement(), name)) {
-            error(new StringResourceModel("CategoryAlreadyExists", CategoryListPanel.this, null).getObject());
+            error(new StringResourceModel("CategoryAlreadyExistsForThisQuestion", CategoryListPanel.this, null).getObject());
             return;
           }
           Category category = categoryWithQuestions.getCategory();

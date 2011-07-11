@@ -40,7 +40,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
@@ -85,6 +84,8 @@ public abstract class CategoryWindow extends Panel {
 
   private final String initialName;
 
+  private List<String> otherCategoryNames = new ArrayList<String>();
+
   public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
@@ -115,16 +116,23 @@ public abstract class CategoryWindow extends Panel {
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
+
+    for(Category otherCategory : question.getCategories()) {
+      if(!otherCategory.getName().equals(initialName)) {
+        otherCategoryNames.add(otherCategory.getName());
+      }
+    }
+
     name.add(new AbstractValidator<String>() {
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(initialName, validatable.getValue())) {
-          QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
-          questionnaireModel.getObject().setQuestionnaireCache(null);
-          Category findCategory = questionnaireFinder.findCategory(validatable.getValue());
-          if(findCategory != null && findCategory != category) {
-            error(validatable, "CategoryAlreadyExists");
+
+        // test if category doesn't already exist when renaming
+        String value = validatable.getValue();
+        for(String categoryName : otherCategoryNames) {
+          if(StringUtils.equalsIgnoreCase(value, categoryName)) {
+            error(validatable, "CategoryAlreadyExistsForThisQuestion");
           }
         }
       }
