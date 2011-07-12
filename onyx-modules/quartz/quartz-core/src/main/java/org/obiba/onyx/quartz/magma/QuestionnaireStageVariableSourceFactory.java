@@ -144,7 +144,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         } else {
           QuestionVariableBuilder questionVariableBuilder = new QuestionVariableBuilder(question).withCategories();
           // If the question has a datasource, then it's never displayed. BoilerPlates don't allow comments.
-          if(question.hasDataSource() || question.isBoilerPlate()) {
+          if(question.hasDataSource() || question.isBoilerPlate() || !questionnaire.isCommentable()) {
             questionVariableBuilder.withoutComment();
           }
           questionVariableBuilder.build();

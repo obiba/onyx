@@ -1,44 +1,67 @@
 <wicket:panel>
-	
+
 	<span wicket:id="feedback" />
-	
-	<form wicket:id="form" autocomplete="off" >	
-	 	
-	 	<table class="keyValueTable">
+
+	<form wicket:id="form" autocomplete="off">
+
+		<table class="keyValueTable">
 			<tr>
-				<td class="keyValueTableKey"><label wicket:id="nameLabel">nameLabel</label></td>
-				<td class="input"><input wicket:id="name" type="text" size="40" autocomplete="off" /></td>
-				<td><span wicket:id="nameHelp" /></td>
-		  </tr>	    	
+				<td class="keyValueTableKey"><label wicket:id="nameLabel"></label>
+				</td>
+				<td class="input"><input wicket:id="name" type="text" size="40"
+					autocomplete="off" />
+				</td>
+				<td><span wicket:id="nameHelp"></span>
+				</td>
+			</tr>
 			<tr>
-		    <td class="keyValueTableKey"><label wicket:id="versionLabel">versionLabel</label></td>
-		    <td class="input"><input wicket:id="version" type="text" size="40" autocomplete="off" /></td>
-		    <td></td>
-		  </tr>
+				<td class="keyValueTableKey"><label wicket:id="versionLabel"></label>
+				</td>
+				<td class="input"><input wicket:id="version" type="text"
+					size="40" autocomplete="off" />
+				</td>
+				<td></td>
+			</tr>
 			<tr>
-				<td valign="top" class="keyValueTableKey"><wicket:message key="UIType" /></td>
+				<td class="keyValueTableKey"><label wicket:id="commentableLabel"></label>
+				</td>
+				<td class="input"><input wicket:id="commentable" type="checkbox" />
+				</td>
+				<td><span wicket:id="commentableHelp"></span>
+				</td>
+			</tr>
+
+			<tr>
+				<td valign="top" class="keyValueTableKey"><wicket:message key="UIType" />
+				</td>
 				<td class="input">
 					<div wicket:id="uiType">
-						<input wicket:id="standard" type="radio" /><label wicket:id="standardLabel">standardLabel</label>
-						<br />
-						<input wicket:id="simplified" type="radio" /><label wicket:id="simplifiedLabel">simplifiedLabel</label>
-					</div>
+						<input wicket:id="standard" type="radio" /><label
+							wicket:id="standardLabel">standardLabel</label> <br /> <input
+							wicket:id="simplified" type="radio" /><label
+							wicket:id="simplifiedLabel">simplifiedLabel</label>
+					</div></td>
+				<td><span wicket:id="uiHelp"></span>
 				</td>
-				<td><span wicket:id="uiHelp" /></td>
-			</tr>	
+			</tr>
 			<tr>
-			  <td valign="top" class="keyValueTableKey"><wicket:message key="Languages" /></td>
-				<td><div wicket:id="languages"></div></td>
-			</tr>	  		  			    
+				<td valign="top" class="keyValueTableKey"><wicket:message key="Languages" />
+				</td>
+				<td><div wicket:id="languages"></div>
+				</td>
+			</tr>
 		</table>
-		
+
 		<fieldset>
-			<legend><wicket:message key="LanguagesProperties" /> <span wicket:id="labelsHelp" /></legend>		
+			<legend>
+				<wicket:message key="LanguagesProperties" />
+				<span wicket:id="labelsHelp" />
+			</legend>
 			<div wicket:id="labels"></div>
 		</fieldset>
-		
+
 		<div wicket:id="saveCancel" class="modal-footer" />
-		
+
 	</form>
-	
+
 </wicket:panel>

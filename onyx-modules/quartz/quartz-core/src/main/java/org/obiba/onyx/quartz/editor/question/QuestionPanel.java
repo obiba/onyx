@@ -189,10 +189,32 @@ public abstract class QuestionPanel extends Panel {
    * @param target
    */
   public void onSave(AjaxRequestTarget target) {
+    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
     if(!variableNameBehavior.isVariableNameDefined()) {
-      ((EditedQuestion) getDefaultModelObject()).getElement().setVariableName(null);
+      question.setVariableName(null);
     }
+    // TODO test before commit
+    // if(!question.getName().equals(initialName)) {
+    // for(Category category : question.getCategories()) {
+    // updateVariableNameKeys(category.getVariableNames(), question.getName());
+    // Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
+    // for(OpenAnswerDefinition oad : openAnswerDefinitionsByName.values()) {
+    // updateVariableNameKeys(oad.getVariableNames(), question.getName());
+    // }
+    // }
+    // }
   }
+
+  // TODO test before commit
+  // private void updateVariableNameKeys(Map<String, String> variableNames, String newKey) {
+  // if(variableNames.containsKey(initialName)) {
+  // String value = variableNames.get(initialName);
+  // if(StringUtils.isNotBlank(value)) {
+  // variableNames.put(newKey, value);
+  // variableNames.remove(initialName);
+  // }
+  // }
+  // }
 
   /**
    * 

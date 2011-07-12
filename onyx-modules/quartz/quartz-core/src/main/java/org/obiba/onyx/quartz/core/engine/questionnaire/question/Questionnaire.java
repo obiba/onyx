@@ -49,6 +49,8 @@ public class Questionnaire implements IHasSection {
   /** Indicates if question conditions where converted to Magma variables */
   private boolean convertedToMagmaVariables;
 
+  private boolean commentable;
+
   private transient QuestionnaireCache questionnaireCache;
 
   public Questionnaire(String name, String version) {
@@ -236,6 +238,14 @@ public class Questionnaire implements IHasSection {
     DefaultPropertyKeyProviderImpl provider = new DefaultPropertyKeyProviderImpl();
     provider.setPropertyKeyNamingStrategy(new DefaultPropertyKeyNamingStrategy());
     return provider;
+  }
+
+  public boolean isCommentable() {
+    return commentable;
+  }
+
+  public void setCommentable(boolean commentable) {
+    this.commentable = commentable;
   }
 
 }
