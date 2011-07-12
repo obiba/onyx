@@ -49,7 +49,7 @@ public class Questionnaire implements IHasSection {
   /** Indicates if question conditions where converted to Magma variables */
   private boolean convertedToMagmaVariables;
 
-  private boolean commentable;
+  private Boolean commentable;
 
   private transient QuestionnaireCache questionnaireCache;
 
@@ -241,7 +241,7 @@ public class Questionnaire implements IHasSection {
   }
 
   public boolean isCommentable() {
-    return commentable;
+    return commentable == null ? true : commentable;
   }
 
   public void setCommentable(boolean commentable) {
