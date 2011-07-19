@@ -242,7 +242,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
       @Override
       public boolean apply(Variable v) {
         // Filter for text when the operator is 'IN'
-        if(validator.getOperator().equals(ComparisonOperator.in)) {
+        if(validator.getOperator() != null && validator.getOperator().equals(ComparisonOperator.in)) {
           return v.getValueType().equals(VariableUtils.convertToValueType(DataType.TEXT));
         }
         return v.getValueType().equals(valueType);
@@ -285,7 +285,8 @@ public abstract class ValidationDataSourceWindow extends Panel {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         VariablePanel variablePanel = new VariablePanel("content", new Model(null), questionnaireModel, valueType) {
           @Override
-          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable createdVariable) {
+          public void onSave(@SuppressWarnings("hiding")
+          AjaxRequestTarget target, Variable createdVariable) {
             variables.add(createdVariable);
             questionnaire.addVariable(createdVariable);
             variableDropDown.setModelObject(createdVariable);
@@ -359,12 +360,14 @@ public abstract class ValidationDataSourceWindow extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         modalWindow.close(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
