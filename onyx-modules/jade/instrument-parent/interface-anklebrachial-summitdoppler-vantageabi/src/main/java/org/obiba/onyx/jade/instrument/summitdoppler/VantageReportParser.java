@@ -321,7 +321,7 @@ public class VantageReportParser {
       return "{brachial=" + brachial + ", ankle=" + ankle + ", index=" + index + ", clock=" + clock + ", scale=" + scale + ", waveForm=" + toString(waveForm) + "}";
     }
 
-    private String toString(byte[] ba) {
+    public String toString(byte[] ba) {
       HexBinaryAdapter adapter = new HexBinaryAdapter();
       return adapter.marshal(ba);
     }
