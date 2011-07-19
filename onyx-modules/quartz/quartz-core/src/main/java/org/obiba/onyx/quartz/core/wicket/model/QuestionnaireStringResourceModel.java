@@ -56,6 +56,8 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
 
   private Object[] stringArgs;
 
+  private boolean asQuartzAnswerFormat;
+
   //
   // Constructors
   //
@@ -72,16 +74,21 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
     initialize(property, stringArgs);
   }
 
+  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
+    this(localizable, property, true, stringArgs);
+  }
+
   /**
    * Constructor using directly the {@link IQuestionnaireElement}.
    * @param localizable
    * @param property
    * @param stringArgs
    */
-  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
+  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, boolean asQuartzAnswerFormat, Object... stringArgs) {
     super();
     if(localizable == null) throw new IllegalArgumentException("Localizable element cannot be null.");
     this.localizableModel = new QuestionnaireModel<IQuestionnaireElement>(localizable);
+    this.asQuartzAnswerFormat = asQuartzAnswerFormat;
     initialize(property, stringArgs);
   }
 
@@ -151,9 +158,18 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
     if(value.getValueType().equals(TextType.get())) {
       Variable variable = varDs.getVariable();
       if(!value.isSequence()) {
-        dataStr = "<span class=\"" + OBIBA_QUARTZ_ANSWER_CSS + "\">" + getValueAsLabel(variable, value, locale) + "</span>";
+        if(asQuartzAnswerFormat) {
+          dataStr = "<span class=\"" + OBIBA_QUARTZ_ANSWER_CSS + "\">" + getValueAsLabel(variable, value, locale) + "</span>";
+        } else {
+          dataStr = getValueAsLabel(variable, value, locale);
+        }
       } else {
-        StringBuffer buff = new StringBuffer("<ul class=\"" + OBIBA_QUARTZ_ANSWER_CSS + "\">");
+        StringBuffer buff = new StringBuffer();
+        if(asQuartzAnswerFormat) {
+          buff.append("<ul class=\"" + OBIBA_QUARTZ_ANSWER_CSS + "\">");
+        } else {
+          buff.append("<ul>");
+        }
         for(Value val : value.asSequence().getValues()) {
           buff.append("<li>").append(getValueAsLabel(variable, val, locale)).append("</li>");
         }
