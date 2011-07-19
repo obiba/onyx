@@ -24,6 +24,8 @@ public class EditedVariable implements Serializable {
 
   private String valueType;
 
+  private boolean repeatable;
+
   private String script;
 
   public String getName() {
@@ -55,6 +57,14 @@ public class EditedVariable implements Serializable {
 
   public void setScript(String script) {
     this.script = script;
+  }
+
+  public boolean isRepeatable() {
+    return repeatable;
+  }
+
+  public void setRepeatable(boolean repeatable) {
+    this.repeatable = repeatable;
   }
 
 }

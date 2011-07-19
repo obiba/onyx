@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.variable;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -28,6 +29,7 @@ public class VariablePreview extends Panel {
     Variable variable = model.getObject();
     add(new Label("name", variable.getName()));
     add(new Label("type", WordUtils.capitalize(variable.getValueType().getName())));
+    add(new Label("repeatable", WordUtils.capitalize(BooleanUtils.toStringTrueFalse(variable.isRepeatable()))));
     Label script = new Label("script", variable.getAttributeStringValue("script"));
     script.add(new SyntaxHighlighterBehavior());
     add(script);

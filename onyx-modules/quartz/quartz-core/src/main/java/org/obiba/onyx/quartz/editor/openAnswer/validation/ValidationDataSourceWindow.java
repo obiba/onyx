@@ -81,8 +81,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private VariableUtils variableUtils;
 
@@ -242,6 +241,10 @@ public abstract class ValidationDataSourceWindow extends Panel {
     final List<Variable> variables = new ArrayList<Variable>(Collections2.filter(questionnaire.getVariables(), new Predicate<Variable>() {
       @Override
       public boolean apply(Variable v) {
+        // Filter for text when the operator is 'IN'
+        if(validator.getOperator().equals(ComparisonOperator.in)) {
+          return v.getValueType().equals(VariableUtils.convertToValueType(DataType.TEXT));
+        }
         return v.getValueType().equals(valueType);
       }
     }));
@@ -294,7 +297,8 @@ public abstract class ValidationDataSourceWindow extends Panel {
           }
 
           @Override
-          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+          public void onCancel(@SuppressWarnings("hiding")
+          AjaxRequestTarget target) {
             variableWindow.close(target);
           }
         };
