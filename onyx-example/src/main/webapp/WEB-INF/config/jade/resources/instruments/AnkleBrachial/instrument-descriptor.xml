@@ -2,6 +2,10 @@
 <instrumentType>
 
   <name>AnkleBrachial</name>
+  
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount>
 
   <instrumentParameters>
     
@@ -45,7 +49,7 @@
     </output>
 
     <output>
-      <vendorName>LeftWaveForm</vendorName>
+      <vendorName>LeftWaveform</vendorName>
       <code>RES_L_WAVEFORM</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -91,7 +95,7 @@
     </output>
 
     <output>
-      <vendorName>RightWaveForm</vendorName>
+      <vendorName>RightWaveform</vendorName>
       <code>RES_R_WAVEFORM</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>

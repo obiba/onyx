@@ -32,9 +32,25 @@ public class VantageReportParser {
 
   private final int SEGMENT_LENGTH = 1024;
 
+  private final int NO_VALUE = 0xFFF;
+
+  private final int SITE_OFF = 0xEEE;
+
+  private final int SITE_DONE = 0xDDD;
+
+  private final int CHECK_MARK = 0xCCC;
+
+  private final int NOT_ANALYZABLE = 0xBBB;
+
+  private final int ABNORMAL_RESULTS = 0xAAA;
+
+  private final int INCREASE_PRESSURE_INFLATE = 0x999;
+
+  private final int DECREASE_PRESSURE_DEFLATE = 0x888;
+
   private final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("MMddyyHHmmss");
 
-  protected Logger log = LoggerFactory.getLogger(VantageReportParser.class);
+  private Logger log = LoggerFactory.getLogger(VantageReportParser.class);
 
   private List<ExamData> examDatas;
 
@@ -66,6 +82,12 @@ public class VantageReportParser {
 
     for(int exam = 0; exam < examCount; exam++) {
 
+      // pressure index
+      int[] pressures = decodeToInts(ba, exam, "30", 20);
+      for(int i = 0; i < pressures.length; i++) {
+        log.info(i + " => " + pressures[i]);
+      }
+
       ExamData examData = new ExamData();
       examDatas.add(examData);
 
@@ -74,39 +96,78 @@ public class VantageReportParser {
       // timestamp
       examData.setTimestamp(decodeToString(ba, exam, "20", 12));
 
-      // pressure index
-      int[] pressures = decodeToInts(ba, exam, "30", 20);
-      // for(int i = 0; i < pressures.length; i++) {
-      // log.info(i + " => " + pressures[i]);
-      // }
+      /*
+       * The Right/Left Arm, Ankle and ABI fields should be fairly self explanatory, except I will add that there are
+       * non-numeric values that can appear in these fields depending on the results of the exam:
+       * 
+       * 0FFFh No Value - Dash '---'
+       * 
+       * 0EEEh Site Off
+       * 
+       * 0DDDh Site Done
+       * 
+       * 0CCCh Check Mark
+       * 
+       * 0BBBh Not Analyzable
+       * 
+       * 0AAAh Abnormal Results
+       * 
+       * 0999h Increase Pressure Inflate
+       * 
+       * 0888h Decrease Pressure Deflate
+       * 
+       * For the case of Waveforms, the field will either be No Value if the waveforms have not been taken, Site Off if
+       * the waveforms have been turned off, or Site Done if the waveforms are complete. The data for the actual
+       * waveforms are located in the other fields.
+       * 
+       * Corrected ankle fields are not implemented and should be skipped.
+       */
 
       // left
       SideData side = new SideData();
       examData.setLeft(side);
       // left pressures
-      side.setBrachial(pressures[8]);
-      side.setAnkle(pressures[10]);
-      side.setIndex(((double) pressures[14]) / 100);
-      // left waveform
-      side.setWaveForm(decodeToBytes(ba, exam, "60", 400));
-      // left clock
-      side.setClock(decodeToString(ba, exam, "01f0", 12));
-      // left scale
-      side.setScale(decodeToByte(ba, exam, "01fc"));
+      if(pressures[9] == 0) {
+        side.setBrachial(pressures[8]);
+      }
+      if(pressures[11] == 0) {
+        side.setAnkle(pressures[10]);
+      }
+      if(pressures[15] == 0) {
+        side.setIndex(((double) pressures[14]) / 100);
+      }
+      // waveform
+      if(pressures[6] * 16 + pressures[7] == SITE_DONE) {
+        // left waveform
+        side.setWaveForm(decodeToBytes(ba, exam, "60", 400));
+        // left clock
+        side.setClock(decodeToString(ba, exam, "01f0", 12));
+        // left scale
+        side.setScale(decodeToByte(ba, exam, "01fc"));
+      }
 
       // right
       side = new SideData();
       examData.setRight(side);
       // right pressures
-      side.setBrachial(pressures[2]);
-      side.setAnkle(pressures[4]);
-      side.setIndex(((double) pressures[12]) / 100);
-      // right waveform
-      side.setWaveForm(decodeToBytes(ba, exam, "0200", 400));
-      // right clock
-      side.setClock(decodeToString(ba, exam, "0390", 12));
-      // right scale
-      side.setScale(decodeToByte(ba, exam, "039c"));
+      if(pressures[3] == 0) {
+        side.setBrachial(pressures[2]);
+      }
+      if(pressures[5] == 0) {
+        side.setAnkle(pressures[4]);
+      }
+      if(pressures[13] == 0) {
+        side.setIndex(((double) pressures[12]) / 100);
+      }
+      // waveform
+      if(pressures[0] * 16 + pressures[1] == SITE_DONE) {
+        // right waveform
+        side.setWaveForm(decodeToBytes(ba, exam, "0200", 400));
+        // right clock
+        side.setClock(decodeToString(ba, exam, "0390", 12));
+        // right scale
+        side.setScale(decodeToByte(ba, exam, "039c"));
+      }
 
       log.info(examData.toString());
     }

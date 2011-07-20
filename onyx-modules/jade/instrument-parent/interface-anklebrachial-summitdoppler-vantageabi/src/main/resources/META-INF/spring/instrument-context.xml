@@ -6,16 +6,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.summitdoppler.VantageABIInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />
-    <property name="externalAppHelper" ref="externalAppHelper"/> 
-    <property name="settingsHelper" ref="settingsHelper"/>     
     <property name="locale" ref="locale"/>     
   </bean>
   
-  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper"/>
-  
-  <bean name="settingsHelper" class="org.obiba.onyx.jade.instrument.LocalSettingsHelper">
-    <property name="settingsFileName" value="Tbf310.ini" />   
-    <property name="settingsFileComment" value="Settings for Tanita TBF-310"/>
-  </bean>  
-
 </beans>
