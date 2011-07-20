@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>AnkleBrachial</name>
+
+  <instrumentParameters>
+    
+    <output>
+      <vendorName>Name</vendorName>
+      <code>OUTPUT_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+
+    <output>
+      <vendorName>Timestamp</vendorName>
+      <code>RES_MEASUREMENT_DATE</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>LeftBrachial</vendorName>
+      <code>RES_L_BRACHIAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>mmHg</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>LeftAnkle</vendorName>
+      <code>RES_L_ANKLE</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>mmHg</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>LeftIndex</vendorName>
+      <code>RES_L_ABI</code>
+      <dataType>DECIMAL</dataType>
+      <measurementUnit/>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>LeftWaveForm</vendorName>
+      <code>RES_L_WAVEFORM</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>LeftClock</vendorName>
+      <code>RES_L_CLOCK</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>LeftScale</vendorName>
+      <code>RES_L_SCALE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+
+    <output>
+      <vendorName>RightBrachial</vendorName>
+      <code>RES_R_BRACHIAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>mmHg</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>RightAnkle</vendorName>
+      <code>RES_R_ANKLE</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>mmHg</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>RightIndex</vendorName>
+      <code>RES_R_ABI</code>
+      <dataType>DECIMAL</dataType>
+      <measurementUnit/>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>RightWaveForm</vendorName>
+      <code>RES_R_WAVEFORM</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>RightClock</vendorName>
+      <code>RES_R_CLOCK</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <vendorName>RightScale</vendorName>
+      <code>RES_R_SCALE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+
+  </instrumentParameters>
+</instrumentType>

@@ -248,6 +248,15 @@
   </stage>
 
   <stage>
+    <name>AnkleBrachial</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
     <name>BoneDensity</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">
