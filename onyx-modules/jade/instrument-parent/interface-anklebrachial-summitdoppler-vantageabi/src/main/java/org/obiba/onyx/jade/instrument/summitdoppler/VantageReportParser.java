@@ -82,12 +82,6 @@ public class VantageReportParser {
 
     for(int exam = 0; exam < examCount; exam++) {
 
-      // pressure index
-      int[] pressures = decodeToInts(ba, exam, "30", 20);
-      for(int i = 0; i < pressures.length; i++) {
-        log.info(i + " => " + pressures[i]);
-      }
-
       ExamData examData = new ExamData();
       examDatas.add(examData);
 
@@ -122,6 +116,12 @@ public class VantageReportParser {
        * 
        * Corrected ankle fields are not implemented and should be skipped.
        */
+
+      // pressure index
+      int[] pressures = decodeToInts(ba, exam, "30", 20);
+      // for(int i = 0; i < pressures.length; i++) {
+      // log.info(i + " => " + pressures[i]);
+      // }
 
       // left
       SideData side = new SideData();
@@ -169,7 +169,7 @@ public class VantageReportParser {
         side.setScale(decodeToByte(ba, exam, "039c"));
       }
 
-      log.info(examData.toString());
+      // log.info(examData.toString());
     }
   }
 
