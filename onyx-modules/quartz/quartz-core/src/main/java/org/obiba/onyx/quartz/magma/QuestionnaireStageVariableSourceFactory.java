@@ -298,6 +298,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         buildParentPlaceholderVariable();
       }
 
+      if(!questionnaire.isCommentable()) {
+        withoutComment();
+      }
+
       if(properties.size() > 0) {
         BeanVariableValueSourceFactory<QuestionAnswer> factory = new BeanVariableValueSourceFactory<QuestionAnswer>("Participant", QuestionAnswer.class);
         factory.setProperties(properties);

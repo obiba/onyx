@@ -65,6 +65,14 @@
 
     <dependency>
       <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-anklebrachial-summitdoppler-vantageabi</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>interface-arterialstiffness</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
@@ -157,6 +165,14 @@
                   <type>zip</type>
                   <outputDirectory>
                     ${project.build.directory}/${project.build.finalName}/instruments/ECG
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-anklebrachial-summitdoppler-vantageabi</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/AnkleBrachial
                   </outputDirectory>
                 </artifactItem>
                 <artifactItem>

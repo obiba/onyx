@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -91,9 +92,11 @@ public abstract class VariablePanel extends Panel {
     final Variable variable = variableModel.getObject();
     if(variable == null) {
       editedVariable.setValueType(forcedValueType);
+      editedVariable.setRepeatable(false);
     } else {
       editedVariable.setName(variable.getName());
       editedVariable.setValueType(variable.getValueType());
+      editedVariable.setRepeatable(variable.isRepeatable());
       editedVariable.setScript(variable.getAttributeStringValue("script"));
     }
     final IModel<EditedVariable> model = new Model<EditedVariable>(editedVariable);
@@ -146,6 +149,10 @@ public abstract class VariablePanel extends Panel {
     valueType.setEnabled((forcedValueType == null) ? usedInQuestion : false);
 
     form.add(valueType.setLabel(new ResourceModel("Type"))).add(new SimpleFormComponentLabel("typeLabel", valueType));
+
+    CheckBox repeatable = new CheckBox("repeatable", new PropertyModel<Boolean>(form.getModel(), "repeatable"));
+
+    form.add(repeatable.setLabel(new ResourceModel("Repeatable"))).add(new SimpleFormComponentLabel("repeatableLabel", repeatable));
 
     TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));
     script.add(new RequiredFormFieldBehavior());
@@ -216,16 +223,21 @@ public abstract class VariablePanel extends Panel {
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
         Builder builder = Variable.Builder.newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
         builder.addAttribute("script", editedVariable.getScript());
+
+        if(editedVariable.isRepeatable()) builder.repeatable();
+
         VariablePanel.this.onSave(target, builder.build());
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         VariablePanel.this.onCancel(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }

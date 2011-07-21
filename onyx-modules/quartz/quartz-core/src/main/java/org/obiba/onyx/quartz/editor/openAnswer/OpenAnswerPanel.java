@@ -205,7 +205,7 @@ public class OpenAnswerPanel extends Panel {
     name.add(new AbstractValidator<String>() {
       @Override
       protected void onValidate(IValidatable<String> validatable) {
-        if(!StringUtils.equalsIgnoreCase(initialName, validatable.getValue())) {
+        if(!StringUtils.equals(initialName, validatable.getValue())) {
           boolean alreadyContains = false;
           if(category != null) {
             Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();

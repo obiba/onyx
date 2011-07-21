@@ -48,6 +48,12 @@ public enum ComparisonOperator {
     public boolean compare(Data left, Data right) {
       return left.compareTo(right) >= 0;
     }
+  },
+  in {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.getValueAsString().contains(right.getValueAsString());
+    }
   };
 
   /**

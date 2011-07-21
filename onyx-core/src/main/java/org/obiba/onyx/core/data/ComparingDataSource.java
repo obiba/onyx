@@ -44,6 +44,8 @@ public class ComparingDataSource implements IDataSource, Cloneable {
 
     if(dataLeft == null && dataRight == null) {
       return DataBuilder.buildBoolean(isComparisonValid(0));
+    } else if(dataLeft != null && comparisonOperator.equals(ComparisonOperator.in)) {
+      return DataBuilder.buildBoolean(isComparisonValid(dataRight.getValueAsString().indexOf("\"" + dataLeft.getValueAsString() + "\"")));
     } else if(dataLeft != null) {
       return DataBuilder.buildBoolean(isComparisonValid(dataLeft.compareTo(dataRight)));
     } else {
@@ -90,6 +92,8 @@ public class ComparingDataSource implements IDataSource, Cloneable {
       return result > 0;
     case ge:
       return result >= 0;
+    case in:
+      return result >= 0;
     default:
       return false;
     }
@@ -121,6 +125,9 @@ public class ComparingDataSource implements IDataSource, Cloneable {
       break;
     case ge:
       op = ">=";
+      break;
+    case in:
+      op = "in";
       break;
     default:
       op = "";

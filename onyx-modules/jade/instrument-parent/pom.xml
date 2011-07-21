@@ -17,6 +17,7 @@
   </parent>
 
   <modules>
+    <module>interface-anklebrachial-summitdoppler-vantageabi</module>
     <module>interface-bioimpedance-tanita-tbf310</module>
     <module>interface-bioimpedance-tanita-bc418</module>    
     <module>interface-ecg-cardiosoft</module>

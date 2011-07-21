@@ -101,7 +101,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     }, new QuestionCategoryChoiceRenderer());
     questionCategoriesDropDownChoice.setOutputMarkupId(true);
 
-    questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
+    questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label", false));
     questionCategoriesDropDownChoice.setNullValid(true);
 
     // Set model on submission

@@ -73,6 +73,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Questionnaire.class, "version");
     xstream.useAttributeFor(Questionnaire.class, "uiType");
     xstream.useAttributeFor(Questionnaire.class, "convertedToMagmaVariables");
+    xstream.useAttributeFor(Questionnaire.class, "commentable");
 
     xstream.alias("section", Section.class);
     xstream.useAttributeFor(Section.class, "name");

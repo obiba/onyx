@@ -126,6 +126,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
     final WebMarkupContainer imageLink = new WebMarkupContainer("comment-action");
     imageLink.setOutputMarkupId(true);
+    imageLink.setVisible(activeQuestionnaireAdministrationService.getQuestionnaire().isCommentable());
     add(imageLink);
 
     // Boiler Plate questions should not have comments.

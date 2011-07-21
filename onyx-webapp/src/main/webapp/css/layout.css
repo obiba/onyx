@@ -7,3 +7,11 @@
 .ui-layout-pane-south {
     overflow: hidden !important;
 }
+
+/* jquery.layout will change these, but it helps the browser layout things before the jquery call */
+.ui-layout-center { 
+	position: relative;
+}
+.ui-layout-north { 
+	position: relative;
+}

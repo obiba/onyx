@@ -26,6 +26,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.CSSPackageResource;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
@@ -130,6 +131,12 @@ public abstract class QuestionnairePanel extends Panel {
     version.setLabel(new ResourceModel("Version"));
     version.add(new RequiredFormFieldBehavior());
     form.add(version).add(new SimpleFormComponentLabel("versionLabel", version));
+
+    CheckBox commentable = new CheckBox("commentable", new PropertyModel<Boolean>(questionnaire, "commentable"));
+    commentable.setLabel(new ResourceModel("Commentable"));
+    form.add(commentable);
+    form.add(new SimpleFormComponentLabel("commentableLabel", commentable));
+    form.add(new HelpTooltipPanel("commentableHelp", new ResourceModel("Commentable.Tooltip")));
 
     QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
     guessUIType(questionnaire);

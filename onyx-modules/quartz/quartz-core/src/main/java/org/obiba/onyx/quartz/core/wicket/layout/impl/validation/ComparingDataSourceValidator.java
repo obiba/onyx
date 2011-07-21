@@ -78,6 +78,9 @@ public class ComparingDataSourceValidator implements IValidator<Data> {
       case ge:
         error = newValidationError("ExpectedToBeGreaterEqual", data, dataToCompare);
         break;
+      case in:
+        error = newValidationError("ExpectedToBeIn", data, dataToCompare);
+        break;
       default:
         break;
       }
