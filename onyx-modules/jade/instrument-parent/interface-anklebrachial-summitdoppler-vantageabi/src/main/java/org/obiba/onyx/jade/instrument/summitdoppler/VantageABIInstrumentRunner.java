@@ -171,9 +171,7 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
   protected void buildGUI() {
 
     appWindow.setAlwaysOnTop(true);
-    // appWindow.setUndecorated(true);
     appWindow.setResizable(false);
-    // appWindow.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
     appWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
     appWindow.addWindowListener(new WindowAdapter() {
@@ -191,7 +189,6 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
     Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     appWindow.setLocation(SCREEN_SIZE.width / 2 - appWindowWidth / 2, SCREEN_SIZE.height / 2 - appWindowHeight / 2);
 
-    // appWindow.setBackground(Color.white);
     appWindow.setVisible(true);
   }
 
@@ -203,7 +200,6 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
   protected JPanel buildMainPanel() {
 
     JPanel panel = new JPanel();
-    // panel.setBackground(new Color(206, 231, 255));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     panel.add(buildMeasureCountSubPanel());
@@ -219,7 +215,6 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
 
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    // panel.setBackground(new Color(206, 231, 255));
 
     panel.add(measureCountLabel = new MeasureCountLabel());
 
@@ -233,7 +228,6 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
 
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    // panel.setBackground(new Color(206, 231, 255));
     panel.add(Box.createVerticalGlue());
 
     JButton openButton = new JButton(resourceBundle.getString("Select_file"));
@@ -271,7 +265,7 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
     JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    // panel.setBackground(new Color(206, 231, 255));
+
     JButton cancelButton = new JButton(resourceBundle.getString("Cancel"));
     cancelButton.setMnemonic('A');
     cancelButton.setToolTipText(resourceBundle.getString("ToolTip.Cancel_measurement"));
@@ -373,13 +367,13 @@ public class VantageABIInstrumentRunner implements InstrumentRunner, Initializin
       appWindow.repaint();
 
       log.info("Sending output of Vantage ABI to server done...");
-      if(instrumentExecutionService.getExpectedMeasureCount() <= instrumentExecutionService.getCurrentMeasureCount()) {
-        exitUI();
-      }
 
     } catch(IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      log.error("Error while parsing ABI file: " + abiFile.getAbsolutePath(), e);
+    }
+
+    if(instrumentExecutionService.getExpectedMeasureCount() <= instrumentExecutionService.getCurrentMeasureCount()) {
+      exitUI();
     }
   }
 
