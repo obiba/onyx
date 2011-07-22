@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +30,8 @@ public abstract class APEXScanDataExtractor {
 
   private JdbcTemplate patScanDb;
 
+  private File scanDataDir;
+
   private String participantKey;
 
   private String scanID;
@@ -37,9 +40,10 @@ public abstract class APEXScanDataExtractor {
 
   private String rFileName;
 
-  protected APEXScanDataExtractor(JdbcTemplate patScanDb, String participantKey) {
+  protected APEXScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey) {
     super();
     this.patScanDb = patScanDb;
+    this.scanDataDir = scanDataDir;
     this.participantKey = participantKey;
   }
 
@@ -84,7 +88,7 @@ public abstract class APEXScanDataExtractor {
   }
 
   protected String getResultPrefix() {
-    return "RES_" + getName();
+    return getName();
   }
 
   protected String getScanID() {
@@ -103,9 +107,14 @@ public abstract class APEXScanDataExtractor {
         rFileName = rs.getString("PFILE_NAME").replace(".P", ".R");
 
         data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
+
         data.put(getResultPrefix() + "_PFILE_NAME", DataBuilder.buildText(pFileName));
         data.put(getResultPrefix() + "_RFILE_NAME", DataBuilder.buildText(rFileName));
-        // TODO add the files
+
+        File rFile = new File(scanDataDir, rFileName);
+        if(rFile.exists()) {
+          data.put(getResultPrefix() + "_RFILE", DataBuilder.buildBinary(rFile));
+        }
       }
 
       return data;

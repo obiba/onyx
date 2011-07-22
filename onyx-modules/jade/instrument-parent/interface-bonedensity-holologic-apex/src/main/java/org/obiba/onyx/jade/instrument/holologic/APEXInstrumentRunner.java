@@ -44,6 +44,8 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   private String patScanDbPath;
 
+  private File scanDataDir;
+
   // participant data
   private String participantID;
 
@@ -98,6 +100,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   public void setPatScanDbPath(String patScanDbPath) {
     this.patScanDbPath = patScanDbPath;
+    this.scanDataDir = new File(patScanDbPath).getParentFile();
   }
 
   @Override
@@ -144,7 +147,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
         backupDbFile.delete();
         // delete scan files
         for(String fileName : participantFiles) {
-          File file = new File(currentDbFile.getParentFile(), fileName);
+          File file = new File(scanDataDir, fileName);
           if(file.exists()) {
             file.delete();
           }
@@ -162,11 +165,11 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
-    extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.LEFT));
-    extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.RIGHT));
-    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, participantID));
-    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, participantID, Energy.SINGLE));
-    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, participantID, Energy.DUAL));
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT));
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT));
+    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantID));
+    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.SINGLE));
+    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.DUAL));
 
     return dataList;
 

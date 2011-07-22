@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -23,8 +24,8 @@ public class LateralScanDataExtractor extends APEXScanDataExtractor {
 
   private Energy energy;
 
-  protected LateralScanDataExtractor(JdbcTemplate patScanDb, String participantKey, Energy energy) {
-    super(patScanDb, participantKey);
+  protected LateralScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy) {
+    super(patScanDb, scanDataDir, participantKey);
     this.energy = energy;
   }
 
