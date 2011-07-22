@@ -46,10 +46,10 @@ public abstract class APEXScanDataExtractor {
   public Map<String, Data> extractData() {
     Map<String, Data> data = extractScanAnalysisData();
     if(scanID != null) {
-      return extractDataImpl(data);
-    } else {
-      return data;
+      extractDataImpl(data);
     }
+
+    return data;
   }
 
   protected String getPFileName() {
@@ -64,7 +64,7 @@ public abstract class APEXScanDataExtractor {
 
   protected abstract long getScanType();
 
-  protected abstract Map<String, Data> extractDataImpl(Map<String, Data> data);
+  protected abstract void extractDataImpl(Map<String, Data> data);
 
   protected JdbcTemplate getPatScanDb() {
     return patScanDb;
@@ -96,7 +96,7 @@ public abstract class APEXScanDataExtractor {
     public Map<String, Data> extractData(ResultSet rs) throws SQLException, DataAccessException {
       Map<String, Data> data = new HashMap<String, Data>();
 
-      // assume there is only one
+      // assume there is only one scan of the given type for the participant
       if(rs.next()) {
         scanID = rs.getString("SCANID");
         pFileName = rs.getString("PFILE_NAME");
@@ -105,6 +105,7 @@ public abstract class APEXScanDataExtractor {
         data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
         data.put(getResultPrefix() + "_PFILE_NAME", DataBuilder.buildText(pFileName));
         data.put(getResultPrefix() + "_RFILE_NAME", DataBuilder.buildText(rFileName));
+        // TODO add the files
       }
 
       return data;
@@ -121,38 +122,55 @@ public abstract class APEXScanDataExtractor {
     }, rsExtractor);
   }
 
-  protected abstract class APEXResultSetExtractor implements ResultSetExtractor<Map<String, Data>> {
+  protected abstract class ResultSetDataExtractor implements ResultSetExtractor<Map<String, Data>> {
 
     protected Map<String, Data> data;
 
     protected ResultSet rs;
 
-    public APEXResultSetExtractor(Map<String, Data> data) {
+    public ResultSetDataExtractor(Map<String, Data> data) {
       super();
       this.data = data;
     }
 
     @Override
     public Map<String, Data> extractData(ResultSet rs) throws SQLException, DataAccessException {
+      this.rs = rs;
       if(rs.next()) {
-        extractDataImpl(rs);
+        putData();
       }
       return data;
     }
 
-    protected void putDouble(ResultSet rs, String name) throws SQLException {
-      put(name, rs.getDouble(name));
+    protected void putString(String name) throws SQLException {
+      put(name, DataBuilder.buildText(rs.getString(name)));
     }
 
-    protected void put(String name, double value) {
-      put(name, DataBuilder.buildDecimal(value));
+    protected void putNString(String name) throws SQLException {
+      put(name, DataBuilder.buildText(rs.getNString(name)));
+    }
+
+    protected void putInt(String name) throws SQLException {
+      put(name, DataBuilder.buildInteger(rs.getInt(name)));
+    }
+
+    protected void putLong(String name) throws SQLException {
+      put(name, DataBuilder.buildInteger(rs.getLong(name)));
+    }
+
+    protected void putDouble(String name) throws SQLException {
+      put(name, DataBuilder.buildDecimal(rs.getDouble(name)));
     }
 
     protected void put(String name, Data value) {
-      data.put(getResultPrefix() + "_" + name, value);
+      data.put(getVariableName(name), value);
     }
 
-    protected abstract void extractDataImpl(ResultSet rs) throws SQLException, DataAccessException;
+    protected String getVariableName(String name) {
+      return getResultPrefix() + "_" + name;
+    }
+
+    protected abstract void putData() throws SQLException, DataAccessException;
   }
 
 }

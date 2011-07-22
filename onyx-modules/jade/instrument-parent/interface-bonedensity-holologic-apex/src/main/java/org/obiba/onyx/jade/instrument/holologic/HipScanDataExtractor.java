@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -44,10 +43,9 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
   }
 
   @Override
-  protected Map<String, Data> extractDataImpl(Map<String, Data> data) {
+  protected void extractDataImpl(Map<String, Data> data) {
     extractScanData("Hip", data, new HipResultSetExtractor(data));
     extractScanData("HipHSA", data, new HipHSAResultSetExtractor(data));
-    return data;
   }
 
   @Override
@@ -60,76 +58,86 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
     }
   }
 
-  private final class HipResultSetExtractor extends APEXResultSetExtractor {
+  private final class HipResultSetExtractor extends ResultSetDataExtractor {
 
     public HipResultSetExtractor(Map<String, Data> data) {
       super(data);
     }
 
     @Override
-    protected void extractDataImpl(ResultSet rs) throws SQLException, DataAccessException {
-      putDouble(rs, "TROCH_AREA");
-      putDouble(rs, "TROCH_BMC");
-      putDouble(rs, "TROCH_BMD");
-      putDouble(rs, "INTER_AREA");
-      putDouble(rs, "INTER_BMC");
-      putDouble(rs, "INTER_BMD");
-      putDouble(rs, "NECK_AREA");
-      putDouble(rs, "NECK_BMC");
-      putDouble(rs, "NECK_BMD");
-      putDouble(rs, "WARDS_AREA");
-      putDouble(rs, "WARDS_BMC");
-      putDouble(rs, "WARDS_BMD");
-      putDouble(rs, "HTOT_AREA");
-      putDouble(rs, "HTOT_BMC");
-      putDouble(rs, "HTOT_BMD");
-      putDouble(rs, "HSTD_TOT");
-      putDouble(rs, "ROI_TYPE");
-      putDouble(rs, "ROI_WIDTH");
-      putDouble(rs, "ROI_HEIGHT");
-      putDouble(rs, "AXIS_LENGTH");
+    protected void putData() throws SQLException, DataAccessException {
+      putDouble("TROCH_AREA");
+      putDouble("TROCH_BMC");
+      putDouble("TROCH_BMD");
+      putDouble("INTER_AREA");
+      putDouble("INTER_BMC");
+      putDouble("INTER_BMD");
+      putDouble("NECK_AREA");
+      putDouble("NECK_BMC");
+      putDouble("NECK_BMD");
+      putDouble("WARDS_AREA");
+      putDouble("WARDS_BMC");
+      putDouble("WARDS_BMD");
+      putDouble("HTOT_AREA");
+      putDouble("HTOT_BMC");
+      putDouble("HTOT_BMD");
+      putDouble("HSTD_TOT");
+      putDouble("ROI_TYPE");
+      putDouble("ROI_WIDTH");
+      putDouble("ROI_HEIGHT");
+      putDouble("AXIS_LENGTH");
+      putString("PHYSICIAN_COMMENT");
     }
+
+    @Override
+    protected String getVariableName(String name) {
+      if(name.equals("PHYSICIAN_COMMENT")) {
+        return super.getVariableName("HIP_" + name);
+      }
+      return super.getVariableName(name);
+    }
+
   }
 
-  private final class HipHSAResultSetExtractor extends APEXResultSetExtractor {
+  private final class HipHSAResultSetExtractor extends ResultSetDataExtractor {
 
     public HipHSAResultSetExtractor(Map<String, Data> data) {
       super(data);
     }
 
     @Override
-    protected void extractDataImpl(ResultSet rs) throws SQLException, DataAccessException {
-      putDouble(rs, "NN_BMD");
-      putDouble(rs, "NN_CSA");
-      putDouble(rs, "NN_CSMI");
-      putDouble(rs, "NN_WIDTH");
-      putDouble(rs, "NN_ED");
-      putDouble(rs, "NN_ACT");
-      putDouble(rs, "NN_PCD");
-      putDouble(rs, "NN_CMP");
-      putDouble(rs, "NN_SECT_MOD");
-      putDouble(rs, "NN_BR");
-      putDouble(rs, "IT_BMD");
-      putDouble(rs, "IT_CSA");
-      putDouble(rs, "IT_CSMI");
-      putDouble(rs, "IT_WIDTH");
-      putDouble(rs, "IT_ED");
-      putDouble(rs, "IT_ACT");
-      putDouble(rs, "IT_PCD");
-      putDouble(rs, "IT_CMP");
-      putDouble(rs, "IT_SECT_MOD");
-      putDouble(rs, "IT_BR");
-      putDouble(rs, "FS_BMD");
-      putDouble(rs, "FS_CSA");
-      putDouble(rs, "FS_CSMI");
-      putDouble(rs, "FS_WIDTH");
-      putDouble(rs, "FS_ED");
-      putDouble(rs, "FS_ACT");
-      putDouble(rs, "FS_PCD");
-      putDouble(rs, "FS_CMP");
-      putDouble(rs, "FS_SECT_MOD");
-      putDouble(rs, "FS_BR");
-      putDouble(rs, "SHAFT_NECK_ANGLE");
+    protected void putData() throws SQLException, DataAccessException {
+      putDouble("NN_BMD");
+      putDouble("NN_CSA");
+      putDouble("NN_CSMI");
+      putDouble("NN_WIDTH");
+      putDouble("NN_ED");
+      putDouble("NN_ACT");
+      putDouble("NN_PCD");
+      putDouble("NN_CMP");
+      putDouble("NN_SECT_MOD");
+      putDouble("NN_BR");
+      putDouble("IT_BMD");
+      putDouble("IT_CSA");
+      putDouble("IT_CSMI");
+      putDouble("IT_WIDTH");
+      putDouble("IT_ED");
+      putDouble("IT_ACT");
+      putDouble("IT_PCD");
+      putDouble("IT_CMP");
+      putDouble("IT_SECT_MOD");
+      putDouble("IT_BR");
+      putDouble("FS_BMD");
+      putDouble("FS_CSA");
+      putDouble("FS_CSMI");
+      putDouble("FS_WIDTH");
+      putDouble("FS_ED");
+      putDouble("FS_ACT");
+      putDouble("FS_PCD");
+      putDouble("FS_CMP");
+      putDouble("FS_SECT_MOD");
+      putDouble("FS_BR");
+      putDouble("SHAFT_NECK_ANGLE");
     }
   }
 

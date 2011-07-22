@@ -164,6 +164,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     // TODO
     extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.LEFT));
     extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.RIGHT));
+    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, participantID));
 
     return dataList;
 
