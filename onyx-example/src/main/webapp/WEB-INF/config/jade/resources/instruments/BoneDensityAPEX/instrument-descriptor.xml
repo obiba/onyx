@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>BoneDensityAPEX</name>
+      
+  <instrumentParameters>
+
+    <input>
+      <code>INPUT_PARTICIPANT_GENDER</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>gender</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_HEIGHT</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="variableDataSource">
+        <path>BoneDensityAPEX:HEIGHT</path>
+      </dataSource>
+    </input>
+    
+    <input>
+      <code>INPUT_PARTICIPANT_WEIGHT</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="variableDataSource">
+        <path>BoneDensityAPEX:WEIGHT</path>
+      </dataSource>
+    </input>
+       
+  </instrumentParameters>
+</instrumentType>
