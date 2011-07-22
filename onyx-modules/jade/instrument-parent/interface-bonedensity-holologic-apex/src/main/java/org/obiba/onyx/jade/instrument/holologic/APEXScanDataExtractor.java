@@ -122,7 +122,10 @@ public abstract class APEXScanDataExtractor {
   }
 
   protected abstract class APEXResultSetExtractor implements ResultSetExtractor<Map<String, Data>> {
+
     protected Map<String, Data> data;
+
+    protected ResultSet rs;
 
     public APEXResultSetExtractor(Map<String, Data> data) {
       super();
@@ -135,6 +138,18 @@ public abstract class APEXScanDataExtractor {
         extractDataImpl(rs);
       }
       return data;
+    }
+
+    protected void putDouble(ResultSet rs, String name) throws SQLException {
+      put(name, rs.getDouble(name));
+    }
+
+    protected void put(String name, double value) {
+      put(name, DataBuilder.buildDecimal(value));
+    }
+
+    protected void put(String name, Data value) {
+      data.put(getResultPrefix() + "_" + name, value);
     }
 
     protected abstract void extractDataImpl(ResultSet rs) throws SQLException, DataAccessException;

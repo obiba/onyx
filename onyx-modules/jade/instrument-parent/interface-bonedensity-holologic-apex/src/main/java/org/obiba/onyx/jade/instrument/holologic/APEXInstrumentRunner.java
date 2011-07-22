@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.obiba.onyx.jade.instrument.holologic.HipScanDataExtractor.Side;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
@@ -29,7 +30,6 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 
 public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(APEXInstrumentRunner.class);
 
   // Injected by spring.
@@ -47,6 +47,12 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
   private String participantID;
 
   private String participantGender;
+
+  private Double participantWeight;
+
+  private Double participantHeight;
+
+  private List<String> participantFiles = new ArrayList<String>();
 
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
@@ -97,6 +103,8 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
   public void afterPropertiesSet() throws Exception {
     participantID = instrumentExecutionService.getParticipantID();
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
+    participantWeight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_WEIGHT").getValue();
+    participantHeight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_HEIGHT").getValue();
   }
 
   /**
@@ -104,16 +112,19 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
    * @throws Exception
    */
   public void initParticipantData() {
-    patScanDb.update("insert into PATIENT ( IDENTIFIER1, SEX ) values( ?, ? )", new PreparedStatementSetter() {
+    patScanDb.update("insert into PATIENT ( PARTICIPANT_KEY, IDENTIFIER1, SEX, WEIGHT, HEIGHT ) values( ?, ?, ? )", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
+        ps.setString(2, participantID);
 
         if(participantGender.equals("MALE")) {
-          ps.setString(2, "M");
+          ps.setString(3, "M");
         } else {
-          ps.setString(2, "F");
+          ps.setString(3, "F");
         }
 
+        ps.setDouble(4, participantWeight);
+        ps.setDouble(5, participantHeight);
       }
     });
   }
@@ -130,7 +141,13 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
       if(backupDbFile.exists()) {
         FileUtil.copyFile(backupDbFile, currentDbFile);
         backupDbFile.delete();
-        // TODO delete scan files
+        // delete scan files
+        for(String fileName : participantFiles) {
+          File file = new File(currentDbFile.getParentFile(), fileName);
+          if(file.exists()) {
+            file.delete();
+          }
+        }
       } else {
         // init
         FileUtil.copyFile(currentDbFile, backupDbFile);
@@ -140,15 +157,22 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   private List<Map<String, Data>> retrieveDeviceData() {
 
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
     // TODO
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.LEFT));
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.RIGHT));
 
     return dataList;
 
+  }
+
+  private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
+    dataList.add(extractor.extractData());
+    participantFiles.add(extractor.getPFileName());
+    participantFiles.add(extractor.getRFileName());
   }
 
   public void sendDataToServer(Map<String, Data> data) {

@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -69,26 +68,26 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
 
     @Override
     protected void extractDataImpl(ResultSet rs) throws SQLException, DataAccessException {
-      data.put(getResultPrefix() + "_TROCH_AREA", DataBuilder.buildDecimal(rs.getDouble("TROCH_AREA")));
-      data.put(getResultPrefix() + "_TROCH_BMC", DataBuilder.buildDecimal(rs.getDouble("TROCH_BMC")));
-      data.put(getResultPrefix() + "_TROCH_BMD", DataBuilder.buildDecimal(rs.getDouble("TROCH_BMD")));
-      data.put(getResultPrefix() + "_INTER_AREA", DataBuilder.buildDecimal(rs.getDouble("INTER_AREA")));
-      data.put(getResultPrefix() + "_INTER_BMC", DataBuilder.buildDecimal(rs.getDouble("INTER_BMC")));
-      data.put(getResultPrefix() + "_INTER_BMD", DataBuilder.buildDecimal(rs.getDouble("INTER_BMD")));
-      data.put(getResultPrefix() + "_NECK_AREA", DataBuilder.buildDecimal(rs.getDouble("NECK_AREA")));
-      data.put(getResultPrefix() + "_NECK_BMC", DataBuilder.buildDecimal(rs.getDouble("NECK_BMC")));
-      data.put(getResultPrefix() + "_NECK_BMD", DataBuilder.buildDecimal(rs.getDouble("NECK_BMD")));
-      data.put(getResultPrefix() + "_WARDS_AREA", DataBuilder.buildDecimal(rs.getDouble("WARDS_AREA")));
-      data.put(getResultPrefix() + "_WARDS_BMC", DataBuilder.buildDecimal(rs.getDouble("WARDS_BMC")));
-      data.put(getResultPrefix() + "_WARDS_BMD", DataBuilder.buildDecimal(rs.getDouble("WARDS_BMD")));
-      data.put(getResultPrefix() + "_HTOT_AREA", DataBuilder.buildDecimal(rs.getDouble("HTOT_AREA")));
-      data.put(getResultPrefix() + "_HTOT_BMC", DataBuilder.buildDecimal(rs.getDouble("HTOT_BMC")));
-      data.put(getResultPrefix() + "_HTOT_BMD", DataBuilder.buildDecimal(rs.getDouble("HTOT_BMD")));
-      data.put(getResultPrefix() + "_HSTD_TOT", DataBuilder.buildDecimal(rs.getDouble("HSTD_TOT")));
-      data.put(getResultPrefix() + "_ROI_TYPE", DataBuilder.buildDecimal(rs.getDouble("ROI_TYPE")));
-      data.put(getResultPrefix() + "_ROI_WIDTH", DataBuilder.buildDecimal(rs.getDouble("ROI_WIDTH")));
-      data.put(getResultPrefix() + "_ROI_HEIGHT", DataBuilder.buildDecimal(rs.getDouble("ROI_HEIGHT")));
-      data.put(getResultPrefix() + "_AXIS_LENGTH", DataBuilder.buildDecimal(rs.getDouble("AXIS_LENGTH")));
+      putDouble(rs, "TROCH_AREA");
+      putDouble(rs, "TROCH_BMC");
+      putDouble(rs, "TROCH_BMD");
+      putDouble(rs, "INTER_AREA");
+      putDouble(rs, "INTER_BMC");
+      putDouble(rs, "INTER_BMD");
+      putDouble(rs, "NECK_AREA");
+      putDouble(rs, "NECK_BMC");
+      putDouble(rs, "NECK_BMD");
+      putDouble(rs, "WARDS_AREA");
+      putDouble(rs, "WARDS_BMC");
+      putDouble(rs, "WARDS_BMD");
+      putDouble(rs, "HTOT_AREA");
+      putDouble(rs, "HTOT_BMC");
+      putDouble(rs, "HTOT_BMD");
+      putDouble(rs, "HSTD_TOT");
+      putDouble(rs, "ROI_TYPE");
+      putDouble(rs, "ROI_WIDTH");
+      putDouble(rs, "ROI_HEIGHT");
+      putDouble(rs, "AXIS_LENGTH");
     }
   }
 
@@ -100,37 +99,37 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
 
     @Override
     protected void extractDataImpl(ResultSet rs) throws SQLException, DataAccessException {
-      data.put(getResultPrefix() + "_NN_BMD", DataBuilder.buildDecimal(rs.getDouble("NN_BMD")));
-      data.put(getResultPrefix() + "_NN_CSA", DataBuilder.buildDecimal(rs.getDouble("NN_CSA")));
-      data.put(getResultPrefix() + "_NN_CSMI", DataBuilder.buildDecimal(rs.getDouble("NN_CSMI")));
-      data.put(getResultPrefix() + "_NN_WIDTH", DataBuilder.buildDecimal(rs.getDouble("NN_WIDTH")));
-      data.put(getResultPrefix() + "_NN_ED", DataBuilder.buildDecimal(rs.getDouble("NN_ED")));
-      data.put(getResultPrefix() + "_NN_ACT", DataBuilder.buildDecimal(rs.getDouble("NN_ACT")));
-      data.put(getResultPrefix() + "_NN_PCD", DataBuilder.buildDecimal(rs.getDouble("NN_PCD")));
-      data.put(getResultPrefix() + "_NN_CMP", DataBuilder.buildDecimal(rs.getDouble("NN_CMP")));
-      data.put(getResultPrefix() + "_NN_SECT_MOD", DataBuilder.buildDecimal(rs.getDouble("NN_SECT_MOD")));
-      data.put(getResultPrefix() + "_NN_BR", DataBuilder.buildDecimal(rs.getDouble("NN_BR")));
-      data.put(getResultPrefix() + "_IT_BMD", DataBuilder.buildDecimal(rs.getDouble("IT_BMD")));
-      data.put(getResultPrefix() + "_IT_CSA", DataBuilder.buildDecimal(rs.getDouble("IT_CSA")));
-      data.put(getResultPrefix() + "_IT_CSMI", DataBuilder.buildDecimal(rs.getDouble("IT_CSMI")));
-      data.put(getResultPrefix() + "_IT_WIDTH", DataBuilder.buildDecimal(rs.getDouble("IT_WIDTH")));
-      data.put(getResultPrefix() + "_IT_ED", DataBuilder.buildDecimal(rs.getDouble("IT_ED")));
-      data.put(getResultPrefix() + "_IT_ACT", DataBuilder.buildDecimal(rs.getDouble("IT_ACT")));
-      data.put(getResultPrefix() + "_IT_PCD", DataBuilder.buildDecimal(rs.getDouble("IT_PCD")));
-      data.put(getResultPrefix() + "_IT_CMP", DataBuilder.buildDecimal(rs.getDouble("IT_CMP")));
-      data.put(getResultPrefix() + "_IT_SECT_MOD", DataBuilder.buildDecimal(rs.getDouble("IT_SECT_MOD")));
-      data.put(getResultPrefix() + "_IT_BR", DataBuilder.buildDecimal(rs.getDouble("IT_BR")));
-      data.put(getResultPrefix() + "_FS_BMD", DataBuilder.buildDecimal(rs.getDouble("FS_BMD")));
-      data.put(getResultPrefix() + "_FS_CSA", DataBuilder.buildDecimal(rs.getDouble("FS_CSA")));
-      data.put(getResultPrefix() + "_FS_CSMI", DataBuilder.buildDecimal(rs.getDouble("FS_CSMI")));
-      data.put(getResultPrefix() + "_FS_WIDTH", DataBuilder.buildDecimal(rs.getDouble("FS_WIDTH")));
-      data.put(getResultPrefix() + "_FS_ED", DataBuilder.buildDecimal(rs.getDouble("FS_ED")));
-      data.put(getResultPrefix() + "_FS_ACT", DataBuilder.buildDecimal(rs.getDouble("FS_ACT")));
-      data.put(getResultPrefix() + "_FS_PCD", DataBuilder.buildDecimal(rs.getDouble("FS_PCD")));
-      data.put(getResultPrefix() + "_FS_CMP", DataBuilder.buildDecimal(rs.getDouble("FS_CMP")));
-      data.put(getResultPrefix() + "_FS_SECT_MOD", DataBuilder.buildDecimal(rs.getDouble("FS_SECT_MOD")));
-      data.put(getResultPrefix() + "_FS_BR", DataBuilder.buildDecimal(rs.getDouble("FS_BR")));
-      data.put(getResultPrefix() + "_SHAFT_NECK_ANGLE", DataBuilder.buildDecimal(rs.getDouble("SHAFT_NECK_ANGLE")));
+      putDouble(rs, "NN_BMD");
+      putDouble(rs, "NN_CSA");
+      putDouble(rs, "NN_CSMI");
+      putDouble(rs, "NN_WIDTH");
+      putDouble(rs, "NN_ED");
+      putDouble(rs, "NN_ACT");
+      putDouble(rs, "NN_PCD");
+      putDouble(rs, "NN_CMP");
+      putDouble(rs, "NN_SECT_MOD");
+      putDouble(rs, "NN_BR");
+      putDouble(rs, "IT_BMD");
+      putDouble(rs, "IT_CSA");
+      putDouble(rs, "IT_CSMI");
+      putDouble(rs, "IT_WIDTH");
+      putDouble(rs, "IT_ED");
+      putDouble(rs, "IT_ACT");
+      putDouble(rs, "IT_PCD");
+      putDouble(rs, "IT_CMP");
+      putDouble(rs, "IT_SECT_MOD");
+      putDouble(rs, "IT_BR");
+      putDouble(rs, "FS_BMD");
+      putDouble(rs, "FS_CSA");
+      putDouble(rs, "FS_CSMI");
+      putDouble(rs, "FS_WIDTH");
+      putDouble(rs, "FS_ED");
+      putDouble(rs, "FS_ACT");
+      putDouble(rs, "FS_PCD");
+      putDouble(rs, "FS_CMP");
+      putDouble(rs, "FS_SECT_MOD");
+      putDouble(rs, "FS_BR");
+      putDouble(rs, "SHAFT_NECK_ANGLE");
     }
   }
 
