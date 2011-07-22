@@ -19,6 +19,7 @@ import java.util.Map;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.holologic.HipScanDataExtractor.Side;
+import org.obiba.onyx.jade.instrument.holologic.LateralScanDataExtractor.Energy;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
@@ -161,10 +162,11 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
-    // TODO
     extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.LEFT));
     extractScanData(dataList, new HipScanDataExtractor(patScanDb, participantID, Side.RIGHT));
     extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, participantID));
+    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, participantID, Energy.SINGLE));
+    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, participantID, Energy.DUAL));
 
     return dataList;
 
