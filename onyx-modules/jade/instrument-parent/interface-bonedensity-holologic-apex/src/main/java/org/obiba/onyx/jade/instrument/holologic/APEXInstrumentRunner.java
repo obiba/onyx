@@ -113,7 +113,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
    * @throws Exception
    */
   public void initParticipantData() {
-    patScanDb.update("insert into PATIENT ( PARTICIPANT_KEY, IDENTIFIER1, SEX, WEIGHT, HEIGHT ) values( ?, ?, ? )", new PreparedStatementSetter() {
+    patScanDb.update("insert into PATIENT ( PARTICIPANT_KEY, IDENTIFIER1, SEX, WEIGHT, HEIGHT ) values( ?, ?, ?, ?, ? )", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
         ps.setString(2, participantID);
