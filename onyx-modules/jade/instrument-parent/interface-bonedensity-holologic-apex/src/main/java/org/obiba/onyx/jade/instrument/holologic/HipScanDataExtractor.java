@@ -89,14 +89,6 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
       putString("PHYSICIAN_COMMENT");
     }
 
-    @Override
-    protected String getVariableName(String name) {
-      if(name.equals("PHYSICIAN_COMMENT")) {
-        return super.getVariableName("HIP_" + name);
-      }
-      return super.getVariableName(name);
-    }
-
   }
 
   private final class HipHSAResultSetExtractor extends ResultSetDataExtractor {
