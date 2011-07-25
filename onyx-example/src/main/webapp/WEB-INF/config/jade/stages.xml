@@ -282,6 +282,15 @@
       </conditions>
     </stageDependencyCondition>
   </stage>
+  
+  <stage>
+    <name>BoneDensityAPEX</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
 
   <stage>
     <name>ArtStiffness</name>

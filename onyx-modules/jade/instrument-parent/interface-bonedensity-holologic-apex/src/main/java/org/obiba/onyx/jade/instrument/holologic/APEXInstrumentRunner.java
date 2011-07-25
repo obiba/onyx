@@ -38,8 +38,6 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   protected ExternalAppLauncherHelper externalAppHelper;
 
-  private String qdrPath;
-
   private JdbcTemplate patScanDb;
 
   private String patScanDbPath;
@@ -71,19 +69,6 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
     this.externalAppHelper = externalAppHelper;
-  }
-
-  public String getQDRPath() {
-    if(new File(this.qdrPath).exists()) {
-      return qdrPath;
-    } else {
-      log.error("The path {} was not found, please make sure that you installed QDR software to that path.", qdrPath);
-      throw new RuntimeException();
-    }
-  }
-
-  public void setQDRPath(String mirPath) {
-    this.qdrPath = mirPath;
   }
 
   public JdbcTemplate getPatScanDb() {

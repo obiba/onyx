@@ -6,8 +6,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
-    <property name="externalAppHelper" ref="externalAppHelper"/> 
-    <property name="qdrPath" value="C:\\QDR\\"/>
+    <property name="externalAppHelper" ref="externalAppHelper"/>
     <property name="patScanDbPath" value="C:\\QDR\\Data\\PatScan.mdb"/>
     <property name="patScanDb" ref="patScanDb" />
   </bean>
