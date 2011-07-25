@@ -187,7 +187,7 @@ public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
 
     @Override
     protected String getVariableName(String name) {
-      if(name.equals("PHYSICIAN_COMMENT")) {
+      if(name.equals("PHYSICIAN_COMMENT") || name.equals("NO_REGIONS") || name.startsWith("REG")) {
         return super.getVariableName("SRB_" + name);
       }
       return super.getVariableName(name);
@@ -228,7 +228,7 @@ public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
 
     @Override
     protected String getVariableName(String name) {
-      if(name.equals("PHYSICIAN_COMMENT")) {
+      if(name.equals("PHYSICIAN_COMMENT") || name.equals("NO_REGIONS") || name.startsWith("REG")) {
         return super.getVariableName("SRC_" + name);
       }
       return super.getVariableName(name);

@@ -172,7 +172,11 @@ public abstract class APEXScanDataExtractor {
     }
 
     protected void put(String name, Data value) {
-      data.put(getVariableName(name), value);
+      String varName = getVariableName(name);
+      if(data.keySet().contains(varName)) {
+        throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
+      }
+      data.put(varName, value);
     }
 
     protected String getVariableName(String name) {
