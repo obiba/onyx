@@ -1025,29 +1025,29 @@
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_FAT_STD</vendorName>
-      <code>RES_WB_FAT_STD</code>
+      <vendorName>WB_WBC_FAT_STD</vendorName>
+      <code>RES_WB_WBC_FAT_STD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_LEAN_STD</vendorName>
-      <code>RES_WB_LEAN_STD</code>
+      <vendorName>WB_WBC_LEAN_STD</vendorName>
+      <code>RES_WB_WBC_LEAN_STD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_BRAIN_FAT</vendorName>
-      <code>RES_WB_BRAIN_FAT</code>
+      <vendorName>WB_WBC_BRAIN_FAT</vendorName>
+      <code>RES_WB_WBC_BRAIN_FAT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_WATER_LBM</vendorName>
-      <code>RES_WB_WATER_LBM</code>
+      <vendorName>WB_WBC_WATER_LBM</vendorName>
+      <code>RES_WB_WBC_WATER_LBM</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
@@ -2299,29 +2299,29 @@
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_FAT_STD</vendorName>
-      <code>RES_WB_FAT_STD</code>
+      <vendorName>WB_OI_FAT_STD</vendorName>
+      <code>RES_WB_OI_FAT_STD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_LEAN_STD</vendorName>
-      <code>RES_WB_LEAN_STD</code>
+      <vendorName>WB_OI_LEAN_STD</vendorName>
+      <code>RES_WB_OI_LEAN_STD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_BRAIN_FAT</vendorName>
-      <code>RES_WB_BRAIN_FAT</code>
+      <vendorName>WB_OI_BRAIN_FAT</vendorName>
+      <code>RES_WB_OI_BRAIN_FAT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>WB_WATER_LBM</vendorName>
-      <code>RES_WB_WATER_LBM</code>
+      <vendorName>WB_OI_WATER_LBM</vendorName>
+      <code>RES_WB_OI_WATER_LBM</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
@@ -2420,463 +2420,463 @@
              
     <!-- Single Energy Lateral -->
     <output>
-      <vendorName>DEL_L1_AREA</vendorName>
-      <code>RES_DEL_L1_AREA</code>
+      <vendorName>SEL_L1_AREA</vendorName>
+      <code>RES_SEL_L1_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_BMC</vendorName>
-      <code>RES_DEL_L1_BMC</code>
+      <vendorName>SEL_L1_BMC</vendorName>
+      <code>RES_SEL_L1_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_BMD</vendorName>
-      <code>RES_DEL_L1_BMD</code>
+      <vendorName>SEL_L1_BMD</vendorName>
+      <code>RES_SEL_L1_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_VBMD</vendorName>
-      <code>RES_DEL_L1_VBMD</code>
+      <vendorName>SEL_L1_VBMD</vendorName>
+      <code>RES_SEL_L1_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_WIDTH</vendorName>
-      <code>RES_DEL_L1_WIDTH</code>
+      <vendorName>SEL_L1_WIDTH</vendorName>
+      <code>RES_SEL_L1_WIDTH</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_AREA</vendorName>
-      <code>RES_DEL_L2_AREA</code>
+      <vendorName>SEL_L2_AREA</vendorName>
+      <code>RES_SEL_L2_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_BMC</vendorName>
-      <code>RES_DEL_L2_BMC</code>
+      <vendorName>SEL_L2_BMC</vendorName>
+      <code>RES_SEL_L2_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_BMD</vendorName>
-      <code>RES_DEL_L2_BMD</code>
+      <vendorName>SEL_L2_BMD</vendorName>
+      <code>RES_SEL_L2_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_VBMD</vendorName>
-      <code>RES_DEL_L2_VBMD</code>
+      <vendorName>SEL_L2_VBMD</vendorName>
+      <code>RES_SEL_L2_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_WIDTH</vendorName>
-      <code>RES_DEL_L2_WIDTH</code>
+      <vendorName>SEL_L2_WIDTH</vendorName>
+      <code>RES_SEL_L2_WIDTH</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_AREA</vendorName>
-      <code>RES_DEL_L3_AREA</code>
+      <vendorName>SEL_L3_AREA</vendorName>
+      <code>RES_SEL_L3_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_BMC</vendorName>
-      <code>RES_DEL_L3_BMC</code>
+      <vendorName>SEL_L3_BMC</vendorName>
+      <code>RES_SEL_L3_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_BMD</vendorName>
-      <code>RES_DEL_L3_BMD</code>
+      <vendorName>SEL_L3_BMD</vendorName>
+      <code>RES_SEL_L3_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_VBMD</vendorName>
-      <code>RES_DEL_L3_VBMD</code>
+      <vendorName>SEL_L3_VBMD</vendorName>
+      <code>RES_SEL_L3_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_WIDTH</vendorName>
-      <code>RES_DEL_L3_WIDTH</code>
+      <vendorName>SEL_L3_WIDTH</vendorName>
+      <code>RES_SEL_L3_WIDTH</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_AREA</vendorName>
-      <code>RES_DEL_L4_AREA</code>
+      <vendorName>SEL_L4_AREA</vendorName>
+      <code>RES_SEL_L4_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_BMC</vendorName>
-      <code>RES_DEL_L4_BMC</code>
+      <vendorName>SEL_L4_BMC</vendorName>
+      <code>RES_SEL_L4_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_BMD</vendorName>
-      <code>RES_DEL_L4_BMD</code>
+      <vendorName>SEL_L4_BMD</vendorName>
+      <code>RES_SEL_L4_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_VBMD</vendorName>
-      <code>RES_DEL_L4_VBMD</code>
+      <vendorName>SEL_L4_VBMD</vendorName>
+      <code>RES_SEL_L4_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_WIDTH</vendorName>
-      <code>RES_DEL_L4_WIDTH</code>
+      <vendorName>SEL_L4_WIDTH</vendorName>
+      <code>RES_SEL_L4_WIDTH</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_AREA</vendorName>
-      <code>RES_DEL_L5_AREA</code>
+      <vendorName>SEL_L5_AREA</vendorName>
+      <code>RES_SEL_L5_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_BMC</vendorName>
-      <code>RES_DEL_L5_BMC</code>
+      <vendorName>SEL_L5_BMC</vendorName>
+      <code>RES_SEL_L5_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_BMD</vendorName>
-      <code>RES_DEL_L5_BMD</code>
+      <vendorName>SEL_L5_BMD</vendorName>
+      <code>RES_SEL_L5_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_VBMD</vendorName>
-      <code>RES_DEL_L5_VBMD</code>
+      <vendorName>SEL_L5_VBMD</vendorName>
+      <code>RES_SEL_L5_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_WIDTH</vendorName>
-      <code>RES_DEL_L5_WIDTH</code>
+      <vendorName>SEL_L5_WIDTH</vendorName>
+      <code>RES_SEL_L5_WIDTH</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_LTOT_AREA</vendorName>
-      <code>RES_DEL_LTOT_AREA</code>
+      <vendorName>SEL_LTOT_AREA</vendorName>
+      <code>RES_SEL_LTOT_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_LTOT_BMC</vendorName>
-      <code>RES_DEL_LTOT_BMC</code>
+      <vendorName>SEL_LTOT_BMC</vendorName>
+      <code>RES_SEL_LTOT_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_LTOT_BMD</vendorName>
-      <code>RES_DEL_LTOT_BMD</code>
+      <vendorName>SEL_LTOT_BMD</vendorName>
+      <code>RES_SEL_LTOT_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_LTOT_VBMD</vendorName>
-      <code>RES_DEL_LTOT_VBMD</code>
+      <vendorName>SEL_LTOT_VBMD</vendorName>
+      <code>RES_SEL_LTOT_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_MID_AREA</vendorName>
-      <code>RES_DEL_L1_MID_AREA</code>
+      <vendorName>SEL_L1_MID_AREA</vendorName>
+      <code>RES_SEL_L1_MID_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_MID_BMC</vendorName>
-      <code>RES_DEL_L1_MID_BMC</code>
+      <vendorName>SEL_L1_MID_BMC</vendorName>
+      <code>RES_SEL_L1_MID_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_MID_BMD</vendorName>
-      <code>RES_DEL_L1_MID_BMD</code>
+      <vendorName>SEL_L1_MID_BMD</vendorName>
+      <code>RES_SEL_L1_MID_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_MID_VBMD</vendorName>
-      <code>RES_DEL_L1_MID_VBMD</code>
+      <vendorName>SEL_L1_MID_VBMD</vendorName>
+      <code>RES_SEL_L1_MID_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_MID_AREA</vendorName>
-      <code>RES_DEL_L2_MID_AREA</code>
+      <vendorName>SEL_L2_MID_AREA</vendorName>
+      <code>RES_SEL_L2_MID_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_MID_BMC</vendorName>
-      <code>RES_DEL_L2_MID_BMC</code>
+      <vendorName>SEL_L2_MID_BMC</vendorName>
+      <code>RES_SEL_L2_MID_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_MID_BMD</vendorName>
-      <code>RES_DEL_L2_MID_BMD</code>
+      <vendorName>SEL_L2_MID_BMD</vendorName>
+      <code>RES_SEL_L2_MID_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_MID_VBMD</vendorName>
-      <code>RES_DEL_L2_MID_VBMD</code>
+      <vendorName>SEL_L2_MID_VBMD</vendorName>
+      <code>RES_SEL_L2_MID_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_MID_AREA</vendorName>
-      <code>RES_DEL_L3_MID_AREA</code>
+      <vendorName>SEL_L3_MID_AREA</vendorName>
+      <code>RES_SEL_L3_MID_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_MID_BMC</vendorName>
-      <code>RES_DEL_L3_MID_BMC</code>
+      <vendorName>SEL_L3_MID_BMC</vendorName>
+      <code>RES_SEL_L3_MID_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_MID_BMD</vendorName>
-      <code>RES_DEL_L3_MID_BMD</code>
+      <vendorName>SEL_L3_MID_BMD</vendorName>
+      <code>RES_SEL_L3_MID_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_MID_VBMD</vendorName>
-      <code>RES_DEL_L3_MID_VBMD</code>
+      <vendorName>SEL_L3_MID_VBMD</vendorName>
+      <code>RES_SEL_L3_MID_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_MID_AREA</vendorName>
-      <code>RES_DEL_L4_MID_AREA</code>
+      <vendorName>SEL_L4_MID_AREA</vendorName>
+      <code>RES_SEL_L4_MID_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_MID_BMC</vendorName>
-      <code>RES_DEL_L4_MID_BMC</code>
+      <vendorName>SEL_L4_MID_BMC</vendorName>
+      <code>RES_SEL_L4_MID_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_MID_BMD</vendorName>
-      <code>RES_DEL_L4_MID_BMD</code>
+      <vendorName>SEL_L4_MID_BMD</vendorName>
+      <code>RES_SEL_L4_MID_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_MID_VBMD</vendorName>
-      <code>RES_DEL_L4_MID_VBMD</code>
+      <vendorName>SEL_L4_MID_VBMD</vendorName>
+      <code>RES_SEL_L4_MID_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_MID_AREA</vendorName>
-      <code>RES_DEL_L5_MID_AREA</code>
+      <vendorName>SEL_L5_MID_AREA</vendorName>
+      <code>RES_SEL_L5_MID_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_MID_BMC</vendorName>
-      <code>RES_DEL_L5_MID_BMC</code>
+      <vendorName>SEL_L5_MID_BMC</vendorName>
+      <code>RES_SEL_L5_MID_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_MID_BMD</vendorName>
-      <code>RES_DEL_L5_MID_BMD</code>
+      <vendorName>SEL_L5_MID_BMD</vendorName>
+      <code>RES_SEL_L5_MID_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_MID_VBMD</vendorName>
-      <code>RES_DEL_L5_MID_VBMD</code>
+      <vendorName>SEL_L5_MID_VBMD</vendorName>
+      <code>RES_SEL_L5_MID_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_MIDTOT_AREA</vendorName>
-      <code>RES_DEL_MIDTOT_AREA</code>
+      <vendorName>SEL_MIDTOT_AREA</vendorName>
+      <code>RES_SEL_MIDTOT_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_MIDTOT_BMC</vendorName>
-      <code>RES_DEL_MIDTOT_BMC</code>
+      <vendorName>SEL_MIDTOT_BMC</vendorName>
+      <code>RES_SEL_MIDTOT_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_MIDTOT_BMD</vendorName>
-      <code>RES_DEL_MIDTOT_BMD</code>
+      <vendorName>SEL_MIDTOT_BMD</vendorName>
+      <code>RES_SEL_MIDTOT_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_MIDTOT_VBMD</vendorName>
-      <code>RES_DEL_MIDTOT_VBMD</code>
+      <vendorName>SEL_MIDTOT_VBMD</vendorName>
+      <code>RES_SEL_MIDTOT_VBMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_PA_AREA</vendorName>
-      <code>RES_DEL_L1_PA_AREA</code>
+      <vendorName>SEL_L1_PA_AREA</vendorName>
+      <code>RES_SEL_L1_PA_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_PA_BMC</vendorName>
-      <code>RES_DEL_L1_PA_BMC</code>
+      <vendorName>SEL_L1_PA_BMC</vendorName>
+      <code>RES_SEL_L1_PA_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_PA_AREA</vendorName>
-      <code>RES_DEL_L2_PA_AREA</code>
+      <vendorName>SEL_L2_PA_AREA</vendorName>
+      <code>RES_SEL_L2_PA_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L2_PA_BMC</vendorName>
-      <code>RES_DEL_L2_PA_BMC</code>
+      <vendorName>SEL_L2_PA_BMC</vendorName>
+      <code>RES_SEL_L2_PA_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_PA_AREA</vendorName>
-      <code>RES_DEL_L3_PA_AREA</code>
+      <vendorName>SEL_L3_PA_AREA</vendorName>
+      <code>RES_SEL_L3_PA_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L3_PA_BMC</vendorName>
-      <code>RES_DEL_L3_PA_BMC</code>
+      <vendorName>SEL_L3_PA_BMC</vendorName>
+      <code>RES_SEL_L3_PA_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_PA_AREA</vendorName>
-      <code>RES_DEL_L4_PA_AREA</code>
+      <vendorName>SEL_L4_PA_AREA</vendorName>
+      <code>RES_SEL_L4_PA_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L4_PA_BMC</vendorName>
-      <code>RES_DEL_L4_PA_BMC</code>
+      <vendorName>SEL_L4_PA_BMC</vendorName>
+      <code>RES_SEL_L4_PA_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_PA_AREA</vendorName>
-      <code>RES_DEL_L5_PA_AREA</code>
+      <vendorName>SEL_L5_PA_AREA</vendorName>
+      <code>RES_SEL_L5_PA_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L5_PA_BMC</vendorName>
-      <code>RES_DEL_L5_PA_BMC</code>
+      <vendorName>SEL_L5_PA_BMC</vendorName>
+      <code>RES_SEL_L5_PA_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_TOTAL_PA_AREA</vendorName>
-      <code>RES_DEL_TOTAL_PA_AREA</code>
+      <vendorName>SEL_TOTAL_PA_AREA</vendorName>
+      <code>RES_SEL_TOTAL_PA_AREA</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_TOTAL_PA_BMC</vendorName>
-      <code>RES_DEL_TOTAL_PA_BMC</code>
+      <vendorName>SEL_TOTAL_PA_BMC</vendorName>
+      <code>RES_SEL_TOTAL_PA_BMC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_PHYSICIAN_COMMENT</vendorName>
-      <code>RES_DEL_PHYSICIAN_COMMENT</code>
+      <vendorName>SEL_PHYSICIAN_COMMENT</vendorName>
+      <code>RES_SEL_PHYSICIAN_COMMENT</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
@@ -2898,7 +2898,7 @@
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>DEL_L1_BMD</vendorName>
+      <vendorName>SEL_L1_BMD</vendorName>
       <code>RES_DEL_L1_BMD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
