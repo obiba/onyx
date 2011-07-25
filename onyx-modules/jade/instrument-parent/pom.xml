@@ -23,6 +23,7 @@
     <module>interface-ecg-cardiosoft</module>
     <module>interface-spirometry-minispir</module>
     <module>interface-bonedensity-achillesexpress</module>
+    <module>interface-bonedensity-holologic-apex</module>
     <module>interface-arterialstiffness-sphygmocor</module>
     <module>interface-cognitivetest-noddletest</module>
     <module>interface-bloodpressure-vsm-bptru</module>
