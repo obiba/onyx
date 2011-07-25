@@ -317,4 +317,31 @@
       </conditions>
     </stageDependencyCondition>
   </stage>
+
+  <stage>
+    <name>BloodPressureBpTru</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>BP_CI</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
 </stages>

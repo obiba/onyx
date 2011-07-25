@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+  <name>BloodPressureBpTru</name>
+
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">5</data>
+  </expectedMeasureCount>
+
+  <instrumentParameters>
+        
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_ARM_USED</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="variableDataSource">
+        <path>CIPreliminaryQuestionnaire:BP_ARM_CHOSEN</path>
+      </dataSource>
+    </input>
+    
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_UPPER_ARM_LN</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>20</decimalMinValueMale>
+          <decimalMaxValueMale>60</decimalMaxValueMale>
+          <decimalMinValueFemale>20</decimalMinValueFemale>
+          <decimalMaxValueFemale>60</decimalMaxValueFemale>
+        </rangeCheck>      
+      </integrityChecks>
+    </input>
+    
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_UPPER_ARM_CIRC</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>17</decimalMinValueMale>
+          <decimalMaxValueMale>50</decimalMaxValueMale>
+          <decimalMinValueFemale>17</decimalMinValueFemale>
+          <decimalMaxValueFemale>50</decimalMaxValueFemale>
+        </rangeCheck>    
+      </integrityChecks>  
+    </input>
+    
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_ARMBAND_SIZE_USED</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <allowedValues>
+        <data type="TEXT">IV_S</data>
+        <data type="TEXT">IV_M</data>
+        <data type="TEXT">IV_LG</data>
+        <data type="TEXT">IV_XL</data>
+      </allowedValues>  
+    </input>
+
+    <output>
+      <code>RES_START_TIME</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_END_TIME</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_SYSTOLIC</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_DIASTOLIC</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_PULSE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <!-- Unsupported: we cannot have some repeated and some non-repeated parameters (unless they're COMPUTED)
+    <output>
+      <code>RES_AVG_SYSTOLIC</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_AVG_DIASTOLIC</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_AVG_PULSE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+     -->
+
+  </instrumentParameters>
+</instrumentType>

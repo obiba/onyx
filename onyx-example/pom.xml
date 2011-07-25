@@ -118,6 +118,14 @@
       <type>zip</type>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bloodpressure-vsm-bptru</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -205,6 +213,14 @@
                   <type>zip</type>
                   <outputDirectory>
                     ${project.build.directory}/${project.build.finalName}/instruments/CognitiveTest
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-bloodpressure-vsm-bptru</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/BloodPressureBpTru
                   </outputDirectory>
                 </artifactItem>
               </artifactItems>
