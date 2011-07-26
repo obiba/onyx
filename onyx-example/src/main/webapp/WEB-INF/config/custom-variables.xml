@@ -18,30 +18,6 @@
 	</variables>
   </valueTable>
   
-  <valueTable name="BoneDensityAPEX">
-	<variables>
-	  <variable name="HEIGHT" valueType="decimal" entityType="Participant">
-	    <attributes>
-	      <attribute name="label" valueType="text" locale="en">Height</attribute>
-	      <attribute name="label" valueType="text" locale="fr">Hauteur</attribute>
-	      <attribute name="script" valueType="text">
-	        $('StandingHeight:CALC_AVG_HEIGHT')
-	      </attribute>
-	    </attributes>
-	  </variable>
-	  <variable name="WEIGHT" valueType="decimal" entityType="Participant">
-	    <attributes>
-	      <attribute name="label" valueType="text" locale="en">Weight</attribute>
-	      <attribute name="label" valueType="text" locale="fr">Poids</attribute>
-	      <attribute name="script" valueType="text">
-	        var w = $('Impedance310:CALC_AVG_WEIGHT');
-	        w.isNull().value() ? $('Weight:RES_WEIGHT') : w;
-	      </attribute>
-	    </attributes>
-	  </variable>
-	</variables>
-  </valueTable>
-  
   <valueTable name="CIPreliminaryQuestionnaire">
 	<variables>
 	  <variable name="BP_CI" valueType="boolean" entityType="Participant">

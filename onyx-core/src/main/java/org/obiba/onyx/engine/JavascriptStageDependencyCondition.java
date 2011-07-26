@@ -35,7 +35,7 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
 
   private String script;
 
-  private ValueSource source;
+  private transient ValueSource source;
 
   @Override
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {

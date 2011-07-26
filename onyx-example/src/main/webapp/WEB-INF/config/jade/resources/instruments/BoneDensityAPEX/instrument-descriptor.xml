@@ -18,18 +18,25 @@
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="variableDataSource">
-        <path>BoneDensityAPEX:HEIGHT</path>
+      <dataSource class="scriptDataSource">
+        <valueType>decimal</valueType>
+        <script>$('StandingHeight:CALC_AVG_HEIGHT')</script>
       </dataSource>
+      <measurementUnit>cm</measurementUnit>
     </input>
     
     <input>
       <code>INPUT_PARTICIPANT_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="variableDataSource">
-        <path>BoneDensityAPEX:WEIGHT</path>
+      <dataSource class="scriptDataSource">
+        <valueType>decimal</valueType>
+        <script>
+	        var w = $('Impedance310:CALC_AVG_WEIGHT');
+	        w.isNull().value() ? $('Weight:RES_WEIGHT') : w;
+        </script>
       </dataSource>
+      <measurementUnit>kg</measurementUnit>
     </input>
        
     <!-- L Hip -->
