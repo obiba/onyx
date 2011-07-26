@@ -25,6 +25,7 @@ import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.DateModifier;
 import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
@@ -135,6 +136,11 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(ComputingDataSource.class, "dataType");
     xstream.useAttributeFor(ComputingDataSource.class, "unit");
     xstream.useAttributeFor(ComputingDataSource.class, "expression");
+
+    xstream.alias("scriptDataSource", JavascriptDataSource.class);
+    xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
+    xstream.useAttributeFor(JavascriptDataSource.class, "unit");
+    xstream.useAttributeFor(JavascriptDataSource.class, "sequence");
 
     xstream.alias("variableDataSource", VariableDataSource.class);
     xstream.useAttributeFor(VariableDataSource.class, "path");

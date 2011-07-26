@@ -22,6 +22,7 @@ import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -141,6 +142,10 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     xstream.useAttributeFor("type", DataType.class);
     xstream.useAttributeFor("dataType", DataType.class);
     xstream.alias("computingDataSource", ComputingDataSource.class);
+    xstream.alias("scriptDataSource", JavascriptDataSource.class);
+    xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
+    xstream.useAttributeFor(JavascriptDataSource.class, "unit");
+    xstream.useAttributeFor(JavascriptDataSource.class, "sequence");
 
     if(readyConditionConfigPath != null) {
       Resource readyConditionFile = null;

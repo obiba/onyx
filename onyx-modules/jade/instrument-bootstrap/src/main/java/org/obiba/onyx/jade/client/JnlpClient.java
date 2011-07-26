@@ -110,15 +110,12 @@ public class JnlpClient {
   }
 
   protected static Properties loadServiceParams(String[] args) {
-
     Properties params = new Properties();
     try {
-
       params.loadFromXML(new ByteArrayInputStream(args[0].getBytes("UTF-8")));
       return params;
-
-    } catch(Exception wErrorLoadingXml) {
-      throw new RuntimeException("Error! Client was unable to load application parameters.");
+    } catch(Exception e) {
+      throw new RuntimeException("Client was unable to load application parameters.", e);
     }
 
   }
