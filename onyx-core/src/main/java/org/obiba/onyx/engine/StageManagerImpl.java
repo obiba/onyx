@@ -52,6 +52,7 @@ public class StageManagerImpl implements ApplicationContextAware, InitializingBe
     xstream.alias("stage", Stage.class);
     xstream.alias("stageCondition", PreviousStageDependencyCondition.class);
     xstream.alias("variableCondition", VariableStageDependencyCondition.class);
+    xstream.alias("scriptCondition", JavascriptStageDependencyCondition.class);
     xstream.alias("multipleCondition", MultipleStageDependencyCondition.class);
     xstream.alias("inverseCondition", InverseStageDependencyCondition.class);
     xstream.alias("moduleCondition", ModuleDependencyCondition.class);
