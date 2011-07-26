@@ -240,7 +240,7 @@ public class BpTru implements BpmSession {
     }
     ((ResultsTableModel) table.getModel()).addRow(row);
     if(listener != null) {
-      listener.onBpResult(startTime, endTime, result);
+      listener.onBpResult(Integer.parseInt(this.reading.getText()), startTime, endTime, result);
     }
   }
 

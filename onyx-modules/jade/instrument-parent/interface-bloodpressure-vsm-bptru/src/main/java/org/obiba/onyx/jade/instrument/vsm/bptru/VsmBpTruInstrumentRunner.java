@@ -44,8 +44,9 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
 
     window.addResultListener(new BpTruResultListener() {
       @Override
-      public void onBpResult(Date startTime, Date endTime, BloodPressure result) {
-        if(result.hasError() == false) {
+      public void onBpResult(int readingNumber, Date startTime, Date endTime, BloodPressure result) {
+        // We don't send the first measurement nor any measurement that has an error
+        if(readingNumber > 1 && result.hasError() == false) {
           instrumentExcecutionService.addOutputParameterValues(asData(startTime, endTime, result));
         }
       }

@@ -15,7 +15,7 @@ import org.obiba.vsm.bptru.bpm.Data;
 
 public interface BpTruResultListener {
 
-  public void onBpResult(Date startTime, Date endTime, Data.BloodPressure result);
+  public void onBpResult(int readingNumber, Date startTime, Date endTime, Data.BloodPressure result);
 
   public void onAvgResult(Data.AvgPressure result);
 
