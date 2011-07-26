@@ -23,6 +23,7 @@ import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.FirstNotNullDataSource;
 import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -323,6 +324,9 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
       xstream.useAttributeFor(ComputingDataSource.class, "dataType");
       xstream.aliasField("type", ComputingDataSource.class, "dataType");
       xstream.alias("firstNotNullDataSource", FirstNotNullDataSource.class);
+      xstream.alias("scriptDataSource", JavascriptDataSource.class);
+      xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
+      xstream.useAttributeFor(JavascriptDataSource.class, "unit");
 
       List<ConditionalMessage> infoMessages = (List<ConditionalMessage>) xstream.fromXML(fis);
       setInfoMessages(infoMessages);
