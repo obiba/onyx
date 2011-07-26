@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ * Copyright (c) 2011 OBiBa. All rights reserved.
+ *  
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -18,7 +18,6 @@ import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.js.JavascriptValueSource;
 import org.obiba.magma.support.Initialisables;
-import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -28,10 +27,6 @@ import org.obiba.onyx.magma.MagmaInstanceProvider;
  * Stage dependency based on Magma javascript.
  */
 public class JavascriptStageDependencyCondition implements StageDependencyCondition {
-
-  private static final String PARTICIPANT_TABLE_NAME = "Participants";
-
-  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   private transient MagmaInstanceProvider magmaInstanceProvider;
 
@@ -57,11 +52,11 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
     }
 
     // Get the stage's ValueTable.
-    ValueTable onyxParticipantTable = magmaInstanceProvider.getValueTable(PARTICIPANT_TABLE_NAME);
+    ValueTable valueTable = magmaInstanceProvider.getValueTable(stage.getName());
 
     // Get the currently interviewed participant's ValueSet.
-    VariableEntity entity = new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, activeInterviewService.getParticipant().getBarcode());
-    ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
+    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant().getBarcode());
+    ValueSet valueSet = valueTable.getValueSet(entity);
 
     Value value = getSource().getValue(valueSet);
     return value.isNull() ? null : (Boolean) value.getValue();
@@ -88,6 +83,10 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
     this.source = null;
   }
 
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
+  }
+
   private ValueSource getSource() {
     if(source == null) {
       source = new JavascriptValueSource(BooleanType.get(), script);
@@ -96,7 +95,4 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
     return source;
   }
 
-  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
-    this.magmaInstanceProvider = magmaInstanceProvider;
-  }
 }
