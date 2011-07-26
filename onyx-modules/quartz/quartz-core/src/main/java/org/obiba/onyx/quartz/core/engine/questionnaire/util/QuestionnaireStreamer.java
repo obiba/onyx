@@ -140,6 +140,7 @@ public class QuestionnaireStreamer {
     xstream.alias("scriptDataSource", JavascriptDataSource.class);
     xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
     xstream.useAttributeFor(JavascriptDataSource.class, "unit");
+    xstream.useAttributeFor(JavascriptDataSource.class, "sequence");
 
     xstream.alias("variableDataSource", VariableDataSource.class);
     xstream.useAttributeFor(VariableDataSource.class, "path");

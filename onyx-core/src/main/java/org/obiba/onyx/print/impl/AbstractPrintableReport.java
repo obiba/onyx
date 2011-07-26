@@ -145,6 +145,7 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     xstream.alias("scriptDataSource", JavascriptDataSource.class);
     xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
     xstream.useAttributeFor(JavascriptDataSource.class, "unit");
+    xstream.useAttributeFor(JavascriptDataSource.class, "sequence");
 
     if(readyConditionConfigPath != null) {
       Resource readyConditionFile = null;

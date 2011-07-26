@@ -327,6 +327,7 @@ public class TubeRegistrationConfiguration implements ApplicationContextAware, R
       xstream.alias("scriptDataSource", JavascriptDataSource.class);
       xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
       xstream.useAttributeFor(JavascriptDataSource.class, "unit");
+      xstream.useAttributeFor(JavascriptDataSource.class, "sequence");
 
       List<ConditionalMessage> infoMessages = (List<ConditionalMessage>) xstream.fromXML(fis);
       setInfoMessages(infoMessages);

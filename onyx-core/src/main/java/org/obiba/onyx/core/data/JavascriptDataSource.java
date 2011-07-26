@@ -44,6 +44,8 @@ public class JavascriptDataSource implements IDataSource {
 
   private String unit;
 
+  private boolean sequence;
+
   private transient MagmaInstanceProvider magmaInstanceProvider;
 
   private transient ValueSource source;
@@ -77,6 +79,14 @@ public class JavascriptDataSource implements IDataSource {
     return getSource().getValue(valueSet);
   }
 
+  public boolean isSequence() {
+    return sequence;
+  }
+
+  public void setSequence(boolean sequence) {
+    this.sequence = sequence;
+  }
+
   @Override
   public String getUnit() {
     return unit;
@@ -89,7 +99,11 @@ public class JavascriptDataSource implements IDataSource {
 
   private ValueSource getSource() {
     if(source == null) {
-      source = new JavascriptValueSource(ValueType.Factory.forName(valueType), script);
+      source = new JavascriptValueSource(ValueType.Factory.forName(valueType), script) {
+        protected boolean isSequence() {
+          return sequence;
+        };
+      };
       Initialisables.initialise(source);
     }
     return source;

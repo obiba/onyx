@@ -157,6 +157,7 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ApplicationContex
     xstream.alias("scriptDataSource", JavascriptDataSource.class);
     xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
     xstream.useAttributeFor(JavascriptDataSource.class, "unit");
+    xstream.useAttributeFor(JavascriptDataSource.class, "sequence");
     xstream.alias("hashedDataSource", HashedDataSource.class);
     xstream.alias("comparingDataSource", ComparingDataSource.class);
     xstream.useAttributeFor(ComparingDataSource.class, "comparisonOperator");
