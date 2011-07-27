@@ -11,12 +11,11 @@ package org.obiba.onyx.print;
 
 import java.util.Set;
 
-import org.springframework.context.ApplicationContextAware;
-
 /**
  * 
  */
-public interface PrintableReportsRegistry extends ApplicationContextAware {
+public interface PrintableReportsRegistry {
+
   public Set<IPrintableReport> availableReports();
 
   public IPrintableReport getReportByName(String reportName);

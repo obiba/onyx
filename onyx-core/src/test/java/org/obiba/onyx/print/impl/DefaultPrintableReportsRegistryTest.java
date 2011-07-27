@@ -20,14 +20,13 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.print.IPrintableReport;
-import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 
 public class DefaultPrintableReportsRegistryTest {
 
-  private PrintableReportsRegistry printableReportsRegistry;
+  private DefaultPrintableReportsRegistry printableReportsRegistry;
 
   private boolean ready = true;
 

@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchValueTableException;
 import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
@@ -22,11 +21,8 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.support.MagmaEngineReferenceResolver;
 import org.obiba.magma.support.MagmaEngineVariableResolver;
-import org.obiba.magma.support.VariableEntityBean;
-import org.obiba.onyx.magma.DataValueConverter;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,61 +30,48 @@ import org.slf4j.LoggerFactory;
  * PdfReport implementation for reports that are retrieved from a variable to be printed.
  */
 public class PdfVariableReport extends PdfReport {
-  //
-  // Constants
-  //
 
   private static final Logger log = LoggerFactory.getLogger(PdfVariableReport.class);
 
-  //
-  // Instance Variables
-  //
+  private transient MagmaInstanceProvider magmaInstanceProvider;
 
   private String pdfVariablePath;
 
-  //
-  // PdfReport Methods
-  //
-
   @Override
   protected InputStream getReport(Locale locale) {
-    MagmaEngineReferenceResolver resolver = MagmaEngineVariableResolver.valueOf(pdfVariablePath);
-    Datasource datasource = MagmaEngine.get().getDatasources().iterator().next();
+
+    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(pdfVariablePath);
+    Datasource datasource = magmaInstanceProvider.getOnyxDatasource();
 
     try {
       ValueTable table = datasource.getValueTable(resolver.getTableName());
       VariableValueSource variableValueSource = table.getVariableValueSource(resolver.getVariableName());
 
       // Get the currently interviewed participant's ValueSet.
-      VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
+      VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant().getBarcode());
       ValueSet valueSet = table.getValueSet(entity);
 
       // Get the PDF data.
       Value pdfValue = variableValueSource.getValue(valueSet);
       if(!pdfValue.isNull()) {
-        Data pdfData = DataValueConverter.valueToData(pdfValue);
-        return new ByteArrayInputStream((byte[]) pdfData.getValue());
+        return new ByteArrayInputStream((byte[]) pdfValue.getValue());
       }
 
     } catch(NoSuchVariableException e) {
-      log.error("No variable found for the following name: {}", e.getName());
+      log.error("Cannot resolve variable '{}' for PDF report '{}'. No such variable {}.", new String[] { pdfVariablePath, this.getName(), e.getName() });
     } catch(NoSuchValueTableException e) {
-      log.error("No ValueTable found for the following name: {}", resolver.getTableName());
+      log.error("Cannot resolve variable '{}' for PDF report '{}'. No such Value Table.", pdfVariablePath, this.getName());
     }
 
     return null;
   }
 
-  public void afterPropertiesSet() {
-    super.afterPropertiesSet();
-  }
-
-  //
-  // Methods
-  //
-
   public void setPdfVariablePath(String pdfVariablePath) {
     this.pdfVariablePath = pdfVariablePath;
+  }
+
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
   }
 
 }

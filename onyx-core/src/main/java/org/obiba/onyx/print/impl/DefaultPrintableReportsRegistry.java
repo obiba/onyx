@@ -17,20 +17,21 @@ import org.obiba.onyx.print.IPrintableReport;
 import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * Discovers and maintains the set of available Printable Reports, contributed by the various Onyx modules.
  */
-public class DefaultPrintableReportsRegistry implements PrintableReportsRegistry {
+public class DefaultPrintableReportsRegistry implements PrintableReportsRegistry, ApplicationContextAware {
 
-  private Set<IPrintableReport> availableReports;
+  private ApplicationContext applicationContext;
 
   public Set<IPrintableReport> availableReports() {
-    return availableReports;
+    return getReportsFromApplicationContext();
   }
 
   public IPrintableReport getReportByName(String reportName) {
-    for(IPrintableReport report : availableReports) {
+    for(IPrintableReport report : getReportsFromApplicationContext()) {
       if(report.getName().equals(reportName)) {
         return report;
       }
@@ -38,11 +39,15 @@ public class DefaultPrintableReportsRegistry implements PrintableReportsRegistry
     return null;
   }
 
-  @SuppressWarnings("unchecked")
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  protected Set<IPrintableReport> getReportsFromApplicationContext() {
     Map<String, IPrintableReport> printableReports = applicationContext.getBeansOfType(IPrintableReport.class);
-    availableReports = new HashSet<IPrintableReport>();
+    Set<IPrintableReport> availableReports = new HashSet<IPrintableReport>();
     availableReports.addAll(printableReports.values());
+    return availableReports;
   }
 
 }
