@@ -28,7 +28,6 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class EasyOnPCInstrumentRunner implements InstrumentRunner, InitializingBean {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(EasyOnPCInstrumentRunner.class);
 
   // Injected by spring.
