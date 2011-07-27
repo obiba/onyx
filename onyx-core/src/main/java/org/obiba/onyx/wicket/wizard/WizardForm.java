@@ -11,6 +11,7 @@ package org.obiba.onyx.wicket.wizard;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -22,10 +23,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.action.ActionWindowProvider;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.FeedbackWindowProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +164,7 @@ public abstract class WizardForm extends Form {
 
   //
   // Event form triggers
-  // 
+  //
 
   protected void onFinishSubmit(AjaxRequestTarget target, Form form) {
     log.debug("finish.onSubmit");
@@ -307,11 +311,31 @@ public abstract class WizardForm extends Form {
   }
 
   /**
-   * Accessor to the feedback panel if any.
-   * @return null by default.
+   * Returns the {@code ActionWindow} available to this wizard component. This implementation expects the component to
+   * be bound to a {@code Page} instance that implements the {@code ActionWindowProvider} interface. If this is not the
+   * case, this methods throws an {@code IllegalStateException}.
+   * @return
+   */
+  protected ActionWindow getActionWindow() {
+    Page page = getPage();
+    if(page instanceof ActionWindowProvider) {
+      return ((ActionWindowProvider) page).getActionWindow();
+    }
+    throw new IllegalStateException("WizardForm should be attached to a Page that implements ActionWindowProvider");
+  }
+
+  /**
+   * Returns the {@code FeedbackWindow} available to this wizard component. This implementation expects the component to
+   * be bound to a {@code Page} instance that implements the {@code FeedbackWindowProvider} interface. If this is not
+   * the case, this methods throws an {@code IllegalStateException}.
+   * @return
    */
   public FeedbackWindow getFeedbackWindow() {
-    return null;
+    Page page = getPage();
+    if(page instanceof FeedbackWindowProvider) {
+      return ((FeedbackWindowProvider) page).getFeedbackWindow();
+    }
+    throw new IllegalStateException("WizardForm should be attached to a Page that implements FeedbackWindowProvider");
   }
 
   @SuppressWarnings("unchecked")

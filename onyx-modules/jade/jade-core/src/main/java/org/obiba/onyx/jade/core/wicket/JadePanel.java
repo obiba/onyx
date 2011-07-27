@@ -18,12 +18,9 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.wizard.InstrumentWizardPanel;
-import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-public class JadePanel extends Panel implements IEngineComponentAware {
+public class JadePanel extends Panel {
 
   private static final long serialVersionUID = -6692482689347742363L;
 
@@ -33,48 +30,29 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   @SpringBean
   private InstrumentService instrumentService;
 
-  private ActionWindow actionWindow;
-
-  private FeedbackWindow feedbackWindow;
-
   private JadeModel model;
 
-  private InstrumentWizardPanel wizardPanel;
-
-  @SuppressWarnings("serial")
   public JadePanel(String id, Stage stage, boolean resuming) {
     super(id);
 
     InstrumentType type = getInstrumentType(stage);
     setDefaultModel(model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new InstrumentTypeModel(type)));
 
-    add(wizardPanel = new InstrumentWizardPanel("content", model.intrumentTypeModel, new StageModel(moduleRegistry, stage.getName()), resuming));
+    add(new InstrumentWizardPanel("content", model.intrumentTypeModel, new StageModel(moduleRegistry, stage.getName()), resuming));
   }
 
   private InstrumentType getInstrumentType(Stage stage) {
     return instrumentService.getInstrumentType(stage.getName());
   }
 
-  public void setActionWindow(ActionWindow window) {
-    wizardPanel.setActionWindow(window);
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    wizardPanel.setFeedbackWindow(feedbackWindow);
-  }
-
-  public FeedbackWindow getFeedbackWindow() {
-    return feedbackWindow;
-  }
-
   @SuppressWarnings("serial")
   private class JadeModel extends AbstractReadOnlyModel {
 
-    private IModel intrumentTypeModel;
+    private IModel<InstrumentType> intrumentTypeModel;
 
-    private IModel stageModel;
+    private IModel<Stage> stageModel;
 
-    public JadeModel(IModel stageModel, IModel instrumentTypeModel) {
+    public JadeModel(IModel<Stage> stageModel, IModel<InstrumentType> instrumentTypeModel) {
       this.intrumentTypeModel = instrumentTypeModel;
       this.stageModel = stageModel;
     }
@@ -87,11 +65,11 @@ public class JadePanel extends Panel implements IEngineComponentAware {
       return (Stage) stageModel.getObject();
     }
 
-    public IModel getIntrumentTypeModel() {
+    public IModel<InstrumentType> getIntrumentTypeModel() {
       return intrumentTypeModel;
     }
 
-    public IModel getStageModel() {
+    public IModel<Stage> getStageModel() {
       return stageModel;
     }
 

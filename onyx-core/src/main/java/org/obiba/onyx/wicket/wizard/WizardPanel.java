@@ -14,7 +14,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 
-public abstract class WizardPanel extends Panel {
+public abstract class WizardPanel<T> extends Panel {
 
   private static final long serialVersionUID = 1L;
 
@@ -23,13 +23,17 @@ public abstract class WizardPanel extends Panel {
 
   private WizardForm wizardForm;
 
-  public WizardPanel(String id, IModel model) {
+  public WizardPanel(String id, IModel<T> model) {
     super(id);
     setDefaultModel(model);
 
     wizardForm = createForm("form");
     add(wizardForm);
+  }
 
+  @SuppressWarnings("unchecked")
+  public IModel<T> getModel() {
+    return (IModel<T>) getDefaultModel();
   }
 
   public WizardForm getWizardForm() {
@@ -40,10 +44,10 @@ public abstract class WizardPanel extends Panel {
     return wizardForm.isCancelled();
   }
 
-  public abstract WizardForm createForm(String componentId);
-
   public EntityQueryService getQueryService() {
     return queryService;
   }
+
+  protected abstract WizardForm createForm(String componentId);
 
 }

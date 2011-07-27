@@ -6,7 +6,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
@@ -26,7 +25,7 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  FeedbackWindow feedbackWindow = new FeedbackWindow("feedback");
+  private final FeedbackWindow feedbackWindow;
 
   //
   // Constructors
@@ -48,7 +47,6 @@ public class QuestionnaireWizardPanel extends WizardPanel {
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
-    getQuestionnaireWizardForm().setFeedbackWindow(this.feedbackWindow);
   }
 
   //
@@ -57,7 +55,12 @@ public class QuestionnaireWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    return new QuestionnaireWizardForm(componentId, getDefaultModel());
+    return new QuestionnaireWizardForm(componentId, getDefaultModel()) {
+      @Override
+      public FeedbackWindow getFeedbackWindow() {
+        return feedbackWindow;
+      }
+    };
   }
 
   //
@@ -66,17 +69,6 @@ public class QuestionnaireWizardPanel extends WizardPanel {
 
   public QuestionnaireWizardForm getQuestionnaireWizardForm() {
     return (QuestionnaireWizardForm) getWizardForm();
-  }
-
-  public void setActionWindow(ActionWindow window) {
-    getQuestionnaireWizardForm().setActionWindow(window);
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-  }
-
-  public FeedbackWindow getFeedbackWindow() {
-    return feedbackWindow;
   }
 
   /**

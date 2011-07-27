@@ -17,11 +17,12 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+import org.obiba.onyx.wicket.reusable.FeedbackWindowProvider;
 
 /**
  * 
  */
-public class AbstractBasePage extends WebPage implements IHeaderContributor {
+public class AbstractBasePage extends WebPage implements IHeaderContributor, FeedbackWindowProvider {
 
   private FeedbackWindow feedbackWindow;
 
@@ -47,7 +48,7 @@ public class AbstractBasePage extends WebPage implements IHeaderContributor {
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }
 
-  protected FeedbackWindow getFeedbackWindow() {
+  public FeedbackWindow getFeedbackWindow() {
     return feedbackWindow;
   }
 

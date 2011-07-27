@@ -24,8 +24,8 @@ import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
-import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.action.ActionWindowProvider;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryIFrame;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
-public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
+public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner, ActionWindowProvider {
 
   private static final Logger log = LoggerFactory.getLogger(StagePage.class);
 
@@ -41,6 +41,8 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
   private ActiveInterviewService activeInterviewService;
 
   private HistoryAjaxBehavior historyAjaxBehavior;
+
+  private ActionWindow actionWindow;
 
   @SuppressWarnings("serial")
   public StagePage(final IModel<Stage> stageModel) {
@@ -66,8 +68,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
 
       IStageExecution exec = activeInterviewService.getStageExecution((Stage) getDefaultModelObject());
 
-      final ActionWindow modal;
-      add(modal = new ActionWindow("modal") {
+      add(actionWindow = new ActionWindow("modal") {
 
         @Override
         public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
@@ -93,7 +94,6 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
         private static final long serialVersionUID = 1L;
 
         @Override
-        @SuppressWarnings("unchecked")
         public void onAjaxHistoryEvent(final AjaxRequestTarget target, final String componentId) {
           log.info("onAjaxHistoryEvent.component={}", componentId);
           setResponsePage(new InvalidStagePage(StagePage.this));
@@ -106,14 +106,17 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
         add(new EmptyPanel("stage-component"));
       } else {
         Component stageComponent = exec.getWidget("stage-component");
-        if(stageComponent instanceof IEngineComponentAware) {
-          IEngineComponentAware comp = (IEngineComponentAware) stageComponent;
-          comp.setActionWindow(modal);
-          comp.setFeedbackWindow(getFeedbackWindow());
+        if(stageComponent == null) {
+          throw new IllegalStateException("stage is interactive but dit not provide a Component to display");
         }
         add(stageComponent);
       }
     }
+  }
+
+  @Override
+  public ActionWindow getActionWindow() {
+    return actionWindow;
   }
 
   public HistoryAjaxBehavior getHistoryAjaxBehavior() {

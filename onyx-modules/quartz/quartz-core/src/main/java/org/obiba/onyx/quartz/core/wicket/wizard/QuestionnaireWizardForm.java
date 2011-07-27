@@ -33,13 +33,11 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.ReusableDialogProvider;
 import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -76,10 +74,6 @@ public class QuestionnaireWizardForm extends WizardForm {
   private WizardStepPanel conclusionStep;
 
   private StageModel stageModel;
-
-  private ActionWindow actionWindow;
-
-  private FeedbackWindow feedbackWindow;
 
   private boolean resuming;
 
@@ -243,7 +237,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
 
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 
@@ -263,7 +257,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 
@@ -272,17 +266,12 @@ public class QuestionnaireWizardForm extends WizardForm {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 
   public void onError(AjaxRequestTarget target, Form form) {
     showFeedbackWindow(target);
-  }
-
-  @Override
-  public FeedbackWindow getFeedbackWindow() {
-    return feedbackWindow;
   }
 
   public void showFeedbackWindow(AjaxRequestTarget target) {
@@ -305,14 +294,6 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   public void setStageModel(StageModel stageModel) {
     this.stageModel = stageModel;
-  }
-
-  public void setActionWindow(ActionWindow window) {
-    this.actionWindow = window;
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    this.feedbackWindow = feedbackWindow;
   }
 
   private AjaxLink createInterrupt() {

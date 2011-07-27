@@ -19,20 +19,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
@@ -41,10 +37,6 @@ import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
-import org.obiba.onyx.ruby.core.wicket.wizard.RubyWizardForm;
-import org.obiba.onyx.ruby.core.wicket.wizard.RubyWizardPanel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 
@@ -93,67 +85,6 @@ public class RubyPanelTest {
   //
   // Test Methods
   //
-
-  @Test
-  public void testSetActionWindow() {
-    recordAndReplayCommonExpectations();
-
-    startWicketPanel(false);
-
-    ActionWindow actionWindow = new ActionWindow("actionWindow") {
-      private static final long serialVersionUID = 1L;
-
-      public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
-        ;
-      }
-    };
-    rubyPanel.setActionWindow(actionWindow);
-
-    verifyCommonMocks();
-
-    // Verify that the specified action window passed to the RubyWizardForm.
-    RubyWizardPanel wizardPanel = (RubyWizardPanel) rubyPanel.get("content");
-    Assert.assertNotNull(wizardPanel);
-    RubyWizardForm wizardForm = (RubyWizardForm) wizardPanel.get("form");
-    Assert.assertNotNull(wizardForm);
-    ActionWindow formActionWindow = wizardForm.getActionWindow();
-    Assert.assertNotNull(formActionWindow);
-    Assert.assertEquals(actionWindow, formActionWindow);
-  }
-
-  @Test
-  public void testSetFeedbackPanel() {
-    recordAndReplayCommonExpectations();
-
-    startWicketPanel(false);
-
-    FeedbackWindow feedbackWindow = new FeedbackWindow("feedback");
-    rubyPanel.setFeedbackWindow(feedbackWindow);
-
-    verifyCommonMocks();
-
-    // Verify that the specified feedback panel was passed to the RubyWizardForm.
-    RubyWizardPanel wizardPanel = (RubyWizardPanel) rubyPanel.get("content");
-    Assert.assertNotNull(wizardPanel);
-    RubyWizardForm wizardForm = (RubyWizardForm) wizardPanel.get("form");
-    Assert.assertNotNull(wizardForm);
-    FeedbackWindow formFeedbackWindow = wizardForm.getFeedbackWindow();
-    Assert.assertNotNull(formFeedbackWindow);
-    Assert.assertEquals(feedbackWindow, formFeedbackWindow);
-  }
-
-  @Test
-  public void testGetFeedbackPanel() {
-    recordAndReplayCommonExpectations();
-
-    startWicketPanel(false);
-
-    FeedbackWindow feedbackWindow = new FeedbackWindow("feedbackPanel");
-    rubyPanel.setFeedbackWindow(feedbackWindow);
-    verifyCommonMocks();
-
-    Assert.assertEquals(feedbackWindow, rubyPanel.getFeedbackWindow());
-  }
 
   //
   // Helper Methods
