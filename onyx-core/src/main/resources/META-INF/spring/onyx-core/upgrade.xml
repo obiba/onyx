@@ -65,6 +65,11 @@
         <bean id="onyx-schemaUpgrade-1.7.0" parent="updateOnyxSchema">
           <property name="appliesTo" value="1.7.0" />
         </bean>
+        <bean class="org.obiba.onyx.runtime.upgrade.Upgrade_1_8_0">
+          <property name="description" value="Onyx role update for questionnaire editor" />
+          <property name="appliesTo" value="1.8.0" />
+          <property name="dataSource" ref="dataSource" />
+        </bean>
       </list>
     </property>
     <property name="stepListeners">
