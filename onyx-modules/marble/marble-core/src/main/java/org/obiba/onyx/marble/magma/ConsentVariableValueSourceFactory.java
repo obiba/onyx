@@ -15,6 +15,7 @@ import java.util.Set;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.marble.domain.consent.Consent;
 
@@ -29,7 +30,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
   // Constants
   //
 
-  public static final String PARTICIPANT = "Participant";
+  public static final String PARTICIPANT = MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE;
 
   //
   // Instance Variables

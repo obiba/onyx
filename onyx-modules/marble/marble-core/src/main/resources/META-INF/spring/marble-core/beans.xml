@@ -86,6 +86,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <constructor-arg value="Consent:mode" />
       </bean>
     </property>
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
   </bean>
 
 </beans>
