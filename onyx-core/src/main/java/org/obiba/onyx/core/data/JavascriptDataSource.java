@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ * Copyright 2011(c) OBiBa. All rights reserved.
  * 
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
@@ -17,7 +17,6 @@ import org.obiba.magma.ValueType;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.js.JavascriptValueSource;
 import org.obiba.magma.support.Initialisables;
-import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.DataValueConverter;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
@@ -26,17 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Get data from a variable.
+ * An implementation of {@code IDataSource} that executes a {@code Magma JavaScript} script to produce a {@code Data}
+ * instance.
  */
 public class JavascriptDataSource implements IDataSource {
 
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = LoggerFactory.getLogger(JavascriptDataSource.class);
-
-  private static final String PARTICIPANT_TABLE_NAME = "Participants";
-
-  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   private String valueType;
 
@@ -69,13 +65,9 @@ public class JavascriptDataSource implements IDataSource {
   }
 
   private Value getValue(Participant participant) {
-    // Get the stage's ValueTable.
-    ValueTable onyxParticipantTable = magmaInstanceProvider.getValueTable(PARTICIPANT_TABLE_NAME);
-
-    // Get the currently interviewed participant's ValueSet.
-    VariableEntity entity = new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, participant.getBarcode());
-    ValueSet valueSet = onyxParticipantTable.getValueSet(entity);
-
+    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(participant.getBarcode());
+    ValueTable valueTable = magmaInstanceProvider.getParticipantsTable();
+    ValueSet valueSet = valueTable.getValueSet(entity);
     return getSource().getValue(valueSet);
   }
 

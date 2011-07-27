@@ -24,11 +24,23 @@ public interface MagmaInstanceProvider {
   public static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   /**
+   * The name of the onyx-core value table
+   */
+  public static final String PARTICIPANTS_TABLE_NAME = "Participants";
+
+  /**
    * Returns the Onyx Magma Datasource.
    * 
    * @return an instance of {@code Datasource}
    */
   public Datasource getOnyxDatasource();
+
+  /**
+   * Return the {@code ValueTable} that onyx-core contributes to the {@code Datasource}. Use this method to obtain an
+   * instance of {@code ValueTable} that is guaranteed to exist, regardless of the configuration.
+   * @return the {@ValueTable}
+   */
+  public ValueTable getParticipantsTable();
 
   /**
    * Returns a {@code ValueTable} from the Onyx {@code Datasource}.
