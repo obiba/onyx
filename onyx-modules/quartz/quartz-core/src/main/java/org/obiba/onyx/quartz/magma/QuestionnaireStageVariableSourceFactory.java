@@ -349,7 +349,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     private void buildCategoryVariable(final QuestionCategory questionCategory) {
       // Build a derived variable from the Question variable using javascript
       // The script test whether the Question variable has this category amongst its answers
-      Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), "Participant").extend(JavascriptVariableBuilder.class).setScript("$('" + variableName(question) + "').any('" + questionCategory.getCategory().getName() + "')");
+      Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), "Participant").extend(JavascriptVariableBuilder.class).setScript(String.format("$('%s').isNull().value() ? null : $('%s').any('%s')", variableName(question), variableName(question), questionCategory.getCategory().getName()));
       categoryVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
       vvsSetBuilder.add(new JavascriptVariableValueSource(categoryVariable.build()));
 
