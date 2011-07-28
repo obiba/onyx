@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.ndd;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -72,13 +75,15 @@ public abstract class TestDataExtractor<T extends TestData<?>> extends XMLDataEx
     return extractStringValue(getTrialPath(index) + path);
   }
 
-  protected void extractResultParametersData(TrialData tData, NodeList resultParams) throws XPathExpressionException {
+  protected Map<String, Number> extractResultParametersData(NodeList resultParams) throws XPathExpressionException {
+    Map<String, Number> results = new HashMap<String, Number>();
     for(int i = 0; i < resultParams.getLength(); i++) {
-      extractResultParametersData(tData, resultParams.item(i));
+      extractResultParametersData(results, resultParams.item(i));
     }
+    return results;
   }
 
-  protected void extractResultParametersData(TrialData tData, Node resultParam) throws XPathExpressionException {
+  protected void extractResultParametersData(Map<String, Number> results, Node resultParam) throws XPathExpressionException {
     String name = extractAttributeValue(resultParam, "ID");
 
     NodeList children = resultParam.getChildNodes();
@@ -86,13 +91,19 @@ public abstract class TestDataExtractor<T extends TestData<?>> extends XMLDataEx
       Node node = children.item(i);
       if(node.getLocalName() != null) {
         if(node.getLocalName().equals("DataValue")) {
-          tData.putResult(name, parseDouble(node.getTextContent()));
+          putResult(results, name, parseDouble(node.getTextContent()));
         } else if(node.getLocalName().equals("PredictedValue")) {
-          tData.putResult(name + "_pred", parseDouble(node.getTextContent()));
+          putResult(results, name + "_PRED", parseDouble(node.getTextContent()));
         } else if(node.getLocalName().equals("LLNormalValue")) {
-          tData.putResult(name + "_ll", parseDouble(node.getTextContent()));
+          putResult(results, name + "_LLNORMAL", parseDouble(node.getTextContent()));
         }
       }
+    }
+  }
+
+  private void putResult(Map<String, Number> results, String name, Double value) {
+    if(value != null) {
+      results.put(name, value);
     }
   }
 

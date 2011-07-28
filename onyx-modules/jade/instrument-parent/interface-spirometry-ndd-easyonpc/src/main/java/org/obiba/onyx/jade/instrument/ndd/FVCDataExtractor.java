@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.ndd;
 
+import java.util.Map;
+
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.obiba.onyx.jade.instrument.ndd.FVCDataExtractor.FVCData;
@@ -36,16 +39,20 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
   protected FVCData extractDataImpl() throws XPathExpressionException {
     FVCData data = new FVCData();
 
+    data.setBestResults(extractResultParametersData((NodeList) xpath.evaluate(getTestRoot() + "/BestValues/ResultParameter", doc, XPathConstants.NODESET)));
+
     NodeList trials = getTrialNodes();
     for(int i = 0; i < trials.getLength(); i++) {
-      FVCTrialData tData = new FVCTrialData();
-      data.getTrials().add(tData);
-      extractResultParametersData(tData, getTrialResultParameterNodes(i + 1));
-      tData.setDate(extractTrialStringValue(i + 1, "/Date"));
-      tData.flowInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelFlow/SamplingInterval"));
-      tData.flowValues = extractTrialStringValue(i + 1, "/ChannelFlow/SamplingValues");
-      tData.volumeInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelVolume/SamplingInterval"));
-      tData.volumeValues = extractTrialStringValue(i + 1, "/ChannelVolume/SamplingValues");
+      if(extractTrialStringValue(i + 1, "/Accepted").equals("true")) {
+        FVCTrialData tData = new FVCTrialData();
+        data.getTrials().add(tData);
+        tData.setResults(extractResultParametersData(getTrialResultParameterNodes(i + 1)));
+        tData.setDate(extractTrialStringValue(i + 1, "/Date"));
+        tData.flowInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelFlow/SamplingInterval"));
+        tData.flowValues = extractTrialStringValue(i + 1, "/ChannelFlow/SamplingValues");
+        tData.volumeInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelVolume/SamplingInterval"));
+        tData.volumeValues = extractTrialStringValue(i + 1, "/ChannelVolume/SamplingValues");
+      }
     }
 
     // log.info(data.toString());
@@ -54,6 +61,20 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
   }
 
   public class FVCData extends TestData<FVCTrialData> {
+
+    private Map<String, Number> bestResults;
+
+    public FVCData() {
+      super();
+    }
+
+    public void setBestResults(Map<String, Number> bestResults) {
+      this.bestResults = bestResults;
+    }
+
+    public Map<String, Number> getBestResults() {
+      return bestResults;
+    }
 
   }
 

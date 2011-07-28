@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 /**
  *
  */
-public class EasyOnPCXMLParser<T extends TestData> {
+public class EMRXMLParser<T extends TestData<?>> {
 
   private XPath xpath;
 
@@ -38,7 +38,7 @@ public class EasyOnPCXMLParser<T extends TestData> {
 
   private T testData;
 
-  public EasyOnPCXMLParser() {
+  public EMRXMLParser() {
     super();
   }
 
@@ -72,6 +72,8 @@ public class EasyOnPCXMLParser<T extends TestData> {
     participantData = pExtractor.extractData();
     testExtractor.init(xpath, doc);
     testData = testExtractor.extractData();
+
+    in.close();
   }
 
   public ParticipantData getParticipantData() {

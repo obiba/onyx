@@ -12,7 +12,6 @@ package org.obiba.onyx.jade.instrument.ndd;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class TrialData {
@@ -23,15 +22,9 @@ public class TrialData {
     super();
   }
 
-  private Map<String, Number> results = new HashMap<String, Number>();
+  private Map<String, Number> results;
 
   private Date date;
-
-  public void putResult(String name, Double value) {
-    if(value != null) {
-      results.put(name, value);
-    }
-  }
 
   public void setDate(String date) {
     try {
@@ -43,6 +36,10 @@ public class TrialData {
 
   public Date getDate() {
     return date;
+  }
+
+  public void setResults(Map<String, Number> results) {
+    this.results = results;
   }
 
   public Map<String, Number> getResults() {

@@ -26,6 +26,8 @@ public class ParticipantData {
 
   private String asthma;
 
+  private String copd;
+
   private String gender;
 
   private String dateOfBirth;
@@ -112,6 +114,14 @@ public class ParticipantData {
 
   public void setDateOfBirth(String dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
+  }
+
+  public void setCopd(String copd) {
+    this.copd = copd;
+  }
+
+  public String getCopd() {
+    return copd;
   }
 
 }

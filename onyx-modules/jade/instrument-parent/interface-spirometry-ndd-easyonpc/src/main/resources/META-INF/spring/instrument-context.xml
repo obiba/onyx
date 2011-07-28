@@ -4,10 +4,15 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.ndd.EasyOnPCInstrumentRunner">
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.ndd.EasyWareProInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/>
     <property name="dbPath" value="C:\\Program Files\\ndd Medizintechnik\\Easy on-PC\\Database\\EasyWarePro.mdb"/>
+    <property name="exchangePath" value="C:\\Program Files\\ndd Medizintechnik\\Easy on-PC\\Database"/>
+    <property name="inFileName" value="OnyxIn.xml"/>
+    <property name="outFileName" value="OnyxOut.xml"/>
+    <property name="reportBaseName" value="Report_FVC"/>
+    <property name="reportFormat" value="PDF"/>
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
