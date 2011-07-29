@@ -18,7 +18,6 @@
 
   <modules>
     <module>quartz-core</module>
-    <module>quartz-integration-test</module>
   </modules>
 
 </project>
