@@ -12,9 +12,11 @@ package org.obiba.onyx.jade.instrument.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -117,6 +119,15 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public Data getInputParameterValue(String parameterCode) {
     InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
     return activeInstrumentRunService.getInstrumentRunValue(parameterCode).getData(parameter.getDataType());
+  }
+
+  @Override
+  public Set<String> getExpectedOutputParameterVendorNames() {
+    Set<String> names = new LinkedHashSet<String>();
+    for(InstrumentParameter ip : activeInstrumentRunService.getInstrumentType().getOutputParameters(true)) {
+      names.add(ip.getVendorName());
+    }
+    return names;
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {

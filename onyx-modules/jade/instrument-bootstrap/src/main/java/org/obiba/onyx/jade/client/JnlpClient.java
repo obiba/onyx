@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 public class JnlpClient {
 
@@ -89,7 +91,9 @@ public class JnlpClient {
   }
 
   protected static GenericApplicationContext loadAppContext(String[] requestParams) {
-    Properties paramsProp = loadServiceParams(requestParams);
+    Properties defaultProps = loadDefaultPropertyValues();
+    defaultProps.list(System.out);
+    Properties paramsProp = loadServiceParams(defaultProps, requestParams);
 
     // Load bootstrap context files.
     GenericApplicationContext appContext = new GenericApplicationContext();
@@ -109,8 +113,16 @@ public class JnlpClient {
 
   }
 
-  protected static Properties loadServiceParams(String[] args) {
-    Properties params = new Properties();
+  protected static Properties loadDefaultPropertyValues() {
+    try {
+      return PropertiesLoaderUtils.loadAllProperties("META-INF/onyx/defaults.properties");
+    } catch(IOException e) {
+      throw new RuntimeException("Client was unable to load application parameters.", e);
+    }
+  }
+
+  protected static Properties loadServiceParams(Properties defaultProps, String[] args) {
+    Properties params = new Properties(defaultProps);
     try {
       params.loadFromXML(new ByteArrayInputStream(args[0].getBytes("UTF-8")));
       return params;

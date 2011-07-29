@@ -104,6 +104,11 @@
   </stage>
 
   <stage>
+    <name>GripStrengthJTech</name>
+    <module>jade</module>
+  </stage>
+
+  <stage>
     <name>BloodPressure</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">

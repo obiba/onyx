@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>GripStrengthJTech</name>
+
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">3</data>
+  </expectedMeasureCount>
+
+  <instrumentParameters>
+    <output>
+      <code>RES_RUNG</code>
+      <vendorName>Rung</vendorName>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_MAX_REPS</code>
+      <vendorName>MaxReps</vendorName>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_SEQUENCE</code>
+      <vendorName>Sequence</vendorName>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_REST_TIME</code>
+      <vendorName>RestTime</vendorName>
+      <measurementUnit>s</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_TRESHOLD</code>
+      <vendorName>Threshold</vendorName>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_TRIAL_SIDE</code>
+      <vendorName>Side</vendorName>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_TRIAL_RUNG_POSITION</code>
+      <vendorName>Position</vendorName>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_TRIAL_MAX</code>
+      <vendorName>Rep</vendorName>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_EXAM_MAX</code>
+      <vendorName>Max</vendorName>
+      <dataType>DECIMAL</dataType>
+      <measurementUnit>kg</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_EXAM_AVG</code>
+      <vendorName>Avg</vendorName>
+      <dataType>DECIMAL</dataType>
+      <measurementUnit>kg</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <code>RES_EXAM_CV</code>
+      <vendorName>CV</vendorName>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+  </instrumentParameters>
+</instrumentType>

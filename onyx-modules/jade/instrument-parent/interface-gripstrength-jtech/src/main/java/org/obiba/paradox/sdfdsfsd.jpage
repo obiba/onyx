@@ -1,0 +1,5 @@
+java.util.Calendar c = java.util.Calendar.getInstance();
+c.clear();
+c.set(1, 0, 1);
+c.add(java.util.Calendar.DAY_OF_YEAR, 2147483647);
+java.text.SimpleDateFormat.getDateTimeInstance().format(c.getTime());
