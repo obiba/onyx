@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
   Copyright (c) 2011 OBiBa. All rights reserved.
    
@@ -7,7 +8,6 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<?xml version="1.0" encoding="ISO-8859-1"?>
 <instrumentType>
 
   <name>SpirometryNDD</name>
@@ -636,14 +636,14 @@
       <code>RES_AmbTemp</code>
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>Â°C</measurementUnit>
+      <measurementUnit>°C</measurementUnit>
     </output>
     <output>
       <vendorName>AmbTemp_Fahr</vendorName>
       <code>RES_AmbTemp_Fahr</code>
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit>Â°F</measurementUnit>
+      <measurementUnit>°F</measurementUnit>
     </output>
     <output>
       <vendorName>AmbHumidity</vendorName>
