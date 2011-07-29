@@ -106,6 +106,15 @@
   <stage>
     <name>GripStrengthJTech</name>
     <module>jade</module>
+    <stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+        <string>CIPreliminaryQuestionnaire</string>
+      </stages>
+      <script>
+        $('Consent:accepted').and($('CIPreliminaryQuestionnaire:GS_CI').not())
+      </script>
+    </stageDependencyCondition>
   </stage>
 
   <stage>
