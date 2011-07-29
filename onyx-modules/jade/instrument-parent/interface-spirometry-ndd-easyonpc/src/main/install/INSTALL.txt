@@ -1,0 +1,18 @@
+=========================
+ EMR Onyx Plugin Install
+=========================
+
+* Copy EMR.Plugin.Onyx.dll in Plugins directory of Easy on-PC program
+* Start Easy on-PC
+* Select Utilities > Configuration > EMR
+* Select EMR System: Onyx Plugin
+* Set in Exchange tab:
+  - Data exchange folder: path to Database directory of Easy on-PC program
+  - check use external Cmd File
+  - Filename In: OnyxIn.xml
+  - Filename Out: OnyxOut.xml
+  - check include curve data in XML
+  - check include trial values in XML
+* Set in Workflow tab:
+  - check close application after test
+* Save Configuration and Exit
