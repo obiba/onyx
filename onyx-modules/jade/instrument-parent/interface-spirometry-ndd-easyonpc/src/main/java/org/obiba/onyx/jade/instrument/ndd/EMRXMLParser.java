@@ -9,11 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.ndd;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +19,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -29,6 +28,9 @@ import org.xml.sax.SAXException;
  *
  */
 public class EMRXMLParser<T extends TestData<?>> {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(EMRXMLParser.class);
 
   private XPath xpath;
 
@@ -45,25 +47,10 @@ public class EMRXMLParser<T extends TestData<?>> {
   public void parse(InputStream in, TestDataExtractor<T> testExtractor) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
 
     // First read the whole file
-    BufferedReader fileReader = new BufferedReader(new InputStreamReader(in));
-    StringBuilder xmlFileContent = new StringBuilder();
-    String wOneLine;
-    int i = 0;
-
-    while((wOneLine = fileReader.readLine()) != null) {
-      xmlFileContent.append(wOneLine + "\n");
-      i++;
-    }
-
-    // The whole XML document
-    String xmlDocument = xmlFileContent.toString();
-
-    // Now create a stream using the copy of the XML file for the XPath analysis
-    InputStream xmlStream = new ByteArrayInputStream(xmlDocument.getBytes());
     DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     domFactory.setNamespaceAware(true);
     DocumentBuilder builder = domFactory.newDocumentBuilder();
-    doc = builder.parse(xmlStream);
+    doc = builder.parse(in);
 
     XPathFactory factory = XPathFactory.newInstance();
     xpath = factory.newXPath();

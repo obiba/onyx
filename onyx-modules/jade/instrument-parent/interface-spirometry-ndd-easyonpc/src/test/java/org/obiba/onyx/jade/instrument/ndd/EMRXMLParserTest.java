@@ -47,6 +47,7 @@ public class EMRXMLParserTest {
     Assert.assertEquals("Caucasian", pData.getEthnicity());
     Assert.assertEquals("", pData.getAsthma());
     Assert.assertEquals("", pData.getSmoker());
+    Assert.assertEquals("", pData.getCopd());
     Assert.assertEquals("Female", pData.getGender());
     Assert.assertEquals("1972-01-27", pData.getDateOfBirth());
 

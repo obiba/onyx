@@ -19,7 +19,7 @@
   <instrumentParameters>
 
     <input>
-      <vendorName>BirthDate</vendorName>
+      <vendorName>DateOfBirth</vendorName>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
       <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
@@ -40,27 +40,19 @@
     </input>
 
     <input>
-      <vendorName>EthnicGroup</vendorName>
-      <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
-      <dataType>INTEGER</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="fixedDataSource">
-        <data type="INTEGER">1</data>
-      </dataSource>
-    </input>
-
-    <input>
+      <vendorName>Height</vendorName>
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="scriptDataSource">
         <valueType>decimal</valueType>
-        <script>$('StandingHeight:CALC_AVG_HEIGHT')</script>
+        <script>$('StandingHeight:CALC_AVG_HEIGHT').div(100)</script>
       </dataSource>
-      <measurementUnit>cm</measurementUnit>
+      <measurementUnit>m</measurementUnit>
     </input>
     
     <input>
+      <vendorName>Weight</vendorName>
       <code>INPUT_PARTICIPANT_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -76,35 +68,35 @@
 
     <!-- Participant Data -->
     <output>
-      <vendorName>HEIGHT</vendorName>
+      <vendorName>Height</vendorName>
       <code>OUTPUT_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
+      <measurementUnit>m</measurementUnit>
     </output>
     <output>
-      <vendorName>WEIGHT</vendorName>
+      <vendorName>Weight</vendorName>
       <code>OUTPUT_WEIGHT</code>
-      <dataType>DECIMAL</dataType>
+      <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
+      <measurementUnit>kg</measurementUnit>
     </output>
     <output>
-      <vendorName>ETHNICITY</vendorName>
+      <vendorName>Ethnicity</vendorName>
       <code>OUTPUT_ETHNICITY</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>ASTHMA</vendorName>
+      <vendorName>Asthma</vendorName>
       <code>OUTPUT_ASTHMA</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>SMOKER</vendorName>
+      <vendorName>Smoker</vendorName>
       <code>OUTPUT_SMOKER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>

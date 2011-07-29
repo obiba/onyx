@@ -58,6 +58,10 @@ public interface InstrumentExecutionService {
 
   public int getCurrentMeasureCount();
 
+  public boolean hasInputParameter(String parameterCode);
+
+  public boolean hasOutputParameter(String parameterCode);
+
   public Map<String, Data> getInputParametersValue(String... parameters);
 
   public Map<String, String> getInputParametersVendorNames(String... parameters);

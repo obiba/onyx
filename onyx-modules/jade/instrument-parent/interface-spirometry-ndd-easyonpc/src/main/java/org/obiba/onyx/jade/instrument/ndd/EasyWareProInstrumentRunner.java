@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
@@ -54,6 +56,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   private String reportFormat;
 
+  private Set<String> outVendorNames;
+
   public EasyWareProInstrumentRunner() {
     super();
   }
@@ -62,21 +66,10 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
    * PerformTest command sent with participant data.
    * @throws Exception
    */
-  public void initParticipantData() {
+  private void initParticipantData() {
     File inFile = getInFile();
     try {
       PrintWriter writer = new PrintWriter(inFile);
-
-      String gender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
-      if(gender.startsWith("F")) {
-        gender = "Female";
-      } else {
-        gender = "Male";
-      }
-      String weight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_WEIGHT").getValue();
-      String height = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_HEIGHT").getValue();
-      SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-      String dob = instrumentExecutionService.getDateAsString("INPUT_PARTICIPANT_DATE_BIRTH", birthDateFormatter);
 
       writer.print("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
       writer.print("<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
@@ -85,20 +78,40 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       writer.print("    <Parameter Name=\"TestType\">FVC</Parameter>");
       writer.print("  </Command>");
       writer.print("  <Patients>");
-      writer.print("    <Patient ID=\"xxxxxx\">");
+      writer.print("    <Patient ID=\"" + new Random().nextInt(1000000) + "\">");
       writer.print("      <LastName/>");
       writer.print("      <FirstName/>");
       writer.print("      <IsBioCal>false</IsBioCal>");
       writer.print("      <PatientDataAtPresent>");
-      writer.print("        <Height>" + height + "</Height>");
-      writer.print("        <Weight>" + weight + "</Weight>");
-      writer.print("        <Ethnicity />");
-      writer.print("        <Smoker />");
-      writer.print("        <Asthma />");
-      writer.print("        <Gender>" + gender + "</Gender>");
-      writer.print("        <DateOfBirth>" + dob + "</DateOfBirth>");
+
+      if(instrumentExecutionService.hasInputParameter("Gender")) {
+        String gender = instrumentExecutionService.getInputParameterValue("Gender").getValue();
+        if(gender.startsWith("F")) {
+          gender = "Female";
+        } else {
+          gender = "Male";
+        }
+        writer.print("        <Gender>" + gender + "</Gender>");
+      } else {
+        writer.print("        <Gender/>");
+      }
+
+      if(instrumentExecutionService.hasInputParameter("DateOfBirth")) {
+        SimpleDateFormat birthDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dob = instrumentExecutionService.getDateAsString("DateOfBirth", birthDateFormatter);
+        writer.print("        <DateOfBirth>" + dob + "</DateOfBirth>");
+      } else {
+        writer.print("        <DateOfBirth/>");
+      }
       writer.print("        <ComputedDateOfBirth>false</ComputedDateOfBirth>");
-      writer.print("        <COPD />");
+
+      writeParameter(writer, "Height");
+      writeParameter(writer, "Weight");
+      writeParameter(writer, "Ethnicity");
+      writeParameter(writer, "Smoker");
+      writeParameter(writer, "Asthma");
+      writeParameter(writer, "COPD");
+
       writer.print("      </PatientDataAtPresent>");
       writer.print("    </Patient>");
       writer.print("  </Patients>");
@@ -113,14 +126,25 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     }
   }
 
-  public void initConfiguration() {
+  private void writeParameter(PrintWriter writer, String name) {
+    if(instrumentExecutionService.hasInputParameter(name)) {
+      Data data = instrumentExecutionService.getInputParameterValue(name);
+      String value = data.getValue() != null ? data.getValueAsString() : "";
+      log.info(name + "=" + value);
+      writer.print("        <" + name + ">" + value + "</" + name + ">");
+    } else {
+      writer.print("        <" + name + "/>");
+    }
+  }
+
+  private void initConfiguration() {
     File inFile = getInFile();
     try {
       PrintWriter writer = new PrintWriter(inFile);
 
       writer.print("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
       writer.print("<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
-      writer.print("  <Command Type=\"PerformTest\">");
+      writer.print("  <Command Type=\"Configuration\">");
       writer.print("    <Parameter Name=\"CloseAfterTest\">True</Parameter>");
       writer.print("    <Parameter Name=\"IncludeTrialValues\">True</Parameter>");
       writer.print("    <Parameter Name=\"IncludeCurveData\">True</Parameter>");
@@ -156,7 +180,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
         FileUtil.copyFile(backupDbFile, currentDbFile);
         backupDbFile.delete();
         deleteFile(getInFile());
-        deleteFile(getOutFile());
+        // deleteFile(getOutFile());
         if(withReport()) {
           deleteFile(getReportFile());
         }
@@ -190,26 +214,26 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       for(FVCTrialData trialData : tData.getTrials()) {
         Map<String, Data> data = new HashMap<String, Data>();
         // participant data
-        data.put("HEIGHT", DataBuilder.buildDecimal(pData.getHeight()));
-        data.put("WEIGHT", DataBuilder.buildInteger(pData.getWeight()));
-        data.put("ETHNICITY", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
-        data.put("ASTHMA", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
-        data.put("SMOKER", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
-        data.put("COPD", DataBuilder.buildText(pData.getCopd().toUpperCase()));
+        addOutput(data, "Height", DataBuilder.buildDecimal(pData.getHeight()));
+        addOutput(data, "Weight", DataBuilder.buildInteger(pData.getWeight()));
+        addOutput(data, "Ethnicity", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
+        addOutput(data, "Asthma", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
+        addOutput(data, "Smoker", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
+        addOutput(data, "COPD", DataBuilder.buildText(pData.getCopd().toUpperCase()));
 
         // trial date
-        data.put("TRIAL_DATE", DataBuilder.buildDate(trialData.getDate()));
+        addOutput(data, "TRIAL_DATE", DataBuilder.buildDate(trialData.getDate()));
 
         // results
         for(Entry<String, Number> entry : trialData.getResults().entrySet()) {
-          data.put(entry.getKey(), DataBuilder.build(entry.getValue()));
+          addOutput(data, entry.getKey(), DataBuilder.build(entry.getValue()));
         }
 
         // curves
-        data.put("FLOW_INTERVAL", DataBuilder.buildDecimal(trialData.getFlowInterval()));
-        data.put("FLOW_VALUES", DataBuilder.buildText(trialData.getFlowValues()));
-        data.put("VOLUME_INTERVAL", DataBuilder.buildDecimal(trialData.getVolumeInterval()));
-        data.put("VOLUME_VALUES", DataBuilder.buildText(trialData.getVolumeValues()));
+        addOutput(data, "FLOW_INTERVAL", DataBuilder.buildDecimal(trialData.getFlowInterval()));
+        addOutput(data, "FLOW_VALUES", DataBuilder.buildText(trialData.getFlowValues()));
+        addOutput(data, "VOLUME_INTERVAL", DataBuilder.buildDecimal(trialData.getVolumeInterval()));
+        addOutput(data, "VOLUME_VALUES", DataBuilder.buildText(trialData.getVolumeValues()));
 
         dataList.add(data);
       }
@@ -220,10 +244,15 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     }
 
     return dataList;
-
   }
 
-  public void sendDataToServer(Map<String, Data> data) {
+  private void addOutput(Map<String, Data> data, String name, Data value) {
+    if(outVendorNames.contains(name)) {
+      data.put(name, value);
+    }
+  }
+
+  private void sendDataToServer(Map<String, Data> data) {
     instrumentExecutionService.addOutputParameterValues(data);
   }
 
@@ -235,18 +264,29 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     log.info("Backup local database");
     resetDeviceData();
 
-    log.info("Configure external application");
-    initConfiguration();
+    log.info("Setting participant data");
+    initParticipantData();
+
+    outVendorNames = instrumentExecutionService.getExpectedOutputParameterVendorNames();
+
+    // log.info("Configure external application");
+    // initConfiguration();
   }
 
   /**
    * Implements parent method run from InstrumentRunner Launch the external application, retrieve and send the data
    */
   public void run() {
-    new Thread(new InitParticipantData()).start();
+    // new Thread(new InitParticipantData()).start();
 
     log.info("Launching Easy on-PC software");
     externalAppHelper.launch();
+
+    // wait for the output xml file to be written
+    try {
+      Thread.sleep(2000);
+    } catch(InterruptedException e) {
+    }
 
     log.info("Retrieving measurements");
     List<Map<String, Data>> dataList = retrieveDeviceData();
@@ -282,7 +322,6 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       } catch(InterruptedException e) {
       }
     }
-
   }
 
   public InstrumentExecutionService getInstrumentExecutionService() {

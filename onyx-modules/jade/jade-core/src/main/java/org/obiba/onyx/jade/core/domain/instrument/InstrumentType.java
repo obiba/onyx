@@ -153,9 +153,25 @@ public class InstrumentType implements Serializable {
    * @return null if not found.
    */
   public InstrumentParameter getInstrumentParameter(String name) {
+    return getInstrumentParameter(getInstrumentParameters(), name);
+  }
+
+  /**
+   * Get the instrument parameter of a specific type searching by the code, and if not found, searching by the vendor
+   * name.
+   * @param <T>
+   * @param parameterType
+   * @param name
+   * @return
+   */
+  public <T extends InstrumentParameter> T getInstrumentParameter(Class<T> parameterType, String name) {
+    return getInstrumentParameter(getInstrumentParameters(parameterType), name);
+  }
+
+  private <T extends InstrumentParameter> T getInstrumentParameter(List<T> parameters, String name) {
     // Lookup the parameter using it's code
-    InstrumentParameter parameter = null;
-    for(InstrumentParameter param : getInstrumentParameters()) {
+    T parameter = null;
+    for(T param : parameters) {
       if(name.equals(param.getCode()) == true) {
         parameter = param;
         break;
@@ -164,7 +180,7 @@ public class InstrumentType implements Serializable {
 
     if(parameter == null) {
       // Lookup the parameter using it's vendor name
-      for(InstrumentParameter param : getInstrumentParameters()) {
+      for(T param : parameters) {
         if(name.equals(param.getVendorName()) == true) {
           parameter = param;
           break;
@@ -173,6 +189,25 @@ public class InstrumentType implements Serializable {
     }
 
     return parameter;
+  }
+
+  /**
+   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type.
+   * @param <T>
+   * @param parameterType type of parameter to return (i.e., the class)
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends InstrumentParameter> List<T> getInstrumentParameters(Class<T> parameterType) {
+    List<T> parameters = new ArrayList<T>();
+
+    for(InstrumentParameter parameter : getInstrumentParameters()) {
+      if(parameterType.isInstance(parameter)) {
+        parameters.add((T) parameter);
+      }
+    }
+
+    return parameters;
   }
 
   /**
@@ -187,11 +222,9 @@ public class InstrumentType implements Serializable {
   public <T extends InstrumentParameter> List<T> getInstrumentParameters(Class<T> parameterType, boolean hasDataSource) {
     List<T> parameters = new ArrayList<T>();
 
-    for(InstrumentParameter parameter : getInstrumentParameters()) {
-      if(parameterType.isInstance(parameter)) {
-        if(!(parameter.getDataSource() != null ^ hasDataSource)) {
-          parameters.add((T) parameter);
-        }
+    for(InstrumentParameter parameter : getInstrumentParameters(parameterType)) {
+      if(!(parameter.getDataSource() != null ^ hasDataSource)) {
+        parameters.add((T) parameter);
       }
     }
 
@@ -343,6 +376,10 @@ public class InstrumentType implements Serializable {
 
   public boolean isRepeatable() {
     return expectedMeasureCount != null;
+  }
+
+  public boolean isRepeatable(InstrumentParameter instrumentParameter) {
+    return isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED);
   }
 
   @Override

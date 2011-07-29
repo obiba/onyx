@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -106,6 +107,18 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return (inputParametersValue);
   }
 
+  @Override
+  public boolean hasInputParameter(String parameterCode) {
+    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+    return type.getInstrumentParameter(InstrumentInputParameter.class, parameterCode) != null;
+  }
+
+  @Override
+  public boolean hasOutputParameter(String parameterCode) {
+    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+    return type.getInstrumentParameter(InstrumentOutputParameter.class, parameterCode) != null;
+  }
+
   public Map<String, String> getInputParametersVendorNames(String... parameters) {
     Map<String, String> inputParametersVendorName = new HashMap<String, String>();
     for(String parameterCode : parameters) {
@@ -135,7 +148,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     if(!instrumentType.isRepeatable()) {
       for(Map.Entry<String, Data> entry : values.entrySet()) {
         String paramName = entry.getKey();
-        InstrumentParameter parameter = getInstrumentParameter(paramName);
+        InstrumentOutputParameter parameter = getInstrumentOutputParameter(paramName);
         updateParameterValue(parameter, entry.getValue());
       }
     } else {
@@ -152,11 +165,11 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     activeInstrumentRunService.update(outputParameterValue);
   }
 
-  private InstrumentParameter getInstrumentParameter(String name) {
-    InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(name);
+  private InstrumentOutputParameter getInstrumentOutputParameter(String name) {
+    InstrumentOutputParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(InstrumentOutputParameter.class, name);
 
     // Test if no parameter found for the given name
-    if(parameter == null || parameter instanceof InstrumentOutputParameter == false) {
+    if(parameter == null) {
       throw new IllegalArgumentException("No output parameter with name: " + name);
     }
 

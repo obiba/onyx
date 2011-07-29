@@ -16,14 +16,13 @@ import java.util.Set;
 
 import org.obiba.magma.Category;
 import org.obiba.magma.Variable;
-import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.VariableValueSourceFactory;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -160,14 +159,16 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
       for(InstrumentParameter instrumentParameter : instrumentParameters) {
         String name = instrumentParameter.getCode();
 
+        boolean repeatable = instrumentType.isRepeatable(instrumentParameter);
+
         // Test whether this parameter is part of the "Measure"
-        if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+        if(repeatable) {
           name = MEASURE + '.' + instrumentParameter.getCode();
         }
 
         Variable.Builder builder = Variable.Builder.newVariable(name, DataTypes.valueTypeFor(instrumentParameter.getDataType()), "Participant");
 
-        if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+        if(repeatable) {
           builder.repeatable().occurrenceGroup(MEASURE);
         }
 
@@ -272,7 +273,7 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
       }
 
       // For parameters that are part of a repeatable measure, add occurrence count attribute.
-      if(instrumentType.isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+      if(instrumentType.isRepeatable(instrumentParameter)) {
         OnyxAttributeHelper.addOccurrenceCountAttribute(builder, instrumentType.getExpectedMeasureCount().toString());
       }
     }
