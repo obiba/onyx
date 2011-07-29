@@ -32,7 +32,7 @@ public class ParadoxRecord {
   }
 
   public <T> T getValue(String fieldName) {
-    return getValue(getFieldIndex(fieldName));
+    return this.<T> getValue(getFieldIndex(fieldName));
   }
 
   void setFieldValue(int i, Object value) {
