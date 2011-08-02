@@ -146,16 +146,9 @@
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>L_HIP_HSTD_TOT</vendorName>
-      <code>RES_L_HIP_HSTD_TOT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
       <vendorName>L_HIP_ROI_TYPE</vendorName>
       <code>RES_L_HIP_ROI_TYPE</code>
-      <dataType>DECIMAL</dataType>
+      <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
@@ -186,6 +179,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>L_HIP_NN_BMD</vendorName>
@@ -512,16 +508,9 @@
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>R_HIP_HSTD_TOT</vendorName>
-      <code>RES_R_HIP_HSTD_TOT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
       <vendorName>R_HIP_ROI_TYPE</vendorName>
       <code>RES_R_HIP_ROI_TYPE</code>
-      <dataType>DECIMAL</dataType>
+      <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
@@ -552,6 +541,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>R_HIP_NN_BMD</vendorName>
@@ -1030,6 +1022,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_WBC_FAT_STD</vendorName>
@@ -1289,6 +1284,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_NET_AVG_AREA</vendorName>
@@ -1737,6 +1735,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_NET_AVG_FAT</vendorName>
@@ -2304,6 +2305,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_OI_FAT_STD</vendorName>
@@ -2423,6 +2427,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
              
     <!-- Single Energy Lateral -->
@@ -2887,6 +2894,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
 
     <!-- Dual Energy Lateral -->
@@ -3351,6 +3361,224 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output>
+    
+    <!-- AP Lumbar Spine -->
+    <output>
+      <vendorName>SP_NO_REGIONS</vendorName>
+      <code>RES_SP_NO_REGIONS</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_STARTING_REGION</vendorName>
+      <code>RES_SP_STARTING_REGION</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_INCLUDED</vendorName>
+      <code>RES_SP_L1_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_INCLUDED</vendorName>
+      <code>RES_SP_L2_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_INCLUDED</vendorName>
+      <code>RES_SP_L3_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_INCLUDED</vendorName>
+      <code>RES_SP_L4_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_INCLUDED</vendorName>
+      <code>RES_SP_L5_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_AREA</vendorName>
+      <code>RES_SP_L1_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_BMC</vendorName>
+      <code>RES_SP_L1_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_BMD</vendorName>
+      <code>RES_SP_L1_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_AREA</vendorName>
+      <code>RES_SP_L2_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_BMC</vendorName>
+      <code>RES_SP_L2_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_BMD</vendorName>
+      <code>RES_SP_L2_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_AREA</vendorName>
+      <code>RES_SP_L3_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_BMC</vendorName>
+      <code>RES_SP_L3_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_BMD</vendorName>
+      <code>RES_SP_L3_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_AREA</vendorName>
+      <code>RES_SP_L4_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_BMC</vendorName>
+      <code>RES_SP_L4_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_BMD</vendorName>
+      <code>RES_SP_L4_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_AREA</vendorName>
+      <code>RES_SP_L5_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_BMC</vendorName>
+      <code>RES_SP_L5_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_BMD</vendorName>
+      <code>RES_SP_L5_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_TOT_AREA</vendorName>
+      <code>RES_SP_TOT_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_TOT_BMC</vendorName>
+      <code>RES_SP_TOT_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_TOT_BMD</vendorName>
+      <code>RES_SP_TOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_STD_TOT_BMD</vendorName>
+      <code>RES_SP_STD_TOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_ROI_TYPE</vendorName>
+      <code>RES_SP_ROI_TYPE</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_ROI_WIDTH</vendorName>
+      <code>RES_SP_ROI_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_ROI_HEIGHT</vendorName>
+      <code>RES_SP_ROI_HEIGHT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_PHYSICIAN_COMMENT</vendorName>
+      <code>RES_SP_PHYSICIAN_COMMENT</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
              
   </instrumentParameters>

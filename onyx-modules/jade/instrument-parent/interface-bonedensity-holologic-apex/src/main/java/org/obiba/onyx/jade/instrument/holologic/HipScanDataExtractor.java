@@ -82,8 +82,7 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
       putDouble("HTOT_AREA");
       putDouble("HTOT_BMC");
       putDouble("HTOT_BMD");
-      putDouble("HSTD_TOT");
-      putDouble("ROI_TYPE");
+      putLong("ROI_TYPE");
       putDouble("ROI_WIDTH");
       putDouble("ROI_HEIGHT");
       putDouble("AXIS_LENGTH");

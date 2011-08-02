@@ -13,8 +13,12 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
@@ -55,6 +59,8 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   private List<String> participantFiles = new ArrayList<String>();
 
+  private Set<String> outVendorNames;
+
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
   }
@@ -90,18 +96,19 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    participantID = instrumentExecutionService.getParticipantID();
+    participantID = "RANDOM-" + new Random().nextInt(1000000);
     participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
     participantWeight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_WEIGHT").getValue();
     participantHeight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_HEIGHT").getValue();
+    // TODO ETHNICITY BIRTHDATE
   }
 
   /**
-   * Retrieve participant data from the database and write them in the spirometer input file
+   * Retrieve participant data from the database and write them in the patient scan database
    * @throws Exception
    */
   public void initParticipantData() {
-    patScanDb.update("insert into PATIENT ( PARTICIPANT_KEY, IDENTIFIER1, SEX, WEIGHT, HEIGHT ) values( ?, ?, ?, ?, ? )", new PreparedStatementSetter() {
+    patScanDb.update("insert into PATIENT ( PATIENT_KEY, IDENTIFIER1, SEX, WEIGHT, HEIGHT ) values( ?, ?, ?, ?, ? )", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
         ps.setString(2, participantID);
@@ -125,6 +132,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
   protected void resetDeviceData() {
     File backupDbFile = new File(getPatScanDbPath() + ".orig");
     File currentDbFile = new File(getPatScanDbPath());
+    scanDataDir = currentDbFile.getParentFile();
 
     try {
       if(backupDbFile.exists()) {
@@ -142,7 +150,8 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
         FileUtil.copyFile(currentDbFile, backupDbFile);
       }
     } catch(Exception ex) {
-      throw new RuntimeException("Error in APEXInstrumentRunner deleteDeviceData: ", ex);
+      log.error(ex.getMessage(), ex);
+      throw new RuntimeException("Error while reseting device data: " + ex.getMessage(), ex);
     }
   }
 
@@ -155,15 +164,24 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantID));
     extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.SINGLE));
     extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.DUAL));
+    extractScanData(dataList, new SpineScanDataExtractor(patScanDb, scanDataDir, participantID));
 
     return dataList;
 
   }
 
   private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
-    dataList.add(extractor.extractData());
-    participantFiles.add(extractor.getPFileName());
-    participantFiles.add(extractor.getRFileName());
+    // filter the values to output
+    Map<String, Data> extractedData = extractor.extractData();
+    Map<String, Data> outputData = new HashMap<String, Data>();
+    for(Entry<String, Data> entry : extractedData.entrySet()) {
+      if(outVendorNames.contains(entry.getKey())) {
+        outputData.put(entry.getKey(), entry.getValue());
+      }
+    }
+    dataList.add(outputData);
+
+    participantFiles.addAll(extractor.getFileNames());
   }
 
   public void sendDataToServer(Map<String, Data> data) {
@@ -180,6 +198,8 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
     log.info("Setting participant data");
     initParticipantData();
+
+    outVendorNames = instrumentExecutionService.getExpectedOutputParameterVendorNames();
   }
 
   /**

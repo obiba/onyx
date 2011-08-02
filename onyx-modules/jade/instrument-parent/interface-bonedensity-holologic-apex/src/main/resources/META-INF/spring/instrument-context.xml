@@ -16,30 +16,20 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/>
-    <property name="patScanDbPath" value="C:\\QDR\\Data\\PatScan.mdb"/>
+    <property name="patScanDbPath" value="${org.obiba.onyx.jade.instrument.holologic.apex.dbPath}"/>
     <property name="patScanDb" ref="patScanDb" />
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
-    <property name="workDir" value="C:\\QDR" />
-    <property name="executable" value="qdr.exe" />
+    <property name="workDir" value="${org.obiba.onyx.jade.instrument.holologic.apex.workDir}" />
+    <property name="executable" value="${org.obiba.onyx.jade.instrument.holologic.apex.executable}" />
   </bean>
   
   <bean id="patScanDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName">
-      <value>sun.jdbc.odbc.JdbcOdbcDriver</value>
-    </property>
-    <property name="url">
-      <value>
-        jdbc:odbc:DRIVER=Microsoft Access Driver (*.mdb);DBQ=C:/QDR/Data/PatScan.mdb;DriverId=25;FIL=MSAccess
-      </value>
-    </property>
-    <property name="username">
-      <value></value>
-    </property>
-    <property name="password">
-      <value></value>
-    </property>
+    <property name="driverClassName" value="${org.obiba.onyx.jade.instrument.holologic.apex.driver}"/>
+    <property name="url" value="${org.obiba.onyx.jade.instrument.holologic.apex.url}"/>
+    <property name="username" value="${org.obiba.onyx.jade.instrument.holologic.apex.username}"/>
+    <property name="password" value="${org.obiba.onyx.jade.instrument.holologic.apex.password}"/>
   </bean>
   
   <bean name="patScanDb" class="org.springframework.jdbc.core.JdbcTemplate">
