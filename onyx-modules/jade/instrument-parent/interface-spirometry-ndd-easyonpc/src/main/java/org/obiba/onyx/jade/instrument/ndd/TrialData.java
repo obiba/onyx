@@ -18,6 +18,8 @@ public class TrialData {
 
   private final SimpleDateFormat ISO_8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
+  private final SimpleDateFormat ISO_8601_SHORT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
   TrialData() {
     super();
   }
@@ -32,7 +34,12 @@ public class TrialData {
     try {
       this.date = ISO_8601.parse(date);
     } catch(ParseException e) {
-      TestData.log.error("Unable to parse trial date: " + date, e);
+      try {
+        this.date = ISO_8601_SHORT.parse(date);
+      } catch(ParseException e1) {
+        TestData.log.error("Unable to parse trial date: " + date, e1);
+      }
+
     }
   }
 

@@ -74,7 +74,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       writer.print("    <Parameter Name=\"TestType\">FVC</Parameter>");
       writer.print("  </Command>");
       writer.print("  <Patients>");
-      writer.print("    <Patient ID=\"" + new Random().nextInt(1000000) + "\">");
+      writer.print("    <Patient ID=\"RANDOM-" + new Random().nextInt(1000000) + "\">");
       writer.print("      <LastName/>");
       writer.print("      <FirstName/>");
       writer.print("      <IsBioCal>false</IsBioCal>");
@@ -152,7 +152,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
         FileUtil.copyFile(currentDbFile, backupDbFile);
       }
     } catch(Exception ex) {
-      throw new RuntimeException("Error while reseting device data: ", ex);
+      log.error(ex.getMessage(), ex);
+      throw new RuntimeException("Error while reseting device data: " + ex.getMessage(), ex);
     }
   }
 
