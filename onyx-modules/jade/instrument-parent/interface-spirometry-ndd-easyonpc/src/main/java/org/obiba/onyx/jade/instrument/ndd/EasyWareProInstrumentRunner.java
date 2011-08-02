@@ -146,7 +146,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
         FileUtil.copyFile(backupDbFile, currentDbFile);
         backupDbFile.delete();
         deleteFile(getInFile());
-        // deleteFile(getOutFile());
+        deleteFile(getOutFile());
       } else {
         // init
         FileUtil.copyFile(currentDbFile, backupDbFile);
@@ -232,17 +232,12 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     initParticipantData();
 
     outVendorNames = instrumentExecutionService.getExpectedOutputParameterVendorNames();
-
-    // log.info("Configure external application");
-    // initConfiguration();
   }
 
   /**
    * Implements parent method run from InstrumentRunner Launch the external application, retrieve and send the data
    */
   public void run() {
-    // new Thread(new InitParticipantData()).start();
-
     log.info("Launching Easy on-PC software");
     externalAppHelper.launch();
 
@@ -267,25 +262,6 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
   public void shutdown() {
     log.info("Restoring local database and cleaning data files");
     resetDeviceData();
-  }
-
-  /**
-   * Wait until application has answered the output file to our input configuration file before pushing the input
-   * participant data file.
-   */
-  private class InitParticipantData implements Runnable {
-
-    @Override
-    public void run() {
-      try {
-        while(!externalAppHelper.isSotfwareAlreadyStarted() || !getOutFile().exists()) {
-          Thread.sleep(200);
-        }
-        log.info("Setting participant data");
-        initParticipantData();
-      } catch(InterruptedException e) {
-      }
-    }
   }
 
   public InstrumentExecutionService getInstrumentExecutionService() {
