@@ -52,10 +52,6 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   private String outFileName;
 
-  private String reportBaseName;
-
-  private String reportFormat;
-
   private Set<String> outVendorNames;
 
   public EasyWareProInstrumentRunner() {
@@ -137,36 +133,6 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     }
   }
 
-  private void initConfiguration() {
-    File inFile = getInFile();
-    try {
-      PrintWriter writer = new PrintWriter(inFile);
-
-      writer.print("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
-      writer.print("<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
-      writer.print("  <Command Type=\"Configuration\">");
-      writer.print("    <Parameter Name=\"CloseAfterTest\">True</Parameter>");
-      writer.print("    <Parameter Name=\"IncludeTrialValues\">True</Parameter>");
-      writer.print("    <Parameter Name=\"IncludeCurveData\">True</Parameter>");
-      if(withReport()) {
-        writer.print("    <Parameter Name=\"AttachReport\">True</Parameter>");
-        writer.print("    <Parameter Name=\"AttachmentFormat\">" + reportFormat + "</Parameter>");
-        writer.print("    <Parameter Name=\"AttachmentFileName\">" + reportBaseName + "</Parameter>");
-      } else {
-        writer.print("    <Parameter Name=\"AttachReport\">False</Parameter>");
-      }
-      writer.print("  </Command>");
-      writer.print("</ndd>");
-
-      writer.flush();
-      writer.close();
-
-    } catch(Exception e) {
-      log.error("Unable to write participant data: " + inFile.getAbsolutePath(), e);
-      instrumentExecutionService.instrumentRunnerError(e);
-    }
-  }
-
   /**
    * Initialise or restore instrument data (database and scan files).
    * @throws Exception
@@ -181,9 +147,6 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
         backupDbFile.delete();
         deleteFile(getInFile());
         // deleteFile(getOutFile());
-        if(withReport()) {
-          deleteFile(getReportFile());
-        }
       } else {
         // init
         FileUtil.copyFile(currentDbFile, backupDbFile);
@@ -214,15 +177,16 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       for(FVCTrialData trialData : tData.getTrials()) {
         Map<String, Data> data = new HashMap<String, Data>();
         // participant data
-        addOutput(data, "Height", DataBuilder.buildDecimal(pData.getHeight()));
-        addOutput(data, "Weight", DataBuilder.buildInteger(pData.getWeight()));
-        addOutput(data, "Ethnicity", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
-        addOutput(data, "Asthma", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
-        addOutput(data, "Smoker", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
-        addOutput(data, "COPD", DataBuilder.buildText(pData.getCopd().toUpperCase()));
+        addOutput(data, "HeightOut", DataBuilder.buildDecimal(pData.getHeight()));
+        addOutput(data, "WeightOut", DataBuilder.buildInteger(pData.getWeight()));
+        addOutput(data, "EthnicityOut", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
+        addOutput(data, "AsthmaOut", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
+        addOutput(data, "SmokerOut", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
+        addOutput(data, "COPDOut", DataBuilder.buildText(pData.getCopd().toUpperCase()));
 
         // trial date
         addOutput(data, "TRIAL_DATE", DataBuilder.buildDate(trialData.getDate()));
+        addOutput(data, "TRIAL_RANK", DataBuilder.buildInteger(trialData.getRank()));
 
         // results
         for(Entry<String, Number> entry : trialData.getResults().entrySet()) {
@@ -366,22 +330,6 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   public File getOutFile() {
     return new File(exchangePath, outFileName);
-  }
-
-  public File getReportFile() {
-    return new File(exchangePath, reportBaseName + "." + reportFormat.toLowerCase());
-  }
-
-  public boolean withReport() {
-    return reportBaseName != null;
-  }
-
-  public void setReportBaseName(String reportBaseName) {
-    this.reportBaseName = reportBaseName;
-  }
-
-  public void setReportFormat(String reportFormat) {
-    this.reportFormat = reportFormat;
   }
 
 }

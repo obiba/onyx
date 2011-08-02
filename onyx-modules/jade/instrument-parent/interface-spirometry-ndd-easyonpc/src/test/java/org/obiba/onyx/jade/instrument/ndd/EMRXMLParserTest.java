@@ -123,8 +123,9 @@ public class EMRXMLParserTest {
     Assert.assertTrue(results.containsKey("FEV1_FEV6"));
     Assert.assertTrue(results.containsKey("MTCR"));
 
-    Assert.assertEquals(3, tData.getTrials().size());
+    Assert.assertEquals(2, tData.getTrials().size());
     Assert.assertEquals("Wed Jul 27 11:15:14 EDT 2011", tData.getTrials().get(0).getDate().toString());
+    Assert.assertEquals(new Long(1), tData.getTrials().get(0).getRank());
 
     results = tData.getTrials().get(0).getResults();
     Assert.assertEquals(76, results.size());
@@ -282,9 +283,7 @@ public class EMRXMLParserTest {
     Assert.assertEquals(results.get("MTCR"), new Double(-0.28284277750747255));
 
     results = tData.getTrials().get(1).getResults();
-    Assert.assertEquals(76, results.size());
-
-    results = tData.getTrials().get(2).getResults();
+    Assert.assertEquals(new Long(3), tData.getTrials().get(1).getRank());
     Assert.assertEquals(76, results.size());
 
     FVCTrialData trialData = tData.getTrials().get(0);

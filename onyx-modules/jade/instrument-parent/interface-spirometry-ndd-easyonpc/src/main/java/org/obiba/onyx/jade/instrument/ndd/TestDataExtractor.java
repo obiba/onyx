@@ -75,6 +75,10 @@ public abstract class TestDataExtractor<T extends TestData<?>> extends XMLDataEx
     return extractStringValue(getTrialPath(index) + path);
   }
 
+  protected Long extractTrialLongValue(int index, String path) throws XPathExpressionException {
+    return extractLongValue(getTrialPath(index) + path);
+  }
+
   protected Map<String, Number> extractResultParametersData(NodeList resultParams) throws XPathExpressionException {
     Map<String, Number> results = new HashMap<String, Number>();
     for(int i = 0; i < resultParams.getLength(); i++) {

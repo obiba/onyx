@@ -1068,8 +1068,8 @@
                   <Number>3</Number>
                   <Rank>2</Rank>
                   <RankOriginal>2</RankOriginal>
-                  <Accepted>true</Accepted>
-                  <AcceptedOriginal>true</AcceptedOriginal>
+                  <Accepted>false</Accepted>
+                  <AcceptedOriginal>false</AcceptedOriginal>
                   <ManualAmbientOverride>false</ManualAmbientOverride>
                   <ResultParameters>
                     <ResultParameter ID="FVC">

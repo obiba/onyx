@@ -48,6 +48,7 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
         data.getTrials().add(tData);
         tData.setResults(extractResultParametersData(getTrialResultParameterNodes(i + 1)));
         tData.setDate(extractTrialStringValue(i + 1, "/Date"));
+        tData.setRank(extractTrialLongValue(i + 1, "/Rank"));
         tData.flowInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelFlow/SamplingInterval"));
         tData.flowValues = extractTrialStringValue(i + 1, "/ChannelFlow/SamplingValues");
         tData.volumeInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelVolume/SamplingInterval"));

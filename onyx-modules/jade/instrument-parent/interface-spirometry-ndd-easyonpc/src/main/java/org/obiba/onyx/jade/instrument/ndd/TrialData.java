@@ -26,6 +26,8 @@ public class TrialData {
 
   private Date date;
 
+  private Long rank;
+
   public void setDate(String date) {
     try {
       this.date = ISO_8601.parse(date);
@@ -36,6 +38,14 @@ public class TrialData {
 
   public Date getDate() {
     return date;
+  }
+
+  public void setRank(Long rank) {
+    this.rank = rank;
+  }
+
+  public Long getRank() {
+    return rank;
   }
 
   public void setResults(Map<String, Number> results) {

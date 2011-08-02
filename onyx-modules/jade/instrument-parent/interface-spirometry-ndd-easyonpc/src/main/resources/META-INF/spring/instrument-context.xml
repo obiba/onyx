@@ -16,17 +16,15 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.ndd.EasyWareProInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/>
-    <property name="dbPath" value="C:\\Program Files\\ndd Medizintechnik\\Easy on-PC\\Database\\EasyWarePro.mdb"/>
-    <property name="exchangePath" value="C:\\Program Files\\ndd Medizintechnik\\Easy on-PC\\Database"/>
-    <property name="inFileName" value="OnyxIn.xml"/>
-    <property name="outFileName" value="OnyxOut.xml"/>
-    <property name="reportBaseName" value="Report_FVC"/>
-    <property name="reportFormat" value="PDF"/>
+    <property name="dbPath" value="${org.obiba.onyx.jade.instrument.ndd.easywarepro.dbPath}"/>
+    <property name="exchangePath" value="${org.obiba.onyx.jade.instrument.ndd.easywarepro.exchangePath}"/>
+    <property name="inFileName" value="${org.obiba.onyx.jade.instrument.ndd.easywarepro.inFileName}"/>
+    <property name="outFileName" value="${org.obiba.onyx.jade.instrument.ndd.easywarepro.outFileName}"/>
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
-    <property name="workDir" value="C:\\Program Files\\ndd Medizintechnik\\Easy on-PC\\Application" />
-    <property name="executable" value="EasyWarePro.exe" />
+    <property name="workDir" value="${org.obiba.onyx.jade.instrument.ndd.easywarepro.workDir}" />
+    <property name="executable" value="${org.obiba.onyx.jade.instrument.ndd.easywarepro.executable}" />
   </bean>
   
 </beans>

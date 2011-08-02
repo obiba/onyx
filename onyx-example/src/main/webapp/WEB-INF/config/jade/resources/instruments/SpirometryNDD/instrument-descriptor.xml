@@ -68,42 +68,42 @@
 
     <!-- Participant Data -->
     <output>
-      <vendorName>Height</vendorName>
+      <vendorName>HeightOut</vendorName>
       <code>OUTPUT_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>m</measurementUnit>
     </output>
     <output>
-      <vendorName>Weight</vendorName>
+      <vendorName>WeightOut</vendorName>
       <code>OUTPUT_WEIGHT</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
     <output>
-      <vendorName>Ethnicity</vendorName>
+      <vendorName>EthnicityOut</vendorName>
       <code>OUTPUT_ETHNICITY</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>Asthma</vendorName>
+      <vendorName>AsthmaOut</vendorName>
       <code>OUTPUT_ASTHMA</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>Smoker</vendorName>
+      <vendorName>SmokerOut</vendorName>
       <code>OUTPUT_SMOKER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
     <output>
-      <vendorName>COPD</vendorName>
+      <vendorName>COPDOut</vendorName>
       <code>OUTPUT_COPD</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -115,6 +115,12 @@
       <vendorName>TRIAL_DATE</vendorName>
       <code>OUTPUT_TRIAL_DATE</code>
       <dataType>DATE</dataType>          
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>TRIAL_RANK</vendorName>
+      <code>OUTPUT_TRIAL_RANK</code>
+      <dataType>INTEGER</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     
