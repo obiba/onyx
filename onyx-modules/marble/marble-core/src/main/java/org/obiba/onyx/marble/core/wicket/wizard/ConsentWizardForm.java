@@ -32,16 +32,16 @@ import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
+import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
 public class ConsentWizardForm extends WizardForm {
+
+  private static final long serialVersionUID = -2559749066496258891L;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -59,10 +59,6 @@ public class ConsentWizardForm extends WizardForm {
   private WizardStepPanel consentConfirmationStep;
 
   private StageModel stageModel;
-
-  private ActionWindow actionWindow;
-
-  private FeedbackWindow feedbackWindow;
 
   protected WizardAdministrationWindow adminWindow;
 
@@ -192,23 +188,6 @@ public class ConsentWizardForm extends WizardForm {
     this.stageModel = stageModel;
   }
 
-  public void setActionWindow(ActionWindow window) {
-    this.actionWindow = window;
-  }
-
-  public ActionWindow getActionWindow() {
-    return actionWindow;
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    this.feedbackWindow = feedbackWindow;
-  }
-
-  @Override
-  public FeedbackWindow getFeedbackWindow() {
-    return feedbackWindow;
-  }
-
   //
   // WizardForm Methods
   //
@@ -217,7 +196,7 @@ public class ConsentWizardForm extends WizardForm {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 
@@ -254,7 +233,7 @@ public class ConsentWizardForm extends WizardForm {
       consentService.saveConsent(activeConsentService.getConsent());
 
       if(actionDef != null) {
-        actionWindow.show(target, stageModel, actionDef);
+        getActionWindow().show(target, stageModel, actionDef);
       }
     }
 

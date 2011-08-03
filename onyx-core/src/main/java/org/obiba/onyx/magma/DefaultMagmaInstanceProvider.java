@@ -29,6 +29,11 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
     return magmaEngine.getDatasources().iterator().next();
   }
 
+  @Override
+  public ValueTable getParticipantsTable() {
+    return getValueTable(PARTICIPANTS_TABLE_NAME);
+  }
+
   public ValueTable getValueTable(String name) {
     return getOnyxDatasource().getValueTable(name);
   }

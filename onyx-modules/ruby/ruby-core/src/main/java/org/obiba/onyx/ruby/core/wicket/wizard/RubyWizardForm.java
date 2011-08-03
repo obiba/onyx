@@ -27,12 +27,10 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
+import org.obiba.onyx.wicket.reusable.WizardAdministrationWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -71,10 +69,6 @@ public class RubyWizardForm extends WizardForm {
   private WizardStepPanel validationStep;
 
   private StageModel stageModel;
-
-  private ActionWindow actionWindow;
-
-  private FeedbackWindow feedbackWindow;
 
   protected WizardAdministrationWindow adminWindow;
 
@@ -116,29 +110,12 @@ public class RubyWizardForm extends WizardForm {
     add(link);
   }
 
-  @Override
-  public FeedbackWindow getFeedbackWindow() {
-    return feedbackWindow;
-  }
-
   //
   // Methods
   //
 
   public void setStageModel(StageModel stageModel) {
     this.stageModel = stageModel;
-  }
-
-  public void setActionWindow(ActionWindow window) {
-    this.actionWindow = window;
-  }
-
-  public ActionWindow getActionWindow() {
-    return actionWindow;
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    this.feedbackWindow = feedbackWindow;
   }
 
   public Component getInterruptLink() {
@@ -270,7 +247,7 @@ public class RubyWizardForm extends WizardForm {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 
@@ -278,7 +255,7 @@ public class RubyWizardForm extends WizardForm {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
     ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 
@@ -291,7 +268,7 @@ public class RubyWizardForm extends WizardForm {
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
 
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
+      getActionWindow().show(target, stageModel, actionDef);
     }
   }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ * Copyright (c) 2011 OBiBa. All rights reserved.
+ *  
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -13,11 +13,15 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -27,6 +31,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
  *
  */
 public abstract class APEXScanDataExtractor {
+
+  private static final Logger log = LoggerFactory.getLogger(APEXScanDataExtractor.class);
 
   private JdbcTemplate patScanDb;
 
@@ -39,6 +45,8 @@ public abstract class APEXScanDataExtractor {
   private String pFileName;
 
   private String rFileName;
+
+  private List<String> fileNames;
 
   protected APEXScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey) {
     super();
@@ -79,10 +87,10 @@ public abstract class APEXScanDataExtractor {
   }
 
   private Map<String, Data> extractScanAnalysisData() {
-    return patScanDb.query("select SCANID, PFILE_NAME from ScanAnalysis where PARTICIPANT_KEY = ? and SCAN_TYPE = ?", new PreparedStatementSetter() {
+    return patScanDb.query("select SCANID, PFILE_NAME from ScanAnalysis where PATIENT_KEY = ? and SCAN_TYPE = ?", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, getParticipantKey());
-        ps.setLong(2, getScanType());
+        ps.setString(2, Long.toString(getScanType()));
       }
     }, new ScanAnalysisResultSetExtractor());
   }
@@ -95,19 +103,34 @@ public abstract class APEXScanDataExtractor {
     return scanID;
   }
 
+  public List<String> getFileNames() {
+    return fileNames != null ? fileNames : (fileNames = new ArrayList<String>());
+  }
+
   private final class ScanAnalysisResultSetExtractor implements ResultSetExtractor<Map<String, Data>> {
     @Override
     public Map<String, Data> extractData(ResultSet rs) throws SQLException, DataAccessException {
       Map<String, Data> data = new HashMap<String, Data>();
 
-      // assume there is only one scan of the given type for the participant
-      if(rs.next()) {
+      // assume the last scan of a given type is the one we are interested in
+      // + stores all scan files for future deletion
+      while(rs.next()) {
         scanID = rs.getString("SCANID");
+        log.info("Visiting scan: " + scanID);
         pFileName = rs.getString("PFILE_NAME");
-        rFileName = rs.getString("PFILE_NAME").replace(".P", ".R");
 
+        if(pFileName != null) {
+          rFileName = pFileName.replace(".P", ".R");
+          getFileNames().add(pFileName);
+          getFileNames().add(rFileName);
+        } else {
+          rFileName = null;
+        }
+      }
+
+      if(scanID != null && pFileName != null) {
+        log.info("Retrieving data from scan: " + scanID);
         data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
-
         data.put(getResultPrefix() + "_PFILE_NAME", DataBuilder.buildText(pFileName));
         data.put(getResultPrefix() + "_RFILE_NAME", DataBuilder.buildText(rFileName));
 
@@ -123,7 +146,7 @@ public abstract class APEXScanDataExtractor {
   }
 
   protected Map<String, Data> extractScanData(String table, Map<String, Data> data, ResultSetExtractor<Map<String, Data>> rsExtractor) {
-    return getPatScanDb().query("select * from " + table + " where PARTICIPANT_KEY = ? and SCANID = ?", new PreparedStatementSetter() {
+    return getPatScanDb().query("select * from " + table + " where PATIENT_KEY = ? and SCANID = ?", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, getParticipantKey());
         ps.setString(2, getScanID());
@@ -149,6 +172,10 @@ public abstract class APEXScanDataExtractor {
         putData();
       }
       return data;
+    }
+
+    protected void putBoolean(String name) throws SQLException {
+      put(name, DataBuilder.buildBoolean(rs.getBoolean(name)));
     }
 
     protected void putString(String name) throws SQLException {

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -86,7 +87,7 @@
       <type>zip</type>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>interface-bonedensity-holologic-apex</artifactId>
@@ -113,12 +114,20 @@
 
     <dependency>
       <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-spirometry-ndd-easyonpc</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>interface-noddletest</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>interface-bloodpressure-vsm-bptru</artifactId>
@@ -126,6 +135,15 @@
       <type>zip</type>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-gripstrength-jtech</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -209,6 +227,14 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-spirometry-ndd-easyonpc</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/SpirometryNDD
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
                   <artifactId>interface-noddletest</artifactId>
                   <type>zip</type>
                   <outputDirectory>
@@ -221,6 +247,14 @@
                   <type>zip</type>
                   <outputDirectory>
                     ${project.build.directory}/${project.build.finalName}/instruments/BloodPressureBpTru
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-gripstrength-jtech</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/GripStrengthJTech
                   </outputDirectory>
                 </artifactItem>
               </artifactItems>

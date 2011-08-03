@@ -1,0 +1,1447 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ndd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="ndd.EasyWarePro.V1">
+  <Command />
+  <Patients>
+    <Patient ID="CLSA-2">
+      <LastName>Patate</LastName>
+      <FirstName>Madame</FirstName>
+      <IsBioCal>false</IsBioCal>
+      <PatientDataAtPresent>
+        <Height>1.7</Height>
+        <Weight>70</Weight>
+        <Ethnicity>Caucasian</Ethnicity>
+        <Smoker />
+        <Asthma />
+        <Gender>Female</Gender>
+        <DateOfBirth>1972-01-27</DateOfBirth>
+        <ComputedDateOfBirth>false</ComputedDateOfBirth>
+        <COPD />
+      </PatientDataAtPresent>
+      <Intervals>
+        <Interval>
+          <OrderID>1</OrderID>
+          <LungAge>41</LungAge>
+          <Tests>
+            <Test TypeOfTest="FVC">
+              <TestDate>2011-07-27T11:14:55.281</TestDate>
+              <BestValues>
+                <ResultParameter ID="FVC">
+                  <DataValue>4.007426843047142</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>4.0737499089445919</PredictedValue>
+                  <LLNormalValue>3.3174999258480966</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF50">
+                  <DataValue>3.2809998989105225</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF60">
+                  <DataValue>2.6553998788197837</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF75">
+                  <DataValue>1.9413999319076538</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF80">
+                  <DataValue>1.6387999455134075</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF2575">
+                  <DataValue>3.1108149834749033</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>3.3374999254010618</PredictedValue>
+                  <LLNormalValue>1.9849999556317926</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF2575_6">
+                  <DataValue>3.1108149834749033</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF7585">
+                  <DataValue>1.6418898947529481</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="PEF">
+                  <DataValue>6.5892000198364258</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>7.4424998336471617</PredictedValue>
+                  <LLNormalValue>5.5712498754728585</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FET">
+                  <DataValue>2.5882336659566123</DataValue>
+                  <Unit>s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FET2575">
+                  <DataValue>0.64411205171878916</DataValue>
+                  <Unit>s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV6">
+                  <DataValue>4.007426843047142</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>4.000624910579063</PredictedValue>
+                  <LLNormalValue>3.2587499271612614</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="EOTV">
+                  <DataValue>0.050337076187133789</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_25">
+                  <DataValue>1.3602560982108116</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_5">
+                  <DataValue>2.2355945333838463</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_75">
+                  <DataValue>2.8538334593176842</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV1">
+                  <DataValue>3.2853683084249496</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>3.3193749258061871</PredictedValue>
+                  <LLNormalValue>2.679999940097332</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV3">
+                  <DataValue>4.007426843047142</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF10">
+                  <DataValue>5.3821996053059893</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF25">
+                  <DataValue>4.7362000147501631</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF40">
+                  <DataValue>3.9711998303731284</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF90">
+                  <DataValue>5.3821996053059893</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF75">
+                  <DataValue>4.7362000147501631</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF60">
+                  <DataValue>3.9711998303731284</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF50">
+                  <DataValue>3.2809998989105225</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF40">
+                  <DataValue>2.6553998788197837</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF25">
+                  <DataValue>1.9413999319076538</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MEF20">
+                  <DataValue>1.6387999455134075</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MMEF">
+                  <DataValue>3.1108149834749033</DataValue>
+                  <Unit>L/s</Unit>
+                  <PredictedValue>3.3374999254010618</PredictedValue>
+                  <LLNormalValue>1.9849999556317926</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_5_FVC">
+                  <DataValue>0.55786284340101866</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_75_VCmax">
+                  <DataValue>0.71213613400555664</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_75_FVC">
+                  <DataValue>0.71213613400555664</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV_75_FEV6">
+                  <DataValue>0.71213613400555664</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV1_VCmax">
+                  <DataValue>0.819819908659104</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV1_FVC">
+                  <DataValue>0.819819908659104</DataValue>
+                  <Unit />
+                  <PredictedValue>0.82500003918539733</PredictedValue>
+                  <LLNormalValue>0.7270000345306471</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV1_FEV6">
+                  <DataValue>0.819819908659104</DataValue>
+                  <Unit />
+                  <PredictedValue>0.8400000398978591</PredictedValue>
+                  <LLNormalValue>0.75200003571808338</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV3_FVC">
+                  <DataValue>1</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEV3_VCmax">
+                  <DataValue>1</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF50_FVC">
+                  <DataValue>0.81872983024082768</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="PEF_L_Min">
+                  <DataValue>395.35200119018555</DataValue>
+                  <Unit>L/min</Unit>
+                  <PredictedValue>446.5499900188297</PredictedValue>
+                  <LLNormalValue>334.27499252837151</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MTC1">
+                  <DataValue>-1.3371173268722949</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MTC2">
+                  <DataValue>-1.4525032374471443</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MTC3">
+                  <DataValue>4.7274225584104546</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="MTCR">
+                  <DataValue>0.92056065170798063</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF2575_FVC">
+                  <DataValue>0.77626245102194336</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="FEF50_VCmax">
+                  <DataValue>0.81872983024082768</DataValue>
+                  <Unit />
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+                <ResultParameter ID="VCmax">
+                  <DataValue>4.007426843047142</DataValue>
+                  <Unit>L</Unit>
+                  <PredictedValue>NaN</PredictedValue>
+                  <LLNormalValue>NaN</LLNormalValue>
+                </ResultParameter>
+              </BestValues>
+              <SWVersion>1.3.1.8</SWVersion>
+              <PatientDataAtTestTime>
+                <Height>1.7</Height>
+                <Weight>70</Weight>
+                <Ethnicity>Caucasian</Ethnicity>
+                <Smoker />
+                <Asthma />
+                <Gender>Female</Gender>
+                <DateOfBirth>1972-01-27</DateOfBirth>
+                <ComputedDateOfBirth>false</ComputedDateOfBirth>
+                <COPD />
+              </PatientDataAtTestTime>
+              <QualityGradeOriginal>D1</QualityGradeOriginal>
+              <QualityGrade>D1</QualityGrade>
+              <Trials>
+                <Trial>
+                  <Date>2011-07-27T11:15:14.937</Date>
+                  <Number>1</Number>
+                  <Rank>1</Rank>
+                  <RankOriginal>1</RankOriginal>
+                  <Accepted>true</Accepted>
+                  <AcceptedOriginal>true</AcceptedOriginal>
+                  <ManualAmbientOverride>false</ManualAmbientOverride>
+                  <ResultParameters>
+                    <ResultParameter ID="FVC">
+                      <DataValue>4.007426843047142</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>4.0737499089445919</PredictedValue>
+                      <LLNormalValue>3.3174999258480966</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50">
+                      <DataValue>3.2809998989105225</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF60">
+                      <DataValue>2.6553998788197837</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF75">
+                      <DataValue>1.9413999319076538</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF80">
+                      <DataValue>1.6387999455134075</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575">
+                      <DataValue>3.1108149834749033</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>3.3374999254010618</PredictedValue>
+                      <LLNormalValue>1.9849999556317926</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575_6">
+                      <DataValue>3.1108149834749033</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF7585">
+                      <DataValue>1.6418898947529481</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEF">
+                      <DataValue>5.39579963684082</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>7.4424998336471617</PredictedValue>
+                      <LLNormalValue>5.5712498754728585</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FET">
+                      <DataValue>2.5882336659566123</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FET2575">
+                      <DataValue>0.64411205171878916</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV6">
+                      <DataValue>4.007426843047142</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>4.000624910579063</PredictedValue>
+                      <LLNormalValue>3.2587499271612614</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="T0">
+                      <DataValue>0.11176633404338759</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BEV">
+                      <DataValue>0.082629762589931488</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEFT">
+                      <DataValue>0.073233665956612418</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="EOTV">
+                      <DataValue>0.050337076187133789</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_25">
+                      <DataValue>1.2651640027761459</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_5">
+                      <DataValue>2.18519888818264</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75">
+                      <DataValue>2.8216925710439682</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1">
+                      <DataValue>3.2853683084249496</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>3.3193749258061871</PredictedValue>
+                      <LLNormalValue>2.679999940097332</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3">
+                      <DataValue>4.007426843047142</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF10">
+                      <DataValue>5.3821996053059893</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF25">
+                      <DataValue>4.7362000147501631</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF40">
+                      <DataValue>3.9711998303731284</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BTPSin">
+                      <DataValue>1.1184662580490112</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BTPSex">
+                      <DataValue>1.0199999809265137</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbPressure">
+                      <DataValue>965.8563232421875</DataValue>
+                      <Unit>hPa</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbTemp">
+                      <DataValue>20</DataValue>
+                      <Unit>°C</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbHumidity">
+                      <DataValue>50</DataValue>
+                      <Unit>%</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MsgNo">
+                      <DataValue>0</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF90">
+                      <DataValue>5.3821996053059893</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF75">
+                      <DataValue>4.7362000147501631</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF60">
+                      <DataValue>3.9711998303731284</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF50">
+                      <DataValue>3.2809998989105225</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF40">
+                      <DataValue>2.6553998788197837</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF25">
+                      <DataValue>1.9413999319076538</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF20">
+                      <DataValue>1.6387999455134075</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MMEF">
+                      <DataValue>3.1108149834749033</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>3.3374999254010618</PredictedValue>
+                      <LLNormalValue>1.9849999556317926</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_5_FVC">
+                      <DataValue>0.54528728128223858</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_VCmax">
+                      <DataValue>0.70411580337132929</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_FVC">
+                      <DataValue>0.70411580337132929</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_FEV6">
+                      <DataValue>0.70411580337132929</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_VCmax">
+                      <DataValue>0.819819908659104</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_FVC">
+                      <DataValue>0.819819908659104</DataValue>
+                      <Unit />
+                      <PredictedValue>0.82500003918539733</PredictedValue>
+                      <LLNormalValue>0.7270000345306471</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_FEV6">
+                      <DataValue>0.819819908659104</DataValue>
+                      <Unit />
+                      <PredictedValue>0.8400000398978591</PredictedValue>
+                      <LLNormalValue>0.75200003571808338</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3_FVC">
+                      <DataValue>1</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3_VCmax">
+                      <DataValue>1</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50_FVC">
+                      <DataValue>0.81872983024082768</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEF_L_Min">
+                      <DataValue>323.74797821044922</DataValue>
+                      <Unit>L/min</Unit>
+                      <PredictedValue>446.5499900188297</PredictedValue>
+                      <LLNormalValue>334.27499252837151</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="ATI">
+                      <DataValue>0</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC1">
+                      <DataValue>-1.3371173268722949</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC2">
+                      <DataValue>-1.4525032374471443</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC3">
+                      <DataValue>4.7274225584104546</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTCR">
+                      <DataValue>-0.28284277750747255</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575_FVC">
+                      <DataValue>0.77626245102194336</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50_VCmax">
+                      <DataValue>0.81872983024082768</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="VCmax">
+                      <DataValue>4.007426843047142</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbTemp_Fahr">
+                      <DataValue>68</DataValue>
+                      <Unit>°F</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                  </ResultParameters>
+                  <ChannelFlow>
+                    <SamplingInterval>0.01</SamplingInterval>
+                    <SamplingValues TypeOfData="System.Double">-0.011184662580490112 0.061199996620416641 0.12239999324083328 0.19379998743534088 0.26519998908042908 0.34679999947547913 0.44879999756813049 0.60179996490478516 0.826200008392334 1.121999979019165 1.4585999250411987 1.8563998937606812 2.3153998851776123 2.8457999229431152 3.4271998405456543 4.0289998054504395 4.5797996520996094 5.028599739074707 5.3039999008178711 5.39579963684082 5.3651995658874512 5.3141999244689941 5.293799877166748 5.293799877166748 5.2427997589111328 5.2019996643066406 5.2019996643066406 5.2121996879577637 5.1815996170043945 5.0693998336791992 4.8959994316101074 4.7328000068664551 4.6205997467041016 4.5389995574951172 4.4777998924255371 4.4267997741699219 4.3757996559143066 4.3350000381469727 4.2941999435424805 4.2737998962402344 4.2533998489379883 4.2329998016357422 4.202399730682373 4.1513996124267578 4.0697999000549316 3.9677999019622803 3.886199951171875 3.8249998092651367 3.7637996673583984 3.6821997165679932 3.5699999332427979 3.4577999114990234 3.3863999843597412 3.335399866104126 3.315000057220459 3.3048000335693359 3.28439998626709 3.2435996532440186 3.2027997970581055 3.1823997497558594 3.1721997261047363 3.1415998935699463 3.09060001373291 3.0293998718261719 2.9987998008728027 2.9885997772216797 2.9579997062683105 2.8763999938964844 2.76419997215271 2.6723997592926025 2.6417999267578125 2.6315999031066895 2.6009998321533203 2.5499999523162842 2.4785997867584229 2.4173998832702637 2.3765997886657715 2.3561999797821045 2.3561999797821045 2.3664000034332275 2.3459999561309814 2.3153998851776123 2.2746000289916992 2.2541999816894531 2.24399995803833 2.223599910736084 2.2133998870849609 2.2031998634338379 2.2031998634338379 2.2133998870849609 2.223599910736084 2.2133998870849609 2.1827998161315918 2.1113998889923096 2.0399999618530273 1.9685999155044556 1.9175999164581299 1.8665999174118042 1.8359999656677246 1.8053998947143555 1.795199990272522 1.7747999429702759 1.7441998720169067 1.7135999202728272 1.6931999921798706 1.6931999921798706 1.6829999685287476 1.6421999931335449 1.5911998748779297 1.5401999950408936 1.509600043296814 1.509600043296814 1.5299999713897705 1.5503998994827271 1.56059992313385 1.56059992313385 1.5401999950408936 1.5197999477386475 1.4891998767852783 1.4483999013900757 1.4075999259948731 1.3769999742507935 1.3463999032974243 1.3055999279022217 1.264799952507019 1.23419988155365 1.2137999534606934 1.1933999061584473 1.1627999544143677 1.121999979019165 1.0811998844146729 1.0607999563217163 1.0403999090194702 1.0097999572753906 0.968999981880188 0.92819994688034058 0.88739997148513794 0.86699992418289185 0.85679996013641357 0.86699992418289185 0.87719994783401489 0.87719994783401489 0.85679996013641357 0.83639997243881226 0.81599992513656616 0.79559993743896484 0.78539997339248657 0.77519994974136353 0.77519994974136353 0.76499998569488525 0.73439997434616089 0.71399998664855957 0.69359999895095825 0.67319995164871216 0.66299998760223389 0.65279996395111084 0.64259999990463257 0.63239997625350952 0.63239997625350952 0.65279996395111084 0.65279996395111084 0.65279996395111084 0.65279996395111084 0.65279996395111084 0.64259999990463257 0.61199992895126343 0.60179996490478516 0.59160000085830688 0.58139997720718384 0.56099998950958252 0.53039997816085815 0.49979996681213379 0.46919995546340942 0.44879999756813049 0.41819998621940613 0.38759997487068176 0.34679999947547913 0.31619998812675476 0.29580000042915344 0.27539998292922974 0.25499999523162842 0.24479998648166657 0.23459997773170471 0.22439999878406525 0.22439999878406525 0.22439999878406525 0.21419999003410339 0.20399998128414154 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.20399998128414154 0.20399998128414154 0.20399998128414154 0.19379998743534088 0.18359999358654022 0.18359999358654022 0.18359999358654022 0.18359999358654022 0.17339999973773956 0.16319999098777771 0.17339999973773956 0.19379998743534088 0.20399998128414154 0.21419999003410339 0.21419999003410339 0.22439999878406525 0.22439999878406525 0.23459997773170471 0.23459997773170471 0.23459997773170471 0.23459997773170471 0.22439999878406525 0.21419999003410339 0.20399998128414154 0.18359999358654022 0.15299998223781586 0.12239999324083328 0.091799996793270111 0.0714000016450882 0.040799997746944427 0.020399998873472214 0.010199999436736107 0.010199999436736107 0.030599998310208321 0.050999995321035385 0.081599995493888855 0.11219999939203262 0.14280000329017639 0.16319999098777771 0.17339999973773956 0.18359999358654022 0.18359999358654022 0.18359999358654022 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.17339999973773956 0.14280000329017639 0.11219999939203262 0.091799996793270111 0.081599995493888855 0.081599995493888855 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.10199999064207077 0.11219999939203262 0.11219999939203262 0.11219999939203262 0.10199999064207077 0.10199999064207077 0.10199999064207077 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.10199999064207077 0.11219999939203262 0.11219999939203262 0.11219999939203262 0.11219999939203262 0.10199999064207077 0.081599995493888855 0.0714000016450882 0.050999995321035385 0.040799997746944427 0.030599998310208321 0.010199999436736107 0 -0.022369325160980225 -0.033553987741470337 -0.044738650321960449 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.067107975482940674 -0.0894773006439209 -0.11184661835432053 -0.13421595096588135 -0.14540061354637146 -0.15658527612686157 -0.16776992380619049 -0.15658527612686157 -0.14540061354637146 -0.14540061354637146 -0.13421595096588135 -0.12303128838539124 -0.12303128838539124 -0.11184661835432053 -0.11184661835432053 -0.11184661835432053 -0.11184661835432053 -0.11184661835432053 -0.11184661835432053 -0.11184661835432053 -0.10066195577383041 -0.10066195577383041 -0.10066195577383041 -0.0894773006439209 -0.0894773006439209 -0.078292638063430786 -0.078292638063430786 -0.078292638063430786 -0.078292638063430786 -0.067107975482940674 -0.067107975482940674 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.022369325160980225 -0.022369325160980225 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.022369325160980225 -0.022369325160980225 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.033553987741470337 -0.033553987741470337 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225</SamplingValues>
+                    <TimeZeroOffset>-0.11676633078604937</TimeZeroOffset>
+                  </ChannelFlow>
+                  <ChannelVolume>
+                    <SamplingInterval>0.01</SamplingInterval>
+                    <SamplingValues TypeOfData="System.Double">-0.00010199844837188721 0.00030599534511566162 0.0013770014047622681 0.003161996603012085 0.0056099891662597656 0.0088739991188049316 0.013107001781463623 0.018716990947723389 0.02636699378490448 0.036821991205215454 0.050540991127491 0.068084992468357086 0.0900149941444397 0.11709599196910858 0.14988899230957031 0.18869999051094055 0.2331719845533371 0.28243798017501831 0.33491697907447815 0.38877296447753906 0.44252696633338928 0.49577099084854126 0.548708975315094 0.60164695978164673 0.65422797203063965 0.70634996891021729 0.75831902027130127 0.81044101715087891 0.86235892772674561 0.91335892677307129 0.96272695064544678 1.0104119777679443 1.0568729639053345 1.102415919303894 1.1472959518432617 1.1917169094085693 1.2356278896331787 1.2790799140930176 1.3221238851547241 1.3649128675460815 1.4074978828430176 1.4498789310455322 1.4920048713684082 1.5336718559265137 1.5745738744735718 1.6145069599151611 1.6535729169845581 1.6919759511947632 1.729766845703125 1.766792893409729 1.8027478456497192 1.8375809192657471 1.8715978860855103 1.9050538539886475 1.9382548332214356 1.9713538885116577 2.0042488574981689 2.0367870330810547 2.0689170360565186 2.1007919311523438 2.1325139999389648 2.164031982421875 2.1950910091400146 2.2255380153656006 2.2555770874023438 2.2854630947113037 2.3151450157165527 2.3441638946533203 2.3721120357513428 2.3990399837493896 2.425508975982666 2.4518249034881592 2.4779369831085205 2.5035898685455322 2.5285799503326416 2.5529069900512695 2.576775074005127 2.6003880500793457 2.6239500045776367 2.6475629806518555 2.6710739135742188 2.6943299770355225 2.7171778678894043 2.7397708892822266 2.7622618675231934 2.7845489978790283 2.80668306350708 2.8287150859832764 2.8507468700408936 2.8728809356689453 2.8951170444488525 2.9173018932342529 2.9392318725585938 2.96055006980896 2.9811539649963379 3.0010440349578857 3.0203218460083008 3.0390899181365967 3.0575010776519775 3.0756058692932129 3.0935580730438232 3.1113569736480713 3.128849983215332 3.1460368633270264 3.1630198955535889 3.1799519062042236 3.1967818737030029 3.2133059501647949 3.2293200492858887 3.2448239326477051 3.2599709033966064 3.2750160694122314 3.2902140617370605 3.3056669235229492 3.3212728500366211 3.3368790149688721 3.3523318767547607 3.3675808906555176 3.3825750350952148 3.3971610069274902 3.4113390445709229 3.4252109527587891 3.4387259483337402 3.4518840312957764 3.4646339416503906 3.4770779609680176 3.4892668724060059 3.5012519359588623 3.51298189163208 3.5243039131164551 3.5352180004119873 3.5458769798278809 3.5563318729400635 3.5664808750152588 3.5762729644775391 3.5856568813323975 3.5946328639984131 3.6033539772033691 3.6119730472564697 3.6206429004669189 3.629364013671875 3.6381359100341797 3.6467549800872803 3.65516996383667 3.6633808612823486 3.6713879108428955 3.6792418956756592 3.6869938373565674 3.6947460174560547 3.7024469375610352 3.7098929882049561 3.7170839309692383 3.7240710258483887 3.7308540344238281 3.7374839782714844 3.7440629005432129 3.7504889965057373 3.7568130493164062 3.7631368637084961 3.7696139812469482 3.776141881942749 3.7826700210571289 3.7891979217529297 3.7957258224487305 3.8022029399871826 3.8084249496459961 3.8144938945770264 3.8204100131988525 3.8262238502502441 3.8318848609924316 3.8372399806976318 3.8422889709472656 3.847031831741333 3.8515708446502686 3.8558039665222168 3.8597819805145264 3.8633518218994141 3.8665649890899658 3.8695738315582275 3.8723788261413574 3.8749799728393555 3.8774278163909912 3.8797738552093506 3.8820688724517822 3.8843128681182861 3.88655686378479 3.8887498378753662 3.890841007232666 3.8928298950195312 3.8947679996490479 3.8967058658599854 3.898643970489502 3.9005818367004395 3.9025199413299561 3.9045088291168213 3.9065489768981934 3.9085888862609863 3.9105269908905029 3.912362813949585 3.9141988754272461 3.9160349369049072 3.9178709983825684 3.9196560382843018 3.9213390350341797 3.9230220317840576 3.9249088764190674 3.9268980026245117 3.92903995513916 3.9311819076538086 3.9334259033203125 3.9356698989868164 3.9380159378051758 3.9403619766235352 3.9427080154418945 3.9450538158416748 3.9472978115081787 3.949491024017334 3.9515819549560547 3.9534690380096436 3.9551010131835938 3.9564268589019775 3.957446813583374 3.9582118988037109 3.9586708545684814 3.95892596244812 3.9590280055999756 3.959129810333252 3.9593849182128906 3.9598438739776611 3.960608959197998 3.9616799354553223 3.9630570411682129 3.9646379947662354 3.966372013092041 3.968207836151123 3.9700438976287842 3.9718799591064453 3.9738178253173828 3.9757559299468994 3.977694034576416 3.9794788360595703 3.9810090065002441 3.9821820259094238 3.9831509590148926 3.9839668273925781 3.9847829341888428 3.9857008457183838 3.9866189956665039 3.9875369071960449 3.9885568618774414 3.9896788597106934 3.9908008575439453 3.9919228553771973 3.9929938316345215 3.9940140247344971 3.9950339794158936 3.9959518909454346 3.9968700408935547 3.9977879524230957 3.9987568855285645 3.9998278617858887 4.0009498596191406 4.0020718574523926 4.0031938552856445 4.004213809967041 4.0050806999206543 4.0057950019836426 4.0063557624816895 4.0068149566650391 4.0071206092834473 4.0072736740112305 4.0073246955871582 4.0071568489074707 4.0068774223327637 4.0064859390258789 4.0059266090393066 4.0053672790527344 4.00480842590332 4.004249095916748 4.003577709197998 4.0027389526367188 4.0016765594482422 4.0003905296325684 3.9989924430847168 3.9974265098571777 3.9958047866821289 3.99418306350708 3.9926729202270508 3.9912190437316895 3.9898767471313477 3.9885907173156738 3.9873602390289307 3.9862418174743652 3.9851233959198 3.9840049743652344 3.9828865528106689 3.9817678928375244 3.980649471282959 3.9795310497283936 3.9785244464874268 3.97751784324646 3.9765112400054932 3.9755604267120361 3.974665641784668 3.9738826751708984 3.973099946975708 3.9723169803619385 3.9715340137481689 3.970862865447998 3.9701919555664062 3.9696884155273438 3.9692411422729492 3.9689056873321533 3.9684581756591797 3.9680109024047852 3.9675633907318115 3.967116117477417 3.9667246341705322 3.9663889408111572 3.9660534858703613 3.9658298492431641 3.9656062126159668 3.9653265476226807 3.9649910926818848 3.9646553993225098 3.9643199443817139 3.9639842510223389 3.963648796081543 3.9632573127746582 3.9628100395202637 3.96236252784729 3.9620270729064941 3.9616916179656982 3.9613559246063232 3.9610204696655273 3.9606847763061523 3.9603493213653564 3.9600138664245605 3.9596781730651855 3.959230899810791 3.9587833881378174 3.9583361148834229 3.9578886032104492 3.9574413299560547 3.9569380283355713 3.956378698348999 3.9558196067810059 3.9552602767944336 3.9547011852264404 3.9541418552398682 3.9535825252532959 3.9530234336853027 3.9524641036987305 3.9519050121307373 3.951345682144165 3.9508984088897705 3.9504508972167969 3.9500036239624023 3.9496121406555176 3.9492764472961426 3.9489409923553467 3.9486055374145508 3.9482698440551758 3.94793438911438 3.947598934173584 3.947263240814209 3.9469277858734131 3.9465920925140381 3.9461448192596436 3.945697546005249 3.9452500343322754 3.9448027610778809 3.9444670677185059 3.94413161277771 3.9437961578369141 3.9435164928436279 3.9432926177978516 3.9430131912231445 3.9426774978637695 3.9423420429229736 3.9420065879821777 3.9416708946228027 3.9413354396820068 3.9409999847412109 3.9407761096954346 3.9405524730682373 3.94032883644104 3.9401051998138428 3.9398813247680664 3.9396576881408691 3.9394340515136719 3.9391543865203857 3.93881893157959 3.9385392665863037 3.9383156299591064 3.93809175491333 3.9378681182861328 3.9376444816589355 3.9374208450317383</SamplingValues>
+                    <TimeZeroOffset>-0.11676633078604937</TimeZeroOffset>
+                    <DefaultVTPlotDrawEndIdx>399</DefaultVTPlotDrawEndIdx>
+                  </ChannelVolume>
+                </Trial>
+                <Trial>
+                  <Date>2011-07-27T11:15:27.906</Date>
+                  <Number>2</Number>
+                  <Rank>3</Rank>
+                  <RankOriginal>3</RankOriginal>
+                  <Accepted>true</Accepted>
+                  <AcceptedOriginal>true</AcceptedOriginal>
+                  <ManualAmbientOverride>false</ManualAmbientOverride>
+                  <ResultParameters>
+                    <ResultParameter ID="FVC">
+                      <DataValue>3.26568466424942</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>4.0737499089445919</PredictedValue>
+                      <LLNormalValue>3.3174999258480966</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50">
+                      <DataValue>3.1721998055775962</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF60">
+                      <DataValue>2.5737999280293784</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF75">
+                      <DataValue>1.6897999445597332</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF80">
+                      <DataValue>1.4483999411265056</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575">
+                      <DataValue>2.9806517424766161</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>3.3374999254010618</PredictedValue>
+                      <LLNormalValue>1.9849999556317926</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575_6">
+                      <DataValue>2.9806517424766161</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF7585">
+                      <DataValue>1.3632248589765272</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEF">
+                      <DataValue>6.07919979095459</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>7.4424998336471617</PredictedValue>
+                      <LLNormalValue>5.5712498754728585</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FET">
+                      <DataValue>2.7229259730204989</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FET2575">
+                      <DataValue>0.54781385857845488</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV6">
+                      <DataValue>3.26568466424942</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>4.000624910579063</PredictedValue>
+                      <LLNormalValue>3.2587499271612614</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="T0">
+                      <DataValue>0.1170740269795013</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BEV">
+                      <DataValue>0.1045011430978775</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEFT">
+                      <DataValue>0.092925973020498709</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="EOTV">
+                      <DataValue>0.035497903823852539</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_25">
+                      <DataValue>1.3259310126304627</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_5">
+                      <DataValue>2.0797745585441589</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75">
+                      <DataValue>2.5515497326850891</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1">
+                      <DataValue>2.8471141457557678</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>3.3193749258061871</PredictedValue>
+                      <LLNormalValue>2.679999940097332</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3">
+                      <DataValue>3.26568466424942</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF10">
+                      <DataValue>5.6235996882120771</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF25">
+                      <DataValue>5.5827997525533037</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF40">
+                      <DataValue>3.797799825668335</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BTPSin">
+                      <DataValue>1.1184662580490112</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BTPSex">
+                      <DataValue>1.0199999809265137</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbPressure">
+                      <DataValue>965.8563232421875</DataValue>
+                      <Unit>hPa</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbTemp">
+                      <DataValue>20</DataValue>
+                      <Unit>°C</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbHumidity">
+                      <DataValue>50</DataValue>
+                      <Unit>%</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MsgNo">
+                      <DataValue>0</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF90">
+                      <DataValue>5.6235996882120771</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF75">
+                      <DataValue>5.5827997525533037</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF60">
+                      <DataValue>3.797799825668335</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF50">
+                      <DataValue>3.1721998055775962</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF40">
+                      <DataValue>2.5737999280293784</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF25">
+                      <DataValue>1.6897999445597332</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF20">
+                      <DataValue>1.4483999411265056</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MMEF">
+                      <DataValue>2.9806517424766161</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>3.3374999254010618</PredictedValue>
+                      <LLNormalValue>1.9849999556317926</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_5_FVC">
+                      <DataValue>0.63685712870938538</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_VCmax">
+                      <DataValue>0.78132152825953671</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_FVC">
+                      <DataValue>0.78132152825953671</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_FEV6">
+                      <DataValue>0.78132152825953671</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_VCmax">
+                      <DataValue>0.871827637531606</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_FVC">
+                      <DataValue>0.871827637531606</DataValue>
+                      <Unit />
+                      <PredictedValue>0.82500003918539733</PredictedValue>
+                      <LLNormalValue>0.7270000345306471</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_FEV6">
+                      <DataValue>0.871827637531606</DataValue>
+                      <Unit />
+                      <PredictedValue>0.8400000398978591</PredictedValue>
+                      <LLNormalValue>0.75200003571808338</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3_FVC">
+                      <DataValue>1</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3_VCmax">
+                      <DataValue>1</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50_FVC">
+                      <DataValue>0.97137358064750245</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEF_L_Min">
+                      <DataValue>364.75198745727539</DataValue>
+                      <Unit>L/min</Unit>
+                      <PredictedValue>446.5499900188297</PredictedValue>
+                      <LLNormalValue>334.27499252837151</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="ATI">
+                      <DataValue>0</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC1">
+                      <DataValue>-1.8157293351023229</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC2">
+                      <DataValue>-2.9526426398303292</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC3">
+                      <DataValue>6.8381369624203394</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTCR">
+                      <DataValue>-0.26552982853090595</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575_FVC">
+                      <DataValue>0.91271878608086132</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50_VCmax">
+                      <DataValue>0.97137358064750245</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="VCmax">
+                      <DataValue>3.26568466424942</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbTemp_Fahr">
+                      <DataValue>68</DataValue>
+                      <Unit>°F</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                  </ResultParameters>
+                  <ChannelFlow>
+                    <SamplingInterval>0.01</SamplingInterval>
+                    <SamplingValues TypeOfData="System.Double">-0.011184662580490112 0.040799997746944427 0.11219999939203262 0.22439999878406525 0.36719998717308044 0.53039997816085815 0.67319995164871216 0.81599992513656616 0.99959993362426758 1.2137999534606934 1.4789998531341553 1.8155999183654785 2.2541999816894531 2.7846000194549561 3.3761999607086182 4.0085997581481934 4.6409997940063477 5.2019996643066406 5.6405997276306152 5.9159994125366211 6.0384001731872559 6.0689997673034668 6.0689997673034668 6.0384001731872559 5.9567995071411133 5.7935996055603027 5.579399585723877 5.3651995658874512 5.1509995460510254 4.9571995735168457 4.7634000778198242 4.5593996047973633 4.3554000854492188 4.202399730682373 4.0901994705200195 3.9881997108459473 3.896399974822998 3.7943999767303467 3.7127997875213623 3.631199836730957 3.5699999332427979 3.5189998149871826 3.4781997203826904 3.4169998168945312 3.345599889755249 3.2741999626159668 3.2027997970581055 3.1415998935699463 3.1007997989654541 3.059999942779541 2.9987998008728027 2.9375998973846436 2.8661999702453613 2.804999828338623 2.7539999485015869 2.7131998538970947 2.6621997356414795 2.6009998321533203 2.5499999523162842 2.5295999050140381 2.519399881362915 2.488800048828125 2.4275999069213867 2.3765997886657715 2.3051998615264893 2.24399995803833 2.1827998161315918 2.1215999126434326 2.0706000328063965 2.0297999382019043 2.0195999145507812 2.0195999145507812 1.9991998672485352 1.9685999155044556 1.9175999164581299 1.8767998218536377 1.8359999656677246 1.8257999420166016 1.8053998947143555 1.7849999666213989 1.7441998720169067 1.6931999921798706 1.6319998502731323 1.5809999704360962 1.5503998994827271 1.5299999713897705 1.509600043296814 1.509600043296814 1.509600043296814 1.4993999004364014 1.4789998531341553 1.4585999250411987 1.4381999969482422 1.4279999732971191 1.3974000215530396 1.3565999269485474 1.3055999279022217 1.264799952507019 1.2239998579025269 1.1832000017166138 1.1424000263214111 1.111799955368042 1.0709999799728394 1.0505999326705933 1.0505999326705933 1.0505999326705933 1.0403999090194702 1.0097999572753906 0.97919994592666626 0.92819994688034058 0.88739997148513794 0.8465999960899353 0.81599992513656616 0.79559993743896484 0.77519994974136353 0.754800021648407 0.754800021648407 0.74459993839263916 0.72419995069503784 0.72419995069503784 0.73439997434616089 0.76499998569488525 0.77519994974136353 0.76499998569488525 0.73439997434616089 0.70379996299743652 0.67319995164871216 0.64259999990463257 0.60179996490478516 0.56099998950958252 0.53039997816085815 0.49979996681213379 0.45899999141693115 0.41819998621940613 0.38759997487068176 0.36719998717308044 0.35699999332427979 0.37740001082420349 0.39779996871948242 0.40799996256828308 0.40799996256828308 0.39779996871948242 0.39779996871948242 0.39779996871948242 0.38759997487068176 0.37740001082420349 0.36719998717308044 0.35699999332427979 0.34679999947547913 0.33659997582435608 0.32639998197555542 0.31619998812675476 0.30599996447563171 0.29580000042915344 0.29580000042915344 0.30599996447563171 0.29580000042915344 0.29580000042915344 0.29580000042915344 0.30599996447563171 0.30599996447563171 0.30599996447563171 0.29580000042915344 0.27539998292922974 0.26519998908042908 0.25499999523162842 0.25499999523162842 0.26519998908042908 0.27539998292922974 0.28560000658035278 0.28560000658035278 0.27539998292922974 0.27539998292922974 0.26519998908042908 0.25499999523162842 0.24479998648166657 0.23459997773170471 0.22439999878406525 0.22439999878406525 0.22439999878406525 0.21419999003410339 0.20399998128414154 0.19379998743534088 0.19379998743534088 0.18359999358654022 0.17339999973773956 0.16319999098777771 0.15299998223781586 0.16319999098777771 0.17339999973773956 0.18359999358654022 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.19379998743534088 0.20399998128414154 0.20399998128414154 0.20399998128414154 0.20399998128414154 0.20399998128414154 0.21419999003410339 0.21419999003410339 0.21419999003410339 0.21419999003410339 0.21419999003410339 0.22439999878406525 0.22439999878406525 0.22439999878406525 0.21419999003410339 0.21419999003410339 0.20399998128414154 0.18359999358654022 0.17339999973773956 0.15299998223781586 0.14280000329017639 0.13259999454021454 0.13259999454021454 0.14280000329017639 0.14280000329017639 0.13259999454021454 0.12239999324083328 0.12239999324083328 0.13259999454021454 0.15299998223781586 0.17339999973773956 0.18359999358654022 0.18359999358654022 0.18359999358654022 0.16319999098777771 0.15299998223781586 0.13259999454021454 0.11219999939203262 0.10199999064207077 0.081599995493888855 0.061199996620416641 0.040799997746944427 0.010199999436736107 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 0 0.020399998873472214 0.050999995321035385 0.0714000016450882 0.091799996793270111 0.10199999064207077 0.10199999064207077 0.11219999939203262 0.12239999324083328 0.12239999324083328 0.12239999324083328 0.11219999939203262 0.11219999939203262 0.10199999064207077 0.10199999064207077 0.10199999064207077 0.10199999064207077 0.10199999064207077 0.10199999064207077 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.10199999064207077 0.11219999939203262 0.11219999939203262 0.12239999324083328 0.11219999939203262 0.11219999939203262 0.10199999064207077 0.091799996793270111 0.081599995493888855 0.081599995493888855 0.0714000016450882 0.0714000016450882 0.061199996620416641 0.050999995321035385 0.040799997746944427 0.040799997746944427 0.030599998310208321 0.020399998873472214 0.020399998873472214 0.020399998873472214 0.020399998873472214 0.010199999436736107 0 0 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.044738650321960449 -0.044738650321960449 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.055923309177160263 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.033553987741470337 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 0 0 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 0 0 0 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 0 0 0 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 0 0 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 0 0 0 0 0 0 0 0 0 0 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112 -0.011184662580490112 -0.011184662580490112 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.022369325160980225 -0.011184662580490112</SamplingValues>
+                    <TimeZeroOffset>-0.12207402754575014</TimeZeroOffset>
+                  </ChannelFlow>
+                  <ChannelVolume>
+                    <SamplingInterval>0.01</SamplingInterval>
+                    <SamplingValues TypeOfData="System.Double">-5.099177360534668E-05 0.00020401179790496826 0.0011219978332519531 0.0030599981546401978 0.0063749998807907104 0.011270999908447266 0.017645999789237976 0.025449007749557495 0.034986004233360291 0.046562999486923218 0.060639001429080963 0.0778769999742508 0.099246002733707428 0.12571500241756439 0.15794700384140015 0.19645199179649353 0.24128100275993347 0.2919749915599823 0.34736096858978271 0.40590900182724 0.46608898043632507 0.52672797441482544 0.58746898174285889 0.64795494079589844 0.70777797698974609 0.76617300510406494 0.82252800464630127 0.87674093246459961 0.92876100540161133 0.97879195213317871 1.026884913444519 1.0729889869689941 1.1170529127120972 1.1594339609146118 1.200590968132019 1.2407280206680298 1.2798960208892822 1.3180949687957764 1.3554270267486572 1.3919429779052734 1.4277960062026978 1.4631389379501343 1.4980229139328003 1.5323460102081299 1.5660059452056885 1.5989519357681274 1.6311839818954468 1.6627529859542847 1.6938629150390625 1.7245649099349976 1.7547059059143066 1.7842350006103516 1.8130499124526978 1.8412529230117798 1.8689459562301636 1.8961799144744873 1.9229549169540405 1.94911789894104 1.9747200012207031 2.0000669956207275 2.0253119468688965 2.0503017902374268 2.07473087310791 2.0986499786376953 2.1218547821044922 2.1444478034973145 2.166428804397583 2.1877977848052979 2.2086057662963867 2.2290058135986328 2.2492527961730957 2.2694487571716309 2.2894918918609619 2.3092799186706543 2.3285577297210693 2.3474278450012207 2.36588978767395 2.3841989040374756 2.4023036956787109 2.4202048778533936 2.437748908996582 2.4547827243804932 2.4712557792663574 2.4872188568115234 2.5027737617492676 2.51812481880188 2.5332717895507812 2.5483677387237549 2.5634636878967285 2.5784578323364258 2.59329891204834 2.607935905456543 2.6223688125610352 2.6366488933563232 2.6507248878479004 2.6643927097320557 2.6775507926940918 2.6903007030487061 2.7026426792144775 2.7145767211914062 2.7261028289794922 2.7373228073120117 2.7481348514556885 2.7586917877197266 2.7691977024078369 2.7797038555145264 2.7901077270507812 2.8003077507019043 2.81020188331604 2.8195858001708984 2.8285617828369141 2.8371298313140869 2.8453917503356934 2.8533987998962402 2.8612017631530762 2.8688008785247803 2.8763487339019775 2.8837947845458984 2.8910877704620361 2.8983297348022461 2.9056227207183838 2.9132218360900879 2.9209737777709961 2.9286746978759766 2.9361207485198975 2.943260669708252 2.9500946998596191 2.956622838973999 2.962742805480957 2.9684548377990723 2.9738097190856934 2.9788587093353271 2.9835507869720459 2.9878346920013428 2.9918127059936523 2.9955358505249023 2.99910569190979 3.00282883644104 3.0067558288574219 3.0108358860015869 3.0149157047271729 3.01894474029541 3.0229227542877197 3.0269007682800293 3.0308277606964111 3.0346527099609375 3.0383758544921875 3.0419456958770752 3.0454137325286865 3.04883074760437 3.0521457195281982 3.05535888671875 3.0584187507629395 3.0613768100738525 3.0643348693847656 3.0673947334289551 3.0704038143157959 3.073361873626709 3.076319694519043 3.0793287754058838 3.0823888778686523 3.0854487419128418 3.0884578227996826 3.0912628173828125 3.0939147472381592 3.0964648723602295 3.0990147590637207 3.1016666889190674 3.1043698787689209 3.1071748733520508 3.1100308895111084 3.1128358840942383 3.1155898571014404 3.1182417869567871 3.1208426952362061 3.1233417987823486 3.125687837600708 3.1279828548431396 3.1302268505096436 3.1324708461761475 3.1346127986907959 3.1366527080535889 3.1386418342590332 3.1405797004699707 3.1424667835235596 3.144251823425293 3.1458837985992432 3.1474137306213379 3.1489946842193604 3.1506776809692383 3.1525137424468994 3.154451847076416 3.1563897132873535 3.15832781791687 3.1602656841278076 3.1622037887573242 3.1642436981201172 3.1662838459014893 3.1683237552642822 3.1703636646270752 3.1724038124084473 3.174494743347168 3.1766366958618164 3.1787788867950439 3.1809208393096924 3.1830627918243408 3.1853067874908447 3.1875507831573486 3.1897947788238525 3.1919877529144287 3.1941297054290771 3.1961698532104492 3.198056697845459 3.1998417377471924 3.2014226913452148 3.2029018402099609 3.2042276859283447 3.2055537700653076 3.2069308757781982 3.2083587646484375 3.2097358703613281 3.2110106945037842 3.2122347354888916 3.2135097980499268 3.2149887084960938 3.2166717052459717 3.2184567451477051 3.2202928066253662 3.2221288681030273 3.2238118648529053 3.225341796875 3.2267186641693115 3.2278916835784912 3.2289118766784668 3.22977876663208 3.2304418087005615 3.230900764465332 3.231104850769043 3.2310488224029541 3.2308251857757568 3.2306015491485596 3.2305455207824707 3.2306985855102539 3.2311065196990967 3.2317695617675781 3.2326364517211914 3.2336056232452393 3.2346255779266357 3.2357475757598877 3.2369716167449951 3.2381956577301025 3.2394194602966309 3.2405924797058105 3.2417144775390625 3.242734432220459 3.2437546253204346 3.2447745800018311 3.2457945346832275 3.246814489364624 3.2478344440460205 3.2488036155700684 3.2497215270996094 3.2506394386291504 3.2516086101531982 3.2526795864105225 3.2538015842437744 3.2549746036529541 3.2561476230621338 3.2572696208953857 3.2582895755767822 3.2592074871063232 3.2600235939025879 3.2608394622802734 3.2616045475006104 3.2623186111450195 3.2629306316375732 3.2634406089782715 3.263899564743042 3.2643074989318848 3.2646136283874512 3.2648684978485107 3.2650725841522217 3.2652764320373535 3.2654805183410645 3.26558256149292 3.2656335830688477 3.2656335830688477 3.265521764755249 3.2654099464416504 3.265186071395874 3.2649624347686768 3.2646269798278809 3.2642912864685059 3.26395583152771 3.2636203765869141 3.2631728649139404 3.2627255916595459 3.2621662616729736 3.2616071701049805 3.2610478401184082 3.2604885101318359 3.2599294185638428 3.2594261169433594 3.2589786052703857 3.258587121963501 3.2582516670227051 3.2579720020294189 3.2577483654022217 3.2575247287750244 3.257300853729248 3.2570772171020508 3.2568535804748535 3.2566299438476562 3.256406307220459 3.2561824321746826 3.2559587955474854 3.2557351589202881 3.2555115222930908 3.2553994655609131 3.2552876472473145 3.2551758289337158 3.2550640106201172 3.2549521923065186 3.2549521923065186 3.2549521923065186 3.2548961639404297 3.2547843456268311 3.2546725273132324 3.2545607089996338 3.2545046806335449 3.2545046806335449 3.2545046806335449 3.2544488906860352 3.2543370723724365 3.2542252540588379 3.2541134357452393 3.2540013790130615 3.2538895606994629 3.2537219524383545 3.2534980773925781 3.2533304691314697 3.2532186508178711 3.2531068325042725 3.2529947757720947 3.2528829574584961 3.2527153491973877 3.2524914741516113 3.2522678375244141 3.2520999908447266 3.2519881725311279 3.2518763542175293 3.2517645359039307 3.251652717590332 3.2515408992767334 3.2515408992767334 3.2515408992767334 3.2515408992767334 3.2514290809631348 3.2513172626495361 3.2510933876037598 3.2509815692901611 3.2508697509765625 3.2507579326629639 3.2506461143493652 3.2505342960357666 3.250422477722168 3.2503106594085693 3.2501986026763916 3.250086784362793 3.2499191761016846 3.2496953010559082 3.2494716644287109 3.2492480278015137 3.2490801811218262 3.2489683628082275 3.2489683628082275 3.2489683628082275 3.2489125728607178 3.2487447261810303 3.248521089553833 3.2482972145080566 3.2480735778808594 3.2479617595672607 3.2478499412536621 3.2477381229400635 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.2476820945739746 3.247570276260376 3.2474024295806885 3.2471787929534912 3.2468991279602051 3.2465636730194092 3.2462282180786133 3.2459485530853271 3.24572491645813 3.2455010414123535 3.2452774047851562 3.245053768157959 3.2448859214782715 3.2447183132171631 3.2444944381713867 3.2442708015441895 3.2440471649169922 3.2439353466033936 3.2438235282897949 3.2437117099761963 3.2435438632965088 3.2433202266693115 3.243152379989624 3.2430405616760254 3.2429287433624268 3.2427048683166504 3.2424812316894531 3.2422575950622559 3.2420339584350586 3.2418103218078613 3.2416424751281738</SamplingValues>
+                    <TimeZeroOffset>-0.12207402754575014</TimeZeroOffset>
+                    <DefaultVTPlotDrawEndIdx>425</DefaultVTPlotDrawEndIdx>
+                  </ChannelVolume>
+                </Trial>
+                <Trial>
+                  <Date>2011-07-27T11:15:42.593</Date>
+                  <Number>3</Number>
+                  <Rank>2</Rank>
+                  <RankOriginal>2</RankOriginal>
+                  <Accepted>false</Accepted>
+                  <AcceptedOriginal>false</AcceptedOriginal>
+                  <ManualAmbientOverride>false</ManualAmbientOverride>
+                  <ResultParameters>
+                    <ResultParameter ID="FVC">
+                      <DataValue>3.803727887570858</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>4.0737499089445919</PredictedValue>
+                      <LLNormalValue>3.3174999258480966</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50">
+                      <DataValue>3.3659999370574951</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF60">
+                      <DataValue>2.8321998914082847</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF75">
+                      <DataValue>2.0570000012715659</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF80">
+                      <DataValue>1.6659999688466389</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575">
+                      <DataValue>3.2179857607082578</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>3.3374999254010618</PredictedValue>
+                      <LLNormalValue>1.9849999556317926</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575_6">
+                      <DataValue>3.2179857607082578</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF7585">
+                      <DataValue>1.6731057262342086</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEF">
+                      <DataValue>6.5892000198364258</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>7.4424998336471617</PredictedValue>
+                      <LLNormalValue>5.5712498754728585</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FET">
+                      <DataValue>3.1285490576778483</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FET2575">
+                      <DataValue>0.59101067724017553</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV6">
+                      <DataValue>3.803727887570858</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>4.000624910579063</PredictedValue>
+                      <LLNormalValue>3.2587499271612614</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="T0">
+                      <DataValue>0.18145094232215173</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BEV">
+                      <DataValue>0.089075580239295959</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEFT">
+                      <DataValue>0.068549057677848288</DataValue>
+                      <Unit>s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="EOTV">
+                      <DataValue>0.024632930755615234</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_25">
+                      <DataValue>1.3602560982108116</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_5">
+                      <DataValue>2.2355945333838463</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75">
+                      <DataValue>2.8538334593176842</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1">
+                      <DataValue>3.2647607550024986</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>3.3193749258061871</PredictedValue>
+                      <LLNormalValue>2.679999940097332</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3">
+                      <DataValue>3.7967934831976891</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF10">
+                      <DataValue>6.5041998227437334</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF25">
+                      <DataValue>4.9809997876485186</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF40">
+                      <DataValue>3.8725999196370444</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BTPSin">
+                      <DataValue>1.1184662580490112</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="BTPSex">
+                      <DataValue>1.0199999809265137</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbPressure">
+                      <DataValue>965.8563232421875</DataValue>
+                      <Unit>hPa</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbTemp">
+                      <DataValue>20</DataValue>
+                      <Unit>°C</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbHumidity">
+                      <DataValue>50</DataValue>
+                      <Unit>%</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MsgNo">
+                      <DataValue>0</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF90">
+                      <DataValue>6.5041998227437334</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF75">
+                      <DataValue>4.9809997876485186</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF60">
+                      <DataValue>3.8725999196370444</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF50">
+                      <DataValue>3.3659999370574951</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF40">
+                      <DataValue>2.8321998914082847</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF25">
+                      <DataValue>2.0570000012715659</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MEF20">
+                      <DataValue>1.6659999688466389</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MMEF">
+                      <DataValue>3.2179857607082578</DataValue>
+                      <Unit>L/s</Unit>
+                      <PredictedValue>3.3374999254010618</PredictedValue>
+                      <LLNormalValue>1.9849999556317926</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_5_FVC">
+                      <DataValue>0.58773776659705923</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_VCmax">
+                      <DataValue>0.750272770206021</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_FVC">
+                      <DataValue>0.750272770206021</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV_75_FEV6">
+                      <DataValue>0.750272770206021</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_VCmax">
+                      <DataValue>0.85830554958216132</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_FVC">
+                      <DataValue>0.85830554958216132</DataValue>
+                      <Unit />
+                      <PredictedValue>0.82500003918539733</PredictedValue>
+                      <LLNormalValue>0.7270000345306471</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV1_FEV6">
+                      <DataValue>0.85830554958216132</DataValue>
+                      <Unit />
+                      <PredictedValue>0.8400000398978591</PredictedValue>
+                      <LLNormalValue>0.75200003571808338</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3_FVC">
+                      <DataValue>0.99817694520267131</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEV3_VCmax">
+                      <DataValue>0.99817694520267131</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50_FVC">
+                      <DataValue>0.88492132890375985</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="PEF_L_Min">
+                      <DataValue>395.35200119018555</DataValue>
+                      <Unit>L/min</Unit>
+                      <PredictedValue>446.5499900188297</PredictedValue>
+                      <LLNormalValue>334.27499252837151</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="ATI">
+                      <DataValue>0</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC1">
+                      <DataValue>-1.3765442476190215</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC2">
+                      <DataValue>-1.698333738192189</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTC3">
+                      <DataValue>5.2380190538072284</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="MTCR">
+                      <DataValue>-0.2627986331241936</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF2575_FVC">
+                      <DataValue>0.84600840434023061</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="FEF50_VCmax">
+                      <DataValue>0.88492132890375985</DataValue>
+                      <Unit />
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="VCmax">
+                      <DataValue>3.803727887570858</DataValue>
+                      <Unit>L</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                    <ResultParameter ID="AmbTemp_Fahr">
+                      <DataValue>68</DataValue>
+                      <Unit>°F</Unit>
+                      <PredictedValue>NaN</PredictedValue>
+                      <LLNormalValue>NaN</LLNormalValue>
+                    </ResultParameter>
+                  </ResultParameters>
+                  <ChannelFlow>
+                    <SamplingInterval>0.01</SamplingInterval>
+                    <SamplingValues TypeOfData="System.Double">-0.011184662580490112 0.030599998310208321 0.050999995321035385 0.050999995321035385 0.040799997746944427 0.040799997746944427 0.061199996620416641 0.11219999939203262 0.18359999358654022 0.26519998908042908 0.34679999947547913 0.43859997391700745 0.53039997816085815 0.62220001220703125 0.72419995069503784 0.86699992418289185 1.111799955368042 1.509600043296814 2.1215999126434326 2.9477999210357666 3.8249998092651367 4.6307997703552246 5.324399471282959 5.9363994598388672 6.3954000473022461 6.5892000198364258 6.5381999015808105 6.3443994522094727 6.109799861907959 5.9159994125366211 5.7425994873046875 5.52839994430542 5.3039999008178711 5.1203999519348145 4.97760009765625 4.8653998374938965 4.753199577331543 4.6511998176574707 4.5492000579833984 4.4267997741699219 4.3247995376586914 4.2431998252868652 4.181999683380127 4.1105995178222656 4.0391998291015625 3.9677999019622803 3.916799783706665 3.886199951171875 3.8555998802185059 3.8046000003814697 3.7331998348236084 3.6719999313354492 3.6107997894287109 3.5699999332427979 3.5393998622894287 3.4985997676849365 3.4475998878479004 3.3965997695922852 3.3659999370574951 3.3557999134063721 3.3557999134063721 3.3659999370574951 3.345599889755249 3.2741999626159668 3.1925997734069824 3.1313998699188232 3.0803999900817871 3.0395998954772949 2.9681997299194336 2.8865997791290283 2.8253998756408691 2.8151998519897461 2.8355998992919922 2.8253998756408691 2.7846000194549561 2.7233998775482178 2.6621997356414795 2.6111998558044434 2.5806000232696533 2.5499999523162842 2.519399881362915 2.4785997867584229 2.3969998359680176 2.3153998851776123 2.2541999816894531 2.233799934387207 2.2541999816894531 2.2644000053405762 2.2541999816894531 2.2031998634338379 2.1521997451782227 2.1215999126434326 2.1011998653411865 2.0706000328063965 2.0399999618530273 1.9991998672485352 1.9685999155044556 1.9583998918533325 1.9583998918533325 1.937999963760376 1.8869998455047607 1.8155999183654785 1.7543998956680298 1.6931999921798706 1.6421999931335449 1.5911998748779297 1.56059992313385 1.5503998994827271 1.5197999477386475 1.4891998767852783 1.4483999013900757 1.4177999496459961 1.4279999732971191 1.4279999732971191 1.4279999732971191 1.4075999259948731 1.3871999979019165 1.3667998313903809 1.3565999269485474 1.3259999752044678 1.2749999761581421 1.2035999298095703 1.1627999544143677 1.1322000026702881 1.101599931716919 1.0607999563217163 1.0199999809265137 0.97919994592666626 0.95879995822906494 0.94859999418258667 0.93839991092681885 0.9179999828338623 0.90779995918273926 0.90779995918273926 0.9179999828338623 0.9179999828338623 0.90779995918273926 0.87719994783401489 0.83639997243881226 0.77519994974136353 0.71399998664855957 0.66299998760223389 0.62220001220703125 0.59160000085830688 0.55079996585845947 0.52019995450973511 0.48959997296333313 0.46919995546340942 0.45899999141693115 0.46919995546340942 0.46919995546340942 0.45899999141693115 0.43859997391700745 0.40799996256828308 0.38759997487068176 0.36719998717308044 0.35699999332427979 0.35699999332427979 0.36719998717308044 0.36719998717308044 0.36719998717308044 0.34679999947547913 0.32639998197555542 0.31619998812675476 0.30599996447563171 0.31619998812675476 0.32639998197555542 0.33659997582435608 0.33659997582435608 0.32639998197555542 0.31619998812675476 0.31619998812675476 0.31619998812675476 0.31619998812675476 0.32639998197555542 0.32639998197555542 0.32639998197555542 0.33659997582435608 0.34679999947547913 0.35699999332427979 0.36719998717308044 0.35699999332427979 0.33659997582435608 0.31619998812675476 0.30599996447563171 0.30599996447563171 0.29580000042915344 0.29580000042915344 0.29580000042915344 0.28560000658035278 0.26519998908042908 0.23459997773170471 0.18359999358654022 0.14280000329017639 0.11219999939203262 0.081599995493888855 0.061199996620416641 0.040799997746944427 0.040799997746944427 0.040799997746944427 0.061199996620416641 0.091799996793270111 0.12239999324083328 0.14280000329017639 0.16319999098777771 0.19379998743534088 0.23459997773170471 0.27539998292922974 0.30599996447563171 0.30599996447563171 0.30599996447563171 0.29580000042915344 0.29580000042915344 0.29580000042915344 0.30599996447563171 0.29580000042915344 0.27539998292922974 0.24479998648166657 0.21419999003410339 0.18359999358654022 0.15299998223781586 0.14280000329017639 0.13259999454021454 0.12239999324083328 0.11219999939203262 0.10199999064207077 0.091799996793270111 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.081599995493888855 0.11219999939203262 0.12239999324083328 0.14280000329017639 0.14280000329017639 0.13259999454021454 0.12239999324083328 0.10199999064207077 0.081599995493888855 0.061199996620416641 0.040799997746944427 0.020399998873472214 0.010199999436736107 0 0.010199999436736107 0.020399998873472214 0.040799997746944427 0.050999995321035385 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.081599995493888855 0.091799996793270111 0.10199999064207077 0.10199999064207077 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.10199999064207077 0.10199999064207077 0.091799996793270111 0.091799996793270111 0.081599995493888855 0.081599995493888855 0.091799996793270111 0.091799996793270111 0.081599995493888855 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.091799996793270111 0.081599995493888855 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.061199996620416641 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.061199996620416641 0.061199996620416641 0.050999995321035385 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.061199996620416641 0.050999995321035385 0.050999995321035385 0.050999995321035385 0.050999995321035385 0.050999995321035385 0.040799997746944427 0.030599998310208321 0.040799997746944427 0.040799997746944427 0.040799997746944427 0.040799997746944427 0.030599998310208321 0.010199999436736107 0 0 0 0.010199999436736107 0.030599998310208321 0.040799997746944427 0.050999995321035385 0.061199996620416641 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.0714000016450882 0.061199996620416641 0.040799997746944427 0.030599998310208321 0.020399998873472214 0.020399998873472214 0.010199999436736107 0 -0.022369325160980225 -0.033553987741470337 -0.044738650321960449 -0.067107975482940674 -0.078292638063430786 -0.0894773006439209 -0.078292638063430786 -0.078292638063430786 -0.055923309177160263 -0.033553987741470337 -0.022369325160980225 0.010199999436736107 0.030599998310208321 0.040799997746944427 0.040799997746944427 0.030599998310208321 0.020399998873472214 0 -0.033553987741470337 -0.055923309177160263 -0.078292638063430786 -0.10066195577383041 -0.12303128838539124 -0.13421595096588135 -0.14540061354637146 -0.16776992380619049 -0.1789546012878418 -0.1789546012878418 -0.16776992380619049 -0.16776992380619049 -0.16776992380619049 -0.1789546012878418 -0.19013926386833191 -0.19013926386833191 -0.19013926386833191 -0.1789546012878418 -0.1789546012878418 -0.16776992380619049 -0.16776992380619049 -0.15658527612686157 -0.15658527612686157 -0.14540061354637146 -0.13421595096588135 -0.12303128838539124 -0.12303128838539124 -0.12303128838539124 -0.12303128838539124 -0.12303128838539124 -0.12303128838539124 -0.11184661835432053 -0.10066195577383041 -0.10066195577383041 -0.0894773006439209 -0.0894773006439209 -0.0894773006439209 -0.0894773006439209 -0.078292638063430786 -0.078292638063430786 -0.078292638063430786 -0.078292638063430786 -0.078292638063430786 -0.0894773006439209 -0.0894773006439209 -0.078292638063430786 -0.055923309177160263 -0.044738650321960449 -0.033553987741470337 -0.044738650321960449 -0.044738650321960449 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.033553987741470337 -0.044738650321960449</SamplingValues>
+                    <TimeZeroOffset>-0.18145094811916351</TimeZeroOffset>
+                  </ChannelFlow>
+                  <ChannelVolume>
+                    <SamplingInterval>0.01</SamplingInterval>
+                    <SamplingValues TypeOfData="System.Double">0 0.00020400434732437134 0.0007140040397644043 0.0012750029563903809 0.0017340034246444702 0.002142004668712616 0.0027030035853385925 0.0036720037460327148 0.0053040012717247009 0.0077520012855529785 0.011016003787517548 0.015197999775409699 0.020298004150390625 0.026316002011299133 0.033303000032901764 0.041565001010894775 0.051968999207019806 0.065943002700805664 0.085475996136665344 0.11281199753284454 0.14891999959945679 0.19328999519348145 0.24485099315643311 0.30278697609901428 0.36572098731994629 0.43130698800086975 0.49694398045539856 0.56094896793365479 0.62265896797180176 0.68227797746658325 0.74011200666427612 0.79595696926116943 0.84955799579620361 0.90116995573043823 0.95130300521850586 1.0002119541168213 1.0479989051818848 1.0947659015655518 1.1405129432678223 1.1850869655609131 1.2285388708114624 1.2711749076843262 1.3131479024887085 1.3544069528579712 1.3949519395828247 1.434782862663269 1.474052906036377 1.5129659175872803 1.5516239404678345 1.5897718667984009 1.6272568702697754 1.6641298532485962 1.7003909349441528 1.7361929416656494 1.7716889381408691 1.8068279027938843 1.8414568901062012 1.8755248785018921 1.9092358350753784 1.9427938461303711 1.9763518571853638 2.0100119113922119 2.0435190200805664 2.0764648914337158 2.1085948944091797 2.1400620937347412 2.1710190773010254 2.2015171051025391 2.231403112411499 2.2604730129241943 2.2888801097869873 2.3170320987701416 2.3453369140625 2.3736419677734375 2.4016408920288086 2.4290280342102051 2.4558029174804688 2.4820680618286133 2.5079250335693359 2.5334758758544922 2.5587210655212402 2.583608865737915 2.6077830791473389 2.6311409473419189 2.6538360118865967 2.676224946975708 2.6987159252166748 2.7213599681854248 2.7439529895782471 2.7661380767822266 2.787761926651001 2.8090288639068604 2.8300919532775879 2.8508999347686768 2.8714020252227783 2.891495943069458 2.9112329483032227 2.9308168888092041 2.9504010677337646 2.9698319435119629 2.9888548851013184 3.0072150230407715 3.0249118804931641 3.041996955871582 3.058521032333374 3.0745348930358887 3.0901920795440674 3.1056959629058838 3.1209959983825684 3.1359899044036865 3.1505248546600342 3.1647539138793945 3.1789829730987549 3.193263053894043 3.207542896270752 3.2216699123382568 3.23559308052063 3.2493119239807129 3.2628779411315918 3.276188850402832 3.2890920639038086 3.3012809753417969 3.3130109310150146 3.3244349956512451 3.3355529308319092 3.3462629318237305 3.356564998626709 3.3664588928222656 3.3760979175567627 3.3855838775634766 3.3949680328369141 3.4041988849639893 3.4133279323577881 3.4224059581756592 3.431535005569458 3.4407148361206055 3.4498438835144043 3.4587180614471436 3.4671840667724609 3.4750888347625732 3.48238205909729 3.4891140460968018 3.4953868389129639 3.5013539791107178 3.5069639682769775 3.51226806640625 3.5172150135040283 3.521906852722168 3.5264968872070312 3.5311379432678223 3.535830020904541 3.5404708385467529 3.5449588298797607 3.5491409301757812 3.5530679225921631 3.556790828704834 3.5604119300842285 3.5639820098876953 3.5676538944244385 3.5713260173797607 3.5749979019165039 3.578516960144043 3.5818319320678711 3.584993839263916 3.5880539417266846 3.5912158489227295 3.594480037689209 3.5978460311889648 3.6012120246887207 3.6044759750366211 3.607637882232666 3.61080002784729 3.6139109134674072 3.6170730590820312 3.6203370094299316 3.623600959777832 3.6268649101257324 3.6302309036254883 3.6336479187011719 3.6372179985046387 3.6408898830413818 3.6444599628448486 3.6478769779205322 3.6510899066925049 3.6541500091552734 3.6572098731994629 3.660167932510376 3.6631259918212891 3.6660840511322021 3.6689908504486084 3.6717448234558105 3.6741929054260254 3.676131010055542 3.6776609420776367 3.6788339614868164 3.6797008514404297 3.6803638935089111 3.6808228492736816 3.6812310218811035 3.6816389560699463 3.6821999549865723 3.6830668449401855 3.6842398643493652 3.6856169700622559 3.6871979236602783 3.6890850067138672 3.6913290023803711 3.6939809322357178 3.6969900131225586 3.700049877166748 3.7031099796295166 3.7060680389404297 3.7090258598327637 3.7119839191436768 3.7150440216064453 3.7180018424987793 3.7208068370819092 3.7233569622039795 3.7256009578704834 3.7275388240814209 3.72917103767395 3.7306499481201172 3.73197603225708 3.7331998348236084 3.7343218326568604 3.7353420257568359 3.736259937286377 3.7370250225067139 3.7377388477325439 3.7384529113769531 3.7392690181732178 3.740339994430542 3.7415640354156494 3.7429409027099609 3.7443690299987793 3.7456948757171631 3.7469189167022705 3.7479898929595947 3.7488570213317871 3.7495198249816895 3.7499790191650391 3.7502338886260986 3.7503359317779541 3.7503359317779541 3.7503869533538818 3.750540018081665 3.75089693069458 3.7513558864593506 3.7519168853759766 3.7525289058685303 3.753140926361084 3.7537529468536377 3.7543649673461914 3.7549769878387451 3.7555890083312988 3.7562520503997803 3.7569658756256104 3.7576799392700195 3.7583940029144287 3.7592098712921143 3.7601280212402344 3.7611479759216309 3.7621679306030273 3.7630858421325684 3.7640039920806885 3.7649219036102295 3.7658400535583496 3.7668600082397461 3.7678799629211426 3.7688488960266113 3.7697670459747314 3.770582914352417 3.7713990211486816 3.7722659111022949 3.7731838226318359 3.7739999294281006 3.7748668193817139 3.775784969329834 3.776702880859375 3.7776210308074951 3.7784368991851807 3.77915096282959 3.779865026473999 3.7805788516998291 3.7812929153442383 3.7820069789886475 3.7826189994812012 3.7833328247070312 3.7840468883514404 3.7847609519958496 3.7853729724884033 3.785984992980957 3.7864949703216553 3.787106990814209 3.7877190113067627 3.7883310317993164 3.78894305229187 3.7895040512084961 3.7900140285491943 3.7905240058898926 3.7910339832305908 3.7915439605712891 3.7919518947601318 3.7922580242156982 3.7926149368286133 3.7930228710174561 3.7934310436248779 3.7938389778137207 3.794144868850708 3.7942979335784912 3.7943489551544189 3.7943489551544189 3.7943489551544189 3.7944509983062744 3.794705867767334 3.7950630187988281 3.7955219745635986 3.7960829734802246 3.7967460155487061 3.7974598407745361 3.7981739044189453 3.7988879680633545 3.7996020317077637 3.8003158569335938 3.8010809421539307 3.80179500579834 3.8024070262908936 3.8028659820556641 3.8032228946685791 3.8034780025482178 3.8036818504333496 3.8037838935852051 3.8037838935852051 3.8036162853240967 3.8033366203308105 3.8029451370239258 3.8023300170898438 3.801602840423584 3.8007640838623047 3.7999253273010254 3.7991423606872559 3.7985272407531738 3.7981357574462891 3.7978560924530029 3.7979071140289307 3.7981619834899902 3.7985191345214844 3.7989270687103271 3.7992839813232422 3.7994880676269531 3.7995390892028809 3.7993154525756836 3.7988121509552 3.7980849742889404 3.7971343994140625 3.7959599494934082 3.7946736812591553 3.7932198047637939 3.791597843170166 3.7898643016815186 3.7880747318267822 3.7863411903381348 3.7846634387969971 3.7829856872558594 3.781196117401123 3.779350757598877 3.777449369430542 3.775547981262207 3.7737584114074707 3.7719688415527344 3.7702353000640869 3.7685575485229492 3.7669358253479004 3.7653698921203613 3.763916015625 3.7625737190246582 3.7612874507904053 3.7600572109222412 3.7588269710540771 3.757596492767334 3.75636625289917 3.7551360130310059 3.7540175914764404 3.7529549598693848 3.751948356628418 3.75105357170105 3.7501587867736816 3.7492640018463135 3.7483692169189453 3.7475862503051758 3.7468032836914062 3.7460205554962158 3.7452375888824463 3.7444546222686768 3.7435598373413086 3.7426650524139404 3.7418820858001709 3.7412669658660889 3.7408196926116943 3.7404839992523193 3.7400925159454346 3.73964524269104 3.7392537593841553 3.7389183044433594 3.7385826110839844 3.7382471561431885 3.7379114627838135 3.7375760078430176 3.7372405529022217 3.7369048595428467 3.7365694046020508 3.7362339496612549 3.73589825630188 3.7354509830474854</SamplingValues>
+                    <TimeZeroOffset>-0.18145094811916351</TimeZeroOffset>
+                    <DefaultVTPlotDrawEndIdx>414</DefaultVTPlotDrawEndIdx>
+                  </ChannelVolume>
+                </Trial>
+              </Trials>
+              <Device>
+                <SerialNumber>201204</SerialNumber>
+                <DeviceType>SPIROSON_AS</DeviceType>
+              </Device>
+            </Test>
+          </Tests>
+        </Interval>
+      </Intervals>
+    </Patient>
+  </Patients>
+</ndd>

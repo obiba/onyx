@@ -12,8 +12,6 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
 
@@ -52,23 +50,4 @@ public class InstrumentWizardPanel extends WizardPanel {
     return wizardForm;
   }
 
-  //
-  // Methods
-  //
-
-  public WizardForm getWizardForm() {
-    return wizardForm;
-  }
-
-  public void setActionWindow(ActionWindow window) {
-    wizardForm.setActionWindow(window);
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    wizardForm.setFeedbackWindow(feedbackWindow);
-  }
-
-  public FeedbackWindow getFeedbackWindow() {
-    return wizardForm.getFeedbackWindow();
-  }
 }

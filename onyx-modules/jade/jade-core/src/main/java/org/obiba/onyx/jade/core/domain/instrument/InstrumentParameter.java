@@ -23,6 +23,8 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public abstract class InstrumentParameter implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   private String code;
 
   private String vendorName;
@@ -171,6 +173,11 @@ public abstract class InstrumentParameter implements Serializable {
 
   public void setMimeType(String mimeType) {
     this.mimeType = mimeType;
+  }
+
+  @Override
+  public String toString() {
+    return vendorName;
   }
 
 }

@@ -51,8 +51,6 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
   private static final Logger log = LoggerFactory.getLogger(PdfTemplateReport.class);
 
-  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
-
   private static final Pattern onyxPattern = Pattern.compile("^Onyx\\.");
 
   private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -109,6 +107,10 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     return new ByteArrayInputStream(output.toByteArray());
   }
 
+  public void setDateFormat(String dateFormat) {
+    this.dateFormat = new SimpleDateFormat(dateFormat);
+  }
+
   private void setAdditionalDataFields(AcroFields form) {
     try {
       form.setField("DateInterview\\.date", dateFormat.format(new Date()));
@@ -138,13 +140,12 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
           String variablePath = fieldToVariableMap.get(variableKey);
 
           if(variablePath != null) {
-            String[] pathElements = extractPathElements(variablePath);
+            MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
 
-            ValueTable tableForVariable = resolveTable(pathElements[0], pathElements[1]);
+            ValueTable tableForVariable = resolveTable(resolver.getDatasourceName(), resolver.getTableName());
             ValueSet valueSetInTable = getParticipantValueSet(tableForVariable);
-            String variableName = pathElements[2];
 
-            String valueString = getStringValue(tableForVariable, valueSetInTable, field.getKey(), variableName);
+            String valueString = getStringValue(tableForVariable, valueSetInTable, field.getKey(), resolver.getVariableName());
             if(valueString != null && valueString.length() != 0) {
               form.setField(field.getKey(), valueString);
               break;
@@ -215,16 +216,12 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     return list;
   }
 
-  public void setDateFormat(String dateFormat) {
-    this.dateFormat = new SimpleDateFormat(dateFormat);
-  }
-
   private ValueTable resolveTable(String datasourceName, String tableName) {
     if(tableName != null) {
       for(Datasource datasource : MagmaEngine.get().getDatasources()) {
         if(datasourceName == null || datasource.getName().equals(datasourceName)) {
           for(ValueTable table : datasource.getValueTables()) {
-            if(table.isForEntityType(PARTICIPANT_ENTITY_TYPE) && table.getName().equals(tableName)) {
+            if(table.getName().equals(tableName)) {
               return table;
             }
           }
@@ -235,15 +232,4 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     throw new IllegalStateException("Could not resolve ValueTable (tableName is null)");
   }
 
-  private String[] extractPathElements(String variablePath) {
-    String[] pathElements = new String[3];
-
-    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
-
-    pathElements[0] = resolver.getDatasourceName();
-    pathElements[1] = resolver.getTableName();
-    pathElements[2] = resolver.getVariableName();
-
-    return pathElements;
-  }
 }

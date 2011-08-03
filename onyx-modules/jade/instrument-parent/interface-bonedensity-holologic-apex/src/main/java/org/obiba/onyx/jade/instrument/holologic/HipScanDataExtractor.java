@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ * Copyright (c) 2011 OBiBa. All rights reserved.
+ *  
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -45,6 +46,7 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
 
   @Override
   protected void extractDataImpl(Map<String, Data> data) {
+    data.put(getResultPrefix() + "_SIDE", DataBuilder.buildText(side.toString()));
     extractScanData("Hip", data, new HipResultSetExtractor(data));
     extractScanData("HipHSA", data, new HipHSAResultSetExtractor(data));
   }
@@ -82,8 +84,7 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
       putDouble("HTOT_AREA");
       putDouble("HTOT_BMC");
       putDouble("HTOT_BMD");
-      putDouble("HSTD_TOT");
-      putDouble("ROI_TYPE");
+      putLong("ROI_TYPE");
       putDouble("ROI_WIDTH");
       putDouble("ROI_HEIGHT");
       putDouble("AXIS_LENGTH");

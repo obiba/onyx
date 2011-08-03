@@ -21,15 +21,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.wizard.QuestionnaireWizardPanel;
-import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
  * Quartz widget entry point.
  */
-public class QuartzPanel extends Panel implements IEngineComponentAware {
+public class QuartzPanel extends Panel {
 
   private static final long serialVersionUID = 0L;
 
@@ -56,18 +53,6 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
     if(activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
 
     add(wizardPanel = new QuestionnaireWizardPanel("content", new QuestionnaireModel(activeQuestionnaireAdministrationService.getQuestionnaire()), new StageModel(moduleRegistry, stage.getName()), resuming));
-  }
-
-  public void setActionWindow(ActionWindow window) {
-    wizardPanel.setActionWindow(window);
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    wizardPanel.setFeedbackWindow(feedbackWindow);
-  }
-
-  public FeedbackWindow getFeedbackWindow() {
-    return wizardPanel.getFeedbackWindow();
   }
 
   /**

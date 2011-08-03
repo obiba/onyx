@@ -19,12 +19,9 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardPanel;
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
-import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-public class MarblePanel extends Panel implements IEngineComponentAware {
+public class MarblePanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
@@ -55,19 +52,4 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
     add(wizardPanel = new ConsentWizardPanel("content", new Model<Consent>(consent), new StageModel(moduleRegistry, stage.getName())));
   }
 
-  //
-  // IEngineComponentAware Methods
-  //
-
-  public void setActionWindow(ActionWindow window) {
-    wizardPanel.setActionWindow(window);
-  }
-
-  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
-    wizardPanel.setFeedbackWindow(feedbackWindow);
-  }
-
-  public FeedbackWindow getFeedbackWindow() {
-    return wizardPanel.getFeedbackWindow();
-  }
 }

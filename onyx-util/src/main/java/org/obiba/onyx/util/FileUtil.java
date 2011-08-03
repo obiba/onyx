@@ -74,6 +74,8 @@ public class FileUtil {
    * @throws IOException
    */
   public static void copyDirectory(File sourceDir, File destDir) throws IOException {
+    if(sourceDir == null) throw new IllegalArgumentException("sourceDir cannot be null");
+    if(destDir == null) throw new IllegalArgumentException("destDir cannot be null");
 
     if(!destDir.exists()) {
       if(destDir.mkdir() == false) {
@@ -81,18 +83,20 @@ public class FileUtil {
       }
     }
 
-    File[] children = sourceDir.listFiles();
-
-    for(File sourceChild : children) {
-      String name = sourceChild.getName();
-      File destChild = new File(destDir, name);
-      if(sourceChild.isDirectory()) {
-        copyDirectory(sourceChild, destChild);
-      } else {
-        copyFile(sourceChild, destChild);
+    if(sourceDir.exists()) {
+      File[] children = sourceDir.listFiles();
+      if(children != null) {
+        for(File sourceChild : children) {
+          String name = sourceChild.getName();
+          File destChild = new File(destDir, name);
+          if(sourceChild.isDirectory()) {
+            copyDirectory(sourceChild, destChild);
+          } else {
+            copyFile(sourceChild, destChild);
+          }
+        }
       }
     }
-
   }
 
   /**
@@ -102,6 +106,8 @@ public class FileUtil {
    * @throws IOException
    */
   public static void copyFile(File source, File dest) throws IOException {
+    if(source == null) throw new IllegalArgumentException("source cannot be null");
+    if(dest == null) throw new IllegalArgumentException("dest cannot be null");
 
     if(dest.isDirectory()) {
       dest = new File(dest, source.getName());

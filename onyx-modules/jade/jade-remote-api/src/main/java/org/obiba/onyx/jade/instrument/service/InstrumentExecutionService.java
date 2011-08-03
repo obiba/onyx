@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.obiba.onyx.util.data.Data;
 
@@ -57,6 +58,10 @@ public interface InstrumentExecutionService {
 
   public int getCurrentMeasureCount();
 
+  public boolean hasInputParameter(String parameterCode);
+
+  public boolean hasOutputParameter(String parameterCode);
+
   public Map<String, Data> getInputParametersValue(String... parameters);
 
   public Map<String, String> getInputParametersVendorNames(String... parameters);
@@ -64,6 +69,11 @@ public interface InstrumentExecutionService {
   public Data getInputParameterValue(String parameter);
 
   public void addOutputParameterValues(Map<String, Data> values);
+
+  /**
+   * Returns a set of expected output parameters using the vendor's name
+   */
+  public Set<String> getExpectedOutputParameterVendorNames();
 
   public void instrumentRunnerError(Exception error);
 

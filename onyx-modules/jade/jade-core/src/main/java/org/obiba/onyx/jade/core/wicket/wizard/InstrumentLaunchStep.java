@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.wizard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
@@ -114,7 +116,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
         List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
 
-        boolean completed = true;
+        List<InstrumentParameter> missingValueParams = new ArrayList<InstrumentParameter>();
 
         if(!instrumentType.isRepeatable()) {
 
@@ -123,11 +125,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
               if(param.isManualCaptureAllowed()) {
                 InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
                 if(param.isRequired(activeInstrumentRunService.getParticipant()) && runValue == null) {
-                  log.warn("Missing value for the following manually captured and required output parameter: {}", param.getVendorName());
-                  form.error(getString("NoInstrumentDataSaveThem"));
-                  completed = false;
-                  setNextStep(null);
-                  break;
+                  missingValueParams.add(param);
                 }
               }
             }
@@ -136,24 +134,18 @@ public class InstrumentLaunchStep extends WizardStepPanel {
               InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
               if(param.isRequired(activeInstrumentRunService.getParticipant())) {
                 if(runValue == null) {
-                  completed = false;
+                  missingValueParams.add(param);
                 } else {
                   Data data = runValue.getData(param.getDataType());
                   if(data == null || data.getValue() == null) {
-                    completed = false;
+                    missingValueParams.add(param);
                   }
                 }
-              }
-              if(!completed) {
-                log.warn("Missing value for the following output parameter: {}", param.getVendorName());
-                form.error(getString("NoInstrumentDataSaveThem"));
-                setNextStep(null);
-                break;
               }
             }
           }
 
-          if(completed) {
+          if(missingValueParams.size() == 0) {
             // Perform each output parameter's integrity checks.
             Map<IntegrityCheck, InstrumentOutputParameter> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams);
 
@@ -167,22 +159,23 @@ public class InstrumentLaunchStep extends WizardStepPanel {
             } else {
               setNextStep(null);
             }
+          } else {
+            log.warn("Missing values for the parameters: {}", missingValueParams);
+            form.error(getString("NoInstrumentDataSaveThem"));
+            setNextStep(null);
           }
         } else {
-
           int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
           if(!((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement() || currentCount == 0) {
 
             // minimum is having the expected count of repeatable measures
             int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
             if(currentCount < expectedCount) {
-              completed = false;
               form.error(getString("MissingMeasure", new Model(new ValueMap("count=" + (expectedCount - currentCount)))));
               setNextStep(null);
             }
           }
         }
-
       }
 
     } else {

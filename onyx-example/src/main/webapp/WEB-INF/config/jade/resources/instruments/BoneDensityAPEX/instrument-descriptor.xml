@@ -6,15 +6,7 @@
   <instrumentParameters>
 
     <input>
-      <code>INPUT_PARTICIPANT_GENDER</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="participantPropertyDataSource">
-        <property>gender</property>
-      </dataSource>
-    </input>
-
-    <input>
+      <vendorName>Height</vendorName>
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -26,6 +18,7 @@
     </input>
     
     <input>
+      <vendorName>Weight</vendorName>
       <code>INPUT_PARTICIPANT_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -38,738 +31,43 @@
       </dataSource>
       <measurementUnit>kg</measurementUnit>
     </input>
-       
-    <!-- L Hip -->
-    <output>
-      <vendorName>L_HIP_TROCH_AREA</vendorName>
-      <code>RES_L_HIP_TROCH_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_TROCH_BMC</vendorName>
-      <code>RES_L_HIP_TROCH_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_TROCH_BMD</vendorName>
-      <code>RES_L_HIP_TROCH_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_INTER_AREA</vendorName>
-      <code>RES_L_HIP_INTER_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_INTER_BMC</vendorName>
-      <code>RES_L_HIP_INTER_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_INTER_BMD</vendorName>
-      <code>RES_L_HIP_INTER_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NECK_AREA</vendorName>
-      <code>RES_L_HIP_NECK_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NECK_BMC</vendorName>
-      <code>RES_L_HIP_NECK_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NECK_BMD</vendorName>
-      <code>RES_L_HIP_NECK_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_WARDS_AREA</vendorName>
-      <code>RES_L_HIP_WARDS_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_WARDS_BMC</vendorName>
-      <code>RES_L_HIP_WARDS_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_WARDS_BMD</vendorName>
-      <code>RES_L_HIP_WARDS_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_HTOT_AREA</vendorName>
-      <code>RES_L_HIP_HTOT_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_HTOT_BMC</vendorName>
-      <code>RES_L_HIP_HTOT_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_HTOT_BMD</vendorName>
-      <code>RES_L_HIP_HTOT_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_HSTD_TOT</vendorName>
-      <code>RES_L_HIP_HSTD_TOT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_ROI_TYPE</vendorName>
-      <code>RES_L_HIP_ROI_TYPE</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_ROI_WIDTH</vendorName>
-      <code>RES_L_HIP_ROI_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_ROI_HEIGHT</vendorName>
-      <code>RES_L_HIP_ROI_HEIGHT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_AXIS_LENGTH</vendorName>
-      <code>RES_L_HIP_AXIS_LENGTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_PHYSICIAN_COMMENT</vendorName>
-      <code>RES_L_HIP_PHYSICIAN_COMMENT</code>
+
+    <!-- Optional -->
+    <input>
+      <vendorName>Gender</vendorName>
+      <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_BMD</vendorName>
-      <code>RES_L_HIP_NN_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_CSA</vendorName>
-      <code>RES_L_HIP_NN_CSA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_CSMI</vendorName>
-      <code>RES_L_HIP_NN_CSMI</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_WIDTH</vendorName>
-      <code>RES_L_HIP_NN_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_ED</vendorName>
-      <code>RES_L_HIP_NN_ED</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_ACT</vendorName>
-      <code>RES_L_HIP_NN_ACT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_PCD</vendorName>
-      <code>RES_L_HIP_NN_PCD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_CMP</vendorName>
-      <code>RES_L_HIP_NN_CMP</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_SECT_MOD</vendorName>
-      <code>RES_L_HIP_NN_SECT_MOD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_NN_BR</vendorName>
-      <code>RES_L_HIP_NN_BR</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_BMD</vendorName>
-      <code>RES_L_HIP_IT_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_CSA</vendorName>
-      <code>RES_L_HIP_IT_CSA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_CSMI</vendorName>
-      <code>RES_L_HIP_IT_CSMI</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_WIDTH</vendorName>
-      <code>RES_L_HIP_IT_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_ED</vendorName>
-      <code>RES_L_HIP_IT_ED</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_ACT</vendorName>
-      <code>RES_L_HIP_IT_ACT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_PCD</vendorName>
-      <code>RES_L_HIP_IT_PCD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_CMP</vendorName>
-      <code>RES_L_HIP_IT_CMP</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_SECT_MOD</vendorName>
-      <code>RES_L_HIP_IT_SECT_MOD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_IT_BR</vendorName>
-      <code>RES_L_HIP_IT_BR</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_BMD</vendorName>
-      <code>RES_L_HIP_FS_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_CSA</vendorName>
-      <code>RES_L_HIP_FS_CSA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_CSMI</vendorName>
-      <code>RES_L_HIP_FS_CSMI</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_WIDTH</vendorName>
-      <code>RES_L_HIP_FS_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_ED</vendorName>
-      <code>RES_L_HIP_FS_ED</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_ACT</vendorName>
-      <code>RES_L_HIP_FS_ACT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_PCD</vendorName>
-      <code>RES_L_HIP_FS_PCD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_CMP</vendorName>
-      <code>RES_L_HIP_FS_CMP</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_SECT_MOD</vendorName>
-      <code>RES_L_HIP_FS_SECT_MOD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_FS_BR</vendorName>
-      <code>RES_L_HIP_FS_BR</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>L_HIP_SHAFT_NECK_ANGLE</vendorName>
-      <code>RES_L_HIP_SHAFT_NECK_ANGLE</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
+      <dataSource class="participantPropertyDataSource">
+        <property>gender</property>
+      </dataSource>
+    </input>
     
-    <!-- R Hip -->
-    <output>
-      <vendorName>R_HIP_TROCH_AREA</vendorName>
-      <code>RES_R_HIP_TROCH_AREA</code>
-      <dataType>DECIMAL</dataType>
+	<!-- Optional -->
+    <input>
+      <vendorName>DateOfBirth</vendorName>
+      <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
+      <dataType>DATE</dataType>
+      <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_TROCH_BMC</vendorName>
-      <code>RES_R_HIP_TROCH_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_TROCH_BMD</vendorName>
-      <code>RES_R_HIP_TROCH_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_INTER_AREA</vendorName>
-      <code>RES_R_HIP_INTER_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_INTER_BMC</vendorName>
-      <code>RES_R_HIP_INTER_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_INTER_BMD</vendorName>
-      <code>RES_R_HIP_INTER_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NECK_AREA</vendorName>
-      <code>RES_R_HIP_NECK_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NECK_BMC</vendorName>
-      <code>RES_R_HIP_NECK_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NECK_BMD</vendorName>
-      <code>RES_R_HIP_NECK_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_WARDS_AREA</vendorName>
-      <code>RES_R_HIP_WARDS_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_WARDS_BMC</vendorName>
-      <code>RES_R_HIP_WARDS_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_WARDS_BMD</vendorName>
-      <code>RES_R_HIP_WARDS_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_HTOT_AREA</vendorName>
-      <code>RES_R_HIP_HTOT_AREA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_HTOT_BMC</vendorName>
-      <code>RES_R_HIP_HTOT_BMC</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_HTOT_BMD</vendorName>
-      <code>RES_R_HIP_HTOT_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_HSTD_TOT</vendorName>
-      <code>RES_R_HIP_HSTD_TOT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_ROI_TYPE</vendorName>
-      <code>RES_R_HIP_ROI_TYPE</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_ROI_WIDTH</vendorName>
-      <code>RES_R_HIP_ROI_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_ROI_HEIGHT</vendorName>
-      <code>RES_R_HIP_ROI_HEIGHT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_AXIS_LENGTH</vendorName>
-      <code>RES_R_HIP_AXIS_LENGTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_PHYSICIAN_COMMENT</vendorName>
-      <code>RES_R_HIP_PHYSICIAN_COMMENT</code>
+      <dataSource class="participantPropertyDataSource">
+        <property>birthDate</property>
+      </dataSource>
+    </input>
+    
+    <!-- Optional, if provided only set of Hip variables will be collected -->
+    <input>
+      <vendorName>HipSide</vendorName>
+      <code>INPUT_HIP_SIDE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_BMD</vendorName>
-      <code>RES_R_HIP_NN_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_CSA</vendorName>
-      <code>RES_R_HIP_NN_CSA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_CSMI</vendorName>
-      <code>RES_R_HIP_NN_CSMI</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_WIDTH</vendorName>
-      <code>RES_R_HIP_NN_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_ED</vendorName>
-      <code>RES_R_HIP_NN_ED</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_ACT</vendorName>
-      <code>RES_R_HIP_NN_ACT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_PCD</vendorName>
-      <code>RES_R_HIP_NN_PCD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_CMP</vendorName>
-      <code>RES_R_HIP_NN_CMP</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_SECT_MOD</vendorName>
-      <code>RES_R_HIP_NN_SECT_MOD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_NN_BR</vendorName>
-      <code>RES_R_HIP_NN_BR</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_BMD</vendorName>
-      <code>RES_R_HIP_IT_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_CSA</vendorName>
-      <code>RES_R_HIP_IT_CSA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_CSMI</vendorName>
-      <code>RES_R_HIP_IT_CSMI</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_WIDTH</vendorName>
-      <code>RES_R_HIP_IT_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_ED</vendorName>
-      <code>RES_R_HIP_IT_ED</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_ACT</vendorName>
-      <code>RES_R_HIP_IT_ACT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_PCD</vendorName>
-      <code>RES_R_HIP_IT_PCD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_CMP</vendorName>
-      <code>RES_R_HIP_IT_CMP</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_SECT_MOD</vendorName>
-      <code>RES_R_HIP_IT_SECT_MOD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_IT_BR</vendorName>
-      <code>RES_R_HIP_IT_BR</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_BMD</vendorName>
-      <code>RES_R_HIP_FS_BMD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_CSA</vendorName>
-      <code>RES_R_HIP_FS_CSA</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_CSMI</vendorName>
-      <code>RES_R_HIP_FS_CSMI</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_WIDTH</vendorName>
-      <code>RES_R_HIP_FS_WIDTH</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_ED</vendorName>
-      <code>RES_R_HIP_FS_ED</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_ACT</vendorName>
-      <code>RES_R_HIP_FS_ACT</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_PCD</vendorName>
-      <code>RES_R_HIP_FS_PCD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_CMP</vendorName>
-      <code>RES_R_HIP_FS_CMP</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_SECT_MOD</vendorName>
-      <code>RES_R_HIP_FS_SECT_MOD</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_FS_BR</vendorName>
-      <code>RES_R_HIP_FS_BR</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
-    <output>
-      <vendorName>R_HIP_SHAFT_NECK_ANGLE</vendorName>
-      <code>RES_R_HIP_SHAFT_NECK_ANGLE</code>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-    </output>
+      <dataSource class="variableDataSource">
+        <path>CIPreliminaryQuestionnaire:BD_FOOT_CHOSEN</path>
+      </dataSource>
+    </input>
+    
+    <!-- Ouput parameters -->
+    
     
     <!-- Whole Body -->
     <output>
@@ -1030,6 +328,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_WBC_FAT_STD</vendorName>
@@ -1289,6 +590,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_NET_AVG_AREA</vendorName>
@@ -1345,6 +649,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG1_AREA</vendorName>
@@ -1373,6 +680,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG2_AREA</vendorName>
@@ -1401,6 +711,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG3_AREA</vendorName>
@@ -1429,6 +742,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG4_AREA</vendorName>
@@ -1457,6 +773,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG5_AREA</vendorName>
@@ -1485,6 +804,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG6_AREA</vendorName>
@@ -1513,6 +835,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG7_AREA</vendorName>
@@ -1541,6 +866,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG8_AREA</vendorName>
@@ -1569,6 +897,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG9_AREA</vendorName>
@@ -1597,6 +928,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG10_AREA</vendorName>
@@ -1625,6 +959,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG11_AREA</vendorName>
@@ -1653,6 +990,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG12_AREA</vendorName>
@@ -1681,6 +1021,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG13_AREA</vendorName>
@@ -1709,6 +1052,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRB_REG14_AREA</vendorName>
@@ -1737,6 +1083,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_NET_AVG_FAT</vendorName>
@@ -1807,6 +1156,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG1_FAT</vendorName>
@@ -1842,6 +1194,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG2_FAT</vendorName>
@@ -1877,6 +1232,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG3_FAT</vendorName>
@@ -1912,6 +1270,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG4_FAT</vendorName>
@@ -1947,6 +1308,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG5_FAT</vendorName>
@@ -1982,6 +1346,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG6_FAT</vendorName>
@@ -2017,6 +1384,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG7_FAT</vendorName>
@@ -2052,6 +1422,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG8_FAT</vendorName>
@@ -2087,6 +1460,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG9_FAT</vendorName>
@@ -2122,6 +1498,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG10_FAT</vendorName>
@@ -2157,6 +1536,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG11_FAT</vendorName>
@@ -2192,6 +1574,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG12_FAT</vendorName>
@@ -2227,6 +1612,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG13_FAT</vendorName>
@@ -2262,6 +1650,9 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_SRC_REG14_FAT</vendorName>
@@ -2304,6 +1695,9 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
     <output>
       <vendorName>WB_OI_FAT_STD</vendorName>
@@ -2423,10 +1817,1322 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
     </output>
              
-    <!-- Single Energy Lateral -->
+    <!-- AP Lumbar Spine -->
     <output>
+      <vendorName>SP_NO_REGIONS</vendorName>
+      <code>RES_SP_NO_REGIONS</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_STARTING_REGION</vendorName>
+      <code>RES_SP_STARTING_REGION</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_INCLUDED</vendorName>
+      <code>RES_SP_L1_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_INCLUDED</vendorName>
+      <code>RES_SP_L2_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_INCLUDED</vendorName>
+      <code>RES_SP_L3_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_INCLUDED</vendorName>
+      <code>RES_SP_L4_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_INCLUDED</vendorName>
+      <code>RES_SP_L5_INCLUDED</code>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_AREA</vendorName>
+      <code>RES_SP_L1_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_BMC</vendorName>
+      <code>RES_SP_L1_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L1_BMD</vendorName>
+      <code>RES_SP_L1_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_AREA</vendorName>
+      <code>RES_SP_L2_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_BMC</vendorName>
+      <code>RES_SP_L2_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L2_BMD</vendorName>
+      <code>RES_SP_L2_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_AREA</vendorName>
+      <code>RES_SP_L3_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_BMC</vendorName>
+      <code>RES_SP_L3_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L3_BMD</vendorName>
+      <code>RES_SP_L3_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_AREA</vendorName>
+      <code>RES_SP_L4_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_BMC</vendorName>
+      <code>RES_SP_L4_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L4_BMD</vendorName>
+      <code>RES_SP_L4_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_AREA</vendorName>
+      <code>RES_SP_L5_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_BMC</vendorName>
+      <code>RES_SP_L5_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_L5_BMD</vendorName>
+      <code>RES_SP_L5_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_TOT_AREA</vendorName>
+      <code>RES_SP_TOT_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_TOT_BMC</vendorName>
+      <code>RES_SP_TOT_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_TOT_BMD</vendorName>
+      <code>RES_SP_TOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_STD_TOT_BMD</vendorName>
+      <code>RES_SP_STD_TOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_ROI_TYPE</vendorName>
+      <code>RES_SP_ROI_TYPE</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_ROI_WIDTH</vendorName>
+      <code>RES_SP_ROI_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_ROI_HEIGHT</vendorName>
+      <code>RES_SP_ROI_HEIGHT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>SP_PHYSICIAN_COMMENT</vendorName>
+      <code>RES_SP_PHYSICIAN_COMMENT</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output>
+    
+    <!-- HipSide input was provided -->
+    <output>
+      <vendorName>HIP_SIDE</vendorName>
+      <code>OUTPUT_HIP_SIDE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_TROCH_AREA</vendorName>
+      <code>RES_HIP_TROCH_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_TROCH_BMC</vendorName>
+      <code>RES_HIP_TROCH_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_TROCH_BMD</vendorName>
+      <code>RES_HIP_TROCH_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_INTER_AREA</vendorName>
+      <code>RES_HIP_INTER_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_INTER_BMC</vendorName>
+      <code>RES_HIP_INTER_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_INTER_BMD</vendorName>
+      <code>RES_HIP_INTER_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NECK_AREA</vendorName>
+      <code>RES_HIP_NECK_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NECK_BMC</vendorName>
+      <code>RES_HIP_NECK_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NECK_BMD</vendorName>
+      <code>RES_HIP_NECK_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_WARDS_AREA</vendorName>
+      <code>RES_HIP_WARDS_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_WARDS_BMC</vendorName>
+      <code>RES_HIP_WARDS_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_WARDS_BMD</vendorName>
+      <code>RES_HIP_WARDS_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_HTOT_AREA</vendorName>
+      <code>RES_HIP_HTOT_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_HTOT_BMC</vendorName>
+      <code>RES_HIP_HTOT_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_HTOT_BMD</vendorName>
+      <code>RES_HIP_HTOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_ROI_TYPE</vendorName>
+      <code>RES_HIP_ROI_TYPE</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_ROI_WIDTH</vendorName>
+      <code>RES_HIP_ROI_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_ROI_HEIGHT</vendorName>
+      <code>RES_HIP_ROI_HEIGHT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_AXIS_LENGTH</vendorName>
+      <code>RES_HIP_AXIS_LENGTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_PHYSICIAN_COMMENT</vendorName>
+      <code>RES_HIP_PHYSICIAN_COMMENT</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output>
+    <output>
+      <vendorName>HIP_NN_BMD</vendorName>
+      <code>RES_HIP_NN_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_CSA</vendorName>
+      <code>RES_HIP_NN_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_CSMI</vendorName>
+      <code>RES_HIP_NN_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_WIDTH</vendorName>
+      <code>RES_HIP_NN_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_ED</vendorName>
+      <code>RES_HIP_NN_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_ACT</vendorName>
+      <code>RES_HIP_NN_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_PCD</vendorName>
+      <code>RES_HIP_NN_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_CMP</vendorName>
+      <code>RES_HIP_NN_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_SECT_MOD</vendorName>
+      <code>RES_HIP_NN_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_NN_BR</vendorName>
+      <code>RES_HIP_NN_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_BMD</vendorName>
+      <code>RES_HIP_IT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_CSA</vendorName>
+      <code>RES_HIP_IT_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_CSMI</vendorName>
+      <code>RES_HIP_IT_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_WIDTH</vendorName>
+      <code>RES_HIP_IT_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_ED</vendorName>
+      <code>RES_HIP_IT_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_ACT</vendorName>
+      <code>RES_HIP_IT_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_PCD</vendorName>
+      <code>RES_HIP_IT_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_CMP</vendorName>
+      <code>RES_HIP_IT_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_SECT_MOD</vendorName>
+      <code>RES_HIP_IT_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_IT_BR</vendorName>
+      <code>RES_HIP_IT_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_BMD</vendorName>
+      <code>RES_HIP_FS_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_CSA</vendorName>
+      <code>RES_HIP_FS_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_CSMI</vendorName>
+      <code>RES_HIP_FS_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_WIDTH</vendorName>
+      <code>RES_HIP_FS_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_ED</vendorName>
+      <code>RES_HIP_FS_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_ACT</vendorName>
+      <code>RES_HIP_FS_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_PCD</vendorName>
+      <code>RES_HIP_FS_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_CMP</vendorName>
+      <code>RES_HIP_FS_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_SECT_MOD</vendorName>
+      <code>RES_HIP_FS_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_FS_BR</vendorName>
+      <code>RES_HIP_FS_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_SHAFT_NECK_ANGLE</vendorName>
+      <code>RES_HIP_SHAFT_NECK_ANGLE</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    
+    <!-- HipSide input was NOT provided: L Hip -->
+    <!-- output>
+      <vendorName>L_HIP_TROCH_AREA</vendorName>
+      <code>RES_L_HIP_TROCH_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_TROCH_BMC</vendorName>
+      <code>RES_L_HIP_TROCH_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_TROCH_BMD</vendorName>
+      <code>RES_L_HIP_TROCH_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_INTER_AREA</vendorName>
+      <code>RES_L_HIP_INTER_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_INTER_BMC</vendorName>
+      <code>RES_L_HIP_INTER_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_INTER_BMD</vendorName>
+      <code>RES_L_HIP_INTER_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NECK_AREA</vendorName>
+      <code>RES_L_HIP_NECK_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NECK_BMC</vendorName>
+      <code>RES_L_HIP_NECK_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NECK_BMD</vendorName>
+      <code>RES_L_HIP_NECK_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_WARDS_AREA</vendorName>
+      <code>RES_L_HIP_WARDS_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_WARDS_BMC</vendorName>
+      <code>RES_L_HIP_WARDS_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_WARDS_BMD</vendorName>
+      <code>RES_L_HIP_WARDS_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_HTOT_AREA</vendorName>
+      <code>RES_L_HIP_HTOT_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_HTOT_BMC</vendorName>
+      <code>RES_L_HIP_HTOT_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_HTOT_BMD</vendorName>
+      <code>RES_L_HIP_HTOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_ROI_TYPE</vendorName>
+      <code>RES_L_HIP_ROI_TYPE</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_ROI_WIDTH</vendorName>
+      <code>RES_L_HIP_ROI_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_ROI_HEIGHT</vendorName>
+      <code>RES_L_HIP_ROI_HEIGHT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_AXIS_LENGTH</vendorName>
+      <code>RES_L_HIP_AXIS_LENGTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_PHYSICIAN_COMMENT</vendorName>
+      <code>RES_L_HIP_PHYSICIAN_COMMENT</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_BMD</vendorName>
+      <code>RES_L_HIP_NN_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_CSA</vendorName>
+      <code>RES_L_HIP_NN_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_CSMI</vendorName>
+      <code>RES_L_HIP_NN_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_WIDTH</vendorName>
+      <code>RES_L_HIP_NN_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_ED</vendorName>
+      <code>RES_L_HIP_NN_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_ACT</vendorName>
+      <code>RES_L_HIP_NN_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_PCD</vendorName>
+      <code>RES_L_HIP_NN_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_CMP</vendorName>
+      <code>RES_L_HIP_NN_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_SECT_MOD</vendorName>
+      <code>RES_L_HIP_NN_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_NN_BR</vendorName>
+      <code>RES_L_HIP_NN_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_BMD</vendorName>
+      <code>RES_L_HIP_IT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_CSA</vendorName>
+      <code>RES_L_HIP_IT_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_CSMI</vendorName>
+      <code>RES_L_HIP_IT_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_WIDTH</vendorName>
+      <code>RES_L_HIP_IT_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_ED</vendorName>
+      <code>RES_L_HIP_IT_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_ACT</vendorName>
+      <code>RES_L_HIP_IT_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_PCD</vendorName>
+      <code>RES_L_HIP_IT_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_CMP</vendorName>
+      <code>RES_L_HIP_IT_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_SECT_MOD</vendorName>
+      <code>RES_L_HIP_IT_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_IT_BR</vendorName>
+      <code>RES_L_HIP_IT_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_BMD</vendorName>
+      <code>RES_L_HIP_FS_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_CSA</vendorName>
+      <code>RES_L_HIP_FS_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_CSMI</vendorName>
+      <code>RES_L_HIP_FS_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_WIDTH</vendorName>
+      <code>RES_L_HIP_FS_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_ED</vendorName>
+      <code>RES_L_HIP_FS_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_ACT</vendorName>
+      <code>RES_L_HIP_FS_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_PCD</vendorName>
+      <code>RES_L_HIP_FS_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_CMP</vendorName>
+      <code>RES_L_HIP_FS_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_SECT_MOD</vendorName>
+      <code>RES_L_HIP_FS_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_FS_BR</vendorName>
+      <code>RES_L_HIP_FS_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>L_HIP_SHAFT_NECK_ANGLE</vendorName>
+      <code>RES_L_HIP_SHAFT_NECK_ANGLE</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output-->
+    
+    <!-- HipSide input was NOT provided: R Hip -->
+    <!-- output>
+      <vendorName>R_HIP_TROCH_AREA</vendorName>
+      <code>RES_R_HIP_TROCH_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_TROCH_BMC</vendorName>
+      <code>RES_R_HIP_TROCH_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_TROCH_BMD</vendorName>
+      <code>RES_R_HIP_TROCH_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_INTER_AREA</vendorName>
+      <code>RES_R_HIP_INTER_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_INTER_BMC</vendorName>
+      <code>RES_R_HIP_INTER_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_INTER_BMD</vendorName>
+      <code>RES_R_HIP_INTER_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NECK_AREA</vendorName>
+      <code>RES_R_HIP_NECK_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NECK_BMC</vendorName>
+      <code>RES_R_HIP_NECK_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NECK_BMD</vendorName>
+      <code>RES_R_HIP_NECK_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_WARDS_AREA</vendorName>
+      <code>RES_R_HIP_WARDS_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_WARDS_BMC</vendorName>
+      <code>RES_R_HIP_WARDS_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_WARDS_BMD</vendorName>
+      <code>RES_R_HIP_WARDS_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_HTOT_AREA</vendorName>
+      <code>RES_R_HIP_HTOT_AREA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_HTOT_BMC</vendorName>
+      <code>RES_R_HIP_HTOT_BMC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_HTOT_BMD</vendorName>
+      <code>RES_R_HIP_HTOT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_ROI_TYPE</vendorName>
+      <code>RES_R_HIP_ROI_TYPE</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_ROI_WIDTH</vendorName>
+      <code>RES_R_HIP_ROI_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_ROI_HEIGHT</vendorName>
+      <code>RES_R_HIP_ROI_HEIGHT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_AXIS_LENGTH</vendorName>
+      <code>RES_R_HIP_AXIS_LENGTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_PHYSICIAN_COMMENT</vendorName>
+      <code>RES_R_HIP_PHYSICIAN_COMMENT</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_BMD</vendorName>
+      <code>RES_R_HIP_NN_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_CSA</vendorName>
+      <code>RES_R_HIP_NN_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_CSMI</vendorName>
+      <code>RES_R_HIP_NN_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_WIDTH</vendorName>
+      <code>RES_R_HIP_NN_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_ED</vendorName>
+      <code>RES_R_HIP_NN_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_ACT</vendorName>
+      <code>RES_R_HIP_NN_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_PCD</vendorName>
+      <code>RES_R_HIP_NN_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_CMP</vendorName>
+      <code>RES_R_HIP_NN_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_SECT_MOD</vendorName>
+      <code>RES_R_HIP_NN_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_NN_BR</vendorName>
+      <code>RES_R_HIP_NN_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_BMD</vendorName>
+      <code>RES_R_HIP_IT_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_CSA</vendorName>
+      <code>RES_R_HIP_IT_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_CSMI</vendorName>
+      <code>RES_R_HIP_IT_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_WIDTH</vendorName>
+      <code>RES_R_HIP_IT_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_ED</vendorName>
+      <code>RES_R_HIP_IT_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_ACT</vendorName>
+      <code>RES_R_HIP_IT_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_PCD</vendorName>
+      <code>RES_R_HIP_IT_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_CMP</vendorName>
+      <code>RES_R_HIP_IT_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_SECT_MOD</vendorName>
+      <code>RES_R_HIP_IT_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_IT_BR</vendorName>
+      <code>RES_R_HIP_IT_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_BMD</vendorName>
+      <code>RES_R_HIP_FS_BMD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_CSA</vendorName>
+      <code>RES_R_HIP_FS_CSA</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_CSMI</vendorName>
+      <code>RES_R_HIP_FS_CSMI</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_WIDTH</vendorName>
+      <code>RES_R_HIP_FS_WIDTH</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_ED</vendorName>
+      <code>RES_R_HIP_FS_ED</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_ACT</vendorName>
+      <code>RES_R_HIP_FS_ACT</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_PCD</vendorName>
+      <code>RES_R_HIP_FS_PCD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_CMP</vendorName>
+      <code>RES_R_HIP_FS_CMP</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_SECT_MOD</vendorName>
+      <code>RES_R_HIP_FS_SECT_MOD</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_FS_BR</vendorName>
+      <code>RES_R_HIP_FS_BR</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>R_HIP_SHAFT_NECK_ANGLE</vendorName>
+      <code>RES_R_HIP_SHAFT_NECK_ANGLE</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output-->
+    
+             
+    <!-- Single Energy Lateral -->
+    <!-- output>
       <vendorName>SEL_L1_AREA</vendorName>
       <code>RES_SEL_L1_AREA</code>
       <dataType>DECIMAL</dataType>
@@ -2887,10 +3593,13 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
-    </output>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output-->
 
     <!-- Dual Energy Lateral -->
-    <output>
+    <!-- output>
       <vendorName>DEL_L1_AREA</vendorName>
       <code>RES_DEL_L1_AREA</code>
       <dataType>DECIMAL</dataType>
@@ -3351,7 +4060,10 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
-    </output>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>
+    </output-->
              
   </instrumentParameters>
 </instrumentType>

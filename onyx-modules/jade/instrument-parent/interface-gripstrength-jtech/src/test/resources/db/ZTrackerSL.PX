@@ -1,0 +1,97 @@
+[7/26/2011, 11:20:27 AM] <ZPatient:1:Philippe> Patient Saved
+[7/26/2011, 11:20:38 AM] <ZPatient:1:Philippe> Patient Deleted
+[7/26/2011, 11:20:47 AM] <ZPatient:1:Philippe> Patient Saved
+[7/26/2011, 11:21:12 AM] <ZIncident:1:gdsdh> Incident Saved
+[7/26/2011, 11:21:56 AM] <ZExam:1:Potatoe> Exam Saved
+[7/26/2011, 11:22:07 AM] <ZIncident:1:CLSA> Incident Saved
+[7/26/2011, 11:24:20 AM] <ZPatient:2:CLSA> Patient Saved
+[7/26/2011, 11:24:20 AM] <ZIncident:2:Name> Incident Saved
+[7/26/2011, 11:24:20 AM] <ZExam:2:Name> Exam Saved
+[7/26/2011, 11:42:05 AM] <ZGripTest:2:1:Max Grip>
+   Row Created
+
+[7/26/2011, 11:42:05 AM] <ZGripTestData:2:1:Right:2>
+   Row Created
+
+[7/26/2011, 11:42:05 AM] <ZGripTestData:2:1:Left:2>
+   Row Created
+
+[7/26/2011, 11:46:34 AM] <ZSustainedTest:2:1:Sustained Grip>
+   Row Created
+
+[7/26/2011, 11:46:34 AM] <ZSustainedTestData:2:1:Right>
+   Row Created
+
+[7/26/2011, 11:46:34 AM] <ZSustainedTestData:2:1:Left>
+   Row Created
+
+[7/26/2011, 11:56:19 AM] <ZPatient:3:j> Patient Saved
+[7/26/2011, 11:56:19 AM] <ZIncident:3:gjhjg> Incident Saved
+[7/26/2011, 11:56:19 AM] <ZExam:3:jgjg> Exam Saved
+[7/26/2011, 11:57:02 AM] <ZGripTest:3:1:Max Grip>
+   Row Created
+
+[7/26/2011, 11:57:02 AM] <ZGripTestData:3:1:Right:2>
+   Row Created
+
+[7/26/2011, 11:57:02 AM] <ZGripTestData:3:1:Left:2>
+   Row Created
+
+[7/26/2011, 11:57:40 AM] <ZSustainedTest:3:1:Sustained Grip>
+   Row Created
+
+[7/26/2011, 11:57:40 AM] <ZSustainedTestData:3:1:Right>
+   Row Created
+
+[7/26/2011, 11:57:40 AM] <ZSustainedTestData:3:1:Left>
+   Row Created
+
+[7/26/2011, 11:58:22 AM] <ZGripTestData:3:1:Left:2>
+   <Rep1> '56563' --> '148040'
+   <Rep2> '56351' --> '145600'
+   <Rep3> '61763' --> '142204'
+   <Average> '58226' --> '145281'
+   <Maximum> '61763' --> '148040'
+   <CV> '4' --> '1'
+
+[7/26/2011, 11:58:22 AM] <ZGripTestData:3:1:Right:2>
+   <Rep1> '49559' --> '1273'
+   <Rep2> '69616' --> ''
+   <Rep3> '23665' --> ''
+   <Rep3Exclude> 'False' --> ''
+   <Average> '47613' --> '1273'
+   <Maximum> '69616' --> '1273'
+   <CV> '39' --> ''
+
+[7/26/2011, 12:10:25 PM] <ZPatient:4:h d gfg> Patient Saved
+[7/26/2011, 12:10:25 PM] <ZIncident:4:dgf> Incident Saved
+[7/26/2011, 12:10:25 PM] <ZExam:4:df> Exam Saved
+[7/28/2011, 4:01:30 PM] <ZGripTestData:3:1:Left:2>
+   <Rep3Exclude> 'False' --> 'True'
+   <Average> '145281' --> '146820'
+   <CV> '1' --> '0'
+
+[7/29/2011, 11:30:14 AM] <ZPatient:1:Philippe> Patient Deleted
+[7/29/2011, 11:30:14 AM] <ZIncident:1:CLSA> Incident Deleted
+[7/29/2011, 11:30:14 AM] <ZExam:1:Potatoe> Exam Deleted
+[7/29/2011, 11:30:18 AM] <ZPatient:2:CLSA> Patient Deleted
+[7/29/2011, 11:30:18 AM] <ZIncident:2:Name> Incident Deleted
+[7/29/2011, 11:30:18 AM] <ZExam:2:Name> Exam Deleted
+[7/29/2011, 11:30:21 AM] <ZPatient:4:h d gfg> Patient Deleted
+[7/29/2011, 11:30:21 AM] <ZIncident:4:dgf> Incident Deleted
+[7/29/2011, 11:30:21 AM] <ZExam:4:df> Exam Deleted
+[7/29/2011, 11:30:23 AM] <ZPatient:3:j> Patient Deleted
+[7/29/2011, 11:30:23 AM] <ZIncident:3:gjhjg> Incident Deleted
+[7/29/2011, 11:30:24 AM] <ZExam:3:jgjg> Exam Deleted
+[7/29/2011, 11:30:30 AM] <ZPatient:1:CLSA> Patient Saved
+[7/29/2011, 11:30:36 AM] <ZIncident:1:CLSA> Incident Saved
+[7/29/2011, 11:30:41 AM] <ZExam:1:CLSA> Exam Saved
+[7/29/2011, 11:36:42 AM] <ZGripTest:1:1:Max Grip>
+   Row Created
+
+[7/29/2011, 11:36:42 AM] <ZGripTestData:1:1:Right:2>
+   Row Created
+
+[7/29/2011, 11:36:42 AM] <ZGripTestData:1:1:Left:2>
+   Row Created
+
