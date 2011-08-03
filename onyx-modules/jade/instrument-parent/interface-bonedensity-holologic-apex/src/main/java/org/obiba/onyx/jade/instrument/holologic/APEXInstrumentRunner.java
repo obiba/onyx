@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.instrument.holologic;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,7 +93,8 @@ public class APEXInstrumentRunner implements InstrumentRunner {
    * @throws Exception
    */
   public void initParticipantData() {
-    participantID = "ONYX";// "RANDOM-" + new Random().nextInt(1000000);
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    participantID = "ONYX-" + formatter.format(new Date());
     final Double weight = instrumentExecutionService.getInputParameterValue("Weight").getValue();
     final Double height = instrumentExecutionService.getInputParameterValue("Height").getValue();
 
@@ -165,8 +167,29 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
-    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT));
-    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT));
+    if(instrumentExecutionService.hasInputParameter("HipSide")) {
+      String hipSide = instrumentExecutionService.getInputParameterValue("HipSide").getValue();
+      if(hipSide != null) {
+        if(hipSide.toUpperCase().startsWith("L")) {
+          extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT) {
+            @Override
+            public String getName() {
+              return "HIP";
+            }
+          });
+        } else if(hipSide.toUpperCase().startsWith("R")) {
+          extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT) {
+            @Override
+            public String getName() {
+              return "HIP";
+            }
+          });
+        }
+      }
+    } else {
+      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT));
+      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT));
+    }
     extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantID));
     extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.SINGLE));
     extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.DUAL));

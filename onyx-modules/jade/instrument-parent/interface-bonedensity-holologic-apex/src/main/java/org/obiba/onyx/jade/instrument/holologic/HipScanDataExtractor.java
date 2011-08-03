@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -45,6 +46,7 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
 
   @Override
   protected void extractDataImpl(Map<String, Data> data) {
+    data.put(getResultPrefix() + "_SIDE", DataBuilder.buildText(side.toString()));
     extractScanData("Hip", data, new HipResultSetExtractor(data));
     extractScanData("HipHSA", data, new HipHSAResultSetExtractor(data));
   }
