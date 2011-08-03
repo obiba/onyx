@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -67,6 +66,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     try {
       PrintWriter writer = new PrintWriter(inFile);
 
+      String patientID = "ONYX";// "RANDOM-" + new Random().nextInt(1000000);
+
       writer.print("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
       writer.print("<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
       writer.print("  <Command Type=\"PerformTest\">");
@@ -74,7 +75,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       writer.print("    <Parameter Name=\"TestType\">FVC</Parameter>");
       writer.print("  </Command>");
       writer.print("  <Patients>");
-      writer.print("    <Patient ID=\"RANDOM-" + new Random().nextInt(1000000) + "\">");
+      writer.print("    <Patient ID=\"" + patientID + "\">");
       writer.print("      <LastName/>");
       writer.print("      <FirstName/>");
       writer.print("      <IsBioCal>false</IsBioCal>");
@@ -82,7 +83,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
       if(instrumentExecutionService.hasInputParameter("Gender")) {
         String gender = instrumentExecutionService.getInputParameterValue("Gender").getValue();
-        if(gender.startsWith("F")) {
+        if(gender.toUpperCase().startsWith("F")) {
           gender = "Female";
         } else {
           gender = "Male";
