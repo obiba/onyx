@@ -283,6 +283,14 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
   }
 
   public String getDbPath() {
+    if(dbPath == null || dbPath.trim().length() == 0) {
+      String osName = System.getProperty("os.name");
+      if(osName.equalsIgnoreCase("Windows 7") || osName.equalsIgnoreCase("Windows Vista")) {
+        dbPath = "C:\\ProgramData\\ndd\\Easy on-PC\\EasyWarePro.mdb";
+      } else {
+        dbPath = "C:\\Documents and Settings\\All Users\\Application Data\\ndd\\Easy on-PC\\EasyWarePro.mdb";
+      }
+    }
     return dbPath;
   }
 
