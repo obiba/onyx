@@ -13,11 +13,11 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -29,11 +29,10 @@ import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
-public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean {
+public class APEXInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(APEXInstrumentRunner.class);
 
@@ -50,12 +49,6 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   // participant data
   private String participantID;
-
-  private String participantGender;
-
-  private Double participantWeight;
-
-  private Double participantHeight;
 
   private List<String> participantFiles = new ArrayList<String>();
 
@@ -94,35 +87,48 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     this.scanDataDir = new File(patScanDbPath).getParentFile();
   }
 
-  @Override
-  public void afterPropertiesSet() throws Exception {
-    participantID = "RANDOM-" + new Random().nextInt(1000000);
-    participantGender = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_GENDER").getValue();
-    participantWeight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_WEIGHT").getValue();
-    participantHeight = instrumentExecutionService.getInputParameterValue("INPUT_PARTICIPANT_HEIGHT").getValue();
-    // TODO ETHNICITY BIRTHDATE
-  }
-
   /**
    * Retrieve participant data from the database and write them in the patient scan database
    * @throws Exception
    */
   public void initParticipantData() {
-    patScanDb.update("insert into PATIENT ( PATIENT_KEY, IDENTIFIER1, SEX, WEIGHT, HEIGHT ) values( ?, ?, ?, ?, ? )", new PreparedStatementSetter() {
+    participantID = "ONYX";// "RANDOM-" + new Random().nextInt(1000000);
+    final Double weight = instrumentExecutionService.getInputParameterValue("Weight").getValue();
+    final Double height = instrumentExecutionService.getInputParameterValue("Height").getValue();
+
+    patScanDb.update("insert into PATIENT ( PATIENT_KEY, IDENTIFIER1, WEIGHT, HEIGHT ) values( ?, ?, ?, ? )", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
         ps.setString(2, participantID);
-
-        if(participantGender.equals("MALE")) {
-          ps.setString(3, "M");
-        } else {
-          ps.setString(3, "F");
-        }
-
-        ps.setDouble(4, participantWeight);
-        ps.setDouble(5, participantHeight);
+        ps.setDouble(3, weight);
+        ps.setDouble(4, height);
       }
     });
+
+    if(instrumentExecutionService.hasInputParameter("Gender")) {
+      final String gender = instrumentExecutionService.getInputParameterValue("Gender").getValue();
+      patScanDb.update("update PATIENT set SEX = ? where PATIENT_KEY = ?", new PreparedStatementSetter() {
+        public void setValues(PreparedStatement ps) throws SQLException {
+          if(gender.toUpperCase().startsWith("M")) {
+            ps.setString(1, "M");
+          } else {
+            ps.setString(1, "F");
+          }
+          ps.setString(2, participantID);
+        }
+      });
+    }
+
+    if(instrumentExecutionService.hasInputParameter("DateOfBirth")) {
+      Date dob = instrumentExecutionService.getInputParameterValue("DateOfBirth").getValue();
+      final java.sql.Date sqlDob = new java.sql.Date(dob.getTime());
+      patScanDb.update("update PATIENT set BIRTHDATE = ? where PATIENT_KEY = ?", new PreparedStatementSetter() {
+        public void setValues(PreparedStatement ps) throws SQLException {
+          ps.setDate(1, sqlDob);
+          ps.setString(2, participantID);
+        }
+      });
+    }
   }
 
   /**
