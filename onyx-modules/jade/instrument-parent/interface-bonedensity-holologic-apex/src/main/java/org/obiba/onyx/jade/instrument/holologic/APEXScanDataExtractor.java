@@ -121,15 +121,15 @@ public abstract class APEXScanDataExtractor {
 
         if(pFileName != null) {
           rFileName = pFileName.replace(".P", ".R");
-          fileNames.add(pFileName);
-          fileNames.add(rFileName);
+          getFileNames().add(pFileName);
+          getFileNames().add(rFileName);
         } else {
           rFileName = null;
         }
       }
 
-      log.info("Retrieving data from scan: " + scanID);
       if(scanID != null && pFileName != null) {
+        log.info("Retrieving data from scan: " + scanID);
         data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
         data.put(getResultPrefix() + "_PFILE_NAME", DataBuilder.buildText(pFileName));
         data.put(getResultPrefix() + "_RFILE_NAME", DataBuilder.buildText(rFileName));
