@@ -27,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -138,6 +139,22 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
   @Override
   public void run() {
     if(!shutdown) {
+
+      new Thread(new Runnable() {
+
+        @Override
+        public void run() {
+          try {
+            while(!shutdown) {
+              if(rlComm != null) {
+                rlComm.read();
+              }
+              Thread.sleep(200);
+            }
+          } catch(Exception e) {
+          }
+        }
+      }).start();
 
       log.info("Starting Rice Lake GUI");
       buildGUI();
@@ -292,7 +309,9 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
 
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+    panel.add(new JLabel(resourceBundle.getString("Weight") + ":"));
     panel.add(weightTxt);
+    panel.add(new JLabel(resourceBundle.getString("kg")));
     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     return panel;
@@ -334,21 +353,6 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
     return (panel);
   }
 
-  class ABIFileLabel extends JLabel {
-
-    private static final long serialVersionUID = 1L;
-
-    public ABIFileLabel() {
-      super();
-    }
-
-    @Override
-    public String getText() {
-      return resourceBundle.getString("No_file_selected");
-    }
-
-  }
-
   class MeasureCountLabel extends JLabel {
 
     private static final long serialVersionUID = 1L;
@@ -369,7 +373,6 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
 
     Map<String, Data> output = new HashMap<String, Data>();
 
-    // TODO
     output.put("Weight", DataBuilder.buildDecimal(weightTxt.getText()));
     instrumentExecutionService.addOutputParameterValues(output);
 
@@ -514,18 +517,27 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
   }
 
   private void clearData() {
-    weightTxt.setText("0.0");
+    weightTxt.setText("");
+    if(rlComm != null) {
+      rlComm.reset();
+    }
 
     saveButton.setEnabled(false);
 
     measureCountLabel.repaint();
   }
 
-  class RiceLakeWeightComm implements SerialPortEventListener {
+  private class RiceLakeWeightComm implements SerialPortEventListener {
+
+    private final byte[] ZERO_COMMAND = new byte[] { 'z' };
+
+    private final byte[] READ_COMMAND = new byte[] { 'p' };
 
     private final SerialPort serialPort;
 
     private final BufferedReader bufferedReader;
+
+    private final OutputStream os;
 
     public RiceLakeWeightComm(SerialPort serialPort, int baudRate) throws UnsupportedCommOperationException, TooManyListenersException, IOException {
       this.serialPort = serialPort;
@@ -537,6 +549,23 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       serialPort.notifyOnDSR(true);
 
       this.bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+      this.os = serialPort.getOutputStream();
+    }
+
+    public void reset() {
+      try {
+        send(ZERO_COMMAND);
+      } catch(IOException e) {
+        log.info("Failed sending reset command to instrument.");
+      }
+    }
+
+    public void read() {
+      try {
+        send(READ_COMMAND);
+      } catch(IOException e) {
+        log.info("Failed sending read command to instrument.");
+      }
     }
 
     public void close() {
@@ -547,13 +576,18 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       return serialPort.isCTS();
     }
 
+    public void send(byte[] command) throws IOException {
+      // log.debug("Sending {}", command);
+      os.write(command);
+    }
+
     @Override
     public void serialEvent(SerialPortEvent event) {
       switch(event.getEventType()) {
 
       // Clear to send
       case SerialPortEvent.CTS:
-
+        log.debug("CTS");
         // If serial is not CTS, it means that the cable was disconnected.
         // Attempt to reestablish the connection.
         if(shutdown == false) {
@@ -561,18 +595,16 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
           // application.
           reestablishConnection();
         }
-
         break;
 
       // Data is available at the serial port, so read it...
       case SerialPortEvent.DATA_AVAILABLE:
-
         try {
           if(bufferedReader.ready()) {
 
             // Parse and sets the data in the GUI.
             String response = bufferedReader.readLine().trim();
-            log.info("data={}", response);
+            // log.info("data={}", response);
             parseResponse(response);
 
             // Enable save button, so data can be saved.
@@ -582,7 +614,13 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
           JOptionPane.showMessageDialog(appWindow, resourceBundle.getString("Err.Result_communication"), resourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
         }
         break;
+
+      // Data set ready
+      case SerialPortEvent.DSR:
+        log.debug("DSR");
+        break;
       }
+
     }
 
     private void parseResponse(String response) {
@@ -595,7 +633,7 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
     }
   }
 
-  class ResultTextField extends JTextField {
+  private class ResultTextField extends JTextField {
 
     private static final long serialVersionUID = 1L;
 
@@ -604,8 +642,8 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       this.setEditable(false);
       this.setSelectionColor(Color.WHITE);
       this.setBackground(Color.WHITE);
-      this.setHorizontalAlignment(JTextField.RIGHT);
-      this.setPreferredSize(new Dimension(30, 0));
+      // this.setHorizontalAlignment(JTextField.RIGHT);
+      // this.setPreferredSize(new Dimension(30, 0));
     }
   }
 
