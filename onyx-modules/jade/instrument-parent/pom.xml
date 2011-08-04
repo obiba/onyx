@@ -29,6 +29,7 @@
     <module>interface-cognitivetest-noddletest</module>
     <module>interface-bloodpressure-vsm-bptru</module>
     <module>interface-gripstrength-jtech</module>
+    <module>interface-weight-ricelake-140-10</module>
     <module>interface-audiogram-tremetrics-ra300</module>
   </modules>
 

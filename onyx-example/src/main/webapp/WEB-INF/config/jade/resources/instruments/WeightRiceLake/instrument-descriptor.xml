@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>WeightRiceLake</name>
+  
+  <instrumentParameters>
+
+    <output>
+      <vendorName>Weight</vendorName>
+      <code>RES_WEIGHT</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <manualCaptureAllowed>true</manualCaptureAllowed>      
+    </output>
+    
+  </instrumentParameters>
+</instrumentType>
