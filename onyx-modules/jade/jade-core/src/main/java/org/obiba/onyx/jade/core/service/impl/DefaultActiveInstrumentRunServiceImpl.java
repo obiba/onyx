@@ -457,19 +457,23 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
    * @return <code>true</code> if the computed output parameter is ready to be computed
    */
   private boolean isReadyToCompute(InstrumentOutputParameter computedParam) {
-    ComputingDataSource computingDataSource = (ComputingDataSource) computedParam.getDataSource();
+    IDataSource ds = computedParam.getDataSource();
 
-    String instrumentTypeName = getInstrumentRun().getInstrumentType();
-    for(IDataSource dataSource : computingDataSource.getDataSources()) {
-      if(dataSource instanceof InstrumentParameterDataSource) {
-        InstrumentParameterDataSource instrumentParameterDataSource = (InstrumentParameterDataSource) dataSource;
-        // ONYX-584 we are only interested in dependencies between COMPUTED data sources
-        // from the current instrument type.
-        // COMPUTED outputs should not be linked by variable data sources.
-        if(instrumentTypeName.equals(instrumentParameterDataSource.getInstrumentType())) {
-          InstrumentParameter parameter = instrumentParameterDataSource.getInstrumentParameter();
-          if(parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED) && dataSource.getData(getParticipant()) == null) {
-            return false;
+    if(ds instanceof ComputingDataSource) {
+      ComputingDataSource computingDataSource = (ComputingDataSource) ds;
+
+      String instrumentTypeName = getInstrumentRun().getInstrumentType();
+      for(IDataSource dataSource : computingDataSource.getDataSources()) {
+        if(dataSource instanceof InstrumentParameterDataSource) {
+          InstrumentParameterDataSource instrumentParameterDataSource = (InstrumentParameterDataSource) dataSource;
+          // ONYX-584 we are only interested in dependencies between COMPUTED data sources
+          // from the current instrument type.
+          // COMPUTED outputs should not be linked by variable data sources.
+          if(instrumentTypeName.equals(instrumentParameterDataSource.getInstrumentType())) {
+            InstrumentParameter parameter = instrumentParameterDataSource.getInstrumentParameter();
+            if(parameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED) && dataSource.getData(getParticipant()) == null) {
+              return false;
+            }
           }
         }
       }
