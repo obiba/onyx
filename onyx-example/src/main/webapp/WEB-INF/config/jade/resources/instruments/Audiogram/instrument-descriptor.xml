@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>Audiogram</name>
+
+  <instrumentParameters>
+
+    <output>
+      <code>RES_TEST_ID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>TEST_ID</vendorName>
+    </output>
+
+    <output>
+      <code>RES_TEST_DATETIME</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>TEST_DATETIME</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LAST_CALIBRATION_DATE</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>CALIBRATION_DATE</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_1KT</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_1KT</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_500</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_500</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_1K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_1K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_2K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_2K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_3K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_3K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_4K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_4K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_RIGHT_6K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>R_6K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_1KT</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_1KT</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_500</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_500</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_1K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_1K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_2K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_2K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_3K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_3K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_4K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_4K</vendorName>
+    </output>
+
+    <output>
+      <code>RES_LEFT_6K</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>dB</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <vendorName>L_6K</vendorName>
+    </output>
+
+
+  </instrumentParameters>
+</instrumentType>

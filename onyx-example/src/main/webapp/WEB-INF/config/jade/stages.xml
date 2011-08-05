@@ -207,6 +207,21 @@
       </conditions>
     </stageDependencyCondition>
   </stage>
+  
+  <stage>
+    <name>WeightRiceLake</name>
+    <module>jade</module>
+    <stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+        <string>CIPreliminaryQuestionnaire</string>
+        <string>Impedance310</string>
+      </stages>
+      <script>$('CIPreliminaryQuestionnaire:WT_CI').not()
+      	.and($('Impedance310:CALC_AVG_WEIGHT').isNull())
+      </script>
+    </stageDependencyCondition>
+  </stage>
 
   <stage>
     <name>Spirometry</name>
@@ -366,4 +381,18 @@
       </conditions>
     </stageDependencyCondition>
   </stage>
+  
+  <stage>
+    <name>Audiogram</name>
+    <module>jade</module>
+    <stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+      </stages>
+      <script>
+        $('Consent:accepted')
+      </script>
+    </stageDependencyCondition>
+  </stage>
+
 </stages>

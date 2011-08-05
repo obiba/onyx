@@ -1,0 +1,20 @@
+<!--
+  Copyright (c) 2011 OBiBa. All rights reserved.
+   
+  This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0.
+   
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tremetrics.ra300.Ra300InstrumentRunner">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
+    <property name="comPort" value="${org.obiba.onyx.tremetrics.ra300.comPort}" /> 
+   	<property name="baudRate" value="${org.obiba.onyx.tremetrics.ra300.baudRate}" />  
+  </bean>
+
+</beans>

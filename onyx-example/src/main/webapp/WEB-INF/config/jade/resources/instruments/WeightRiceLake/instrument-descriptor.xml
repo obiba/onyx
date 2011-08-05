@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Copyright (c) 2011 OBiBa. All rights reserved.
+   
+  This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0.
+   
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<instrumentType>
+
+  <name>WeightRiceLake</name>
+  
+  <instrumentParameters>
+
+    <output>
+      <vendorName>Weight</vendorName>
+      <code>RES_WEIGHT</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <manualCaptureAllowed>true</manualCaptureAllowed>      
+    </output>
+    
+  </instrumentParameters>
+</instrumentType>
