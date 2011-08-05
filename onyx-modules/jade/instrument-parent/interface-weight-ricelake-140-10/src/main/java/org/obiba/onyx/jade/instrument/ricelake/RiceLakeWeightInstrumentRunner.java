@@ -113,7 +113,7 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
     weightTxt = new ResultTextField();
 
     // Initialize interface components size
-    appWindowWidth = 300;
+    appWindowWidth = 350;
     appWindowHeight = 175;
 
     localSettings = new Properties();
@@ -126,10 +126,6 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       refreshSerialPortList();
       log.info("Setup serial port");
       setupSerialPort();
-      // If serial port is not available display error message
-      if(rlComm == null) {// || !rlComm.isReady()) {
-        reestablishConnection();
-      }
     } else {
       JOptionPane.showMessageDialog(null, resourceBundle.getString("Err.Application_lock"), resourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
       shutdown = true;
@@ -310,7 +306,9 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     panel.add(new JLabel(resourceBundle.getString("Weight") + ":"));
+    panel.add(Box.createRigidArea(new Dimension(10, 0)));
     panel.add(weightTxt);
+    panel.add(Box.createRigidArea(new Dimension(10, 0)));
     panel.add(new JLabel(resourceBundle.getString("kg")));
     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -326,13 +324,44 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
+    panel.add(Box.createHorizontalGlue());
+    panel.add(saveButton);
+
+    JButton resetButton = new JButton(resourceBundle.getString("Reset"));
+    resetButton.setMnemonic('R');
+    resetButton.setToolTipText(resourceBundle.getString("ToolTip.Reset_measurement"));
+    panel.add(Box.createRigidArea(new Dimension(10, 0)));
+    panel.add(resetButton);
+
     JButton cancelButton = new JButton(resourceBundle.getString("Cancel"));
     cancelButton.setMnemonic('A');
     cancelButton.setToolTipText(resourceBundle.getString("ToolTip.Cancel_measurement"));
-    panel.add(Box.createHorizontalGlue());
-    panel.add(saveButton);
     panel.add(Box.createRigidArea(new Dimension(10, 0)));
     panel.add(cancelButton);
+
+    JButton configureButton = new JButton(resourceBundle.getString("Configure"));
+    configureButton.setMnemonic('C');
+    configureButton.setToolTipText(resourceBundle.getString("ToolTip.Configure"));
+    panel.add(Box.createRigidArea(new Dimension(10, 0)));
+    panel.add(configureButton);
+
+    // Configure button listener
+    configureButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        configure();
+      }
+    });
+
+    // Reset button listener
+    resetButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        clearData();
+      }
+    });
 
     // Save button listener.
     saveButton.addActionListener(new ActionListener() {
@@ -437,53 +466,22 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
     }
   }
 
-  /**
-   * Reestablish a lost connection.
-   */
-  protected void reestablishConnection() {
+  private void configure() {
+    // List all serial port in a drop down list, so a new one can be
+    // selected.
+    refreshSerialPortList();
+    String selectedPort = (String) JOptionPane.showInputDialog(appWindow, resourceBundle.getString("Instruction.Choose_port"), resourceBundle.getString("Title.Settings"), JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getComPort());
 
-    String[] options = { resourceBundle.getString("OK"), resourceBundle.getString("Cancel"), resourceBundle.getString("Settings") };
+    if(selectedPort != null) {
+      setComPort(selectedPort);
 
-    // Loop until connection is reestablished.
-    int selectedOption;
-    while(rlComm == null || !rlComm.isReady()) {
-
-      selectedOption = JOptionPane.showOptionDialog(appWindow, resourceBundle.getString("Err.No_communication"), resourceBundle.getString("Title.Communication_problem"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, resourceBundle.getString("OK"));
-
-      // OK option selected.
-      if(selectedOption == 0) {
-
-        // Try to reestablish connection.
-        setupSerialPort();
-
-        // Cancel option selected.
-      } else if(selectedOption == 1) {
-
-        exitUI();
-        break;
-
-        // Configuration option selected.
-      } else if(selectedOption == 2) {
-
-        // List all serial port in a drop down list, so a new one can be
-        // selected.
-        refreshSerialPortList();
-        String selectedPort = (String) JOptionPane.showInputDialog(appWindow, resourceBundle.getString("Instruction.Choose_port"), resourceBundle.getString("Title.Settings"), JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getComPort());
-
-        if(selectedPort != null) {
-          setComPort(selectedPort);
-
-          try {
-            settingsHelper.saveSettings(localSettings);
-          } catch(CouldNotSaveSettingsException e) {
-            log.error("Local settings could not be persisted.", e);
-          }
-
-          setupSerialPort();
-        } else {
-          exitUI();
-        }
+      try {
+        settingsHelper.saveSettings(localSettings);
+      } catch(CouldNotSaveSettingsException e) {
+        log.error("Local settings could not be persisted.", e);
       }
+
+      setupSerialPort();
     }
   }
 
@@ -572,10 +570,6 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       this.serialPort.close();
     }
 
-    public boolean isReady() {
-      return serialPort.isCTS();
-    }
-
     public void send(byte[] command) throws IOException {
       // log.debug("Sending {}", command);
       os.write(command);
@@ -588,13 +582,6 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       // Clear to send
       case SerialPortEvent.CTS:
         log.debug("CTS");
-        // If serial is not CTS, it means that the cable was disconnected.
-        // Attempt to reestablish the connection.
-        if(shutdown == false) {
-          // Only try to reestablish if we're not shutting down the
-          // application.
-          reestablishConnection();
-        }
         break;
 
       // Data is available at the serial port, so read it...
@@ -608,7 +595,7 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
             parseResponse(response);
 
             // Enable save button, so data can be saved.
-            saveButton.setEnabled(true);
+            saveButton.setEnabled(!weightTxt.getText().equals("0.0"));
           }
         } catch(IOException wErrorReadingDataOnSerialPort) {
           JOptionPane.showMessageDialog(appWindow, resourceBundle.getString("Err.Result_communication"), resourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
@@ -642,7 +629,7 @@ public class RiceLakeWeightInstrumentRunner implements InstrumentRunner, Initial
       this.setEditable(false);
       this.setSelectionColor(Color.WHITE);
       this.setBackground(Color.WHITE);
-      // this.setHorizontalAlignment(JTextField.RIGHT);
+      this.setHorizontalAlignment(JTextField.RIGHT);
       // this.setPreferredSize(new Dimension(30, 0));
     }
   }
