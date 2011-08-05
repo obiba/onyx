@@ -12,6 +12,8 @@
 
   <name>SpirometryNDD</name>
   
+  <allowPartial>true</allowPartial>
+  
   <expectedMeasureCount class="fixedDataSource">
     <data type="INTEGER">3</data>
   </expectedMeasureCount>
