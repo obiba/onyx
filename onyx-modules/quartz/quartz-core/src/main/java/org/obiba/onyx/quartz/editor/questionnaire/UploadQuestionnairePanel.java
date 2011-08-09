@@ -102,7 +102,6 @@ public abstract class UploadQuestionnairePanel extends Panel {
           return;
         }
         try {
-
           ZipInputStream zis = new ZipInputStream(zip.getInputStream());
           ZipEntry entry = null;
           Questionnaire questionnaire = null;
@@ -110,6 +109,10 @@ public abstract class UploadQuestionnairePanel extends Panel {
           while((entry = zis.getNextEntry()) != null) {
             if(!entry.isDirectory()) {
               String name = entry.getName();
+              // ONYX-1534 lookup for files anywhere in the file hierarchy
+              if(name.contains("/")) {
+                name = name.substring(name.lastIndexOf('/') + 1);
+              }
               int n;
               if("questionnaire.xml".equals(name)) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -138,7 +141,6 @@ public abstract class UploadQuestionnairePanel extends Panel {
 
               } else if(name.endsWith(".properties")) {
                 File tmp = new File(name);
-                tmp.deleteOnExit();
                 FileOutputStream out = new FileOutputStream(tmp);
                 while((n = zis.read(BUFFER, 0, BUFFER_SIZE)) > -1) {
                   out.write(BUFFER, 0, n);
@@ -149,8 +151,8 @@ public abstract class UploadQuestionnairePanel extends Panel {
                 } catch(Exception e) {
                 }
               }
-              zis.closeEntry();
             }
+            zis.closeEntry();
           }
 
           if(questionnaire == null) {
@@ -172,6 +174,11 @@ public abstract class UploadQuestionnairePanel extends Panel {
             questionnaireRegister.register(questionnaire);
           }
 
+          // cleanup
+          new File(clientFileName).delete();
+          for(File f : localeProperties) {
+            f.delete();
+          }
         } catch(IOException e) {
           log.error("IOException", e);
           error(getLocalizer().getString("Error.CannotReadFile", UploadQuestionnairePanel.this) + ": " + e.getMessage());
