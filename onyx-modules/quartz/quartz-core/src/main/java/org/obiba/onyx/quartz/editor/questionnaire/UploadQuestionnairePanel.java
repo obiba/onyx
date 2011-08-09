@@ -170,7 +170,8 @@ public abstract class UploadQuestionnairePanel extends Panel {
               }
               if(hasError()) return;
             }
-            questionnaireBundleManager.createBundle(questionnaire, localeProperties.toArray(new File[localeProperties.size()]));
+            QuestionnaireBundle bundle = questionnaireBundleManager.createBundle(questionnaire, localeProperties.toArray(new File[localeProperties.size()]));
+            questionnaireBundleManager.cacheBundle(bundle);
             questionnaireRegister.register(questionnaire);
           }
 
