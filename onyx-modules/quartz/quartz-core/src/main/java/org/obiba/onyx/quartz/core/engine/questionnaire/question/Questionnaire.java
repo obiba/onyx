@@ -137,7 +137,9 @@ public class Questionnaire implements IHasSection {
   public void removePage(Page page) {
     if(page != null) {
       getPages().remove(page);
-      page.getSection().removePage(page);
+      if(page.getSection() != null) {
+        page.getSection().removePage(page);
+      }
     }
   }
 
