@@ -528,8 +528,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       for(Map.Entry<String, Data> entry : values.entrySet()) {
         String paramName = entry.getKey();
         InstrumentParameter parameter = getInstrumentParameter(paramName);
-        if(captureMethod != null && parameter.isManualCaptureAllowed()) parameter.setCaptureMethod(captureMethod);
+        // ONYX-1562 building the run value by modifying the parameter original capture method
+        // is very ugly. Patch the problem by restoring the original one.
+        InstrumentParameterCaptureMethod originalCaptureMethod = parameter.getCaptureMethod();
+        if(captureMethod != null && parameter.isManualCaptureAllowed()) {
+          parameter.setCaptureMethod(captureMethod);
+        }
         updateParameterValue(parameter, entry.getValue());
+        parameter.setCaptureMethod(originalCaptureMethod);
       }
     } else {
       if(captureMethod != null) {
