@@ -144,7 +144,7 @@ public class MenuBuilder {
         BookmarkablePageLink<?> link = (BookmarkablePageLink<?>) component;
 
         Page currentPage = component.getPage();
-        log.info("linkPageClass = {}, pageClass = {}", link.getPageClass().getSimpleName(), currentPage.getClass().getSimpleName());
+        log.debug("linkPageClass = {}, pageClass = {}", link.getPageClass().getSimpleName(), currentPage.getClass().getSimpleName());
 
         if(link.getPageClass().equals(currentPage.getClass())) {
           String cssClass = SELECTED_CSS_CLASS;
