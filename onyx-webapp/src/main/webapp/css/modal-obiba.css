@@ -153,6 +153,7 @@ div.wicket-modal div.onyx .interview-log-panel-content {
   height: 31em;
   width: 55em;
   margin-left: 0.8333em;
+  overflow: auto;
 }
 
 div.wicket-modal div.onyx .interview-log-panel-content tbody {
