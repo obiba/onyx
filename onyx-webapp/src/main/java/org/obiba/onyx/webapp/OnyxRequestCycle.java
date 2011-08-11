@@ -13,6 +13,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
@@ -21,14 +22,19 @@ import org.obiba.magma.MagmaRuntimeException;
 import org.obiba.onyx.core.service.impl.NoSuchInterviewException;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.home.page.InternalErrorPage;
+import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.stage.page.InternalErrorStagePage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * implements an alternative way of managing the runtimeExceptions
  */
 class OnyxRequestCycle extends WebRequestCycle {
+
+  private final Logger log = LoggerFactory.getLogger(OnyxRequestCycle.class);
 
   /**
    * @param application
@@ -41,7 +47,12 @@ class OnyxRequestCycle extends WebRequestCycle {
 
   @Override
   public Page onRuntimeException(Page page, RuntimeException e) {
+    if(e instanceof PageExpiredException) {
+      return new LoginPage();
+    }
+
     Throwable t = e;
+    log.info("Request cycle runtime exception", e);
 
     while(true) {
       if(t instanceof NoSuchInterviewException) {
