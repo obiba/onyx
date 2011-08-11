@@ -70,7 +70,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 /**
  * Builds the {@code VariableValueSource} instances for a specific {@code Questionnaire}
@@ -101,6 +100,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     variableNameResolver = new QuestionnaireUniqueVariableNameResolver();
     buildQuestionnaireRun();
     buildQuestionnaireMetric();
+    buildQuestionnaireComment();
     buildQuestionnaireVariables();
     variableNameResolver = null;
     return vvsSetBuilder.build();
@@ -132,21 +132,17 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
           new QuestionVariableBuilder(question).build();
           for(Question subQuestion : question.getQuestions()) {
             // Build a variable for each child question, but without comment and using their parent's categories.
-            new QuestionVariableBuilder(subQuestion).withoutComment().withParentCategories().build();
+            new QuestionVariableBuilder(subQuestion).withParentCategories().build();
           }
         } else if(question.isArrayOfJoinedCategories()) {
           throw new UnsupportedOperationException("Variables for joined categories is not supported.");
         } else if(question.hasSubQuestions()) {
           new QuestionVariableBuilder(question).build();
           for(Question subQuestion : question.getQuestions()) {
-            new QuestionVariableBuilder(subQuestion).withCategories().withComment(subQuestion.isBoilerPlate() == false).build();
+            new QuestionVariableBuilder(subQuestion).withCategories().build();
           }
         } else {
           QuestionVariableBuilder questionVariableBuilder = new QuestionVariableBuilder(question).withCategories();
-          // If the question has a datasource, then it's never displayed. BoilerPlates don't allow comments.
-          if(question.hasDataSource() || question.isBoilerPlate()) {
-            questionVariableBuilder.withoutComment();
-          }
           questionVariableBuilder.build();
         }
       }
@@ -193,6 +189,18 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new VariableUnitBuilderVisitor(ImmutableMap.of("duration", "s"))));
     factory.setOccurrenceGroup("QuestionnaireMetric");
     vvsSetBuilder.addAll(factory.createSources());
+  }
+
+  protected void buildQuestionnaireComment() {
+    if(questionnaire.isCommentable()) {
+      BeanVariableValueSourceFactory<QuestionnaireComment> factory = new BeanVariableValueSourceFactory<QuestionnaireComment>("Participant", QuestionnaireComment.class);
+      factory.setPrefix("QuestionnaireComment");
+      factory.setProperties(ImmutableSet.of("variable", "comment"));
+      factory.setPropertyNameToVariableName(ImmutableMap.of("variable", "question"));
+      factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor()));
+      factory.setOccurrenceGroup("QuestionnaireComment");
+      vvsSetBuilder.addAll(factory.createSources());
+    }
   }
 
   /**
@@ -261,24 +269,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     private Question question;
 
-    private Set<String> properties = Sets.newHashSet("comment");
-
     private List<QuestionCategory> categories;
 
     public QuestionVariableBuilder(Question question) {
       this.question = question;
-    }
-
-    public QuestionVariableBuilder withoutComment() {
-      properties.remove("comment");
-      return this;
-    }
-
-    public QuestionVariableBuilder withComment(boolean with) {
-      if(with == false) {
-        withoutComment();
-      }
-      return this;
     }
 
     public QuestionVariableBuilder withParentCategories() {
@@ -297,19 +291,6 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       } else {
         buildParentPlaceholderVariable();
       }
-
-      if(!questionnaire.isCommentable()) {
-        withoutComment();
-      }
-
-      if(properties.size() > 0) {
-        BeanVariableValueSourceFactory<QuestionAnswer> factory = new BeanVariableValueSourceFactory<QuestionAnswer>("Participant", QuestionAnswer.class);
-        factory.setProperties(properties);
-        factory.setPrefix(variableName(question));
-        factory.setVariableBuilderVisitors(ImmutableSet.of(new QuestionCommentAttributesBuilderVisitor(question)));
-        vvsSetBuilder.addAll(factory.createSources());
-      }
-
     }
 
     private void buildParentPlaceholderVariable() {
@@ -446,21 +427,6 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         Attribute boilerplateAttribute = Attribute.Builder.newAttribute("boilerplate").withValue(BooleanType.get().trueValue()).build();
         builder1.addAttribute(boilerplateAttribute);
       }
-    }
-
-  }
-
-  private class QuestionCommentAttributesBuilderVisitor extends QuestionAttributesBuilderVisitor {
-
-    public QuestionCommentAttributesBuilderVisitor(Question question) {
-      super(question);
-    }
-
-    @Override
-    public void visit(Builder builder1) {
-      super.visit(builder1);
-      // Flag this variable as a comment for another variable.
-      builder1.addAttribute("commentFor", getQuestion().getName());
     }
 
   }
