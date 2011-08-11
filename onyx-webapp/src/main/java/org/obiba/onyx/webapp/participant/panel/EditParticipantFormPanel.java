@@ -13,6 +13,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.core.domain.participant.Participant;
 
 /**
  * 
@@ -21,10 +22,9 @@ public class EditParticipantFormPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("serial")
-  public EditParticipantFormPanel(String id, IModel participantModel, Page sourcePage) {
+  public EditParticipantFormPanel(String id, IModel<Participant> participantModel, Page sourcePage) {
     super(id);
-    Form editParticipantForm = new Form("editParticipantForm");
+    Form<Object> editParticipantForm = new Form<Object>("editParticipantForm");
     editParticipantForm.add(new EditParticipantPanel("editParticipantPanel", participantModel, sourcePage, editParticipantForm));
     add(editParticipantForm);
   }
