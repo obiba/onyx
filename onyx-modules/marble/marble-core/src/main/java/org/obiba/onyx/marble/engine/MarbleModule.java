@@ -37,6 +37,7 @@ import org.obiba.onyx.magma.PrebuiltVariableValueSourceFactory;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.engine.state.AbstractMarbleStageState;
 import org.obiba.onyx.marble.magma.ConsentBeanResolver;
 import org.obiba.onyx.marble.magma.ConsentVariableValueSourceFactory;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class MarbleModule implements Module, ValueTableFactoryBeanProvider, Appl
     exec.setStage(stage);
     exec.setInterview(interview);
 
-    AbstractStageState ready = (AbstractStageState) applicationContext.getBean("marbleReadyState");
+    AbstractMarbleStageState ready = (AbstractMarbleStageState) applicationContext.getBean("marbleReadyState");
     AbstractStageState inProgress = (AbstractStageState) applicationContext.getBean("marbleInProgressState");
     AbstractStageState completed = (AbstractStageState) applicationContext.getBean("marbleCompletedState");
     AbstractStageState notApplicable = (AbstractStageState) applicationContext.getBean("marbleNotApplicableState");
