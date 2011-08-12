@@ -42,6 +42,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean id="marbleCompletedState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState"
     scope="prototype">
   </bean>
+  
+  <bean id="marbleNotApplicableState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleNotApplicableState"
+    scope="prototype">
+  </bean>
 
   <bean id="consentService" class="org.obiba.onyx.marble.core.service.impl.ConsentServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
