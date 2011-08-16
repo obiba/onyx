@@ -74,7 +74,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
       // minimum is having the expected count of repeatable measures
       int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
       int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
-      boolean skipped = ((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement();
+      boolean skipped = ((InstrumentLaunchPanel) get(getContentId())).isSkipMeasurement();
       if(currentCount < expectedCount && !skipped) {
         return false;
       } else {
@@ -166,7 +166,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           }
         } else {
           int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
-          if(!((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement() || currentCount == 0) {
+          if(!((InstrumentLaunchPanel) get(getContentId())).isSkipMeasurement() || currentCount == 0) {
 
             // minimum is having the expected count of repeatable measures
             int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());

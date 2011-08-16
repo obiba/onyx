@@ -143,23 +143,26 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
           continue;
         }
 
-        InstrumentRunValue runValue = getInstrumentRunValue(outputParameter, false);
+        if(!instrumentType.isRepeatable(outputParameter)) {
+          InstrumentRunValue runValue = getInstrumentRunValue(outputParameter, false);
 
-        // Don't include parameters that haven't been assigned a value.
-        if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
-          continue;
-        }
-
-        for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
-          // Skip non-warning checks.
-          if(!check.getType().equals(IntegrityCheckType.WARNING)) {
+          // Don't include parameters that haven't been assigned a value.
+          if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
             continue;
           }
 
-          if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
-            paramsWithWarnings.add(outputParameter);
+          for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
+            // Skip non-warning checks.
+            if(!check.getType().equals(IntegrityCheckType.WARNING)) {
+              continue;
+            }
+
+            if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
+              paramsWithWarnings.add(outputParameter);
+            }
           }
         }
+        // TODO check repeated measures individually
       }
     }
 
@@ -295,7 +298,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
 
-    if(!getInstrumentType().isRepeatable()) {
+    if(!getInstrumentType().isRepeatable(parameter)) {
       InstrumentRunValue valueTemplate = new InstrumentRunValue();
       valueTemplate.setInstrumentParameter(parameter.getCode());
       valueTemplate.setInstrumentRun(instrumentRun);
@@ -524,24 +527,26 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   private void addOutputParameterValues(Map<String, Data> values, InstrumentParameterCaptureMethod captureMethod) {
     values = deleteNullOutputParameterValues(values); // Avoid saving parameters with null values.
-    if(!getInstrumentType().isRepeatable()) {
-      for(Map.Entry<String, Data> entry : values.entrySet()) {
-        String paramName = entry.getKey();
-        InstrumentParameter parameter = getInstrumentParameter(paramName);
-        // ONYX-1562 building the run value by modifying the parameter original capture method
-        // is very ugly. Patch the problem by restoring the original one.
-        InstrumentParameterCaptureMethod originalCaptureMethod = parameter.getCaptureMethod();
-        if(captureMethod != null && parameter.isManualCaptureAllowed()) {
-          parameter.setCaptureMethod(captureMethod);
-        }
-        updateParameterValue(parameter, entry.getValue());
-        parameter.setCaptureMethod(originalCaptureMethod);
-      }
-    } else {
-      if(captureMethod != null) {
-        addManuallyCapturedMeasure(values);
+
+    // filter out the repeatable parameters
+    // and persist non-repeatable data
+    InstrumentType type = getInstrumentType();
+    Map<String, Data> repeatableData = new HashMap<String, Data>();
+    for(Map.Entry<String, Data> entry : values.entrySet()) {
+      InstrumentParameter parameter = getInstrumentParameter(entry.getKey());
+      if(!type.isRepeatable(parameter)) {
+        updateParameterValue(parameter, entry.getValue(), captureMethod);
       } else {
-        addMeasure(values);
+        repeatableData.put(entry.getKey(), entry.getValue());
+      }
+    }
+
+    // persist repeatable data if any
+    if(repeatableData.size() > 0) {
+      if(captureMethod != null) {
+        addManuallyCapturedMeasure(repeatableData);
+      } else {
+        addMeasure(repeatableData);
       }
     }
   }
@@ -571,6 +576,17 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
 
     return parameter;
+  }
+
+  private void updateParameterValue(InstrumentParameter parameter, Data value, InstrumentParameterCaptureMethod captureMethod) {
+    // ONYX-1562 building the run value by modifying the parameter original capture method
+    // is very ugly. Patch the problem by restoring the original one.
+    InstrumentParameterCaptureMethod originalCaptureMethod = parameter.getCaptureMethod();
+    if(captureMethod != null && parameter.isManualCaptureAllowed()) {
+      parameter.setCaptureMethod(captureMethod);
+    }
+    updateParameterValue(parameter, value);
+    parameter.setCaptureMethod(originalCaptureMethod);
   }
 
   private void updateParameterValue(InstrumentParameter parameter, Data value) {

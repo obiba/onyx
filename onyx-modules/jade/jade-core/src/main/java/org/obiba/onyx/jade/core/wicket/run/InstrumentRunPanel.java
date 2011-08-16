@@ -200,7 +200,7 @@ public class InstrumentRunPanel extends Panel {
     for(Object parameter : parameters) {
       InstrumentParameter param = (InstrumentParameter) parameter;
 
-      if(!activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+      if(!activeInstrumentRunService.getInstrumentType().isRepeatable(param)) {
         InstrumentRunValue runValue = run.getInstrumentRunValue(param);
 
         // do not show COMPUTED values or missing values

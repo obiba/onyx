@@ -30,7 +30,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.time.Duration;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -43,10 +42,9 @@ import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
-import org.obiba.onyx.wicket.behavior.AbstractAjaxTimerBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -84,10 +82,6 @@ public abstract class MeasuresListPanel extends Panel {
 
   private Dialog invalidMeasureDetailsDialog;
 
-  private AbstractAjaxTimerBehavior autoRefreshBehavior;
-
-  private Duration autoRefreshInterval = Duration.seconds(10);
-
   @SuppressWarnings("serial")
   public MeasuresListPanel(String id) {
     super(id);
@@ -100,7 +94,6 @@ public abstract class MeasuresListPanel extends Panel {
     addRefreshLink();
     addConfirmDeleteMeasureDialog();
     addNoMeasureAvailableMessage();
-    addAutoRefreshBehavior();
 
   }
 
@@ -324,33 +317,9 @@ public abstract class MeasuresListPanel extends Panel {
 
   }
 
-  /**
-   * Add a behavior that will refresh the panel at regular time intervals.
-   */
-  @SuppressWarnings("serial")
-  private void addAutoRefreshBehavior() {
-    add(autoRefreshBehavior = new AbstractAjaxTimerBehavior(getAutoRefreshInterval()) {
-
-      @Override
-      protected void onTimer(AjaxRequestTarget target) {
-        refresh(target);
-      }
-
-    });
-  }
-
-  public void enableAutoRefresh(AjaxRequestTarget target) {
-    autoRefreshBehavior.start(target);
-  }
-
-  public void disableAutoRefresh() {
-    autoRefreshBehavior.stop();
-  }
-
   public void refresh(AjaxRequestTarget target) {
     log.debug("Refreshing MeasureListPanel...");
     target.addComponent(MeasuresListPanel.this);
-    if(MeasuresListPanel.this.getParent() instanceof InstrumentLaunchPanel) ((InstrumentLaunchPanel) MeasuresListPanel.this.getParent()).getSkipMeasure().refresh(target);
     onRefresh(target);
   }
 
@@ -374,14 +343,6 @@ public abstract class MeasuresListPanel extends Panel {
 
   private String getOddEvenCssClass(int row) {
     return row % 2 == 1 ? "odd" : "even";
-  }
-
-  public Duration getAutoRefreshInterval() {
-    return autoRefreshInterval;
-  }
-
-  public void setAutoRefreshInterval(Duration autoRefreshInterval) {
-    this.autoRefreshInterval = autoRefreshInterval;
   }
 
 }

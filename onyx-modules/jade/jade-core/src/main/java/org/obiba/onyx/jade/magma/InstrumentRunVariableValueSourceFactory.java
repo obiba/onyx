@@ -201,6 +201,10 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
     delegateFactory.setProperties(ImmutableSet.of("captureMethod"));
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
+    if(instrumentType.isRepeatable(instrumentParameter)) {
+      delegateFactory.setOccurrenceGroup(MEASURE);
+    }
+
     return delegateFactory.createSources().iterator().next();
   }
 
