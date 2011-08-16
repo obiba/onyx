@@ -67,6 +67,8 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   private List<IModel<InstrumentRunValue>> inputRunValueModels = new ArrayList<IModel<InstrumentRunValue>>();
 
+  private MeasuresPanel measures;
+
   @SuppressWarnings("serial")
   public InstrumentOutputParameterPanel(String id) {
     super(id);
@@ -87,7 +89,7 @@ public class InstrumentOutputParameterPanel extends Panel {
     }
 
     if(instrumentType.isRepeatable()) {
-      add(new MeasuresPanel("measures"));
+      add(measures = new MeasuresPanel("measures"));
     } else {
       add(new EmptyPanel("measures"));
     }
@@ -111,6 +113,13 @@ public class InstrumentOutputParameterPanel extends Panel {
     for(IModel<InstrumentRunValue> runValueModel : outputRunValueModels) {
       activeInstrumentRunService.update(runValueModel.getObject());
     }
+  }
+
+  public boolean isSkipMeasurement() {
+    if(measures != null) {
+      return measures.isSkipMeasurement();
+    }
+    return false;
   }
 
   @SuppressWarnings("serial")
