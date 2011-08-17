@@ -312,7 +312,7 @@ div#feedback {
 }
 
 .page-feedback{
-	width: 25em;
+	margin-right:1.6667em !important;
 	margin-left:1.6667em !important;
 	margin-top:1.6667em !important;
 	background-color: #FFFFFF;
