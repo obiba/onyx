@@ -37,6 +37,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -193,28 +195,26 @@ public abstract class QuestionPanel extends Panel {
     if(!variableNameBehavior.isVariableNameDefined()) {
       question.setVariableName(null);
     }
-    // TODO test before commit
-    // if(!question.getName().equals(initialName)) {
-    // for(Category category : question.getCategories()) {
-    // updateVariableNameKeys(category.getVariableNames(), question.getName());
-    // Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
-    // for(OpenAnswerDefinition oad : openAnswerDefinitionsByName.values()) {
-    // updateVariableNameKeys(oad.getVariableNames(), question.getName());
-    // }
-    // }
-    // }
+    if(!question.getName().equals(initialName)) {
+      for(Category category : question.getCategories()) {
+        updateVariableNameKeys(category.getVariableNames(), question.getName());
+        Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
+        for(OpenAnswerDefinition oad : openAnswerDefinitionsByName.values()) {
+          updateVariableNameKeys(oad.getVariableNames(), question.getName());
+        }
+      }
+    }
   }
 
-  // TODO test before commit
-  // private void updateVariableNameKeys(Map<String, String> variableNames, String newKey) {
-  // if(variableNames.containsKey(initialName)) {
-  // String value = variableNames.get(initialName);
-  // if(StringUtils.isNotBlank(value)) {
-  // variableNames.put(newKey, value);
-  // variableNames.remove(initialName);
-  // }
-  // }
-  // }
+  private void updateVariableNameKeys(Map<String, String> variableNames, String newKey) {
+    if(variableNames.containsKey(initialName)) {
+      String value = variableNames.get(initialName);
+      if(StringUtils.isNotBlank(value)) {
+        variableNames.put(newKey, value);
+        variableNames.remove(initialName);
+      }
+    }
+  }
 
   /**
    * 
