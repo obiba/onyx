@@ -60,8 +60,6 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public abstract class QuestionPanel extends Panel {
 
-  // private transient Logger logger = LoggerFactory.getLogger(getClass());
-
   private final VariableNameBehavior variableNameBehavior;
 
   private final String initialName;
@@ -191,10 +189,12 @@ public abstract class QuestionPanel extends Panel {
    * @param target
    */
   public void onSave(AjaxRequestTarget target) {
-    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
+    EditedQuestion editedQuestion = (EditedQuestion) getDefaultModelObject();
+    Question question = editedQuestion.getElement();
     if(!variableNameBehavior.isVariableNameDefined()) {
       question.setVariableName(null);
     }
+    // update keys of variables names
     if(!question.getName().equals(initialName)) {
       for(Category category : question.getCategories()) {
         updateVariableNameKeys(category.getVariableNames(), question.getName());
@@ -202,6 +202,13 @@ public abstract class QuestionPanel extends Panel {
         for(OpenAnswerDefinition oad : openAnswerDefinitionsByName.values()) {
           updateVariableNameKeys(oad.getVariableNames(), question.getName());
         }
+      }
+    }
+    // update category name for single open answer
+    if(editedQuestion.getQuestionType() == QuestionType.SINGLE_OPEN_ANSWER) {
+      List<Category> categories = question.getCategories();
+      if(!categories.isEmpty() && categories.size() == 1) {
+        categories.get(0).setName(question.getName());
       }
     }
   }
