@@ -172,20 +172,22 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     try {
       EMRXMLParser<FVCData> parser = new EMRXMLParser<FVCData>();
       parser.parse(new FileInputStream(outFile), new FVCDataExtractor());
+      Map<String, Data> data = new HashMap<String, Data>();
 
+      // participant data
       ParticipantData pData = parser.getParticipantData();
+      addOutput(data, "HeightOut", DataBuilder.buildDecimal(pData.getHeight()));
+      addOutput(data, "WeightOut", DataBuilder.buildInteger(pData.getWeight()));
+      addOutput(data, "EthnicityOut", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
+      addOutput(data, "AsthmaOut", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
+      addOutput(data, "SmokerOut", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
+      addOutput(data, "COPDOut", DataBuilder.buildText(pData.getCopd().toUpperCase()));
+      dataList.add(data);
+
+      // trial data
       FVCData tData = parser.getTestData();
-
       for(FVCTrialData trialData : tData.getTrials()) {
-        Map<String, Data> data = new HashMap<String, Data>();
-        // participant data
-        addOutput(data, "HeightOut", DataBuilder.buildDecimal(pData.getHeight()));
-        addOutput(data, "WeightOut", DataBuilder.buildInteger(pData.getWeight()));
-        addOutput(data, "EthnicityOut", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
-        addOutput(data, "AsthmaOut", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
-        addOutput(data, "SmokerOut", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
-        addOutput(data, "COPDOut", DataBuilder.buildText(pData.getCopd().toUpperCase()));
-
+        data = new HashMap<String, Data>();
         // trial date
         addOutput(data, "TRIAL_DATE", DataBuilder.buildDate(trialData.getDate()));
         addOutput(data, "TRIAL_RANK", DataBuilder.buildInteger(trialData.getRank()));
