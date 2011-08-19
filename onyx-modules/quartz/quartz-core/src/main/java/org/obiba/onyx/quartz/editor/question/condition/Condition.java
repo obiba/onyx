@@ -23,7 +23,7 @@ public class Condition implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public static enum Type {
-    NONE, QUESTION_CATEGORY, VARIABLE;
+    NONE, QUESTION_CATEGORY, VARIABLE, JAVASCRIPT;
   }
 
   private Type type = Type.NONE;
@@ -33,6 +33,8 @@ public class Condition implements Serializable {
   private Category category;
 
   private Variable variable;
+
+  private String script;
 
   public Type getType() {
     return type;
@@ -64,6 +66,14 @@ public class Condition implements Serializable {
 
   public void setVariable(Variable variable) {
     this.variable = variable;
+  }
+
+  public String getScript() {
+    return script;
+  }
+
+  public void setScript(String script) {
+    this.script = script;
   }
 
 }

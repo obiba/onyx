@@ -46,8 +46,9 @@ public class JavascriptDataSource implements IDataSource {
 
   private transient ValueSource source;
 
-  public JavascriptDataSource(String script) {
+  public JavascriptDataSource(String script, String valueType) {
     this.script = script;
+    this.valueType = valueType;
   }
 
   public String getScript() {
@@ -82,6 +83,10 @@ public class JavascriptDataSource implements IDataSource {
   @Override
   public String getUnit() {
     return unit;
+  }
+
+  public void setValueType(String valueType) {
+    this.valueType = valueType;
   }
 
   @Override

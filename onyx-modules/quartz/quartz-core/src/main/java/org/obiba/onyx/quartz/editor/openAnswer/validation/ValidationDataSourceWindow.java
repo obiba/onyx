@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswer.validation;
 
+import static org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type.JAVASCRIPT;
 import static org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type.QUESTION_CATEGORY;
 import static org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type.VARIABLE;
 
@@ -35,6 +36,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -44,9 +46,13 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -58,6 +64,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.syntaxHighlighter.SyntaxHighlighterBehavior;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.OpenAnswerValidator.Type;
+import org.obiba.onyx.quartz.editor.utils.JavascriptUtils;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.variable.VariablePanel;
@@ -81,7 +88,8 @@ public abstract class ValidationDataSourceWindow extends Panel {
 
   // private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private VariableUtils variableUtils;
 
@@ -117,31 +125,37 @@ public abstract class ValidationDataSourceWindow extends Panel {
     if(model.getObject() != null) {
       ComparingDataSource comparingDataSource = model.getObject();
       validator.setOperator(comparingDataSource.getComparisonOperator());
-      VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
-      if(questionnaire.getName().equals(variableDataSource.getTableName())) {
-        try {
-          validator.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
-          validator.setType(Type.VARIABLE);
-        } catch(IllegalArgumentException e) {
-          // not found in this questionnaire
-        }
-      }
-      if(validator.getType() == null) { // not found yet
-        Variable variable = variableUtils.findVariable(variableDataSource);
-        if(variable != null) {
+      IDataSource dataSourceRight = comparingDataSource.getDataSourceRight();
+      if(dataSourceRight instanceof VariableDataSource) {
+        VariableDataSource variableDataSource = (VariableDataSource) dataSourceRight;
+        if(questionnaire.getName().equals(variableDataSource.getTableName())) {
           try {
-            validator.setVariable(questionnaire.getVariable(variable.getName()));
+            validator.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
             validator.setType(Type.VARIABLE);
           } catch(IllegalArgumentException e) {
-            // not found
-            Question question = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
-            validator.setType(Type.QUESTION_CATEGORY);
-            validator.setQuestion(question);
-            validator.setCategory(VariableUtils.findCategory(variable, question));
+            // not found in this questionnaire
           }
         }
+        if(validator.getType() == null) { // not found yet
+          Variable variable = variableUtils.findVariable(variableDataSource);
+          if(variable != null) {
+            try {
+              validator.setVariable(questionnaire.getVariable(variable.getName()));
+              validator.setType(Type.VARIABLE);
+            } catch(IllegalArgumentException e) {
+              // not found
+              Question question = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
+              validator.setType(Type.QUESTION_CATEGORY);
+              validator.setQuestion(question);
+              validator.setCategory(VariableUtils.findCategory(variable, question));
+            }
+          }
+        }
+      } else if(dataSourceRight instanceof JavascriptDataSource) {
+        JavascriptDataSource javascriptDataSource = (JavascriptDataSource) dataSourceRight;
+        validator.setType(JAVASCRIPT);
+        validator.setScript(javascriptDataSource.getScript());
       }
-
     }
 
     feedbackPanel = new FeedbackPanel("content");
@@ -285,8 +299,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         VariablePanel variablePanel = new VariablePanel("content", new Model(null), questionnaireModel, valueType) {
           @Override
-          public void onSave(@SuppressWarnings("hiding")
-          AjaxRequestTarget target, Variable createdVariable) {
+          public void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, Variable createdVariable) {
             variables.add(createdVariable);
             questionnaire.addVariable(createdVariable);
             variableDropDown.setModelObject(createdVariable);
@@ -298,12 +311,10 @@ public abstract class ValidationDataSourceWindow extends Panel {
           }
 
           @Override
-          public void onCancel(@SuppressWarnings("hiding")
-          AjaxRequestTarget target) {
+          public void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target) {
             variableWindow.close(target);
           }
         };
-
         variableWindow.setContent(variablePanel);
         variableWindow.show(target);
       }
@@ -319,6 +330,23 @@ public abstract class ValidationDataSourceWindow extends Panel {
       }
     });
 
+    Radio<Type> javascriptType = new Radio<Type>("javascriptType", new Model<Type>(JAVASCRIPT));
+    javascriptType.setLabel(new ResourceModel("JavascriptType"));
+    validationType.add(javascriptType).add(new SimpleFormComponentLabel("javascriptTypeLabel", javascriptType));
+
+    final TextArea<String> javascriptField = new TextArea<String>("javascriptField", new PropertyModel<String>(validator, "script"));
+    javascriptField.setOutputMarkupPlaceholderTag(true);
+    javascriptField.setVisible(validator.getType() == JAVASCRIPT);
+    validationType.add(javascriptField);
+
+    javascriptField.add(new IValidator<String>() {
+
+      @Override
+      public void validate(final IValidatable<String> validatable) {
+        JavascriptUtils.compile(validatable.getValue(), questionModel.getObject().getName(), ValidationDataSourceWindow.this, form);
+      }
+    });
+
     validationType.add(new AjaxFormChoiceComponentUpdatingBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
@@ -326,17 +354,25 @@ public abstract class ValidationDataSourceWindow extends Panel {
         switch(type) {
         case QUESTION_CATEGORY:
           variableDropDown.setModelObject(null);
+          javascriptField.setModelObject(null);
           break;
         case VARIABLE:
           questionName.setModelObject(null);
           categoryName.setModelObject(null);
+          javascriptField.setModelObject(null);
           break;
-
+        case JAVASCRIPT:
+          variableDropDown.setModelObject(null);
+          questionName.setModelObject(null);
+          categoryName.setModelObject(null);
+          break;
         }
         questionConditionContainer.setVisible(type == QUESTION_CATEGORY);
         variableContainer.setVisible(type == VARIABLE);
+        javascriptField.setVisible(type == JAVASCRIPT);
         target.addComponent(questionTypeContainer);
         target.addComponent(variableTypeContainer);
+        target.addComponent(javascriptField);
       }
     });
 
@@ -344,30 +380,32 @@ public abstract class ValidationDataSourceWindow extends Panel {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
 
-        VariableDataSource variableDataSource = null;
+        IDataSource dataSource = null;
         switch(validator.getType()) {
         case QUESTION_CATEGORY:
-          variableDataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getQuestion().getName() + "." + validator.getCategory().getName());
+          dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getQuestion().getName() + "." + validator.getCategory().getName());
           break;
         case VARIABLE:
-          variableDataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getVariable().getName());
+          dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getVariable().getName());
+          break;
+        case JAVASCRIPT:
+          dataSource = new JavascriptDataSource(validator.getScript(), VariableUtils.convertToValueType(dataType).getName());
+          ((JavascriptDataSource) dataSource).setSequence(validator.getOperator() == ComparisonOperator.in);
           break;
         }
 
-        ComparingDataSource comparingDataSource = new ComparingDataSource(null, validator.getOperator(), variableDataSource);
+        ComparingDataSource comparingDataSource = new ComparingDataSource(null, validator.getOperator(), dataSource);
         ValidationDataSourceWindow.this.onSave(target, comparingDataSource);
         modalWindow.close(target);
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding")
-      Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         modalWindow.close(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
-      Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }

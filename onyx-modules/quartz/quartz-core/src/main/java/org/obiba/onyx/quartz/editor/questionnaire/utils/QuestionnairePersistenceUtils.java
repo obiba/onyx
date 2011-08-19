@@ -44,7 +44,7 @@ public class QuestionnairePersistenceUtils {
 
     // store xml file
     QuestionnaireBundle bundle = questionnaireBundleManager.createBundle(builder.getQuestionnaire(), false);
-    questionnaireBundleManager.cacheBundle(bundle);
+    questionnaireBundleManager.flushBundle(bundle);
 
     // store locales
     if(localeProperties != null) localePropertiesUtils.persist(bundle, localeProperties);

@@ -71,6 +71,8 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -88,6 +90,7 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
+import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -108,15 +111,18 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public class OpenAnswerPanel extends Panel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OnyxSettings onyxSettings;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OpenAnswerUtils openAnswerUtils;
 
@@ -192,7 +198,7 @@ public class OpenAnswerPanel extends Panel {
     validatorWindow = new ModalWindow("validatorWindow");
     validatorWindow.setCssClassName("onyx");
     validatorWindow.setInitialWidth(850);
-    validatorWindow.setInitialHeight(200);
+    validatorWindow.setInitialHeight(300);
     validatorWindow.setResizable(true);
     validatorWindow.setTitle(new ResourceModel("Validator"));
     add(validatorWindow);
@@ -747,6 +753,14 @@ public class OpenAnswerPanel extends Panel {
     }
 
     OpenAnswerDefinition opa = (OpenAnswerDefinition) getDefaultModelObject();
+
+    // update value type of JavascriptDataSource
+    for(ComparingDataSource cds : opa.getValidationDataSources()) {
+      if(cds.getDataSourceRight() instanceof JavascriptDataSource) {
+        ((JavascriptDataSource) cds.getDataSourceRight()).setValueType(VariableUtils.convertToValueType(opa.getDataType()).getName());
+      }
+    }
+
     // TODO use a specific model instead of use onSave Method
     opa.clearUIArgument();
     if(StringUtils.isNotBlank(sizeField.getValue())) {
@@ -925,10 +939,15 @@ public class OpenAnswerPanel extends Panel {
           cellItem.add(new Label(componentId, new ResourceModel("Operator." + rowModel.getObject().getComparisonOperator())));
         }
       });
-      columns.add(new AbstractColumn<ComparingDataSource>(new ResourceModel("Variable")) {
+      columns.add(new AbstractColumn<ComparingDataSource>(new ResourceModel("VariableScript")) {
         @Override
         public void populateItem(Item<ICellPopulator<ComparingDataSource>> cellItem, String componentId, IModel<ComparingDataSource> rowModel) {
-          cellItem.add(new Label(componentId, ((VariableDataSource) rowModel.getObject().getDataSourceRight()).getPath()));
+          IDataSource datasource = rowModel.getObject().getDataSourceRight();
+          if(datasource instanceof VariableDataSource) {
+            cellItem.add(new Label(componentId, ((VariableDataSource) datasource).getPath()));
+          } else if(datasource instanceof JavascriptDataSource) {
+            cellItem.add(new Label(componentId, StringUtils.abbreviate(((JavascriptDataSource) datasource).getScript(), 20)));
+          }
         }
       });
 

@@ -58,7 +58,8 @@ public abstract class UploadQuestionnairePanel extends Panel {
   private static final byte[] BUFFER = new byte[BUFFER_SIZE];
 
   @SpringBean
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Needs to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Needs to be be re-initialized upon deserialization")
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
@@ -171,7 +172,7 @@ public abstract class UploadQuestionnairePanel extends Panel {
               if(hasError()) return;
             }
             QuestionnaireBundle bundle = questionnaireBundleManager.createBundle(questionnaire, localeProperties.toArray(new File[localeProperties.size()]));
-            questionnaireBundleManager.cacheBundle(bundle);
+            questionnaireBundleManager.flushBundle(bundle);
             questionnaireRegister.register(questionnaire);
           }
 

@@ -31,16 +31,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextAction;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.EvaluatorException;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
@@ -58,6 +53,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils;
+import org.obiba.onyx.quartz.editor.utils.JavascriptUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -160,22 +156,7 @@ public abstract class VariablePanel extends Panel {
 
       @Override
       public void validate(final IValidatable<String> validatable) {
-        try {
-          ContextFactory.getGlobal().call(new ContextAction() {
-            @Override
-            public Object run(Context cx) {
-              return cx.compileString(validatable.getValue(), name.getConvertedInput(), 1, null);
-            }
-          });
-        } catch(EvaluatorException e) {
-          String errorMsg;
-          if(e.columnNumber() > 0) {
-            errorMsg = new StringResourceModel("BadScript.withColumn", VariablePanel.this, null, new Object[] { e.details(), e.lineNumber(), e.columnNumber() }).getObject();
-          } else {
-            errorMsg = new StringResourceModel("BadScript", VariablePanel.this, null, new Object[] { e.details(), e.lineNumber() }).getObject();
-          }
-          form.error(errorMsg);
-        }
+        JavascriptUtils.compile(validatable.getValue(), name.getConvertedInput(), VariablePanel.this, form);
       }
     });
 
@@ -230,14 +211,12 @@ public abstract class VariablePanel extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding")
-      Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         VariablePanel.this.onCancel(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
-      Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }

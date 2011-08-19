@@ -397,6 +397,12 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     log.debug("Added bundle " + bundle.getName() + " to the cache");
   }
 
+  @Override
+  public void flushBundle(QuestionnaireBundle bundle) {
+    bundleCache.remove(bundle.getQuestionnaire().getName());
+    log.debug("Flush bundle " + bundle.getName() + " from the cache");
+  }
+
   private String getLatestBundleVersion(File bundleDir) {
     VersionFileFilter versionFileFilter = new VersionFileFilter();
 
