@@ -102,7 +102,7 @@ public class UserSearchPanel extends Panel {
     userDetailsModalWindow.setHeightUnit("em");
     userDetailsModalWindow.setWidthUnit("em");
     userDetailsModalWindow.setInitialWidth(32);
-    userDetailsModalWindow.setInitialHeight(21);
+    userDetailsModalWindow.setInitialHeight(28);
     userDetailsModalWindow.setResizable(false);
 
   }
