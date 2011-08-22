@@ -25,6 +25,7 @@ import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -44,6 +45,8 @@ public class VariableUtils {
   public static final String QUESTION_NAME = "questionName";
 
   public static final String CATEGORY_NAME = "categoryName";
+
+  public static final String OPENANSWER_NAME = "openAnswerName";
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
@@ -92,6 +95,18 @@ public class VariableUtils {
         } else {
           return question.getCategoriesByName().get(categoryName);
         }
+      }
+    } catch(NoSuchAttributeException e) {
+      return null;
+    }
+    return null;
+  }
+
+  public static OpenAnswerDefinition findOpenAnswer(Variable variable, Category category) {
+    try {
+      if(variable.hasAttribute(OPENANSWER_NAME)) {
+        String openAnswerName = variable.getAttributeStringValue(OPENANSWER_NAME);
+        return category.getOpenAnswerDefinitionsByName().get(openAnswerName);
       }
     } catch(NoSuchAttributeException e) {
       return null;

@@ -147,7 +147,9 @@ public abstract class ValidationDataSourceWindow extends Panel {
               Question question = VariableUtils.findQuestion(variable, QuestionnaireFinder.getInstance(questionnaire));
               validator.setType(Type.QUESTION_CATEGORY);
               validator.setQuestion(question);
-              validator.setCategory(VariableUtils.findCategory(variable, question));
+              Category category = VariableUtils.findCategory(variable, question);
+              validator.setCategory(category);
+              validator.setOpenAnswer(VariableUtils.findOpenAnswer(variable, category));
             }
           }
         }
@@ -210,9 +212,14 @@ public abstract class ValidationDataSourceWindow extends Panel {
     List<Question> questions = new ArrayList<Question>(questionnaire.getQuestionnaireCache().getQuestionCache().values());
     Collections.sort(questions, new QuestionnaireElementComparator());
     final Multimap<Question, Category> questionCategories = LinkedHashMultimap.create();
+    final Multimap<Category, OpenAnswerDefinition> categoryOpenAnswer = LinkedHashMultimap.create();
     for(Question q : questions) {
       if(!q.equals(questionModel.getObject()) && q.getType() != QuestionType.BOILER_PLATE) {
-        questionCategories.putAll(q, findCategories(q));
+        final List<Category> findCategories = findCategories(q);
+        for(Category category : findCategories) {
+          categoryOpenAnswer.putAll(category, category.getOpenAnswerDefinitionsByName().values());
+        }
+        questionCategories.putAll(q, findCategories);
       }
     }
 
@@ -237,14 +244,39 @@ public abstract class ValidationDataSourceWindow extends Panel {
     categoryName.setLabel(new ResourceModel("Category"));
     questionConditionContainer.add(categoryName).add(new SimpleFormComponentLabel("categoryLabel", categoryName));
 
+    final List<OpenAnswerDefinition> openAnswers = categoryName.getModelObject() == null ? new ArrayList<OpenAnswerDefinition>() : new ArrayList<OpenAnswerDefinition>(categoryOpenAnswer.get(categoryName.getModelObject()));
+
+    final DropDownChoice<OpenAnswerDefinition> openAnswerName = new DropDownChoice<OpenAnswerDefinition>("openAnswer", new PropertyModel<OpenAnswerDefinition>(form.getModel(), "openAnswer"), openAnswers, new QuestionnaireElementNameRenderer()) {
+      @Override
+      public boolean isRequired() {
+        return validationType.getModelObject() == QUESTION_CATEGORY;
+      }
+    };
+
     questionName.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         categories.clear();
+        openAnswers.clear();
         categories.addAll(questionName.getModelObject() == null ? new ArrayList<Category>() : new ArrayList<Category>(questionCategories.get(questionName.getModelObject())));
+        openAnswers.addAll(categories.isEmpty() ? new ArrayList<OpenAnswerDefinition>() : new ArrayList<OpenAnswerDefinition>(categoryOpenAnswer.get(categories.get(0))));
         target.addComponent(categoryName);
+        target.addComponent(openAnswerName);
       }
     });
+
+    categoryName.add(new OnChangeAjaxBehavior() {
+
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        openAnswers.clear();
+        openAnswers.addAll(categoryName.getModelObject() == null ? new ArrayList<OpenAnswerDefinition>() : new ArrayList<OpenAnswerDefinition>(categoryOpenAnswer.get(categoryName.getModelObject())));
+        target.addComponent(openAnswerName);
+      }
+    });
+
+    openAnswerName.setLabel(new ResourceModel("OpenAnswer"));
+    questionConditionContainer.add(openAnswerName).add(new SimpleFormComponentLabel("openAnswerLabel", openAnswerName));
 
     Radio<Type> variableType = new Radio<Type>("variableType", new Model<Type>(VARIABLE));
     variableType.setLabel(new ResourceModel("Variable"));
@@ -365,12 +397,14 @@ public abstract class ValidationDataSourceWindow extends Panel {
         case VARIABLE:
           questionName.setModelObject(null);
           categoryName.setModelObject(null);
+          openAnswerName.setModelObject(null);
           javascriptField.setModelObject(null);
           break;
         case JAVASCRIPT:
           variableDropDown.setModelObject(null);
           questionName.setModelObject(null);
           categoryName.setModelObject(null);
+          openAnswerName.setModelObject(null);
           break;
         }
         questionConditionContainer.setVisible(type == QUESTION_CATEGORY);
@@ -389,7 +423,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
         IDataSource dataSource = null;
         switch(validator.getType()) {
         case QUESTION_CATEGORY:
-          dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getQuestion().getName() + "." + validator.getCategory().getName());
+          dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getQuestion().getName() + "." + validator.getCategory().getName() + "." + validator.getOpenAnswer().getName());
           break;
         case VARIABLE:
           dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getVariable().getName());
