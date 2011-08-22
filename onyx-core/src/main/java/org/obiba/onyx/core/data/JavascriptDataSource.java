@@ -85,6 +85,10 @@ public class JavascriptDataSource implements IDataSource {
     return unit;
   }
 
+  public String getValueType() {
+    return valueType;
+  }
+
   public void setValueType(String valueType) {
     this.valueType = valueType;
   }

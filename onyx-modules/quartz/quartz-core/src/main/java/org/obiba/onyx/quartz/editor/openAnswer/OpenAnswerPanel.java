@@ -70,6 +70,7 @@ import org.apache.wicket.validation.validator.MinimumValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.JavascriptDataSource;
@@ -92,6 +93,7 @@ import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWi
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.Images;
@@ -757,7 +759,15 @@ public class OpenAnswerPanel extends Panel {
     // update value type of JavascriptDataSource
     for(ComparingDataSource cds : opa.getValidationDataSources()) {
       if(cds.getDataSourceRight() instanceof JavascriptDataSource) {
-        ((JavascriptDataSource) cds.getDataSourceRight()).setValueType(VariableUtils.convertToValueType(opa.getDataType()).getName());
+        JavascriptDataSource dataSourceRight = (JavascriptDataSource) cds.getDataSourceRight();
+        String name = VariableUtils.convertToValueType(opa.getDataType()).getName();
+        if(name.equals(TextType.get().getName())) {
+          List<ComparisonOperator> comparisonOperatorAsList = Arrays.asList(ComparisonOperator.eq, ComparisonOperator.ne, ComparisonOperator.in);
+          if(!comparisonOperatorAsList.contains(cds.getComparisonOperator())) {
+            error(new StringResourceModel("InvalidType", OpenAnswerPanel.this, null).getObject());
+          }
+        }
+        dataSourceRight.setValueType(name);
       }
     }
 

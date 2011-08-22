@@ -179,7 +179,13 @@ public abstract class ValidationDataSourceWindow extends Panel {
       }
     };
 
-    final DropDownChoice<ComparisonOperator> operator = new DropDownChoice<ComparisonOperator>("operator", new PropertyModel<ComparisonOperator>(form.getModel(), "operator"), Arrays.asList(ComparisonOperator.values()), operatorRenderer);
+    List<ComparisonOperator> comparisonOperatorAsList = null;
+    if(dataType == DataType.TEXT) {
+      comparisonOperatorAsList = Arrays.asList(ComparisonOperator.eq, ComparisonOperator.ne, ComparisonOperator.in);
+    } else {
+      comparisonOperatorAsList = Arrays.asList(ComparisonOperator.values());
+    }
+    final DropDownChoice<ComparisonOperator> operator = new DropDownChoice<ComparisonOperator>("operator", new PropertyModel<ComparisonOperator>(form.getModel(), "operator"), comparisonOperatorAsList, operatorRenderer);
     form.add(operator.setLabel(new ResourceModel("Operator")).setRequired(true)).add(new SimpleFormComponentLabel("operatorLabel", operator));
 
     final RadioGroup<Type> validationType = new RadioGroup<Type>("validationType", new PropertyModel<Type>(form.getModel(), "type"));
