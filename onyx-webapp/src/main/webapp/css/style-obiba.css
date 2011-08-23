@@ -1885,6 +1885,12 @@ div.log-comment {
   
 /******************* End Sample Collection *********************************************/
 
+/******************* Jade *********************************************/
+
+div.instrument-instructions {
+	padding-top: 1.667em;
+}
+
 div.measuresListPanel table.entityTable td.count, div.measuresListPanel table.entityTable td.refresh {
   color:#C65F02;
   font-size:0.9167em;
@@ -1908,12 +1914,19 @@ div.wizard-content span.instrument-run-panel-content td.keyValueTableKey {
 }
 
 div.wicket-modal div.onyx div.section {
-  margin-bottom: 0.8333em; margin-left: 1.6667em; margin-right: 1.6667em;
+  margin-bottom: 0.8333em; 
+  margin-left: 1.6667em; 
+  margin-right: 1.6667em;
 }
 
 div.wizard-content #instrumentRunPanelTitle {
-  color: #C65F02; margin-top: 1.6667em; margin-bottom: 0.8333em; font-weight: bold;
+  color: #C65F02; 
+  margin-top: 1.6667em; 
+  margin-bottom: 0.8333em; 
+  font-weight: bold;
 }
+
+/******************* End Jade *********************************************/
 
 div.appointment-update-log-panel-content  {
   white-space:nowrap;

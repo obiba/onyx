@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -30,6 +31,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -43,6 +45,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.model.MagmaStringResourceModel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -74,7 +77,26 @@ public class InstrumentOutputParameterPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    final InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+
+    // instrument instructions
+    add(new Label("instrument-instructions", new MagmaStringResourceModel(new MessageSourceResolvableStringModel(instrumentType.getInstructions())) {
+
+      @Override
+      protected String getTableContext() {
+        return instrumentType.getName();
+      }
+
+      @Override
+      protected Participant getParticipant() {
+        return activeInstrumentRunService.getParticipant();
+      }
+
+      @Override
+      protected Locale getLocale() {
+        return InstrumentOutputParameterPanel.this.getLocale();
+      }
+    }).setEscapeModelStrings(false));
 
     if(getOutputParametersOriginallyMarkedForManualCapture().size() == 0) {
       add(new EmptyPanel("outputs"));

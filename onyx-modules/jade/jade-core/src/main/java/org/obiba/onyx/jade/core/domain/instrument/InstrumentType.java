@@ -18,6 +18,8 @@ import org.obiba.onyx.core.data.TypeConverterDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public class InstrumentType implements Serializable {
 
@@ -65,6 +67,10 @@ public class InstrumentType implements Serializable {
 
   public void setExpectedMeasureCount(IDataSource expectedMeasureCount) {
     this.expectedMeasureCount = expectedMeasureCount;
+  }
+
+  public MessageSourceResolvable getInstructions() {
+    return new DefaultMessageSourceResolvable(new String[] { name + ".instructions" }, "");
   }
 
   /**

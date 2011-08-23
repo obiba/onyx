@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -51,8 +50,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   public InstrumentLaunchStep(String id) {
     super(id);
     setOutputMarkupId(true);
-
-    add(new Label("title", new StringResourceModel("InstrumentApplicationLaunch", this, null)));
+    add(new EmptyPanel(getTitleId()).setVisible(false));
   }
 
   @Override

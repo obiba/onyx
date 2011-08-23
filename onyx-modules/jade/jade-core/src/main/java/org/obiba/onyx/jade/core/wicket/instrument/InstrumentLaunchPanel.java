@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -24,6 +25,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -33,6 +35,7 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
+import org.obiba.onyx.wicket.model.MagmaStringResourceModel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -69,8 +72,27 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     setOutputMarkupId(true);
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    final InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     String codebase = instrumentService.getInstrumentInstallPath(instrumentType);
+
+    // instrument instructions
+    add(new Label("instrument-instructions", new MagmaStringResourceModel(new MessageSourceResolvableStringModel(instrumentType.getInstructions())) {
+
+      @Override
+      protected String getTableContext() {
+        return instrumentType.getName();
+      }
+
+      @Override
+      protected Participant getParticipant() {
+        return activeInstrumentRunService.getParticipant();
+      }
+
+      @Override
+      protected Locale getLocale() {
+        return InstrumentLaunchPanel.this.getLocale();
+      }
+    }).setEscapeModelStrings(false));
 
     // general instructions and launcher
     add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model<ValueMap>(new ValueMap("name=" + instrumentType.getName())))));
