@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
@@ -423,7 +424,14 @@ public abstract class ValidationDataSourceWindow extends Panel {
         IDataSource dataSource = null;
         switch(validator.getType()) {
         case QUESTION_CATEGORY:
-          dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getQuestion().getName() + "." + validator.getCategory().getName() + "." + validator.getOpenAnswer().getName());
+          Question question = validator.getQuestion();
+          OpenAnswerDefinition openAnswer = validator.getOpenAnswer();
+          String variableName = openAnswer.getVariableName(question.getName());
+          if(StringUtils.isNotBlank(variableName)) {
+            dataSource = new VariableDataSource(questionnaire.getName() + ":" + variableName);
+          } else {
+            dataSource = new VariableDataSource(questionnaire.getName() + ":" + question.getName() + "." + validator.getCategory().getName() + "." + openAnswer.getName());
+          }
           break;
         case VARIABLE:
           dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getVariable().getName());

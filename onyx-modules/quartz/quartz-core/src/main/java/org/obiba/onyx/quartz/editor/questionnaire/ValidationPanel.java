@@ -130,7 +130,7 @@ public class ValidationPanel extends Panel {
               // always boolean)
               if(variable == null) {
                 error("VariableNotFound", variableDataSource, openAnswer.getName());
-              } else if(!variable.hasAttribute(VariableUtils.CATEGORY_NAME) && !valueType.getName().equals(variable.getValueType().getName())) {
+              } else if(!variable.hasAttribute(VariableUtils.OPENANSWER_NAME) && !valueType.getName().equals(variable.getValueType().getName())) {
                 error("OpenAnswerTypeDifferentFromValidationVariable", dataType, openAnswer.getName(), variable.getName(), variable.getValueType().getClass().getSimpleName());
               }
             }
