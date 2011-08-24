@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ * Copyright (c) 2011 OBiBa. All rights reserved.
+ *  
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -27,7 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * A string resource model to resolved magma variables references in strings. Example of string that will be resolved:
+ * 
+ * <pre>
+ *   You must select the $('ContraIndications:ArmSideChosen') Arm to measure the blood pressure.
+ * </pre>
+ * 
+ * Supports value sequences display and localisation of category names.
  */
 public abstract class MagmaStringResourceModel extends AbstractReadOnlyModel<String> implements IChainingModel<String> {
 
@@ -37,27 +43,45 @@ public abstract class MagmaStringResourceModel extends AbstractReadOnlyModel<Str
 
   private Object target;
 
-  public MagmaStringResourceModel(Object target) {
+  public MagmaStringResourceModel(IModel<?> targetModel) {
+    super();
+    this.target = targetModel;
+  }
+
+  public MagmaStringResourceModel(String target) {
     super();
     this.target = target;
   }
 
+  /**
+   * Get the Participant from which value set will be retrieved.
+   * @return
+   */
   protected abstract Participant getParticipant();
 
+  /**
+   * Get the locale in which labels should be retrieved.
+   * @return
+   */
   protected abstract Locale getLocale();
 
+  /**
+   * Get the table context to resolve variable not fully qualified paths.
+   * @return
+   */
   protected abstract String getTableContext();
 
   @Override
   public String getObject() {
     String message;
     if(target instanceof IModel<?>) {
-      message = (String) ((IModel<?>) target).getObject();
+      Object obj = ((IModel<?>) target).getObject();
+      message = (obj != null ? obj.toString() : null);
     } else {
       message = (String) target;
     }
 
-    return resolveVariableValuesInMessage(message, getTableContext(), getLocale());
+    return message != null ? resolveVariableValuesInMessage(message, getTableContext(), getLocale()) : "";
   }
 
   @Override
