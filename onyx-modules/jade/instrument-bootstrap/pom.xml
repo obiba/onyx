@@ -2,8 +2,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Jade Instrument Bootstrap</name>
-  <description>Physical Measurement Instrument Bootstrap</description>
+  <name>Onyx Instrument Bootstrap</name>
+  <description>Onyx Instrument Bootstrap</description>
 
   <groupId>org.obiba.jade.instrument</groupId>
   <artifactId>instrument-bootstrap</artifactId>
@@ -50,6 +50,39 @@
         </exclusion>
       </exclusions>
     </dependency>
+    
+    <!-- Use the JDK's logging implementation so we reduce the number of dependencies for instrument projects -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
-
+  
+  <build>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo.webstart</groupId>
+          <artifactId>webstart-maven-plugin</artifactId>
+          <version>1.0-alpha-2p01</version>
+          <executions>
+            <execution>
+              <id>make-jnlp</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jnlp-single</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
+            <libPath>lib</libPath>
+            <jnlp></jnlp>
+            <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
+            <outputJarVersions>false</outputJarVersions>
+            <verbose>false</verbose>
+          </configuration>
+        </plugin>
+      </plugins>
+  </build>
 </project>

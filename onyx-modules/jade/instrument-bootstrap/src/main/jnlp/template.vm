@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp
-    spec="$jnlpspec"
-    codebase="${codebaseUrl}">
+<jnlp spec="1.6+">
   <information>
     <title>$project.name</title>
-    <vendor>$project.organization.name</vendor>
-    <homepage href="$project.url"/>
+    <vendor>OBiBa</vendor>
     <description>$project.description</description>
 #if($offlineAllowed)
     <offline-allowed/>
@@ -21,9 +18,6 @@
     <j2se version="$j2seVersion"/>
      $dependencies
   </resources>
-  <application-desc main-class="${mainClass}">
-    <argument><![CDATA[__config__]]></argument>
-  </application-desc>
-
+  <component-desc/>
 </jnlp>
 

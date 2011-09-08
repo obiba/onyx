@@ -38,12 +38,7 @@
       <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>instrument-bootstrap</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <!-- Use the JDK's logging implementation so we reduce the number of dependencies for instrument projects -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -57,21 +52,27 @@
         <plugin>
           <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-maven-plugin</artifactId>
-          <version>1.0-alpha-2</version>
+          <version>1.0-alpha-2p01</version>
           <executions>
             <execution>
-              <id>make-jnlp</id><!-- this is used for inheritance merges -->
-              <phase>package</phase><!-- append to the packaging phase. -->
+              <id>make-jnlp</id>
+              <phase>package</phase>
               <goals>
-                <goal>jnlp-single</goal><!-- goals == mojos -->
+                <goal>jnlp-single</goal>
               </goals>
             </execution>
           </executions>
           <configuration>
-            <!--
-              Set to true to exclude all transitive dependencies. Default is false.
-            -->
+
             <excludeTransitive>false</excludeTransitive>
+
+            <dependencies>
+              <excludes>
+                <exclude>org.slf4j:slf4j-api</exclude>
+                <exclude>org.slf4j:slf4j-jdk14</exclude>
+                <exclude>org.slf4j:jcl-over-slf4j</exclude>
+              </excludes>
+            </dependencies>
 
             <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
             <libPath>lib</libPath>
@@ -88,10 +89,6 @@
               <!-- relative to inputTemplateResourcePath -->
               <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate-->
               <!--outputFile>launch.jnlp</outputFile--><!-- defaults to launch.jnlp -->
-
-              <!-- used to automatically identify the jar containing the main class. -->
-              <!-- this is perhaps going to change -->
-              <mainClass>org.obiba.onyx.jade.client.JnlpClient</mainClass>
 
             </jnlp>
 

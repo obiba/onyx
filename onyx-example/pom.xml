@@ -49,6 +49,14 @@
 
     <dependency>
       <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>instrument-bootstrap</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>interface-bioimpedance-tanita-bc418</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
@@ -176,6 +184,14 @@
             </goals>
             <configuration>
               <artifactItems>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>instrument-bootstrap</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/bootstrap
+                  </outputDirectory>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.obiba.jade.instrument</groupId>
                   <artifactId>interface-bioimpedance-tanita-bc418</artifactId>
