@@ -437,7 +437,7 @@ public abstract class ValidationDataSourceWindow extends Panel {
           dataSource = new VariableDataSource(questionnaire.getName() + ":" + validator.getVariable().getName());
           break;
         case JAVASCRIPT:
-          dataSource = new JavascriptDataSource(validator.getScript(), VariableUtils.convertToValueType(dataType).getName());
+          dataSource = new JavascriptDataSource(validator.getScript(), VariableUtils.convertToValueType(dataType).getName(), questionnaire.getName());
           ((JavascriptDataSource) dataSource).setSequence(validator.getOperator() == ComparisonOperator.in);
           break;
         }

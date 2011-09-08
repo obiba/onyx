@@ -34,6 +34,8 @@ public class JavascriptDataSource implements IDataSource {
 
   private static final Logger log = LoggerFactory.getLogger(JavascriptDataSource.class);
 
+  private String valueTable;
+
   private String valueType;
 
   private String script;
@@ -47,6 +49,17 @@ public class JavascriptDataSource implements IDataSource {
   private transient ValueSource source;
 
   public JavascriptDataSource(String script, String valueType) {
+    this(script, valueType, null);
+  }
+
+  /**
+   * @param script
+   * @param valueType
+   * @param valueTable the contextual table. This can be null, in which case, the "Participants" table is used as a
+   * context to resolve variables.
+   */
+  public JavascriptDataSource(String script, String valueType, String valueTable) {
+    this.valueTable = valueTable;
     this.script = script;
     this.valueType = valueType;
   }
@@ -67,9 +80,12 @@ public class JavascriptDataSource implements IDataSource {
 
   private Value getValue(Participant participant) {
     VariableEntity entity = magmaInstanceProvider.newParticipantEntity(participant.getBarcode());
-    ValueTable valueTable = magmaInstanceProvider.getParticipantsTable();
-    ValueSet valueSet = valueTable.getValueSet(entity);
-    return getSource().getValue(valueSet);
+    ValueTable valueTable = this.valueTable != null ? magmaInstanceProvider.getValueTable(this.valueTable) : magmaInstanceProvider.getParticipantsTable();
+    if(valueTable.hasValueSet(entity)) {
+      ValueSet valueSet = valueTable.getValueSet(entity);
+      return getSource().getValue(valueSet);
+    }
+    return ValueType.Factory.forName(valueType).nullValue();
   }
 
   public boolean isSequence() {
@@ -78,6 +94,14 @@ public class JavascriptDataSource implements IDataSource {
 
   public void setSequence(boolean sequence) {
     this.sequence = sequence;
+  }
+
+  public void setValueTable(String valueTable) {
+    this.valueTable = valueTable;
+  }
+
+  public String getValueTable() {
+    return valueTable;
   }
 
   @Override

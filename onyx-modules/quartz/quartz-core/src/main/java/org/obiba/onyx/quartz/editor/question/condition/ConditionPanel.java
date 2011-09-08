@@ -387,7 +387,7 @@ public class ConditionPanel extends Panel {
       questionBuilder.setVariableCondition(questionnaire.getName() + ":" + condition.getVariable().getName());
       break;
     case JAVASCRIPT:
-      JavascriptDataSource datasource = new JavascriptDataSource(condition.getScript(), BooleanType.get().getName());
+      JavascriptDataSource datasource = new JavascriptDataSource(condition.getScript(), BooleanType.get().getName(), questionnaire.getName());
       question.setCondition(datasource);
       break;
     }
