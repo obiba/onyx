@@ -33,8 +33,6 @@ public abstract class EyeExtractor {
       String fileName = mediasRowSet.getString("FileName").trim();
       String extension = mediasRowSet.getString("FileExt").trim();
       byte[] pict = pathToByteArray(location, fileName, extension);
-      log.info(getName());
-      log.info(pict.toString());
       data.put(getName(), new Data(DataType.DATA, pict));
     }
   }
