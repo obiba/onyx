@@ -1,10 +1,12 @@
 package org.obiba.onyx.jade.instrument.topcon;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
@@ -30,6 +33,8 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
   private JdbcTemplate jdbc;
 
   private Set<String> outVendorNames;
+
+  private Set<EyeExtractor> usedExtractors = new HashSet<EyeExtractor>();
 
   private String personUUID;
 
@@ -54,25 +59,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
   public void shutdown() {
     log.info("shutdown");
     cleanData();
-  }
-
-  /**
-   * Delete inserted participant data
-   */
-  private void cleanData() {
-    log.info("Cleaning Data");
-    jdbc.update("DELETE FROM dbo.Patients WHERE PatientUid = ?", new PreparedStatementSetter() {
-      @Override
-      public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, patientUUID);
-      }
-    });
-    jdbc.update("DELETE FROM dbo.Persons WHERE PersonUid = ?", new PreparedStatementSetter() {
-      @Override
-      public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, personUUID);
-      }
-    });
   }
 
   /**
@@ -105,22 +91,47 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
   public Map<String, Data> retrieveData() {
     log.info("Retrieving Data");
+
     Map<String, Data> data = new HashMap<String, Data>();
 
-    Map<String, Class<? extends EyeExtractor>> extractors = new HashMap<String, Class<? extends EyeExtractor>>();
+    Map<String, Class<? extends EyeExtractor>> availableExtractors = new HashMap<String, Class<? extends EyeExtractor>>();
 
-    extractors.put(LeftEyeExtractor.name, LeftEyeExtractor.class);
-    extractors.put(RightEyeExtractor.name, RightEyeExtractor.class);
+    availableExtractors.put(LeftEyeExtractor.name, LeftEyeExtractor.class);
+    availableExtractors.put(RightEyeExtractor.name, RightEyeExtractor.class);
 
     for(String vendorName : outVendorNames) {
-      if(extractors.keySet().contains(vendorName)) {
-        intanciate(extractors, vendorName).extract(jdbc, data, patientUUID);
+      if(availableExtractors.keySet().contains(vendorName)) {
+        EyeExtractor instance = instantiate(availableExtractors, vendorName);
+        usedExtractors.add(instance);
+        instance.extractData(jdbc, data, patientUUID);
       }
     }
     return data;
   }
 
-  private EyeExtractor intanciate(Map<String, Class<? extends EyeExtractor>> extractors, String vendorName) {
+  /**
+   * Clean data
+   */
+  private void cleanData() {
+    log.info("Cleaning Data");
+    jdbc.update("DELETE FROM dbo.Exams WHERE PatientUid = ?", patientUUID);
+
+    // Delete Pictures Files
+    SqlRowSet mediaRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ?", new Object[] { patientUUID });
+    while(mediaRowSet.next()) {
+      String storagePathUid = mediaRowSet.getString("StoragePathUid");
+      String fileName = mediaRowSet.getString("FileName").trim();
+      String extension = mediaRowSet.getString("FileExt").trim();
+      String location = EyeExtractorQueryUtil.getLocation(jdbc, storagePathUid);
+      new File(location, fileName + extension).delete();
+    }
+
+    jdbc.update("DELETE FROM dbo.Media WHERE PatientUid = ?", patientUUID);
+    jdbc.update("DELETE FROM dbo.Patients WHERE PatientUid = ?", patientUUID);
+    jdbc.update("DELETE FROM dbo.Persons WHERE PersonUid = ?", personUUID);
+  }
+
+  private EyeExtractor instantiate(Map<String, Class<? extends EyeExtractor>> extractors, String vendorName) {
     try {
       return BeanUtils.instantiate(extractors.get(vendorName));
     } catch(Exception e) {

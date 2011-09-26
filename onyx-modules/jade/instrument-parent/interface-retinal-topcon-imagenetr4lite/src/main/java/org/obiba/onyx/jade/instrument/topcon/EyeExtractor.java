@@ -25,15 +25,17 @@ public abstract class EyeExtractor {
 
   private static final Logger log = LoggerFactory.getLogger(EyeExtractor.class);
 
-  public void extract(JdbcTemplate jdbc, Map<String, Data> data, String patientUUID) {
+  public void extractData(JdbcTemplate jdbc, Map<String, Data> data, String patientUUID) {
     log.info("Extracting Data");
-    SqlRowSet mediasRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ? AND EyeType = ?", new Object[] { patientUUID, getEyeType().intValue() });
-    while(mediasRowSet.next()) {
-      String location = jdbc.queryForObject("SELECT Location FROM dbo.StoragePaths WHERE StoragePathUid = ?", new Object[] { mediasRowSet.getString("StoragePathUid") }, String.class);
-      String fileName = mediasRowSet.getString("FileName").trim();
-      String extension = mediasRowSet.getString("FileExt").trim();
-      byte[] pict = pathToByteArray(location, fileName, extension);
-      data.put(getName(), new Data(DataType.DATA, pict));
+    SqlRowSet mediaRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ? AND EyeType = ?", new Object[] { patientUUID, getEyeType().intValue() });
+    while(mediaRowSet.next()) {
+      String storagePathUid = mediaRowSet.getString("StoragePathUid");
+      String fileName = mediaRowSet.getString("FileName").trim();
+      String extension = mediaRowSet.getString("FileExt").trim();
+      String location = EyeExtractorQueryUtil.getLocation(jdbc, storagePathUid);
+
+      byte[] imageByteArray = pathToByteArray(location, fileName, extension);
+      data.put(getName(), new Data(DataType.DATA, imageByteArray));
     }
   }
 
@@ -57,5 +59,4 @@ public abstract class EyeExtractor {
         return 2;
     }
   }
-
 }
