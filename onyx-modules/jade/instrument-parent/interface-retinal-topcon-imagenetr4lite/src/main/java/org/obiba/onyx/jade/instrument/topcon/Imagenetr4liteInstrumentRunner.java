@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
@@ -33,9 +32,9 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
   private Set<String> outVendorNames;
 
-  private String personUUID;
+  private final String personUUID = "11111111-2222-3333-4444-555555555555";
 
-  private String patientUUID;
+  private final String patientUUID = personUUID;
 
   @Override
   public void initialize() {
@@ -65,7 +64,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
    */
   private void initializeParticipantData() {
     log.info("initializing participant Data");
-    personUUID = UUID.randomUUID().toString();
     jdbc.update("insert into dbo.Persons (PersonUid, SurName, ForeName) values(?,?,?)", new PreparedStatementSetter() {
       @Override
       public void setValues(PreparedStatement ps) throws SQLException {
@@ -76,7 +74,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     });
 
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-    patientUUID = UUID.randomUUID().toString();
     jdbc.update("insert into dbo.Patients (PatientUid, PatientIdentifier, PersonUid) values(?,?,?)", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, patientUUID);
