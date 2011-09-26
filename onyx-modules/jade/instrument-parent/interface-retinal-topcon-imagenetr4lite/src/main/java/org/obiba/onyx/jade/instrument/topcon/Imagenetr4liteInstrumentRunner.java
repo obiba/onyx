@@ -115,7 +115,7 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
     for(String vendorName : outVendorNames) {
       if(extractors.keySet().contains(vendorName)) {
-        extractors.get(vendorName).extract(jdbc, data, "b2688d61-5349-4f67-809f-cbc62bdec8cd");
+        extractors.get(vendorName).extract(jdbc, data, patientUUID);
       }
     }
     return data;
