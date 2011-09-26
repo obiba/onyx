@@ -15,6 +15,7 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
@@ -121,7 +122,7 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
   private EyeExtractor intanciate(Map<String, Class<? extends EyeExtractor>> extractors, String vendorName) {
     try {
-      return extractors.get(vendorName).newInstance();
+      return BeanUtils.instantiate(extractors.get(vendorName));
     } catch(Exception e) {
       throw new RuntimeException(e);
     }
