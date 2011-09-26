@@ -106,19 +106,25 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     log.info("Retrieving Data");
     Map<String, Data> data = new HashMap<String, Data>();
 
-    LeftEyeExtractor leftEyeExtractor = new LeftEyeExtractor();
-    RightEyeExtractor rightEyeExtractor = new RightEyeExtractor();
+    Map<String, Class<? extends EyeExtractor>> extractors = new HashMap<String, Class<? extends EyeExtractor>>();
 
-    Map<String, EyeExtractor> extractors = new HashMap<String, EyeExtractor>();
-    extractors.put(leftEyeExtractor.getName(), leftEyeExtractor);
-    extractors.put(rightEyeExtractor.getName(), rightEyeExtractor);
+    extractors.put(LeftEyeExtractor.name, LeftEyeExtractor.class);
+    extractors.put(RightEyeExtractor.name, RightEyeExtractor.class);
 
     for(String vendorName : outVendorNames) {
       if(extractors.keySet().contains(vendorName)) {
-        extractors.get(vendorName).extract(jdbc, data, patientUUID);
+        intanciate(extractors, vendorName).extract(jdbc, data, patientUUID);
       }
     }
     return data;
+  }
+
+  private EyeExtractor intanciate(Map<String, Class<? extends EyeExtractor>> extractors, String vendorName) {
+    try {
+      return extractors.get(vendorName).newInstance();
+    } catch(Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public InstrumentExecutionService getInstrumentExecutionService() {
