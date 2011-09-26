@@ -15,12 +15,21 @@
   <instrumentParameters>
 
     <output>
-      <vendorName>EYEPICT_VENDOR</vendorName>
-      <code>EYEPICT</code>
+      <vendorName>RIGHT_EYE_VENDOR</vendorName>
+      <code>RIGHT_EYE</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
+    
+     <output>
+      <vendorName>LEFT_EYE_VENDOR</vendorName>
+      <code>LEFT_EYE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+    </output>
+    
              
   </instrumentParameters>
 </instrumentType>

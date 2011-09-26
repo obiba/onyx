@@ -1,7 +1,5 @@
 package org.obiba.onyx.jade.instrument.topcon;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -15,13 +13,10 @@ import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.util.FileCopyUtils;
 
 public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
@@ -108,24 +103,22 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
   }
 
   public Map<String, Data> retrieveData() {
+    log.info("Retrieving Data");
     Map<String, Data> data = new HashMap<String, Data>();
-    SqlRowSet mediasRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ?", new Object[] { patientUUID });
-    while(mediasRowSet.next()) {
-      String location = jdbc.queryForObject("SELECT Location FROM dbo.StoragePaths WHERE StoragePathUid = ?", new Object[] { mediasRowSet.getString("StoragePathUid") }, String.class);
-      String fileName = mediasRowSet.getString("FileName").trim();
-      String extension = mediasRowSet.getString("FileExt").trim();
-      byte[] pict = pathToByteArray(location, fileName, extension);
-      data.put("EYEPICT_VENDOR", new Data(DataType.DATA, pict));
+
+    LeftEyeExtractor leftEyeExtractor = new LeftEyeExtractor();
+    RightEyeExtractor rightEyeExtractor = new RightEyeExtractor();
+
+    Map<String, EyeExtractor> extractors = new HashMap<String, EyeExtractor>();
+    extractors.put(leftEyeExtractor.getName(), leftEyeExtractor);
+    extractors.put(rightEyeExtractor.getName(), rightEyeExtractor);
+
+    for(String vendorName : outVendorNames) {
+      if(extractors.keySet().contains(vendorName)) {
+        extractors.get(vendorName).extract(jdbc, data, "b2688d61-5349-4f67-809f-cbc62bdec8cd");
+      }
     }
     return data;
-  }
-
-  private byte[] pathToByteArray(String location, String fileName, String extension) {
-    try {
-      return FileCopyUtils.copyToByteArray(new File(location, fileName + extension));
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   public InstrumentExecutionService getInstrumentExecutionService() {
