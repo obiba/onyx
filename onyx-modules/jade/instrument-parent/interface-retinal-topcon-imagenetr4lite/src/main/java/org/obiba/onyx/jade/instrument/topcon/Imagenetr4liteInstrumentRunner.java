@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -33,8 +32,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
   private JdbcTemplate jdbc;
 
   private Set<String> outVendorNames;
-
-  private Set<EyeExtractor> usedExtractors = new HashSet<EyeExtractor>();
 
   private String personUUID;
 
@@ -102,7 +99,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     for(String vendorName : outVendorNames) {
       if(availableExtractors.keySet().contains(vendorName)) {
         EyeExtractor instance = instantiate(availableExtractors, vendorName);
-        usedExtractors.add(instance);
         instance.extractData(jdbc, data, patientUUID);
       }
     }
@@ -123,6 +119,7 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
       String fileName = mediaRowSet.getString("FileName").trim();
       String extension = mediaRowSet.getString("FileExt").trim();
       String location = EyeExtractorQueryUtil.getLocation(jdbc, storagePathUid);
+      log.info("Deleting: " + location + "/" + fileName + extension);
       new File(location, fileName + extension).delete();
     }
 
