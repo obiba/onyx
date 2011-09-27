@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.instrument.topcon;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
@@ -25,10 +26,19 @@ public abstract class EyeExtractor {
 
   private static final Logger log = LoggerFactory.getLogger(EyeExtractor.class);
 
-  public void extractData(JdbcTemplate jdbc, Map<String, Data> data, String patientUUID) {
+  public Map<String, Data> extractData(JdbcTemplate jdbc, String patientUUID) {
     log.info("Extracting Data");
-    SqlRowSet mediaRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ? AND EyeType = ?", new Object[] { patientUUID, getEyeType().intValue() });
-    while(mediaRowSet.next()) {
+    Map<String, Data> data = new HashMap<String, Data>();
+    SqlRowSet mediaRowSet = jdbc.queryForRowSet(//
+    "SELECT FileName, FileExt, StoragePathUid, CreateDate" + //
+    " FROM dbo.Media" + //
+    " WHERE PatientUid = ?" + //
+    " AND EyeType = ? " + //
+    " AND Status = 1 " + //
+    " AND Display = 1 " + //
+    " ORDER BY CreateDate ASC", new Object[] { patientUUID, getEyeType().intValue() });
+
+    if(mediaRowSet.last()) {
       String storagePathUid = mediaRowSet.getString("StoragePathUid");
       String fileName = mediaRowSet.getString("FileName").trim();
       String extension = mediaRowSet.getString("FileExt").trim();
@@ -36,7 +46,10 @@ public abstract class EyeExtractor {
 
       byte[] imageByteArray = pathToByteArray(location, fileName, extension);
       data.put(getName(), new Data(DataType.DATA, imageByteArray));
+    } else {
+      log.warn("Missing Picture");
     }
+    return data;
   }
 
   private byte[] pathToByteArray(String location, String fileName, String extension) {

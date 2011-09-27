@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
@@ -30,15 +29,12 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
   private JdbcTemplate jdbc;
 
-  private Set<String> outVendorNames;
-
   private final String personUUID = "11111111-2222-3333-4444-555555555555";
 
   private final String patientUUID = personUUID;
 
   @Override
   public void initialize() {
-    outVendorNames = instrumentExecutionService.getExpectedOutputParameterVendorNames();
     initializeParticipantData();
   }
 
@@ -93,10 +89,10 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     availableExtractors.put(LeftEyeExtractor.name, LeftEyeExtractor.class);
     availableExtractors.put(RightEyeExtractor.name, RightEyeExtractor.class);
 
-    for(String vendorName : outVendorNames) {
+    for(String vendorName : instrumentExecutionService.getExpectedOutputParameterVendorNames()) {
       if(availableExtractors.keySet().contains(vendorName)) {
         EyeExtractor instance = instantiate(availableExtractors, vendorName);
-        instance.extractData(jdbc, data, patientUUID);
+        data.putAll(instance.extractData(jdbc, patientUUID));
       }
     }
     return data;
