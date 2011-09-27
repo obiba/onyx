@@ -107,9 +107,16 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
    */
   private void cleanData() {
     log.info("Cleaning Data");
-    jdbc.update("DELETE FROM dbo.Exams WHERE PatientUid = ?", patientUUID);
 
-    // Delete Pictures Files
+    deletePictureFiles();
+
+    jdbc.update("DELETE FROM dbo.Exams WHERE PatientUid = ?", patientUUID);
+    jdbc.update("DELETE FROM dbo.Media WHERE PatientUid = ?", patientUUID);
+    jdbc.update("DELETE FROM dbo.Patients WHERE PatientUid = ?", patientUUID);
+    jdbc.update("DELETE FROM dbo.Persons WHERE PersonUid = ?", personUUID);
+  }
+
+  private void deletePictureFiles() {
     SqlRowSet mediaRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ?", new Object[] { patientUUID });
     while(mediaRowSet.next()) {
       String storagePathUid = mediaRowSet.getString("StoragePathUid");
@@ -119,10 +126,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
       log.info("Deleting: " + location + "/" + fileName + extension);
       new File(location, fileName + extension).delete();
     }
-
-    jdbc.update("DELETE FROM dbo.Media WHERE PatientUid = ?", patientUUID);
-    jdbc.update("DELETE FROM dbo.Patients WHERE PatientUid = ?", patientUUID);
-    jdbc.update("DELETE FROM dbo.Persons WHERE PersonUid = ?", personUUID);
   }
 
   private EyeExtractor instantiate(Map<String, Class<? extends EyeExtractor>> extractors, String vendorName) {
