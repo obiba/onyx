@@ -62,7 +62,7 @@ public class PdfPrintingService implements InitializingBean {
       // Lookup all services
       PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
       for(PrintService ps : printServices) {
-        if(ps.getName().equalsIgnoreCase(printerName)) {
+        if(ps != null && printerName.equalsIgnoreCase(ps.getName())) {
           log.info("Using printer '{}'", ps.getName());
           this.printService = ps;
           break;
