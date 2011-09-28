@@ -295,7 +295,7 @@ public abstract class EditQuestionPanel extends Panel {
           case LIST_DROP_DOWN:
             question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : new DefaultQuestionPanelFactory().getBeanName());
             question.setMultiple(questionType == LIST_CHECKBOX);
-            if(question.getCategories().size() < 2) {
+            if(question.getCategories().size() < 1) {
               tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));
               target.addComponent(tabbedPanel);
               form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());

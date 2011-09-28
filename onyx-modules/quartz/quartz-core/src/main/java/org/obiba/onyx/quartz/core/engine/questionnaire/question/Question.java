@@ -161,8 +161,17 @@ public class Question implements IHasQuestion {
     if(isArrayOfJoinedCategories()) {
       throw new RuntimeException("Unsupported question type [Array of joined categories] for question " + getName());
     }
+
     int nbCategories = getQuestionCategories().size();
-    if(nbCategories == 1) return SINGLE_OPEN_ANSWER;
+    if(nbCategories == 1) {
+      Category cat = getCategories().get(0);
+      OpenAnswerDefinition open = cat.getOpenAnswerDefinition();
+      if(open != null && !open.hasChildOpenAnswerDefinitions()) {
+        return SINGLE_OPEN_ANSWER;
+      } else {
+        return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
+      }
+    }
     if(nbCategories > 1) {
       if(isMultiple()) return LIST_CHECKBOX;
       return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
