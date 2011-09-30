@@ -46,7 +46,7 @@ public class DicomServer {
     public DicomObject getDicomObject() throws IOException {
       DicomInputStream dis = new DicomInputStream(new FileInputStream(file));
       try {
-        return dis.getDicomObject();
+        return dis.readDicomObject();
       } finally {
         try {
           dis.close();
