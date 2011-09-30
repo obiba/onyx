@@ -11,9 +11,6 @@ package org.obiba.onyx.jade.instrument.topcon;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/**
- *
- */
 public class EyeExtractorQueryUtil {
   public static String getLocation(JdbcTemplate jdbc, String storagePathUid) {
     return jdbc.queryForObject("SELECT Location FROM dbo.StoragePaths WHERE StoragePathUid = ?", new Object[] { storagePathUid }, String.class);
