@@ -105,18 +105,15 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private static final String ID_PREFIX = "element_";
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnaireBundleManager questionnaireBundleManager;
 
@@ -159,6 +156,8 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   private ConfirmationDialog editingConfirmationDialog;
 
+  private ConfirmationDialog deleteConfirmationDialog;
+
   private ModalWindow copyQuestionWindow;
 
   /**
@@ -184,6 +183,11 @@ public abstract class QuestionnaireTreePanel extends Panel {
     editingConfirmationDialog.setTitle(new StringResourceModel("ConfirmCancel", this, null));
     editingConfirmationDialog.setContent(new MultiLineLabel(editingConfirmationDialog.getContentId(), new ResourceModel("CancelChanges")));
     add(editingConfirmationDialog);
+
+    deleteConfirmationDialog = new ConfirmationDialog("deleteConfirm");
+    deleteConfirmationDialog.setTitle(new StringResourceModel("ConfirmDeleteElement", this, null));
+    deleteConfirmationDialog.setContent(new MultiLineLabel(deleteConfirmationDialog.getContentId(), new ResourceModel("DeleteItem")));
+    add(deleteConfirmationDialog);
 
     copyQuestionWindow = new ModalWindow("copyQuestionWindow");
     copyQuestionWindow.setCssClassName("onyx");
@@ -440,12 +444,12 @@ public abstract class QuestionnaireTreePanel extends Panel {
 
   }
 
-  protected class DeleteBehavior extends AbstractDefaultAjaxBehavior {
-    @Override
-    protected void respond(AjaxRequestTarget target) {
-      deleteElement(RequestCycle.get().getRequest().getParameter("nodeId"), target);
-    }
-  }
+  // protected class DeleteBehavior extends AbstractDefaultAjaxBehavior {
+  // @Override
+  // protected void respond(AjaxRequestTarget target) {
+  // deleteElement(RequestCycle.get().getRequest().getParameter("nodeId"), target);
+  // }
+  // }
 
   private class PreviewBehavior extends AbstractDefaultAjaxBehavior {
 
@@ -568,7 +572,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       menuItems.add(new MenuItem(new StringResourceModel("Delete", QuestionnaireTreePanel.this, null), Images.DELETE) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          deleteElement(nodeId, target);
+          confirmDeleteElement(nodeId, target);
         }
       });
       IModel<String> title = new StringResourceModel("ItemPreview", QuestionnaireTreePanel.this, new Model<Section>(questionnaireFinder.findSection(node.getName())), new Object[] { new StringResourceModel("Section", QuestionnaireTreePanel.this, null), node.getName() });
@@ -596,7 +600,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       menuItems.add(new MenuItem(new StringResourceModel("Delete", QuestionnaireTreePanel.this, null), Images.DELETE) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          deleteElement(nodeId, target);
+          confirmDeleteElement(nodeId, target);
         }
       });
       show(pagePreviewPanel, title, QuartzImages.PAGE, menuItems, target);
@@ -641,7 +645,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       menuItems.add(new MenuItem(new StringResourceModel("Delete", QuestionnaireTreePanel.this, null), Images.DELETE) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          deleteElement(nodeId, target);
+          confirmDeleteElement(nodeId, target);
         }
       });
       show(questionPreviewPanel, title, QuartzImages.QUESTION, menuItems, target);
@@ -673,7 +677,7 @@ public abstract class QuestionnaireTreePanel extends Panel {
       menuItems.add(new MenuItem(new StringResourceModel("Delete", QuestionnaireTreePanel.this, null), Images.DELETE) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          deleteElement(nodeId, target);
+          confirmDeleteElement(nodeId, target);
         }
       });
       show(variablePreview, title, QuartzImages.VARIABLE, menuItems, target);
@@ -980,6 +984,25 @@ public abstract class QuestionnaireTreePanel extends Panel {
     show(variablePanel, new StringResourceModel("Variable", QuestionnaireTreePanel.this, null), QuartzImages.VARIABLE, null, target);
   }
 
+  private void confirmDeleteElement(final String nodeId, AjaxRequestTarget target) {
+    deleteConfirmationDialog.setYesButtonCallback(new OnYesCallback() {
+      @Override
+      public void onYesButtonClicked(AjaxRequestTarget target) {
+        deleteElement(nodeId, target);
+      }
+    });
+    deleteConfirmationDialog.setNoButtonCallback(new OnNoCallback() {
+      @Override
+      public void onNoButtonClicked(AjaxRequestTarget target) {
+      }
+    });
+    deleteConfirmationDialog.show(target);
+  }
+
+  /**
+   * @param nodeId
+   * @param target
+   */
   private void deleteElement(String nodeId, AjaxRequestTarget target) {
     @SuppressWarnings("unchecked")
     final Questionnaire questionnaire = ((IModel<Questionnaire>) QuestionnaireTreePanel.this.getDefaultModel()).getObject();
