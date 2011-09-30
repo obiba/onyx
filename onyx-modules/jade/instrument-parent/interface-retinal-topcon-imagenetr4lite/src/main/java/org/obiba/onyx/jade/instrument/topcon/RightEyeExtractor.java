@@ -19,8 +19,8 @@ public class RightEyeExtractor extends EyeExtractor {
   }
 
   @Override
-  public EyeType getEyeType() {
-    return EyeType.RIGHT;
+  public int getEyeTypeIntValue() {
+    return 2;
   }
 
 }

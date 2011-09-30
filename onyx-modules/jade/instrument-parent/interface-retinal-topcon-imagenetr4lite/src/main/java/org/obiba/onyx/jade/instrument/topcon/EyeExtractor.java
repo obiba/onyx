@@ -36,7 +36,7 @@ public abstract class EyeExtractor {
     " AND EyeType = ? " + //
     " AND Status = 1 " + //
     " AND Display = 1 " + //
-    " ORDER BY CreateDate ASC", new Object[] { patientUUID, getEyeType().intValue() });
+    " ORDER BY CreateDate ASC", new Object[] { patientUUID, getEyeTypeIntValue() });
 
     if(mediaRowSet.last()) {
       String storagePathUid = mediaRowSet.getString("StoragePathUid");
@@ -60,16 +60,16 @@ public abstract class EyeExtractor {
     }
   }
 
+  /**
+   * Vendor Name
+   * @return
+   */
   public abstract String getName();
 
-  public abstract EyeType getEyeType();
+  /**
+   * Value of EyeType in MSSQL of IMAGEnet
+   * @return
+   */
+  public abstract int getEyeTypeIntValue();
 
-  public enum EyeType {
-    LEFT, RIGHT;
-    public int intValue() {
-      if(this == LEFT) return 1;
-      else
-        return 2;
-    }
-  }
 }
