@@ -396,6 +396,19 @@
   </stage>
   
   <stage>
+    <name>UltrasoundGeVivid</name>
+    <module>jade</module>
+    <!--stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+      </stages>
+      <script>
+        $('Consent:accepted')
+      </script>
+    </stageDependencyCondition-->
+  </stage>
+  
+  <stage>
     <name>RetinalScan</name>
     <module>jade</module>
     <stageDependencyCondition class="scriptCondition">
