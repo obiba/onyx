@@ -3,8 +3,6 @@ package org.obiba.onyx.jade.instrument.topcon;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,11 +67,10 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
       }
     });
 
-    final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
     jdbc.update("insert into dbo.Patients (PatientUid, PatientIdentifier, PersonUid) values(?,?,?)", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, patientUUID);
-        ps.setString(2, "ONYX-" + formatter.format(new Date()));
+        ps.setString(2, instrumentExecutionService.getParticipantID());
         ps.setString(3, personUUID);
       }
     });
