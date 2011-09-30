@@ -93,13 +93,13 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
-    
-    <!-- Unsupported: we cannot have some repeated and some non-repeated parameters (unless they're COMPUTED)
+
     <output>
       <code>RES_AVG_SYSTOLIC</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
     </output>
 
     <output>
@@ -107,6 +107,7 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
     </output>
 
     <output>
@@ -114,8 +115,8 @@
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
     </output>
-     -->
 
   </instrumentParameters>
 </instrumentType>
