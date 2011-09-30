@@ -52,8 +52,7 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
       }
 
       public void onAvgResult(org.obiba.vsm.bptru.bpm.Data.AvgPressure result) {
-        // Unsupported: Onyx does not support repeating and non-repating parameters
-        // instrumentExcecutionService.addOutputParameterValues(asData(result));
+        instrumentExcecutionService.addOutputParameterValues(asData(result));
       };
     });
 
