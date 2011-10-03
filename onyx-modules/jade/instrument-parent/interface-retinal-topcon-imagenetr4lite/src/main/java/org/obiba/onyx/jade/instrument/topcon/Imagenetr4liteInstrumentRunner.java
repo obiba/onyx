@@ -3,16 +3,12 @@ package org.obiba.onyx.jade.instrument.topcon;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
-import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -42,7 +38,7 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     externalAppHelper.launch();
 
     log.info("Sending data to server");
-    instrumentExecutionService.addOutputParameterValues(retrieveData());
+    processData();
   }
 
   @Override
@@ -76,23 +72,11 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     });
   }
 
-  public Map<String, Data> retrieveData() {
-    log.info("Retrieving Data");
+  public void processData() {
+    log.info("Processing Data");
 
-    Map<String, Data> data = new HashMap<String, Data>();
-
-    Map<String, Class<? extends EyeExtractor>> availableExtractors = new HashMap<String, Class<? extends EyeExtractor>>();
-
-    availableExtractors.put(LeftEyeExtractor.name, LeftEyeExtractor.class);
-    availableExtractors.put(RightEyeExtractor.name, RightEyeExtractor.class);
-
-    for(String vendorName : instrumentExecutionService.getExpectedOutputParameterVendorNames()) {
-      if(availableExtractors.keySet().contains(vendorName)) {
-        EyeExtractor instance = instantiate(availableExtractors, vendorName);
-        data.putAll(instance.extractData(jdbc, patientUUID));
-      }
-    }
-    return data;
+    instrumentExecutionService.addOutputParameterValues((new LeftEyeExtractor()).extractData(jdbc, patientUUID));
+    instrumentExecutionService.addOutputParameterValues((new RightEyeExtractor()).extractData(jdbc, patientUUID));
   }
 
   /**
@@ -118,14 +102,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
       String location = EyeExtractorQueryUtil.getLocation(jdbc, storagePathUid);
       log.info("Deleting: " + location + "/" + fileName + extension);
       new File(location, fileName + extension).delete();
-    }
-  }
-
-  private EyeExtractor instantiate(Map<String, Class<? extends EyeExtractor>> extractors, String vendorName) {
-    try {
-      return BeanUtils.instantiate(extractors.get(vendorName));
-    } catch(Exception e) {
-      throw new RuntimeException(e);
     }
   }
 

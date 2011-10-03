@@ -26,6 +26,10 @@ public abstract class EyeExtractor {
 
   private static final Logger log = LoggerFactory.getLogger(EyeExtractor.class);
 
+  public static final String EYE_PICT_VENDOR = "EYE_PICT_VENDOR";
+
+  public static final String EYE_SIDE_VENDOR = "EYE_SIDE_VENDOR";
+
   public Map<String, Data> extractData(JdbcTemplate jdbc, String patientUUID) {
     log.info("Extracting Data");
     Map<String, Data> data = new HashMap<String, Data>();
@@ -45,7 +49,8 @@ public abstract class EyeExtractor {
       String location = EyeExtractorQueryUtil.getLocation(jdbc, storagePathUid);
 
       byte[] imageByteArray = pathToByteArray(location, fileName, extension);
-      data.put(getName(), new Data(DataType.DATA, imageByteArray));
+      data.put(EYE_PICT_VENDOR, new Data(DataType.DATA, imageByteArray));
+      data.put(EYE_SIDE_VENDOR, new Data(DataType.TEXT, getSideName()));
     } else {
       log.warn("Missing Picture");
     }
@@ -60,11 +65,7 @@ public abstract class EyeExtractor {
     }
   }
 
-  /**
-   * Vendor Name
-   * @return
-   */
-  public abstract String getName();
+  public abstract String getSideName();
 
   /**
    * Value of EyeType in MSSQL of IMAGEnet

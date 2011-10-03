@@ -11,10 +11,10 @@ package org.obiba.onyx.jade.instrument.topcon;
 
 public class RightEyeExtractor extends EyeExtractor {
 
-  public static String name = "RIGHT_EYE_VENDOR";
+  public static final String name = "RIGHT";
 
   @Override
-  public String getName() {
+  public String getSideName() {
     return name;
   }
 
