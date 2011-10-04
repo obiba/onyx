@@ -151,7 +151,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
         InstrumentOutputParameter parameter = getInstrumentOutputParameter(paramName);
         updateParameterValue(parameter, entry.getValue());
       }
-    } else {
+    } else if(!values.isEmpty()) {
       Measure measure = activeInstrumentRunService.addMeasure(values);
       List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
       MeasureStatus status = activeInstrumentRunService.checkIntegrity(outputParams, measure).isEmpty() ? MeasureStatus.VALID : MeasureStatus.INVALID;
