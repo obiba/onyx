@@ -16,6 +16,10 @@ div.wicket-modal {
   overflow: auto;
 }
 
+div.wicket-modal div.w_bottomRight {
+  cursor: se-resize !important;
+}
+
 /*************** Onyx Style Modal Window ********************/
 
 div.modal-footer {
