@@ -107,8 +107,8 @@ public class QuestionnaireListPanel extends Panel {
     modalWindow = new ModalWindow("modalWindow");
     modalWindow.setCssClassName("onyx");
     modalWindow.setInitialWidth(1100);
-    modalWindow.setInitialHeight(601);
-    modalWindow.setResizable(false);
+    modalWindow.setInitialHeight(801);
+    modalWindow.setResizable(true);
     modalWindow.setTitle(new ResourceModel("Questionnaire"));
 
     uploadWindow = new ModalWindow("uploadWindow");
