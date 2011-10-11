@@ -12,14 +12,14 @@ public abstract class FormMock extends Panel {
    */
   private static final long serialVersionUID = 1L;
 
-  public FormMock(String id, IModel model) {
+  public FormMock(String id, IModel<?> model) {
     super(id, model);
-    Form form = new Form("form");
+    Form<?> form = new Form("form");
     add(form);
     if(model.getObject() == null) throw new IllegalArgumentException("Null object in FormMock not accepted.");
     form.add(populateContent("content", model));
   }
 
-  public abstract Component populateContent(String id, IModel model);
+  public abstract Component populateContent(String id, IModel<?> model);
 
 }
