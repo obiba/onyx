@@ -11,21 +11,26 @@
 <instrumentType>
 
   <name>RetinalScan</name>
-      
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount>
+   
+  <allowPartial>true</allowPartial>
+  
   <instrumentParameters>
-
+	
     <output>
-      <vendorName>RIGHT_EYE_VENDOR</vendorName>
-      <code>RIGHT_EYE</code>
+      <vendorName>EYE_PICT_VENDOR</vendorName>
+      <code>EYE</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
+	  <mimeType>image/jpeg</mimeType>
     </output>
     
-     <output>
-      <vendorName>LEFT_EYE_VENDOR</vendorName>
-      <code>LEFT_EYE</code>
-      <dataType>DATA</dataType>
+    <output>
+      <vendorName>EYE_SIDE_VENDOR</vendorName>
+      <code>SIDE</code>
+      <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
