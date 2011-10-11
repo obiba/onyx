@@ -27,18 +27,22 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
     setOutputMarkupId(true);
   }
 
+  @Override
   protected Panel createCategoriesPanel(String id, IModel<Question> questionModel) {
     return new DefaultQuestionCategoriesPanel(id, questionModel);
   }
 
+  @Override
   protected Panel createQuetionListPanel(String id, IModel<Question> questionModel) {
     return new DefaultQuestionListPanel(id, new AnswerableChildQuesionProvider(questionModel));
   }
 
+  @Override
   protected Panel createSharedCategoriesPanel(String id, IModel<Question> questionModel) {
     return new DefaultQuestionSharedCategoriesPanel(id, questionModel, new AnswerableChildQuesionProvider(questionModel));
   }
 
+  @Override
   protected Panel createJoinedCategoriesPanel(String id, IModel<Question> questionModel) {
     throw new UnsupportedOperationException("Joined categories array questions not supported yet");
   }

@@ -1,0 +1,26 @@
+<wicket:panel>
+	<div wicket:id="media" />
+</wicket:panel>
+
+<wicket:fragment wicket:id="imageFragment">
+	<div wicket:id="images">
+		<img wicket:id="image" />
+	</div>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="audioFragment">
+	<audio controls="controls">
+		<wicket:container wicket:id="audio-source-container">
+			<source wicket:id="audio-source" />
+		</wicket:container>
+	</audio>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="videoFragment">
+	<video controls="controls">
+		<wicket:container wicket:id="video-source-container">
+			<source wicket:id="video-source" />
+		</wicket:container>
+	</video>
+</wicket:fragment>
+

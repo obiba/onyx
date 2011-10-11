@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia.MediaType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
@@ -39,6 +40,12 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   //
   // Constants
   //
+
+  private static final String VIDEO_DIR = "video";
+
+  private static final String AUDIO_DIR = "audio";
+
+  private static final String IMAGES_DIR = "images";
 
   public static final String LANGUAGE_FILE_BASENAME = "language";
 
@@ -129,9 +136,27 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   }
 
   @Override
+  @Deprecated
   public Resource getImageResource(String imageId) {
-    File imageDir = new File(bundleVersionDir, "images");
+    File imageDir = new File(bundleVersionDir, IMAGES_DIR);
     return new FileSystemResource(new File(imageDir, imageId));
+  }
+
+  @Override
+  public Resource getResource(String mediaId, MediaType mediaType) {
+    File dir = null;
+    switch(mediaType) {
+    case IMAGE:
+      dir = new File(bundleVersionDir, IMAGES_DIR);
+      break;
+    case AUDIO:
+      dir = new File(bundleVersionDir, AUDIO_DIR);
+      break;
+    case VIDEO:
+      dir = new File(bundleVersionDir, VIDEO_DIR);
+      break;
+    }
+    return new FileSystemResource(new File(dir, mediaId));
   }
 
   @Override
@@ -166,7 +191,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     }
   }
 
-  private String getPath(Locale locale) {
+  private static String getPath(Locale locale) {
     return LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION;
   }
 

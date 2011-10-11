@@ -58,7 +58,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     this.questionnaireProperties = new ArrayList<String>(Arrays.asList("label", "description", "labelNext", "labelPrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel", "conclusion"));
     this.sectionProperties = new ArrayList<String>(Arrays.asList("label"));
     this.pageProperties = new ArrayList<String>(Arrays.asList("label"));
-    this.questionProperties = new ArrayList<String>(Arrays.asList("label", "instructions", "caption", "help", "specifications", "categoryOrder"));
+    this.questionProperties = new ArrayList<String>(Arrays.asList("label", "instructions", "media", "caption", "help", "specifications", "categoryOrder"));
     this.categoryProperties = new ArrayList<String>(Arrays.asList("label"));
     this.openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
     this.propertyKeyNamingStrategy = new DefaultPropertyKeyNamingStrategy();

@@ -415,6 +415,12 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MAJOR_OPERATION5AGE").withSharedCategory(PNA, "8888");
     builder.inQuestion("MAJOR_OPERATION5AGE").withSharedCategory(DNK, "9999");
 
+    builder.withSection("MEDIA").withSection("DISPLAYING_MEDIA").withPage("38").withQuestion("MEDIA_DISPLAY_IMAGE");
+    builder.inPage("38").withQuestion("MEDIA_DISPLAY_AUDIO");
+    builder.inPage("38").withQuestion("MEDIA_DISPLAY_VIDEO");
+
+    builder.inSection("MEDIA").withSection("RECORDING_MEDIA").withPage("39").withQuestion("MEDIA_RECORD_AUDIO");
+
     return builder;
   }
 }

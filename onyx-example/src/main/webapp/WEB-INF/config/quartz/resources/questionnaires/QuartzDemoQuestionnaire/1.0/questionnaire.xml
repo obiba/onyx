@@ -1059,9 +1059,7 @@
                           </validators>
                           <validationDataSources id="460">
                             <comparingDataSource id="461" comparisonOperator="le">
-                              <dataSourceRight class="org.obiba.onyx.core.data.VariableDataSource" id="462">
-                                <path>QuartzDemoQuestionnaire:PARTICIPANT_AGE.PARTICIPANT_AGE.PARTICIPANT_AGE</path>
-                              </dataSourceRight>
+                              <dataSourceRight class="variableDataSource" id="462" path="QuartzDemoQuestionnaire:PARTICIPANT_AGE.PARTICIPANT_AGE.PARTICIPANT_AGE"/>
                             </comparingDataSource>
                           </validationDataSources>
                           <openAnswerDefinitions id="463"/>
@@ -1160,9 +1158,7 @@
                       </category>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="502">
-                    <path>QuartzDemoQuestionnaire:PREGNANT.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="502" path="QuartzDemoQuestionnaire:PREGNANT.Y"/>
                   <questions id="503"/>
                 </question>
               </questions>
@@ -1268,9 +1264,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="544">
-                    <path>QuartzDemoQuestionnaire:EVER_DRUNK_ALCOHOL.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="544" path="QuartzDemoQuestionnaire:EVER_DRUNK_ALCOHOL.Y"/>
                   <questions id="545"/>
                 </question>
               </questions>
@@ -1374,94 +1368,62 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="590" expression="$1 || $2 || $3 || $4 || $5 || $6 || $7 || $8" dataType="BOOLEAN">
                     <dataSources id="591">
-                      <org.obiba.onyx.core.data.VariableDataSource id="592">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.CIGARS_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="593">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.SMALL_CIGARS_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="594">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.PIPES_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="595">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.CHEWING_TOBACCO_SNUFF_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="596">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.BETEL_NUT_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="597">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.PAAN_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="598">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
-                      <org.obiba.onyx.core.data.VariableDataSource id="599">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.SHEESHA_EVER.Y</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="592" path="QuartzDemoQuestionnaire:EVER_USED.CIGARS_EVER.Y"/>
+                      <variableDataSource id="593" path="QuartzDemoQuestionnaire:EVER_USED.SMALL_CIGARS_EVER.Y"/>
+                      <variableDataSource id="594" path="QuartzDemoQuestionnaire:EVER_USED.PIPES_EVER.Y"/>
+                      <variableDataSource id="595" path="QuartzDemoQuestionnaire:EVER_USED.CHEWING_TOBACCO_SNUFF_EVER.Y"/>
+                      <variableDataSource id="596" path="QuartzDemoQuestionnaire:EVER_USED.BETEL_NUT_EVER.Y"/>
+                      <variableDataSource id="597" path="QuartzDemoQuestionnaire:EVER_USED.PAAN_EVER.Y"/>
+                      <variableDataSource id="598" path="QuartzDemoQuestionnaire:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y"/>
+                      <variableDataSource id="599" path="QuartzDemoQuestionnaire:EVER_USED.SHEESHA_EVER.Y"/>
                     </dataSources>
                   </condition>
                   <questions id="600">
                     <question id="601" name="CIGARS_CURRENT" number="1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="602"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="603">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.CIGARS_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="603" path="QuartzDemoQuestionnaire:EVER_USED.CIGARS_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="604"/>
                     </question>
                     <question id="605" name="SMALL_CIGARS_CURRENT" number="2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="606"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="607">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.SMALL_CIGARS_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="607" path="QuartzDemoQuestionnaire:EVER_USED.SMALL_CIGARS_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="608"/>
                     </question>
                     <question id="609" name="PIPES_CURRENT" number="3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="610"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="611">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.PIPES_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="611" path="QuartzDemoQuestionnaire:EVER_USED.PIPES_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="612"/>
                     </question>
                     <question id="613" name="CHEWING_TOBACCO_SNUFF_CURRENT" number="4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="614"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="615">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.CHEWING_TOBACCO_SNUFF_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="615" path="QuartzDemoQuestionnaire:EVER_USED.CHEWING_TOBACCO_SNUFF_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="616"/>
                     </question>
                     <question id="617" name="BETEL_NUT_CURRENT" number="5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="618"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="619">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.BETEL_NUT_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="619" path="QuartzDemoQuestionnaire:EVER_USED.BETEL_NUT_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="620"/>
                     </question>
                     <question id="621" name="PAAN_CURRENT" number="6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="622"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="623">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.PAAN_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="623" path="QuartzDemoQuestionnaire:EVER_USED.PAAN_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="624"/>
                     </question>
                     <question id="625" name="SHEESHA_CURRENT" number="7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="626"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="627">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.SHEESHA_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="627" path="QuartzDemoQuestionnaire:EVER_USED.SHEESHA_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="628"/>
                     </question>
                     <question id="629" name="OTHER_NICOTIN_PRODUCT_CURRENT" number="8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="630"/>
-                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="631">
-                        <path>QuartzDemoQuestionnaire:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y</path>
-                      </condition>
+                      <condition class="variableDataSource" id="631" path="QuartzDemoQuestionnaire:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y"/>
                       <parentQuestion reference="584"/>
                       <questions id="632"/>
                     </question>
@@ -1554,9 +1516,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="667">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BP</path>
-                  </condition>
+                  <condition class="variableDataSource" id="667" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BP"/>
                   <questions id="668"/>
                 </question>
                 <question id="669" name="MED_HIGH_BP" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -1579,9 +1539,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="675">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BP</path>
-                  </condition>
+                  <condition class="variableDataSource" id="675" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BP"/>
                   <questions id="676"/>
                 </question>
               </questions>
@@ -1605,9 +1563,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="684">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BLOOD_CHOL</path>
-                  </condition>
+                  <condition class="variableDataSource" id="684" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BLOOD_CHOL"/>
                   <questions id="685"/>
                 </question>
                 <question id="686" name="MED_HIGH_BLOOD_CHOL" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -1630,9 +1586,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="692">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BLOOD_CHOL</path>
-                  </condition>
+                  <condition class="variableDataSource" id="692" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HIGH_BLOOD_CHOL"/>
                   <questions id="693"/>
                 </question>
               </questions>
@@ -1656,9 +1610,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="701">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HEART_ATTACK</path>
-                  </condition>
+                  <condition class="variableDataSource" id="701" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HEART_ATTACK"/>
                   <questions id="702"/>
                 </question>
                 <question id="703" name="MED_HEART_ATTACK" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -1681,9 +1633,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="709">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HEART_ATTACK</path>
-                  </condition>
+                  <condition class="variableDataSource" id="709" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.HEART_ATTACK"/>
                   <questions id="710"/>
                 </question>
               </questions>
@@ -1707,9 +1657,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="718">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.ANGINA</path>
-                  </condition>
+                  <condition class="variableDataSource" id="718" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.ANGINA"/>
                   <questions id="719"/>
                 </question>
                 <question id="720" name="MED_ANGINA" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -1732,9 +1680,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="726">
-                    <path>QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.ANGINA</path>
-                  </condition>
+                  <condition class="variableDataSource" id="726" path="QuartzDemoQuestionnaire:CARDIOVASCULAR_CONDITIONS.ANGINA"/>
                   <questions id="727"/>
                 </question>
               </questions>
@@ -1823,9 +1769,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="763" expression="$1 &gt; 0" dataType="BOOLEAN">
                     <dataSources id="764">
-                      <org.obiba.onyx.core.data.VariableDataSource id="765">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="765" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="766"/>
@@ -1861,9 +1805,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="779" expression="$1 &gt; 0" dataType="BOOLEAN">
                     <dataSources id="780">
-                      <org.obiba.onyx.core.data.VariableDataSource id="781">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="781" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="782"/>
@@ -1891,9 +1833,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="790" expression="$1 &gt; 1" dataType="BOOLEAN">
                     <dataSources id="791">
-                      <org.obiba.onyx.core.data.VariableDataSource id="792">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="792" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="793"/>
@@ -1920,9 +1860,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="800" expression="$1 &gt; 1" dataType="BOOLEAN">
                     <dataSources id="801">
-                      <org.obiba.onyx.core.data.VariableDataSource id="802">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="802" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="803"/>
@@ -1950,9 +1888,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="811" expression="$1 &gt; 2" dataType="BOOLEAN">
                     <dataSources id="812">
-                      <org.obiba.onyx.core.data.VariableDataSource id="813">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="813" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="814"/>
@@ -1979,9 +1915,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="821" expression="$1 &gt; 2" dataType="BOOLEAN">
                     <dataSources id="822">
-                      <org.obiba.onyx.core.data.VariableDataSource id="823">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="823" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="824"/>
@@ -2009,9 +1943,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="832" expression="$1 &gt; 3" dataType="BOOLEAN">
                     <dataSources id="833">
-                      <org.obiba.onyx.core.data.VariableDataSource id="834">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="834" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="835"/>
@@ -2038,9 +1970,7 @@
                   </questionCategories>
                   <condition class="computingDataSource" id="842" expression="$1 &gt; 3" dataType="BOOLEAN">
                     <dataSources id="843">
-                      <org.obiba.onyx.core.data.VariableDataSource id="844">
-                        <path>QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER</path>
-                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <variableDataSource id="844" path="QuartzDemoQuestionnaire:RX_MEDICATION.MED_NUMBER.MED_NUMBER"/>
                     </dataSources>
                   </condition>
                   <questions id="845"/>
@@ -2106,9 +2036,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="870">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION1OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="870" path="QuartzDemoQuestionnaire:MAJOR_OPERATION1OCC.Y"/>
                   <questions id="871"/>
                 </question>
                 <question id="872" name="MAJOR_OPERATION1AGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2133,9 +2061,7 @@
                           </validators>
                           <validationDataSources id="882">
                             <comparingDataSource id="883" comparisonOperator="le">
-                              <dataSourceRight class="org.obiba.onyx.core.data.VariableDataSource" id="884">
-                                <path>QuartzDemoQuestionnaire:PARTICIPANT_AGE.PARTICIPANT_AGE.PARTICIPANT_AGE</path>
-                              </dataSourceRight>
+                              <dataSourceRight class="variableDataSource" id="884" path="QuartzDemoQuestionnaire:PARTICIPANT_AGE.PARTICIPANT_AGE.PARTICIPANT_AGE"/>
                             </comparingDataSource>
                           </validationDataSources>
                           <openAnswerDefinitions id="885"/>
@@ -2157,9 +2083,7 @@
                           </uIArguments>
                           <validationDataSources id="893">
                             <comparingDataSource id="894" comparisonOperator="ge">
-                              <dataSourceRight class="org.obiba.onyx.core.data.VariableDataSource" id="895">
-                                <path>QuartzDemoQuestionnaire:DOB_YEAR.DOB_YEAR.DOB_YEAR</path>
-                              </dataSourceRight>
+                              <dataSourceRight class="variableDataSource" id="895" path="QuartzDemoQuestionnaire:DOB_YEAR.DOB_YEAR.DOB_YEAR"/>
                             </comparingDataSource>
                             <comparingDataSource id="896" comparisonOperator="le">
                               <dataSourceRight class="currentDateSource" id="897">
@@ -2183,9 +2107,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="903">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION1OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="903" path="QuartzDemoQuestionnaire:MAJOR_OPERATION1OCC.Y"/>
                   <questions id="904"/>
                 </question>
                 <question id="905" name="MAJOR_OPERATION2OCC" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2208,9 +2130,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="911">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION1OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="911" path="QuartzDemoQuestionnaire:MAJOR_OPERATION1OCC.Y"/>
                   <questions id="912"/>
                 </question>
               </questions>
@@ -2234,9 +2154,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="920">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION2OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="920" path="QuartzDemoQuestionnaire:MAJOR_OPERATION2OCC.Y"/>
                   <questions id="921"/>
                 </question>
                 <question id="922" name="MAJOR_OPERATION2AGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2259,9 +2177,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="928">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION2OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="928" path="QuartzDemoQuestionnaire:MAJOR_OPERATION2OCC.Y"/>
                   <questions id="929"/>
                 </question>
                 <question id="930" name="MAJOR_OPERATION3OCC" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2284,9 +2200,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="936">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION2OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="936" path="QuartzDemoQuestionnaire:MAJOR_OPERATION2OCC.Y"/>
                   <questions id="937"/>
                 </question>
               </questions>
@@ -2310,9 +2224,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="945">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION3OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="945" path="QuartzDemoQuestionnaire:MAJOR_OPERATION3OCC.Y"/>
                   <questions id="946"/>
                 </question>
                 <question id="947" name="MAJOR_OPERATION3AGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2335,9 +2247,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="953">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION3OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="953" path="QuartzDemoQuestionnaire:MAJOR_OPERATION3OCC.Y"/>
                   <questions id="954"/>
                 </question>
                 <question id="955" name="MAJOR_OPERATION4OCC" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2360,9 +2270,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="961">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION3OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="961" path="QuartzDemoQuestionnaire:MAJOR_OPERATION3OCC.Y"/>
                   <questions id="962"/>
                 </question>
               </questions>
@@ -2386,9 +2294,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="970">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION4OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="970" path="QuartzDemoQuestionnaire:MAJOR_OPERATION4OCC.Y"/>
                   <questions id="971"/>
                 </question>
                 <question id="972" name="MAJOR_OPERATION4AGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2411,9 +2317,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="978">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION4OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="978" path="QuartzDemoQuestionnaire:MAJOR_OPERATION4OCC.Y"/>
                   <questions id="979"/>
                 </question>
                 <question id="980" name="MAJOR_OPERATION5OCC" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2436,9 +2340,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="986">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION4OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="986" path="QuartzDemoQuestionnaire:MAJOR_OPERATION4OCC.Y"/>
                   <questions id="987"/>
                 </question>
               </questions>
@@ -2462,9 +2364,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="995">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION5OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="995" path="QuartzDemoQuestionnaire:MAJOR_OPERATION5OCC.Y"/>
                   <questions id="996"/>
                 </question>
                 <question id="997" name="MAJOR_OPERATION5AGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
@@ -2487,9 +2387,7 @@
                       <category reference="43"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="1003">
-                    <path>QuartzDemoQuestionnaire:MAJOR_OPERATION5OCC.Y</path>
-                  </condition>
+                  <condition class="variableDataSource" id="1003" path="QuartzDemoQuestionnaire:MAJOR_OPERATION5OCC.Y"/>
                   <questions id="1004"/>
                 </question>
               </questions>
@@ -2499,43 +2397,53 @@
         </section>
       </sections>
     </section>
+    <section id="1006" name="MEDIA">
+      <pages id="1007"/>
+      <sections id="1008">
+        <section id="1009" name="DISPLAYING_MEDIA">
+          <parentSection reference="1006"/>
+          <pages id="1010">
+            <page id="1011" name="38" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="1009"/>
+              <questions id="1012">
+                <question id="1013" name="MEDIA_DISPLAY_IMAGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1011"/>
+                  <questionCategories id="1014"/>
+                  <questions id="1015"/>
+                </question>
+                <question id="1016" name="MEDIA_DISPLAY_AUDIO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1011"/>
+                  <questionCategories id="1017"/>
+                  <questions id="1018"/>
+                </question>
+                <question id="1019" name="MEDIA_DISPLAY_VIDEO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1011"/>
+                  <questionCategories id="1020"/>
+                  <questions id="1021"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="1022"/>
+        </section>
+        <section id="1023" name="RECORDING_MEDIA">
+          <parentSection reference="1006"/>
+          <pages id="1024">
+            <page id="1025" name="39" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="1023"/>
+              <questions id="1026">
+                <question id="1027" name="MEDIA_RECORD_AUDIO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1025"/>
+                  <questionCategories id="1028"/>
+                  <questions id="1029"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="1030"/>
+        </section>
+      </sections>
+    </section>
   </sections>
-  <pages id="1006">
-    <page reference="7"/>
-    <page reference="18"/>
-    <page reference="49"/>
-    <page reference="83"/>
-    <page reference="118"/>
-    <page reference="199"/>
-    <page reference="248"/>
-    <page reference="266"/>
-    <page reference="324"/>
-    <page reference="361"/>
-    <page reference="369"/>
-    <page reference="390"/>
-    <page reference="412"/>
-    <page reference="472"/>
-    <page reference="480"/>
-    <page reference="507"/>
-    <page reference="516"/>
-    <page reference="549"/>
-    <page reference="582"/>
-    <page reference="636"/>
-    <page reference="660"/>
-    <page reference="677"/>
-    <page reference="694"/>
-    <page reference="711"/>
-    <page reference="731"/>
-    <page reference="749"/>
-    <page reference="783"/>
-    <page reference="804"/>
-    <page reference="825"/>
-    <page reference="849"/>
-    <page reference="858"/>
-    <page reference="913"/>
-    <page reference="938"/>
-    <page reference="963"/>
-    <page reference="988"/>
-  </pages>
-  <variables id="1007"/>
+  <variables id="1031"/>
 </questionnaire>

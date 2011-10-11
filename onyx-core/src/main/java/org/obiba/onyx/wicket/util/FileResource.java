@@ -26,14 +26,21 @@ public class FileResource extends WebResource {
   // Instance Variables
   //
 
-  private File file;
+  private final File file;
+
+  private final String contentType;
 
   //
   // Constructors
   //
 
   public FileResource(File file) {
+    this(file, null);
+  }
+
+  public FileResource(File file, String contentType) {
     this.file = file;
+    this.contentType = contentType;
   }
 
   //
@@ -42,6 +49,18 @@ public class FileResource extends WebResource {
 
   @Override
   public IResourceStream getResourceStream() {
-    return new FileResourceStream(file);
+    return new FileResourceStream(file) {
+
+      private static final long serialVersionUID = -6064554737433421700L;
+
+      @Override
+      public String getContentType() {
+        return contentType;
+      }
+    };
+  }
+
+  public String getContentType() {
+    return contentType;
   }
 }

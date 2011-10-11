@@ -174,13 +174,10 @@ public abstract class QuestionPanel extends Panel {
     add(new HelpTooltipPanel("labelsHelp", new Model<String>(new StringResourceModel("LanguagesProperties.Tooltip", this, null).getString() + "<br /><img align=\"center\" src=\"" + RequestCycle.get().urlFor(new ResourceReference(QuestionPanel.class, "labels-with-help.png")) + "\" />")));
 
     Map<String, IModel<String>> labelsTooltips = new HashMap<String, IModel<String>>();
-    labelsTooltips.put("label", new ResourceModel("Question.Tooltip.label"));
-    labelsTooltips.put("instructions", new ResourceModel("Question.Tooltip.instructions"));
-    labelsTooltips.put("caption", new ResourceModel("Question.Tooltip.caption"));
-    labelsTooltips.put("help", new ResourceModel("Question.Tooltip.help"));
-    labelsTooltips.put("specifications", new ResourceModel("Question.Tooltip.specifications"));
-    labelsTooltips.put("categoryOrder", new ResourceModel("Question.Tooltip.categoryOrder"));
 
+    for(String key : questionnaireModel.getObject().getPropertyKeyProvider().getProperties(new Question())) {
+      labelsTooltips.put(key, new ResourceModel("Question.Tooltip." + key));
+    }
     add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow, question.getParentQuestion() != null, labelsTooltips));
   }
 
