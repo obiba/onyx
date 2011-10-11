@@ -73,11 +73,13 @@ public class MediaPanel extends Panel {
         add(new Label("media", new ResourceModel("UnsupportedMultipleMediaTypes")));
         return;
       }
-      try {
-        String filePath = StringUtils.substringBefore(mediaId, "|");
-        resources.add(new FileResource(bundle.getResource(filePath, media.getType()).getFile(), supportedMedia.getMimeType()));
-      } catch(IOException ex) {
-        // resource not found, nothing to do
+      if(media != null) {
+        try {
+          String filePath = StringUtils.substringBefore(mediaId, "|");
+          resources.add(new FileResource(bundle.getResource(filePath, media.getType()).getFile(), supportedMedia.getMimeType()));
+        } catch(IOException ex) {
+          // resource not found, nothing to do
+        }
       }
     }
     if(media == null || resources.isEmpty()) {
