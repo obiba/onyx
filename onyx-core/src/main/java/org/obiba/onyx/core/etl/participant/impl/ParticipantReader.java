@@ -39,7 +39,7 @@ import org.springframework.batch.item.UnexpectedInputException;
 /**
  * Default ItemReader for reading Participant items from an Excel workbook
  */
-public class ParticipantReader extends AbstractParticipantReader {
+public class ParticipantReader extends AbstractFileBasedParticipantReader {
 
   /**
    * Sheet number.

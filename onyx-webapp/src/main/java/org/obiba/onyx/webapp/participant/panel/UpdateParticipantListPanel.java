@@ -38,11 +38,11 @@ import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
-import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
+import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.Option;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 /**
@@ -60,7 +60,7 @@ public class UpdateParticipantListPanel extends Panel {
   private AppointmentManagementService appointmentManagementService;
 
   @SpringBean
-  private AbstractParticipantReader participantReader;
+  private IParticipantReader participantReader;
 
   //
   // Instance variables
@@ -307,10 +307,6 @@ public class UpdateParticipantListPanel extends Panel {
       this.appointmentUpdateStats = appointmentUpdateStats;
     }
 
-  }
-
-  public void setParticipantReader(AbstractParticipantReader participantReader) {
-    this.participantReader = participantReader;
   }
 
   public FeedbackWindow getFeedbackWindow() {

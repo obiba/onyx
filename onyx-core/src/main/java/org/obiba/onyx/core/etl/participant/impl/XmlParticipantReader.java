@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.XStreamException;
  * ItemReader for reading Participant items from an xml file. To use this reader: configure the participant-reader.xml
  * file under the cohort project
  */
-public class XmlParticipantReader extends AbstractParticipantReader {
+public class XmlParticipantReader extends AbstractFileBasedParticipantReader {
 
   /**
    * Maps attribute names to tag names.

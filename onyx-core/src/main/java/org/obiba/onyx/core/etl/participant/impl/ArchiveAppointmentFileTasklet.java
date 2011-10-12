@@ -17,6 +17,7 @@ import java.util.Date;
 import org.obiba.core.util.FileUtil;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
+import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -34,7 +35,7 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
 
   private Resource outputDirectory;
 
-  private AbstractParticipantReader participantReader;
+  private IParticipantReader participantReader;
 
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) throws Exception {
 
@@ -77,11 +78,16 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
   }
 
   private FilenameFilter getFilter() {
-    return (new FilenameFilter() {
+    if(participantReader instanceof AbstractFileBasedParticipantReader) {
+      return ((AbstractFileBasedParticipantReader) participantReader).getFilter();
+    }
+    return new FilenameFilter() {
+
+      @Override
       public boolean accept(File dir, String name) {
-        return participantReader.accept(dir, name);
+        return false;
       }
-    });
+    };
   }
 
   public void setInputDirectory(Resource inputDirectory) {
@@ -100,7 +106,7 @@ public class ArchiveAppointmentFileTasklet implements Tasklet {
     return outputDirectory;
   }
 
-  public void setParticipantReader(AbstractParticipantReader participantReader) {
+  public void setParticipantReader(IParticipantReader participantReader) {
     this.participantReader = participantReader;
   }
 
