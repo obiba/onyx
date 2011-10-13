@@ -94,7 +94,7 @@ public class AppointmentListUpdateListener {
 
     if(status.getExitCode().equals("COMPLETED")) {
       AppointmentUpdateStats appointmentUpdateStats = new AppointmentUpdateStats(stepExecution.getJobParameters().getDate("date"), getAddedParticipants(), getUpdatedParticipants(), getIgnoredParticipants(), getUnreadableParticipants());
-      appointmentUpdateStats.setFileName(stepExecution.getExecutionContext().get("fileName").toString());
+      appointmentUpdateStats.setFileName(stepExecution.getExecutionContext().getString("fileName", "<N/A>"));
       appointmentManagementService.saveAppointmentUpdateStats(appointmentUpdateStats);
     }
 
