@@ -75,7 +75,9 @@ class OnyxRequestCycle extends WebRequestCycle {
   private Page newErrorPage(Page page, String... messages) {
     Session.get().cleanupFeedbackMessages();
     for(String msg : messages) {
-      Session.get().error(msg);
+      if(msg != null) {
+        Session.get().error(msg);
+      }
     }
     Session.get().dirty();
 
