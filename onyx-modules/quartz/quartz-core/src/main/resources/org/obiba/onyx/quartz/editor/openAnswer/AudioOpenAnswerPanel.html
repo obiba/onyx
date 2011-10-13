@@ -1,0 +1,41 @@
+<wicket:panel>
+
+	<table class="keyValueTable">
+		<tr>
+			<td valign="top" class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+			<td><input wicket:id="name" type="text" size="40" autocomplete="off" /> <span wicket:id="nameHelp" /></td>
+		</tr>
+		<tr>
+			<td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
+			<td><input wicket:id="variable" type="text" size="40" autocomplete="off" /> <span wicket:id="variableHelp" /></td>
+		</tr>					
+	</table>
+	
+	<br />
+		
+	<fieldset>
+	
+		<legend><wicket:message key="AudioConfiguration" /></legend>
+
+		<table class="keyValueTable">
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="samplingRateLabel"></label></td>
+				<td><select wicket:id="samplingRate"></select> <span wicket:id="samplingRateHelp" /></td>
+			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey"><label wicket:id="maxDurationLabel"></label></td>
+				<td><input wicket:id="maxDuration" type="text" /> <span wicket:id="maxDurationHelp" /></td>			
+			</tr>
+			<tr>
+				<td valign="top" class="keyValueTableKey" colspan="2">
+					<span wicket:id="resultingSizeContainer"> 
+						<span wicket:id="resultingSize" /> 
+					</span>
+					<span wicket:id="resultingSizeHelp" />
+				</td>
+			</tr>
+		</table>
+
+	</fieldset>
+	
+</wicket:panel>

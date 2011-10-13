@@ -16,11 +16,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Check that questions have a type supported by the editor
  */
 public class StructureAnalyser {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final Questionnaire questionnaire;
 
@@ -42,6 +46,7 @@ public class StructureAnalyser {
         try {
           if(question.getType() == null) unsupportedTypes.put(question, "Unknown type");
         } catch(Exception e) {
+          logger.debug("Cannot detect question type", e);
           unsupportedTypes.put(question, e.getMessage());
         }
       }

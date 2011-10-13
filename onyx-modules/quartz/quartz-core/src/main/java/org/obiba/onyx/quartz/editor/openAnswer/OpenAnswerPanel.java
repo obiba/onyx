@@ -91,6 +91,7 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
+import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.util.data.ComparisonOperator;
@@ -111,20 +112,17 @@ import com.google.common.collect.Collections2;
  *
  */
 @SuppressWarnings("serial")
-public class OpenAnswerPanel extends Panel {
+public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OnyxSettings onyxSettings;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private OpenAnswerUtils openAnswerUtils;
 
@@ -422,7 +420,8 @@ public class OpenAnswerPanel extends Panel {
         } else {
           validatorWindow.setContent(new ValidationDataSourceWindow("content", new Model<ComparingDataSource>(), questionModel, questionnaireModel, dataTypeDropDown.getModelObject(), validatorWindow) {
             @Override
-            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, ComparingDataSource comparingDataSource) {
+            protected void onSave(@SuppressWarnings("hiding")
+            AjaxRequestTarget target, ComparingDataSource comparingDataSource) {
               openAnswer.addValidationDataSource(comparingDataSource);
               target.addComponent(validators);
             }
@@ -546,7 +545,8 @@ public class OpenAnswerPanel extends Panel {
     defaultValuesList = new SortableList<Data>("defaultValues", openAnswer.getDefaultValues(), true) {
 
       @Override
-      public Component getItemTitle(@SuppressWarnings("hiding") String id, Data data) {
+      public Component getItemTitle(@SuppressWarnings("hiding")
+      String id, Data data) {
         return new Label(id, data.getType() == DataType.DATE ? onyxSettings.getDateFormat().format(data.getValue()) : data.getValueAsString());
       }
 
@@ -635,7 +635,7 @@ public class OpenAnswerPanel extends Panel {
     }
   }
 
-  private String buildPressEnterScript(AjaxButton addButton) {
+  private static String buildPressEnterScript(AjaxButton addButton) {
     return "if (event.keyCode == 13) {document.getElementById('" + addButton.getMarkupId() + "').click(); return false;} else {return true;};";
   }
 
@@ -646,7 +646,7 @@ public class OpenAnswerPanel extends Panel {
     defaultValue.setType(getType(DataType.valueOf(value)));
   }
 
-  private boolean isValidStringEnum(String value) {
+  private static boolean isValidStringEnum(String value) {
     for(DataType data : DataType.values()) {
       if(data.name().equals(value)) return true;
     }
@@ -716,7 +716,7 @@ public class OpenAnswerPanel extends Panel {
     }
   }
 
-  private void addDefaultValue(OpenAnswerDefinition openAnswerDefinition, final String name) {
+  private static void addDefaultValue(OpenAnswerDefinition openAnswerDefinition, final String name) {
     Collection<Data> collectionEqualName = Collections2.filter(openAnswerDefinition.getDefaultValues(), new Predicate<Data>() {
 
       @Override
@@ -729,7 +729,7 @@ public class OpenAnswerPanel extends Panel {
     }
   }
 
-  private Class<?> getType(DataType dataType) {
+  private static Class<?> getType(DataType dataType) {
     switch(dataType) {
     case DATE:
       return Date.class;
@@ -748,6 +748,7 @@ public class OpenAnswerPanel extends Panel {
    * 
    * @param target
    */
+  @Override
   @SuppressWarnings("incomplete-switch")
   public void onSave(AjaxRequestTarget target) {
     if(!variableNameBehavior.isVariableNameDefined()) {
@@ -892,7 +893,7 @@ public class OpenAnswerPanel extends Panel {
     }
   }
 
-  private void clearAndHide(FormComponent<?>... components) {
+  private static void clearAndHide(FormComponent<?>... components) {
     if(components != null) {
       for(FormComponent<?> component : components) {
         component.setModelObject(null);
@@ -1003,7 +1004,8 @@ public class OpenAnswerPanel extends Panel {
         public void onClick(AjaxRequestTarget target) {
           validatorWindow.setContent(new ValidationDataSourceWindow("content", rowModel, questionModel, questionnaireModel, dataTypeDropDown.getModelObject(), validatorWindow) {
             @Override
-            protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, ComparingDataSource editedComparingDataSource) {
+            protected void onSave(@SuppressWarnings("hiding")
+            AjaxRequestTarget target, ComparingDataSource editedComparingDataSource) {
               OpenAnswerDefinition openAnswer = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
               openAnswer.removeValidationDataSource(comparingDataSource);
               openAnswer.addValidationDataSource(editedComparingDataSource);

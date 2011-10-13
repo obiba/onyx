@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
@@ -26,6 +27,7 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -167,10 +169,9 @@ public class Question implements IHasQuestion {
       Category cat = getCategories().get(0);
       OpenAnswerDefinition open = cat.getOpenAnswerDefinition();
       if(open != null && !open.hasChildOpenAnswerDefinitions()) {
-        return SINGLE_OPEN_ANSWER;
-      } else {
-        return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
+        return open.getUIArgumentsValueMap() != null && open.getUIArgumentsValueMap().containsKey(AudioOpenAnswerPanel.SAMPLING_RATE_KEY) ? SINGLE_AUDIO_RECORDING : SINGLE_OPEN_ANSWER;
       }
+      return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
     }
     if(nbCategories > 1) {
       if(isMultiple()) return LIST_CHECKBOX;
@@ -247,13 +248,13 @@ public class Question implements IHasQuestion {
    * @return
    */
   public List<QuestionCategory> getMissingQuestionCategories() {
-    List<QuestionCategory> questionCategories = new ArrayList<QuestionCategory>();
+    List<QuestionCategory> missingQuestionCategories = new ArrayList<QuestionCategory>();
     for(QuestionCategory questionCategory : getQuestionCategories()) {
       if(questionCategory.getCategory().isEscape()) {
-        questionCategories.add(questionCategory);
+        missingQuestionCategories.add(questionCategory);
       }
     }
-    return questionCategories;
+    return missingQuestionCategories;
   }
 
   public Map<String, Category> getCategoriesByName() {

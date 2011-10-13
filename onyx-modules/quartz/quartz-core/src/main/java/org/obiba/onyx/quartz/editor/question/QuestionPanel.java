@@ -9,6 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
 
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -110,26 +119,42 @@ public abstract class QuestionPanel extends Panel {
     List<QuestionType> typeChoices = null;
     if(useQuestionType) {
       if(forceAllowedType.length == 0) {
+
         QuestionType questionType = model.getObject().getQuestionType();
         if(questionType == null) {
           typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
         } else {
-          if(questionType == QuestionType.BOILER_PLATE) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.BOILER_PLATE));
-          } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER, QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
-          } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
+          switch(questionType) {
+
+          case BOILER_PLATE:
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(BOILER_PLATE));
+            break;
+
+          case SINGLE_OPEN_ANSWER:
+          case SINGLE_AUDIO_RECORDING:
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(SINGLE_OPEN_ANSWER, LIST_CHECKBOX, LIST_DROP_DOWN, LIST_RADIO, SINGLE_AUDIO_RECORDING));
+            break;
+
+          case LIST_CHECKBOX:
+          case LIST_DROP_DOWN:
+          case LIST_RADIO:
             List<QuestionType> asList = null;
             if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
-              asList = Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_RADIO);
+              asList = Arrays.asList(LIST_CHECKBOX, LIST_RADIO);
             } else {
-              asList = Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO);
+              asList = Arrays.asList(LIST_CHECKBOX, LIST_DROP_DOWN, LIST_RADIO);
             }
             typeChoices = new ArrayList<QuestionType>(asList);
-          } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+            break;
+
+          case ARRAY_CHECKBOX:
+          case ARRAY_RADIO:
+            typeChoices = new ArrayList<QuestionType>(Arrays.asList(ARRAY_CHECKBOX, ARRAY_RADIO));
+            break;
+
           }
         }
+
       } else {
         typeChoices = new ArrayList<QuestionType>(Arrays.asList(forceAllowedType));
       }
@@ -202,7 +227,7 @@ public abstract class QuestionPanel extends Panel {
       }
     }
     // update category name for single open answer
-    if(editedQuestion.getQuestionType() == QuestionType.SINGLE_OPEN_ANSWER) {
+    if(editedQuestion.getQuestionType() == SINGLE_OPEN_ANSWER || editedQuestion.getQuestionType() == SINGLE_AUDIO_RECORDING) {
       List<Category> categories = question.getCategories();
       if(!categories.isEmpty() && categories.size() == 1) {
         categories.get(0).setName(question.getName());

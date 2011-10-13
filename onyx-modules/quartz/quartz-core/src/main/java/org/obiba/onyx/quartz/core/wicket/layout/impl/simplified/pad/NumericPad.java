@@ -268,7 +268,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     if(size < 1) {
       size = 1;
     }
-    openField.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
+    openField.add(new AttributeAppender("size", new Model<String>(Integer.toString(size)), ""));
 
     // Transfer the validators of the OpenAnswer field to the numeric pad.
     for(IValidator dataValidator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {

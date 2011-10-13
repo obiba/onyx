@@ -41,6 +41,7 @@ import org.obiba.onyx.quartz.editor.category.CategoriesArrayPanel;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.question.array.ArrayRowsPanel;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
@@ -79,6 +80,8 @@ public abstract class EditQuestionPanel extends Panel {
   private final IModel<Questionnaire> questionnaireModel;
 
   private final SavableHidableTab openAnswerTab;
+
+  private final SavableHidableTab audioRecordingTab;
 
   private final HidableTab categoriesTab;
 
@@ -168,6 +171,47 @@ public abstract class EditQuestionPanel extends Panel {
     };
     openAnswerTab.setVisible(false);
 
+    audioRecordingTab = new SavableHidableTab(new ResourceModel("AudioRecording")) {
+
+      private AudioOpenAnswerPanel panel;
+
+      @Override
+      public Panel getPanel(String panelId) {
+        final OpenAnswerDefinition openAnswerDefinition;
+        if(panel == null) {
+          Category firstCategory = null;
+          if(question.getCategories().isEmpty()) {
+            openAnswerDefinition = new OpenAnswerDefinition();
+            openAnswerDefinition.setRequired(true);
+          } else {
+            firstCategory = question.getCategories().get(0);
+            openAnswerDefinition = firstCategory.getOpenAnswerDefinition();
+          }
+          panel = new AudioOpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(firstCategory), questionModel, questionnaireModel) {
+            @Override
+            public void onSave(AjaxRequestTarget target) {
+              super.onSave(target);
+              if(form.hasError()) return;
+              if(question.getCategories().isEmpty()) {
+                Category category = new Category(question.getName());
+                category.setOpenAnswerDefinition(openAnswerDefinition);
+                QuestionCategory questionCategory = new QuestionCategory();
+                questionCategory.setCategory(category);
+                question.addQuestionCategory(questionCategory);
+              }
+            }
+          };
+        }
+        return panel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
+      }
+    };
+    audioRecordingTab.setVisible(false);
+
     categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       private CategoriesPanel panel;
 
@@ -245,6 +289,7 @@ public abstract class EditQuestionPanel extends Panel {
     tabs.add(categoriesTab);
     tabs.add(rowsTab);
     tabs.add(columnsTab);
+    tabs.add(audioRecordingTab);
     final SavableHidableTab conditionTab = new SavableHidableTab(new ResourceModel("Conditions")) {
       private ConditionPanel panel;
 
@@ -320,6 +365,17 @@ public abstract class EditQuestionPanel extends Panel {
 
           case BOILER_PLATE:
             break;
+
+          case SINGLE_AUDIO_RECORDING:
+            audioRecordingTab.save(target);
+            if(form.hasError()) return;
+            if(question.getCategories().isEmpty() || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
+              tabbedPanel.setSelectedTab(tabs.indexOf(audioRecordingTab));
+              target.addComponent(tabbedPanel);
+              form.error(new StringResourceModel("Validator.AudioRecordingNotDefined", EditQuestionPanel.this, null).getObject());
+            }
+            break;
+
           }
         }
 
@@ -333,12 +389,14 @@ public abstract class EditQuestionPanel extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         EditQuestionPanel.this.onCancel(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
@@ -357,6 +415,7 @@ public abstract class EditQuestionPanel extends Panel {
       categoriesTab.setVisible(false);
       rowsTab.setVisible(false);
       columnsTab.setVisible(false);
+      audioRecordingTab.setVisible(false);
       break;
 
     case LIST_CHECKBOX:
@@ -366,6 +425,7 @@ public abstract class EditQuestionPanel extends Panel {
       openAnswerTab.setVisible(false);
       rowsTab.setVisible(false);
       columnsTab.setVisible(false);
+      audioRecordingTab.setVisible(false);
       break;
 
     case ARRAY_CHECKBOX:
@@ -374,9 +434,18 @@ public abstract class EditQuestionPanel extends Panel {
       columnsTab.setVisible(true);
       openAnswerTab.setVisible(false);
       categoriesTab.setVisible(false);
+      audioRecordingTab.setVisible(false);
       break;
 
     case BOILER_PLATE:
+      break;
+
+    case SINGLE_AUDIO_RECORDING:
+      audioRecordingTab.setVisible(true);
+      openAnswerTab.setVisible(false);
+      categoriesTab.setVisible(false);
+      rowsTab.setVisible(false);
+      columnsTab.setVisible(false);
       break;
     }
   }

@@ -7,24 +7,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.engine.questionnaire.question;
+package org.obiba.onyx.quartz.editor.utils;
+
+import org.apache.wicket.ajax.AjaxRequestTarget;
 
 /**
  *
  */
-public enum QuestionType {
+public interface SaveablePanel {
 
-  BOILER_PLATE, //
-
-  SINGLE_OPEN_ANSWER, //
-
-  LIST_RADIO, //
-  LIST_DROP_DOWN, //
-  LIST_CHECKBOX, //
-
-  ARRAY_RADIO, //
-  ARRAY_CHECKBOX, //
-
-  SINGLE_AUDIO_RECORDING;
+  void onSave(AjaxRequestTarget target);
 
 }

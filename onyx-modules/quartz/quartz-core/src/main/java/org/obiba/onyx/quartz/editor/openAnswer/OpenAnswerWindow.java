@@ -21,6 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
+import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -37,7 +38,7 @@ public abstract class OpenAnswerWindow extends Panel {
 
   private final Form<OpenAnswerDefinition> form;
 
-  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow, boolean audioRecording) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -49,13 +50,13 @@ public abstract class OpenAnswerWindow extends Panel {
     add(form = new Form<OpenAnswerDefinition>("form", model));
     form.setMultiPart(false);
 
-    final OpenAnswerPanel openAnswerPanel = new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+    final Panel openAnswerPanel = audioRecording ? new AudioOpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel) : new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
     form.add(openAnswerPanel);
 
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
-        openAnswerPanel.onSave(target);
+        ((SaveablePanel) openAnswerPanel).onSave(target);
         if(form.hasError()) return;
         OpenAnswerWindow.this.onSave(target, form.getModelObject());
         modalWindow.close(target);
@@ -68,7 +69,8 @@ public abstract class OpenAnswerWindow extends Panel {
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
+      Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }

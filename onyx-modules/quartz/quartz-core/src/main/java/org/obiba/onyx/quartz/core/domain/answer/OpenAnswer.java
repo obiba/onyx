@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,8 +29,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
-@Table(appliesTo = "open_answer", indexes = { @Index(name = "open_answer_definition_name_index",
-    columnNames = { "openAnswerDefinitionName" }) })
+@Table(appliesTo = "open_answer", indexes = { @Index(name = "open_answer_definition_name_index", columnNames = { "openAnswerDefinitionName" }) })
 public class OpenAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8772952316177874064L;
@@ -53,6 +53,18 @@ public class OpenAnswer extends AbstractEntity {
   @ManyToOne(optional = false)
   @JoinColumn(name = "category_answer_id")
   private CategoryAnswer categoryAnswer;
+
+  @Lob
+  @Column(length = Integer.MAX_VALUE)
+  private byte[] dataValue;
+
+  public byte[] getDataValue() {
+    return dataValue;
+  }
+
+  public void setDataValue(byte[] dataValue) {
+    this.dataValue = dataValue;
+  }
 
   public CategoryAnswer getCategoryAnswer() {
     return categoryAnswer;
