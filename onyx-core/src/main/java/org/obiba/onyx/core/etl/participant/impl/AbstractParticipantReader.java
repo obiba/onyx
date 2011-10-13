@@ -62,6 +62,9 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
 
   public void setColumnNameToAttributeNameMap(Map<String, String> columnNameToAttributeNameMap) {
     if(columnNameToAttributeNameMap != null) {
+      if(this.columnNameToAttributeNameMap == null) {
+        this.columnNameToAttributeNameMap = new HashMap<String, String>();
+      }
       // Add map entries to columnNameToAttributeNameMap. Convert all keys to UPPERCASE.
       Iterator<Map.Entry<String, String>> mapIter = columnNameToAttributeNameMap.entrySet().iterator();
       while(mapIter.hasNext()) {

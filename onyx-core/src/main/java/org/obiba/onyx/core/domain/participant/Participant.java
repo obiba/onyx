@@ -161,7 +161,7 @@ public class Participant extends AbstractEntity {
   }
 
   public void setGenderAsData(Data gender) {
-    setGender(gender.getValue() != null ? Gender.valueOf((String) gender.getValue()) : null);
+    setGender(gender.getValue() != null ? Gender.valueOf(((String) gender.getValue()).toUpperCase()) : null);
   }
 
   public Date getBirthDate() {
@@ -391,6 +391,15 @@ public class Participant extends AbstractEntity {
 
   }
 
+  public void setEssentialAttributeValue(String attributeName, Data value) {
+    Assert.notNull("Null attribute name", attributeName);
+    String fieldName = getEssentialAttributeDataFieldName(attributeName);
+    if(fieldName != null) {
+      BeanWrapper participantBean = new BeanWrapperImpl(this);
+      participantBean.setPropertyValue(fieldName, value);
+    }
+  }
+
   public String getEssentialAttributeDataFieldName(String attributeName) {
     String fieldName = essentialAttributeToFieldNameMap.get(attributeName);
     if(fieldName != null) {
@@ -449,6 +458,21 @@ public class Participant extends AbstractEntity {
     // is null.
     if(data != null) {
       getConfiguredAttributeValues().add(newParticipantAttributeValue(attributeName, data));
+    }
+  }
+
+  /**
+   * Sets an essential attribute or configured attribute's value
+   * @param attributeName the name of the attribute to set
+   * @param data its new value (can be null)
+   */
+  public void setAttributeValue(String attributeName, Data data) {
+    String fieldName = essentialAttributeToFieldNameMap.get(attributeName);
+    if(fieldName != null) {
+      // a field
+      setEssentialAttributeValue(attributeName, data);
+    } else {
+      setConfiguredAttributeValue(attributeName, data);
     }
   }
 
