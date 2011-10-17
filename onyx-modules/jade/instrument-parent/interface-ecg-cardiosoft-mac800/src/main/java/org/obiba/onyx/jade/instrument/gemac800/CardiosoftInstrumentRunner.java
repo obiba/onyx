@@ -256,7 +256,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
     try {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
-        if(!pd.getName().equalsIgnoreCase("doc") && !pd.getName().equalsIgnoreCase("xpath") && !pd.getName().equalsIgnoreCase("xmldocument") && !pd.getName().equalsIgnoreCase("class")) {
+        if(instrumentExecutionService.hasOutputParameter(pd.getName())) {
           Object value = pd.getReadMethod().invoke(resultParser);
           if(value != null) {
             if(value instanceof Long) {
@@ -363,7 +363,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     window.pack();
 
     // Make sure dialog stays on top of all other application windows.
-    window.setAlwaysOnTop(true);
+    window.setAlwaysOnTop(false);
     window.setLocationByPlatform(true);
 
     // Center dialog horizontally at the bottom of the screen.
