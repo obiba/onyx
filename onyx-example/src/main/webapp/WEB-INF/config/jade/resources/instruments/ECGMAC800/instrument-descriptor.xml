@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>ECGMAC800</name>
+
+  <instrumentParameters>
+    <input>
+      <code>INPUT_PARTICIPANT_BARCODE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="hashedDataSource">  
+        <hashedStringMaxLength>30</hashedStringMaxLength>  
+        <dataSource class="participantPropertyDataSource">
+          <property>barcode</property>
+        </dataSource>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_LAST_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="hashedDataSource">  
+        <hashedStringMaxLength>30</hashedStringMaxLength>  
+        <dataSource class="participantPropertyDataSource">
+          <property>lastName</property>
+        </dataSource>    
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_FIRST_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="hashedDataSource">  
+        <hashedStringMaxLength>30</hashedStringMaxLength>     
+        <dataSource class="participantPropertyDataSource">
+          <property>firstName</property>
+        </dataSource>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_BIRTH_YEAR</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>birthYear</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_BIRTH_MONTH</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>birthMonth</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_BIRTH_DAY</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>birthDay</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_GENDER</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>gender</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">CAUCASIAN</data>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_PACEMAKER</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">1</data>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">1</data>
+      </dataSource>
+    </input>
+
+    <input>
+      <code>INPUT_PARTICIPANT_WEIGHT</code>
+      <measurementUnit>hg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">1</data>
+      </dataSource>
+    </input>
+
+    <output>
+      <vendorName>participantID</vendorName>
+      <code>OUTPUT_PARTICIPANT_BARCODE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit/>
+      <integrityChecks>
+        <equalsParameterCheck>
+          
+          <parameterCode>INPUT_PARTICIPANT_BARCODE</parameterCode>
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <vendorName>time</vendorName>
+      <code>RES_MEASUREMENT_TIME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>date</vendorName>
+      <code>RES_MEASUREMENT_DATE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>diagnosis</vendorName>
+      <code>RES_DIAGNOSIS</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>filterSetting</vendorName>
+      <code>RES_FILTER_SETTINGS</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>diagnosisVersion</vendorName>
+      <code>RES_DIAGNOSIS_VERSION</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>ventricularRate</vendorName>
+      <code>RES_VENTRICULAR_RATE</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>BPM</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>PQInterval</vendorName>
+      <code>RES_PQ_INTERVAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>   
+    </output>
+
+    <output>
+      <vendorName>PDuration</vendorName>
+      <code>RES_P_DURATION</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <condition class="fixedDataSource">
+         <data type="BOOLEAN">false</data>
+      </condition>    
+    </output>
+    
+    <output>
+      <vendorName>QRsDuration</vendorName>
+      <code>RES_QRS_DURATION</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>QTInterval</vendorName>
+      <code>RES_QT_INTERVAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>QTCInterval</vendorName>
+      <code>RES_QTC_INTERVAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>RRInterval</vendorName>
+      <code>RES_RR_INTERVAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>PPInterval</vendorName>
+      <code>RES_PP_INTERVAL</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>PAxis</vendorName>
+      <code>RES_P_AXIS</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>degree</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>RAxis</vendorName>
+      <code>RES_R_AXIS</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>degree</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>TAxis</vendorName>
+      <code>RES_T_AXIS</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>degree</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>QRSNum</vendorName>
+      <code>RES_QRS_NUMBER</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>POnset</vendorName>
+      <code>RES_P_ONSET</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>POffset</vendorName>
+      <code>RES_P_OFFSET</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>QOnset</vendorName>
+      <code>RES_Q_ONSET</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>QOffset</vendorName>
+      <code>RES_Q_OFFSET</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>TOffset</vendorName>
+      <code>RES_T_OFFSET</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>xmlFile</vendorName>
+      <code>RES_XML_FILE</code>
+      <dataType>DATA</dataType>
+      <mimeType>text/xml</mimeType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+  </instrumentParameters>
+</instrumentType>
