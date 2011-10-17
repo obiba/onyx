@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.jade.instrument.gehealthcare;
+package org.obiba.onyx.jade.instrument.gemac800;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;

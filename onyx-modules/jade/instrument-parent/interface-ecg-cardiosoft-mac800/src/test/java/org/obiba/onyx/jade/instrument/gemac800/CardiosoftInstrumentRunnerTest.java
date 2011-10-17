@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.jade.instrument.gehealthcare;
+package org.obiba.onyx.jade.instrument.gemac800;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
@@ -34,6 +34,8 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
+import org.obiba.onyx.jade.instrument.gemac800.CardiosoftInstrumentResultParser;
+import org.obiba.onyx.jade.instrument.gemac800.CardiosoftInstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
@@ -72,8 +74,6 @@ public class CardiosoftInstrumentRunnerTest {
     exportPath.mkdir();
     cardiosoftInstrumentRunner.setExportPath(exportPath.getPath());
 
-    cardiosoftInstrumentRunner.setPdfFileNameRestingEcg("EcgResting.pdf");
-    cardiosoftInstrumentRunner.setPdfFileNameFullEcg("EcgFull.pdf");
     cardiosoftInstrumentRunner.setSettingsFileName("CARDIO.INI");
     cardiosoftInstrumentRunner.setWinSettingsFileName("WIN.INI");
     cardiosoftInstrumentRunner.setXmlFileName("Ecg.XML");
@@ -192,8 +192,6 @@ public class CardiosoftInstrumentRunnerTest {
     (new FileOutputStream(new File(cardiosoftInstrumentRunner.getCardioPath(), cardiosoftInstrumentRunner.getSettingsFileName()))).write((byte) 234432141);
 
     // Copy the results file + PDF file to test directory.
-    FileUtil.copyFile(new File(getClass().getResource("/EcgResting.pdf").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameRestingEcg()));
-    FileUtil.copyFile(new File(getClass().getResource("/EcgFull.pdf").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameFullEcg()));
     FileUtil.copyFile(new File(getClass().getResource("/Ecg.XML").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getXmlFileName()));
 
   }
@@ -210,8 +208,5 @@ public class CardiosoftInstrumentRunnerTest {
 
     // Make sure result files have been deleted.
     Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getXmlFileName()).exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameRestingEcg()).exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileNameFullEcg()).exists());
-
   }
 }

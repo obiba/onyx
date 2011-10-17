@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.jade.instrument.gehealthcare;
+package org.obiba.onyx.jade.instrument.gemac800;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -79,10 +79,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   private String executableForParticipantInfo;
 
   private String xmlFileName;
-
-  private String pdfFileNameRestingEcg;
-
-  private String pdfFileNameFullEcg;
 
   private ResourceBundle ecgResourceBundle;
 
@@ -188,22 +184,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     this.xmlFileName = xmlFileName;
   }
 
-  public String getPdfFileNameRestingEcg() {
-    return pdfFileNameRestingEcg;
-  }
-
-  public void setPdfFileNameRestingEcg(String pdfFileNameRestingEcg) {
-    this.pdfFileNameRestingEcg = pdfFileNameRestingEcg;
-  }
-
-  public String getPdfFileNameFullEcg() {
-    return pdfFileNameFullEcg;
-  }
-
-  public void setPdfFileNameFullEcg(String pdfFileNameFullEcg) {
-    this.pdfFileNameFullEcg = pdfFileNameFullEcg;
-  }
-
   /**
    * Replace the instrument configuration file if needed Delete the result database and files
    * @throws Exception
@@ -222,15 +202,15 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     };
 
     try {
-      File[] backupDatabaseFiles = new File(getInitPath()).listFiles(filter);
+      File[] backupDatabaseFiles = new File(getCardioPath(), getInitPath()).listFiles(filter);
       if(backupDatabaseFiles.length > 0) {
         for(int i = 0; i < backupDatabaseFiles.length; i++) {
-          FileUtil.copyFile(backupDatabaseFiles[i], new File(getDatabasePath(), backupDatabaseFiles[i].getName()));
+          FileUtil.copyFile(backupDatabaseFiles[i], new File(getCardioPath() + "/" + getDatabasePath(), backupDatabaseFiles[i].getName()));
         }
       } else {
-        File[] databaseFiles = new File(getDatabasePath()).listFiles(filter);
+        File[] databaseFiles = new File(getCardioPath(), getDatabasePath()).listFiles(filter);
         for(int i = 0; i < databaseFiles.length; i++) {
-          FileUtil.copyFile(databaseFiles[i], new File(getInitPath(), databaseFiles[i].getName()));
+          FileUtil.copyFile(databaseFiles[i], new File(getCardioPath() + "/" + getInitPath(), databaseFiles[i].getName()));
         }
       }
 
@@ -239,7 +219,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     }
 
     // Delete BTrieve record file.
-    File btrRecordFile = new File(getDatabasePath(), getBtrRecordFileName());
+    File btrRecordFile = new File(getCardioPath() + "/" + getDatabasePath(), getBtrRecordFileName());
     if(!btrRecordFile.delete()) {
       log.warn("Could not delete BTrieve record file.");
     }
@@ -249,26 +229,16 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       log.warn("Could not delete Cardiosoft XML output file!");
     }
 
-    reportFile = new File(getExportPath(), getPdfFileNameRestingEcg());
-    if(!reportFile.delete()) {
-      log.warn("Could not delete Resting Ecg PDF output file!");
-    }
-
-    reportFile = new File(getExportPath(), getPdfFileNameFullEcg());
-    if(!reportFile.delete()) {
-      log.warn("Could not delete Full Ecg PDF output file!");
-    }
-
   }
 
   private void overwriteIniFile(String settingsFileName) {
-    File backupSettingsFile = new File(getInitPath(), settingsFileName);
+    File backupSettingsFile = new File(getCardioPath() + "/" + getInitPath(), settingsFileName);
     File currentSettingsFile = new File(getCardioPath(), settingsFileName);
     try {
       if(backupSettingsFile.exists()) {
         FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
       } else {
-        new File(getInitPath()).mkdir();
+        new File(getCardioPath(), getInitPath()).mkdir();
         FileUtil.copyFile(currentSettingsFile, backupSettingsFile);
       }
     } catch(Exception ex) {
@@ -323,23 +293,19 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath(), getXmlFileName());
+      log.info("Expected XML file path: {}", xmlFile.getAbsolutePath());
       outputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
-
-      File pdfRestingEcgFile = new File(getExportPath(), getPdfFileNameRestingEcg());
-      outputToSend.put("pdfFile", DataBuilder.buildBinary(pdfRestingEcgFile));
-
-      File pdfFullEcgFile = new File(getExportPath(), getPdfFileNameFullEcg());
-      outputToSend.put("pdfFileFull", DataBuilder.buildBinary(pdfFullEcgFile));
 
       instrumentExecutionService.addOutputParameterValues(outputToSend);
 
     } catch(Exception e) {
+      log.debug("Sending data to server failed.", e);
       throw new RuntimeException(e);
     }
   }
 
   private void initParticipantData() {
-    File participantDataFile = new File(getDatabasePath() + getBtrRecordFileName());
+    File participantDataFile = new File(getCardioPath() + "/" + getDatabasePath(), getBtrRecordFileName());
     try {
       Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_BIRTH_YEAR", "INPUT_PARTICIPANT_BIRTH_MONTH", "INPUT_PARTICIPANT_BIRTH_DAY", "INPUT_PARTICIPANT_PACEMAKER");
 
@@ -358,7 +324,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     command.add(getExecutableForParticipantInfo() + " " + getBtrRecordFileName() + " " + getBtrDatabaseFileName());
 
     ProcessBuilder builder = new ProcessBuilder(command);
-    builder.directory(new File(getDatabasePath()));
+    builder.directory(new File(getCardioPath(), getDatabasePath()));
 
     try {
       log.info("Executing command '{}'", command);
