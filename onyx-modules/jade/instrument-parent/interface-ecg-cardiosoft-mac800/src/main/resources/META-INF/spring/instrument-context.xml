@@ -13,8 +13,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="exportPath" value="${org.obiba.onyx.jade.instrument.gemac800.exportDir}"/>
     <property name="settingsFileName" value="CARDIO.INI"/>
     <property name="winSettingsFileName" value="WIN.INI"/>
-    <property name="btrRecordFileName" value="btr-record.dat"/>
-    <property name="btrDatabaseFileName" value="PATIENT.BTR"/>
     <property name="xmlFileName" value="${org.obiba.onyx.jade.instrument.gemac800.exportXMLFile}"/>    
     <property name="executableForParticipantInfo" value="butil.exe -LOAD"/>
     <property name="locale" ref="locale"/>     

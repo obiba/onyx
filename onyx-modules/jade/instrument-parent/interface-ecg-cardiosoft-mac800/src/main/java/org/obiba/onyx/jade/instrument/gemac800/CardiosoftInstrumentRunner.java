@@ -19,12 +19,8 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -71,10 +67,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   private String settingsFileName;
 
   private String winSettingsFileName;
-
-  private String btrRecordFileName;
-
-  private String btrDatabaseFileName;
 
   private String executableForParticipantInfo;
 
@@ -152,22 +144,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     this.winSettingsFileName = winSettingsFileName;
   }
 
-  public String getBtrRecordFileName() {
-    return btrRecordFileName;
-  }
-
-  public void setBtrRecordFileName(String btrRecordFileName) {
-    this.btrRecordFileName = btrRecordFileName;
-  }
-
-  public String getBtrDatabaseFileName() {
-    return btrDatabaseFileName;
-  }
-
-  public void setBtrDatabaseFileName(String btrDatabaseFileName) {
-    this.btrDatabaseFileName = btrDatabaseFileName;
-  }
-
   public String getExecutableForParticipantInfo() {
     return executableForParticipantInfo;
   }
@@ -218,12 +194,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       throw new RuntimeException("Error initializing ECG database files", couldNotInitDbs);
     }
 
-    // Delete BTrieve record file.
-    File btrRecordFile = new File(getCardioPath() + "/" + getDatabasePath(), getBtrRecordFileName());
-    if(!btrRecordFile.delete()) {
-      log.warn("Could not delete BTrieve record file.");
-    }
-
     File reportFile = new File(getExportPath(), getXmlFileName());
     if(!reportFile.delete()) {
       log.warn("Could not delete Cardiosoft XML output file!");
@@ -247,7 +217,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   }
 
   /**
-   * Place the results and xml and pdf files into a map object to send them to the server for persistence
+   * Place the results and xml file into a map object to send them to the server for persistence
    * @param resultParser
    * @throws Exception
    */
@@ -304,42 +274,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     }
   }
 
-  private void initParticipantData() {
-    File participantDataFile = new File(getCardioPath() + "/" + getDatabasePath(), getBtrRecordFileName());
-    try {
-      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_BIRTH_YEAR", "INPUT_PARTICIPANT_BIRTH_MONTH", "INPUT_PARTICIPANT_BIRTH_DAY", "INPUT_PARTICIPANT_PACEMAKER");
-
-      FileOutputStream participantDataOuputStream = new FileOutputStream(participantDataFile);
-      BtrInputGenerator inputGenerator = new BtrInputGenerator();
-      participantDataOuputStream.write((inputGenerator.generateByteBuffer(inputData)).array());
-      participantDataOuputStream.close();
-
-    } catch(Exception ex) {
-      throw new RuntimeException("Error writing ecg participant data file: ", ex);
-    }
-
-    List<String> command = new ArrayList<String>();
-    command.add("cmd");
-    command.add("/c");
-    command.add(getExecutableForParticipantInfo() + " " + getBtrRecordFileName() + " " + getBtrDatabaseFileName());
-
-    ProcessBuilder builder = new ProcessBuilder(command);
-    builder.directory(new File(getCardioPath(), getDatabasePath()));
-
-    try {
-      log.info("Executing command '{}'", command);
-      Process process = builder.start();
-      log.info("Waiting for process '{}'", process);
-      process.waitFor();
-    } catch(IOException e) {
-      log.error("Could not create external process.", e);
-      throw new RuntimeException(e);
-    } catch(InterruptedException e) {
-      log.error("Error waiting for process to end.", e);
-      throw new RuntimeException(e);
-    }
-  }
-
   /**
    * Create an information dialog that tells the user to wait while the data is being processed.
    */
@@ -381,7 +315,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   public void initialize() {
     showProcessingDialog();
     deleteDeviceData();
-    initParticipantData();
   }
 
   /**

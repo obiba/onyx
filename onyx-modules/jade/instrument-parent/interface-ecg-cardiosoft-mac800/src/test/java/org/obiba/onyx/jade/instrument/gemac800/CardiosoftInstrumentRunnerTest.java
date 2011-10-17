@@ -34,8 +34,6 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
-import org.obiba.onyx.jade.instrument.gemac800.CardiosoftInstrumentResultParser;
-import org.obiba.onyx.jade.instrument.gemac800.CardiosoftInstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
@@ -66,8 +64,6 @@ public class CardiosoftInstrumentRunnerTest {
     File databasePath = new File(cardioSoftSimulatedPath, "DATABASE");
     databasePath.mkdir();
     cardiosoftInstrumentRunner.setDatabasePath(databasePath.getPath());
-    cardiosoftInstrumentRunner.setBtrRecordFileName("btr-record.dat");
-    cardiosoftInstrumentRunner.setBtrDatabaseFileName("PATIENT.BTR");
 
     // Cardiosoft output path.
     File exportPath = new File(cardioSoftSimulatedPath, "EXPORT");
