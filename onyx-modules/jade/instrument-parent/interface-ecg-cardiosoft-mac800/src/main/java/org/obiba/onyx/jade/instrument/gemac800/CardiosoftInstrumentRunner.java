@@ -195,7 +195,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     }
 
     File reportFile = new File(getExportPath(), getXmlFileName());
-    if(!reportFile.delete()) {
+    if(reportFile.exists() && !reportFile.delete()) {
       log.warn("Could not delete Cardiosoft XML output file!");
     }
 
