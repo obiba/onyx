@@ -33,13 +33,6 @@
     </output>
 
     <output>
-      <vendorName>diagnosisVersion</vendorName>
-      <code>RES_DIAGNOSIS_VERSION</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-    </output>
-
-    <output>
       <vendorName>ventricularRate</vendorName>
       <code>RES_VENTRICULAR_RATE</code>
       <dataType>INTEGER</dataType>

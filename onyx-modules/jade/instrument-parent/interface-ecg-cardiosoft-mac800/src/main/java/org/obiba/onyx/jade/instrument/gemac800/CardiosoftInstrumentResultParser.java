@@ -69,8 +69,6 @@ public class CardiosoftInstrumentResultParser {
   private Long participantPacemaker;
 
   // Resting ECG Measurements
-  private String diagnosisVersion;
-
   private Long ventricularRate;
 
   private Long pQInterval;
@@ -172,10 +170,6 @@ public class CardiosoftInstrumentResultParser {
 
   public String getFilterSetting() {
     return filterSetting;
-  }
-
-  public String getDiagnosisVersion() {
-    return diagnosisVersion;
   }
 
   public Long getVentricularRate() {
@@ -337,7 +331,6 @@ public class CardiosoftInstrumentResultParser {
    * @throws XPathExpressionException
    */
   private void extractRestingEcgMeasurements() throws XPathExpressionException {
-    diagnosisVersion = xpath.evaluate("//RestingECGMeasurements/DiagnosisVersion/text()", doc, XPathConstants.STRING).toString();
     ventricularRate = extractMeasurement("VentricularRate");
     pQInterval = extractMeasurement("PQInterval");
     pDuration = extractMeasurement("PDuration");
