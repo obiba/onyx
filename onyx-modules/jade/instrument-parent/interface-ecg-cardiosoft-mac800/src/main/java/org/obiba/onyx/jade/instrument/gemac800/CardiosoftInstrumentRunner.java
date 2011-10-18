@@ -263,7 +263,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath(), getXmlFileName());
-      log.info("Expected XML file path: {}", xmlFile.getAbsolutePath());
       outputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
 
       instrumentExecutionService.addOutputParameterValues(outputToSend);
@@ -297,7 +296,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     window.pack();
 
     // Make sure dialog stays on top of all other application windows.
-    window.setAlwaysOnTop(false);
+    window.setAlwaysOnTop(true);
     window.setLocationByPlatform(true);
 
     // Center dialog horizontally at the bottom of the screen.
@@ -326,6 +325,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     File cardioSoftXmlOutput = new File(getExportPath(), getXmlFileName());
 
     // Get data from external app
+    log.info("Expected XML file path: {}", cardioSoftXmlOutput.getAbsolutePath());
     if(cardioSoftXmlOutput.exists()) {
 
       try {
