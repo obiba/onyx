@@ -18,6 +18,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="externalAppHelper" ref="externalAppHelper"/>
     <property name="patScanDbPath" value="${org.obiba.onyx.jade.instrument.holologic.apex.dbPath}"/>
     <property name="patScanDb" ref="patScanDb" />
+    <property name="dicomSettings">
+	    <bean class="org.obiba.onyx.jade.instrument.holologic.DicomSettings">
+		    <property name="aeTitle" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.aeTitle}" />
+		    <property name="hostname" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.hostname}" />
+		    <property name="port" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.port}" />
+		    <property name="stgCmtPort" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.stgCmtPort}" />
+ 		</bean>
+    </property>
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
