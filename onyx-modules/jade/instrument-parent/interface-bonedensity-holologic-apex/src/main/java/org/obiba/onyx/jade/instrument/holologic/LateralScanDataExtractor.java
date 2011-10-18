@@ -10,22 +10,22 @@
 package org.obiba.onyx.jade.instrument.holologic;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.Map;
 
+import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.obiba.onyx.util.data.Data;
-import org.springframework.dao.DataAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/**
- *
- */
 public class LateralScanDataExtractor extends APEXScanDataExtractor {
+
+  private static final Logger log = LoggerFactory.getLogger(LateralScanDataExtractor.class);
 
   private Energy energy;
 
-  protected LateralScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy) {
-    super(patScanDb, scanDataDir, participantKey);
+  protected LateralScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy, DicomServer server) {
+    super(patScanDb, scanDataDir, participantKey, server);
     this.energy = energy;
   }
 
@@ -40,6 +40,11 @@ public class LateralScanDataExtractor extends APEXScanDataExtractor {
   }
 
   @Override
+  public String getDicomBodyPartName() {
+    return "LSPINE";
+  }
+
+  @Override
   protected long getScanType() {
     switch(energy) {
     case SINGLE:
@@ -51,54 +56,7 @@ public class LateralScanDataExtractor extends APEXScanDataExtractor {
 
   @Override
   protected void extractDataImpl(Map<String, Data> data) {
-    extractScanData("Lateral", data, new LateralResultSetExtractor(data));
-  }
-
-  private final class LateralResultSetExtractor extends ResultSetDataExtractor {
-
-    public LateralResultSetExtractor(Map<String, Data> data) {
-      super(data);
-    }
-
-    @Override
-    protected void putData() throws SQLException, DataAccessException {
-      for(int i = 1; i <= 5; i++) {
-        putDouble("L" + i + "_AREA");
-        putDouble("L" + i + "_BMC");
-        putDouble("L" + i + "_BMD");
-        putDouble("L" + i + "_VBMD");
-        putDouble("L" + i + "_WIDTH");
-      }
-      putDouble("LTOT_AREA");
-      putDouble("LTOT_BMC");
-      putDouble("LTOT_BMD");
-      putDouble("LTOT_VBMD");
-
-      for(int i = 1; i <= 5; i++) {
-        putDouble("L" + i + "_MID_AREA");
-        putDouble("L" + i + "_MID_BMC");
-        putDouble("L" + i + "_MID_BMD");
-        putDouble("L" + i + "_MID_VBMD");
-      }
-      putDouble("MIDTOT_AREA");
-      putDouble("MIDTOT_BMC");
-      putDouble("MIDTOT_BMD");
-      putDouble("MIDTOT_VBMD");
-
-      for(int i = 1; i <= 5; i++) {
-        putDouble("L" + i + "_P&A_AREA");
-        putDouble("L" + i + "_P&A_BMC");
-      }
-      putDouble("TOTAL_P&A_AREA");
-      putDouble("TOTAL_P&A_BMC");
-
-      putString("PHYSICIAN_COMMENT");
-    }
-
-    @Override
-    protected String getVariableName(String name) {
-      return super.getVariableName(name.replace("&", ""));
-    }
+    log.warn("no additional data can be extracted for this scan");
   }
 
   public enum Energy {

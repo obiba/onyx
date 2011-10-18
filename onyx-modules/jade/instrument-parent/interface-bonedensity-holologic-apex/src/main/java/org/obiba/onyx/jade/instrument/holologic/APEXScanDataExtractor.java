@@ -10,14 +10,20 @@
 package org.obiba.onyx.jade.instrument.holologic;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dcm4che2.data.DicomObject;
+import org.dcm4che2.data.Tag;
+import org.dcm4che2.tool.dcmrcv.DicomServer;
+import org.dcm4che2.tool.dcmrcv.DicomServer.StoredDicomFile;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
@@ -27,9 +33,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-/**
- *
- */
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 public abstract class APEXScanDataExtractor {
 
   private static final Logger log = LoggerFactory.getLogger(APEXScanDataExtractor.class);
@@ -42,17 +48,22 @@ public abstract class APEXScanDataExtractor {
 
   private String scanID;
 
+  private String scanMode;
+
   private String pFileName;
 
   private String rFileName;
 
   private List<String> fileNames;
 
-  protected APEXScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey) {
+  private DicomServer server;
+
+  protected APEXScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server) {
     super();
     this.patScanDb = patScanDb;
     this.scanDataDir = scanDataDir;
     this.participantKey = participantKey;
+    this.server = server;
   }
 
   public Map<String, Data> extractData() {
@@ -74,6 +85,12 @@ public abstract class APEXScanDataExtractor {
 
   public abstract String getName();
 
+  public abstract String getDicomBodyPartName();
+
+  public int getNbRequiredDicomFiles() {
+    return 1;
+  }
+
   protected abstract long getScanType();
 
   protected abstract void extractDataImpl(Map<String, Data> data);
@@ -87,7 +104,7 @@ public abstract class APEXScanDataExtractor {
   }
 
   private Map<String, Data> extractScanAnalysisData() {
-    return patScanDb.query("select SCANID, PFILE_NAME from ScanAnalysis where PATIENT_KEY = ? and SCAN_TYPE = ?", new PreparedStatementSetter() {
+    return patScanDb.query("select SCANID, PFILE_NAME, SCAN_MODE, SCAN_TYPE from ScanAnalysis where PATIENT_KEY = ? and SCAN_TYPE = ?", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, getParticipantKey());
         ps.setString(2, Long.toString(getScanType()));
@@ -116,6 +133,7 @@ public abstract class APEXScanDataExtractor {
       // + stores all scan files for future deletion
       while(rs.next()) {
         scanID = rs.getString("SCANID");
+        scanMode = rs.getString("SCAN_MODE");
         log.info("Visiting scan: " + scanID);
         pFileName = rs.getString("PFILE_NAME");
 
@@ -129,8 +147,9 @@ public abstract class APEXScanDataExtractor {
       }
 
       if(scanID != null && pFileName != null) {
-        log.info("Retrieving data from scan: " + scanID);
+        log.info("Retrieving P and R data from scan: " + scanID);
         data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
+        data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
         data.put(getResultPrefix() + "_PFILE_NAME", DataBuilder.buildText(pFileName));
         data.put(getResultPrefix() + "_RFILE_NAME", DataBuilder.buildText(rFileName));
 
@@ -140,9 +159,52 @@ public abstract class APEXScanDataExtractor {
         }
       }
 
+      Collection<StoredDicomFile> selectCollection = Collections2.filter(server.listDicomFiles(), new Predicate<StoredDicomFile>() {
+
+        @Override
+        public boolean apply(StoredDicomFile o) {
+          try {
+            String bodyPartExam = ((StoredDicomFile) o).getDicomObject().getString(Tag.BodyPartExamined);
+            log.info(bodyPartExam);
+            log.info(getDicomBodyPartName());
+            // if 2 null we suppose that it is a whole body scan
+            boolean ret = (bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
+            log.info(ret + "");
+            return ret;
+          } catch(IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      });
+      ArrayList<StoredDicomFile> selectList = new ArrayList<StoredDicomFile>(selectCollection);
+      if(!selectList.isEmpty()) {
+        // Whole Body
+        if(getDicomBodyPartName() == null) {
+          StoredDicomFile storedDicomFile = selectList.get(0);
+          StoredDicomFile storedDicomFile2 = selectList.get(1);
+          try {
+            DicomObject d = storedDicomFile.getDicomObject();
+            DicomObject d2 = storedDicomFile2.getDicomObject();
+
+            data.put(getResultPrefix() + "_" + d.getString(Tag.Modality) + "_DICOM_1", DataBuilder.buildBinary(storedDicomFile.getFile()));
+            data.put(getResultPrefix() + "_" + d2.getString(Tag.Modality) + "_DICOM_2", DataBuilder.buildBinary(storedDicomFile2.getFile()));
+          } catch(IOException e) {
+            throw new RuntimeException(e);
+          }
+
+        } else {
+          StoredDicomFile storedDicomFile = selectList.get(0);
+          try {
+            DicomObject d = storedDicomFile.getDicomObject();
+            data.put(getResultPrefix() + "_" + d.getString(Tag.Modality) + "_DICOM", DataBuilder.buildBinary(storedDicomFile.getFile()));
+          } catch(IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }
+
       return data;
     }
-
   }
 
   protected Map<String, Data> extractScanData(String table, Map<String, Data> data, ResultSetExtractor<Map<String, Data>> rsExtractor) {
