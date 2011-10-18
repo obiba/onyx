@@ -11,11 +11,11 @@ package org.obiba.onyx.quartz.editor.question;
 
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
 
 import java.util.ArrayList;
@@ -199,7 +199,6 @@ public abstract class QuestionPanel extends Panel {
     add(new HelpTooltipPanel("labelsHelp", new Model<String>(new StringResourceModel("LanguagesProperties.Tooltip", this, null).getString() + "<br /><img align=\"center\" src=\"" + RequestCycle.get().urlFor(new ResourceReference(QuestionPanel.class, "labels-with-help.png")) + "\" />")));
 
     Map<String, IModel<String>> labelsTooltips = new HashMap<String, IModel<String>>();
-
     for(String key : questionnaireModel.getObject().getPropertyKeyProvider().getProperties(new Question())) {
       labelsTooltips.put(key, new ResourceModel("Question.Tooltip." + key));
     }

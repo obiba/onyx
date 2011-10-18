@@ -61,7 +61,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
    * @param id
    * @param model
    */
-  public NumericPad(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+  public NumericPad(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<OpenAnswerDefinition> openAnswerDefinitionModel) {
 
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
 
@@ -69,7 +69,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
     // Create the dialog input field.
     valuePressed = createPadInputField(type);
-    IModel labelModel = createCategoryLabel();
+    IModel<String> labelModel = createCategoryLabel();
     valuePressed.setLabel(labelModel);
 
     // Add a feedback panel to the numeric pad for error reporting.
@@ -226,7 +226,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     return link;
   }
 
-  private IModel createCategoryLabel() {
+  private IModel<String> createCategoryLabel() {
     // Create and add the label for the numeric input field.
 
     OpenAnswerDefinition parentOpenAnswer = getOpenAnswerDefinition().getParentOpenAnswerDefinition();
@@ -240,7 +240,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     labelModel = new QuestionnaireStringResourceModel(labelModel, "label");
 
     if(getQuestion().getParentQuestion() != null && getQuestion().getParentQuestion().isArrayOfSharedCategories()) {
-      labelModel = new Model(new QuestionnaireStringResourceModel(getQuestionModel(), "label").getString() + ": " + labelModel.getObject());
+      labelModel = new Model<String>(new QuestionnaireStringResourceModel(getQuestionModel(), "label").getString() + ": " + labelModel.getObject());
     }
 
     return labelModel;
@@ -248,7 +248,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
   private void addNumericButtons() {
     for(int i = 0; i < 10; i++) {
-      add(new PadButton(String.valueOf(i), new Model(String.valueOf(i))));
+      add(new PadButton(String.valueOf(i), new Model<String>(String.valueOf(i))));
     }
   }
 

@@ -2398,42 +2398,42 @@
       </sections>
     </section>
     <section id="1006" name="MEDIA">
-      <pages id="1007"/>
-      <sections id="1008">
-        <section id="1009" name="DISPLAYING_MEDIA">
+      <pages id="1007">
+        <page id="1008" name="38" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="1006"/>
+          <questions id="1009">
+            <question id="1010" name="MEDIA_BP" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="1008"/>
+              <questionCategories id="1011"/>
+              <questions id="1012"/>
+            </question>
+          </questions>
+        </page>
+      </pages>
+      <sections id="1013">
+        <section id="1014" name="DISPLAYING_MEDIA">
           <parentSection reference="1006"/>
-          <pages id="1010">
-            <page id="1011" name="38" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="1009"/>
-              <questions id="1012">
-                <question id="1013" name="MEDIA_DISPLAY_IMAGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="1011"/>
-                  <questionCategories id="1014"/>
-                  <questions id="1015"/>
+          <pages id="1015">
+            <page id="1016" name="39" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="1014"/>
+              <questions id="1017">
+                <question id="1018" name="DISPLAYING_MEDIA_BP" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1016"/>
+                  <questionCategories id="1019"/>
+                  <questions id="1020"/>
                 </question>
-                <question id="1016" name="MEDIA_DISPLAY_AUDIO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="1011"/>
-                  <questionCategories id="1017"/>
-                  <questions id="1018"/>
+                <question id="1021" name="MEDIA_DISPLAY_IMAGE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1016"/>
+                  <questionCategories id="1022"/>
+                  <questions id="1023"/>
                 </question>
-                <question id="1019" name="MEDIA_DISPLAY_VIDEO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="1011"/>
-                  <questionCategories id="1020"/>
-                  <questions id="1021"/>
+                <question id="1024" name="MEDIA_DISPLAY_AUDIO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1016"/>
+                  <questionCategories id="1025"/>
+                  <questions id="1026"/>
                 </question>
-              </questions>
-            </page>
-          </pages>
-          <sections id="1022"/>
-        </section>
-        <section id="1023" name="RECORDING_MEDIA">
-          <parentSection reference="1006"/>
-          <pages id="1024">
-            <page id="1025" name="39" uIFactoryName="quartz.DefaultPageLayoutFactory">
-              <section reference="1023"/>
-              <questions id="1026">
-                <question id="1027" name="MEDIA_RECORD_AUDIO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <page reference="1025"/>
+                <question id="1027" name="MEDIA_DISPLAY_VIDEO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1016"/>
                   <questionCategories id="1028"/>
                   <questions id="1029"/>
                 </question>
@@ -2442,8 +2442,55 @@
           </pages>
           <sections id="1030"/>
         </section>
+        <section id="1031" name="RECORDING_MEDIA">
+          <parentSection reference="1006"/>
+          <pages id="1032">
+            <page id="1033" name="40" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="1031"/>
+              <questions id="1034">
+                <question id="1035" name="RECORDING_MEDIA_BP" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1033"/>
+                  <questionCategories id="1036"/>
+                  <questions id="1037"/>
+                </question>
+                <question id="1038" name="MEDIA_RECORD_AUDIO" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="1033"/>
+                  <questionCategories id="1039">
+                    <questionCategory id="1040">
+                      <question reference="1038"/>
+                      <category id="1041" name="AUDIO_RECORDING" escape="false">
+                        <openAnswerDefinition id="1042" name="AUDIO_RECORDING" dataType="DATA" required="true">
+                          <uIArguments id="1043">
+                            <string-array id="1044">
+                              <string>type</string>
+                              <string>audio</string>
+                            </string-array>
+                            <string-array id="1045">
+                              <string>audio.samplingRate</string>
+                              <string>16000</string>
+                            </string-array>
+                            <string-array id="1046">
+                              <string>audio.maxDuration</string>
+                              <string>5</string>
+                            </string-array>
+                          </uIArguments>
+                          <openAnswerDefinitions id="1047"/>
+                          <variableNames id="1048"/>
+                        </openAnswerDefinition>
+                        <variableNames id="1049"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="1050"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="1051"/>
+        </section>
       </sections>
     </section>
   </sections>
-  <variables id="1031"/>
+  <variables id="1052"/>
 </questionnaire>

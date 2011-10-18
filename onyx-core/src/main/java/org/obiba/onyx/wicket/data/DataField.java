@@ -8,18 +8,28 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.wicket.data;
 
+import java.io.Serializable;
 import java.util.Calendar;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.Resource;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.WebResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -27,25 +37,38 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.resource.ByteArrayResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.upload.FileUploadException;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.wicket.nanogong.NanoGongApplet;
+import org.obiba.wicket.nanogong.NanoGongApplet.Format;
+import org.obiba.wicket.nanogong.NanoGongApplet.Option;
+import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data field is the component representation of {@link Data}.
  * @see DataConverter
  */
+@SuppressWarnings("serial")
 public class DataField extends Panel {
 
   private static final long serialVersionUID = 4522983933046975818L;
+
+  private static final Logger logger = LoggerFactory.getLogger(DataField.class);
 
   private static final int DATE_YEAR_MAXIMUM = 3000;
 
@@ -155,15 +178,28 @@ public class DataField extends Panel {
     addUnitLabel(unit);
   }
 
+  /**
+   * @param string
+   * @param propertyModel
+   * @param dataType
+   * @param samplingRate
+   * @param maxDuration
+   */
+  public DataField(String id, IModel<Data> model, DataType dataType, Rate samplingRate, int maxDuration) {
+    super(id);
+    add(input = new AudioRecorderFragment("input", model, samplingRate, maxDuration));
+    addUnitLabel(null);
+  }
+
   private void addUnitLabel(String unit) {
-    add(new Label("unit", (unit == null ? "" : unit)));
+    add(new Label("unit", StringUtils.trimToEmpty(unit)));
   }
 
   /**
    * Set the model that identifies the underlying field in error messages.
    * @param labelModel
    */
-  public void setLabel(IModel labelModel) {
+  public void setLabel(IModel<String> labelModel) {
     input.getField().setLabel(labelModel);
   }
 
@@ -268,10 +304,8 @@ public class DataField extends Panel {
 
   private abstract class FieldFragment extends Fragment {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
+
     protected FormComponent field = null;
 
     public FieldFragment(String id, String markupId, MarkupContainer markupProvider) {
@@ -286,11 +320,6 @@ public class DataField extends Panel {
 
   private class TextAreaFragment extends FieldFragment {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
     public TextAreaFragment(String id, IModel model, final DataType dataType, Integer columns, Integer rows) {
       super(id, "textAreaFragment", DataField.this);
       add(field = createTextArea(model, dataType, columns, rows));
@@ -299,9 +328,6 @@ public class DataField extends Panel {
 
   private class InputFragment extends FieldFragment {
 
-    private static final long serialVersionUID = 7003783791888047073L;
-
-    @SuppressWarnings("serial")
     public InputFragment(String id, IModel model, final DataType dataType, Integer size) {
       super(id, "inputFragment", DataField.this);
 
@@ -312,7 +338,6 @@ public class DataField extends Panel {
         break;
       case BOOLEAN:
         field = new CheckBox("field", model) {
-          // @SuppressWarnings("unchecked")
           // @Override
           // public IConverter getConverter(Class type) {
           // return new DataConverter(dataType);
@@ -323,13 +348,12 @@ public class DataField extends Panel {
             return DataField.this.isRequired();
           }
         };
-        field.add(new AttributeModifier("type", new Model("checkbox")));
+        field.add(new AttributeModifier("type", new Model<String>("checkbox")));
         break;
       case DATE:
         field = new DateTextField("field", model) {
-          @SuppressWarnings("unchecked")
           @Override
-          public IConverter getConverter(Class type) {
+          public IConverter getConverter(Class<?> type) {
             return new DataConverter(dataType, userSessionService);
           }
 
@@ -365,10 +389,9 @@ public class DataField extends Panel {
         });
         break;
       case INTEGER:
-        field = new TextField("field", model, Long.class) {
-          @SuppressWarnings("unchecked")
+        field = new TextField<Long>("field", model, Long.class) {
           @Override
-          public IConverter getConverter(Class type) {
+          public IConverter getConverter(Class<?> type) {
             return new DataConverter(dataType, userSessionService);
           }
 
@@ -379,10 +402,9 @@ public class DataField extends Panel {
         };
         break;
       case DECIMAL:
-        field = new TextField("field", model, Double.class) {
-          @SuppressWarnings("unchecked")
+        field = new TextField<Double>("field", model, Double.class) {
           @Override
-          public IConverter getConverter(Class type) {
+          public IConverter getConverter(Class<?> type) {
             return new DataConverter(dataType, userSessionService);
           }
 
@@ -393,13 +415,12 @@ public class DataField extends Panel {
         };
         break;
       }
-      field.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
+      field.add(new AttributeAppender("size", new Model<String>(Integer.toString(size)), ""));
       add(field);
     }
 
   }
 
-  @SuppressWarnings("serial")
   private FormComponent createTextArea(IModel model, final DataType dataType, Integer columns, Integer rows) {
     FormComponent field = new TextArea("field", model) {
 
@@ -421,13 +442,11 @@ public class DataField extends Panel {
     return field;
   }
 
-  @SuppressWarnings("serial")
-  private FormComponent createTextField(IModel model, final DataType dataType) {
-    FormComponent field = new TextField("field", model, String.class) {
+  private FormComponent<String> createTextField(IModel<String> model, final DataType dataType) {
+    return new TextField<String>("field", model, String.class) {
 
-      @SuppressWarnings("unchecked")
       @Override
-      public IConverter getConverter(Class type) {
+      public IConverter getConverter(Class<?> type) {
         return new DataConverter(dataType, userSessionService);
       }
 
@@ -436,7 +455,6 @@ public class DataField extends Panel {
         return DataField.this.isRequired();
       }
     };
-    return field;
   }
 
   private class SelectFragment extends FieldFragment {
@@ -497,6 +515,70 @@ public class DataField extends Panel {
       }
       add(field);
     }
+  }
+
+  private class AudioRecorderFragment extends FieldFragment {
+
+    public AudioRecorderFragment(String id, final IModel<Data> model, Rate samplingRate, int maxDuration) {
+      super(id, "audioRecorderFragment", DataField.this);
+
+      Map<Option, Object> options = new HashMap<NanoGongApplet.Option, Object>();
+      options.put(Option.AudioFormat, Format.PCM);
+      options.put(Option.SamplingRate, samplingRate);
+      options.put(Option.MaxDuration, String.valueOf(maxDuration));
+      options.put(Option.ShowSpeedButton, "false");
+      options.put(Option.ShowSaveButton, "false");
+      options.put(Option.ShowTime, "true");
+      options.put(Option.Color, "#FFFFFF");
+
+      if(model.getObject() != null) {
+        CharSequence audioFileUrl = urlFor(new ResourceReference(AudioRecorderFragment.class, "audio.wav") {
+          @Override
+          protected Resource newResource() {
+            return new WebResource() {
+              @Override
+              public IResourceStream getResourceStream() {
+                return new ByteArrayResource("audio/x-wav", (byte[]) model.getObject().getValue()).getResourceStream();
+              }
+            };
+          }
+        });
+        logger.info("audioFileUrl: {}", audioFileUrl);
+        options.put(Option.SoundFileURL, audioFileUrl);
+      }
+
+      field = new NanoGongApplet("nanoGong", "140", "60", options) {
+        @Override
+        public void onAudioData(FileUpload fileUpload) {
+          logger.info("audio file uploaded: {}", fileUpload.getClientFileName());
+          model.setObject(new Data(DataType.DATA, fileUpload.getBytes()));
+          for(DataListener listener : listeners) {
+            listener.onDataUploaded();
+          }
+        }
+
+        @Override
+        protected void onFileUploadException(FileUploadException exception, Map<String, Object> exceptionModel) {
+          for(DataListener listener : listeners) {
+            listener.onError(exception, exceptionModel);
+          }
+        }
+      };
+      add(field);
+
+    }
+  }
+
+  private Set<DataListener> listeners = new HashSet<DataListener>();
+
+  public void addListener(DataListener dataListener) {
+    listeners.add(dataListener);
+  }
+
+  public interface DataListener extends EventListener, Serializable {
+    void onDataUploaded();
+
+    void onError(FileUploadException exception, Map<String, Object> exceptionModel);
   }
 
 }

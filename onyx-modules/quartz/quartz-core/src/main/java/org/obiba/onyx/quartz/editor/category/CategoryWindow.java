@@ -183,8 +183,7 @@ public abstract class CategoryWindow extends Panel {
       @Override
       public void editItem(final OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
         final ElementClone<OpenAnswerDefinition> original = QuestionnaireElementCloner.clone(openAnswer, new CloneSettings(true), localePropertiesModel.getObject());
-        boolean isAudio = openAnswer.getUIArgumentsValueMap() != null && openAnswer.getUIArgumentsValueMap().containsKey(AudioOpenAnswerPanel.SAMPLING_RATE_KEY);
-        openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow, isAudio) {
+        openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow, openAnswer.isAudioAnswer()) {
           @Override
           protected void onSave(@SuppressWarnings("hiding")
           AjaxRequestTarget target, @SuppressWarnings("hiding")

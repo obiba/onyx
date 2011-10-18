@@ -221,6 +221,11 @@
       <groupId>org.obiba.magma</groupId>
       <artifactId>magma-crypt</artifactId>
     </dependency>
+    
+    <dependency>
+		  <groupId>org.obiba.wicket</groupId>
+		  <artifactId>wicket-nanogong</artifactId>
+		</dependency>    
   </dependencies>
 
   <build>

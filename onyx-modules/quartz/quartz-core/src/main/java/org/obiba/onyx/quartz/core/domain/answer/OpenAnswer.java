@@ -29,7 +29,8 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
-@Table(appliesTo = "open_answer", indexes = { @Index(name = "open_answer_definition_name_index", columnNames = { "openAnswerDefinitionName" }) })
+@Table(appliesTo = "open_answer", indexes = { @Index(name = "open_answer_definition_name_index",
+    columnNames = { "openAnswerDefinitionName" }) })
 public class OpenAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8772952316177874064L;
@@ -114,7 +115,6 @@ public class OpenAnswer extends AbstractEntity {
     this.dateValue = dateValue;
   }
 
-  @SuppressWarnings("incomplete-switch")
   public Data getData() {
     Data data = null;
 
@@ -137,12 +137,15 @@ public class OpenAnswer extends AbstractEntity {
     case TEXT:
       data = DataBuilder.buildText(textValue);
       break;
+
+    case DATA:
+      data = DataBuilder.buildBinary(dataValue);
+      break;
     }
 
     return data;
   }
 
-  @SuppressWarnings("incomplete-switch")
   public void setData(Data data) {
 
     if(data != null) {
@@ -163,6 +166,10 @@ public class OpenAnswer extends AbstractEntity {
 
         case TEXT:
           textValue = data.getValue();
+          break;
+
+        case DATA:
+          dataValue = data.getValue();
           break;
         }
       } else {

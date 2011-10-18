@@ -15,10 +15,13 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.DateField;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
+import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 
 /**
  * Returns the content for the Self Administered Health Questionnaire
@@ -415,11 +418,15 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MAJOR_OPERATION5AGE").withSharedCategory(PNA, "8888");
     builder.inQuestion("MAJOR_OPERATION5AGE").withSharedCategory(DNK, "9999");
 
-    builder.withSection("MEDIA").withSection("DISPLAYING_MEDIA").withPage("38").withQuestion("MEDIA_DISPLAY_IMAGE");
-    builder.inPage("38").withQuestion("MEDIA_DISPLAY_AUDIO");
-    builder.inPage("38").withQuestion("MEDIA_DISPLAY_VIDEO");
+    builder.withSection("MEDIA").withPage("38").withQuestion("MEDIA_BP");
 
-    builder.inSection("MEDIA").withSection("RECORDING_MEDIA").withPage("39").withQuestion("MEDIA_RECORD_AUDIO");
+    builder.inSection("MEDIA").withSection("DISPLAYING_MEDIA").withPage("39").withQuestion("DISPLAYING_MEDIA_BP");
+    builder.inPage("39").withQuestion("MEDIA_DISPLAY_IMAGE");
+    builder.inPage("39").withQuestion("MEDIA_DISPLAY_AUDIO");
+    builder.inPage("39").withQuestion("MEDIA_DISPLAY_VIDEO");
+
+    builder.inSection("MEDIA").withSection("RECORDING_MEDIA").withPage("40").withQuestion("RECORDING_MEDIA_BP");
+    builder.inPage("40").withQuestion("MEDIA_RECORD_AUDIO").withCategory("AUDIO_RECORDING").withOpenAnswerDefinition("AUDIO_RECORDING", DataType.DATA).setUnit(SupportedMedia.AUDIO_WAVE.getMimeType()).addUIArgument("type", AudioOpenAnswerPanel.AUDIO_TYPE).addUIArgument(AudioOpenAnswerPanel.SAMPLING_RATE_KEY, Rate._16000.toString()).addUIArgument(AudioOpenAnswerPanel.MAX_DURATION_KEY, "5");
 
     return builder;
   }

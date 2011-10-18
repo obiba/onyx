@@ -4,13 +4,14 @@ import java.util.Locale;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
 
-public class QuestionnaireWizardPanel extends WizardPanel {
+public class QuestionnaireWizardPanel extends WizardPanel<Questionnaire> {
 
   //
   // Constants
@@ -32,7 +33,7 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   //
 
   @SuppressWarnings("serial")
-  public QuestionnaireWizardPanel(String id, IModel questionnaireModel, StageModel stageModel, boolean resuming) {
+  public QuestionnaireWizardPanel(String id, IModel<Questionnaire> questionnaireModel, StageModel stageModel, boolean resuming) {
     super(id, questionnaireModel);
 
     getQuestionnaireWizardForm().setStageModel(stageModel);
@@ -56,6 +57,8 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   @Override
   public WizardForm createForm(String componentId) {
     return new QuestionnaireWizardForm(componentId, getDefaultModel()) {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public FeedbackWindow getFeedbackWindow() {
         return feedbackWindow;

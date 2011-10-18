@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 import org.apache.wicket.Component;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.FormMock;
 import org.obiba.onyx.util.data.Data;
 
@@ -20,13 +22,13 @@ public class DefaultOpenAnswerDefinitionPanelMock extends FormMock {
 
   private DefaultOpenAnswerDefinitionPanel panel;
 
-  public DefaultOpenAnswerDefinitionPanelMock(String id, IModel questionCategoryModel) {
+  public DefaultOpenAnswerDefinitionPanelMock(String id, IModel<QuestionCategory> questionCategoryModel) {
     super(id, questionCategoryModel);
   }
 
   @Override
   public Component populateContent(String id, IModel model) {
-    return panel = new DefaultOpenAnswerDefinitionPanel(id, new PropertyModel(model, "question"), model);
+    return panel = new DefaultOpenAnswerDefinitionPanel(id, new PropertyModel<Question>(model, "question"), model);
   }
 
   public Data getData() {

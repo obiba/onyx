@@ -110,6 +110,10 @@ public class DataBuilder {
     return null;
   }
 
+  public static Data buildBinary(byte[] bytes) {
+    return new Data(DataType.DATA, bytes);
+  }
+
   public static Data buildBinary(InputStream inputStream) {
 
     ByteArrayOutputStream convertedStream = new ByteArrayOutputStream();
@@ -131,7 +135,7 @@ public class DataBuilder {
       }
     }
 
-    return new Data(DataType.DATA, convertedStream.toByteArray());
+    return buildBinary(convertedStream.toByteArray());
   }
 
   public static Data buildBinary(File file) {
@@ -144,7 +148,6 @@ public class DataBuilder {
       throw new RuntimeException(e);
     }
     return buildBinary(inputStream);
-
   }
 
 }

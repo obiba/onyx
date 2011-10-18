@@ -51,18 +51,18 @@
         <ref bean="onyx-schemaUpgrade-1.5.2" />
         <ref bean="onyx-postDataUpgrade-1.5.2" />
         <ref bean="batchSchema-1.6.0" />
-        <bean id="onyx-schemaUpgrade-1.6.0" parent="updateOnyxSchema">
+        <bean parent="updateOnyxSchema">
           <property name="appliesTo" value="1.6.0" />
         </bean>
         <ref bean="onyx-dataUpgrade-1.6.0" />
         <ref bean="onyx-dataUpgrade2-1.6.0" />
         <ref bean="onyx-schemaUpgrade2-1.6.0" />
         <ref bean="onyx-constraints-1.6.0" />
-        <bean id="onyx-schemaUpgrade-1.6.1" parent="updateOnyxSchema">
+        <bean parent="updateOnyxSchema">
           <property name="appliesTo" value="1.6.1" />
         </bean>
         <ref bean="onyx-dataUpgrade-1.6.1" />
-        <bean id="onyx-schemaUpgrade-1.7.0" parent="updateOnyxSchema">
+        <bean parent="updateOnyxSchema">
           <property name="appliesTo" value="1.7.0" />
         </bean>
         <bean class="org.obiba.onyx.runtime.upgrade.Upgrade_1_8_0">
@@ -70,6 +70,9 @@
           <property name="appliesTo" value="1.8.0" />
           <property name="dataSource" ref="dataSource" />
         </bean>
+        <bean parent="updateOnyxSchema">
+          <property name="appliesTo" value="1.8.5" />
+        </bean>        
       </list>
     </property>
     <property name="stepListeners">

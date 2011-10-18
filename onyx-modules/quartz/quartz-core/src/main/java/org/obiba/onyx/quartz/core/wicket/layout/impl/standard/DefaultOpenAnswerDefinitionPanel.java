@@ -8,6 +8,8 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
+import java.util.Map;
+
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -17,22 +19,30 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.upload.FileUploadException;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.OpenAnswerDefinitionValidatorFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.data.DataField.DataListener;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,12 +69,12 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
    * @param questionModel
    * @param questionCategoryModel
    */
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
     initialize();
   }
 
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<OpenAnswerDefinition> openAnswerDefinitionModel) {
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
     initialize();
   }
@@ -88,15 +98,15 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     // UI arguments as attributes
     ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
     if(getOpenAnswerDefinition().getDefaultValues().size() > 1) {
-      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), getOpenAnswerDefinition().getDefaultValues(), new IChoiceRenderer() {
+      openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), getOpenAnswerDefinition().getDefaultValues(), new IChoiceRenderer<Data>() {
 
-        public Object getDisplayValue(Object object) {
-          Data data = (Data) object;
+        @Override
+        public Object getDisplayValue(Data data) {
           return new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), data.getValueAsString()).getObject();
         }
 
-        public String getIdValue(Object object, int index) {
-          Data data = (Data) object;
+        @Override
+        public String getIdValue(Data data, int index) {
           return data.getValueAsString();
         }
 
@@ -105,15 +115,51 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       if(getOpenAnswerDefinition().getDefaultValues().size() == 1) {
         setData(getOpenAnswerDefinition().getDefaultValues().get(0));
       }
-      Integer rows = null;
-      Integer columns = null;
-      if(arguments != null) {
-        rows = arguments.get(INPUT_NB_ROWS) != null ? arguments.getInt(INPUT_NB_ROWS) : null;
-        columns = arguments.get(INPUT_SIZE_KEY) != null ? arguments.getInt(INPUT_SIZE_KEY) : null;
-      }
-      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString(), columns, rows);
-      if(rows != null && rows > 1 && getOpenAnswerDefinition().getDataType().equals(DataType.TEXT)) {
-        add(new AttributeAppender("class", new Model<String>("open-area"), " "));
+
+      if(getOpenAnswerDefinition().isAudioAnswer()) {
+        Rate samplingRate;
+        try {
+          samplingRate = Rate.parse(arguments.getString(AudioOpenAnswerPanel.SAMPLING_RATE_KEY));
+        } catch(Exception e) {
+          // cannot parse rate
+          samplingRate = Rate._11025;
+        }
+        Integer maxDuration = arguments.getAsInteger(AudioOpenAnswerPanel.MAX_DURATION_KEY);
+        if(maxDuration == null) maxDuration = 1200;
+        openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), samplingRate, maxDuration);
+        openField.addListener(new DataListener() {
+          @Override
+          public void onDataUploaded() {
+            log.info(">>> onDataUploaded");
+            // persist data
+            activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+
+            AjaxRequestTarget target = AjaxRequestTarget.get();
+            if(target != null) {
+              updateFeedback(target); // clean a previous error message
+              fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
+            }
+          }
+
+          @Override
+          public void onError(FileUploadException exception, Map<String, Object> exceptionModel) {
+            log.error("FileUploadException", exception);
+            error(new StringResourceModel("FileUploadError", DefaultOpenAnswerDefinitionPanel.this, null).getObject());
+            AjaxRequestTarget target = AjaxRequestTarget.get();
+            if(target != null) updateFeedback(target);
+          }
+        });
+      } else {
+        Integer rows = null;
+        Integer columns = null;
+        if(arguments != null) {
+          rows = arguments.get(INPUT_NB_ROWS) != null ? arguments.getInt(INPUT_NB_ROWS) : null;
+          columns = arguments.get(INPUT_SIZE_KEY) != null ? arguments.getInt(INPUT_SIZE_KEY) : null;
+        }
+        openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString(), columns, rows);
+        if(rows != null && rows > 1 && getOpenAnswerDefinition().getDataType().equals(DataType.TEXT)) {
+          add(new AttributeAppender("class", new Model<String>("open-area"), " "));
+        }
       }
     }
     openField.getField().setOutputMarkupId(true);
@@ -121,7 +167,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
     // validators
     if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
-      for(IValidator validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
+      for(IValidator<?> validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
         openField.add(validator);
       }
     }

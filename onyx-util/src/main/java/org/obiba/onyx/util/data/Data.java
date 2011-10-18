@@ -80,16 +80,15 @@ public class Data implements Serializable, Comparable<Data> {
   }
 
   public String getValueAsString() {
-    if(type != DataType.DATA) {
-      return value != null ? value.toString() : null;
+    if(type == DataType.DATA) {
+      return "binary: " + (value == null ? 0 : ((byte[]) value).length) + " bytes";
     }
-    // TODO determine how to output a meaningful value for byte arrays
-    return "";
+    return value != null ? value.toString() : null;
   }
 
   @Override
   public String toString() {
-    return "[" + type + ":" + value + "]";
+    return "[" + type + ":" + getValueAsString() + "]";
   }
 
   @Override
@@ -139,6 +138,7 @@ public class Data implements Serializable, Comparable<Data> {
     return isEqual;
   }
 
+  @SuppressWarnings("incomplete-switch")
   @Override
   public int compareTo(Data data) {
     int result = -1;

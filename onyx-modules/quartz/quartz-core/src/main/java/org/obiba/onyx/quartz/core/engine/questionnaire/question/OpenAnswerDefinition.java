@@ -20,6 +20,7 @@ import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -260,6 +261,10 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
       if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) return findOpenAnswerDefinition(name1);
     }
     return null;
+  }
+
+  public boolean isAudioAnswer() {
+    return getUIArgumentsValueMap() != null && AudioOpenAnswerPanel.AUDIO_TYPE.equals(getUIArgumentsValueMap().getString("type"));
   }
 
 }

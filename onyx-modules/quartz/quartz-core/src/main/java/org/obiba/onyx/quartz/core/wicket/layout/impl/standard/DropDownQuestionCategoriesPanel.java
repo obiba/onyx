@@ -185,7 +185,8 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
    * associated to.
    * @param questionCategory
    */
-  private void updateOpenAnswerDefinitionPanel(AjaxRequestTarget target, IModel questionCategoryModel) {
+  private void
+      updateOpenAnswerDefinitionPanel(AjaxRequestTarget target, IModel<QuestionCategory> questionCategoryModel) {
     boolean changed = false;
 
     if(questionCategoryModel == null) {
@@ -195,7 +196,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
         changed = true;
       }
     } else {
-      QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
+      QuestionCategory questionCategory = questionCategoryModel.getObject();
       OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
       if(openAnswerDefinition != null) {
@@ -227,7 +228,9 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     this.selectedQuestionCategoryModel = selectedQuestionCategoryModel;
   }
 
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  public
+      void
+      onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection()={}", selectedQuestionCategoryModel != null ? selectedQuestionCategoryModel.getObject() : null);
 
     if(((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {
