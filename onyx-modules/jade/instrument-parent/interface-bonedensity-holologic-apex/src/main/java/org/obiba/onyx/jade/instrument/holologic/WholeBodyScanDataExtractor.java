@@ -38,11 +38,6 @@ public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
   }
 
   @Override
-  public int getNbRequiredDicomFiles() {
-    return 2;
-  }
-
-  @Override
   protected long getScanType() {
     return 5l;
   }

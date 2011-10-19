@@ -87,10 +87,6 @@ public abstract class APEXScanDataExtractor {
 
   public abstract String getDicomBodyPartName();
 
-  public int getNbRequiredDicomFiles() {
-    return 1;
-  }
-
   protected abstract long getScanType();
 
   protected abstract void extractDataImpl(Map<String, Data> data);
@@ -191,7 +187,6 @@ public abstract class APEXScanDataExtractor {
           } catch(IOException e) {
             throw new RuntimeException(e);
           }
-
         } else {
           StoredDicomFile storedDicomFile = selectList.get(0);
           try {
