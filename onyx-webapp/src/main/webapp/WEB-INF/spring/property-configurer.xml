@@ -18,6 +18,10 @@
   <!-- Loads the configuration properties. These are used throughout the spring context files to configure the deployment -->
   <bean class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
     <constructor-arg ref="configurationEncryptor" />
+
+    <property name="ignoreResourceNotFound" value="true"/>
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+
     <property name="properties">
       <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations" value="classpath*:/META-INF/onyx/defaults.properties"/>
@@ -31,6 +35,10 @@
 
         <value>${org.obiba.onyx.config.path}/onyx-config.properties</value>
         <value>${org.obiba.onyx.config.path}/*/module-config.properties</value>
+
+        <!-- Can be used to specify a local path to load properties from (ie: file:/etc/default/onyx.properties) -->
+        <!-- This needs to be specified as a system property (ie: java -Dorg.obiba.onyx.local.config.file=...) -->
+        <value>${org.obiba.onyx.local.config.file}</value>
       </list>
     </property>
   </bean>
