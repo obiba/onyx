@@ -56,8 +56,6 @@ import org.obiba.wicket.nanogong.NanoGongApplet;
 import org.obiba.wicket.nanogong.NanoGongApplet.Format;
 import org.obiba.wicket.nanogong.NanoGongApplet.Option;
 import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Data field is the component representation of {@link Data}.
@@ -68,7 +66,7 @@ public class DataField extends Panel {
 
   private static final long serialVersionUID = 4522983933046975818L;
 
-  private static final Logger logger = LoggerFactory.getLogger(DataField.class);
+  // private static final Logger logger = LoggerFactory.getLogger(DataField.class);
 
   private static final int DATE_YEAR_MAXIMUM = 3000;
 
@@ -543,23 +541,28 @@ public class DataField extends Panel {
             };
           }
         });
-        logger.info("audioFileUrl: {}", audioFileUrl);
         options.put(Option.SoundFileURL, audioFileUrl);
       }
 
       field = new NanoGongApplet("nanoGong", "140", "60", options) {
         @Override
-        public void onAudioData(FileUpload fileUpload) {
-          logger.info("audio file uploaded: {}", fileUpload.getClientFileName());
+        protected void onAudioData(FileUpload fileUpload) {
           model.setObject(new Data(DataType.DATA, fileUpload.getBytes()));
-          for(DataListener listener : listeners) {
+          for(AudioDataListener listener : listeners) {
             listener.onDataUploaded();
           }
         }
 
         @Override
+        protected void onAudioDataProcessed(AjaxRequestTarget target) {
+          for(AudioDataListener listener : listeners) {
+            listener.onAudioDataProcessed(target);
+          }
+        }
+
+        @Override
         protected void onFileUploadException(FileUploadException exception, Map<String, Object> exceptionModel) {
-          for(DataListener listener : listeners) {
+          for(AudioDataListener listener : listeners) {
             listener.onError(exception, exceptionModel);
           }
         }
@@ -569,14 +572,16 @@ public class DataField extends Panel {
     }
   }
 
-  private Set<DataListener> listeners = new HashSet<DataListener>();
+  private Set<AudioDataListener> listeners = new HashSet<AudioDataListener>();
 
-  public void addListener(DataListener dataListener) {
+  public void addListener(AudioDataListener dataListener) {
     listeners.add(dataListener);
   }
 
-  public interface DataListener extends EventListener, Serializable {
+  public interface AudioDataListener extends EventListener, Serializable {
     void onDataUploaded();
+
+    void onAudioDataProcessed(AjaxRequestTarget target);
 
     void onError(FileUploadException exception, Map<String, Object> exceptionModel);
   }

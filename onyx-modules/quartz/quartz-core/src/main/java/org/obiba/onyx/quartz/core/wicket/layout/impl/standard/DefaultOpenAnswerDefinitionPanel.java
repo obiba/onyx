@@ -39,7 +39,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataField;
-import org.obiba.onyx.wicket.data.DataField.DataListener;
+import org.obiba.onyx.wicket.data.DataField.AudioDataListener;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
@@ -127,18 +127,17 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         Integer maxDuration = arguments.getAsInteger(AudioOpenAnswerPanel.MAX_DURATION_KEY);
         if(maxDuration == null) maxDuration = 1200;
         openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), samplingRate, maxDuration);
-        openField.addListener(new DataListener() {
+        openField.addListener(new AudioDataListener() {
           @Override
           public void onDataUploaded() {
-            log.info(">>> onDataUploaded");
             // persist data
             activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+          }
 
-            AjaxRequestTarget target = AjaxRequestTarget.get();
-            if(target != null) {
-              updateFeedback(target); // clean a previous error message
-              fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
-            }
+          @Override
+          public void onAudioDataProcessed(AjaxRequestTarget target) {
+            updateFeedback(target); // clean a previous error message
+            fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
           }
 
           @Override
