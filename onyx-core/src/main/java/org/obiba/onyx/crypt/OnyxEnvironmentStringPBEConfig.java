@@ -32,7 +32,7 @@ public class OnyxEnvironmentStringPBEConfig extends EnvironmentStringPBEConfig {
    */
   public void setOnyxPasswordKeyName(String passwordKeyName) {
     setPasswordSysPropertyName(passwordKeyName);
-    if(getPasswordSysPropertyName() == null) {
+    if(getPassword() == null) {
       setPasswordEnvName(passwordKeyName);
     }
   }
