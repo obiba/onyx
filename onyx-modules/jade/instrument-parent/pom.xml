@@ -34,6 +34,7 @@
     <module>interface-audiogram-tremetrics-ra300</module>
     <module>interface-retinal-topcon-imagenetr4lite</module>
     <module>interface-ultrasound-ge-vivid</module>
+    <module>interface-tonometer-reichert-ora</module>
   </modules>
 
   <dependencies>
