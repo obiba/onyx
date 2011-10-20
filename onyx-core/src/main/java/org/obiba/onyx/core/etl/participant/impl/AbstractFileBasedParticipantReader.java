@@ -70,6 +70,7 @@ public abstract class AbstractFileBasedParticipantReader extends AbstractPartici
     }
   }
 
+  @Override
   public void open(ExecutionContext context) throws ItemStreamException {
     File currentFile = null;
 
@@ -98,9 +99,11 @@ public abstract class AbstractFileBasedParticipantReader extends AbstractPartici
     }
   }
 
+  @Override
   public void update(ExecutionContext context) throws ItemStreamException {
   }
 
+  @Override
   public void close() throws ItemStreamException {
     if(fileInputStream != null) {
       try {
@@ -113,6 +116,7 @@ public abstract class AbstractFileBasedParticipantReader extends AbstractPartici
 
   public FilenameFilter getFilter() {
     return (new FilenameFilter() {
+      @Override
       public boolean accept(File dir, String name) {
         return AbstractFileBasedParticipantReader.this.accept(dir, name);
       }
@@ -121,6 +125,7 @@ public abstract class AbstractFileBasedParticipantReader extends AbstractPartici
 
   public void sortFilesOnDateAsc(File[] appointmentFiles) {
     Arrays.sort(appointmentFiles, new Comparator<File>() {
+      @Override
       public int compare(File f1, File f2) {
         return (Long.valueOf(f1.lastModified()).compareTo(Long.valueOf(f2.lastModified())));
       }

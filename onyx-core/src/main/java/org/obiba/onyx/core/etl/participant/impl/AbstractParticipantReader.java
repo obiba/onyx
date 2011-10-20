@@ -10,12 +10,12 @@
 package org.obiba.onyx.core.etl.participant.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.etl.participant.IParticipantReader;
@@ -54,22 +54,22 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
-
     if(participantMetadata != null) {
       addDefaultColumnNameToAttributeNameMapEntries();
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void setColumnNameToAttributeNameMap(Map<String, String> columnNameToAttributeNameMap) {
     if(columnNameToAttributeNameMap != null) {
       if(this.columnNameToAttributeNameMap == null) {
-        this.columnNameToAttributeNameMap = new HashMap<String, String>();
+        this.columnNameToAttributeNameMap = new CaseInsensitiveMap();
       }
-      // Add map entries to columnNameToAttributeNameMap. Convert all keys to UPPERCASE.
+      // Add map entries to columnNameToAttributeNameMap.
       Iterator<Map.Entry<String, String>> mapIter = columnNameToAttributeNameMap.entrySet().iterator();
       while(mapIter.hasNext()) {
         Map.Entry<String, String> mapEntry = mapIter.next();
-        this.columnNameToAttributeNameMap.put(mapEntry.getKey().toUpperCase(), mapEntry.getValue());
+        this.columnNameToAttributeNameMap.put(mapEntry.getKey(), mapEntry.getValue());
       }
     }
   }
@@ -88,7 +88,7 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
         String token = tokenizer.nextToken();
         String[] entry = token.split("=");
         if(entry.length == 2) {
-          columnNameToAttributeNameMap.put(entry[0].toUpperCase().trim(), entry[1].trim());
+          columnNameToAttributeNameMap.put(entry[0].trim(), entry[1].trim());
         } else {
           log.error("Could not identify Participant column to attribute mapping: " + token);
         }
@@ -100,9 +100,10 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
     return participantMetadata;
   }
 
+  @SuppressWarnings("unchecked")
   private void addDefaultColumnNameToAttributeNameMapEntries() {
     if(columnNameToAttributeNameMap == null) {
-      columnNameToAttributeNameMap = new HashMap<String, String>();
+      columnNameToAttributeNameMap = new CaseInsensitiveMap();
     }
 
     // Set default mappings for essential attributes.

@@ -86,7 +86,9 @@ public class ParticipantMetadataTest {
   // Helper Methods
   //
 
-  private void verifyAttribute(ParticipantAttribute attribute, String name, DataType type, boolean mandatoryAtEnrollment, boolean mandatoryAtReception, boolean editableAtReception, boolean editableAfterReception, String[] expectedAllowedValues) {
+  private
+      void
+      verifyAttribute(ParticipantAttribute attribute, String name, DataType type, boolean mandatoryAtEnrollment, boolean mandatoryAtReception, boolean editableAtReception, boolean editableAfterReception, String[] expectedAllowedValues) {
     // Verify name.
     assertEquals(name, attribute.getName());
 
@@ -109,7 +111,7 @@ public class ParticipantMetadataTest {
       for(String expectedAllowedValue : expectedAllowedValues) {
         assertTrue(allowedValues.contains(expectedAllowedValue));
       }
-    } else if(expectedAllowedValues == null) {
+    } else {
       assertTrue(allowedValues.isEmpty());
     }
   }

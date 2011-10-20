@@ -50,6 +50,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   private ParticipantMetadata participantMetadata;
 
+  @Override
   public Participant process(Participant participantItem) throws Exception {
     String participantId = participantItem.getEnrollmentId();
 
@@ -232,6 +233,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     this.participantService = participantService;
   }
 
+  @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
     for(AppointmentUpdateLog appointmentUpdateLog : log) {
       AppointmentUpdateLog.addErrorLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
@@ -239,6 +241,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     return null;
   }
 
+  @Override
   public void beforeStep(StepExecution stepExecution) {
   }
 

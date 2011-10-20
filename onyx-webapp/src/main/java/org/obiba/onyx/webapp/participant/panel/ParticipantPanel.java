@@ -31,11 +31,14 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 
 @SuppressWarnings("serial")
 public class ParticipantPanel extends Panel {
+
+  // private static final Logger logger = LoggerFactory.getLogger(ParticipantPanel.class);
 
   @SpringBean(name = "userSessionService")
   UserSessionService userSessionService;
@@ -47,16 +50,17 @@ public class ParticipantPanel extends Panel {
     this(id, participantModel, false);
   }
 
+  @SuppressWarnings("unchecked")
   public ParticipantPanel(String id, IModel<Participant> participantModel, boolean shortList) {
     super(id, participantModel);
 
     setOutputMarkupId(true);
 
-    Participant participant = (Participant) participantModel.getObject();
+    Participant participant = participantModel.getObject();
 
-    add(new ParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList), participantMetadata, this));
+    add(new ParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", (IModel<Participant>) getDefaultModel(), getEssentialAttributesToDisplay(participant, shortList), participantMetadata, this));
     if(!shortList) {
-      add(new ParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, this));
+      add(new ParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", (IModel<Participant>) getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, this));
     } else {
       add(new EmptyPanel("configuredAttributeGroups"));
     }
@@ -89,12 +93,14 @@ public class ParticipantPanel extends Panel {
 
   private class ParticipantPanelAttributeGroupsFragment extends ParticipantAttributeGroupsFragment {
 
-    protected ParticipantPanelAttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
+    protected ParticipantPanelAttributeGroupsFragment(String id, IModel<Participant> participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
       super(id, participantModel, attributes, participantMetadata, parentPanel);
     }
 
     @Override
-    protected ParticipantAttributeGroupFragment addAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+    protected
+        ParticipantAttributeGroupFragment
+        addAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
       return new ParticipantPanelAttributeGroupFragment(id, participantModel, group, attributes);
     }
 
@@ -104,21 +110,24 @@ public class ParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private List<ParticipantAttribute> attributesToDisplay;
+    // private List<ParticipantAttribute> attributesToDisplay;
 
-    public ParticipantPanelAttributeGroupFragment(String id, IModel participantModel, Group group, List<ParticipantAttribute> attributes) {
+    public ParticipantPanelAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, List<ParticipantAttribute> attributes) {
       super(id, participantModel, group, ParticipantPanel.this, attributes);
     }
 
     @Override
-    protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
+    protected void
+        addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
+
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
-      item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name"))));
+      item.add(new Label("label", new SpringStringResourceModel(new PropertyModel<String>(attribute, "name"))));
       if(attribute.getType() == DataType.DATE) {
-        item.add(DateLabel.forDatePattern("field", new Model<Date>((Date) getAttributeValue(participant, attribute.getName()).getValue()), userSessionService.getDatePattern()));
+        Data data = getAttributeValue(participant, attribute.getName());
+        item.add(DateLabel.forDatePattern("field", new Model<Date>(data == null ? null : (Date) data.getValue()), userSessionService.getDatePattern()));
       } else {
-        item.add(new Label("field", new Model(getAttributeValueAsString(participant, attribute.getName()))));
+        item.add(new Label("field", new Model<String>(getAttributeValueAsString(participant, attribute.getName()))));
       }
     }
 
