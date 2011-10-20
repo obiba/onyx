@@ -71,7 +71,7 @@ public class OraInstrumentRunner implements InstrumentRunner {
 
       @Override
       public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, "Onyx, Onyx");
+        ps.setString(1, instrumentExecutionService.getParticipantLastName() + ", " + instrumentExecutionService.getParticipantFirstName());
         ps.setDate(2, new java.sql.Date(instrumentExecutionService.getParticipantBirthDate().getTime()));
         ps.setBoolean(3, instrumentExecutionService.getParticipantGender().startsWith("M"));
         ps.setInt(4, 2);
@@ -126,7 +126,7 @@ public class OraInstrumentRunner implements InstrumentRunner {
   }
 
   private Map<String, Data> extractData(final String eyeSide) {
-    return jdbc.query("select * from Measures where PatientId = ? and Eye = ? order by MeasureDate asc", new PreparedStatementSetter() {
+    return jdbc.query("select * from Measures where PatientId = ? and Eye = ? order by MeasureDate desc", new PreparedStatementSetter() {
 
       @Override
       public void setValues(PreparedStatement ps) throws SQLException {
@@ -141,7 +141,7 @@ public class OraInstrumentRunner implements InstrumentRunner {
 
         // how to avoid while() ? last() on Access DB can not be called
         log.info("Retrieve measures");
-        while(rs.next()) {
+        if(rs.next()) {
           Putter data = new Putter(rs);
           data.putInt("MeasureID");
           data.putInt("MeasureNumber");
