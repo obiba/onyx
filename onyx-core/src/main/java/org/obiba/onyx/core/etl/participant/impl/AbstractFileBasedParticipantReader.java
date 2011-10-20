@@ -34,7 +34,7 @@ import org.springframework.core.io.Resource;
  */
 public abstract class AbstractFileBasedParticipantReader extends AbstractParticipantReader {
 
-  private static final Logger log = LoggerFactory.getLogger(AbstractFileBasedParticipantReader.class);
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
   private Resource inputDirectory;
 

@@ -162,7 +162,6 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
         return attribute;
       }
     }
-
     return null;
   }
 

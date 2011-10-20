@@ -10,7 +10,6 @@
 package org.obiba.onyx.core.etl.participant.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -35,6 +34,7 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
   protected Map<String, String> columnNameToAttributeNameMap;
 
   // Maps attribute names to column indices.
+  // TODO this is dedicated to csv/xls, should not be here but in its child (that works with xls)
   protected Map<String, Integer> attributeNameToColumnIndexMap;
 
   protected void checkColumnsForMandatoryAttributesPresent() {
@@ -42,10 +42,10 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
     allAttributes.addAll(participantMetadata.getEssentialAttributes());
     allAttributes.addAll(participantMetadata.getConfiguredAttributes());
 
-    // Check that all attributes mandatory at enrollment are present.
+    // Check that all attributes mandatory at enrolment are present.
     for(ParticipantAttribute attribute : allAttributes) {
       if(attribute.isMandatoryAtEnrollment()) {
-        if(!attributeNameToColumnIndexMap.containsKey(attribute.getName().toUpperCase())) {
+        if(!attributeNameToColumnIndexMap.containsKey(attribute.getName())) {
           throw new IllegalArgumentException("Invalid worksheet; no column exists for mandatory field '" + attribute.getName() + "'");
         }
       }
@@ -61,16 +61,11 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
 
   @SuppressWarnings("unchecked")
   public void setColumnNameToAttributeNameMap(Map<String, String> columnNameToAttributeNameMap) {
+    if(this.columnNameToAttributeNameMap == null) {
+      this.columnNameToAttributeNameMap = new CaseInsensitiveMap();
+    }
     if(columnNameToAttributeNameMap != null) {
-      if(this.columnNameToAttributeNameMap == null) {
-        this.columnNameToAttributeNameMap = new CaseInsensitiveMap();
-      }
-      // Add map entries to columnNameToAttributeNameMap.
-      Iterator<Map.Entry<String, String>> mapIter = columnNameToAttributeNameMap.entrySet().iterator();
-      while(mapIter.hasNext()) {
-        Map.Entry<String, String> mapEntry = mapIter.next();
-        this.columnNameToAttributeNameMap.put(mapEntry.getKey(), mapEntry.getValue());
-      }
+      this.columnNameToAttributeNameMap.putAll(columnNameToAttributeNameMap);
     }
   }
 
@@ -115,7 +110,7 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
       String essentialAttributeName = essentialAttribute.getName();
 
       if(!columnNameToAttributeNameMap.containsValue(essentialAttributeName)) {
-        columnNameToAttributeNameMap.put(essentialAttributeName.toUpperCase(), essentialAttributeName);
+        columnNameToAttributeNameMap.put(essentialAttributeName, essentialAttributeName);
       }
     }
 
@@ -124,7 +119,7 @@ public abstract class AbstractParticipantReader implements IParticipantReader {
       String configuredAttributeName = configuredAttribute.getName();
 
       if(!columnNameToAttributeNameMap.containsValue(configuredAttributeName)) {
-        columnNameToAttributeNameMap.put(configuredAttributeName.toUpperCase(), configuredAttributeName);
+        columnNameToAttributeNameMap.put(configuredAttributeName, configuredAttributeName);
       }
     }
   }

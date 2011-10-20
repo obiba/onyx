@@ -11,9 +11,10 @@ package org.obiba.onyx.core.etl.participant.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 
 /**
  * 
@@ -24,7 +25,7 @@ public class XmlParticipantInput implements Serializable {
 
   private List<Attribute> attributes = new ArrayList<Attribute>();
 
-  Map<String, String> attributesMap;
+  private Map<String, String> attributesMap;
 
   public List<Attribute> getAttributes() {
     return (this.attributes != null) ? attributes : new ArrayList<Attribute>();
@@ -34,10 +35,11 @@ public class XmlParticipantInput implements Serializable {
     return attributesMap;
   }
 
+  @SuppressWarnings("unchecked")
   public void setAttributesMap() {
-    attributesMap = new HashMap<String, String>();
+    attributesMap = new CaseInsensitiveMap();
     for(Attribute attribute : getAttributes()) {
-      String attributeKey = attribute.getKey().toUpperCase();
+      String attributeKey = attribute.getKey();
       if(!attributesMap.containsKey(attributeKey)) {
         attributesMap.put(attributeKey, attribute.getValue());
       } else {

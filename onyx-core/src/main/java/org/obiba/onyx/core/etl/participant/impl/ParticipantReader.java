@@ -11,9 +11,9 @@ package org.obiba.onyx.core.etl.participant.impl;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -79,7 +79,7 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
       rowIter = sheet.rowIterator();
 
       // Skip ahead to the first data row.
-      row = skipToFirstDataRow(rowIter);
+      skipToFirstDataRow();
 
     } catch(IOException e) {
       AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: " + e.getMessage()));
@@ -91,16 +91,15 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
 
   }
 
+  @Override
   public Participant read() throws Exception, UnexpectedInputException, ParseException {
     Participant participant = null;
 
     // Need this check because even though the row iterator only returns "physical" rows, rows containing
     // cells with whitespace only are also returned. We want to ignore those rows.
-    if(row != null && !rowContainsWhitespaceOnly(evaluator, row)) {
-
-      participant = processParticipant(row, evaluator);
-      participant.setAppointment(processAppointment(row, evaluator));
-
+    if(row != null && !rowContainsWhitespaceOnly()) {
+      participant = processParticipant();
+      participant.setAppointment(processAppointment());
     }
 
     if(rowIter.hasNext()) {
@@ -119,13 +118,14 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
   //
   // Local methods
   //
+  @SuppressWarnings("unchecked")
   private void initAttributeNameToColumnIndexMap(ExecutionContext context, Row headerRow) {
     if(headerRow == null) {
       AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Null headerRow"));
       throw new IllegalArgumentException("Null headerRow");
     }
 
-    attributeNameToColumnIndexMap = new HashMap<String, Integer>();
+    attributeNameToColumnIndexMap = new CaseInsensitiveMap();
 
     Iterator<Cell> cellIter = headerRow.cellIterator();
 
@@ -141,11 +141,11 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
         String columnName = cell.getRichStringCellValue().getString();
 
         if(columnName != null) {
-          String attributeName = columnNameToAttributeNameMap.get(columnName.toUpperCase());
+          String attributeName = columnNameToAttributeNameMap.get(columnName);
 
           if(attributeName != null) {
-            if(!attributeNameToColumnIndexMap.containsKey(attributeName.toUpperCase())) {
-              attributeNameToColumnIndexMap.put(attributeName.toUpperCase(), cell.getColumnIndex());
+            if(!attributeNameToColumnIndexMap.containsKey(attributeName)) {
+              attributeNameToColumnIndexMap.put(attributeName, cell.getColumnIndex());
             } else {
               AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Duplicate column for field: " + attributeName));
               throw new IllegalArgumentException("Duplicate column for field: " + attributeName);
@@ -155,24 +155,21 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
       }
     }
 
+    log.info("attributeNameToColumnIndexMap: {}", attributeNameToColumnIndexMap);
+
     checkColumnsForMandatoryAttributesPresent();
   }
 
-  private Row skipToFirstDataRow(Iterator<Row> rowIter) {
-    Row row = null;
-
+  private void skipToFirstDataRow() {
     while(true) {
       row = rowIter.next();
-
       if(row.getRowNum() >= (getFirstDataRowNumber() - 1)) {
         break;
       }
     }
-
-    return row;
   }
 
-  private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, Row row) {
+  private boolean rowContainsWhitespaceOnly() {
     boolean rowContainsWhitespaceOnly = true;
 
     Iterator cellIter = row.cellIterator();
@@ -189,7 +186,7 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
     return rowContainsWhitespaceOnly;
   }
 
-  private Participant processParticipant(Row row, HSSFFormulaEvaluator evaluator) {
+  private Participant processParticipant() {
     Participant participant = new Participant();
 
     setParticipantEssentialAttributes(participant, row, evaluator);
@@ -198,15 +195,15 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
     return participant;
   }
 
-  private Appointment processAppointment(Row row, HSSFFormulaEvaluator evaluator) {
+  private Appointment processAppointment() {
     Appointment appointment = new Appointment();
     Data data = null;
 
-    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)), evaluator);
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     appointment.setAppointmentCode(enrollmentId);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME)), evaluator);
     Date appointmentTime = (data != null) ? (Date) data.getValue() : null;
     appointment.setDate(appointmentTime);
 
@@ -218,30 +215,30 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
 
     Data data = null;
 
-    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)), evaluator);
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     participant.setEnrollmentId(enrollmentId);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)), evaluator);
     String assessmentCenterId = (String) ((data != null) ? data.getValue() : null);
     participant.setSiteNo(assessmentCenterId);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME)), evaluator);
     String firstName = (String) ((data != null) ? data.getValue() : null);
     participant.setFirstName(firstName);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    data = getEssentialAttributeValue(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME)), evaluator);
     String lastName = (String) ((data != null) ? data.getValue() : null);
     participant.setLastName(lastName);
 
-    if(attributeNameToColumnIndexMap.containsKey(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    if(attributeNameToColumnIndexMap.containsKey(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)) {
+      data = getEssentialAttributeValue(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)), evaluator);
       Date birthDate = (data != null) ? (Date) data.getValue() : null;
       participant.setBirthDate(birthDate);
     }
 
-    if(attributeNameToColumnIndexMap.containsKey(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+    if(attributeNameToColumnIndexMap.containsKey(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)) {
+      data = getEssentialAttributeValue(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)), evaluator);
       String gender = (data != null) ? data.getValueAsString() : "";
       if(gender.equals("M")) {
         participant.setGender(Gender.MALE);
@@ -255,14 +252,16 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
 
   protected void setParticipantConfiguredAttributes(Participant participant, Row row, HSSFFormulaEvaluator evaluator) {
     for(ParticipantAttribute configuredAttribute : getParticipantMetadata().getConfiguredAttributes()) {
-      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToColumnIndexMap.containsKey(configuredAttribute.getName().toUpperCase())) {
-        Cell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName().toUpperCase()));
+      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToColumnIndexMap.containsKey(configuredAttribute.getName())) {
+        Cell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName()));
         setConfiguredAttribute(participant, configuredAttribute, cell, evaluator);
       }
     }
   }
 
-  private void setConfiguredAttribute(Participant participant, ParticipantAttribute attribute, Cell cell, HSSFFormulaEvaluator evaluator) {
+  private
+      void
+      setConfiguredAttribute(Participant participant, ParticipantAttribute attribute, Cell cell, HSSFFormulaEvaluator evaluator) {
     Data data = getAttributeValue(attribute, cell, evaluator);
     participant.setConfiguredAttributeValue(attribute.getName(), data);
   }
