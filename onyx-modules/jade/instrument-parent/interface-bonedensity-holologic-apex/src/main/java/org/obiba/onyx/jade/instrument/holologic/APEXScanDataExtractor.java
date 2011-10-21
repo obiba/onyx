@@ -161,12 +161,8 @@ public abstract class APEXScanDataExtractor {
         public boolean apply(StoredDicomFile o) {
           try {
             String bodyPartExam = ((StoredDicomFile) o).getDicomObject().getString(Tag.BodyPartExamined);
-            log.info(bodyPartExam);
-            log.info(getDicomBodyPartName());
             // if 2 null we suppose that it is a whole body scan
-            boolean ret = (bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
-            log.info(ret + "");
-            return ret;
+            return (bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
           } catch(IOException e) {
             throw new RuntimeException(e);
           }
