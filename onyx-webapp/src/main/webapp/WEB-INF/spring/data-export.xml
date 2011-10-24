@@ -14,6 +14,7 @@
     <property name="captureAndExportStrategyMap" ref="captureAndExportStrategyMap" />
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="publicKeyFactory" ref="onyxKeyStore" />
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
   </bean>
 
 </beans>

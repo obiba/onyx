@@ -10,10 +10,9 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,24 +20,30 @@ import java.util.Map;
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.DatasourceFactory;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.magma.crypt.KeyProviderSecurityException;
 import org.obiba.magma.crypt.NoSuchKeyException;
-import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.magma.filter.FilteredValueTable;
 import org.obiba.magma.support.DatasourceCopier;
 import org.obiba.magma.support.DatasourceCopier.DatasourceCopyValueSetEventListener;
+import org.obiba.magma.support.DatasourceParsingException;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
+import org.obiba.onyx.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 public class OnyxDataExport {
 
@@ -58,6 +63,8 @@ public class OnyxDataExport {
 
   // ONYX-424: Required to set FlushMode
   private SessionFactory sessionFactory;
+
+  private MagmaInstanceProvider magmaInstanceProvider;
 
   public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
     this.exportDestinations = exportDestinations;
@@ -93,6 +100,10 @@ public class OnyxDataExport {
 
   public void setSessionFactory(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
+  }
+
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
   }
 
   @Transactional(rollbackFor = Exception.class)
@@ -134,46 +145,70 @@ public class OnyxDataExport {
       }
     };
 
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      for(OnyxDataExportDestination destination : exportDestinations) {
+    Datasource datasource = magmaInstanceProvider.getOnyxDatasource();
+    for(final OnyxDataExportDestination destination : exportDestinations) {
+      log.info("Exporting to {}", destination.getName());
+      boolean exportFailed = false;
 
-        boolean exportFailed = false;
-        File outputFile = new File(outputRootDirectory, destination.getName() + "-" + getCurrentDateTimeString() + ".zip");
-        FsDatasource outputDatasource = new FsDatasource(destination.getName(), outputFile, destination.getEncryptionStrategy(pkProvider));
+      Iterable<ValueTable> tables = getExportValueTables(datasource, destination);
 
-        MagmaEngine.get().addDatasource(outputDatasource);
-        try {
-          for(ValueTable table : datasource.getValueTables()) {
-            // Check whether the destination wants this type of entity
-            if(destination.wantsTable(table)) {
-              // Export interviews for each destination
-              long exportStartTime = System.currentTimeMillis();
+      File outputFile = destination.createOutputFile(outputRootDirectory);
 
-              // Apply all filters to ValueTable for current OnyxDestination.
-              ValueTable filteredTable = new FilteredValueTable(table, destination.getVariableFilterChainForTable(table), destination.getEntityFilterChainForTable(table));
+      DatasourceFactory factory = destination.getDatasourceFactory(outputFile, pkProvider, tables);
 
-              ExportListener listener = new ExportListener(destination);
-              DatasourceCopier copier = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener).build();
+      Datasource outputDatasource = factory.create();
+      try {
+        outputDatasource.initialise();
+      } catch(DatasourceParsingException e) {
+        e.printTree();
+        throw e;
+      }
 
-              // Copy the filtered table to the destination datasource
-              copier.copy(filteredTable, outputDatasource);
+      try {
+        for(ValueTable table : tables) {
+          // Export interviews for each destination
+          long exportStartTime = System.currentTimeMillis();
 
-              long exportEndTime = System.currentTimeMillis();
-              log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
-            }
-          }
-        } catch(Exception e) {
-          // Flag the export as failed so we delete the output file
-          exportFailed = true;
-          throw e;
-        } finally {
-          MagmaEngine.get().removeDatasource(outputDatasource);
-          if(exportFailed == true) {
-            outputFile.delete();
+          ExportListener listener = new ExportListener(destination);
+
+          // Copy the filtered table to the destination datasource
+          DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener).build().copy(table, outputDatasource);
+
+          long exportEndTime = System.currentTimeMillis();
+          log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
+        }
+      } catch(Exception e) {
+        // Flag the export as failed so we delete the output file
+        exportFailed = true;
+        throw e;
+      } finally {
+        outputDatasource.dispose();
+        if(exportFailed == true) {
+          try {
+            FileUtil.delete(outputFile);
+          } catch(IOException e) {
+            // ignore
           }
         }
       }
     }
+  }
+
+  private Iterable<ValueTable> getExportValueTables(Datasource datasource, final OnyxDataExportDestination destination) {
+    return Iterables.transform(Iterables.filter(datasource.getValueTables(), new Predicate<ValueTable>() {
+
+      @Override
+      public boolean apply(ValueTable input) {
+        return destination.wantsTable(input);
+      }
+
+    }), new Function<ValueTable, ValueTable>() {
+
+      @Override
+      public ValueTable apply(ValueTable from) {
+        return new FilteredValueTable(from, destination.getVariableFilterChainForTable(from), destination.getEntityFilterChainForTable(from));
+      }
+    });
   }
 
   /**
@@ -201,11 +236,6 @@ public class OnyxDataExport {
     // Write an entry in ExportLog to flag the set of entities as exported.
     ExportLog exportLog = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
     exportLogService.save(exportLog);
-  }
-
-  private String getCurrentDateTimeString() {
-    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-    return df.format(new Date());
   }
 
   private class ExportListener implements DatasourceCopyValueSetEventListener {
