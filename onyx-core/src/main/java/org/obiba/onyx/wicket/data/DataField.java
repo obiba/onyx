@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -351,7 +352,7 @@ public class DataField extends Panel {
 
   private class InputFragment extends FieldFragment {
 
-    @SuppressWarnings("incomplete-switch")
+    @SuppressWarnings({ "incomplete-switch", "unchecked" })
     public InputFragment(String id, IModel<Data> model, final DataType dataType, Integer size) {
       super(id, "inputFragment", DataField.this);
 
@@ -369,6 +370,7 @@ public class DataField extends Panel {
             return DataField.this.isRequired();
           }
         };
+        field.setType(String.class);
         break;
 
       case DATE:
@@ -409,6 +411,7 @@ public class DataField extends Panel {
             return userSessionService.getDatePattern();
           }
         });
+        field.setType(Date.class);
         break;
 
       case INTEGER:
@@ -423,6 +426,7 @@ public class DataField extends Panel {
             return DataField.this.isRequired();
           }
         };
+        field.setType(Long.class);
         break;
 
       case DECIMAL:
@@ -437,6 +441,7 @@ public class DataField extends Panel {
             return DataField.this.isRequired();
           }
         };
+        field.setType(Double.class);
         break;
       }
       field.add(new AttributeAppender("size", new Model<String>(Integer.toString(size)), ""));
