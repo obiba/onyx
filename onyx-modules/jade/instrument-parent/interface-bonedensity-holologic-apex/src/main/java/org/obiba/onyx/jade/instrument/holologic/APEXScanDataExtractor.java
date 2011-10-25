@@ -15,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +31,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.ResultSetExtractor;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 public abstract class APEXScanDataExtractor {
 
@@ -155,20 +151,18 @@ public abstract class APEXScanDataExtractor {
         }
       }
 
-      Collection<StoredDicomFile> selectCollection = Collections2.filter(server.listDicomFiles(), new Predicate<StoredDicomFile>() {
-
-        @Override
-        public boolean apply(StoredDicomFile o) {
-          try {
-            String bodyPartExam = ((StoredDicomFile) o).getDicomObject().getString(Tag.BodyPartExamined);
-            // if 2 null we suppose that it is a whole body scan
-            return (bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
-          } catch(IOException e) {
-            throw new RuntimeException(e);
-          }
+      List<StoredDicomFile> selectList = new ArrayList<StoredDicomFile>();
+      for(StoredDicomFile sdf : server.listDicomFiles()) {
+        try {
+          String bodyPartExam = sdf.getDicomObject().getString(Tag.BodyPartExamined);
+          // if 2 null we suppose that it is a whole body scan
+          boolean include = (bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
+          if(include) selectList.add(sdf);
+        } catch(IOException e) {
+          throw new RuntimeException(e);
         }
-      });
-      ArrayList<StoredDicomFile> selectList = new ArrayList<StoredDicomFile>(selectCollection);
+      }
+
       if(!selectList.isEmpty()) {
         // Whole Body
         if(getDicomBodyPartName() == null) {
