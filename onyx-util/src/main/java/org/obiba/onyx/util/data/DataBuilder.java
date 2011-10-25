@@ -94,6 +94,7 @@ public class DataBuilder {
     return new Data(DataType.TEXT, text);
   }
 
+  @SuppressWarnings("incomplete-switch")
   public static Data build(DataType type, String value) {
     switch(type) {
     case BOOLEAN:

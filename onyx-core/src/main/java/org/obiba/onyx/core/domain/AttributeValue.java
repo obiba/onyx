@@ -49,6 +49,8 @@ public class AttributeValue extends AbstractEntity {
   @Column(length = 2000)
   private String textValue;
 
+  private Boolean booleanValue;
+
   public void setAttributeName(String attributeName) {
     this.attributeName = attributeName;
   }
@@ -85,6 +87,10 @@ public class AttributeValue extends AbstractEntity {
         case TEXT:
           textValue = data.getValue();
           break;
+
+        case BOOLEAN:
+          booleanValue = data.getValue();
+          break;
         }
       } else {
         throw new IllegalArgumentException("DataType " + getAttributeType() + " expected, " + data.getType() + " received.");
@@ -94,6 +100,7 @@ public class AttributeValue extends AbstractEntity {
       integerValue = null;
       dateValue = null;
       textValue = null;
+      booleanValue = false;
     }
   }
 
@@ -118,6 +125,10 @@ public class AttributeValue extends AbstractEntity {
 
     case TEXT:
       data = DataBuilder.buildText(textValue);
+      break;
+
+    case BOOLEAN:
+      data = DataBuilder.buildBoolean(booleanValue);
       break;
     }
 

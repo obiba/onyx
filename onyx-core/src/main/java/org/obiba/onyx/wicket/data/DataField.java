@@ -9,16 +9,18 @@
 package org.obiba.onyx.wicket.data;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Resource;
@@ -26,11 +28,11 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.WebResource;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -45,6 +47,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.resource.ByteArrayResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converters.DateConverter;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.upload.FileUploadException;
 import org.apache.wicket.validation.IValidator;
@@ -66,7 +69,7 @@ public class DataField extends Panel {
 
   private static final long serialVersionUID = 4522983933046975818L;
 
-  // private static final Logger logger = LoggerFactory.getLogger(DataField.class);
+  //private static final Logger logger = LoggerFactory.getLogger(DataField.class);
 
   private static final int DATE_YEAR_MAXIMUM = 3000;
 
@@ -98,7 +101,11 @@ public class DataField extends Panel {
     if(rows != null && rows > 1 && dataType.equals(DataType.TEXT)) {
       input = new TextAreaFragment("input", model, dataType, size, rows);
     } else {
-      input = new InputFragment("input", model, dataType, size == null ? -1 : size);
+      if(dataType == DataType.BOOLEAN) {
+        input = new CheckboxFragment("input", model);
+      } else {
+        input = new InputFragment("input", model, dataType, size == null ? -1 : size);
+      }
     }
     add(input);
     addUnitLabel(unit);
@@ -124,7 +131,7 @@ public class DataField extends Panel {
    * @param choices
    * @param unit
    */
-  public DataField(String id, IModel<Data> model, final DataType dataType, IModel choices, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, IModel<List<Data>> choices, String unit) {
     this(id, model, dataType, choices, null, unit);
   }
 
@@ -137,10 +144,10 @@ public class DataField extends Panel {
    * @param renderer
    * @param unit
    */
-  public DataField(String id, IModel<Data> model, final DataType dataType, IModel choices, IChoiceRenderer renderer, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, IModel<List<Data>> choices, IChoiceRenderer<Data> renderer, String unit) {
     super(id);
 
-    input = new SelectFragment("input", model, dataType, choices, renderer);
+    input = new SelectFragment("input", model, choices, renderer);
     add(input);
 
     addUnitLabel(unit);
@@ -154,7 +161,7 @@ public class DataField extends Panel {
    * @param choices
    * @param unit
    */
-  public DataField(String id, IModel<Data> model, final DataType dataType, List choices, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, List<Data> choices, String unit) {
     this(id, model, dataType, choices, null, unit);
   }
 
@@ -167,10 +174,10 @@ public class DataField extends Panel {
    * @param renderer
    * @param unit
    */
-  public DataField(String id, IModel<Data> model, final DataType dataType, List choices, IChoiceRenderer renderer, String unit) {
+  public DataField(String id, IModel<Data> model, final DataType dataType, List<Data> choices, IChoiceRenderer<Data> renderer, String unit) {
     super(id);
 
-    input = new SelectFragment("input", model, dataType, choices, renderer);
+    input = new SelectFragment("input", model, choices, renderer);
     add(input);
 
     addUnitLabel(unit);
@@ -265,7 +272,7 @@ public class DataField extends Panel {
    * @param validator the validator
    * @return this for chaining
    */
-  public Component add(IValidator validator) {
+  public Component add(IValidator<?> validator) {
     input.getField().add(validator);
     return this;
   }
@@ -304,11 +311,10 @@ public class DataField extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    protected FormComponent field = null;
+    protected FormComponent field;
 
     public FieldFragment(String id, String markupId, MarkupContainer markupProvider) {
       super(id, markupId, markupProvider);
-
     }
 
     public FormComponent getField() {
@@ -318,38 +324,55 @@ public class DataField extends Panel {
 
   private class TextAreaFragment extends FieldFragment {
 
-    public TextAreaFragment(String id, IModel model, final DataType dataType, Integer columns, Integer rows) {
+    public TextAreaFragment(String id, IModel<Data> model, final DataType dataType, Integer columns, Integer rows) {
       super(id, "textAreaFragment", DataField.this);
-      add(field = createTextArea(model, dataType, columns, rows));
+
+      field = new TextArea<Data>("field", model) {
+
+        @Override
+        public IConverter getConverter(Class<?> type) {
+          return new DataConverter(dataType, userSessionService);
+        }
+
+        @Override
+        public boolean isRequired() {
+          return DataField.this.isRequired();
+        }
+      };
+      if(columns != null) {
+        field.add(new AttributeAppender("cols", new Model<Integer>(columns), ""));
+      }
+      field.add(new AttributeAppender("rows", new Model<Integer>(rows), ""));
+
+      add(field);
     }
   }
 
   private class InputFragment extends FieldFragment {
 
-    public InputFragment(String id, IModel model, final DataType dataType, Integer size) {
+    @SuppressWarnings("incomplete-switch")
+    public InputFragment(String id, IModel<Data> model, final DataType dataType, Integer size) {
       super(id, "inputFragment", DataField.this);
 
       switch(dataType) {
       case TEXT:
       case DATA:
-        field = createTextField(model, dataType);
-        break;
-      case BOOLEAN:
-        field = new CheckBox("field", model) {
-          // @Override
-          // public IConverter getConverter(Class type) {
-          // return new DataConverter(dataType);
-          // }
+        field = new TextField<Data>("field", model) {
+          @Override
+          public IConverter getConverter(Class<?> type) {
+            return new DataConverter(dataType, userSessionService);
+          }
 
           @Override
           public boolean isRequired() {
             return DataField.this.isRequired();
           }
         };
-        field.add(new AttributeModifier("type", new Model<String>("checkbox")));
         break;
+
       case DATE:
-        field = new DateTextField("field", model) {
+        // cannot use DateTextField because we have IModel<Data> and not IModel<Date>
+        field = new DataDateTextField("field", model, userSessionService.getDatePattern()) {
           @Override
           public IConverter getConverter(Class<?> type) {
             return new DataConverter(dataType, userSessionService);
@@ -386,8 +409,9 @@ public class DataField extends Panel {
           }
         });
         break;
+
       case INTEGER:
-        field = new TextField<Long>("field", model, Long.class) {
+        field = new TextField<Data>("field", model) {
           @Override
           public IConverter getConverter(Class<?> type) {
             return new DataConverter(dataType, userSessionService);
@@ -399,8 +423,9 @@ public class DataField extends Panel {
           }
         };
         break;
+
       case DECIMAL:
-        field = new TextField<Double>("field", model, Double.class) {
+        field = new TextField<Data>("field", model) {
           @Override
           public IConverter getConverter(Class<?> type) {
             return new DataConverter(dataType, userSessionService);
@@ -417,98 +442,130 @@ public class DataField extends Panel {
       add(field);
     }
 
-  }
+    private class DataDateTextField extends TextField<Data> implements ITextFormatProvider {
 
-  private FormComponent createTextArea(IModel model, final DataType dataType, Integer columns, Integer rows) {
-    FormComponent field = new TextArea("field", model) {
+      /**
+       * The date pattern of the text field
+       */
+      private String datePattern = null;
 
-      @SuppressWarnings("unchecked")
-      @Override
-      public IConverter getConverter(Class type) {
-        return new DataConverter(dataType, userSessionService);
+      /**
+       * The converter for the TextField
+       */
+      private IConverter converter = null;
+
+      /**
+       * Creates a new DateTextField bound with a specific <code>SimpleDateFormat</code> pattern.
+       * 
+       * @param id The id of the text field
+       * @param model The model
+       * @param datePattern A <code>SimpleDateFormat</code> pattern
+       * 
+       * @see org.apache.wicket.markup.html.form.TextField
+       */
+      public DataDateTextField(String id, IModel<Data> model, String datePattern) {
+        super(id, model, Data.class);
+        this.datePattern = datePattern;
+        converter = new DateConverter() {
+
+          /**
+           * @see org.apache.wicket.util.convert.converters.DateConverter#getDateFormat(java.util.Locale)
+           */
+          @Override
+          public DateFormat getDateFormat(Locale locale) {
+            if(locale == null) {
+              locale = Locale.getDefault();
+            }
+            return new SimpleDateFormat(DataDateTextField.this.datePattern, locale);
+          }
+        };
       }
 
-      @Override
-      public boolean isRequired() {
-        return DataField.this.isRequired();
-      }
-    };
-    if(columns != null) {
-      field.add(new AttributeAppender("cols", new Model<Integer>(columns), ""));
-    }
-    field.add(new AttributeAppender("rows", new Model<Integer>(rows), ""));
-    return field;
-  }
-
-  private FormComponent<String> createTextField(IModel<String> model, final DataType dataType) {
-    return new TextField<String>("field", model, String.class) {
-
+      /**
+       * Returns the default converter if created without pattern; otherwise it returns a pattern-specific converter.
+       * 
+       * @param type The type for which the convertor should work
+       * 
+       * @return A pattern-specific converter
+       * 
+       * @see org.apache.wicket.markup.html.form.TextField
+       */
       @Override
       public IConverter getConverter(Class<?> type) {
-        return new DataConverter(dataType, userSessionService);
+        if(converter == null) {
+          return super.getConverter(type);
+        }
+        return converter;
       }
 
+      /**
+       * Returns the date pattern.
+       * 
+       * @see org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider#getTextFormat()
+       */
       @Override
-      public boolean isRequired() {
-        return DataField.this.isRequired();
+      public String getTextFormat() {
+        return datePattern;
       }
-    };
+
+    }
+  }
+
+  private class CheckboxFragment extends FieldFragment {
+
+    public CheckboxFragment(String id, final IModel<Data> model) {
+      super(id, "checkboxFragment", DataField.this);
+      // it seems that we cannot use PropertyModel because Data is not a real POJO
+      field = new CheckBox("field", new Model<Boolean>() {
+        @Override
+        public void setObject(Boolean object) {
+          model.setObject(new Data(DataType.BOOLEAN, object));
+          modelChanged();
+        }
+      });
+      add(field);
+    }
   }
 
   private class SelectFragment extends FieldFragment {
 
-    private static final long serialVersionUID = -6926320986227794949L;
-
-    @SuppressWarnings("unchecked")
-    public SelectFragment(String id, IModel model, final DataType dataType, List choices, IChoiceRenderer renderer) {
+    public SelectFragment(String id, IModel<Data> model, List<Data> choices, IChoiceRenderer<Data> renderer) {
       super(id, "selectFragment", DataField.this);
 
       if(renderer == null) {
-        field = new DropDownChoice("select", model, choices) {
-          private static final long serialVersionUID = 1L;
-
+        field = new DropDownChoice<Data>("select", model, choices) {
           @Override
           public boolean isRequired() {
             return DataField.this.isRequired();
           }
-
         };
       } else {
-        field = new DropDownChoice("select", model, choices, renderer) {
-          private static final long serialVersionUID = 1L;
-
+        field = new DropDownChoice<Data>("select", model, choices, renderer) {
           @Override
           public boolean isRequired() {
             return DataField.this.isRequired();
           }
-
         };
       }
       add(field);
     }
 
-    public SelectFragment(String id, IModel model, final DataType dataType, IModel choices, IChoiceRenderer renderer) {
+    public SelectFragment(String id, IModel<Data> model, IModel<List<Data>> choices, IChoiceRenderer<Data> renderer) {
       super(id, "selectFragment", DataField.this);
 
       if(renderer == null) {
-        field = new DropDownChoice("select", model, choices) {
-          private static final long serialVersionUID = 1L;
-
+        field = new DropDownChoice<Data>("select", model, choices) {
           @Override
           public boolean isRequired() {
             return DataField.this.isRequired();
           }
-
         };
       } else {
-        field = new DropDownChoice("select", model, choices, renderer) {
-          private static final long serialVersionUID = 1L;
-
+        field = new DropDownChoice<Data>("select", model, choices, renderer) {
           @Override
           public boolean isRequired() {
             return DataField.this.isRequired();
           }
-
         };
       }
       add(field);
@@ -579,6 +636,7 @@ public class DataField extends Panel {
   }
 
   public interface AudioDataListener extends EventListener, Serializable {
+
     void onDataUploaded();
 
     void onAudioDataProcessed(AjaxRequestTarget target);
