@@ -44,6 +44,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.resource.ByteArrayResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
@@ -69,7 +70,7 @@ public class DataField extends Panel {
 
   private static final long serialVersionUID = 4522983933046975818L;
 
-  //private static final Logger logger = LoggerFactory.getLogger(DataField.class);
+  // private static final Logger logger = LoggerFactory.getLogger(DataField.class);
 
   private static final int DATE_YEAR_MAXIMUM = 3000;
 
@@ -516,7 +517,7 @@ public class DataField extends Panel {
     public CheckboxFragment(String id, final IModel<Data> model) {
       super(id, "checkboxFragment", DataField.this);
       // it seems that we cannot use PropertyModel because Data is not a real POJO
-      field = new CheckBox("field", new Model<Boolean>() {
+      field = new CheckBox("field", new PropertyModel<Boolean>(model, "value") {
         @Override
         public void setObject(Boolean object) {
           model.setObject(new Data(DataType.BOOLEAN, object));
