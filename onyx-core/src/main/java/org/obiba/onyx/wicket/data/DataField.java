@@ -411,7 +411,6 @@ public class DataField extends Panel {
             return userSessionService.getDatePattern();
           }
         });
-        field.setType(Date.class);
         break;
 
       case INTEGER:
@@ -470,7 +469,8 @@ public class DataField extends Panel {
        * @see org.apache.wicket.markup.html.form.TextField
        */
       public DataDateTextField(String id, IModel<Data> model, String datePattern) {
-        super(id, model, Data.class);
+        super(id, model);
+        setType(Date.class);
         this.datePattern = datePattern;
         converter = new DateConverter() {
 
