@@ -377,23 +377,19 @@ public class EditParticipantPanel extends Panel {
         } else {
           attributeValueModel = new PropertyModel<Data>(participant, essentialAttributeFieldName);
         }
-      } else {
-        ParticipantAttributeValue configuredAttributeValue = getConfiguredAttributeValue(attribute, participant);
-        if(configuredAttributeValue == null) {
+      } else if(getConfiguredAttributeValue(attribute, participant) == null) {
+        participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
 
-          participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
-
-          // ONYX-186
-          if(participant.getId() != null) {
-            participantService.updateParticipant(participant);
-            attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, configuredAttributeValue), "data");
-          } else {
-            attributeValueModel = new PropertyModel<Data>(configuredAttributeValue, "data");
-          }
-
+        // ONYX-186
+        if(participant.getId() != null) {
+          participantService.updateParticipant(participant);
+          attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
         } else {
-          attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, configuredAttributeValue), "data");
+          attributeValueModel = new PropertyModel<Data>(getConfiguredAttributeValue(attribute, participant), "data");
         }
+
+      } else {
+        attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
       }
 
       // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
