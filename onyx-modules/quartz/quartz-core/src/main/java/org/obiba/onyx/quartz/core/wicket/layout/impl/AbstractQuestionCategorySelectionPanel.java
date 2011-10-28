@@ -13,6 +13,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.MultipleDefaultOpenAnswerDefinitionPanel;
@@ -28,6 +30,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * 
    */
   private static final long serialVersionUID = 1L;
+
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategorySelectionPanel.class);
 
   /**
@@ -35,9 +38,8 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * @param id
    * @param questionCategoryModel
    */
-  public AbstractQuestionCategorySelectionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+  public AbstractQuestionCategorySelectionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
-
   }
 
   /**

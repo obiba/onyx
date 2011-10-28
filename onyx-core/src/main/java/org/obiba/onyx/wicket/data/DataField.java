@@ -319,6 +319,10 @@ public class DataField extends Panel {
       super(id, markupId, markupProvider);
     }
 
+    public FieldFragment(String id, String markupId, MarkupContainer markupProvider, IModel<?> model) {
+      super(id, markupId, markupProvider, model);
+    }
+
     public FormComponent getField() {
       return field;
     }
@@ -581,9 +585,9 @@ public class DataField extends Panel {
   private class AudioRecorderFragment extends FieldFragment {
 
     public AudioRecorderFragment(String id, final IModel<Data> model, Rate samplingRate, int maxDuration) {
-      super(id, "audioRecorderFragment", DataField.this);
+      super(id, "audioRecorderFragment", DataField.this, model);
 
-      Map<Option, Object> options = new HashMap<NanoGongApplet.Option, Object>();
+      final Map<Option, Object> options = new HashMap<NanoGongApplet.Option, Object>();
       options.put(Option.AudioFormat, Format.PCM);
       options.put(Option.SamplingRate, samplingRate);
       options.put(Option.MaxDuration, String.valueOf(maxDuration));
@@ -591,26 +595,15 @@ public class DataField extends Panel {
       options.put(Option.ShowSaveButton, "false");
       options.put(Option.ShowTime, "true");
       options.put(Option.Color, "#FFFFFF");
-
       if(model.getObject() != null) {
-        CharSequence audioFileUrl = urlFor(new ResourceReference(AudioRecorderFragment.class, "audio.wav") {
-          @Override
-          protected Resource newResource() {
-            return new WebResource() {
-              @Override
-              public IResourceStream getResourceStream() {
-                return new ByteArrayResource("audio/x-wav", (byte[]) model.getObject().getValue()).getResourceStream();
-              }
-            };
-          }
-        });
-        options.put(Option.SoundFileURL, audioFileUrl);
+        options.put(Option.SoundFileURL, getFileAudioUrl());
       }
 
       field = new NanoGongApplet("nanoGong", "140", "60", options) {
         @Override
         protected void onAudioData(FileUpload fileUpload) {
           model.setObject(new Data(DataType.DATA, fileUpload.getBytes()));
+          options.put(Option.SoundFileURL, getFileAudioUrl());
           for(AudioDataListener listener : listeners) {
             listener.onDataUploaded();
           }
@@ -632,6 +625,20 @@ public class DataField extends Panel {
       };
       add(field);
 
+    }
+
+    private String getFileAudioUrl() {
+      return getDefaultModelObject() == null ? null : urlFor(new ResourceReference(AudioRecorderFragment.class, "audio.wav") {
+        @Override
+        protected Resource newResource() {
+          return new WebResource() {
+            @Override
+            public IResourceStream getResourceStream() {
+              return new ByteArrayResource("audio/x-wav", (byte[]) ((Data) getDefaultModelObject()).getValue()).getResourceStream();
+            }
+          };
+        }
+      }).toString();
     }
   }
 

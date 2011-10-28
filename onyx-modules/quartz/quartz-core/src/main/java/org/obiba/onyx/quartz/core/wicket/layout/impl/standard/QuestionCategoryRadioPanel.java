@@ -147,6 +147,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     return openField != null;
   }
 
+  @Override
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection={}:{}", questionModel.getObject(), questionCategoryModel.getObject());
 

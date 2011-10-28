@@ -55,8 +55,8 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    * @param questionCategoryModel
    * @param selectionsModel check group selections model
    */
-  public QuestionCategoryCheckBoxPanel(String id, IModel questionCategoryModel, IModel selectionsModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, selectionsModel, true);
+  public QuestionCategoryCheckBoxPanel(String id, IModel<QuestionCategory> questionCategoryModel, IModel selectionsModel) {
+    this(id, new QuestionnaireModel(questionCategoryModel.getObject().getQuestion()), questionCategoryModel, selectionsModel, true);
   }
 
   /**
@@ -69,7 +69,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public QuestionCategoryCheckBoxPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel selectionsModel, boolean radioLabelVisible) {
+  public QuestionCategoryCheckBoxPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel selectionsModel, boolean radioLabelVisible) {
     super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
 
@@ -124,8 +124,8 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
       openField = newOpenAnswerDefinitionPanel("open");
       add(openField);
 
-      checkbox.add(new AttributeAppender("class", new Model("checkbox-open"), " "));
-      checkboxLabel.add(new AttributeModifier("class", new Model("label-open")));
+      checkbox.add(new AttributeAppender("class", new Model<String>("checkbox-open"), " "));
+      checkboxLabel.add(new AttributeModifier("class", new Model<String>("label-open")));
 
     } else {
       // no open answer
@@ -150,6 +150,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     return openField != null;
   }
 
+  @Override
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     if(!getSelectionModel().isSelected()) {
       // set checkbox as selected
