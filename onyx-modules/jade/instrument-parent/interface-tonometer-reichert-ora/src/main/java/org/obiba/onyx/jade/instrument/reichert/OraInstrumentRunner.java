@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
@@ -41,13 +43,17 @@ public class OraInstrumentRunner implements InstrumentRunner {
 
   @Override
   public void initialize() {
+    if(externalAppHelper.isSotfwareAlreadyStarted()) {
+      JOptionPane.showMessageDialog(null, externalAppHelper.getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+      throw new RuntimeException("already lock for execution");
+    }
     initializeParticipantData();
   }
 
   @Override
   public void run() {
     log.info("Launching Ora");
-    externalAppHelper.launch();
+    externalAppHelper.launchExternalSoftware();
 
     log.info("Sending data to server");
     processData();

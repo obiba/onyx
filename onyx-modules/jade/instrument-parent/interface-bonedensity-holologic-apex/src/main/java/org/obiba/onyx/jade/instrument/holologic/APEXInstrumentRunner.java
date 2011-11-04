@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.dcm4che2.tool.dcmrcv.DicomServer;
@@ -240,6 +241,10 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
    * input file to be read by the external application
    */
   public void initialize() {
+    if(externalAppHelper.isSotfwareAlreadyStarted()) {
+      JOptionPane.showMessageDialog(null, externalAppHelper.getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+      throw new RuntimeException("already lock for execution");
+    }
     showProcessingDialog();
     log.info("Backup local database");
     resetDeviceData();
@@ -274,7 +279,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     }
 
     log.info("Launching APEX software");
-    externalAppHelper.launch();
+    externalAppHelper.launchExternalSoftware();
 
     log.info("Retrieving measurements");
     List<Map<String, Data>> dataList = retrieveDeviceData();

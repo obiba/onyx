@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
@@ -29,13 +31,17 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
   @Override
   public void initialize() {
+    if(externalAppHelper.isSotfwareAlreadyStarted()) {
+      JOptionPane.showMessageDialog(null, externalAppHelper.getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+      throw new RuntimeException("already lock for execution");
+    }
     initializeParticipantData();
   }
 
   @Override
   public void run() {
     log.info("Launching IMAGEnet R4 Lite");
-    externalAppHelper.launch();
+    externalAppHelper.launchExternalSoftware();
 
     log.info("Sending data to server");
     processData();
