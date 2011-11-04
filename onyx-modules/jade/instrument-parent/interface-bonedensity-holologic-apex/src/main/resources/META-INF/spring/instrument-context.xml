@@ -26,6 +26,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		    <property name="stgCmtPort" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.stgCmtPort}" />
  		</bean>
     </property>
+    <property name="locale" ref="locale"/>
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">

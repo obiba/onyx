@@ -9,6 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -18,9 +23,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import java.util.Set;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -31,11 +43,12 @@ import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.util.FileSystemUtils;
 
-public class APEXInstrumentRunner implements InstrumentRunner {
+public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(APEXInstrumentRunner.class);
 
@@ -62,6 +75,15 @@ public class APEXInstrumentRunner implements InstrumentRunner {
   private List<String> participantFiles = new ArrayList<String>();
 
   private Set<String> outVendorNames;
+
+  private ResourceBundle apexResourceBundle;
+
+  private Locale locale;
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    setApexResourceBundle(ResourceBundle.getBundle("instrument", getLocale()));
+  }
 
   /**
    * Retrieve participant data from the database and write them in the patient scan database
@@ -218,6 +240,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
    * input file to be read by the external application
    */
   public void initialize() {
+    showProcessingDialog();
     log.info("Backup local database");
     resetDeviceData();
 
@@ -276,6 +299,38 @@ public class APEXInstrumentRunner implements InstrumentRunner {
     FileSystemUtils.deleteRecursively(dcmDir);
   }
 
+  private void showProcessingDialog() {
+
+    JPanel messagePanel = new JPanel();
+    messagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+
+    JLabel message = new JLabel(apexResourceBundle.getString("Message.ProcessingMeasurement"));
+    message.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
+    messagePanel.add(message);
+
+    JLabel subMessage = new JLabel(apexResourceBundle.getString("Message.ProcessingMeasurementInstructions"));
+    subMessage.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
+    subMessage.setForeground(Color.RED);
+    messagePanel.add(subMessage);
+
+    JFrame window = new JFrame();
+    window.add(messagePanel);
+    window.pack();
+
+    // Make sure dialog stays on top of all other application windows.
+    window.setAlwaysOnTop(true);
+    window.setLocationByPlatform(true);
+
+    // Center dialog horizontally at the bottom of the screen.
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    window.setLocation((screenSize.width - window.getWidth()) / 2, screenSize.height - window.getHeight() - 70);
+
+    window.setEnabled(false);
+    window.setVisible(true);
+
+  }
+
   public enum Side {
     LEFT, RIGHT
   }
@@ -299,6 +354,18 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   public void setDicomSettings(DicomSettings dicomSettings) {
     this.dicomSettings = dicomSettings;
+  }
+
+  public void setApexResourceBundle(ResourceBundle apexResourceBundle) {
+    this.apexResourceBundle = apexResourceBundle;
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 
 }
