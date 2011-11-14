@@ -21,12 +21,15 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.string.Strings;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.MediaPanel;
+import org.obiba.onyx.quartz.core.wicket.model.InvalidMultipleMediaTypesException;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireWebResourceModel;
 import org.obiba.onyx.wicket.reusable.AddCommentWindow;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
@@ -78,8 +81,12 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     QuestionnaireStringResourceModel stringModel = new QuestionnaireStringResourceModel(question, "instructions");
     add(new Label("instructions", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel)));
 
-    stringModel = new QuestionnaireStringResourceModel(question, "media");
-    add(new MediaPanel("media", stringModel).setVisible(!isEmptyString(stringModel)));
+    try {
+      QuestionnaireWebResourceModel mediaModel = new QuestionnaireWebResourceModel(question, "media");
+      add(new MediaPanel("media", mediaModel).setVisible(mediaModel.getObject() != null));
+    } catch(InvalidMultipleMediaTypesException e) {
+      add(new Label("media", new ResourceModel("UnsupportedMultipleMediaTypes")));
+    }
 
     stringModel = new QuestionnaireStringResourceModel(question, "caption");
     add(new Label("caption", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel)));

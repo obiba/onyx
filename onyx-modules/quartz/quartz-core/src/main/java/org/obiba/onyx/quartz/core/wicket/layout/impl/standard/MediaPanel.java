@@ -9,16 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.Resource;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebComponent;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -26,14 +23,9 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.Strings;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.wicket.util.FileResource;
+import org.obiba.onyx.wicket.util.ContentTypedWebResource;
 
 /**
  *
@@ -41,50 +33,20 @@ import org.obiba.onyx.wicket.util.FileResource;
 @SuppressWarnings("serial")
 public class MediaPanel extends Panel {
 
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
-  @SpringBean
-  private QuestionnaireBundleManager bundleManager;
+  // private static Logger logger = LoggerFactory.getLogger(MediaPanel.class);
 
   /**
    * @param id
    * @param model
    */
-  public MediaPanel(String id, IModel<String> model) {
+  public MediaPanel(String id, IModel<List<ContentTypedWebResource>> model) {
     super(id, model);
 
-    String mediaIds = model.getObject();
-    if(Strings.isEmpty(mediaIds)) {
-      add(new EmptyPanel("media"));
-      return;
-    }
-
-    String bundleName = activeQuestionnaireAdministrationService.getQuestionnaire().getName();
-    QuestionnaireBundle bundle = bundleManager.getBundle(bundleName);
-
-    SupportedMedia media = null;
-    List<FileResource> resources = new ArrayList<FileResource>();
-    for(String mediaId : Strings.split(mediaIds, ',')) {
-      SupportedMedia supportedMedia = SupportedMedia.detect(mediaId);
-      if(media == null) {
-        media = supportedMedia;
-      } else if(media.getType() != supportedMedia.getType()) {
-        add(new Label("media", new ResourceModel("UnsupportedMultipleMediaTypes")));
-        return;
-      }
-      if(media != null) {
-        try {
-          String filePath = StringUtils.substringBefore(mediaId, "|");
-          resources.add(new FileResource(bundle.getResource(filePath, media.getType()).getFile(), supportedMedia.getMimeType()));
-        } catch(IOException ex) {
-          // resource not found, nothing to do
-        }
-      }
-    }
-    if(media == null || resources.isEmpty()) {
+    List<ContentTypedWebResource> resources = model.getObject();
+    if(resources == null || resources.isEmpty()) {
       add(new EmptyPanel("media"));
     } else {
+      SupportedMedia media = SupportedMedia.resolveFromMimeType(resources.get(0).getContentType());
       switch(media.getType()) {
       case IMAGE:
         add(new ImageFragment("media", resources));
@@ -101,14 +63,14 @@ public class MediaPanel extends Panel {
 
   public class AudioVideoComponent extends WebComponent implements IResourceListener {
 
-    private final FileResource resource;
+    private final ContentTypedWebResource resource;
 
-    public AudioVideoComponent(final String id, final FileResource resource) {
+    public AudioVideoComponent(final String id, final ContentTypedWebResource resource) {
       super(id);
       this.resource = resource;
     }
 
-    public FileResource getResource() {
+    public ContentTypedWebResource getResource() {
       return resource;
     }
 
@@ -151,11 +113,11 @@ public class MediaPanel extends Panel {
 
   private class ImageFragment extends Fragment {
 
-    public ImageFragment(String id, List<FileResource> resources) {
+    public ImageFragment(String id, List<? extends Resource> resources) {
       super(id, "imageFragment", MediaPanel.this);
-      add(new ListView<FileResource>("images", resources) {
+      add(new ListView<Resource>("images", resources) {
         @Override
-        protected void populateItem(ListItem<FileResource> item) {
+        protected void populateItem(ListItem<Resource> item) {
           item.add(new Image("image", item.getModel()));
         }
       });
@@ -164,11 +126,11 @@ public class MediaPanel extends Panel {
 
   private class AudioFragment extends Fragment {
 
-    public AudioFragment(String id, List<FileResource> resources) {
+    public AudioFragment(String id, List<ContentTypedWebResource> resources) {
       super(id, "audioFragment", MediaPanel.this);
-      add(new ListView<FileResource>("audio-source-container", resources) {
+      add(new ListView<ContentTypedWebResource>("audio-source-container", resources) {
         @Override
-        protected void populateItem(ListItem<FileResource> item) {
+        protected void populateItem(ListItem<ContentTypedWebResource> item) {
           item.add(new AudioVideoComponent("audio-source", item.getModelObject()));
         }
       });
@@ -177,11 +139,11 @@ public class MediaPanel extends Panel {
 
   private class VideoFragment extends Fragment {
 
-    public VideoFragment(String id, List<FileResource> resources) {
+    public VideoFragment(String id, List<ContentTypedWebResource> resources) {
       super(id, "videoFragment", MediaPanel.this);
-      add(new ListView<FileResource>("video-source-container", resources) {
+      add(new ListView<ContentTypedWebResource>("video-source-container", resources) {
         @Override
-        protected void populateItem(ListItem<FileResource> item) {
+        protected void populateItem(ListItem<ContentTypedWebResource> item) {
           item.add(new AudioVideoComponent("video-source", item.getModelObject()));
         }
       });

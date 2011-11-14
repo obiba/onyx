@@ -65,7 +65,17 @@ public enum SupportedMedia {
     return extensions;
   }
 
-  public static SupportedMedia detect(String media) {
+  public static SupportedMedia resolveFromMimeType(String mimeType) {
+    if(Strings.isEmpty(mimeType)) return null;
+    for(SupportedMedia supportedMedia : SupportedMedia.values()) {
+      if(StringUtils.equalsIgnoreCase(supportedMedia.getMimeType(), mimeType)) {
+        return supportedMedia;
+      }
+    }
+    return null;
+  }
+
+  public static SupportedMedia resolveFromPath(String media) {
     if(Strings.isEmpty(media)) return null;
     String[] splits = Strings.split(media, '|');
     if(splits.length == 1) {
@@ -82,14 +92,6 @@ public enum SupportedMedia {
       }
       return null;
     }
-    String mimeType = splits[1];
-    if(mimeType != null) {
-      for(SupportedMedia supportedMedia : SupportedMedia.values()) {
-        if(StringUtils.equalsIgnoreCase(supportedMedia.getMimeType(), mimeType)) {
-          return supportedMedia;
-        }
-      }
-    }
-    return null;
+    return resolveFromMimeType(splits[1]);
   }
 }

@@ -12,7 +12,6 @@ package org.obiba.onyx.quartz.core.wicket.model;
 import java.util.Locale;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.magma.Attribute;
 import org.obiba.magma.Category;
 import org.obiba.magma.Value;
@@ -21,14 +20,10 @@ import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.wicket.model.SpringDetachableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QuestionnaireStringResourceModel extends SpringDetachableModel<String> {
+public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel<String> {
 
   //
   // Constants
@@ -44,18 +39,6 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
   // Instance Variables
   //
 
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
-  @SpringBean
-  private QuestionnaireBundleManager bundleManager;
-
-  private IModel<? extends IQuestionnaireElement> localizableModel;
-
-  private String property;
-
-  private Object[] stringArgs;
-
   private boolean asQuartzAnswerFormat;
 
   //
@@ -69,9 +52,7 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
    * @param stringArgs
    */
   public QuestionnaireStringResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, Object... stringArgs) {
-    super();
-    this.localizableModel = localizableModel;
-    initialize(property, stringArgs);
+    super(localizableModel, property, stringArgs);
   }
 
   public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
@@ -85,22 +66,8 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
    * @param stringArgs
    */
   public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, boolean asQuartzAnswerFormat, Object... stringArgs) {
-    super();
-    if(localizable == null) throw new IllegalArgumentException("Localizable element cannot be null.");
-    this.localizableModel = new QuestionnaireModel<IQuestionnaireElement>(localizable);
+    super(localizable, property);
     this.asQuartzAnswerFormat = asQuartzAnswerFormat;
-    initialize(property, stringArgs);
-  }
-
-  @SuppressWarnings("hiding")
-  private void initialize(String property, Object... stringArgs) {
-    this.property = property;
-
-    // Make a copy of the string arguments.
-    if(stringArgs != null && stringArgs.length != 0) {
-      this.stringArgs = new Object[stringArgs.length];
-      System.arraycopy(stringArgs, 0, this.stringArgs, 0, this.stringArgs.length);
-    }
   }
 
   //
@@ -109,17 +76,10 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
 
   @Override
   protected String load() {
-
     // Now use these services to get current questionnaire bundle.
     Locale locale = activeQuestionnaireAdministrationService.getLanguage();
     String bundleName = activeQuestionnaireAdministrationService.getQuestionnaire().getName();
-    QuestionnaireBundle bundle = bundleManager.getBundle(bundleName);
-
-    // Finally, resolve the string resource using the bundle's message source and the
-    // property key.
-    String message = QuestionnaireStringResourceModelHelper.getMessage(bundle, getLocalizable(), property, stringArgs, locale);
-
-    return resolveVariableValuesInMessage(message, bundleName, locale);
+    return resolveVariableValuesInMessage(resolveMessage(), bundleName, locale);
   }
 
   private String resolveVariableValuesInMessage(String message, String tableContext, Locale locale) {
@@ -202,19 +162,6 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel<Stri
       }
     }
     return category.getName();
-  }
-
-  /**
-   * Get the localizable element directly or from a model.
-   */
-  private IQuestionnaireElement getLocalizable() {
-    IQuestionnaireElement loc = null;
-    if(localizableModel != null) {
-      loc = localizableModel.getObject();
-    }
-    if(loc == null) throw new IllegalArgumentException("Localizable element cannot be null.");
-
-    return loc;
   }
 
   /**
