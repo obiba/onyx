@@ -66,7 +66,7 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
    * @param stringArgs
    */
   public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, boolean asQuartzAnswerFormat, Object... stringArgs) {
-    super(localizable, property);
+    super(localizable, property, stringArgs);
     this.asQuartzAnswerFormat = asQuartzAnswerFormat;
   }
 

@@ -22,15 +22,7 @@ import org.springframework.util.Assert;
 
 public abstract class QuestionnaireResourceModel<T> extends SpringDetachableModel<T> {
 
-  //
-  // Constants
-  //
-
   private static final long serialVersionUID = 1L;
-
-  //
-  // Instance Variables
-  //
 
   @SpringBean
   protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -43,10 +35,6 @@ public abstract class QuestionnaireResourceModel<T> extends SpringDetachableMode
   protected String property;
 
   protected Object[] stringArgs;
-
-  //
-  // Constructors
-  //
 
   /**
    * Constructor using a model for providing the {@link IQuestionnaireElement}.

@@ -110,7 +110,7 @@ public class QuestionnaireStringResourceModelTest {
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
     // retrieve the current locale and questionnaire.
     expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     // Expect that questionnaireBundleManagerMock is used to retrieve the current questionnaire bundle.
@@ -144,7 +144,7 @@ public class QuestionnaireStringResourceModelTest {
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
     // retrieve the current locale and questionnaire.
     expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     // Expect that questionnaireBundleManagerMock is used to retrieve the current questionnaire bundle.
@@ -178,7 +178,7 @@ public class QuestionnaireStringResourceModelTest {
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
     // retrieve the current locale and questionnaire.
     expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     // Expect that questionnaireBundleManagerMock is used to retrieve the current questionnaire bundle.

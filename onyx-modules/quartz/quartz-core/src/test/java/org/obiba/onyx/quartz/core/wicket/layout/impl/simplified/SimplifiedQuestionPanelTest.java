@@ -340,7 +340,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
+      @Override
       public Panel getTestPanel(String panelId) {
 
         return new SimplifiedQuestionPanelMock(panelId, new Model(question));
@@ -441,10 +441,10 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
+      @Override
       public Panel getTestPanel(String panelId) {
 
-        return new SimplifiedQuestionPanelMock(panelId, new Model(question));
+        return new SimplifiedQuestionPanelMock(panelId, new Model<Question>(question));
       }
     });
 
@@ -519,6 +519,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
@@ -593,6 +594,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
@@ -684,6 +686,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
