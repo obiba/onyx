@@ -186,6 +186,10 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
       // trial data
       FVCData tData = parser.getTestData();
+
+      // Quality Grade data
+      addOutput(data, "QUALITY_GRADE", DataBuilder.buildText(tData.getQualityGrade()));
+
       for(FVCTrialData trialData : tData.getTrials()) {
         data = new HashMap<String, Data>();
         // trial date

@@ -54,6 +54,7 @@ public class EMRXMLParserTest {
     FVCData tData = parser.getTestData();
     Assert.assertEquals("FVC", tData.getType());
     Assert.assertEquals("Wed Jul 27 11:14:55 EDT 2011", tData.getDate().toString());
+    Assert.assertEquals("D1", tData.getQualityGrade());
 
     Map<String, Number> results = tData.getBestResults();
     Assert.assertEquals(65, results.size());
