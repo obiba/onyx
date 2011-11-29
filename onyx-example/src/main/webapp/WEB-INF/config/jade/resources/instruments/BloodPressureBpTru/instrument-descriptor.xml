@@ -60,6 +60,44 @@
         <data type="TEXT">IV_XL</data>
       </allowedValues>  
     </input>
+    
+    <output>
+      <code>FIRST_RES_START_TIME</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_END_TIME</code>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_SYSTOLIC</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_DIASTOLIC</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_PULSE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
 
     <output>
       <code>RES_START_TIME</code>

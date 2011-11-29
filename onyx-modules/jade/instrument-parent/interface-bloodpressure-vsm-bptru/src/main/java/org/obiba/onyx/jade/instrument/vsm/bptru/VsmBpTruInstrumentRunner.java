@@ -46,8 +46,12 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
       @Override
       public void onBpResult(int readingNumber, Date startTime, Date endTime, BloodPressure result) {
         // We don't send the first measurement nor any measurement that has an error
-        if(readingNumber > 1 && result.hasError() == false) {
-          instrumentExcecutionService.addOutputParameterValues(asData(startTime, endTime, result));
+        if(result.hasError() == false) {
+          if(readingNumber == 1) {
+            instrumentExcecutionService.addOutputParameterValues(asData("FIRST_", startTime, endTime, result));
+          } else if(readingNumber > 1) {
+            instrumentExcecutionService.addOutputParameterValues(asData(startTime, endTime, result));
+          }
         }
       }
 
@@ -66,12 +70,16 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
   }
 
   private Map<String, Data> asData(Date startTime, Date endTime, BloodPressure result) {
+    return asData("", startTime, endTime, result);
+  }
+
+  private Map<String, Data> asData(String prefix, Date startTime, Date endTime, BloodPressure result) {
     Map<String, Data> values = new LinkedHashMap<String, Data>();
-    values.put("RES_START_TIME", DataBuilder.buildDate(startTime));
-    values.put("RES_END_TIME", DataBuilder.buildDate(endTime));
-    values.put("RES_SYSTOLIC", DataBuilder.buildInteger(result.sbp()));
-    values.put("RES_DIASTOLIC", DataBuilder.buildInteger(result.dbp()));
-    values.put("RES_PULSE", DataBuilder.buildInteger(result.pulse()));
+    values.put(prefix + "RES_START_TIME", DataBuilder.buildDate(startTime));
+    values.put(prefix + "RES_END_TIME", DataBuilder.buildDate(endTime));
+    values.put(prefix + "RES_SYSTOLIC", DataBuilder.buildInteger(result.sbp()));
+    values.put(prefix + "RES_DIASTOLIC", DataBuilder.buildInteger(result.dbp()));
+    values.put(prefix + "RES_PULSE", DataBuilder.buildInteger(result.pulse()));
     return values;
   }
 
