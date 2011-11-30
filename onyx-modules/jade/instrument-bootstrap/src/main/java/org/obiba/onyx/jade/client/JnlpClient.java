@@ -92,7 +92,6 @@ public class JnlpClient {
 
   protected static GenericApplicationContext loadAppContext(String[] requestParams) {
     Properties defaultProps = loadDefaultPropertyValues();
-    defaultProps.list(System.out);
     Properties paramsProp = loadServiceParams(defaultProps, requestParams);
 
     // Load bootstrap context files.
