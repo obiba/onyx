@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StoredDicomFile;
@@ -152,7 +151,8 @@ public abstract class APEXScanDataExtractor {
       }
 
       List<StoredDicomFile> selectList = new ArrayList<StoredDicomFile>();
-      for(StoredDicomFile sdf : server.listDicomFiles()) {
+      List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
+      for(StoredDicomFile sdf : listDicomFiles) {
         try {
           String bodyPartExam = sdf.getDicomObject().getString(Tag.BodyPartExamined);
           // if 2 null we suppose that it is a whole body scan
@@ -162,33 +162,28 @@ public abstract class APEXScanDataExtractor {
           throw new RuntimeException(e);
         }
       }
-
       if(!selectList.isEmpty()) {
         // Whole Body
         if(getDicomBodyPartName() == null) {
-          StoredDicomFile storedDicomFile = selectList.get(0);
-          StoredDicomFile storedDicomFile2 = selectList.get(1);
-          try {
-            DicomObject d = storedDicomFile.getDicomObject();
-            DicomObject d2 = storedDicomFile2.getDicomObject();
-
-            data.put(getResultPrefix() + "_" + d.getString(Tag.Modality) + "_DICOM_1", DataBuilder.buildBinary(storedDicomFile.getFile()));
-            data.put(getResultPrefix() + "_" + d2.getString(Tag.Modality) + "_DICOM_2", DataBuilder.buildBinary(storedDicomFile2.getFile()));
-          } catch(IOException e) {
-            throw new RuntimeException(e);
-          }
-        } else {
-          StoredDicomFile storedDicomFile = selectList.get(0);
-          try {
-            DicomObject d = storedDicomFile.getDicomObject();
-            data.put(getResultPrefix() + "_" + d.getString(Tag.Modality) + "_DICOM", DataBuilder.buildBinary(storedDicomFile.getFile()));
-          } catch(IOException e) {
-            throw new RuntimeException(e);
-          }
+          processFilesExtraction(2, selectList, data);
+        }
+        // LSPINE and analysis
+        else if(getDicomBodyPartName().equals("LSPINE")) {
+          processFilesExtraction(3, listDicomFiles, data);
+        }
+        // Other scan
+        else {
+          processFilesExtraction(1, selectList, data);
         }
       }
-
       return data;
+    }
+  }
+
+  private void processFilesExtraction(int nbFiles, List<StoredDicomFile> files, Map<String, Data> data) {
+    for(int i = 0; i < nbFiles; i++) {
+      StoredDicomFile storedDicomFile = files.get(i);
+      data.put(getResultPrefix() + "_DICOM" + (nbFiles > 1 ? ("_" + (i + 1)) : ""), DataBuilder.buildBinary(storedDicomFile.getFile()));
     }
   }
 
