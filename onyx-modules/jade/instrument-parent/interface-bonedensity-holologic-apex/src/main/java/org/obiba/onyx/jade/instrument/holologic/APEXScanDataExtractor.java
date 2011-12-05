@@ -168,8 +168,8 @@ public abstract class APEXScanDataExtractor {
           processFilesExtraction(2, selectList, data);
         }
         // LSPINE and analysis
-        else if(getDicomBodyPartName().equals("LSPINE")) {
-          processFilesExtraction(3, listDicomFiles, data);
+        else if("LSPINE".equals(getDicomBodyPartName())) {
+          processFilesExtractionSpine(listDicomFiles, data);
         }
         // Other scan
         else {
@@ -184,6 +184,27 @@ public abstract class APEXScanDataExtractor {
     for(int i = 0; i < nbFiles; i++) {
       StoredDicomFile storedDicomFile = files.get(i);
       data.put(getResultPrefix() + "_DICOM" + (nbFiles > 1 ? ("_" + (i + 1)) : ""), DataBuilder.buildBinary(storedDicomFile.getFile()));
+    }
+  }
+
+  private void processFilesExtractionSpine(List<StoredDicomFile> files, Map<String, Data> data) {
+    try {
+      // 3 files for spine
+      for(int i = 0; i < 3; i++) {
+        StoredDicomFile storedDicomFile = files.get(i);
+        String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
+        String modality = storedDicomFile.getDicomObject().getString(Tag.Modality);
+        Data binary = DataBuilder.buildBinary(storedDicomFile.getFile());
+        if("LSPINE".equals(bodyPartExam)) {
+          data.put(getResultPrefix() + "_DICOM_MEASURE", binary);
+        } else if("PR".equals(modality)) {
+          data.put(getResultPrefix() + "_DICOM_PR", binary);
+        } else {
+          data.put(getResultPrefix() + "_DICOM_OT", binary);
+        }
+      }
+    } catch(IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
