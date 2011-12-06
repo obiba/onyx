@@ -10,6 +10,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="locale" ref="locale"/>
     <property name="softwareInstallPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path}"/>
     <property name="resultPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path.results}"/>
+    <property name="packagePrefix" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.package.prefix}"/>
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
