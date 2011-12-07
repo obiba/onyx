@@ -213,7 +213,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   @Override
   protected void onDestroy() {
-    log.info("Onyx Web Application [{}] is stoping", getServletContext().getContextPath());
+    log.info("Onyx Web Application [{}] is stopping", getServletContext().getContextPath());
     forEachListeners(new IListenerCallback() {
       public void handleListener(String beanName, WebApplicationStartupListener listener) {
         listener.shutdown(OnyxApplication.this);
