@@ -23,15 +23,13 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
+import org.apache.wicket.IResourceListener;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.Resource;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
-import org.apache.wicket.markup.html.WebResource;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -50,7 +48,6 @@ import org.apache.wicket.resource.ByteArrayResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converters.DateConverter;
-import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.upload.FileUploadException;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -582,12 +579,13 @@ public class DataField extends Panel {
     }
   }
 
-  private class AudioRecorderFragment extends FieldFragment {
+  private class AudioRecorderFragment extends FieldFragment implements IResourceListener {
+
+    final Map<Option, Object> options = new HashMap<NanoGongApplet.Option, Object>();
 
     public AudioRecorderFragment(String id, final IModel<Data> model, Rate samplingRate, int maxDuration) {
       super(id, "audioRecorderFragment", DataField.this, model);
 
-      final Map<Option, Object> options = new HashMap<NanoGongApplet.Option, Object>();
       options.put(Option.AudioFormat, Format.PCM);
       options.put(Option.SamplingRate, samplingRate);
       options.put(Option.MaxDuration, String.valueOf(maxDuration));
@@ -595,9 +593,6 @@ public class DataField extends Panel {
       options.put(Option.ShowSaveButton, "false");
       options.put(Option.ShowTime, "true");
       options.put(Option.Color, "#FFFFFF");
-      if(model.getObject() != null) {
-        options.put(Option.SoundFileURL, getFileAudioUrl());
-      }
 
       field = new NanoGongApplet("nanoGong", "140", "60", options) {
         @Override
@@ -627,18 +622,22 @@ public class DataField extends Panel {
 
     }
 
-    private String getFileAudioUrl() {
-      return getDefaultModelObject() == null ? null : urlFor(new ResourceReference(AudioRecorderFragment.class, "audio.wav") {
-        @Override
-        protected Resource newResource() {
-          return new WebResource() {
-            @Override
-            public IResourceStream getResourceStream() {
-              return new ByteArrayResource("audio/x-wav", (byte[]) ((Data) getDefaultModelObject()).getValue()).getResourceStream();
-            }
-          };
-        }
-      }).toString();
+    @Override
+    protected void onInitialize() {
+      super.onInitialize();
+      if(getDefaultModelObject() != null) {
+        options.put(Option.SoundFileURL, getFileAudioUrl());
+      }
+    }
+
+    private CharSequence getFileAudioUrl() {
+      return urlFor(IResourceListener.INTERFACE);
+    }
+
+    @Override
+    public void onResourceRequested() {
+      byte[] clip = (byte[]) ((Data) getDefaultModelObject()).getValue();
+      new ByteArrayResource("audio/x-wav", clip).onResourceRequested();
     }
   }
 
