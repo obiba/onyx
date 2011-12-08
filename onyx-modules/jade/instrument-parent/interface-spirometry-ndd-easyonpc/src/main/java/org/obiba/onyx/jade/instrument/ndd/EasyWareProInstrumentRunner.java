@@ -177,7 +177,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       // participant data
       ParticipantData pData = parser.getParticipantData();
       addOutput(data, "HeightOut", DataBuilder.buildDecimal(pData.getHeight()));
-      addOutput(data, "WeightOut", DataBuilder.buildInteger(pData.getWeight()));
+      addOutput(data, "WeightOut", DataBuilder.buildDecimal(pData.getWeight()));
       addOutput(data, "EthnicityOut", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
       addOutput(data, "AsthmaOut", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
       addOutput(data, "SmokerOut", DataBuilder.buildText(pData.getSmoker().toUpperCase()));

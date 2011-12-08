@@ -18,7 +18,7 @@ public class ParticipantData {
 
   private Double height;
 
-  private Long weight;
+  private Double weight;
 
   private String ethnicity;
 
@@ -52,7 +52,7 @@ public class ParticipantData {
     return height;
   }
 
-  public Long getWeight() {
+  public Double getWeight() {
     return weight;
   }
 
@@ -92,7 +92,7 @@ public class ParticipantData {
     this.height = height;
   }
 
-  public void setWeight(Long weight) {
+  public void setWeight(Double weight) {
     this.weight = weight;
   }
 
