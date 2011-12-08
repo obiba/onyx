@@ -133,31 +133,42 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
   /**
    * Initialise or restore instrument data (database and scan files).
+   * @param starting
    * @throws Exception
    */
-  protected void resetDeviceData() {
+  protected void resetDeviceData(boolean starting) {
     File backupDbFile = new File(patScanDbPath + ".orig");
     File currentDbFile = new File(patScanDbPath);
     scanDataDir = currentDbFile.getParentFile();
 
     try {
-      if(backupDbFile.exists()) {
+      if(backupDbFile.exists() && starting) {
+        log.error("Backup file exists and you are starting a scan: probably abnormal shutdown");
+        log.info("Restoring backed up file");
         FileUtil.copyFile(backupDbFile, currentDbFile);
-        backupDbFile.delete();
-        // delete scan files
-        for(String fileName : participantFiles) {
-          File file = new File(scanDataDir, fileName);
-          if(file.exists()) {
-            file.delete();
-          }
-        }
-      } else {
-        // init
+      }
+      if(starting) {
         FileUtil.copyFile(currentDbFile, backupDbFile);
+      } else {
+        if(backupDbFile.exists()) {
+          restore(backupDbFile, currentDbFile);
+        }
       }
     } catch(Exception ex) {
       log.error(ex.getMessage(), ex);
       throw new RuntimeException("Error while reseting device data: " + ex.getMessage(), ex);
+    }
+  }
+
+  private void restore(File backupDbFile, File currentDbFile) throws IOException {
+    FileUtil.copyFile(backupDbFile, currentDbFile);
+    backupDbFile.delete();
+    // delete scan files
+    for(String fileName : participantFiles) {
+      File file = new File(scanDataDir, fileName);
+      if(file.exists()) {
+        file.delete();
+      }
     }
   }
 
@@ -247,7 +258,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     }
     showProcessingDialog();
     log.info("Backup local database");
-    resetDeviceData();
+    resetDeviceData(true);
 
     log.info("Setting participant data");
     initParticipantData();
@@ -295,7 +306,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
    */
   public void shutdown() {
     log.info("Restoring local database and cleaning scan files");
-    resetDeviceData();
+    resetDeviceData(false);
 
     log.info("Shutdown Dicom server");
     server.stop();
