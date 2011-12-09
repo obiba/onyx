@@ -18,13 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class LateralScanDataExtractor extends APEXScanDataExtractor {
+public class IVAImagingScanDataExtractor extends APEXScanDataExtractor {
 
-  private static final Logger log = LoggerFactory.getLogger(LateralScanDataExtractor.class);
+  private static final Logger log = LoggerFactory.getLogger(IVAImagingScanDataExtractor.class);
 
   private Energy energy;
 
-  protected LateralScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy, DicomServer server) {
+  protected IVAImagingScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy, DicomServer server) {
     super(patScanDb, scanDataDir, participantKey, server);
     this.energy = energy;
   }
@@ -32,10 +32,10 @@ public class LateralScanDataExtractor extends APEXScanDataExtractor {
   @Override
   public String getName() {
     switch(energy) {
-    case SINGLE:
-      return "SEL";
-    default:
+    case DUAL_LATERAL:
       return "DEL";
+    default:
+      return "SEL";
     }
   }
 
@@ -47,7 +47,11 @@ public class LateralScanDataExtractor extends APEXScanDataExtractor {
   @Override
   protected long getScanType() {
     switch(energy) {
-    case SINGLE:
+    case CLSA_DXA:
+      return 29l;
+    case SINGLE_AP:
+      return 35l;
+    case SINGLE_LATERAL:
       return 36l;
     default:
       return 37l;
@@ -60,7 +64,9 @@ public class LateralScanDataExtractor extends APEXScanDataExtractor {
   }
 
   public enum Energy {
-    SINGLE, DUAL
+    SINGLE_LATERAL, DUAL_LATERAL, SINGLE_AP,
+    // clsa c-arm (different of simulation mode)
+    CLSA_DXA
   }
 
 }

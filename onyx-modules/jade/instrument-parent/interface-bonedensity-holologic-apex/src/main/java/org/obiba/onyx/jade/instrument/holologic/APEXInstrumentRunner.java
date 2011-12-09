@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
-import org.obiba.onyx.jade.instrument.holologic.LateralScanDataExtractor.Energy;
+import org.obiba.onyx.jade.instrument.holologic.IVAImagingScanDataExtractor.Energy;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
@@ -223,7 +223,7 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
       extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT, server));
     }
     extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantID, server));
-    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.SINGLE, server));
+    extractScanData(dataList, new IVAImagingScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.CLSA_DXA, server));
 
     return dataList;
 

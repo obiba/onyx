@@ -18,14 +18,14 @@ import org.obiba.onyx.util.data.Data;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class SpineScanDataExtractor extends APEXScanDataExtractor {
+public class APSpineScanDataExtractor extends APEXScanDataExtractor {
 
   /**
    * @param patScanDb
    * @param participantKey
    * @param server
    */
-  protected SpineScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server) {
+  protected APSpineScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server) {
     super(patScanDb, scanDataDir, participantKey, server);
   }
 
