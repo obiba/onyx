@@ -209,9 +209,9 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
         // curves
         addOutput(data, "FLOW_INTERVAL", DataBuilder.buildDecimal(trialData.getFlowInterval()));
-        addOutput(data, "FLOW_VALUES", DataBuilder.buildText(trialData.getFlowValues()));
+        addOutput(data, "FLOW_VALUES", DataBuilder.buildBinary(trialData.getFlowValues()));
         addOutput(data, "VOLUME_INTERVAL", DataBuilder.buildDecimal(trialData.getVolumeInterval()));
-        addOutput(data, "VOLUME_VALUES", DataBuilder.buildText(trialData.getVolumeValues()));
+        addOutput(data, "VOLUME_VALUES", DataBuilder.buildBinary(trialData.getVolumeValues()));
 
         dataList.add(data);
       }

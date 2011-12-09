@@ -50,9 +50,9 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
         tData.setDate(extractTrialStringValue(i + 1, "/Date"));
         tData.setRank(extractTrialLongValue(i + 1, "/Rank"));
         tData.flowInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelFlow/SamplingInterval"));
-        tData.flowValues = extractTrialStringValue(i + 1, "/ChannelFlow/SamplingValues");
+        tData.flowValues = extractTrialBinaryValue(i + 1, "/ChannelFlow/SamplingValues");
         tData.volumeInterval = parseDouble(extractTrialStringValue(i + 1, "/ChannelVolume/SamplingInterval"));
-        tData.volumeValues = extractTrialStringValue(i + 1, "/ChannelVolume/SamplingValues");
+        tData.volumeValues = extractTrialBinaryValue(i + 1, "/ChannelVolume/SamplingValues");
       }
     }
 
@@ -83,11 +83,11 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
 
     private Double flowInterval;
 
-    private String flowValues;
+    private byte[] flowValues;
 
     private Double volumeInterval;
 
-    private String volumeValues;
+    private byte[] volumeValues;
 
     public FVCTrialData() {
       super();
@@ -97,7 +97,7 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
       return flowInterval;
     }
 
-    public String getFlowValues() {
+    public byte[] getFlowValues() {
       return flowValues;
     }
 
@@ -105,7 +105,7 @@ public class FVCDataExtractor extends TestDataExtractor<FVCData> {
       return volumeInterval;
     }
 
-    public String getVolumeValues() {
+    public byte[] getVolumeValues() {
       return volumeValues;
     }
   }

@@ -72,6 +72,11 @@ public abstract class TestDataExtractor<T extends TestData<?>> extends XMLDataEx
     return getTestRoot() + "/Trials/Trial[" + index + "]";
   }
 
+  protected byte[] extractTrialBinaryValue(int index, String path) throws XPathExpressionException {
+    String value = extractStringValue(getTrialPath(index) + path);
+    return value.getBytes();
+  }
+
   protected String extractTrialStringValue(int index, String path) throws XPathExpressionException {
     return extractStringValue(getTrialPath(index) + path);
   }
