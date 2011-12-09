@@ -91,6 +91,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(exec == null) {
       Module module = moduleRegistry.getModule(stage.getModule());
       exec = (StageExecutionContext) module.createStageExecution(currentParticipant.getInterview(), stage);
+      storeStageExecutionContext(currentParticipant, exec);
 
       // Add a transition listener to log (persist) the stage transitions.
       LoggingTransitionListener transitionListener = new LoggingTransitionListener();
@@ -98,14 +99,17 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       exec.addTransitionListener(transitionListener);
 
       for(StageExecutionContext sec : getStageExecutionContexts(currentParticipant)) {
-        if(exec.getStage().getStageDependencyCondition() != null) {
+        if(exec != sec && exec.getStage().getStageDependencyCondition() != null) {
+          // for each known stage exec, add the current as a listener
           if(exec.getStage().getStageDependencyCondition().isDependentOn(stage, sec.getStage().getName())) {
             sec.addTransitionListener(exec);
           }
+          // ONYX-1601 gives a second chance if not all stage execs were available when initializing the listeners
+          if(sec.getStage().getStageDependencyCondition().isDependentOn(sec.getStage(), stage.getName())) {
+            exec.addTransitionListener(sec);
+          }
         }
       }
-
-      storeStageExecutionContext(currentParticipant, exec);
 
       // try to find previous state in memento
       StageExecutionMemento template = new StageExecutionMemento();

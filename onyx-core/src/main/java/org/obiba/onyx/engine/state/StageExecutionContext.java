@@ -82,7 +82,9 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void addTransitionListener(ITransitionListener listener) {
-    transitionListeners.add(listener);
+    if(!transitionListeners.contains(listener)) {
+      transitionListeners.add(listener);
+    }
   }
 
   public void removeTransitionListener(ITransitionListener listener) {
