@@ -53,6 +53,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   private Set<String> outVendorNames;
 
+  private boolean retrieveDeviceDataError = false;
+
   public EasyWareProInstrumentRunner() {
     super();
   }
@@ -146,11 +148,15 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       if(backupDbFile.exists()) {
         FileUtil.copyFile(backupDbFile, currentDbFile);
         backupDbFile.delete();
-        deleteFile(getInFile());
-        deleteFile(getOutFile());
+        if(!retrieveDeviceDataError) {
+          deleteFile(getInFile());
+          deleteFile(getOutFile());
+        }
       } else {
         // init
         FileUtil.copyFile(currentDbFile, backupDbFile);
+        deleteFile(getInFile());
+        deleteFile(getOutFile());
       }
     } catch(Exception ex) {
       log.error(ex.getMessage(), ex);
@@ -165,7 +171,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
   }
 
   private List<Map<String, Data>> retrieveDeviceData() {
-
+    retrieveDeviceDataError = false;
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
     File outFile = getOutFile();
@@ -212,6 +218,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
     } catch(Exception e) {
       log.error("Unable to parse data from: " + outFile.getAbsolutePath(), e);
+      retrieveDeviceDataError = true;
       instrumentExecutionService.instrumentRunnerError(e);
     }
 
