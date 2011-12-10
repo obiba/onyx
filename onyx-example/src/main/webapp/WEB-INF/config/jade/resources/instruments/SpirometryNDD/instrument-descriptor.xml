@@ -683,7 +683,8 @@
     <output>
       <vendorName>FLOW_VALUES</vendorName>
       <code>RES_FLOW_VALUES</code>
-      <dataType>TEXT</dataType>
+      <dataType>DATA</dataType>
+      <mimeType>text/plain</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
@@ -697,7 +698,8 @@
     <output>
       <vendorName>VOLUME_VALUES</vendorName>
       <code>RES_VOLUME_VALUES</code>
-      <dataType>TEXT</dataType>
+      <dataType>DATA</dataType>
+      <mimeType>text/plain</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
