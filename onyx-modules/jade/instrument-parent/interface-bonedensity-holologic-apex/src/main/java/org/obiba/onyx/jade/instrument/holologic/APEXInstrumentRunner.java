@@ -30,10 +30,11 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -330,20 +331,22 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     subMessage.setForeground(Color.RED);
     messagePanel.add(subMessage);
 
-    JFrame window = new JFrame();
-    window.add(messagePanel);
-    window.pack();
+    JDialog dialog = new JDialog();
+    dialog.setResizable(false);
+    dialog.add(messagePanel);
+    dialog.pack();
+    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     // Make sure dialog stays on top of all other application windows.
-    window.setAlwaysOnTop(true);
-    window.setLocationByPlatform(true);
+    dialog.setAlwaysOnTop(true);
+    dialog.setLocationByPlatform(true);
 
     // Center dialog horizontally at the bottom of the screen.
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    window.setLocation((screenSize.width - window.getWidth()) / 2, screenSize.height - window.getHeight() - 70);
+    dialog.setLocation((screenSize.width - dialog.getWidth()) / 2, screenSize.height - dialog.getHeight() - 70);
 
-    window.setEnabled(false);
-    window.setVisible(true);
+    dialog.setVisible(true);
+    dialog.setResizable(false);
 
   }
 
