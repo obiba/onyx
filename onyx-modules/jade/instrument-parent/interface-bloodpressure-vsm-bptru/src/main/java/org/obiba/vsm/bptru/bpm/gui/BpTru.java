@@ -16,20 +16,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.vsm.bptru.bpm.Data;
 import org.obiba.vsm.bptru.bpm.bpm200.Bpm200;
 import org.obiba.vsm.bptru.bpm.state.BpmSession;
@@ -60,12 +65,18 @@ public class BpTru implements BpmSession {
 
   private JButton startButton;
 
+  private JButton addButton;
+
   private JButton stopButton;
 
   /**
    * Launch the application.
+   * @throws IOException
+   * @throws SecurityException
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws SecurityException, IOException {
+    LogManager.getLogManager().readConfiguration(JnlpClient.class.getResourceAsStream("/logging.properties"));
+    Logger.getLogger("vsm.bptru.bpm").setLevel(java.util.logging.Level.ALL);
     BpTru b = new BpTru();
     b.waitForExit();
   }
@@ -136,6 +147,14 @@ public class BpTru implements BpmSession {
       }
     });
     buttons.add(startButton);
+
+    addButton = new JButton("Add");
+    addButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        stateMachine.add();
+      }
+    });
+    buttons.add(addButton);
 
     JButton exitButton = new JButton("Exit");
     exitButton.addActionListener(new ActionListener() {
@@ -223,6 +242,10 @@ public class BpTru implements BpmSession {
     row.add(reading);
     row.add(sdf.format(startTime));
     row.add(sdf.format(endTime));
+    if(result.code().hasSystemError()) {
+      JOptionPane.showMessageDialog(null, result.systemError().toString());
+      return;
+    }
     if(result.code().hasSbpError() == false) {
       row.add(result.sbp());
     } else {
@@ -263,6 +286,10 @@ public class BpTru implements BpmSession {
     this.cycleTime.setText(Integer.toString(cycle));
   };
 
+  public int getCycle() {
+    return Integer.parseInt(this.cycleTime.getText());
+  }
+
   public void setFirmware(String firmware) {
     this.firmware.setText(firmware);
   }
@@ -270,6 +297,7 @@ public class BpTru implements BpmSession {
   public void setState(States state) {
     this.state.setText(state.toString());
     this.startButton.setEnabled(state.canStart());
+    this.addButton.setEnabled(state.canStart());
     this.stopButton.setEnabled(state.canStop());
   }
 
@@ -283,6 +311,10 @@ public class BpTru implements BpmSession {
 
   public void setReading(int reading) {
     this.reading.setText(Integer.toString(reading));
+  }
+
+  public void incrementReading() {
+    this.reading.setText(Integer.toString(Integer.parseInt(this.reading.getText()) + 1));
   }
 
   public void clearResults() {

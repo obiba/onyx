@@ -44,6 +44,10 @@ public class StateMachine extends BpmMessageLoop {
     state.stop();
   }
 
+  public void add() {
+    state.add();
+  }
+
   public void transition(States states) {
     switch(states) {
     case CONNECTING:
@@ -54,6 +58,7 @@ public class StateMachine extends BpmMessageLoop {
       break;
     case MEASURING:
       state = new MeasuringState(this, getInstrument());
+      break;
     }
     getSession().setState(states);
   }

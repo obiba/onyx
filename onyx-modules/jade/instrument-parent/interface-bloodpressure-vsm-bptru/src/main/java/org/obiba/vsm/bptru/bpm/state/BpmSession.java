@@ -19,9 +19,13 @@ public interface BpmSession {
 
   public void setFirmware(String firmware);
 
+  public int getCycle();
+
   public void setCycle(int cycle);
 
   public void setCuffPressure(int pressure);
+
+  public void incrementReading();
 
   public void setReading(int reading);
 
