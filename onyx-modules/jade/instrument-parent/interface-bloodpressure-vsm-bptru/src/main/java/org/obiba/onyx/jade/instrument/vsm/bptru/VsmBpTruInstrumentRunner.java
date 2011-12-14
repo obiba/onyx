@@ -45,11 +45,12 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
     window.addResultListener(new BpTruResultListener() {
       @Override
       public void onBpResult(int readingNumber, Date startTime, Date endTime, BloodPressure result) {
-        // We don't send the first measurement nor any measurement that has an error
-        if(result.hasError() == false) {
-          if(readingNumber == 1) {
-            instrumentExcecutionService.addOutputParameterValues(asData("FIRST_", startTime, endTime, result));
-          } else if(readingNumber > 1) {
+        // We always send the first measurement even if it has errors (we send nulls).
+        if(readingNumber == 1) {
+          instrumentExcecutionService.addOutputParameterValues(asData("FIRST_", startTime, endTime, result));
+        } else {
+          // We don't send failed measurements
+          if(result.hasError() == false) {
             instrumentExcecutionService.addOutputParameterValues(asData(startTime, endTime, result));
           }
         }
@@ -77,9 +78,9 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
     Map<String, Data> values = new LinkedHashMap<String, Data>();
     values.put(prefix + "RES_START_TIME", DataBuilder.buildDate(startTime));
     values.put(prefix + "RES_END_TIME", DataBuilder.buildDate(endTime));
-    values.put(prefix + "RES_SYSTOLIC", DataBuilder.buildInteger(result.sbp()));
-    values.put(prefix + "RES_DIASTOLIC", DataBuilder.buildInteger(result.dbp()));
-    values.put(prefix + "RES_PULSE", DataBuilder.buildInteger(result.pulse()));
+    values.put(prefix + "RES_SYSTOLIC", DataBuilder.buildInteger(result.hasError() ? null : result.sbp()));
+    values.put(prefix + "RES_DIASTOLIC", DataBuilder.buildInteger(result.hasError() ? null : result.dbp()));
+    values.put(prefix + "RES_PULSE", DataBuilder.buildInteger(result.hasError() ? null : result.pulse()));
     return values;
   }
 
@@ -88,6 +89,7 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
     values.put("RES_AVG_SYSTOLIC", DataBuilder.buildInteger(result.sbp()));
     values.put("RES_AVG_DIASTOLIC", DataBuilder.buildInteger(result.dbp()));
     values.put("RES_AVG_PULSE", DataBuilder.buildInteger(result.pulse()));
+    values.put("RES_AVG_COUNT", DataBuilder.buildInteger(result.count()));
     return values;
   }
 }
