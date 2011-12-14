@@ -36,7 +36,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import org.dcm4che2.data.DicomObject;
+import org.dcm4che2.tool.dcmrcv.ApexTag;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
+import org.dcm4che2.tool.dcmrcv.DicomServer.StoredDicomFile;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.holologic.IVAImagingScanDataExtractor.Energy;
@@ -81,6 +84,8 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
   private ResourceBundle apexResourceBundle;
 
   private Locale locale;
+
+  private List<String> sentVariables = new ArrayList<String>();
 
   @Override
   public void afterPropertiesSet() throws Exception {
@@ -293,11 +298,19 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     log.info("Launching APEX software");
     externalAppHelper.launchExternalSoftware();
 
+    retrieveMeasurements();
+  }
+
+  private void retrieveMeasurements() {
     log.info("Retrieving measurements");
     List<Map<String, Data>> dataList = retrieveDeviceData();
 
     log.info("Sending data to server");
+    sentVariables.clear();
     for(Map<String, Data> dataMap : dataList) {
+      for(String key : dataMap.keySet()) {
+        sentVariables.add(key);
+      }
       sendDataToServer(dataMap);
     }
   }
@@ -306,12 +319,100 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
    * Implements parent method shutdown from InstrumentRunner Delete results from current measurement
    */
   public void shutdown() {
+    StringBuilder warningMessage = new StringBuilder();
+    boolean completeVariable = isCompleteVariable();
+    boolean completeDicom = isCompleteDicom();
+    if(completeVariable == false) {
+      warningMessage.append("Your scan is incomplete, you probably did not perform scan, analysis and/or sent Dicom file(s)\n\n");
+    }
+    if(completeDicom == false) {
+      warningMessage.append("Your scan is incomplete, P and R files are not included in Dicom file(s).\n\n");
+    }
+    warningMessage.append("Click 'Yes' to re-launch Apex,\n");
+    warningMessage.append("Click 'No' to cancel measurement and delete participant data.\n");
+
+    if(completeVariable && completeDicom) {
+      cleanAllData();
+    } else {
+      showWarningIncompleteMeasure(warningMessage);
+    }
+  }
+
+  private void cleanAllData() {
     log.info("Restoring local database and cleaning scan files");
     resetDeviceData(false);
 
     log.info("Shutdown Dicom server");
     server.stop();
 
+    deleteTemporaryDicomFiles();
+  }
+
+  private void showWarningIncompleteMeasure(StringBuilder warningMessage) {
+    JOptionPane pane = new JOptionPane(warningMessage, JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
+    JDialog dialog = pane.createDialog("Warning");
+    dialog.setAlwaysOnTop(true);
+    dialog.setVisible(true);
+
+    switch(processJOptionPaneValue(pane.getValue())) {
+    case JOptionPane.CLOSED_OPTION:
+      showWarningIncompleteMeasure(warningMessage);
+      break;
+    case JOptionPane.YES_OPTION:
+      deleteTemporaryDicomFiles();
+      log.info("Re-Launching APEX software");
+      externalAppHelper.launchExternalSoftware();
+      retrieveMeasurements();
+      shutdown();
+      break;
+    case JOptionPane.NO_OPTION:
+      cleanAllData();
+      break;
+    }
+  }
+
+  private int processJOptionPaneValue(Object value) {
+    if(value == null) return JOptionPane.CLOSED_OPTION;
+    if(value instanceof Integer) return ((Integer) value).intValue();
+    return JOptionPane.CLOSED_OPTION;
+  }
+
+  /**
+   * Return true if you sent all required variable, false otherwise
+   * @return
+   */
+  private boolean isCompleteVariable() {
+    for(String out : outVendorNames) {
+      if(sentVariables.contains(out) == false) {
+        log.info("Missing variables");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Return true if Dicom contains P and R files, false otherwise
+   * @return
+   */
+  private boolean isCompleteDicom() {
+    for(StoredDicomFile file : server.listDicomFiles()) {
+      for(ApexTag tag : ApexTag.values())
+        try {
+          DicomObject dicomObject = file.getDicomObject();
+          if(dicomObject.contains(tag.getValue())) {
+            if(dicomObject.containsValue(tag.getValue()) == false) {
+              log.info("Missing P and/or R files");
+              return false;
+            }
+          }
+        } catch(IOException e) {
+        }
+    }
+    return true;
+  }
+
+  private void deleteTemporaryDicomFiles() {
     log.info("Delete temporary dicom files");
     FileSystemUtils.deleteRecursively(dcmDir);
   }
@@ -338,7 +439,6 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     // Make sure dialog stays on top of all other application windows.
-    dialog.setAlwaysOnTop(true);
     dialog.setLocationByPlatform(true);
 
     // Center dialog horizontally at the bottom of the screen.

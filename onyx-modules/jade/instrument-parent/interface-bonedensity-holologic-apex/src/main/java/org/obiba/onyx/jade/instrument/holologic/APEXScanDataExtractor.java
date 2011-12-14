@@ -180,17 +180,16 @@ public abstract class APEXScanDataExtractor {
     }
   }
 
-  private void processFilesExtraction(int nbFiles, List<StoredDicomFile> files, Map<String, Data> data) {
-    for(int i = 0; i < nbFiles; i++) {
+  private void processFilesExtraction(int requiredFiles, List<StoredDicomFile> files, Map<String, Data> data) {
+    for(int i = 0; i < files.size(); i++) {
       StoredDicomFile storedDicomFile = files.get(i);
-      data.put(getResultPrefix() + "_DICOM" + (nbFiles > 1 ? ("_" + (i + 1)) : ""), DataBuilder.buildBinary(storedDicomFile.getFile()));
+      data.put(getResultPrefix() + "_DICOM" + (requiredFiles > 1 ? ("_" + (i + 1)) : ""), DataBuilder.buildBinary(storedDicomFile.getFile()));
     }
   }
 
   private void processFilesExtractionSpine(List<StoredDicomFile> files, Map<String, Data> data) {
     try {
-      // 3 files for spine
-      for(int i = 0; i < 3; i++) {
+      for(int i = 0; i < files.size(); i++) {
         StoredDicomFile storedDicomFile = files.get(i);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
         String modality = storedDicomFile.getDicomObject().getString(Tag.Modality);
@@ -204,7 +203,6 @@ public abstract class APEXScanDataExtractor {
         }
       }
     } catch(IOException e) {
-      throw new RuntimeException(e);
     }
   }
 
