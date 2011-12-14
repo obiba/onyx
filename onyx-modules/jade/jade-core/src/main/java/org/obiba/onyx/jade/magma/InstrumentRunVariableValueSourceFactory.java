@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.magma;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -152,7 +151,7 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
   }
 
   private Set<VariableValueSource> createInstrumentParameterSources(InstrumentType instrumentType) {
-    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+    Set<VariableValueSource> sources = new LinkedHashSet<VariableValueSource>();
 
     List<InstrumentParameter> instrumentParameters = instrumentType.getInstrumentParameters();
     if(instrumentParameters.size() > 0) {
