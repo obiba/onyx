@@ -118,8 +118,8 @@ public class MeasuringState implements State {
   }
 
   private void endReading(Data.BloodPressure bp) {
-    stateMachine.getSession().incrementReading();
     stateMachine.getSession().addResult(startTime, new Date(), bp);
+    stateMachine.getSession().incrementReading();
     startTime = null;
   }
 
