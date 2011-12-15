@@ -10,7 +10,12 @@
 package org.obiba.onyx.jade.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
@@ -23,6 +28,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 public class JnlpClient {
@@ -31,7 +37,7 @@ public class JnlpClient {
 
   public static void main(String[] args) throws Exception {
 
-    LogManager.getLogManager().readConfiguration(JnlpClient.class.getResourceAsStream("/logging.properties"));
+    setupLogManager();
 
     // Create application context.
     GenericApplicationContext appContext = loadAppContext(args);
@@ -79,6 +85,42 @@ public class JnlpClient {
     log.info("Exiting VM");
     System.exit(0);
 
+  }
+
+  private static void setupLogManager() throws IOException {
+    Properties properties = loadLoggingProperties();
+    properties.store(System.out, null);
+    LogManager.getLogManager().readConfiguration(asInputStream(properties));
+  }
+
+  private static InputStream asInputStream(Properties properties) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    properties.store(baos, null);
+    return new ByteArrayInputStream(baos.toByteArray());
+  }
+
+  private static Properties loadLoggingProperties() throws IOException {
+    Properties properties = new Properties();
+    fillProperties(properties, JnlpClient.class.getResourceAsStream("/logging.properties"));
+    fillProperties(properties, loadLocalLoggingProperties());
+    return properties;
+  }
+
+  private static void fillProperties(Properties p, InputStream is) throws IOException {
+    if(is != null) {
+      PropertiesLoaderUtils.fillProperties(p, new InputStreamResource(is));
+    }
+  }
+
+  private static InputStream loadLocalLoggingProperties() throws FileNotFoundException {
+    String userHome = System.getProperty("user.home");
+    if(userHome != null) {
+      File localPropsFile = new File(userHome, "logging.properties");
+      if(localPropsFile.exists() && localPropsFile.canRead()) {
+        return new FileInputStream(localPropsFile);
+      }
+    }
+    return null;
   }
 
   private static void addRemoteLoggingHandler(GenericApplicationContext appContext) {
