@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.TypeConverterDataSource;
@@ -36,6 +37,9 @@ public class InstrumentType implements Serializable {
   private List<Contraindication> contraindications;
 
   private boolean allowPartial;
+
+  // Allows overriding values from defaults.properties
+  private Properties properties;
 
   public InstrumentType() {
   }
@@ -427,4 +431,10 @@ public class InstrumentType implements Serializable {
   public void setAllowPartial(boolean allowPartial) {
     this.allowPartial = allowPartial;
   }
+
+  // Setter is not defined due to issues with autowiring (several beans of type Properties exist in the context)
+  public Properties getProperties() {
+    return properties;
+  }
+
 }
