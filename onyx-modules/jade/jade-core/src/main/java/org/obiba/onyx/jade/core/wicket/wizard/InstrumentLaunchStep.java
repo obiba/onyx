@@ -116,10 +116,10 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
         List<InstrumentParameter> missingValueParams = new ArrayList<InstrumentParameter>();
 
-        if(!instrumentType.isRepeatable()) {
+        if(instrumentType.isRepeatable() == false) {
 
           if(isOutputParamCapturedManually()) {
-            for(InstrumentOutputParameter param : instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+            for(InstrumentOutputParameter param : instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
               if(param.isManualCaptureAllowed()) {
                 InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
                 if(param.isRequired(activeInstrumentRunService.getParticipant()) && runValue == null) {
@@ -164,7 +164,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           }
         } else {
           int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
-          if(!((InstrumentLaunchPanel) get(getContentId())).isSkipMeasurement() || currentCount == 0) {
+          if(((InstrumentLaunchPanel) get(getContentId())).isSkipMeasurement() == false || currentCount == 0) {
 
             // minimum is having the expected count of repeatable measures
             int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
@@ -185,7 +185,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
   private boolean isOutputParamCapturedManually() {
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
-    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL);
+    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
     for(InstrumentOutputParameter param : outputParams) {
       InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
       if(param.isManualCaptureAllowed() && runValue != null && runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
