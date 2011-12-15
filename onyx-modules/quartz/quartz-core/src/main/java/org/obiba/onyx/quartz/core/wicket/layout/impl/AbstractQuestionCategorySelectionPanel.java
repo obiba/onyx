@@ -69,10 +69,8 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
 
     if(AbstractOpenAnswerDefinitionPanel.class.isInstance(parentContainer)) {
       AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) parentContainer;
-      if(openField.getData() != null) {
-        openField.resetField();
-        target.addComponent(openField);
-      }
+      openField.resetField();
+      target.addComponent(openField);
     }
 
     parentContainer.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
@@ -81,10 +79,8 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
         if(!questionCategoryModel.equals(component.getDefaultModel())) {
           log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getDefaultModelObject());
           AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-          if(openField.getData() != null) {
-            openField.resetField();
-            target.addComponent(openField);
-          }
+          openField.resetField();
+          target.addComponent(openField);
         }
         return CONTINUE_TRAVERSAL;
       }
