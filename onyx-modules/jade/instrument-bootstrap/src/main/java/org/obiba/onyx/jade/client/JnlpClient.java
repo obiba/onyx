@@ -89,7 +89,6 @@ public class JnlpClient {
 
   private static void setupLogManager() throws IOException {
     Properties properties = loadLoggingProperties();
-    properties.store(System.out, null);
     LogManager.getLogManager().readConfiguration(asInputStream(properties));
   }
 
