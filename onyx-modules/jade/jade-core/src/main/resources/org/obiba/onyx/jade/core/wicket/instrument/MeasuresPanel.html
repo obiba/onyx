@@ -1,7 +1,9 @@
 <wicket:panel>
   <div>
-    <wicket:message key="manualButtonDescription">[Click Add button to enter values manually]</wicket:message>
-    <input class="obiba-button ui-corner-all" type="button" wicket:id="manualButton" wicket:message="value:Add" />
+    <wicket:enclosure>
+      <wicket:message key="manualButtonDescription">[Click Add button to enter values manually]</wicket:message>
+      <input class="obiba-button ui-corner-all" type="button" wicket:id="manualButton" wicket:message="value:Add" />
+    </wicket:enclosure>
   </div>
   <br>
   <div wicket:id="measuresList"/>
