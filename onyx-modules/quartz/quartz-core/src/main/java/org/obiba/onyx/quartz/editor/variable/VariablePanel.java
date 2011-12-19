@@ -36,7 +36,6 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
@@ -49,6 +48,7 @@ import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
@@ -65,6 +65,9 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 public abstract class VariablePanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
+
+  @SpringBean
+  private MagmaInstanceProvider magmaInstanceProvider;
 
   @SpringBean
   private VariableValidationUtils variableValidationUtils;
@@ -162,12 +165,15 @@ public abstract class VariablePanel extends Panel {
 
     form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script)).add(new HelpTooltipPanel("scriptHelp", new ResourceModel("Script.Tooltip")));
 
-    Set<ValueTable> valueTables = MagmaEngine.get().getDatasource("onyx-datasource").getValueTables();
+    Set<ValueTable> valueTables = magmaInstanceProvider.getOnyxDatasource().getValueTables();
     List<String> tables = new ArrayList<String>(valueTables.size());
     for(ValueTable valueTable : valueTables) {
-      tables.add(valueTable.getName());
+      if(valueTable.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE)) {
+        tables.add(valueTable.getName());
+      }
     }
     Collections.sort(tables);
+
     final DropDownChoice<String> tablesDropDown = new DropDownChoice<String>("tables", new Model<String>(tables.get(0)), tables);
     tablesDropDown.setNullValid(false);
     form.add(tablesDropDown.setLabel(new ResourceModel("Tables"))).add(new SimpleFormComponentLabel("tablesLabel", tablesDropDown));
@@ -232,12 +238,11 @@ public abstract class VariablePanel extends Panel {
     tableVariables.clear();
     String selectedTable = tablesDropDown.getModelObject();
     if(selectedTable != null) {
-      ValueTable table = MagmaEngine.get().getDatasource("onyx-datasource").getValueTable(selectedTable);
+      ValueTable table = magmaInstanceProvider.getValueTable(selectedTable);
       for(Variable v : table.getVariables()) {
         tableVariables.add(v.getName());
       }
       Collections.sort(tableVariables);
     }
   }
-
 }

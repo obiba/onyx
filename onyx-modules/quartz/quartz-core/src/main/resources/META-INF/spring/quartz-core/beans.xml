@@ -99,6 +99,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<bean id="variableUtils" class="org.obiba.onyx.quartz.editor.variable.VariableUtils">
  		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+        <property name="magmaInstanceProvider" ref="magmaInstanceProvider" />
  	</bean>
  	
  	<bean id="variableValidationUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils">
