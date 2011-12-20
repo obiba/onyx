@@ -14,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import libhidapi.HidapiLibrary;
+
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
@@ -40,6 +42,7 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
   @Override
   public void initialize() {
     expectedNames = instrumentExcecutionService.getExpectedOutputParameterVendorNames();
+    HidapiLibrary.hid_init();
   }
 
   @Override
@@ -74,6 +77,7 @@ public class VsmBpTruInstrumentRunner implements InstrumentRunner {
 
   @Override
   public void shutdown() {
+    HidapiLibrary.hid_exit();
   }
 
   private boolean wantsFirst() {

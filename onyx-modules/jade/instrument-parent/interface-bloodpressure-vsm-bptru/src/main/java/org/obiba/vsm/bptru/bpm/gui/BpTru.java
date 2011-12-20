@@ -34,6 +34,8 @@ import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import libhidapi.HidapiLibrary;
+
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.vsm.bptru.bpm.Data;
 import org.obiba.vsm.bptru.bpm.bpm200.Bpm200;
@@ -75,10 +77,12 @@ public class BpTru implements BpmSession {
    * @throws SecurityException
    */
   public static void main(String[] args) throws SecurityException, IOException {
+    HidapiLibrary.hid_init();
     LogManager.getLogManager().readConfiguration(JnlpClient.class.getResourceAsStream("/logging.properties"));
     Logger.getLogger("vsm.bptru.bpm").setLevel(java.util.logging.Level.ALL);
     BpTru b = new BpTru();
     b.waitForExit();
+    HidapiLibrary.hid_exit();
   }
 
   /**
