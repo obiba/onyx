@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.dcm4che2.tool.dcmrcv.DicomServer;
+import org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner.Side;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,11 @@ public class IVAImagingScanDataExtractor extends APEXScanDataExtractor {
     SINGLE_LATERAL, DUAL_LATERAL, SINGLE_AP,
     // clsa c-arm (different of simulation mode)
     CLSA_DXA
+  }
+
+  @Override
+  public Side getSide() {
+    return null;
   }
 
 }

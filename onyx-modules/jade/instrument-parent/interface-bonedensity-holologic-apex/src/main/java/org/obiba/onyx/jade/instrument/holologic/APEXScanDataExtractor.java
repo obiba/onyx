@@ -22,6 +22,7 @@ import java.util.Map;
 import org.dcm4che2.data.Tag;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StoredDicomFile;
+import org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner.Side;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
@@ -81,6 +82,8 @@ public abstract class APEXScanDataExtractor {
   public abstract String getName();
 
   public abstract String getDicomBodyPartName();
+
+  public abstract Side getSide();
 
   protected abstract long getScanType();
 
@@ -172,11 +175,25 @@ public abstract class APEXScanDataExtractor {
           processFilesExtractionSpine(listDicomFiles, data);
         }
         // Other scan
-        else {
+        else if("HIP".equals(getDicomBodyPartName())) {
+          processFilesExtractionHip(getSide(), selectList, data);
+        } else {
           processFilesExtraction(1, selectList, data);
         }
       }
       return data;
+    }
+
+    private void processFilesExtractionHip(Side side, List<StoredDicomFile> files, Map<String, Data> data) {
+      try {
+        for(int i = 0; i < files.size(); i++) {
+          StoredDicomFile storedDicomFile = files.get(i);
+          if((side == Side.LEFT ? "L" : "R").equals(storedDicomFile.getDicomObject().getString(Tag.Laterality))) {
+            data.put(getResultPrefix() + "_DICOM", DataBuilder.buildBinary(storedDicomFile.getFile()));
+          }
+        }
+      } catch(IOException e) {
+      }
     }
   }
 

@@ -186,21 +186,22 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
       String hipSide = instrumentExecutionService.getInputParameterValue("HipSide").getValue();
       if(hipSide != null) {
         if(hipSide.toUpperCase().startsWith("L")) {
-          extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT, server) {
-            @Override
-            public String getName() {
-              return "HIP";
-            }
-          });
+          extractLeftHip(dataList);
         } else if(hipSide.toUpperCase().startsWith("R")) {
-          extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT, server) {
-            @Override
-            public String getName() {
-              return "HIP";
-            }
-          });
+          extractRightHip(dataList);
+        } else if(hipSide.toUpperCase().startsWith("B")) {
+          if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
+            extractLeftHip(dataList);
+            extractRightHip(dataList);
+          } else {
+            extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT, server));
+            extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT, server));
+          }
         }
       }
+    } else if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
+      extractLeftHip(dataList);
+      extractRightHip(dataList);
     } else {
       extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT, server));
       extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT, server));
@@ -233,6 +234,24 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
 
     return dataList;
 
+  }
+
+  private void extractRightHip(List<Map<String, Data>> dataList) {
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT, server) {
+      @Override
+      public String getName() {
+        return "HIP";
+      }
+    });
+  }
+
+  private void extractLeftHip(List<Map<String, Data>> dataList) {
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT, server) {
+      @Override
+      public String getName() {
+        return "HIP";
+      }
+    });
   }
 
   private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
@@ -382,13 +401,16 @@ public class APEXInstrumentRunner implements InstrumentRunner, InitializingBean 
    * @return
    */
   private boolean isCompleteVariable() {
+    List<String> missing = new ArrayList<String>();
+    boolean retValue = true;
     for(String out : outVendorNames) {
       if(sentVariables.contains(out) == false) {
-        log.info("Missing variables");
-        return false;
+        missing.add(out);
+        retValue = false;
       }
     }
-    return true;
+    log.info("Missing variables: " + missing);
+    return retValue;
   }
 
   /**

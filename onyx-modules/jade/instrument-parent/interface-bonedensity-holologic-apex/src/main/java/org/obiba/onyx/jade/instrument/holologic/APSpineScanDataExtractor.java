@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.dcm4che2.tool.dcmrcv.DicomServer;
+import org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner.Side;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -76,6 +77,11 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
       putDouble("ROI_HEIGHT");
       putString("PHYSICIAN_COMMENT");
     }
+  }
+
+  @Override
+  public Side getSide() {
+    return null;
   }
 
 }

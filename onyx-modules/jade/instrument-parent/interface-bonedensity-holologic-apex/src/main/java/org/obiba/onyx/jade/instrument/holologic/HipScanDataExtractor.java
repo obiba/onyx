@@ -143,4 +143,8 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
     }
   }
 
+  public Side getSide() {
+    return side;
+  }
+
 }

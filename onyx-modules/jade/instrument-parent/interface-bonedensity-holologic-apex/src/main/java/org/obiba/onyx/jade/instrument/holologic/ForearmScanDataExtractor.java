@@ -111,4 +111,9 @@ public class ForearmScanDataExtractor extends APEXScanDataExtractor {
     }
   }
 
+  @Override
+  public Side getSide() {
+    return side;
+  }
+
 }
