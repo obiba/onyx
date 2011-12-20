@@ -188,7 +188,7 @@ public abstract class APEXScanDataExtractor {
       try {
         for(int i = 0; i < files.size(); i++) {
           StoredDicomFile storedDicomFile = files.get(i);
-          if((side == Side.LEFT ? "L" : "R").equals(storedDicomFile.getDicomObject().getString(Tag.Laterality))) {
+          if(side != null && (side == Side.LEFT ? "L" : "R").equals(storedDicomFile.getDicomObject().getString(Tag.Laterality))) {
             data.put(getResultPrefix() + "_DICOM", DataBuilder.buildBinary(storedDicomFile.getFile()));
           }
         }
