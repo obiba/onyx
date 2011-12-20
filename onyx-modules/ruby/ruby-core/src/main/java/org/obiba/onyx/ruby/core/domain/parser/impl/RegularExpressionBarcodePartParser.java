@@ -9,6 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -36,13 +41,24 @@ public class RegularExpressionBarcodePartParser extends FixedSizeBarcodePartPars
   }
 
   @Override
-  protected MessageSourceResolvable validatePart(String part) {
-    MessageSourceResolvable error = null;
-    if(!part.matches(expression)) {
-      // The code must match the given pattern
-      error = createBarcodeError(REGULAR_EXPRESSION_MISMATCH_BARCODE_ERROR, new Object[] { part, expression }, "Invalid barcode part format.");
+  protected BarcodePart eatPart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors, boolean validate) {
+    Pattern p = Pattern.compile(expression);
+    Matcher m = p.matcher(barcodeFragment);
+
+    BarcodePart part = null;
+    if(m.matches()) {
+      part = new BarcodePart(barcodeFragment.substring(0, m.end()));
+      barcodeFragment.delete(0, m.end());
+    } else if(validate) {
+      errors.add(createBarcodeError(REGULAR_EXPRESSION_MISMATCH_BARCODE_ERROR, new Object[] { barcodeFragment, expression }, "Invalid barcode part format."));
     }
-    return error;
+    return part;
+  }
+
+  @Override
+  protected MessageSourceResolvable validatePart(String part) {
+    // We use eatPart instead to allow barcodes of varying-size
+    return null;
   }
 
   public boolean isKey() {
