@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public class BarcodeStructure {
   //
@@ -82,6 +83,11 @@ public class BarcodeStructure {
       }
 
       barcodePartList.add(barcodePart);
+    }
+
+    // If we still have some barcode, then we didn't parse it completely. Thus, it's an invalid barcode.
+    if(barcodeFragment.length() > 0) {
+      errors.add(new DefaultMessageSourceResolvable(new String[] { "Ruby.Error.InvalidSizeBarcode" }, new Object[] { barcode, getExpectedSize(), barcode.length() }));
     }
 
     return barcodePartList;
