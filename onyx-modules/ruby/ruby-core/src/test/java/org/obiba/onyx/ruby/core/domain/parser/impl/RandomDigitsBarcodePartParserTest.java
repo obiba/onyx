@@ -37,7 +37,8 @@ public class RandomDigitsBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldPassWithNumericFormat() {
@@ -47,12 +48,13 @@ public class RandomDigitsBarcodePartParserTest {
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("1234567890"), errors);
 
     Assert.assertEquals(0, errors.size());
-    Assert.assertEquals("12345", result.getPartLabel().getCodes()[0]);
+    Assert.assertEquals("1234567890", result.getPartLabel().getCodes()[0]);
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldFailWithNumericFormat() {
@@ -68,7 +70,8 @@ public class RandomDigitsBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldPassWithAlphaNumericFormat() {
@@ -78,12 +81,13 @@ public class RandomDigitsBarcodePartParserTest {
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("Ae1234567890"), errors);
 
     Assert.assertEquals(0, errors.size());
-    Assert.assertEquals("Ae123", result.getPartLabel().getCodes()[0]);
+    Assert.assertEquals("Ae1234567890", result.getPartLabel().getCodes()[0]);
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldFailWithAlphaNumericFormat() {

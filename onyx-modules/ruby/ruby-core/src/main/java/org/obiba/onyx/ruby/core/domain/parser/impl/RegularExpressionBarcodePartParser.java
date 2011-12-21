@@ -47,7 +47,7 @@ public class RegularExpressionBarcodePartParser extends FixedSizeBarcodePartPars
 
     BarcodePart part = null;
     if(m.matches()) {
-      part = new BarcodePart(barcodeFragment.substring(0, m.end()));
+      part = new BarcodePart(barcodeFragment.substring(0, m.end()), getPartTitle());
       barcodeFragment.delete(0, m.end());
     } else if(validate) {
       errors.add(createBarcodeError(REGULAR_EXPRESSION_MISMATCH_BARCODE_ERROR, new Object[] { barcodeFragment, expression }, "Invalid barcode part format."));
