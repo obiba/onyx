@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.obiba.jade</groupId>
     <artifactId>jade</artifactId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.8.5</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -77,7 +77,7 @@
           <configuration>
             <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
             <libPath>lib</libPath>
-            <jnlp></jnlp>
+            <jnlp />
             <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
             <outputJarVersions>false</outputJarVersions>
             <verbose>false</verbose>
