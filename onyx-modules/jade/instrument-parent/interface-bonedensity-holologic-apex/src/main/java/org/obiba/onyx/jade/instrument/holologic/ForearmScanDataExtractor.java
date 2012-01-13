@@ -24,8 +24,8 @@ public class ForearmScanDataExtractor extends APEXScanDataExtractor {
 
   private Side side;
 
-  public ForearmScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String pFileName, Side side, DicomServer server) {
-    super(patScanDb, scanDataDir, pFileName, server);
+  public ForearmScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String pFileName, Side side, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, pFileName, server, apexReceiver);
     this.side = side;
   }
 

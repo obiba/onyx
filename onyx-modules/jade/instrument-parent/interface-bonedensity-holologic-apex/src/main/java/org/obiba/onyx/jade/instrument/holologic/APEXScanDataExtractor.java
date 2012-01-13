@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
+import org.dcm4che2.tool.dcmrcv.ApexTag;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StoredDicomFile;
 import org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner.Side;
@@ -54,12 +56,15 @@ public abstract class APEXScanDataExtractor {
 
   private DicomServer server;
 
-  protected APEXScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server) {
+  private ApexReceiver apexReceiver;
+
+  protected APEXScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server, ApexReceiver apexReceiver) {
     super();
     this.patScanDb = patScanDb;
     this.scanDataDir = scanDataDir;
     this.participantKey = participantKey;
     this.server = server;
+    this.apexReceiver = apexReceiver;
   }
 
   public Map<String, Data> extractData() {
@@ -154,12 +159,16 @@ public abstract class APEXScanDataExtractor {
       }
 
       List<StoredDicomFile> selectList = new ArrayList<StoredDicomFile>();
-      List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
+      List<StoredDicomFile> listDicomFiles = server.listSortedDicomFiles();
+
+      // TODO try refactor, it is a mess now
       for(StoredDicomFile sdf : listDicomFiles) {
         try {
-          String bodyPartExam = sdf.getDicomObject().getString(Tag.BodyPartExamined);
-          // if 2 null we suppose that it is a whole body scan
-          boolean include = (bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
+          DicomObject dicomObject = sdf.getDicomObject();
+          boolean containsBodyPartKey = dicomObject.contains(Tag.BodyPartExamined);
+          String bodyPartExam = dicomObject.getString(Tag.BodyPartExamined);
+          // if 2 null and scan contains Body Part Key we suppose that it is a whole body
+          boolean include = (containsBodyPartKey && bodyPartExam == null && getDicomBodyPartName() == null) ? true : (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
           if(include) selectList.add(sdf);
         } catch(IOException e) {
           throw new RuntimeException(e);
@@ -168,7 +177,7 @@ public abstract class APEXScanDataExtractor {
       if(!selectList.isEmpty()) {
         // Whole Body
         if(getDicomBodyPartName() == null) {
-          processFilesExtraction(2, selectList, data);
+          processFilesExtractionWB(selectList, data);
         }
         // LSPINE and analysis
         else if("LSPINE".equals(getDicomBodyPartName())) {
@@ -178,7 +187,7 @@ public abstract class APEXScanDataExtractor {
         else if("HIP".equals(getDicomBodyPartName())) {
           processFilesExtractionHip(getSide(), selectList, data);
         } else {
-          processFilesExtraction(1, selectList, data);
+          processFilesExtractionForeArm(getSide(), selectList, data);
         }
       }
       return data;
@@ -189,7 +198,7 @@ public abstract class APEXScanDataExtractor {
         for(int i = 0; i < files.size(); i++) {
           StoredDicomFile storedDicomFile = files.get(i);
           if(side != null && (side == Side.LEFT ? "L" : "R").equals(storedDicomFile.getDicomObject().getString(Tag.Laterality))) {
-            data.put(getResultPrefix() + "_DICOM", DataBuilder.buildBinary(storedDicomFile.getFile()));
+            putDicom(data, getResultPrefix() + "_DICOM", storedDicomFile);
           }
         }
       } catch(IOException e) {
@@ -197,10 +206,22 @@ public abstract class APEXScanDataExtractor {
     }
   }
 
-  private void processFilesExtraction(int requiredFiles, List<StoredDicomFile> files, Map<String, Data> data) {
+  private void processFilesExtractionWB(List<StoredDicomFile> files, Map<String, Data> data) {
     for(int i = 0; i < files.size(); i++) {
       StoredDicomFile storedDicomFile = files.get(i);
-      data.put(getResultPrefix() + "_DICOM" + (requiredFiles > 1 ? ("_" + (i + 1)) : ""), DataBuilder.buildBinary(storedDicomFile.getFile()));
+      putDicom(data, getResultPrefix() + "_DICOM" + "_" + (i + 1), storedDicomFile);
+    }
+  }
+
+  private void processFilesExtractionForeArm(Side side, List<StoredDicomFile> files, Map<String, Data> data) {
+    try {
+      for(int i = 0; i < files.size(); i++) {
+        StoredDicomFile storedDicomFile = files.get(i);
+        if(side != null && (side == Side.LEFT ? "L" : "R").equals(storedDicomFile.getDicomObject().getString(Tag.Laterality))) {
+          putDicom(data, getResultPrefix() + "_DICOM", storedDicomFile);
+        }
+      }
+    } catch(IOException e) {
     }
   }
 
@@ -210,17 +231,42 @@ public abstract class APEXScanDataExtractor {
         StoredDicomFile storedDicomFile = files.get(i);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
         String modality = storedDicomFile.getDicomObject().getString(Tag.Modality);
-        Data binary = DataBuilder.buildBinary(storedDicomFile.getFile());
         if("LSPINE".equals(bodyPartExam)) {
-          data.put(getResultPrefix() + "_DICOM_MEASURE", binary);
+          putDicom(data, getResultPrefix() + "_DICOM_MEASURE", storedDicomFile);
         } else if("PR".equals(modality)) {
-          data.put(getResultPrefix() + "_DICOM_PR", binary);
+          putDicom(data, getResultPrefix() + "_DICOM_PR", storedDicomFile);
         } else {
-          data.put(getResultPrefix() + "_DICOM_OT", binary);
+          putDicom(data, getResultPrefix() + "_DICOM_OT", storedDicomFile);
         }
       }
     } catch(IOException e) {
     }
+  }
+
+  public void putDicom(Map<String, Data> data, String name, StoredDicomFile storedDicomFile) {
+    boolean completeDicom = isCompleteDicom(storedDicomFile);
+    apexReceiver.missingRawInDicomFile(completeDicom);
+    Data binary = DataBuilder.buildBinary(storedDicomFile.getFile());
+    data.put(name, binary);
+  }
+
+  /**
+   * Return true if Dicom contains P and R files, false otherwise
+   * @return
+   */
+  private boolean isCompleteDicom(StoredDicomFile storedDicomFile) {
+    for(ApexTag tag : ApexTag.values())
+      try {
+        DicomObject dicomObject = storedDicomFile.getDicomObject();
+        if(dicomObject.contains(tag.getValue())) {
+          if(dicomObject.containsValue(tag.getValue()) == false) {
+            log.info("Missing P and/or R files");
+            return false;
+          }
+        }
+      } catch(IOException e) {
+      }
+    return true;
   }
 
   protected Map<String, Data> extractScanData(String table, Map<String, Data> data, ResultSetExtractor<Map<String, Data>> rsExtractor) {

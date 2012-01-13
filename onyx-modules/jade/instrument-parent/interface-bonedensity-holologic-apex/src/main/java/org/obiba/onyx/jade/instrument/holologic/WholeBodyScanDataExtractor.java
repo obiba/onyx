@@ -24,8 +24,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
 
-  protected WholeBodyScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server) {
-    super(patScanDb, scanDataDir, participantKey, server);
+  protected WholeBodyScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
   }
 
   @Override

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.dcm4che2.data.DicomObject;
@@ -133,13 +134,24 @@ public class DicomServer {
     return settings;
   }
 
-  public List<StoredDicomFile> listDicomFiles() {
+  /**
+   * Return dicom files. (Oldest to Latest date modified)
+   * @return
+   */
+  public List<StoredDicomFile> listSortedDicomFiles() {
     File files[] = storage.listFiles();
     if(files != null) {
       List<StoredDicomFile> storedFiles = new ArrayList<StoredDicomFile>(files.length);
       for(File file : files) {
         storedFiles.add(new StoredDicomFile(file));
       }
+      Collections.sort(storedFiles, new Comparator<StoredDicomFile>() {
+
+        @Override
+        public int compare(StoredDicomFile o1, StoredDicomFile o2) {
+          return new Long(o1.getFile().lastModified()).compareTo(o2.getFile().lastModified());
+        }
+      });
       return storedFiles;
     }
     return Collections.emptyList();

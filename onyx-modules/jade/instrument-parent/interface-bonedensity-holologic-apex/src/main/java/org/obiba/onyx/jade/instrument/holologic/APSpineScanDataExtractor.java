@@ -26,8 +26,8 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
    * @param participantKey
    * @param server
    */
-  protected APSpineScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server) {
-    super(patScanDb, scanDataDir, participantKey, server);
+  protected APSpineScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
   }
 
   @Override

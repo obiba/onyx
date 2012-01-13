@@ -32,8 +32,8 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
    * @param participantKey
    * @param server
    */
-  protected HipScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Side side, DicomServer server) {
-    super(patScanDb, scanDataDir, participantKey, server);
+  protected HipScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Side side, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
     this.side = side;
   }
 

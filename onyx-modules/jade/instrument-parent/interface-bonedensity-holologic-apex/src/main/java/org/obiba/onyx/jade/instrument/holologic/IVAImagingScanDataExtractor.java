@@ -25,8 +25,8 @@ public class IVAImagingScanDataExtractor extends APEXScanDataExtractor {
 
   private Energy energy;
 
-  protected IVAImagingScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy, DicomServer server) {
-    super(patScanDb, scanDataDir, participantKey, server);
+  protected IVAImagingScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
     this.energy = energy;
   }
 

@@ -15,8 +15,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
-    <property name="externalAppHelper" ref="externalAppHelper"/>
-    <property name="patScanDbPath" value="${org.obiba.onyx.jade.instrument.holologic.apex.dbPath}"/>
     <property name="patScanDb" ref="patScanDb" />
     <property name="dicomSettings">
 	    <bean class="org.obiba.onyx.jade.instrument.holologic.DicomSettings">
@@ -27,11 +25,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
  		</bean>
     </property>
     <property name="locale" ref="locale"/>
-  </bean>
-  
-  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
-    <property name="workDir" value="${org.obiba.onyx.jade.instrument.holologic.apex.workDir}" />
-    <property name="executable" value="${org.obiba.onyx.jade.instrument.holologic.apex.executable}" />
   </bean>
   
   <bean id="patScanDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
