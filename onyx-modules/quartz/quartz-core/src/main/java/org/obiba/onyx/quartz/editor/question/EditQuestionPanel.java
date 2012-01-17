@@ -356,9 +356,9 @@ public abstract class EditQuestionPanel extends Panel {
           case ARRAY_CHECKBOX:
           case ARRAY_RADIO:
             question.setMultiple(questionType == ARRAY_CHECKBOX);
-            if(question.getQuestions().size() < 2 || question.getCategories().size() < 1) {
+            if(question.getQuestions().size() < 1 || question.getCategories().size() < 1) {
               form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
-              tabbedPanel.setSelectedTab(tabs.indexOf(question.getQuestions().size() < 2 ? rowsTab : columnsTab));
+              tabbedPanel.setSelectedTab(tabs.indexOf(question.getQuestions().size() < 1 ? rowsTab : columnsTab));
               target.addComponent(tabbedPanel);
             }
             break;
