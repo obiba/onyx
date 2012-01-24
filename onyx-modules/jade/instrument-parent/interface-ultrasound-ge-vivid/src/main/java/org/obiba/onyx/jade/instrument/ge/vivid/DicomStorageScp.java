@@ -15,11 +15,14 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -61,6 +64,33 @@ public class DicomStorageScp {
 
   private JTable table;
 
+  private DefaultTableModel model;
+
+  private static final String MULTIFRAME = "MULTIFRAME";
+
+  private static final String FILENAME = "Filename";
+
+  private static final String PATIENT_ID = "Patient ID";
+
+  private static final String AQUISITION_DATE_TIME = "Aquisition Date/time";
+
+  public static final String SERIESTIME = "Series Time";
+
+  private static final String NUMBER = "File Number";
+
+  public static final String LATERALITY = "Laterality";
+
+  public static final List<String> columns = new ArrayList<String>();
+  static {
+    columns.add("#");
+    columns.add(FILENAME);
+    columns.add(PATIENT_ID);
+    columns.add(AQUISITION_DATE_TIME);
+    columns.add(SERIESTIME);
+    columns.add(NUMBER);
+    columns.add(LATERALITY);
+  }
+
   /**
    * Create the application.
    */
@@ -72,12 +102,26 @@ public class DicomStorageScp {
 
       @Override
       public void onStored(File file, DicomObject dicomObject) {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model = (DefaultTableModel) table.getModel();
         int rows = model.getRowCount();
 
         Date date = dicomObject.getDate(Tag.AcquisitionDateTime) != null ? dicomObject.getDate(Tag.AcquisitionDateTime) : dicomObject.getDate(Tag.StudyDate, Tag.StudyTime);
+        String serie = dicomObject.getString(Tag.SeriesTime);
 
-        model.addRow(new Object[] { "" + (rows + 1), file.getName(), dicomObject.getString(Tag.PatientID), df.format(date), dicomObject.getString(Tag.Modality) });
+        int row = getRowBySerie(serie);
+        if(row == -1) {
+          model.addRow(new Object[] { "" + (rows + 1), //
+          file.getName(),//
+          dicomObject.getString(Tag.PatientID),//
+          df.format(date),//
+          serie, //
+          1,//
+          "" });
+        } else {
+          int columnIndex = columns.indexOf(NUMBER);
+          int value = (Integer) getData().get(row).get(columnIndex);
+          model.setValueAt(value + 1, row, columnIndex);
+        }
       }
     });
 
@@ -99,6 +143,16 @@ public class DicomStorageScp {
     });
     initialize();
     bind();
+  }
+
+  private int getRowBySerie(String serie) {
+    Vector<Vector<Object>> data = getData();
+    for(int i = 0; i < data.size(); i++) {
+      Vector<Object> row = data.get(i);
+      String ser = (String) row.get(columns.indexOf(SERIESTIME));
+      if(ser.equals(serie)) return i;
+    }
+    return -1;
   }
 
   public void show() {
@@ -191,15 +245,17 @@ public class DicomStorageScp {
     panel_3.setLayout(new BorderLayout(0, 0));
 
     table = new JTable();
-    table.setModel(new DefaultTableModel(new String[] { "#", "Filename", "Patient ID", "Aquisition Date/time", "Modality" }, 0) {
+    table.setModel(new DefaultTableModel(columns.toArray(), 0) {
       @Override
       public boolean isCellEditable(int row, int column) {
-        return false;
+        return column == columns.indexOf(LATERALITY) ? true : false;
       }
     });
     table.getColumnModel().getColumn(0).setResizable(false);
     table.getColumnModel().getColumn(0).setPreferredWidth(15);
     table.getColumnModel().getColumn(0).setMaxWidth(15);
+
+    table.getColumnModel().getColumn(columns.indexOf(LATERALITY)).setCellEditor(new DefaultCellEditor(new JComboBox(new Object[] { "Left", "Right" })));
     panel_3.add(table, BorderLayout.CENTER);
     panel_3.add(table.getTableHeader(), BorderLayout.NORTH);
 
@@ -209,7 +265,17 @@ public class DicomStorageScp {
     JButton btnNewButton = new JButton("Save");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        frmDicomServer.dispose();
+        Vector<Vector<Object>> data = getData();
+        boolean missing = false;
+        for(int i = 0; i < data.size(); i++) {
+          String laterality = (String) data.get(i).get(columns.indexOf(LATERALITY));
+          if(laterality == null || laterality.equals("")) {
+            JOptionPane.showMessageDialog(null, "You need to choose laterality for each line");
+            missing = true;
+            break;
+          }
+        }
+        if(missing == false) frmDicomServer.dispose();
       }
     });
     panel_4.add(btnNewButton);
@@ -226,6 +292,10 @@ public class DicomStorageScp {
       }
 
     });
+  }
+
+  public Vector<Vector<Object>> getData() {
+    return model == null ? new Vector<Vector<Object>>() : model.getDataVector();
   }
 
   private DicomSettings getSettings() {
