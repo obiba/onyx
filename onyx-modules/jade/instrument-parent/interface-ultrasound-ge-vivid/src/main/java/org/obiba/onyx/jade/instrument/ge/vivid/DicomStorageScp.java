@@ -66,8 +66,6 @@ public class DicomStorageScp {
 
   private DefaultTableModel model;
 
-  private static final String MULTIFRAME = "MULTIFRAME";
-
   private static final String FILENAME = "Filename";
 
   private static final String PATIENT_ID = "Patient ID";
