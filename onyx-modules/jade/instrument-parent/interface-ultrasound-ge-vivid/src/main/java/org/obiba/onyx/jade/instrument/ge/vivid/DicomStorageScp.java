@@ -16,7 +16,6 @@ import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -66,13 +65,9 @@ public class DicomStorageScp {
 
   private DefaultTableModel model;
 
-  private static final String FILENAME = "Filename";
-
   private static final String PATIENT_ID = "Patient ID";
 
-  private static final String AQUISITION_DATE_TIME = "Aquisition Date/time";
-
-  public static final String SERIESTIME = "Series Time";
+  public static final String STUDYINSTANCEUID = "Study Instance UID";
 
   private static final String NUMBER = "File Number";
 
@@ -81,10 +76,8 @@ public class DicomStorageScp {
   public static final List<String> columns = new ArrayList<String>();
   static {
     columns.add("#");
-    columns.add(FILENAME);
     columns.add(PATIENT_ID);
-    columns.add(AQUISITION_DATE_TIME);
-    columns.add(SERIESTIME);
+    columns.add(STUDYINSTANCEUID);
     columns.add(NUMBER);
     columns.add(LATERALITY);
   }
@@ -103,16 +96,13 @@ public class DicomStorageScp {
         model = (DefaultTableModel) table.getModel();
         int rows = model.getRowCount();
 
-        Date date = dicomObject.getDate(Tag.AcquisitionDateTime) != null ? dicomObject.getDate(Tag.AcquisitionDateTime) : dicomObject.getDate(Tag.StudyDate, Tag.StudyTime);
-        String serie = dicomObject.getString(Tag.SeriesTime);
+        String siuid = dicomObject.getString(Tag.StudyInstanceUID);
 
-        int row = getRowBySerie(serie);
+        int row = getRowBySIUID(siuid);
         if(row == -1) {
           model.addRow(new Object[] { "" + (rows + 1), //
-          file.getName(),//
           dicomObject.getString(Tag.PatientID),//
-          df.format(date),//
-          serie, //
+          siuid, //
           1,//
           "" });
         } else {
@@ -143,12 +133,12 @@ public class DicomStorageScp {
     bind();
   }
 
-  private int getRowBySerie(String serie) {
+  private int getRowBySIUID(String siuid) {
     Vector<Vector<Object>> data = getData();
     for(int i = 0; i < data.size(); i++) {
       Vector<Object> row = data.get(i);
-      String ser = (String) row.get(columns.indexOf(SERIESTIME));
-      if(ser.equals(serie)) return i;
+      String currentSiuid = (String) row.get(columns.indexOf(STUDYINSTANCEUID));
+      if(currentSiuid.equals(siuid)) return i;
     }
     return -1;
   }

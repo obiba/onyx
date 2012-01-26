@@ -82,7 +82,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
       for(int i = 0; i < data.size(); i++) {
         Vector<Object> row = data.get(i);
         List<String> columns = DicomStorageScp.columns;
-        String seriestime = (String) row.get(columns.indexOf(DicomStorageScp.SERIESTIME));
+        String studyInstanceUID = (String) row.get(columns.indexOf(DicomStorageScp.STUDYINSTANCEUID));
 
         List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
 
@@ -94,25 +94,33 @@ public class VividInstrumentRunner implements InstrumentRunner {
         int idx = 1;
         for(StoredDicomFile dcm : listDicomFiles) {
           try {
-            DicomObject d = dcm.getDicomObject();
-            if(d.getString(Tag.SeriesTime).equals(seriestime)) {
-              if(d.getStrings(Tag.ImageType)[4].contains("SINGLEFRAME")) {
+            DicomObject dicomObject = dcm.getDicomObject();
+            if(dicomObject.getString(Tag.StudyInstanceUID).equals(studyInstanceUID)) {
+              Data dicomData = DataBuilder.buildBinary(dcm.getFile());
+
+              if(dicomObject.contains(Tag.MediaStorageSOPClassUID) && dicomObject.getString(Tag.MediaStorageSOPClassUID).equals("1.2.840.10008.5.1.4.1.1.6.1")) {
                 if(output.contains("STILL_IMAGE")) {
-                  values.put("STILL_IMAGE", DataBuilder.buildBinary(dcm.getFile()));
+                  values.put("STILL_IMAGE", dicomData);
+                }
+              } else if("SR".equals(dicomObject.getString(Tag.Modality))) {
+                if(output.contains("SR")) {
+                  values.put("SR", dicomData);
                 }
               } else {
                 if(output.contains("CINELOOP_" + idx)) {
-                  values.put("CINELOOP_" + idx, DataBuilder.buildBinary(dcm.getFile()));
+                  values.put("CINELOOP_" + idx, dicomData);
                 }
                 idx++;
               }
             }
           } catch(IOException e) {
-            // ignore
+            log.info(e.getMessage());
           }
         }
         instrumentExecutionService.addOutputParameterValues(values);
       }
+    } catch(Exception e) {
+      e.printStackTrace();
     } finally {
       FileSystemUtils.deleteRecursively(dcmDir);
     }
