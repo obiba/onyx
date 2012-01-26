@@ -13,8 +13,6 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -44,8 +42,6 @@ import org.dcm4che2.tool.dcmrcv.DicomServer.StateListener;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StorageListener;
 
 public class DicomStorageScp {
-
-  private final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
   private final CountDownLatch exitLatch = new CountDownLatch(1);
 
