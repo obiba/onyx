@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
+import org.dcm4che2.data.UID;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StoredDicomFile;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
@@ -95,32 +96,41 @@ public class VividInstrumentRunner implements InstrumentRunner {
         for(StoredDicomFile dcm : listDicomFiles) {
           try {
             DicomObject dicomObject = dcm.getDicomObject();
-            if(dicomObject.getString(Tag.StudyInstanceUID).equals(studyInstanceUID)) {
+            String studyInstanceUid = dicomObject.getString(Tag.StudyInstanceUID);
+            String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject.getString(Tag.MediaStorageSOPClassUID) : null;
+            String modality = dicomObject.getString(Tag.Modality);
+            // Allow garbage collection, as the instance may be quite large
+            dicomObject = null;
+            if(studyInstanceUid.equals(studyInstanceUID)) {
+              // This will contain a large byte-array
               Data dicomData = DataBuilder.buildBinary(dcm.getFile());
 
-              if(dicomObject.contains(Tag.MediaStorageSOPClassUID) && dicomObject.getString(Tag.MediaStorageSOPClassUID).equals("1.2.840.10008.5.1.4.1.1.6.1")) {
+              if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
                 if(output.contains("STILL_IMAGE")) {
                   values.put("STILL_IMAGE", dicomData);
                 }
-              } else if("SR".equals(dicomObject.getString(Tag.Modality))) {
-                if(output.contains("SR")) {
-                  values.put("SR", dicomData);
-                }
-              } else {
+              } else if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
                 if(output.contains("CINELOOP_" + idx)) {
                   values.put("CINELOOP_" + idx, dicomData);
                 }
                 idx++;
+              } else if("SR".equals(modality)) {
+                if(output.contains("SR")) {
+                  values.put("SR", dicomData);
+                }
+              } else {
+                // don't know what this file is.
+                log.warn("Received unknown DICOM file. Ignoring.");
               }
             }
           } catch(IOException e) {
-            log.info(e.getMessage());
+            log.error("Unexpected excepion while reading DICOM file.", e);
           }
         }
         instrumentExecutionService.addOutputParameterValues(values);
       }
     } catch(Exception e) {
-      e.printStackTrace();
+      log.error("Unexpected excepion while processing DICOM files.", e);
     } finally {
       FileSystemUtils.deleteRecursively(dcmDir);
     }
