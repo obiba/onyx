@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -24,6 +25,11 @@
     </dependency>
 
     <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.obiba</groupId>
       <artifactId>obiba-core</artifactId>
     </dependency>
@@ -42,7 +48,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
     </dependency>
-      
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
@@ -85,12 +91,12 @@
       <groupId>org.springframework.batch</groupId>
       <artifactId>spring-batch-test</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.opensymphony.quartz</groupId>
       <artifactId>quartz</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
@@ -116,10 +122,8 @@
       <artifactId>opencsv</artifactId>
     </dependency>
 
-    <!--
-      Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate
-      references javax.transaction.TransactionManager
-    -->
+    <!-- Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate references 
+      javax.transaction.TransactionManager -->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
@@ -232,7 +236,7 @@
     <dependency>
       <groupId>org.obiba.wicket</groupId>
       <artifactId>wicket-nanogong</artifactId>
-    </dependency>    
+    </dependency>
   </dependencies>
 
   <build>
