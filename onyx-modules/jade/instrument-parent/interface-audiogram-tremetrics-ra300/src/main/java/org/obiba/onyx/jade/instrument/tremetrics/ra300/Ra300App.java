@@ -106,6 +106,11 @@ public class Ra300App {
     updateState();
   }
 
+  public void setCommSettings(String comPort, int baudRate) {
+    this.baudRate.getModel().setValue(Integer.toString(baudRate));
+    this.ports.getModel().setSelectedItem(comPort);
+  }
+
   private void updateState() {
     stateLabel.setText(ra300.getState().toString());
     switch(ra300.getState()) {
@@ -405,4 +410,5 @@ public class Ra300App {
 
     });
   }
+
 }
