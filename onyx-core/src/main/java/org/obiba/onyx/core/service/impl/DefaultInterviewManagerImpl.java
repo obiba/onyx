@@ -27,6 +27,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
@@ -112,6 +113,9 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     releaseInterview(userSessionService.getSessionId());
   }
 
+  // Ensures an active transaction when invoked outside request cycle
+  // ONYX-1622
+  @Transactional
   synchronized public void releaseInterview(String sessionId) {
     unlockInterview(findLock(sessionId));
   }
