@@ -35,6 +35,7 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
       JOptionPane.showMessageDialog(null, externalAppHelper.getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
       throw new RuntimeException("already lock for execution");
     }
+    cleanData();
     initializeParticipantData();
   }
 
@@ -53,11 +54,6 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
     cleanData();
   }
 
-  /**
-   * Retrieve participant data from the database and write them in the patient scan database
-   * 
-   * @throws Exception
-   */
   private void initializeParticipantData() {
     log.info("initializing participant Data");
     jdbc.update("insert into dbo.Persons (PersonUid, SurName, ForeName) values(?,?,?)", new PreparedStatementSetter() {
