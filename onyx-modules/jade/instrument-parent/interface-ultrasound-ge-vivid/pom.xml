@@ -31,6 +31,14 @@
         <executions>
           <execution>
             <id>make-jnlp</id>
+             <configuration>
+              <jnlp>
+                <!-- 
+                  Overriden to increase heap size 
+                -->
+                <inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath>
+              </jnlp>
+            </configuration>
           </execution>
         </executions>
       </plugin>

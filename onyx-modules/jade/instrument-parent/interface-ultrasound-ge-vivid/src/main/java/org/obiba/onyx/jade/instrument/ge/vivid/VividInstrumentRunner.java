@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.instrument.ge.vivid;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
 
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
@@ -75,6 +78,12 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
   @Override
   public void shutdown() {
+    EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        JOptionPane.showMessageDialog(null, "Uploading data to Onyx. Please wait. This dialog will close automatically.", "Uploading...", JOptionPane.INFORMATION_MESSAGE);
+      }
+    });
+
     Set<String> output = instrumentExecutionService.getExpectedOutputParameterVendorNames();
     try {
       Map<String, Data> values = new HashMap<String, Data>();
