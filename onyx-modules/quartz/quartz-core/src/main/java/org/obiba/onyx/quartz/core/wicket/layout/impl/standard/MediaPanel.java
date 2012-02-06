@@ -68,6 +68,7 @@ public class MediaPanel extends Panel {
     public AudioVideoComponent(final String id, final ContentTypedWebResource resource) {
       super(id);
       this.resource = resource;
+      this.resource.setCacheable(false);
     }
 
     public ContentTypedWebResource getResource() {
