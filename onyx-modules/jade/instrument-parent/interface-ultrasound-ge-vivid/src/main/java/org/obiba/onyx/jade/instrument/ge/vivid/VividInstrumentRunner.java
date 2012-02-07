@@ -2,12 +2,14 @@ package org.obiba.onyx.jade.instrument.ge.vivid;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.JOptionPane;
 
@@ -112,7 +114,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
             dicomObject = null;
             if(studyInstanceUid.equals(studyInstanceUID)) {
               // This will contain a large byte-array
-              Data dicomData = DataBuilder.buildBinary(dcm.getFile());
+              Data dicomData = DataBuilder.buildBinary(new GZIPInputStream(new FileInputStream(dcm.getFile())));
 
               if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
                 if(output.contains("STILL_IMAGE")) {
