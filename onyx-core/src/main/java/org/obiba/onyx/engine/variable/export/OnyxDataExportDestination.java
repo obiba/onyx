@@ -10,30 +10,18 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.obiba.magma.DatasourceFactory;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
-import org.obiba.magma.crypt.KeyProvider;
-import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
 import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
-import org.obiba.magma.datasource.csv.CsvDatasource;
-import org.obiba.magma.datasource.csv.support.CsvDatasourceFactory;
-import org.obiba.magma.datasource.csv.support.CsvUtil;
-import org.obiba.magma.datasource.fs.support.FsDatasourceFactory;
 import org.obiba.magma.filter.CompositeFilterChain;
 import org.obiba.magma.filter.FilterChain;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
@@ -56,18 +44,12 @@ public class OnyxDataExportDestination {
     this.name = name;
   }
 
-  public DatasourceFactory getDatasourceFactory(File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
-    if(options == null || options.getFormat() == null) {
-      return xmlDatasourceFactory(outputDir, provider);
-    }
+  public Options getOptions() {
+    return options;
+  }
 
-    switch(options.getFormat()) {
-    case CSV:
-      return csvDatasourceFactory(outputDir, tables);
-    case XML:
-      return xmlDatasourceFactory(outputDir, provider);
-    }
-    throw new IllegalStateException("Unknown output format " + options.getFormat());
+  public EncryptionOptions getEncryptOptions() {
+    return this.encrypt != null ? this.encrypt : options != null ? options.getEncrypt() : null;
   }
 
   public boolean isEncryptionRequested() {
@@ -134,81 +116,26 @@ public class OnyxDataExportDestination {
     return new File(outputRootDirectory, filename);
   }
 
-  private DatasourceFactory csvDatasourceFactory(File outputFile, Iterable<ValueTable> tables) {
-    CsvDatasourceFactory factory = new CsvDatasourceFactory();
-    factory.setName(getName());
-
-    outputFile.mkdir();
-    factory.setBundle(outputFile);
-
-    if(options.getSeparator() != null) factory.setSeparator(options.getSeparator());
-    if(options.getQuote() != null) factory.setQuote(options.getQuote());
-    if(options.getCharacterSet() != null) factory.setCharacterSet(options.getCharacterSet());
-
-    // TODO: this is very painful! The CsvDatasource needs serious work.
-    // We have to build the datasource structure ourselves, beforehand (CsvDatasource won't do it for us)
-    // This is the only combination of disk structure and "addTable" call that I was able to get working.
-    for(ValueTable table : tables) {
-      File tableDir = new File(outputFile, table.getName());
-      tableDir.mkdir();
-
-      File variablesFile = new File(tableDir, CsvDatasource.VARIABLES_FILE);
-      File dataFile = new File(tableDir, CsvDatasource.DATA_FILE);
-
-      CSVWriter writer = null;
-      try {
-        writer = new CSVWriter(new FileWriter(variablesFile));
-        writer.writeAll(Collections.singletonList(CsvUtil.getCsvVariableHeader(table)));
-
-        dataFile.createNewFile();
-      } catch(IOException e) {
-        throw new RuntimeException(e);
-      } finally {
-        if(writer != null) {
-          try {
-            writer.close();
-          } catch(IOException e) {
-            // ignore
-          }
-        }
-      }
-      factory.addTable(table.getName(), variablesFile, dataFile);
-    }
-
-    return factory;
-  }
-
-  private DatasourceFactory xmlDatasourceFactory(File outputFile, KeyProvider provider) {
-    FsDatasourceFactory factory = new FsDatasourceFactory();
-    factory.setName(getName());
-    factory.setFile(outputFile);
-    factory.setEncryptionStrategy(getEncryptionStrategy(provider));
-    return factory;
-  }
-
-  private DatasourceEncryptionStrategy getEncryptionStrategy(KeyProvider provider) {
-    EncryptionOptions encrypt = this.encrypt != null ? this.encrypt : options != null ? options.getEncrypt() : null;
-    if(encrypt != null) {
-      GeneratedSecretKeyDatasourceEncryptionStrategy strategy = new GeneratedSecretKeyDatasourceEncryptionStrategy();
-      strategy.setKeyProvider(provider);
-      encrypt.configureStrategy(strategy);
-      return strategy;
-    }
-    return null;
-  }
-
   private String getCurrentDateTimeString() {
     DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
     return df.format(new Date());
   }
 
   public enum Format {
-    CSV, XML
+    CSV, XML, OPAL
   }
 
   public static class Options {
 
     private Format format;
+
+    private String opalUri;
+
+    private String opalDatasource;
+
+    private String username;
+
+    private String password;
 
     private String characterSet;
 
@@ -224,6 +151,38 @@ public class OnyxDataExportDestination {
 
     public void setFormat(Format format) {
       this.format = format;
+    }
+
+    public String getOpalUri() {
+      return opalUri;
+    }
+
+    public void setOpalUri(String opalUri) {
+      this.opalUri = opalUri;
+    }
+
+    public String getOpalDatasource() {
+      return opalDatasource;
+    }
+
+    public void setOpalDatasource(String opalDatasource) {
+      this.opalDatasource = opalDatasource;
+    }
+
+    public String getUsername() {
+      return username;
+    }
+
+    public void setUsername(String username) {
+      this.username = username;
+    }
+
+    public String getPassword() {
+      return password;
+    }
+
+    public void setPassword(String password) {
+      this.password = password;
     }
 
     public String getCharacterSet() {
@@ -269,7 +228,7 @@ public class OnyxDataExportDestination {
 
     private Integer keySize;
 
-    private void configureStrategy(GeneratedSecretKeyDatasourceEncryptionStrategy strategy) {
+    public void configureStrategy(GeneratedSecretKeyDatasourceEncryptionStrategy strategy) {
       if(algorithm != null) {
         strategy.setAlgorithm(algorithm);
       }

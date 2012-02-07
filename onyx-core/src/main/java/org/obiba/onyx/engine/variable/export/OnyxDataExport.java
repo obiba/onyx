@@ -16,6 +16,7 @@ import java.security.PublicKey;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
@@ -30,11 +31,17 @@ import org.obiba.magma.filter.FilteredValueTable;
 import org.obiba.magma.support.DatasourceCopier;
 import org.obiba.magma.support.DatasourceCopier.DatasourceCopyValueSetEventListener;
 import org.obiba.magma.support.DatasourceParsingException;
+import org.obiba.magma.support.MultithreadedDatasourceCopier;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
+import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
+import org.obiba.onyx.engine.variable.export.format.CsvDatasourceFactoryProvider;
+import org.obiba.onyx.engine.variable.export.format.DatasourceFactoryProvider;
+import org.obiba.onyx.engine.variable.export.format.OpalDatasourceFactoryProvider;
+import org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.FileUtil;
 import org.slf4j.Logger;
@@ -43,11 +50,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 public class OnyxDataExport {
 
   private static final Logger log = LoggerFactory.getLogger(OnyxDataExport.class);
+
+  private final List<DatasourceFactoryProvider> exportDatasourceProviders = ImmutableList.of(new CsvDatasourceFactoryProvider(), new XmlDatasourceFactoryProvider(), new OpalDatasourceFactoryProvider());
 
   private ExportLogService exportLogService;
 
@@ -65,6 +75,12 @@ public class OnyxDataExport {
   private SessionFactory sessionFactory;
 
   private MagmaInstanceProvider magmaInstanceProvider;
+
+  private ThreadFactory threadFactory;
+
+  public void setThreadFactory(ThreadFactory threadFactory) {
+    this.threadFactory = threadFactory;
+  }
 
   public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
     this.exportDestinations = exportDestinations;
@@ -154,7 +170,7 @@ public class OnyxDataExport {
 
       File outputFile = destination.createOutputFile(outputRootDirectory);
 
-      DatasourceFactory factory = destination.getDatasourceFactory(outputFile, pkProvider, tables);
+      DatasourceFactory factory = getDatasourceFactory(pkProvider, destination, tables, outputFile);
 
       Datasource outputDatasource = factory.create();
       try {
@@ -172,7 +188,7 @@ public class OnyxDataExport {
           ExportListener listener = new ExportListener(destination);
 
           // Copy the filtered table to the destination datasource
-          DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener).build().copy(table, outputDatasource);
+          MultithreadedDatasourceCopier.Builder.newCopier().withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
 
           long exportEndTime = System.currentTimeMillis();
           log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
@@ -192,6 +208,23 @@ public class OnyxDataExport {
         }
       }
     }
+  }
+
+  private DatasourceFactory getDatasourceFactory(KeyProvider pkProvider, final OnyxDataExportDestination destination, Iterable<ValueTable> tables, File outputFile) {
+
+    // Default export format
+    Format format = Format.XML;
+
+    if(destination.getOptions() != null && destination.getOptions().getFormat() != null) {
+      format = destination.getOptions().getFormat();
+    }
+
+    for(DatasourceFactoryProvider provider : exportDatasourceProviders) {
+      if(provider.getFormat() == format) {
+        return provider.getDatasourceFactory(destination, outputFile, pkProvider, tables);
+      }
+    }
+    throw new IllegalStateException("Unknown export format: " + format);
   }
 
   private Iterable<ValueTable> getExportValueTables(Datasource datasource, final OnyxDataExportDestination destination) {

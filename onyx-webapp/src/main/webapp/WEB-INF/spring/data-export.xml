@@ -10,6 +10,9 @@
         <property name="targetBeanName" value="userSessionService" />
       </bean>
     </property>
+    <property name="threadFactory">
+      <bean class="org.obiba.onyx.spring.TransactionalThreadFactory"/>
+    </property>
     <property name="exportLogService" ref="exportLogService" />
     <property name="captureAndExportStrategyMap" ref="captureAndExportStrategyMap" />
     <property name="sessionFactory" ref="sessionFactory"/>
