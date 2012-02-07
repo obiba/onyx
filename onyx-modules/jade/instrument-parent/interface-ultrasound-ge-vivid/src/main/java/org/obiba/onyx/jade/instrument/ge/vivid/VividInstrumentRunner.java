@@ -1,6 +1,7 @@
 package org.obiba.onyx.jade.instrument.ge.vivid;
 
 import java.awt.EventQueue;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JOptionPane;
 
@@ -114,7 +115,8 @@ public class VividInstrumentRunner implements InstrumentRunner {
             dicomObject = null;
             if(studyInstanceUid.equals(studyInstanceUID)) {
               // This will contain a large byte-array
-              Data dicomData = DataBuilder.buildBinary(new GZIPInputStream(new FileInputStream(dcm.getFile())));
+              Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
+              log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(), ((byte[]) dicomData.getValue()).length));
 
               if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
                 if(output.contains("STILL_IMAGE")) {
@@ -145,5 +147,35 @@ public class VividInstrumentRunner implements InstrumentRunner {
     } finally {
       FileSystemUtils.deleteRecursively(dcmDir);
     }
+  }
+
+  private byte[] compress(File file) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    GZIPOutputStream compressed = new GZIPOutputStream(baos);
+
+    byte[] buffer = new byte[4096];
+    FileInputStream fis = new FileInputStream(file);
+    try {
+      long byteCount = 0;
+      int bytesRead;
+      while((bytesRead = fis.read(buffer)) != -1) {
+        compressed.write(buffer, 0, bytesRead);
+        byteCount += bytesRead;
+      }
+      compressed.flush();
+    } finally {
+      try {
+        fis.close();
+      } catch(IOException ex) {
+        // do nothing
+      }
+      try {
+        compressed.close();
+      } catch(IOException ex) {
+        // do nothing
+      }
+    }
+
+    return baos.toByteArray();
   }
 }
