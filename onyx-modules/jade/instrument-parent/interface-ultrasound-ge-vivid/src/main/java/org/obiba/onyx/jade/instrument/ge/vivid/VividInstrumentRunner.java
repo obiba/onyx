@@ -25,6 +25,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 
 public class VividInstrumentRunner implements InstrumentRunner {
@@ -152,30 +153,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
   private byte[] compress(File file) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     GZIPOutputStream compressed = new GZIPOutputStream(baos);
-
-    byte[] buffer = new byte[4096];
-    FileInputStream fis = new FileInputStream(file);
-    try {
-      long byteCount = 0;
-      int bytesRead;
-      while((bytesRead = fis.read(buffer)) != -1) {
-        compressed.write(buffer, 0, bytesRead);
-        byteCount += bytesRead;
-      }
-      compressed.flush();
-    } finally {
-      try {
-        fis.close();
-      } catch(IOException ex) {
-        // do nothing
-      }
-      try {
-        compressed.close();
-      } catch(IOException ex) {
-        // do nothing
-      }
-    }
-
+    FileCopyUtils.copy(new FileInputStream(file), compressed);
     return baos.toByteArray();
   }
 }
