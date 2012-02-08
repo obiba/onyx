@@ -11,12 +11,15 @@ package org.obiba.onyx.magma;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchDatasourceException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.support.VariableEntityBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
+
+  private static final String ONYX_DATASOURCE = "onyx-datasource";
 
   private MagmaEngine magmaEngine;
 
@@ -26,7 +29,10 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
   }
 
   public Datasource getOnyxDatasource() {
-    return magmaEngine.getDatasources().iterator().next();
+    if(magmaEngine.hasDatasource(ONYX_DATASOURCE)) {
+      return magmaEngine.getDatasource(ONYX_DATASOURCE);
+    }
+    throw new NoSuchDatasourceException(ONYX_DATASOURCE);
   }
 
   @Override
