@@ -81,7 +81,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       log.debug("Testing variable: {} {} {}", new Object[] { magmaVariableName, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
 
       // Get the currently interviewed participant's ValueSet.
-      VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant().getBarcode());
+      VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant());
       if(stageTable.hasValueSet(entity)) {
         ValueSet valueSet = stageTable.getValueSet(entity);
 

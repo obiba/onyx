@@ -11,15 +11,15 @@ package org.obiba.onyx.magma;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.NoSuchDatasourceException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
-
-  private static final String ONYX_DATASOURCE = "onyx-datasource";
 
   private MagmaEngine magmaEngine;
 
@@ -29,10 +29,7 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
   }
 
   public Datasource getOnyxDatasource() {
-    if(magmaEngine.hasDatasource(ONYX_DATASOURCE)) {
-      return magmaEngine.getDatasource(ONYX_DATASOURCE);
-    }
-    throw new NoSuchDatasourceException(ONYX_DATASOURCE);
+    return magmaEngine.getDatasource(ONYX_DATASOURCE);
   }
 
   @Override
@@ -42,6 +39,23 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
 
   public ValueTable getValueTable(String name) {
     return getOnyxDatasource().getValueTable(name);
+  }
+
+  @Override
+  public ValueTable resolveTableFromVariablePath(String variablePath) {
+    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
+    return resolver.resolveTable(getParticipantsTable());
+  }
+
+  @Override
+  public VariableValueSource resolveVariablePath(String variablePath) {
+    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
+    return resolver.resolveSource(getParticipantsTable());
+  }
+
+  @Override
+  public VariableEntity newParticipantEntity(Participant participant) {
+    return newParticipantEntity(participant.getBarcode());
   }
 
   public VariableEntity newParticipantEntity(String identifier) {

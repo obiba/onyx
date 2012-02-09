@@ -79,7 +79,7 @@ public class JavascriptDataSource implements IDataSource {
   }
 
   private Value getValue(Participant participant) {
-    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(participant.getBarcode());
+    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(participant);
     ValueTable valueTable = this.valueTable != null ? magmaInstanceProvider.getValueTable(this.valueTable) : magmaInstanceProvider.getParticipantsTable();
     if(valueTable.hasValueSet(entity)) {
       ValueSet valueSet = valueTable.getValueSet(entity);

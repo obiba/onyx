@@ -134,7 +134,7 @@ public abstract class MagmaStringResourceModel extends AbstractReadOnlyModel<Str
   //
 
   private String getValueAsString(VariableDataSource varDs, Value value, Locale locale) {
-    if(value == null || value.getValue() == null) return "";
+    if(value == null || value.isNull()) return "";
 
     String dataStr = value.toString();
     if(value.getValueType().equals(TextType.get())) {
