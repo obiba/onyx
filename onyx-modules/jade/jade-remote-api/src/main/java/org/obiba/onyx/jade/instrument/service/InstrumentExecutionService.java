@@ -58,6 +58,8 @@ public interface InstrumentExecutionService {
 
   public int getCurrentMeasureCount();
 
+  public boolean isRepeatableMeasure();
+
   public boolean hasInputParameter(String parameterCode);
 
   public boolean hasOutputParameter(String parameterCode);

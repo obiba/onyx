@@ -61,7 +61,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   private String participantID;
 
-  private boolean isRepeatableMeasure;
+  private boolean isRepeatable;
 
   private List<Map<String, Data>> retrieveDeviceData() {
 
@@ -164,7 +164,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
    */
   public void initialize() {
     participantID = instrumentExecutionService.getParticipantID();
-    isRepeatableMeasure = instrumentExecutionService.getExpectedMeasureCount() > 1;
+    isRepeatable = instrumentExecutionService.isRepeatableMeasure();
     initApexReceiverStatus();
     outVendorNames = instrumentExecutionService.getExpectedOutputParameterVendorNames();
 
@@ -206,7 +206,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
       }
       // send only if measure is complete (all variable assigned)
       // because repeatable measure accept partial variable set
-      if(isRepeatableMeasure) {
+      if(isRepeatable) {
         if(outVendorNames.equals(dataMap.keySet())) {
           sendDataToServer(dataMap);
         }
@@ -230,6 +230,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
     List<String> missing = new ArrayList<String>();
     List<String> sentVariablesCopy = new ArrayList<String>(sentVariables);
     boolean retValue = true;
+
     // if repeatable measure check if all variables in measure has been sent
     for(int i = 0; i < instrumentExecutionService.getExpectedMeasureCount(); i++) {
       for(String out : outVendorNames) {
@@ -256,7 +257,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
       public void actionPerformed(ActionEvent e) {
         retrieveMeasurements();
         if(isCompleteVariable()) {
-          if(isRepeatableMeasure) {
+          if(isRepeatable) {
             apexReceiver.setVariableStatusOKButCheck();
           } else {
             apexReceiver.setVariableStatusOK();

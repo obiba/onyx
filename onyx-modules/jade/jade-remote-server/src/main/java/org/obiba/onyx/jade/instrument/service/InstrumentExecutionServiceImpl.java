@@ -192,6 +192,10 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return activeInstrumentRunService.getCurrentMeasureCount();
   }
 
+  public boolean isRepeatableMeasure() {
+    return activeInstrumentRunService.getInstrumentType().isRepeatable();
+  }
+
   public int getExpectedMeasureCount() {
     return activeInstrumentRunService.getInstrumentType().getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
   }
