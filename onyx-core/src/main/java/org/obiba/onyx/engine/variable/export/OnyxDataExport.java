@@ -34,6 +34,7 @@ import org.obiba.magma.support.DatasourceParsingException;
 import org.obiba.magma.support.MultithreadedDatasourceCopier;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
@@ -59,6 +60,8 @@ public class OnyxDataExport {
 
   private final List<DatasourceFactoryProvider> exportDatasourceProviders = ImmutableList.of(new CsvDatasourceFactoryProvider(), new XmlDatasourceFactoryProvider(), new OpalDatasourceFactoryProvider());
 
+  private ParticipantService participantService;
+
   private ExportLogService exportLogService;
 
   private UserSessionService userSessionService;
@@ -77,6 +80,10 @@ public class OnyxDataExport {
   private MagmaInstanceProvider magmaInstanceProvider;
 
   private ThreadFactory threadFactory;
+  
+  public void setParticipantService(ParticipantService participantService) {
+    this.participantService = participantService;
+  }
 
   public void setThreadFactory(ThreadFactory threadFactory) {
     this.threadFactory = threadFactory;
@@ -173,6 +180,9 @@ public class OnyxDataExport {
       DatasourceFactory factory = getDatasourceFactory(pkProvider, destination, tables, outputFile);
 
       Datasource outputDatasource = factory.create();
+      if(destination.getOptions().getUseEnrollmentId()) {
+        outputDatasource = new EnrollmentIdDatasource(participantService, outputDatasource);
+      }
       try {
         outputDatasource.initialise();
       } catch(DatasourceParsingException e) {

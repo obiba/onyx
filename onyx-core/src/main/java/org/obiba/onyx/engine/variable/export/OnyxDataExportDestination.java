@@ -129,6 +129,8 @@ public class OnyxDataExportDestination {
 
     private Format format;
 
+    private boolean useEnrollmentId;
+
     private String opalUri;
 
     private String opalDatasource;
@@ -144,6 +146,10 @@ public class OnyxDataExportDestination {
     private String quote;
 
     private EncryptionOptions encrypt;
+
+    public boolean getUseEnrollmentId() {
+      return useEnrollmentId;
+    }
 
     public Format getFormat() {
       return format;
