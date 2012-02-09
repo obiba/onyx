@@ -26,26 +26,13 @@ import com.google.common.collect.ImmutableSet;
  * Factory for creating VariableValueSources for all Consent variables.
  */
 public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFactory<Consent> {
-  //
-  // Constants
-  //
-
-  public static final String PARTICIPANT = MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE;
-
-  //
-  // Instance Variables
-  //
 
   private String stageName;
 
   private Map<String, String> variableToFieldMap;
 
-  //
-  // Constructors
-  //
-
   public ConsentVariableValueSourceFactory(String stageName) {
-    super(PARTICIPANT, Consent.class);
+    super(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, Consent.class);
     this.stageName = stageName;
   }
 
@@ -58,7 +45,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
     Set<VariableValueSource> sources = null;
 
     ImmutableSet.Builder<Variable.BuilderVisitor> visitorSetBuilder = new ImmutableSet.Builder<Variable.BuilderVisitor>();
-    visitorSetBuilder.add(new StageAttributeVisitor(stageName));
+    visitorSetBuilder.add(new StageAttributeVisitor(stageName), new PdfMimeTypeAttributeVisitor());
     Set<Variable.BuilderVisitor> visitors = visitorSetBuilder.build();
 
     // Create the non-PDF form sources.
@@ -90,7 +77,7 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
       propertyNameToVariableNameMapBuilder.put(propertyName, entry.getKey());
     }
 
-    BeanVariableValueSourceFactory<Consent> factory = new BeanVariableValueSourceFactory<Consent>(PARTICIPANT, Consent.class);
+    BeanVariableValueSourceFactory<Consent> factory = new BeanVariableValueSourceFactory<Consent>(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, Consent.class);
     factory.setProperties(propertySetBuilder.build());
     factory.setPropertyNameToVariableName(propertyNameToVariableNameMapBuilder.build());
     factory.setMappedPropertyType(new ImmutableMap.Builder<String, Class<?>>().put("pdfFormFields", String.class).build());
@@ -98,4 +85,13 @@ public class ConsentVariableValueSourceFactory extends BeanVariableValueSourceFa
 
     return factory.createSources();
   }
+
+  private static final class PdfMimeTypeAttributeVisitor implements Variable.BuilderVisitor {
+
+    @Override
+    public void visit(Variable.Builder builder) {
+      if(builder.isName("pdfForm")) builder.mimeType("application/pdf");
+    }
+  }
+
 }
