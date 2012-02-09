@@ -52,7 +52,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
   public static final String ONYX_VERSION = "onyxVersion";
 
-  public static final String PARTICIPANT = "Participant";
+  public static final String PARTICIPANT = MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE;
 
   public static final String INTERVIEW = "Interview";
 
@@ -114,7 +114,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     this.version = version;
   }
 
-  public void setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
+  public void
+      setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
     this.participantCaptureAndExportStrategy = participantCaptureAndExportStrategy;
   }
 

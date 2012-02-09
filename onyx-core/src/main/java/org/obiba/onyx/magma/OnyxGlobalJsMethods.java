@@ -102,7 +102,7 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
   }
 
   private static Scriptable getLastExportDate(Scriptable thisObj) {
-    List<ExportLog> logs = exportLogService.getExportLogs("Participant", null, false);
+    List<ExportLog> logs = exportLogService.getExportLogs(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, null, false);
     if(logs.size() > 0) {
       return new ScriptableValue(thisObj, DateTimeType.get().valueOf(logs.get(0).getExportDate()));
     } else {

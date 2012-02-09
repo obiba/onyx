@@ -17,6 +17,7 @@ import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -38,7 +39,7 @@ public class ParticipantCaptureAndExportStrategy implements CaptureAndExportStra
   //
 
   public String getEntityType() {
-    return "Participant";
+    return MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE;
   }
 
   public Date getCaptureStartDate(String entityIdentifier) {
@@ -57,7 +58,7 @@ public class ParticipantCaptureAndExportStrategy implements CaptureAndExportStra
 
   public boolean isExported(String entityIdentifier, String destinationName) {
     if(entityIdentifier != null) {
-      ExportLog exportLog = (destinationName != null) ? exportLogService.getLastExportLog("Participant", entityIdentifier, destinationName) : exportLogService.getLastExportLog("Participant", entityIdentifier);
+      ExportLog exportLog = (destinationName != null) ? exportLogService.getLastExportLog(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, entityIdentifier, destinationName) : exportLogService.getLastExportLog(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, entityIdentifier);
       return exportLog != null;
     }
     return false;

@@ -19,6 +19,7 @@ import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 
 /**
  * Model to obtain details of the Participants that are scheduled to be purged. The load method obtains all the
@@ -53,7 +54,7 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<List<Participant>>
     exportedInterviews = new ArrayList<Participant>();
     unexportedInterviews = new ArrayList<Participant>();
     for(Participant participant : participantsToPurge) {
-      List<ExportLog> exportLogs = exportLogService.getExportLogs("Participant", participant.getBarcode(), null, true);
+      List<ExportLog> exportLogs = exportLogService.getExportLogs(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, participant.getBarcode(), null, true);
       if(exportLogs == null || exportLogs.isEmpty()) {
         unexportedInterviews.add(participant);
       } else {

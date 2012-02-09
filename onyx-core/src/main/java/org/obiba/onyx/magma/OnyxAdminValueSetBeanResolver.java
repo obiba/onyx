@@ -70,7 +70,7 @@ public class OnyxAdminValueSetBeanResolver extends AbstractOnyxBeanResolver {
       return interviewService.getStageInstances(participant.getInterview());
     }
     if(type.equals(ExportLog.class)) {
-      return exportLogService.getExportLogs("Participant", valueSet.getVariableEntity().getIdentifier(), null, true);
+      return exportLogService.getExportLogs(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, valueSet.getVariableEntity().getIdentifier(), null, true);
     }
     return null;
   }
