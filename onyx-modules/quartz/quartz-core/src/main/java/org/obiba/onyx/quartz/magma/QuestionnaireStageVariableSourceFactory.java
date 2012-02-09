@@ -35,9 +35,11 @@ import org.obiba.magma.js.JavascriptVariableBuilder;
 import org.obiba.magma.js.JavascriptVariableValueSource;
 import org.obiba.magma.support.VariableUnitBuilderVisitor;
 import org.obiba.magma.type.BooleanType;
+import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.magma.DataTypes;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
@@ -62,6 +64,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.SimplifiedUIPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.springframework.context.NoSuchMessageException;
@@ -75,6 +78,8 @@ import com.google.common.collect.Iterables;
  * Builds the {@code VariableValueSource} instances for a specific {@code Questionnaire}
  */
 public class QuestionnaireStageVariableSourceFactory implements VariableValueSourceFactory {
+
+  private static final String PARTICIPANT = MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE;
 
   private QuestionnaireBundle bundle;
 
@@ -174,7 +179,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   }
 
   protected void buildQuestionnaireRun() {
-    BeanVariableValueSourceFactory<QuestionnaireParticipant> factory = new BeanVariableValueSourceFactory<QuestionnaireParticipant>("Participant", QuestionnaireParticipant.class);
+    BeanVariableValueSourceFactory<QuestionnaireParticipant> factory = new BeanVariableValueSourceFactory<QuestionnaireParticipant>(PARTICIPANT, QuestionnaireParticipant.class);
     factory.setPrefix("QuestionnaireRun");
     factory.setProperties(ImmutableSet.of("questionnaireVersion", "locale", "timeStart", "timeEnd", "user.login"));
     factory.setPropertyNameToVariableName(ImmutableMap.of("questionnaireVersion", "version", "user.login", "user"));
@@ -183,7 +188,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   }
 
   protected void buildQuestionnaireMetric() {
-    BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm> factory = new BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm>("Participant", QuestionnairePageMetricAlgorithm.class);
+    BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm> factory = new BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm>(PARTICIPANT, QuestionnairePageMetricAlgorithm.class);
     factory.setPrefix("QuestionnaireMetric");
     factory.setProperties(ImmutableSet.of("section", "page", "duration", "questionCount", "missingCount"));
     factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new VariableUnitBuilderVisitor(ImmutableMap.of("duration", "s"))));
@@ -193,7 +198,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   protected void buildQuestionnaireComment() {
     if(questionnaire.isCommentable()) {
-      BeanVariableValueSourceFactory<QuestionnaireComment> factory = new BeanVariableValueSourceFactory<QuestionnaireComment>("Participant", QuestionnaireComment.class);
+      BeanVariableValueSourceFactory<QuestionnaireComment> factory = new BeanVariableValueSourceFactory<QuestionnaireComment>(PARTICIPANT, QuestionnaireComment.class);
       factory.setPrefix("QuestionnaireComment");
       factory.setProperties(ImmutableSet.of("variable", "comment"));
       factory.setPropertyNameToVariableName(ImmutableMap.of("variable", "question"));
@@ -294,13 +299,13 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     private void buildParentPlaceholderVariable() {
-      Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), "Participant");
+      Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), PARTICIPANT);
       questionVariable.accept(new QuestionAttributesBuilderVisitor(question, true, false)).accept(new QuestionBuilderVisitor(question));
       vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
     }
 
     private void buildCategoricalVariable() {
-      Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), TextType.get(), "Participant");
+      Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), TextType.get(), PARTICIPANT);
       if(question.isMultiple()) {
         // Build a repeatable variable for the list of CategoryAnswers
         questionVariable.repeatable();
@@ -330,7 +335,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     private void buildCategoryVariable(final QuestionCategory questionCategory) {
       // Build a derived variable from the Question variable using javascript
       // The script test whether the Question variable has this category amongst its answers
-      Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), "Participant").extend(JavascriptVariableBuilder.class).setScript(String.format("$('%s').isNull().value() ? null : $('%s').any('%s')", variableName(question), variableName(question), questionCategory.getCategory().getName()));
+      Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript(String.format("$('%s').isNull().value() ? null : $('%s').any('%s')", variableName(question), variableName(question), questionCategory.getCategory().getName()));
       categoryVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
       vvsSetBuilder.add(new JavascriptVariableValueSource(categoryVariable.build()));
 
@@ -346,7 +351,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     protected void buildOpenAnswerVariable(final QuestionCategory questionCategory, final OpenAnswerDefinition oad) {
-      Variable.Builder openAnswerVariable = Variable.Builder.newVariable(variableName(question, questionCategory, oad), DataTypes.valueTypeFor(oad.getDataType()), "Participant");
+      // Special case for OpenAnswers capturing DataType.DATE:
+      // Onyx will only capture the date part (no time). Thus, the valid ValueType is DateType instead of DateTimeType.
+      ValueType type = oad.getDataType() == DataType.DATE ? DateType.get() : DataTypes.valueTypeFor(oad.getDataType());
+
+      Variable.Builder openAnswerVariable = Variable.Builder.newVariable(variableName(question, questionCategory, oad), type, PARTICIPANT);
       openAnswerVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
       BeanPropertyVariableValueSource valueSource = new BeanPropertyVariableValueSource(openAnswerVariable.build(), OpenAnswer.class, "data.value");
       vvsSetBuilder.add(valueSource);
