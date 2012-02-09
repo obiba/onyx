@@ -5,6 +5,7 @@
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
     <property name="exportDestinations" ref="onyxDataExportDestinations" />
     <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
+    <property name="participantService" ref="participantService" />
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
         <property name="targetBeanName" value="userSessionService" />
