@@ -28,6 +28,9 @@
   <!-- Import Participant reader context -->
   <import resource="participant-reader.xml" />
 
+  <!-- Import an additional context, empty by default -->
+  <import resource="custom.xml" />
+
   <!--
     A static stage ordering strategy. Override this by implementing Comparable<Stage> and defining the stageOrderingStrategy bean to point to your
     implementation
