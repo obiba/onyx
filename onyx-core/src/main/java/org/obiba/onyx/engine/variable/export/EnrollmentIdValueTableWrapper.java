@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
-import org.obiba.magma.NoSuchVariableException;
+import org.obiba.magma.NoSuchValueSetException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.support.VariableEntityBean;
@@ -58,12 +58,12 @@ class EnrollmentIdValueTableWrapper extends AbstractTransformingValueTableWrappe
 
     @Override
     public VariableEntity apply(VariableEntity input) {
-      return new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, fromBarcode(input).getEnrollmentId());
+      return new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, fromEnrollmentId(input).getBarcode());
     }
 
     @Override
     public VariableEntity unapply(VariableEntity from) {
-      return new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, fromEnrollmentId(from).getBarcode());
+      return new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, fromBarcode(from).getEnrollmentId());
     }
 
     private Participant fromBarcode(VariableEntity input) {
@@ -81,7 +81,7 @@ class EnrollmentIdValueTableWrapper extends AbstractTransformingValueTableWrappe
     private Participant fromTemplate(Participant template) {
       Participant one = participantService.getParticipant(template);
       if(one == null) {
-        throw new NoSuchVariableException("");
+        throw new NoSuchValueSetException("", "");
       }
       return one;
     }

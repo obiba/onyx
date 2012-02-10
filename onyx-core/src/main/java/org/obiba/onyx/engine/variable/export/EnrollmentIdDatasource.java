@@ -36,7 +36,7 @@ public class EnrollmentIdDatasource implements Datasource {
 
   private final Datasource datasource;
 
-  protected EnrollmentIdDatasource(ParticipantService participantService, Datasource datasource) {
+  public EnrollmentIdDatasource(ParticipantService participantService, Datasource datasource) {
     if(participantService == null) throw new IllegalArgumentException("participantService cannot be null");
     if(datasource == null) throw new IllegalArgumentException("datasource cannot be null");
 
@@ -194,7 +194,7 @@ public class EnrollmentIdDatasource implements Datasource {
 
     @Override
     public ValueSetWriter writeValueSet(final VariableEntity entity) {
-      return wrappedWriter.writeValueSet(function.apply(entity));
+      return wrappedWriter.writeValueSet(function.unapply(entity));
     }
   }
 
