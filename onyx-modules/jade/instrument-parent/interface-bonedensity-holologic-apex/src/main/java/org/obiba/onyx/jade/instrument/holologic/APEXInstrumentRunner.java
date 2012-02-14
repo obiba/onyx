@@ -272,6 +272,8 @@ public class APEXInstrumentRunner implements InstrumentRunner {
           apexReceiver.setVariableStatusNotOK();
           apexReceiver.setDicomStatusNotReady();
         }
+        apexReceiver.validate();
+        apexReceiver.repaint();
       }
     });
     apexReceiver.setVisible(true);
