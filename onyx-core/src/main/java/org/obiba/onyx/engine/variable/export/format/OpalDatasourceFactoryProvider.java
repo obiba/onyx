@@ -11,7 +11,6 @@ package org.obiba.onyx.engine.variable.export.format;
 
 import java.io.File;
 import java.net.Socket;
-import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +42,16 @@ public class OpalDatasourceFactoryProvider implements DatasourceFactoryProvider 
 
   private OnyxKeyStore onyxKeyStore;
 
+  private OpalJavaClient opalJavaClient;
+
+  public void setOnyxKeyStore(OnyxKeyStore onyxKeyStore) {
+    this.onyxKeyStore = onyxKeyStore;
+  }
+
+  public void setOpalJavaClient(OpalJavaClient opalJavaClient) {
+    this.opalJavaClient = opalJavaClient;
+  }
+
   @Override
   public Format getFormat() {
     return Format.OPAL;
@@ -50,18 +59,12 @@ public class OpalDatasourceFactoryProvider implements DatasourceFactoryProvider 
 
   @Override
   public DatasourceFactory getDatasourceFactory(final OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
-
-    try {
-      final OpalJavaClient opalJavaClient = new OpalJavaClient(destination.getOptions().getOpalUri(), destination.getOptions().getUsername(), destination.getOptions().getPassword());
-      return new AbstractDatasourceFactory() {
-        @Override
-        public Datasource internalCreate() {
-          return new RestDatasource(destination.getName(), opalJavaClient, destination.getOptions().getOpalDatasource());
-        }
-      };
-    } catch(URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    return new AbstractDatasourceFactory() {
+      @Override
+      public Datasource internalCreate() {
+        return new RestDatasource(destination.getName(), opalJavaClient, destination.getOptions().getOpalDatasource());
+      }
+    };
 
   }
 

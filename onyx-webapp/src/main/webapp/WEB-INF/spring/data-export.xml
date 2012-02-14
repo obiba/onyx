@@ -5,6 +5,15 @@
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
     <property name="exportDestinations" ref="onyxDataExportDestinations" />
     <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
+    <property name="exportDatasourceProviders">
+      <list>
+        <bean class="org.obiba.onyx.engine.variable.export.format.CsvDatasourceFactoryProvider"/>
+        <bean class="org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider"/>
+        <bean class="org.obiba.onyx.engine.variable.export.format.OpalDatasourceFactoryProvider">
+          <property name="opalJavaClient" ref="opalJavaClient"/>
+        </bean>
+      </list>
+    </property>
     <property name="participantService" ref="participantService" />
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">

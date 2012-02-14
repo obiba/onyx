@@ -39,10 +39,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
-import org.obiba.onyx.engine.variable.export.format.CsvDatasourceFactoryProvider;
 import org.obiba.onyx.engine.variable.export.format.DatasourceFactoryProvider;
-import org.obiba.onyx.engine.variable.export.format.OpalDatasourceFactoryProvider;
-import org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.FileUtil;
 import org.slf4j.Logger;
@@ -51,14 +48,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 public class OnyxDataExport {
 
   private static final Logger log = LoggerFactory.getLogger(OnyxDataExport.class);
 
-  private final List<DatasourceFactoryProvider> exportDatasourceProviders = ImmutableList.of(new CsvDatasourceFactoryProvider(), new XmlDatasourceFactoryProvider(), new OpalDatasourceFactoryProvider());
+  private List<DatasourceFactoryProvider> exportDatasourceProviders;
 
   private ParticipantService participantService;
 
@@ -80,7 +76,11 @@ public class OnyxDataExport {
   private MagmaInstanceProvider magmaInstanceProvider;
 
   private ThreadFactory threadFactory;
-  
+
+  public void setExportDatasourceProviders(List<DatasourceFactoryProvider> exportDatasourceProviders) {
+    this.exportDatasourceProviders = exportDatasourceProviders;
+  }
+
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
   }

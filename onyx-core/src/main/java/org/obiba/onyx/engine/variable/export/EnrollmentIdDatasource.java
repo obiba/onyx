@@ -30,6 +30,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
+/**
+ * Wraps another {@code Datasource} instance that uses the participant's {@code enrollmentId} instead of the
+ * {@code barcode} as the entity identifier. For users of this datasource, the identifier is the {@code barcode} and
+ * uses the {@code enrollmentId} internally. This is only the case for entities of type {@code Participant}, other
+ * entities are not affected.
+ */
 public class EnrollmentIdDatasource implements Datasource {
 
   private final ParticipantService participantService;
