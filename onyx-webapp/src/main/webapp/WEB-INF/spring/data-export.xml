@@ -10,7 +10,7 @@
         <bean class="org.obiba.onyx.engine.variable.export.format.CsvDatasourceFactoryProvider"/>
         <bean class="org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider"/>
         <bean class="org.obiba.onyx.engine.variable.export.format.OpalDatasourceFactoryProvider">
-          <property name="opalJavaClient" ref="opalJavaClient"/>
+          <property name="opalJavaClient" ref="&amp;opalJavaClient"/>
         </bean>
       </list>
     </property>

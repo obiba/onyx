@@ -35,6 +35,7 @@ import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.onyx.crypt.OnyxKeyStore;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
+import org.obiba.onyx.opal.OpalClientFactoryBean;
 import org.obiba.opal.rest.client.magma.OpalJavaClient;
 import org.obiba.opal.rest.client.magma.RestDatasource;
 
@@ -42,14 +43,14 @@ public class OpalDatasourceFactoryProvider implements DatasourceFactoryProvider 
 
   private OnyxKeyStore onyxKeyStore;
 
-  private OpalJavaClient opalJavaClient;
+  private OpalClientFactoryBean opalJavaClientFactory;
 
   public void setOnyxKeyStore(OnyxKeyStore onyxKeyStore) {
     this.onyxKeyStore = onyxKeyStore;
   }
 
-  public void setOpalJavaClient(OpalJavaClient opalJavaClient) {
-    this.opalJavaClient = opalJavaClient;
+  public void setOpalJavaClient(OpalClientFactoryBean opalJavaClientFactory) {
+    this.opalJavaClientFactory = opalJavaClientFactory;
   }
 
   @Override
@@ -58,8 +59,21 @@ public class OpalDatasourceFactoryProvider implements DatasourceFactoryProvider 
   }
 
   @Override
-  public DatasourceFactory getDatasourceFactory(final OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
+  public
+      DatasourceFactory
+      getDatasourceFactory(final OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
     return new AbstractDatasourceFactory() {
+
+      private final OpalJavaClient opalJavaClient;
+
+      {
+        try {
+          opalJavaClient = opalJavaClientFactory.getObject();
+        } catch(Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+
       @Override
       public Datasource internalCreate() {
         return new RestDatasource(destination.getName(), opalJavaClient, destination.getOptions().getOpalDatasource());
