@@ -134,6 +134,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="pdfTemplateEngine" class="org.obiba.onyx.print.impl.DefaultPdfTemplateEngine" scope="session">
     <property name="dateFormat" value="${org.obiba.onyx.dateFormat}" />
     <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
+    <property name="messageSource" ref="messageSource"/>
   </bean>
 
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">

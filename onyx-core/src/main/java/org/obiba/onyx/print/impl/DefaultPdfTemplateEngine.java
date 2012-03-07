@@ -26,6 +26,7 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.type.DateTimeType;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -33,6 +34,8 @@ import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.print.PdfTemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 
 import com.lowagie.text.pdf.AcroFields;
@@ -47,13 +50,18 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
   private MagmaInstanceProvider magmaInstanceProvider;
 
+  private MessageSource messageSource;
+
   public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
     this.magmaInstanceProvider = magmaInstanceProvider;
   }
 
-  public
-      InputStream
-      applyTemplate(Locale locale, Map<String, String> fieldToVariableMap, LocalizedResourceLoader reportTemplateLoader, ActiveInterviewService activeInterviewService) {
+  @Required
+  public void setMessageSource(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
+
+  public InputStream applyTemplate(Locale locale, Map<String, String> fieldToVariableMap, LocalizedResourceLoader reportTemplateLoader, ActiveInterviewService activeInterviewService) {
 
     // Get report template
     Resource resource = reportTemplateLoader.getLocalizedResource(locale);
@@ -77,7 +85,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
       AcroFields form = stamper.getAcroFields();
       Participant participant = activeInterviewService.getParticipant();
 
-      setVariableDataFields(participant, form, fieldToVariableMap);
+      setVariableDataFields(participant, form, fieldToVariableMap, locale);
       setAdditionalDataFields(form);
 
     } catch(Exception ex) {
@@ -111,7 +119,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     }
   }
 
-  private void setVariableDataFields(Participant participant, AcroFields form, Map<String, String> fieldToVariableMap) {
+  private void setVariableDataFields(Participant participant, AcroFields form, Map<String, String> fieldToVariableMap, Locale locale) {
 
     HashMap<String, String> fieldList = form.getFields();
 
@@ -136,7 +144,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
               ValueTable valueTable = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
               VariableValueSource variable = magmaInstanceProvider.resolveVariablePath(variablePath);
               ValueSet valueSet = valueTable.getValueSet(magmaInstanceProvider.newParticipantEntity(participant));
-              String valueString = getValueAsString(variable.getVariable(), variable.getValue(valueSet));
+              String valueString = getValueAsString(variable.getVariable(), variable.getValue(valueSet), locale);
               if(valueString != null && valueString.length() != 0) {
                 form.setField(field.getKey(), valueString);
                 break;
@@ -153,21 +161,23 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     }
   }
 
-  private String getValueAsString(org.obiba.magma.Variable variable, Value value) {
+  private String getValueAsString(org.obiba.magma.Variable variable, Value value, Locale locale) {
     if(value.isNull()) return "";
 
     String valueString = "";
     if(value.isSequence()) {
       for(Value v : value.asSequence().getValues()) {
-        valueString += " " + getValueAsString(variable, v);
+        valueString += " " + getValueAsString(variable, v, locale);
       }
     } else {
+      valueString = value.toString();
+      String unit = variable.getUnit();
       if(value.getValueType() == DateTimeType.get()) {
         valueString = dateFormat.format(value.getValue());
+      } else if(value.getValueType() == TextType.get() && unit == null) {
+        valueString = messageSource.getMessage(valueString, null, valueString, locale);
       } else {
-        valueString = value.toString();
-
-        if(variable != null && variable.getUnit() != null) valueString += " " + variable.getUnit();
+        if(variable != null && unit != null) valueString += " " + unit;
       }
     }
     return valueString;
