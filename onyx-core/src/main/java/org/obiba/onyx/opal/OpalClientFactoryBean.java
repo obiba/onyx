@@ -27,10 +27,11 @@ public class OpalClientFactoryBean implements FactoryBean<OpalJavaClient> {
   public OpalJavaClient getObject() throws Exception {
     if(url == null || url.isEmpty()) throw new IllegalStateException("Opal url cannot be empty.");
 
+    String opalUrl = url;
     if(url.endsWith("/ws") == false || url.endsWith("/ws/") == false) {
-      url = url + "/ws";
+      opalUrl = url + "/ws";
     }
-    return new OpalJavaClient(url, username, password);
+    return new OpalJavaClient(opalUrl, username, password);
   }
 
   @Override
