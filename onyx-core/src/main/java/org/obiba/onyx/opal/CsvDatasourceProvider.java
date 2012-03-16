@@ -42,6 +42,10 @@ public class CsvDatasourceProvider implements InitializingBean {
     this.datasourceName = datasourceName;
   }
 
+  public void setTableName(String tableName) {
+    this.tableName = tableName;
+  }
+
   @Override
   public void afterPropertiesSet() throws Exception {
     if(datasourceName != null && datasourceName.isEmpty() == false) {
