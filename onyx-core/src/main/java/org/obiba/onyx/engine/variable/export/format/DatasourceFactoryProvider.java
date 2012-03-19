@@ -15,11 +15,10 @@ import org.obiba.magma.DatasourceFactory;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
 
 public interface DatasourceFactoryProvider {
 
-  public Format getFormat();
+  public String getFormat();
 
   public DatasourceFactory getDatasourceFactory(OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables);
 

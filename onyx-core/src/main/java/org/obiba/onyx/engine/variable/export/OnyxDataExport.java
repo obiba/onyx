@@ -38,8 +38,8 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
 import org.obiba.onyx.engine.variable.export.format.DatasourceFactoryProvider;
+import org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.FileUtil;
 import org.slf4j.Logger;
@@ -223,14 +223,14 @@ public class OnyxDataExport {
   private DatasourceFactory getDatasourceFactory(KeyProvider pkProvider, final OnyxDataExportDestination destination, Iterable<ValueTable> tables, File outputFile) {
 
     // Default export format
-    Format format = Format.XML;
+    String format = XmlDatasourceFactoryProvider.FORMAT;
 
     if(destination.getOptions() != null && destination.getOptions().getFormat() != null) {
       format = destination.getOptions().getFormat();
     }
 
     for(DatasourceFactoryProvider provider : exportDatasourceProviders) {
-      if(provider.getFormat() == format) {
+      if(provider.getFormat().equalsIgnoreCase(format)) {
         return provider.getDatasourceFactory(destination, outputFile, pkProvider, tables);
       }
     }

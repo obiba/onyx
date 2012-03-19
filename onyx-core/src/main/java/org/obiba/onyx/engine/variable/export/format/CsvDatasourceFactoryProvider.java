@@ -21,7 +21,6 @@ import org.obiba.magma.datasource.csv.CsvDatasource;
 import org.obiba.magma.datasource.csv.support.CsvDatasourceFactory;
 import org.obiba.magma.datasource.csv.support.CsvUtil;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Options;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -32,14 +31,12 @@ import au.com.bytecode.opencsv.CSVWriter;
 public class CsvDatasourceFactoryProvider implements DatasourceFactoryProvider {
 
   @Override
-  public Format getFormat() {
-    return Format.CSV;
+  public String getFormat() {
+    return "CSV";
   }
 
   @Override
-  public
-      DatasourceFactory
-      getDatasourceFactory(OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
+  public DatasourceFactory getDatasourceFactory(OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
     CsvDatasourceFactory factory = new CsvDatasourceFactory();
     factory.setName(destination.getName());
 

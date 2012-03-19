@@ -34,7 +34,6 @@ import org.obiba.magma.ValueTable;
 import org.obiba.magma.crypt.KeyProvider;
 import org.obiba.onyx.crypt.OnyxKeyStore;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
 import org.obiba.onyx.opal.OpalClientFactoryBean;
 import org.obiba.opal.rest.client.magma.OpalJavaClient;
 import org.obiba.opal.rest.client.magma.RestDatasource;
@@ -54,8 +53,8 @@ public class OpalDatasourceFactoryProvider implements DatasourceFactoryProvider 
   }
 
   @Override
-  public Format getFormat() {
-    return Format.OPAL;
+  public String getFormat() {
+    return "OPAL";
   }
 
   @Override

@@ -22,6 +22,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
 import org.obiba.magma.filter.CompositeFilterChain;
 import org.obiba.magma.filter.FilterChain;
+import org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
@@ -110,7 +111,7 @@ public class OnyxDataExportDestination {
 
   public File createOutputFile(File outputRootDirectory) {
     String filename = getName() + "-" + getCurrentDateTimeString();
-    if(options == null || options.getFormat() == null || options.getFormat() == Format.XML) {
+    if(options == null || options.getFormat() == null || options.getFormat() == XmlDatasourceFactoryProvider.FORMAT) {
       filename = filename + ".zip";
     }
     return new File(outputRootDirectory, filename);
@@ -121,13 +122,9 @@ public class OnyxDataExportDestination {
     return df.format(new Date());
   }
 
-  public enum Format {
-    CSV, XML, OPAL
-  }
-
   public static class Options {
 
-    private Format format;
+    private String format;
 
     private boolean useEnrollmentId;
 
@@ -145,11 +142,11 @@ public class OnyxDataExportDestination {
       return useEnrollmentId;
     }
 
-    public Format getFormat() {
+    public String getFormat() {
       return format;
     }
 
-    public void setFormat(Format format) {
+    public void setFormat(String format) {
       this.format = format;
     }
 

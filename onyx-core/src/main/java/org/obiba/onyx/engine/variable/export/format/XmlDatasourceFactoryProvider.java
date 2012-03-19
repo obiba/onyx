@@ -19,19 +19,18 @@ import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionSt
 import org.obiba.magma.datasource.fs.support.FsDatasourceFactory;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.EncryptionOptions;
-import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Format;
 
 public class XmlDatasourceFactoryProvider implements DatasourceFactoryProvider {
 
+  public static final String FORMAT = "XML";
+
   @Override
-  public Format getFormat() {
-    return Format.XML;
+  public String getFormat() {
+    return FORMAT;
   }
 
   @Override
-  public
-      DatasourceFactory
-      getDatasourceFactory(OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
+  public DatasourceFactory getDatasourceFactory(OnyxDataExportDestination destination, File outputDir, KeyProvider provider, Iterable<ValueTable> tables) {
 
     FsDatasourceFactory factory = new FsDatasourceFactory();
     factory.setName(destination.getName());
