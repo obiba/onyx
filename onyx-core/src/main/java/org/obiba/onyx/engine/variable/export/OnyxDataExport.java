@@ -180,7 +180,7 @@ public class OnyxDataExport {
       DatasourceFactory factory = getDatasourceFactory(pkProvider, destination, tables, outputFile);
 
       Datasource outputDatasource = factory.create();
-      if(destination.getOptions().getUseEnrollmentId()) {
+      if(destination.getOptions() != null && destination.getOptions().getUseEnrollmentId()) {
         outputDatasource = new EnrollmentIdDatasource(participantService, outputDatasource);
       }
       try {
