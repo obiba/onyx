@@ -134,36 +134,33 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentType instrumentType = getInstrumentType();
 
-    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
-      if(parameter instanceof InstrumentOutputParameter) {
-        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
+    for(InstrumentOutputParameter outputParameter : instrumentType.getInstrumentParameters(InstrumentOutputParameter.class)) {
 
-        // Don't include parameters with a non-MANUAL capture method.
-        if(!outputParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+      // Don't include parameters with a non-MANUAL capture method.
+      if(!outputParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+        continue;
+      }
+
+      if(!instrumentType.isRepeatable(outputParameter)) {
+        InstrumentRunValue runValue = getInstrumentRunValue(outputParameter, false);
+
+        // Don't include parameters that haven't been assigned a value.
+        if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
           continue;
         }
 
-        if(!instrumentType.isRepeatable(outputParameter)) {
-          InstrumentRunValue runValue = getInstrumentRunValue(outputParameter, false);
-
-          // Don't include parameters that haven't been assigned a value.
-          if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
+        for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
+          // Skip non-warning checks.
+          if(!check.getType().equals(IntegrityCheckType.WARNING)) {
             continue;
           }
 
-          for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
-            // Skip non-warning checks.
-            if(!check.getType().equals(IntegrityCheckType.WARNING)) {
-              continue;
-            }
-
-            if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
-              paramsWithWarnings.add(outputParameter);
-            }
+          if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
+            paramsWithWarnings.add(outputParameter);
           }
         }
-        // TODO check repeated measures individually
       }
+      // TODO check repeated measures individually
     }
 
     return paramsWithWarnings;
@@ -358,6 +355,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     }
     getPersistenceManager().save(measure);
+    // The relationship is driven by Measure.instrumentRun. This should make the InstrumentRun instance reflect the change
+    getPersistenceManager().refresh(instrumentRun);
 
     return measure;
 

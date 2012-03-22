@@ -35,6 +35,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.instrument.validation.DeviationCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsParameterCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsValueCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.ParameterSpreadCheck;
@@ -167,6 +168,7 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ApplicationContex
     xstream.alias("equalsParameterCheck", EqualsParameterCheck.class);
     xstream.alias("rangeCheck", RangeCheck.class);
     xstream.alias("parameterSpreadCheck", ParameterSpreadCheck.class);
+    xstream.alias("deviationCheck", DeviationCheck.class);
 
     xstream.alias("data", Data.class);
     xstream.registerConverter(new XStreamDataConverter());
