@@ -129,7 +129,8 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
     return (Question) getDefaultModelObject();
   }
 
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  @Override
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     updateSelections(target);
   }

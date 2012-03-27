@@ -171,8 +171,9 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, final IModel questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, final IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     // repaint the panel
     target.addComponent(this);
 

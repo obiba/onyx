@@ -78,7 +78,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(selectionsModel, questionCategoryModel);
 
     if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
-      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
+      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionModel.getObject(), questionCategory);
       if(previousAnswer != null) selectionModel.select();
     }
 
@@ -151,7 +151,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
   }
 
   @Override
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     if(!getSelectionModel().isSelected()) {
       // set checkbox as selected
       getSelectionModel().select();

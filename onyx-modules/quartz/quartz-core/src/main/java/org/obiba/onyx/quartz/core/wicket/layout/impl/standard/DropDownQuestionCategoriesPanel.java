@@ -228,9 +228,8 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     this.selectedQuestionCategoryModel = selectedQuestionCategoryModel;
   }
 
-  public
-      void
-      onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  @Override
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection()={}", selectedQuestionCategoryModel != null ? selectedQuestionCategoryModel.getObject() : null);
 
     if(((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {

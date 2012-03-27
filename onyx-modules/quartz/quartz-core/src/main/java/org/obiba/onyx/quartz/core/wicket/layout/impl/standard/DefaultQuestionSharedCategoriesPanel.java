@@ -158,7 +158,8 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
     return checkGroupView;
   }
 
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  @Override
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     target.addComponent(array);
 
     IQuestionCategorySelectionListener parentListener = findParent(IQuestionCategorySelectionListener.class);

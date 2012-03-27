@@ -120,7 +120,8 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     return (Question) getDefaultModelObject();
   }
 
-  public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  @Override
+  public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     // optimize by updating only the selection state that have changed
     visitChildren(new Component.IVisitor() {
