@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -59,7 +60,13 @@ public class ArrayExample extends Panel {
 
     });
 
-    add(new AbstractQuestionArray("array", new Model(), columns, new RowProvider(3)) {
+    List<Row> rows = new ArrayList<Row>();
+    for(int i = 0; i < 3; i++) {
+      String index = Integer.toString(i + 1);
+      rows.add(new Row(index, "label" + index, "description" + index));
+    }
+
+    add(new AbstractQuestionArray("array", new Model(), columns, new ListDataProvider<Row>(rows)) {
 
       public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
         return new RadioRows(id, columns, rows);

@@ -55,7 +55,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
    * @param id
    * @param questionCategoryModel
    */
-  public QuestionCategoryRadioPanel(String id, IModel questionCategoryModel, RadioGroup radioGroup) {
+  public QuestionCategoryRadioPanel(String id, IModel<QuestionCategory> questionCategoryModel, RadioGroup radioGroup) {
     this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, radioGroup, true);
   }
 
@@ -148,7 +148,9 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   }
 
   @Override
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
+  public
+      void
+      onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection={}:{}", questionModel.getObject(), questionCategoryModel.getObject());
 
     if(!radioGroup.getModel().equals(questionCategoryModel)) {

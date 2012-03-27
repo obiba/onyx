@@ -55,7 +55,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.singledocument.SingleDocumentQuestionnairePage;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.editor.behavior.AjaxDownload;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireConverter;
@@ -235,7 +234,9 @@ public class QuestionnaireListPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
+        public
+            void
+            populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           final Questionnaire questionnaire = rowModel.getObject();
           final String name = questionnaire.getName();
           cellItem.add(new AjaxLazyLoadPanel(componentId) {
@@ -278,7 +279,9 @@ public class QuestionnaireListPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
+        public
+            void
+            populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           StringBuilder localeList = new StringBuilder();
           Locale sessionLocale = Session.get().getLocale();
           for(Locale locale : rowModel.getObject().getLocales()) {
@@ -293,7 +296,9 @@ public class QuestionnaireListPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
+        public
+            void
+            populateItem(Item<ICellPopulator<Questionnaire>> cellItem, String componentId, IModel<Questionnaire> rowModel) {
           cellItem.add(new LinkFragment(componentId, rowModel));
         }
       });
@@ -451,7 +456,7 @@ public class QuestionnaireListPanel extends Panel {
               activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
               activeQuestionnaireAdministrationService.setDefaultLanguage(language);
               activeQuestionnaireAdministrationService.setQuestionnaireDevelopmentMode(true);
-              setResponsePage(new SingleDocumentQuestionnairePage(new QuestionnaireModel<Questionnaire>(questionnaire)));
+              setResponsePage(new SingleDocumentQuestionnairePage(rowModel));
             }
           };
           item.add(link);

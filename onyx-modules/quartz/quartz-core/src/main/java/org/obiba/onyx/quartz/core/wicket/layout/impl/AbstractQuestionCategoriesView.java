@@ -18,6 +18,7 @@ import org.apache.wicket.markup.repeater.OddEvenItem;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @see IDataListPermutator
  * @see QuestionCategoriesProvider
  */
-public abstract class AbstractQuestionCategoriesView extends GridView {
+public abstract class AbstractQuestionCategoriesView extends GridView<QuestionCategory> {
 
   /**
    * 
@@ -43,7 +44,7 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
   /**
    * A map for creating row items at a given index only once.
    */
-  private Map<Integer, Item> rowIndexToItem = new HashMap<Integer, Item>();
+  private Map<Integer, Item<QuestionCategory>> rowIndexToItem = new HashMap<Integer, Item<QuestionCategory>>();
 
   /**
    * Constructor using a {@link QuestionCategoriesProvider} as a data provider for the grid.
@@ -52,7 +53,7 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
    * @param filter filters the categories list
    * @param permutator permute the categories of the list so that it can be presented in a grid
    */
-  public AbstractQuestionCategoriesView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+  public AbstractQuestionCategoriesView(String id, IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel<QuestionCategory>> permutator) {
     super(id, new QuestionCategoriesProvider(questionModel, filter, permutator));
 
     QuestionCategoriesProvider provider = ((QuestionCategoriesProvider) getDataProvider());
@@ -65,7 +66,7 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
   }
 
   @Override
-  protected void populateEmptyItem(Item item) {
+  protected void populateEmptyItem(Item<QuestionCategory> item) {
     item.add(new EmptyPanel("input").setVisible(false));
   }
 
@@ -73,9 +74,9 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
    * Create a new row or reuse a previously instanciated one at the same index.
    */
   @Override
-  protected Item newRowItem(String id, int index) {
+  protected Item<QuestionCategory> newRowItem(String id, int index) {
     // see QUA-79
-    Item rowItem = rowIndexToItem.get(index);
+    Item<QuestionCategory> rowItem = rowIndexToItem.get(index);
     if(rowItem == null) {
       rowItem = new OddEvenItem(id, index, null);
       rowIndexToItem.put(index, rowItem);

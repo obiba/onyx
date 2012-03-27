@@ -14,24 +14,26 @@ import java.util.List;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 
 /**
  * Data provider build on a templated list, with filtering and permutation facilities.
  * 
  * @param <T>
  */
-public abstract class AbstractDataListProvider<T extends Serializable> implements IDataProvider {
+public abstract class AbstractDataListProvider<T extends Serializable> implements IDataProvider<T> {
 
   private static final long serialVersionUID = 1L;
 
-  protected IDataListPermutator<T> permutator;
+  protected IDataListPermutator<IModel<T>> permutator;
 
   public AbstractDataListProvider() {
     this(null);
   }
 
-  public AbstractDataListProvider(IDataListPermutator<T> permutator) {
+  public AbstractDataListProvider(IDataListPermutator<IModel<T>> permutator) {
     super();
     this.permutator = permutator;
   }
@@ -40,19 +42,23 @@ public abstract class AbstractDataListProvider<T extends Serializable> implement
    * To be overridden if list is to be permutated.
    * @return
    */
-  public IDataListPermutator<T> getDataListPermutator() {
+  public IDataListPermutator<IModel<T>> getDataListPermutator() {
     return permutator;
   }
 
-  public abstract List<T> getDataList();
+  public abstract List<IModel<T>> getDataList();
 
   public Iterator<T> iterator(int first, int count) {
-    return getDataList().subList(first, first + count).iterator();
+    return Iterables.transform(getDataList().subList(first, first + count), new Function<IModel<T>, T>() {
+
+      @Override
+      public T apply(IModel<T> input) {
+        return input != null ? input.getObject() : null;
+      }
+    }).iterator();
   }
 
-  public IModel model(Object object) {
-    return new Model((Serializable) object);
-  }
+  public abstract IModel<T> model(T object);
 
   public int size() {
     return getDataList().size();

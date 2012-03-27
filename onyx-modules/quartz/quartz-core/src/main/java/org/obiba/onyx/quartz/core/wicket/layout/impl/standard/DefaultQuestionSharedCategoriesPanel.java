@@ -79,9 +79,9 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
 
     // following columns: the question's categories
     Question parentQuestion = (Question) getDefaultModelObject();
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getDefaultModel());
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(questionModel);
     if(!parentQuestion.isMultiple()) {
-      for(IModel questionCategoryModel : provider.getDataList()) {
+      for(IModel<QuestionCategory> questionCategoryModel : provider.getDataList()) {
         columns.add(new QuestionCategoryRadioColumn(questionCategoryModel, new PropertyModel(this, "radioGroupView.groups")));
       }
 
@@ -94,7 +94,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQues
 
       });
     } else {
-      for(IModel questionCategoryModel : provider.getDataList()) {
+      for(IModel<QuestionCategory> questionCategoryModel : provider.getDataList()) {
         QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
         if(!questionCategory.isEscape()) {
           columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")));

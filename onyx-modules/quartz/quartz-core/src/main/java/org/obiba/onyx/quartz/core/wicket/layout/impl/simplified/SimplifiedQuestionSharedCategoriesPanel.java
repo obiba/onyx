@@ -79,7 +79,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
     });
 
     // following columns: the question's categories
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getDefaultModel());
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getQuestionModel());
     for(IModel questionCategoryModel : provider.getDataList()) {
       columns.add(new AbstractQuestionCategoryColumn(questionCategoryModel) {
 
@@ -121,8 +121,9 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
   }
 
-  private IModel getQuestionModel() {
-    return getDefaultModel();
+  @SuppressWarnings("unchecked")
+  private IModel<Question> getQuestionModel() {
+    return (IModel<Question>) getDefaultModel();
   }
 
   private Question getQuestion() {
