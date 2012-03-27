@@ -1,15 +1,13 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswer;
-
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -39,6 +37,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -51,17 +50,15 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
  *
  */
 @SuppressWarnings("serial")
 public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
 
-  public static final String AUDIO_TYPE = "audio";
-
-  public static final String SAMPLING_RATE_KEY = "audio.samplingRate";
-
-  public static final String MAX_DURATION_KEY = "audio.maxDuration";
+//  private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   private static final NumberFormat MEGABYTE_FORMATTER = new DecimalFormat("#0.00");
 
@@ -79,7 +76,8 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
 
   private WebMarkupContainer resultingSizeContainer;
 
-  public AudioOpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
+  public AudioOpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel,
+      final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel) {
     super(id, model);
 
     final Question question = questionModel.getObject();
@@ -98,11 +96,13 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
           boolean alreadyContains = false;
           if(category != null) {
             Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
-            alreadyContains = (openAnswerDefinitionsByName.containsKey(validatable.getValue()) && openAnswerDefinitionsByName.get(validatable.getValue()) != openAnswer);
+            alreadyContains = (openAnswerDefinitionsByName.containsKey(
+                validatable.getValue()) && openAnswerDefinitionsByName.get(validatable.getValue()) != openAnswer);
           }
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           questionnaireModel.getObject().setQuestionnaireCache(null);
-          OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder.findOpenAnswerDefinition(validatable.getValue());
+          OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder
+              .findOpenAnswerDefinition(validatable.getValue());
           if(alreadyContains || findOpenAnswerDefinition != null && findOpenAnswerDefinition != openAnswer) {
             error(validatable, "OpenAnswerAlreadyExists");
           }
@@ -112,7 +112,8 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
     add(name).add(new SimpleFormComponentLabel("nameLabel", name));
     add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
-    variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
+    variable = new TextField<String>("variable",
+        new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
     add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
     add(new HelpTooltipPanel("variableHelp", new ResourceModel("Variable.Tooltip")));
@@ -122,7 +123,7 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
         @Override
         @SuppressWarnings("hiding")
         protected String
-            generateVariableName(Question parentQuestion, Question question, Category category, String name) {
+        generateVariableName(Question parentQuestion, Question question, Category category, String name) {
           if(StringUtils.isBlank(name)) return "";
           if(category != null) {
             return super.generateVariableName(parentQuestion, question, category, name);
@@ -143,12 +144,15 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
     ValueMap uiArgumentsValueMap = openAnswer.getUIArgumentsValueMap();
 
     Rate samplingRateValue = null;
-    if(openAnswer.isAudioAnswer()) {
-      samplingRateValue = Rate.parse(uiArgumentsValueMap.get(SAMPLING_RATE_KEY).toString());
+    if(openAnswer.isAudioAnswer() && uiArgumentsValueMap
+        .containsKey(OpenAnswerDefinition.AUDIO_RECORDING_SAMPLING_RATE_KEY)) {
+      samplingRateValue = Rate
+          .parse(uiArgumentsValueMap.get(OpenAnswerDefinition.AUDIO_RECORDING_SAMPLING_RATE_KEY).toString());
     }
     if(samplingRateValue == null) samplingRateValue = Rate._11025;
 
-    samplingRateDropDown = new DropDownChoice<Rate>("samplingRate", new Model<Rate>(samplingRateValue), Arrays.asList(Rate.values()), new IChoiceRenderer<Rate>() {
+    samplingRateDropDown = new DropDownChoice<Rate>("samplingRate", new Model<Rate>(samplingRateValue),
+        Arrays.asList(Rate.values()), new IChoiceRenderer<Rate>() {
       @Override
       public Object getDisplayValue(Rate rate) {
         return new StringResourceModel("SamplingRate." + rate.toString(), AudioOpenAnswerPanel.this, null).getString();
@@ -175,8 +179,10 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
     add(new HelpTooltipPanel("samplingRateHelp", new ResourceModel("SamplingRate.Tooltip")));
 
     Integer maxDurationValue = 1200;
-    if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(MAX_DURATION_KEY)) {
-      maxDurationValue = Integer.valueOf(uiArgumentsValueMap.get(MAX_DURATION_KEY).toString());
+    if(openAnswer.isAudioAnswer() && uiArgumentsValueMap
+        .containsKey(OpenAnswerDefinition.AUDIO_RECORDING_MAX_DURATION_KEY)) {
+      maxDurationValue = Integer
+          .valueOf(uiArgumentsValueMap.get(OpenAnswerDefinition.AUDIO_RECORDING_MAX_DURATION_KEY).toString());
     }
     maxDurationField = new TextField<Integer>("maxDuration", new Model<Integer>(maxDurationValue));
     maxDurationField.setLabel(new ResourceModel("MaxDuration"));
@@ -206,8 +212,9 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
     String sr = samplingRateDropDown.getValue();
     String md = maxDurationField.getValue();
     if(isNotBlank(sr) && isNotBlank(md)) {
-      double megabytes = Bytes.bytes(Double.valueOf(sr).doubleValue() * 2d * Double.valueOf(md).doubleValue()).megabytes();
-      resultingSizeLabel.setDefaultModel(new StringResourceModel("ResultingSize", AudioOpenAnswerPanel.this, null, new Object[] { MEGABYTE_FORMATTER.format(megabytes) }));
+      double megabytes = Bytes.bytes(Double.valueOf(sr) * 2d * Double.valueOf(md)).megabytes();
+      resultingSizeLabel.setDefaultModel(new StringResourceModel("ResultingSize", AudioOpenAnswerPanel.this, null,
+          new Object[] {MEGABYTE_FORMATTER.format(megabytes)}));
     }
   }
 
@@ -223,14 +230,13 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
 
     // TODO use a specific model instead of use onSave Method
     opa.clearUIArgument();
-    opa.addUIArgument("type", AUDIO_TYPE);
+    opa.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUDIO_RECORDING.getUiArgument());
     if(StringUtils.isNotBlank(samplingRateDropDown.getValue())) {
-      opa.addUIArgument(SAMPLING_RATE_KEY, samplingRateDropDown.getValue());
+      opa.addUIArgument(OpenAnswerDefinition.AUDIO_RECORDING_SAMPLING_RATE_KEY, samplingRateDropDown.getValue());
     }
     if(StringUtils.isNotBlank(maxDurationField.getValue())) {
-      opa.addUIArgument(MAX_DURATION_KEY, maxDurationField.getValue());
+      opa.addUIArgument(OpenAnswerDefinition.AUDIO_RECORDING_MAX_DURATION_KEY, maxDurationField.getValue());
     }
-
   }
 
 }

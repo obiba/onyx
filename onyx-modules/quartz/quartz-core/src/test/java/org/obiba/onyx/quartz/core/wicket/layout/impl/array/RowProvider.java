@@ -24,7 +24,7 @@ class RowProvider extends AbstractDataListProvider<Row> {
 
   public RowProvider(int count) {
     for(int i = 0; i < count; i++) {
-      String index = new Integer(i + 1).toString();
+      String index = Integer.toString(i + 1);
       getDataList().add(new Row(index, "label" + index, "description" + index));
     }
   }

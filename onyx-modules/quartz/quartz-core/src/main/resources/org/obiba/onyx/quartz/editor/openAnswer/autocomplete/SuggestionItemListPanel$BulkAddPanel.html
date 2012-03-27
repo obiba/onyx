@@ -1,0 +1,17 @@
+<wicket:panel xmlns:wicket="http://www.w3.org/1999/XSL/Transform">
+
+	<form wicket:id="form" autocomplete="off" >	
+		<table class="keyValueTable">
+			<tr>
+				<td class="keyValueTableKey" valign="top"><label wicket:id="label"></label></td>
+				<td>
+					<textarea wicket:id="values" rows="2" cols="60"></textarea>
+					<a wicket:id="bulkAddLink"><img wicket:id="bulkAddImg" class="action" /></a>
+					<br />
+					<span class="instructions"><wicket:message key=CommaSeparatedNames /></span>
+				</td>
+			</tr>	
+		</table>	
+	</form>
+
+</wicket:panel>

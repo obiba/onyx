@@ -16,9 +16,9 @@ import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.DateField;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
-import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
@@ -426,7 +426,10 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inPage("39").withQuestion("MEDIA_DISPLAY_VIDEO");
 
     builder.inSection("MEDIA").withSection("RECORDING_MEDIA").withPage("40").withQuestion("RECORDING_MEDIA_BP");
-    builder.inPage("40").withQuestion("MEDIA_RECORD_AUDIO").withCategory("AUDIO_RECORDING").withOpenAnswerDefinition("AUDIO_RECORDING", DataType.DATA).setUnit(SupportedMedia.AUDIO_WAVE.getMimeType()).addUIArgument("type", AudioOpenAnswerPanel.AUDIO_TYPE).addUIArgument(AudioOpenAnswerPanel.SAMPLING_RATE_KEY, Rate._16000.toString()).addUIArgument(AudioOpenAnswerPanel.MAX_DURATION_KEY, "5");
+    builder.inPage("40").withQuestion("MEDIA_RECORD_AUDIO").withCategory("AUDIO_RECORDING").withOpenAnswerDefinition
+        ("AUDIO_RECORDING", DataType.DATA).setUnit(SupportedMedia.AUDIO_WAVE.getMimeType()).addUIArgument("type",
+        OpenAnswerDefinition.OpenAnswerType.AUDIO_RECORDING.getUiArgument()).addUIArgument(OpenAnswerDefinition.AUDIO_RECORDING_SAMPLING_RATE_KEY,
+        Rate._16000.toString()).addUIArgument(OpenAnswerDefinition.AUDIO_RECORDING_MAX_DURATION_KEY, "5");
 
     return builder;
   }

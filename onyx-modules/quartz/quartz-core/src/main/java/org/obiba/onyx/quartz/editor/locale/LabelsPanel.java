@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.collect.ListMultimap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.Session;
@@ -43,8 +44,6 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-import com.google.common.collect.ListMultimap;
-
 /**
  *
  */
@@ -63,11 +62,14 @@ public class LabelsPanel extends Panel {
 
   private final Map<String, IModel<String>> tooltips;
 
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel,
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     this(id, model, elementModel, feedbackPanel, feedbackWindow, false, null);
   }
 
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField, Map<String, IModel<String>> tooltips) {
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel,
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField,
+      Map<String, IModel<String>> tooltips) {
     super(id, model);
     this.elementModel = elementModel;
     this.tooltips = tooltips;
@@ -160,7 +162,8 @@ public class LabelsPanel extends Panel {
       add(new ListView<KeyValue>("item", model) {
         @Override
         protected void populateItem(ListItem<KeyValue> item) {
-          TextArea<String> textArea = new TextArea<String>("textArea", new PropertyModel<String>(item.getModel(), "value"));
+          TextArea<String> textArea = new TextArea<String>("textArea",
+              new PropertyModel<String>(item.getModel(), "value"));
           String label = item.getModelObject().getKey();
           textArea.setLabel(new Model<String>(label));
           SimpleFormComponentLabel textAreaLabel = new SimpleFormComponentLabel("label", textArea);
@@ -181,7 +184,7 @@ public class LabelsPanel extends Panel {
           item.add(textAreaLabel);
           item.add(tooltip);
 
-          if(!label.equals("label") && onlyLabelField) {
+          if(!"label".equals(label) && onlyLabelField) {
             textArea.setVisible(false);
             textAreaLabel.setVisible(false);
             tooltip.setVisible(false);

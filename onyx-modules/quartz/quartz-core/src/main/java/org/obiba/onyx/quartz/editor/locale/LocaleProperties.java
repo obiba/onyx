@@ -17,14 +17,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.springframework.util.Assert;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.springframework.util.Assert;
 
 /**
  *
@@ -116,7 +115,7 @@ public class LocaleProperties implements Serializable {
     return "locales: " + locales + ", elementLabels: " + elementLabels;
   }
 
-  public class KeyValue implements Serializable {
+  public static class KeyValue implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

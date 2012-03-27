@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -20,6 +20,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.openAnswer.autocomplete.AutoCompleteOpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -38,19 +39,35 @@ public abstract class OpenAnswerWindow extends Panel {
 
   private final Form<OpenAnswerDefinition> form;
 
-  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel, final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow, boolean audioRecording) {
+  private Panel openAnswerPanel;
+
+  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel,
+      final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel,
+      IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
-
     add(feedbackWindow);
 
     add(form = new Form<OpenAnswerDefinition>("form", model));
     form.setMultiPart(false);
 
-    final Panel openAnswerPanel = audioRecording ? new AudioOpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel) : new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+    switch(model.getObject().getOpenAnswerType()) {
+      case AUDIO_RECORDING:
+        openAnswerPanel = new AudioOpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel,
+            questionnaireModel);
+        break;
+      case AUTO_COMPLETE:
+        openAnswerPanel = new AutoCompleteOpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel,
+            questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        break;
+      default:
+        openAnswerPanel = new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel,
+            questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+    }
+
     form.add(openAnswerPanel);
 
     form.add(new SaveCancelPanel("saveCancel", form) {

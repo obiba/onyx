@@ -34,7 +34,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitio
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.OpenAnswerDefinitionValidatorFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
-import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
@@ -119,12 +118,12 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       if(getOpenAnswerDefinition().isAudioAnswer()) {
         Rate samplingRate;
         try {
-          samplingRate = Rate.parse(arguments.getString(AudioOpenAnswerPanel.SAMPLING_RATE_KEY));
+          samplingRate = Rate.parse(arguments.getString(OpenAnswerDefinition.AUDIO_RECORDING_SAMPLING_RATE_KEY));
         } catch(Exception e) {
           // cannot parse rate
           samplingRate = Rate._11025;
         }
-        Integer maxDuration = arguments.getAsInteger(AudioOpenAnswerPanel.MAX_DURATION_KEY);
+        Integer maxDuration = arguments.getAsInteger(OpenAnswerDefinition.AUDIO_RECORDING_MAX_DURATION_KEY);
         if(maxDuration == null) maxDuration = 1200;
         openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), samplingRate, maxDuration);
         openField.addListener(new AudioDataListener() {

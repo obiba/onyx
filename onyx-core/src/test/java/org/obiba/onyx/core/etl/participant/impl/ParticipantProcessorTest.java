@@ -9,13 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.Assert;
-
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +40,13 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -422,7 +421,7 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     Map<String, String> map = new HashMap<String, String>();
 
     map.put("p1-STREET", "299, Avenue des Pins Ouest");
-    map.put("p1-CITY", "Montréal");
+    map.put("p1-CITY", "MontrÃ©al");
     map.put("p1-PROVINCE", "QC");
     map.put("p1-COUNTRY", "Canada");
     map.put("p1-POSTAL CODE", "H1T2M4");

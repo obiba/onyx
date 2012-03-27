@@ -50,7 +50,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   /**
    * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
    * @param parent
-   * @param condition
+   * @param openAnswerDefinition
    */
   private OpenAnswerDefinitionBuilder(QuestionnaireBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
     super(parent);

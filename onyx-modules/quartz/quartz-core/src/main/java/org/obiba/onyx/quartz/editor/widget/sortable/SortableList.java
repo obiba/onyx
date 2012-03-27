@@ -70,7 +70,6 @@ public abstract class SortableList<T extends Serializable> extends Panel {
     super(id, model);
 
     add(CSSPackageResource.getHeaderContribution(SortableList.class, "SortableList.css"));
-    // add(JavascriptPackageResource.getHeaderContribution(SortableList.class, "SortableList.js"));
 
     ListView<T> listView = new ListView<T>("listView", model) {
 
