@@ -50,7 +50,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerSuggestionUtils;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
@@ -81,6 +81,8 @@ public class SuggestionItemListPanel extends Panel {
 
   private ConfirmationDialog deleteConfirm;
 
+  private final OpenAnswerDefinitionSuggestion openAnswerSuggestion;
+
   public SuggestionItemListPanel(String id, final IModel<OpenAnswerDefinition> model,
       final IModel<Questionnaire> questionnaireModel,
       final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
@@ -89,6 +91,8 @@ public class SuggestionItemListPanel extends Panel {
     this.questionnaireModel = questionnaireModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
+
+    openAnswerSuggestion = new OpenAnswerDefinitionSuggestion(model.getObject());
 
     itemWindow = new ModalWindow("itemWindow");
     itemWindow.setCssClassName("onyx");
@@ -141,12 +145,12 @@ public class SuggestionItemListPanel extends Panel {
 
     @Override
     public Iterator<String> iterator(int first, int count) {
-      return OpenAnswerSuggestionUtils.getSuggestionItems(openAnswerDefinition).iterator();
+      return openAnswerSuggestion.getSuggestionItems().iterator();
     }
 
     @Override
     public int size() {
-      return OpenAnswerSuggestionUtils.getSuggestionItems(openAnswerDefinition).size();
+      return openAnswerSuggestion.getSuggestionItems().size();
     }
 
     @Override
@@ -230,8 +234,7 @@ public class SuggestionItemListPanel extends Panel {
           deleteConfirm.setYesButtonCallback(new ConfirmationDialog.OnYesCallback() {
             @Override
             public void onYesButtonClicked(AjaxRequestTarget target) {
-              OpenAnswerSuggestionUtils.removeSuggestionItem(
-                  ((OpenAnswerDefinition) SuggestionItemListPanel.this.getDefaultModelObject()), rowModel.getObject());
+              openAnswerSuggestion.removeSuggestionItem(rowModel.getObject());
               target.addComponent(itemList);
             }
           });
@@ -259,8 +262,7 @@ public class SuggestionItemListPanel extends Panel {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           if(value.getModelObject() == null) return;
-          OpenAnswerSuggestionUtils.addSuggestionItem(((OpenAnswerDefinition) SuggestionItemListPanel.this
-              .getDefaultModelObject()), value.getModelObject());
+          openAnswerSuggestion.addSuggestionItem(value.getModelObject());
           value.setModelObject(null);
           target.addComponent(value);
           target.addComponent(itemList);
@@ -305,10 +307,8 @@ public class SuggestionItemListPanel extends Panel {
           String[] items = StringUtils.split(values.getModelObject(), ',');
           if(items == null) return;
 
-          OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) SuggestionItemListPanel.this
-              .getDefaultModelObject();
           for(String item : new LinkedHashSet<String>(Arrays.asList(items))) {
-            OpenAnswerSuggestionUtils.addSuggestionItem(openAnswerDefinition, item);
+            openAnswerSuggestion.addSuggestionItem(item);
           }
           values.setModelObject(null);
           target.addComponent(values);

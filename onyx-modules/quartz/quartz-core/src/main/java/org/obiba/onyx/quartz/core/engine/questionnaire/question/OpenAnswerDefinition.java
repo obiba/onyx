@@ -27,6 +27,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
+import org.springframework.util.Assert;
 
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.AUDIO_RECORDING;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.AUTO_COMPLETE;
@@ -36,6 +37,10 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswe
 public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider {
 
   private static final long serialVersionUID = -7756577128502621726L;
+
+  private static final String INPUT_SIZE_KEY = "size";
+
+  private static final String INPUT_NB_ROWS_KEY = "rows";
 
   public enum OpenAnswerType {
 
@@ -54,10 +59,6 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
 
   }
-
-  public static final String AUDIO_RECORDING_SAMPLING_RATE_KEY = "audio.samplingRate";
-
-  public static final String AUDIO_RECORDING_MAX_DURATION_KEY = "audio.maxDuration";
 
   private String name;
 
@@ -328,14 +329,36 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     return getOpenAnswerType() == AUDIO_RECORDING;
   }
 
-  public static OpenAnswerDefinition createAudioRecording() {
-    OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition();
-    openAnswerDefinition.addUIArgument(UI_ARGUMENT_KEY, AUDIO_RECORDING.getUiArgument());
-    return openAnswerDefinition;
-  }
-
   Iterator<String[]> getUIArgumentsIterator() {
     return uIArguments == null ? null : uIArguments.iterator();
+  }
+
+  public Integer getInputSize() {
+    ValueMap valueMap = getUIArgumentsValueMap();
+    return valueMap == null ? null : valueMap.getAsInteger(INPUT_SIZE_KEY);
+  }
+
+  public void setInputSize(Integer inputSize) {
+    if(inputSize == null) {
+      removeUIArgument(INPUT_SIZE_KEY);
+    } else {
+      Assert.isTrue(inputSize.intValue() > 0, "The size of an OpenAnswer field can not be less than one.");
+      addUIArgument(INPUT_SIZE_KEY, String.valueOf(inputSize));
+    }
+  }
+
+  public Integer getInputNbRows() {
+    ValueMap valueMap = getUIArgumentsValueMap();
+    return valueMap == null ? null : valueMap.getAsInteger(INPUT_NB_ROWS_KEY);
+  }
+
+  public void setNbRows(Integer inputNbRows) {
+    if(inputNbRows == null) {
+      removeUIArgument(INPUT_NB_ROWS_KEY);
+    } else {
+      Assert.isTrue(inputNbRows.intValue() > 0, "The number of rows of an OpenAnswer area can not be less than one.");
+      addUIArgument(INPUT_NB_ROWS_KEY, String.valueOf(inputNbRows));
+    }
   }
 
 }

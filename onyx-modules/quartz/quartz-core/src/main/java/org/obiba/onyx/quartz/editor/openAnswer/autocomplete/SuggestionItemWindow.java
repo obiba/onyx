@@ -29,7 +29,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerSuggestionUtils;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
@@ -61,6 +61,8 @@ public abstract class SuggestionItemWindow extends Panel implements SaveablePane
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
+    final OpenAnswerDefinitionSuggestion openAnswerSuggestion = new OpenAnswerDefinitionSuggestion(model.getObject());
+
     final Form<OpenAnswerDefinition> form = new Form<OpenAnswerDefinition>("form", model);
     form.setMultiPart(false);
     add(form);
@@ -76,7 +78,7 @@ public abstract class SuggestionItemWindow extends Panel implements SaveablePane
     localeProperties.setLocales(new ArrayList<Locale>(questionnaireModel.getObject().getLocales()));
     for(Locale locale : localeProperties.getLocales()) {
       ListMultimap<Locale, KeyValue> map = ArrayListMultimap.create();
-      String label = OpenAnswerSuggestionUtils.getSuggestionLabel(openAnswerDefinition, locale, itemOriginal);
+      String label = openAnswerSuggestion.getSuggestionLabel(locale, itemOriginal);
       map.put(locale, new KeyValue("label", StringUtils.equals(itemOriginal, label) ? null : label));
       localeProperties.addElementLabel(openAnswerDefinition, map);
     }
@@ -93,13 +95,12 @@ public abstract class SuggestionItemWindow extends Panel implements SaveablePane
 
         String newItem = name.getModelObject();
         if(!StringUtils.equals(itemOriginal, newItem)) {
-          OpenAnswerSuggestionUtils.removeSuggestionItem(openAnswerDefinition, itemOriginal);
-          OpenAnswerSuggestionUtils.addSuggestionItem(openAnswerDefinition, newItem);
+          openAnswerSuggestion.removeSuggestionItem(itemOriginal);
+          openAnswerSuggestion.addSuggestionItem(newItem);
         }
         ListMultimap<Locale, KeyValue> elementLabels = localeProperties.getElementLabels(openAnswerDefinition);
         for(Map.Entry<Locale, KeyValue> entry : elementLabels.entries()) {
-          OpenAnswerSuggestionUtils.setSuggestionLabel(openAnswerDefinition, entry.getKey(), newItem,
-              entry.getValue().getValue());
+          openAnswerSuggestion.setSuggestionLabel(entry.getKey(), newItem, entry.getValue().getValue());
         }
         logger.info("UIArguments: {}", openAnswerDefinition.getUIArgumentsValueMap());
         SuggestionItemWindow.this.onSave(target);

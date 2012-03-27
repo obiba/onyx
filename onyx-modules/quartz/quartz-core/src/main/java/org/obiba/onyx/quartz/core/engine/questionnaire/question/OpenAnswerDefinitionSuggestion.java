@@ -11,6 +11,7 @@
  */
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -20,13 +21,14 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.util.Assert;
 
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
 
 /**
  *
  */
-public class OpenAnswerSuggestionUtils {
+public class OpenAnswerDefinitionSuggestion implements Serializable {
 
   private static final String SUGGESTION_ITEMS = "suggest.items";
 
@@ -38,23 +40,40 @@ public class OpenAnswerSuggestionUtils {
 
   private static final String SUGGESTION_VARIABLE_MAX_COUNT = "suggest.variable.maxCount";
 
-  public static OpenAnswerDefinition createAutoComplete() {
-    OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition();
-    openAnswerDefinition.setDataType(DataType.TEXT);
-    openAnswerDefinition.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUTO_COMPLETE.getUiArgument());
-    return openAnswerDefinition;
+
+
+  public enum Source {
+    ITEMS_LIST, VARIABLE_VALUES
   }
 
-  public static void addSuggestionItem(OpenAnswerDefinition openAnswerDefinition, String item) {
-    if(StringUtils.isNotBlank(item)) openAnswerDefinition.addUIArgument(SUGGESTION_ITEMS, item);
+  private final OpenAnswerDefinition openAnswer;
+
+  public OpenAnswerDefinitionSuggestion(OpenAnswerDefinition openAnswer) {
+    Assert.notNull(openAnswer);
+    this.openAnswer = openAnswer;
   }
 
-  public static void removeSuggestionItem(OpenAnswerDefinition openAnswerDefinition, String item) {
+  public static OpenAnswerDefinitionSuggestion createNewSuggestionOpenAnswer() {
+    OpenAnswerDefinition openAnswer = new OpenAnswerDefinition();
+    openAnswer.setDataType(DataType.TEXT);
+    openAnswer.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUTO_COMPLETE.getUiArgument());
+    return new OpenAnswerDefinitionSuggestion(openAnswer);
+  }
+
+  public OpenAnswerDefinition getOpenAnswerDefinition() {
+    return openAnswer;
+  }
+
+  public void addSuggestionItem(String item) {
+    if(StringUtils.isNotBlank(item)) openAnswer.addUIArgument(SUGGESTION_ITEMS, item);
+  }
+
+  public void removeSuggestionItem(String item) {
     if(StringUtils.isNotBlank(item)) {
-      openAnswerDefinition.removeUIArgument(SUGGESTION_ITEMS, item);
+      openAnswer.removeUIArgument(SUGGESTION_ITEMS, item);
 
       // remove suggestion labels for all locales
-      Iterator<String[]> it = openAnswerDefinition.getUIArgumentsIterator();
+      Iterator<String[]> it = openAnswer.getUIArgumentsIterator();
       if(it != null) {
         String keyStart = SUGGESTION_LABELS + ":" + item + ":";
         int keyLen = keyStart.length() + 2;
@@ -72,46 +91,46 @@ public class OpenAnswerSuggestionUtils {
     }
   }
 
-  public static void setSuggestionLabel(OpenAnswerDefinition openAnswerDefinition, Locale locale, String item,
+  public void setSuggestionLabel(Locale locale, String item,
       String label) {
     if(locale != null && StringUtils.isNotBlank(item)) {
-      removeSuggestionLabel(openAnswerDefinition, locale, item);
+      removeSuggestionLabel(locale, item);
       if(StringUtils.isNotBlank(label)) {
-        openAnswerDefinition.addUIArgument(getSuggestionLabelKey(locale, item), label);
+        openAnswer.addUIArgument(getSuggestionLabelKey(locale, item), label);
       }
     }
   }
 
-  public static List<String> getSuggestionItems(OpenAnswerDefinition openAnswerDefinition) {
-    ValueMap valueMap = openAnswerDefinition.getUIArgumentsValueMap();
+  public List<String> getSuggestionItems() {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     if(valueMap == null) return Collections.emptyList();
     String[] array = valueMap.getStringArray(SUGGESTION_ITEMS);
     return (List<String>) (array == null ? Collections.emptyList() : Arrays.asList(array));
   }
 
-  public static String getSuggestionLabel(OpenAnswerDefinition openAnswerDefinition, Locale locale, String item) {
-    ValueMap valueMap = openAnswerDefinition.getUIArgumentsValueMap();
+  public String getSuggestionLabel(Locale locale, String item) {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     if(valueMap == null || StringUtils.isBlank(item)) return null;
     if(locale == null) return item;
     return valueMap.getString(getSuggestionLabelKey(locale, item));
   }
 
-  public static void removeSuggestionLabel(OpenAnswerDefinition openAnswerDefinition, Locale locale, String item) {
+  public void removeSuggestionLabel(Locale locale, String item) {
     if(locale != null && StringUtils.isNotBlank(item)) {
-      openAnswerDefinition.removeUIArgument(getSuggestionLabelKey(locale, item));
+      openAnswer.removeUIArgument(getSuggestionLabelKey(locale, item));
     }
   }
 
-  public static boolean hasSuggestionItems(OpenAnswerDefinition openAnswerDefinition) {
-    return !getSuggestionItems(openAnswerDefinition).isEmpty();
+  public boolean hasSuggestionItems() {
+    return !getSuggestionItems().isEmpty();
   }
 
   private static String getSuggestionLabelKey(Locale locale, String item) {
     return SUGGESTION_LABELS + ":" + item + ":" + locale.getLanguage();
   }
 
-  public static boolean hasVariableValues(OpenAnswerDefinition openAnswerDefinition) {
-    Iterator<String[]> it = openAnswerDefinition.getUIArgumentsIterator();
+  public boolean hasVariableValues() {
+    Iterator<String[]> it = openAnswer.getUIArgumentsIterator();
     if(it != null) {
       String keyStart = SUGGESTION_VARIABLE + ":";
       int keyLen = keyStart.length() + 2;
@@ -126,28 +145,34 @@ public class OpenAnswerSuggestionUtils {
     return false;
   }
 
-  public static void setVariableValues(OpenAnswerDefinition openAnswerDefinition, Locale locale,
-      String variableName) {
-    openAnswerDefinition.removeUIArgument(getVariableKey(locale));
-    openAnswerDefinition.addUIArgument(getVariableKey(locale), variableName);
+  public void setVariableValues(Locale locale, String variableName) {
+    openAnswer.removeUIArgument(getVariableKey(locale));
+    openAnswer.addUIArgument(getVariableKey(locale), variableName);
   }
 
-  public static String getVariableValues(OpenAnswerDefinition openAnswerDefinition, Locale locale) {
-    ValueMap valueMap = openAnswerDefinition.getUIArgumentsValueMap();
+  public String getVariableValues(Locale locale) {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     return valueMap == null || locale == null ? null : valueMap.getString(getVariableKey(locale));
   }
 
-  public static boolean getVariableSelectEntity(OpenAnswerDefinition openAnswerDefinition) {
-    ValueMap valueMap = openAnswerDefinition.getUIArgumentsValueMap();
+  public boolean getVariableSelectEntity() {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     return valueMap == null ? false : valueMap.getBoolean(SUGGESTION_VARIABLE_SELECT_ENTITY);
   }
 
-  public static int getVariableMaxCount(OpenAnswerDefinition openAnswerDefinition) {
-    ValueMap valueMap = openAnswerDefinition.getUIArgumentsValueMap();
+  public int getVariableMaxCount() {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     return valueMap == null ? -1 : valueMap.getInt(SUGGESTION_VARIABLE_MAX_COUNT, -1);
   }
 
   private static String getVariableKey(Locale locale) {
     return SUGGESTION_VARIABLE + ":" + locale.getLanguage();
   }
+
+  public Source getSuggestionSource() {
+    if(hasSuggestionItems()) return Source.ITEMS_LIST;
+    if(hasVariableValues()) return Source.VARIABLE_VALUES;
+    return null;
+  }
+
 }

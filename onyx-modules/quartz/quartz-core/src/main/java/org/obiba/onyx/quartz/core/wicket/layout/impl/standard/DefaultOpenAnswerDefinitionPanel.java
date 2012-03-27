@@ -1,8 +1,8 @@
 /***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  **********************************************************************************************************************/
@@ -27,6 +27,7 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionAudio;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -49,12 +50,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
   private static final long serialVersionUID = 8950481253772691811L;
 
-  @SuppressWarnings("unused")
+  public static final int MAXIMUM_LENGTH = 2000;
+
   private static final Logger log = LoggerFactory.getLogger(DefaultOpenAnswerDefinitionPanel.class);
-
-  public static final String INPUT_SIZE_KEY = "size";
-
-  public static final String INPUT_NB_ROWS = "rows";
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -63,17 +61,19 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
   /**
    * Constructor.
-   * 
+   *
    * @param id
    * @param questionModel
    * @param questionCategoryModel
    */
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel,
+      IModel<QuestionCategory> questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
     initialize();
   }
 
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<OpenAnswerDefinition> openAnswerDefinitionModel) {
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel,
+      IModel<QuestionCategory> questionCategoryModel, IModel<OpenAnswerDefinition> openAnswerDefinitionModel) {
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
     initialize();
   }
@@ -83,25 +83,30 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     setOutputMarkupId(true);
 
     if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
-      OpenAnswer previousAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
+      OpenAnswer previousAnswer = activeQuestionnaireAdministrationService
+          .findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
       if(previousAnswer != null) {
         setData(previousAnswer.getData());
       }
     }
 
-    QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "label");
-    QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel");
+    QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(),
+        "label");
+    QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(),
+        "unitLabel");
 
     add(new Label("label", openLabel));
 
     // UI arguments as attributes
     ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
     if(getOpenAnswerDefinition().getDefaultValues().size() > 1) {
-      openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), getOpenAnswerDefinition().getDefaultValues(), new IChoiceRenderer<Data>() {
+      openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(),
+          getOpenAnswerDefinition().getDefaultValues(), new IChoiceRenderer<Data>() {
 
         @Override
         public Object getDisplayValue(Data data) {
-          return new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), data.getValueAsString()).getObject();
+          return new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), data.getValueAsString())
+              .getObject();
         }
 
         @Override
@@ -116,21 +121,18 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       }
 
       if(getOpenAnswerDefinition().isAudioAnswer()) {
-        Rate samplingRate;
-        try {
-          samplingRate = Rate.parse(arguments.getString(OpenAnswerDefinition.AUDIO_RECORDING_SAMPLING_RATE_KEY));
-        } catch(Exception e) {
-          // cannot parse rate
-          samplingRate = Rate._11025;
-        }
-        Integer maxDuration = arguments.getAsInteger(OpenAnswerDefinition.AUDIO_RECORDING_MAX_DURATION_KEY);
-        if(maxDuration == null) maxDuration = 1200;
-        openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), samplingRate, maxDuration);
+        OpenAnswerDefinitionAudio openAnswerAudio = new OpenAnswerDefinitionAudio(getOpenAnswerDefinition());
+        Rate samplingRate = openAnswerAudio.getSamplingRate();
+        int maxDuration = openAnswerAudio.getMaxDuration();
+
+        openField = new DataField("open", new PropertyModel<Data>(this, "data"),
+            getOpenAnswerDefinition().getDataType(), samplingRate, maxDuration);
         openField.addListener(new AudioDataListener() {
           @Override
           public void onDataUploaded() {
             // persist data
-            activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+            activeQuestionnaireAdministrationService
+                .answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
           }
 
           @Override
@@ -148,13 +150,10 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
           }
         });
       } else {
-        Integer rows = null;
-        Integer columns = null;
-        if(arguments != null) {
-          rows = arguments.get(INPUT_NB_ROWS) != null ? arguments.getInt(INPUT_NB_ROWS) : null;
-          columns = arguments.get(INPUT_SIZE_KEY) != null ? arguments.getInt(INPUT_SIZE_KEY) : null;
-        }
-        openField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString(), columns, rows);
+        Integer rows = getOpenAnswerDefinition().getInputNbRows();
+        Integer columns = getOpenAnswerDefinition().getInputSize();
+        openField = new DataField("open", new PropertyModel<Data>(this, "data"),
+            getOpenAnswerDefinition().getDataType(), unitLabel.getString(), columns, rows);
         if(rows != null && rows > 1 && getOpenAnswerDefinition().getDataType().equals(DataType.TEXT)) {
           add(new AttributeAppender("class", new Model<String>("open-area"), " "));
         }
@@ -165,15 +164,16 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
     // validators
     if(!activeQuestionnaireAdministrationService.isQuestionnaireDevelopmentMode()) {
-      for(IValidator<?> validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
+      for(IValidator<?> validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(),
+          activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
         openField.add(validator);
       }
     }
 
     // at least this validator for textual input
-    if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT) && getOpenAnswerDefinition().getDefaultValues().size() == 0) {
+    if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT) && getOpenAnswerDefinition().getDefaultValues().isEmpty()) {
       // see OpenAnswer.textValue column length
-      openField.add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), DataType.TEXT));
+      openField.add(new DataValidator(new StringValidator.MaximumLengthValidator(MAXIMUM_LENGTH), DataType.TEXT));
     }
 
     // behaviors
@@ -184,7 +184,8 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
           // persist data
-          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+          activeQuestionnaireAdministrationService
+              .answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
 
           // clean a previous error message
           updateFeedback(target);
@@ -207,7 +208,8 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
           protected void onEvent(AjaxRequestTarget target) {
             // persist data
             // do not fire event if category was already selected
-            if(activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
+            if(activeQuestionnaireAdministrationService
+                .findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
               openField.focusField(target);
 
               // persist data for category
@@ -222,11 +224,13 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     }
 
     // set the label of the field
-    openField.setLabel(QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));
+    openField.setLabel(QuestionnaireStringResourceModelHelper
+        .getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));
   }
 
   /**
    * Refresh wizard feedback panel and input field.
+   *
    * @param target
    */
   private void updateFeedback(final AjaxRequestTarget target) {

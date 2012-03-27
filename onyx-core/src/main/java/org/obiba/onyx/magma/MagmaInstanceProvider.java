@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
+import java.util.Set;
+
 import org.obiba.magma.Datasource;
 import org.obiba.magma.NoSuchDatasourceException;
 import org.obiba.magma.NoSuchValueTableException;
@@ -36,6 +38,8 @@ public interface MagmaInstanceProvider {
    * The name of the onyx-core value table
    */
   public static final String PARTICIPANTS_TABLE_NAME = "Participants";
+
+  Set<Datasource> getDatasources();
 
   /**
    * Returns the Onyx Magma Datasource.
@@ -89,9 +93,10 @@ public interface MagmaInstanceProvider {
   /**
    * Creates a new {@code VariableEntity} for a participant.
    * 
-   * @param identifier the participant's identifier
+   * @param participant the participant's identifier
    * @return an instance of {@code VariableEntity}
    */
   public VariableEntity newParticipantEntity(Participant participant);
 
+  Datasource getDatasource(String name);
 }

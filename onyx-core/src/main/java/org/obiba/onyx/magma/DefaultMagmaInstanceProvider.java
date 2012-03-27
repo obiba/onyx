@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
+import java.util.Set;
+
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
@@ -28,6 +30,17 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
     this.magmaEngine = magmaEngine;
   }
 
+  @Override
+  public Set<Datasource> getDatasources() {
+    return magmaEngine.getDatasources();
+  }
+
+  @Override
+  public Datasource getDatasource(String name) {
+    return magmaEngine.getDatasource(name);
+  }
+
+  @Override
   public Datasource getOnyxDatasource() {
     return magmaEngine.getDatasource(ONYX_DATASOURCE);
   }
@@ -37,6 +50,7 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
     return getValueTable(PARTICIPANTS_TABLE_NAME);
   }
 
+  @Override
   public ValueTable getValueTable(String name) {
     return getOnyxDatasource().getValueTable(name);
   }
@@ -58,6 +72,7 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
     return newParticipantEntity(participant.getBarcode());
   }
 
+  @Override
   public VariableEntity newParticipantEntity(String identifier) {
     return new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, identifier);
   }

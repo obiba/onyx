@@ -63,7 +63,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -82,7 +81,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.OnyxSettings;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
@@ -296,23 +294,15 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
     PatternValidator numericPatternValidator = new PatternValidator("\\d*");
     // ui Arguments
-    String sizeStr = null;
-    ValueMap uiArgumentsValueMap = openAnswer.getUIArgumentsValueMap();
-    if(uiArgumentsValueMap != null && uiArgumentsValueMap
-        .containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY)) {
-      sizeStr = uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY).toString();
-    }
-    sizeField = new TextField<String>("size", new Model<String>(sizeStr));
+    Integer size = openAnswer.getInputSize();
+    sizeField = new TextField<String>("size", new Model<String>(size == null ? null : String.valueOf(size)));
     sizeField.add(numericPatternValidator);
     sizeField.setLabel(new ResourceModel("SizeLabel"));
     add(new SimpleFormComponentLabel("sizeLabel", sizeField));
     add(sizeField);
 
-    String rowsStr = null;
-    if(uiArgumentsValueMap != null && uiArgumentsValueMap.containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS)) {
-      rowsStr = uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS).toString();
-    }
-    rowsField = new TextField<String>("rows", new Model<String>(rowsStr));
+    Integer rows = openAnswer.getInputNbRows();
+    rowsField = new TextField<String>("rows", new Model<String>(rows == null ? null : String.valueOf(rows)));
     rowsField.add(numericPatternValidator);
     rowsField.setLabel(new ResourceModel("RowsLabel"));
     add(new SimpleFormComponentLabel("rowsLabel", rowsField));
@@ -809,13 +799,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     }
 
     // TODO use a specific model instead of use onSave Method
-    opa.clearUIArgument();
-    if(StringUtils.isNotBlank(sizeField.getValue())) {
-      opa.addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY, sizeField.getValue());
-    }
-    if(StringUtils.isNotBlank(rowsField.getValue())) {
-      opa.addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS, rowsField.getValue());
-    }
+    opa.setInputSize(StringUtils.isBlank(sizeField.getValue()) ? null : Integer.valueOf(sizeField.getValue()));
+    opa.setNbRows(StringUtils.isBlank(rowsField.getValue()) ? null : Integer.valueOf(rowsField.getValue()));
+
 
     // TODO use a specific model instead of use onSave Method
     opa.clearDataValidators();

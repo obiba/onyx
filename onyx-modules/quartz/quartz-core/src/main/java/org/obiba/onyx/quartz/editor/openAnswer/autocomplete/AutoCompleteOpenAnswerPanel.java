@@ -28,17 +28,15 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerSuggestionUtils;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.editor.QuartzEditorPanel;
 import org.obiba.onyx.quartz.editor.behavior.VariableNameBehavior;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
@@ -49,27 +47,20 @@ import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion.Source;
 
 /**
  *
  */
 public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel {
 
-  private final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-  private enum AutoCompleteSource {
-    ITEMS_LIST, VARIABLE
-  }
+//  private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
       justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
-
-  @SuppressWarnings("rawtypes")
-  private TextField defaultValue;
 
   private final VariableNameBehavior variableNameBehavior;
 
@@ -77,11 +68,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
   private String initialName;
 
-  private TextField<String> patternField;
-
   private TextField<String> sizeField;
-
-  private TextField<String> rowsField;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -95,10 +82,10 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
   private LabelsPanel labelsPanel;
 
-  public AutoCompleteOpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model,
-      final IModel<Category> categoryModel, final IModel<Question> questionModel,
-      final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel,
-      final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
+  public AutoCompleteOpenAnswerPanel(String id, IModel<OpenAnswerDefinition> model,
+      IModel<Category> categoryModel, IModel<Question> questionModel,
+      final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel,
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     this.questionModel = questionModel;
@@ -176,33 +163,24 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
     PatternValidator numericPatternValidator = new PatternValidator("\\d*");
     // ui Arguments
-    String sizeStr = null;
-    ValueMap uiArgumentsValueMap = openAnswer.getUIArgumentsValueMap();
-    if(uiArgumentsValueMap != null && uiArgumentsValueMap
-        .containsKey(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY)) {
-      sizeStr = uiArgumentsValueMap.get(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY).toString();
-    }
-    sizeField = new TextField<String>("size", new Model<String>(sizeStr));
+    Integer size = openAnswer.getInputSize();
+    sizeField = new TextField<String>("size", new Model<String>(size == null ? null : String.valueOf(size)));
     sizeField.add(numericPatternValidator);
     sizeField.setLabel(new ResourceModel("SizeLabel"));
     add(new SimpleFormComponentLabel("sizeLabel", sizeField));
     add(sizeField);
 
-    AutoCompleteSource source = null;
-
-    if(OpenAnswerSuggestionUtils.hasSuggestionItems(openAnswer)) {
-      source = AutoCompleteSource.ITEMS_LIST;
-    } else if(OpenAnswerSuggestionUtils.hasVariableValues(openAnswer)) {
-      source = AutoCompleteSource.VARIABLE;
-    }
+    OpenAnswerDefinitionSuggestion openAnswerSuggestion = new OpenAnswerDefinitionSuggestion(openAnswer);
+    Source source = openAnswerSuggestion.getSuggestionSource();
 
     final WebMarkupContainer sourceConfigContainer = new WebMarkupContainer("sourceConfigContainer");
     sourceConfigContainer.setOutputMarkupId(true);
     add(sourceConfigContainer);
     sourceConfigContainer.add(showSuggestionConfig(source));
 
-    final RadioGroup<AutoCompleteSource> radioSource = new RadioGroup<AutoCompleteSource>("source",
-        new Model<AutoCompleteSource>(source));
+    final RadioGroup<OpenAnswerDefinitionSuggestion.Source> radioSource = new RadioGroup<OpenAnswerDefinitionSuggestion.Source>(
+        "source",
+        new Model<OpenAnswerDefinitionSuggestion.Source>(source));
     radioSource.setLabel(new ResourceModel("SourceOfSuggestions"));
     radioSource.add(new AjaxFormChoiceComponentUpdatingBehavior() {
       @Override
@@ -213,14 +191,16 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     });
     add(radioSource);
 
-    Radio<AutoCompleteSource> sourceItems = new Radio<AutoCompleteSource>("sourceItems", new Model<AutoCompleteSource>(
-        AutoCompleteSource.ITEMS_LIST));
+    Radio<OpenAnswerDefinitionSuggestion.Source> sourceItems = new Radio<OpenAnswerDefinitionSuggestion.Source>(
+        "sourceItems", new Model<OpenAnswerDefinitionSuggestion.Source>(
+        Source.ITEMS_LIST));
     sourceItems.setLabel(new ResourceModel("listOfItems"));
     radioSource.add(sourceItems);
     radioSource.add(new SimpleFormComponentLabel("sourceItemsLabel", sourceItems));
 
-    Radio<AutoCompleteSource> sourceVariable = new Radio<AutoCompleteSource>("sourceVariable",
-        new Model<AutoCompleteSource>(AutoCompleteSource.VARIABLE));
+    Radio<OpenAnswerDefinitionSuggestion.Source> sourceVariable = new Radio<OpenAnswerDefinitionSuggestion.Source>(
+        "sourceVariable",
+        new Model<OpenAnswerDefinitionSuggestion.Source>(Source.VARIABLE_VALUES));
     sourceVariable.setLabel(new ResourceModel("variableValues"));
     radioSource.add(sourceVariable);
     radioSource.add(new SimpleFormComponentLabel("sourceVariableLabel", sourceVariable));
@@ -235,13 +215,16 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
   }
 
-  private Panel showSuggestionConfig(AutoCompleteSource source) {
+  @SuppressWarnings("unchecked")
+  private Panel showSuggestionConfig(Source source) {
+    if(source == null) return new EmptyPanel("sourceConfig");
     switch(source) {
       case ITEMS_LIST:
         return new SuggestionItemListPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(),
             questionnaireModel, feedbackPanel, feedbackWindow);
-      case VARIABLE:
-        return new EmptyPanel("sourceConfig");
+      case VARIABLE_VALUES:
+        return new SuggestionVariableValuesPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(),
+            questionnaireModel, feedbackPanel, feedbackWindow);
       default:
         return new EmptyPanel("sourceConfig");
     }
@@ -249,6 +232,8 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
   @Override
   public void onSave(AjaxRequestTarget target) {
-    //To change body of implemented methods use File | Settings | File Templates.
+    if(!variableNameBehavior.isVariableNameDefined()) {
+      variable.setModelObject(null);
+    }
   }
 }

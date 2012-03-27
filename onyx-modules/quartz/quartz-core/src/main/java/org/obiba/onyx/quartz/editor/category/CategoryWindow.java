@@ -37,7 +37,8 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerSuggestionUtils;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionAudio;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -239,7 +240,7 @@ public abstract class CategoryWindow extends Panel {
       }
 
       @Override
-      @SuppressWarnings({"rawtypes", "unchecked"})
+      @SuppressWarnings({ "rawtypes", "unchecked" })
       public SortableList<OpenAnswerDefinition>.Button[] getButtons() {
         SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(
             new ResourceModel("AddOpenAnswerDefinition"), Images.ADD) {
@@ -301,7 +302,9 @@ public abstract class CategoryWindow extends Panel {
 
           @Override
           public void callback(AjaxRequestTarget target) {
-            OpenAnswerDefinition openAnswerDefinition = OpenAnswerSuggestionUtils.createAutoComplete();
+
+            OpenAnswerDefinition openAnswerDefinition = OpenAnswerDefinitionSuggestion.createNewSuggestionOpenAnswer()
+                .getOpenAnswerDefinition();
             openAnswerDefinition.setRequired(true);
             openAnswerWindow.setContent(
                 new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition),
@@ -358,7 +361,8 @@ public abstract class CategoryWindow extends Panel {
 
           @Override
           public void callback(AjaxRequestTarget target) {
-            OpenAnswerDefinition openAnswerDefinition = OpenAnswerDefinition.createAudioRecording();
+            OpenAnswerDefinition openAnswerDefinition = OpenAnswerDefinitionAudio.createOpenAnswerDefinitionAudio()
+                .getOpenAnswer();
             openAnswerDefinition.setRequired(true);
             openAnswerWindow.setContent(
                 new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition),
@@ -410,7 +414,7 @@ public abstract class CategoryWindow extends Panel {
           }
         };
 
-        return new SortableList.Button[]{addButton, addAutoCompleteButton, addAudioButton};
+        return new SortableList.Button[] { addButton, addAutoCompleteButton, addAudioButton };
       }
     };
 
