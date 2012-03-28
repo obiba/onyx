@@ -163,6 +163,11 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     uIArguments.add(new String[] { key, value });
   }
 
+  public void replaceUIArgument(String key, String value) {
+    removeUIArgument(key);
+    addUIArgument(key, value);
+  }
+
   public void removeUIArgument(String key, String value) {
     if(uIArguments != null) {
       for(Iterator<String[]> it = uIArguments.iterator(); it.hasNext(); ) {
@@ -342,8 +347,8 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     if(inputSize == null) {
       removeUIArgument(INPUT_SIZE_KEY);
     } else {
-      Assert.isTrue(inputSize.intValue() > 0, "The size of an OpenAnswer field can not be less than one.");
-      addUIArgument(INPUT_SIZE_KEY, String.valueOf(inputSize));
+      Assert.isTrue(inputSize > 0, "The size of an OpenAnswer field can not be less than one.");
+      replaceUIArgument(INPUT_SIZE_KEY, String.valueOf(inputSize));
     }
   }
 
@@ -356,8 +361,8 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     if(inputNbRows == null) {
       removeUIArgument(INPUT_NB_ROWS_KEY);
     } else {
-      Assert.isTrue(inputNbRows.intValue() > 0, "The number of rows of an OpenAnswer area can not be less than one.");
-      addUIArgument(INPUT_NB_ROWS_KEY, String.valueOf(inputNbRows));
+      Assert.isTrue(inputNbRows > 0, "The number of rows of an OpenAnswer area can not be less than one.");
+      replaceUIArgument(INPUT_NB_ROWS_KEY, String.valueOf(inputNbRows));
     }
   }
 

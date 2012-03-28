@@ -39,6 +39,7 @@ public class OpenAnswerDefinitionAudio implements Serializable {
     this.openAnswer = openAnswer;
   }
 
+  @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
   public static OpenAnswerDefinitionAudio createOpenAnswerDefinitionAudio() {
     OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition();
     openAnswerDefinition.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUDIO_RECORDING.getUiArgument());
@@ -65,7 +66,7 @@ public class OpenAnswerDefinitionAudio implements Serializable {
     if(rate == null) {
       openAnswer.removeUIArgument(SAMPLING_RATE_KEY);
     } else {
-      openAnswer.addUIArgument(SAMPLING_RATE_KEY, rate.toString());
+      openAnswer.replaceUIArgument(SAMPLING_RATE_KEY, rate.toString());
     }
   }
 
@@ -78,7 +79,7 @@ public class OpenAnswerDefinitionAudio implements Serializable {
     if(maxDuration == null) {
       openAnswer.removeUIArgument(MAX_DURATION_KEY);
     } else {
-      openAnswer.addUIArgument(MAX_DURATION_KEY, String.valueOf(maxDuration));
+      openAnswer.replaceUIArgument(MAX_DURATION_KEY, String.valueOf(maxDuration));
     }
   }
 

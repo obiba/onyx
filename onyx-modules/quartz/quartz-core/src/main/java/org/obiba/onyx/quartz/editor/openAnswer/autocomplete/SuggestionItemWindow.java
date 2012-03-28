@@ -13,7 +13,7 @@ package org.obiba.onyx.quartz.editor.openAnswer.autocomplete;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -52,7 +52,7 @@ public abstract class SuggestionItemWindow extends Panel implements SaveablePane
 
   private final FeedbackWindow feedbackWindow;
 
-  public SuggestionItemWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<String> itemModel,
+  public SuggestionItemWindow(String id, IModel<OpenAnswerDefinition> model, IModel<String> itemModel,
       IModel<Questionnaire> questionnaireModel, final ModalWindow modalWindow) {
     super(id, model);
 
@@ -99,7 +99,7 @@ public abstract class SuggestionItemWindow extends Panel implements SaveablePane
           openAnswerSuggestion.addSuggestionItem(newItem);
         }
         ListMultimap<Locale, KeyValue> elementLabels = localeProperties.getElementLabels(openAnswerDefinition);
-        for(Map.Entry<Locale, KeyValue> entry : elementLabels.entries()) {
+        for(Entry<Locale, KeyValue> entry : elementLabels.entries()) {
           openAnswerSuggestion.setSuggestionLabel(entry.getKey(), newItem, entry.getValue().getValue());
         }
         logger.info("UIArguments: {}", openAnswerDefinition.getUIArgumentsValueMap());

@@ -3,56 +3,66 @@
   <table class="keyValueTable">
     <tr>
       <td valign="top" class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
-      <td><input wicket:id="name" type="text" size="40" autocomplete="off" /> <span wicket:id="nameHelp" /></td>
+      <td><input wicket:id="name" type="text" size="40" autocomplete="off"/> <span wicket:id="nameHelp"/></td>
     </tr>
     <tr>
       <td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
-      <td><input wicket:id="variable" type="text" size="40" autocomplete="off" /> <span wicket:id="variableHelp" /></td>
+      <td><input wicket:id="variable" type="text" size="40" autocomplete="off"/> <span wicket:id="variableHelp"/></td>
     </tr>
     <tr>
       <td valign="top" class="keyValueTableKey"><label wicket:id="unitLabel"></label></td>
-      <td><input wicket:id="unit" type="text" size="40" autocomplete="off" /> <span wicket:id="unitHelp" /></td>
+      <td><input wicket:id="unit" type="text" size="40" autocomplete="off"/> <span wicket:id="unitHelp"/></td>
     </tr>
     <tr>
       <td valign="top" class="keyValueTableKey"><label wicket:id="sizeLabel"></label></td>
-      <td><input wicket:id="size" type="text" size="2" autocomplete="off" /></td>
+      <td><input wicket:id="size" type="text" size="2" autocomplete="off"/></td>
+    </tr>
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="maxCountLabel"></label></td>
+      <td><input wicket:id="maxCount" type="text" size="2" autocomplete="off"/></td>
     </tr>
   </table>
 
   <br/>
 
   <fieldset>
-    <legend><wicket:message key="Suggestions" /></legend>
+    <legend>
+      <wicket:message key="Suggestions"/>
+    </legend>
 
     <div wicket:id="source">
-      <input type="radio" wicket:id="sourceItems" /> <label wicket:id="sourceItemsLabel"></label>
-      <br />
-      <input type="radio" wicket:id="sourceVariable" /> <label wicket:id="sourceVariableLabel"></label>
+      <input type="radio" wicket:id="sourceItems"/> <label wicket:id="sourceItemsLabel"></label>
+      <br/>
+      <input type="radio" wicket:id="sourceVariable"/> <label wicket:id="sourceVariableLabel"></label>
     </div>
 
     <div wicket:id="sourceConfigContainer">
-      <div wicket:id="sourceConfig"> </div>
+      <div wicket:id="sourceConfig"></div>
     </div>
 
   </fieldset>
 
-  <br />
+  <br/>
 
   <fieldset>
-    <legend><wicket:message key="LanguagesProperties" /></legend>
+    <legend>
+      <wicket:message key="LanguagesProperties"/>
+    </legend>
     <div wicket:id="labels"></div>
   </fieldset>
 
-  <br />
+  <br/>
 
-  <br />
+  <br/>
 
   <fieldset>
-    <legend><wicket:message key="Validation" /></legend>
+    <legend>
+      <wicket:message key="Validation"/>
+    </legend>
     <table class="keyValueTable">
       <tr>
         <td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel"></label></td>
-        <td><input wicket:id="required" type="checkbox" /></td>
+        <td><input wicket:id="required" type="checkbox"/></td>
       </tr>
     </table>
 

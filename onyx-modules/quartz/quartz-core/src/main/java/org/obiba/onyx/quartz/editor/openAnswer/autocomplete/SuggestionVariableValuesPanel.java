@@ -23,7 +23,6 @@ import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
-import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -33,6 +32,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.magma.Datasource;
@@ -63,9 +63,6 @@ public class SuggestionVariableValuesPanel extends Panel {
       IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
-    add(CSSPackageResource
-        .getHeaderContribution(SuggestionVariableValuesPanel.class, "SuggestionVariableValuesPanel.css"));
-
     final OpenAnswerDefinitionSuggestion openAnswerSuggestion = new OpenAnswerDefinitionSuggestion(model.getObject());
 
     String datasourceValue = null;
@@ -76,7 +73,7 @@ public class SuggestionVariableValuesPanel extends Panel {
         if(variablePath.contains(":")) {
           String datasourceTable = variablePath.split(":")[0];
           if(datasourceTable.contains(".")) {
-            String[] split = datasourceTable.split(".");
+            String[] split = datasourceTable.split("\\.");
             datasourceValue = split[0];
             tableValue = split[1];
           }
@@ -94,11 +91,16 @@ public class SuggestionVariableValuesPanel extends Panel {
     datasource = new DropDownChoice<String>("datasource", new Model<String>(datasourceValue), datasources);
     datasource.setLabel(new ResourceModel("Datasource"));
     datasource.setNullValid(false);
+    datasource.setRequired(true);
     datasource.add(new RequiredFormFieldBehavior());
     datasource.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
+        openAnswerSuggestion.clearVariableValues();
+        table.setModelObject(null);
         target.addComponent(table);
+        target.addComponent(datasource);
+        target.addComponent(variableTabbedPanel);
       }
     });
     add(datasource).add(new SimpleFormComponentLabel("datasourceLabel", datasource));
@@ -122,17 +124,21 @@ public class SuggestionVariableValuesPanel extends Panel {
     table.setLabel(new ResourceModel("Table"));
     table.setOutputMarkupId(true);
     table.setNullValid(false);
+    table.setRequired(true);
     table.add(new RequiredFormFieldBehavior());
     table.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
+        openAnswerSuggestion.clearVariableValues();
+        target.addComponent(table);
         target.addComponent(variableTabbedPanel);
       }
     });
     add(table).add(new SimpleFormComponentLabel("tableLabel", table));
 
     CheckBox selectEntity = new CheckBox("selectEntity",
-        new Model<Boolean>(openAnswerSuggestion.getVariableSelectEntity()));
+        new PropertyModel<Boolean>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion),
+            "variableSelectEntity"));
     selectEntity.setLabel(new ResourceModel("SelectEntity"));
     add(selectEntity).add(new SimpleFormComponentLabel("selectEntityLabel", selectEntity));
     add(new HelpTooltipPanel("selectEntityHelp", new ResourceModel("SelectEntity.Tooltip")));
@@ -143,13 +149,7 @@ public class SuggestionVariableValuesPanel extends Panel {
       AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
         @Override
         public Panel getPanel(String panelId) {
-          String variableValue = null;
-          String variablePath = openAnswerSuggestion.getVariableValues(locale);
-          if(variablePath != null) {
-            String[] split = variablePath.split(":");
-            if(split.length == 2) variableValue = split[1];
-          }
-          return new VariablePanel(panelId, new Model<String>(variableValue));
+          return new VariablePanel(panelId, new VariableModel(openAnswerSuggestion, locale));
         }
       };
       tabs.add(new PanelCachingTab(tab));
@@ -168,7 +168,7 @@ public class SuggestionVariableValuesPanel extends Panel {
 
   public class VariablePanel extends Panel {
 
-    public VariablePanel(String id, Model<String> model) {
+    public VariablePanel(String id, IModel<String> model) {
       super(id, model);
 
       IModel<List<String>> variableChoiceModel = new AbstractReadOnlyModel<List<String>>() {
@@ -178,8 +178,8 @@ public class SuggestionVariableValuesPanel extends Panel {
             return Collections.emptyList();
           }
           List<String> variables = new ArrayList<String>();
-          for(Variable variable : magmaInstanceProvider.getDatasource(datasource.getModelObject()).getValueTable(table
-              .getModelObject()).getVariables()) {
+          for(Variable variable : magmaInstanceProvider.getDatasource(datasource.getModelObject())
+              .getValueTable(table.getModelObject()).getVariables()) {
             variables.add(variable.getName());
           }
           Collections.sort(variables);
@@ -191,17 +191,42 @@ public class SuggestionVariableValuesPanel extends Panel {
       variable.setLabel(new ResourceModel("Variable"));
       variable.setOutputMarkupId(true);
       variable.setNullValid(false);
+      variable.setRequired(true);
       variable.add(new RequiredFormFieldBehavior());
-      variable.add(new OnChangeAjaxBehavior() {
-        @Override
-        protected void onUpdate(AjaxRequestTarget target) {
-          OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) SuggestionVariableValuesPanel.this
-              .getDefaultModelObject();
-
-        }
-      });
       add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
     }
+  }
+
+  public class VariableModel implements IModel<String> {
+
+    private final OpenAnswerDefinitionSuggestion openAnswerSuggestion;
+    private final Locale locale;
+
+    public VariableModel(OpenAnswerDefinitionSuggestion openAnswerSuggestion, Locale locale) {
+      this.openAnswerSuggestion = openAnswerSuggestion;
+      this.locale = locale;
+    }
+
+    @Override
+    public String getObject() {
+      String variablePath = openAnswerSuggestion.getVariableValues(locale);
+      if(variablePath != null) {
+        String[] split = variablePath.split(":");
+        if(split.length == 2) return split[1];
+      }
+      return null;
+    }
+
+    @Override
+    public void setObject(String string) {
+      String variableName = datasource.getModelObject() + "." + table.getModelObject() + ":" + string;
+      openAnswerSuggestion.setVariableValues(locale, variableName);
+    }
+
+    @Override
+    public void detach() {
+    }
+
   }
 
 }

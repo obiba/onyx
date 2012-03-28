@@ -30,6 +30,8 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswe
  */
 public class OpenAnswerDefinitionSuggestion implements Serializable {
 
+  private static final String SUGGESTION_MAX_COUNT = "suggest.maxCount";
+
   private static final String SUGGESTION_ITEMS = "suggest.items";
 
   private static final String SUGGESTION_LABELS = "suggest.labels";
@@ -37,10 +39,6 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
   private static final String SUGGESTION_VARIABLE = "suggest.variable";
 
   private static final String SUGGESTION_VARIABLE_SELECT_ENTITY = "suggest.variable.selectEntity";
-
-  private static final String SUGGESTION_VARIABLE_MAX_COUNT = "suggest.variable.maxCount";
-
-
 
   public enum Source {
     ITEMS_LIST, VARIABLE_VALUES
@@ -53,11 +51,18 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     this.openAnswer = openAnswer;
   }
 
+  @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
   public static OpenAnswerDefinitionSuggestion createNewSuggestionOpenAnswer() {
     OpenAnswerDefinition openAnswer = new OpenAnswerDefinition();
     openAnswer.setDataType(DataType.TEXT);
     openAnswer.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUTO_COMPLETE.getUiArgument());
     return new OpenAnswerDefinitionSuggestion(openAnswer);
+  }
+
+  public void resetSuggestionOpenAnswerDefinition() {
+    openAnswer.setDataType(DataType.TEXT);
+    openAnswer.clearUIArgument();
+    openAnswer.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUTO_COMPLETE.getUiArgument());
   }
 
   public OpenAnswerDefinition getOpenAnswerDefinition() {
@@ -91,8 +96,7 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     }
   }
 
-  public void setSuggestionLabel(Locale locale, String item,
-      String label) {
+  public void setSuggestionLabel(Locale locale, String item, String label) {
     if(locale != null && StringUtils.isNotBlank(item)) {
       removeSuggestionLabel(locale, item);
       if(StringUtils.isNotBlank(label)) {
@@ -101,6 +105,7 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public List<String> getSuggestionItems() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     if(valueMap == null) return Collections.emptyList();
@@ -146,8 +151,22 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
   }
 
   public void setVariableValues(Locale locale, String variableName) {
-    openAnswer.removeUIArgument(getVariableKey(locale));
-    openAnswer.addUIArgument(getVariableKey(locale), variableName);
+    openAnswer.replaceUIArgument(getVariableKey(locale), variableName);
+  }
+
+  public void clearVariableValues() {
+    Iterator<String[]> it = openAnswer.getUIArgumentsIterator();
+    if(it != null) {
+      String keyStart = SUGGESTION_VARIABLE + ":";
+      int keyLen = keyStart.length() + 2;
+      while(it.hasNext()) {
+        String[] strings = it.next();
+        if(strings.length > 0) {
+          String localizedKey = strings[0];
+          if(localizedKey.length() == keyLen && localizedKey.startsWith(keyStart)) it.remove();
+        }
+      }
+    }
   }
 
   public String getVariableValues(Locale locale) {
@@ -155,14 +174,30 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     return valueMap == null || locale == null ? null : valueMap.getString(getVariableKey(locale));
   }
 
-  public boolean getVariableSelectEntity() {
+  @SuppressWarnings("UnusedDeclaration")
+  public boolean isVariableSelectEntity() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    return valueMap == null ? false : valueMap.getBoolean(SUGGESTION_VARIABLE_SELECT_ENTITY);
+    return valueMap != null && valueMap.getBoolean(SUGGESTION_VARIABLE_SELECT_ENTITY);
   }
 
-  public int getVariableMaxCount() {
+  @SuppressWarnings("UnusedDeclaration")
+  public void setVariableSelectEntity(boolean selectEntity) {
+    openAnswer.replaceUIArgument(SUGGESTION_VARIABLE_SELECT_ENTITY, String.valueOf(selectEntity));
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  public Integer getMaxCount() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    return valueMap == null ? -1 : valueMap.getInt(SUGGESTION_VARIABLE_MAX_COUNT, -1);
+    return valueMap == null ? null : valueMap.getAsInteger(SUGGESTION_MAX_COUNT);
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  public void setMaxCount(Integer maxCount) {
+    if(maxCount == null) {
+      openAnswer.removeUIArgument(SUGGESTION_MAX_COUNT);
+    } else {
+      openAnswer.replaceUIArgument(SUGGESTION_MAX_COUNT, String.valueOf(maxCount));
+    }
   }
 
   private static String getVariableKey(Locale locale) {

@@ -57,17 +57,18 @@ import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.table.EntityListTablePanel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
+import static org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 
 /**
  *
  */
 public class SuggestionItemListPanel extends Panel {
 
-  public static final int ITEMS_PER_PAGE = 20;
-
-  private final transient Logger logger = LoggerFactory.getLogger(getClass());
+  private static final int ITEMS_PER_PAGE = 20;
+  private static final int ITEM_WINDOW_HEIGHT = 300;
+  private static final int ITEM_WINDOW_WIDTH = 850;
 
   private EntityListTablePanel<String> itemList;
 
@@ -83,9 +84,8 @@ public class SuggestionItemListPanel extends Panel {
 
   private final OpenAnswerDefinitionSuggestion openAnswerSuggestion;
 
-  public SuggestionItemListPanel(String id, final IModel<OpenAnswerDefinition> model,
-      final IModel<Questionnaire> questionnaireModel,
-      final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
+  public SuggestionItemListPanel(String id, IModel<OpenAnswerDefinition> model,
+      IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     this.questionnaireModel = questionnaireModel;
@@ -96,11 +96,11 @@ public class SuggestionItemListPanel extends Panel {
 
     itemWindow = new ModalWindow("itemWindow");
     itemWindow.setCssClassName("onyx");
-    itemWindow.setInitialWidth(850);
-    itemWindow.setInitialHeight(300);
+    itemWindow.setInitialWidth(ITEM_WINDOW_WIDTH);
+    itemWindow.setInitialHeight(ITEM_WINDOW_HEIGHT);
     itemWindow.setResizable(true);
     itemWindow.setTitle(new ResourceModel("SuggestionItem"));
-    itemWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+    itemWindow.setCloseButtonCallback(new CloseButtonCallback() {
       @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
         return true; // same as cancel
@@ -110,11 +110,11 @@ public class SuggestionItemListPanel extends Panel {
 
     add(deleteConfirm = new ConfirmationDialog("deleteConfirm"));
     deleteConfirm.setTitle(new StringResourceModel("ConfirmDeleteItem", this, null));
-    deleteConfirm.setContent(new MultiLineLabel(deleteConfirm.getContentId(),
-        new ResourceModel("ConfirmDeleteItemContent")));
+    deleteConfirm
+        .setContent(new MultiLineLabel(deleteConfirm.getContentId(), new ResourceModel("ConfirmDeleteItemContent")));
 
-    itemList = new EntityListTablePanel<String>("items", new ItemProvider(model.getObject()),
-        new ItemListColumnProvider(), new ResourceModel("Items"), ITEMS_PER_PAGE);
+    itemList = new EntityListTablePanel<String>("items", new ItemProvider(), new ItemListColumnProvider(),
+        new ResourceModel("Items"), ITEMS_PER_PAGE);
     itemList.setAllowColumnSelection(false);
     add(itemList);
 
@@ -137,12 +137,6 @@ public class SuggestionItemListPanel extends Panel {
 
   private class ItemProvider extends SortableDataProvider<String> {
 
-    private OpenAnswerDefinition openAnswerDefinition;
-
-    private ItemProvider(OpenAnswerDefinition openAnswerDefinition) {
-      this.openAnswerDefinition = openAnswerDefinition;
-    }
-
     @Override
     public Iterator<String> iterator(int first, int count) {
       return openAnswerSuggestion.getSuggestionItems().iterator();
@@ -164,7 +158,7 @@ public class SuggestionItemListPanel extends Panel {
 
     private final List<IColumn<String>> columns = new ArrayList<IColumn<String>>();
 
-    public ItemListColumnProvider() {
+    private ItemListColumnProvider() {
       columns.add(new AbstractColumn<String>(new ResourceModel("Name"), "name") {
         @Override
         public void populateItem(Item<ICellPopulator<String>> cellItem, String componentId, IModel<String> rowModel) {
@@ -176,8 +170,7 @@ public class SuggestionItemListPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void populateItem(Item<ICellPopulator<String>> cellItem, String componentId,
-            IModel<String> rowModel) {
+        public void populateItem(Item<ICellPopulator<String>> cellItem, String componentId, IModel<String> rowModel) {
           cellItem.add(new LinkFragment(componentId, rowModel));
         }
       });
@@ -209,16 +202,16 @@ public class SuggestionItemListPanel extends Panel {
   private class LinkFragment extends Fragment {
 
     @SuppressWarnings("rawtypes")
-    public LinkFragment(String id, final IModel<String> rowModel) {
+    private LinkFragment(String id, final IModel<String> rowModel) {
       super(id, "linkFragment", SuggestionItemListPanel.this, rowModel);
 
       add(new AjaxLink<String>("editLink", rowModel) {
+        @SuppressWarnings("unchecked")
         @Override
         public void onClick(AjaxRequestTarget target) {
           itemWindow.setContent(new SuggestionItemWindow("content",
               (IModel<OpenAnswerDefinition>) SuggestionItemListPanel.this.getDefaultModel(), rowModel,
-              questionnaireModel,
-              itemWindow) {
+              questionnaireModel, itemWindow) {
             @Override
             public void onSave(AjaxRequestTarget target) {
               target.addComponent(itemList);
@@ -231,7 +224,7 @@ public class SuggestionItemListPanel extends Panel {
       add(new AjaxLink("deleteLink") {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          deleteConfirm.setYesButtonCallback(new ConfirmationDialog.OnYesCallback() {
+          deleteConfirm.setYesButtonCallback(new OnYesCallback() {
             @Override
             public void onYesButtonClicked(AjaxRequestTarget target) {
               openAnswerSuggestion.removeSuggestionItem(rowModel.getObject());
@@ -247,7 +240,7 @@ public class SuggestionItemListPanel extends Panel {
 
   private class SimpleAddPanel extends Panel {
 
-    public SimpleAddPanel(String id) {
+    private SimpleAddPanel(String id) {
       super(id);
       IModel<String> model = new Model<String>();
       Form<String> form = new Form<String>("form", model);
@@ -279,16 +272,16 @@ public class SuggestionItemListPanel extends Panel {
       simpleAddButton.add(new Image("img", Images.ADD));
       form.add(simpleAddButton);
     }
-  }
 
-  private static String buildPressEnterScript(AjaxButton addButton) {
-    return "if (event.keyCode == 13) {document.getElementById('" + addButton.getMarkupId()
-        + "').click(); return false;} else {return true;};";
+    private String buildPressEnterScript(AjaxButton addButton) {
+      return "if (event.keyCode == 13) {document.getElementById('" + addButton
+          .getMarkupId() + "').click(); return false;} else {return true;};";
+    }
   }
 
   private class BulkAddPanel extends Panel {
 
-    public BulkAddPanel(String id) {
+    private BulkAddPanel(String id) {
       super(id);
       IModel<String> model = new Model<String>();
       Form<String> form = new Form<String>("form", model);
