@@ -8,6 +8,8 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
+import java.util.Collection;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -55,8 +57,8 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    * @param questionCategoryModel
    * @param selectionsModel check group selections model
    */
-  public QuestionCategoryCheckBoxPanel(String id, IModel<QuestionCategory> questionCategoryModel, IModel selectionsModel) {
-    this(id, new QuestionnaireModel(questionCategoryModel.getObject().getQuestion()), questionCategoryModel, selectionsModel, true);
+  public QuestionCategoryCheckBoxPanel(String id, IModel<QuestionCategory> questionCategoryModel, IModel<Collection<IModel<QuestionCategory>>> selectionsModel) {
+    this(id, new QuestionnaireModel<Question>(questionCategoryModel.getObject().getQuestion()), questionCategoryModel, selectionsModel, true);
   }
 
   /**
@@ -69,7 +71,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public QuestionCategoryCheckBoxPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel selectionsModel, boolean radioLabelVisible) {
+  public QuestionCategoryCheckBoxPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<Collection<IModel<QuestionCategory>>> selectionsModel, boolean radioLabelVisible) {
     super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
 
@@ -103,12 +105,12 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
           }
           if(getOpenField() != null) {
             if(!getSelectionModel().isSelected()) {
-              resetOpenAnswerDefinitionPanels(target, getOpenField(), QuestionCategoryCheckBoxPanel.this.getDefaultModel());
+              resetOpenAnswerDefinitionPanels(target, getOpenField(), getQuestionCategoryModel());
               updateFeedbackPanel(target);
             }
           }
 
-          fireQuestionCategorySelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getDefaultModel(), getSelectionModel().isSelected());
+          fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), getSelectionModel().isSelected());
         }
 
       });

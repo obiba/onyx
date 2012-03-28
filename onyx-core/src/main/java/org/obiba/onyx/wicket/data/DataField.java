@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,9 +26,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.Response;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AbstractAutoCompleteRenderer;
+import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -195,6 +199,12 @@ public class DataField extends Panel {
     addUnitLabel(null);
   }
 
+  public DataField(String id, IModel<Data> model, DataType dataType, IAutoCompleteDataProvider provider, IAutoCompleteDataConverter converter) {
+    super(id, model);
+    add(input = new AutoCompleteFragment("input", model, provider, converter));
+    addUnitLabel(null);
+  }
+
   private void addUnitLabel(String unit) {
     add(new Label("unit", StringUtils.trimToEmpty(unit)));
   }
@@ -306,6 +316,69 @@ public class DataField extends Panel {
     return input.getField();
   }
 
+  /**
+   * Used to transform a choice into it's unique ID (and back) and its display value.
+   */
+  public interface IAutoCompleteDataConverter extends Serializable {
+
+    public Data getModelObject(String key);
+
+    public String getKey(Data data);
+
+    /**
+     * Returns the HTML to display for the specified value with an optional partial string. This is used in both the
+     * list of choices and as the label of the selected item once a selection is set.
+     * 
+     * @param data the value for which to obtain the HTML
+     * @param partial the string that partially matches the value, may be null.
+     * @return the HTML string to display
+     */
+    public String getDisplayValue(Data data, String partial);
+
+    /**
+     * Adapts an IAutoCompleteDataConverter to IConverter and IAutoCompleteRenderer
+     */
+    final class Adaptor extends AbstractAutoCompleteRenderer<Data> implements IConverter {
+      final IAutoCompleteDataConverter converter;
+
+      Adaptor(IAutoCompleteDataConverter converter) {
+        this.converter = converter;
+      }
+
+      // IConverter methods
+      @Override
+      public Object convertToObject(String value, Locale locale) {
+        return converter.getModelObject(value);
+      }
+
+      @Override
+      public String convertToString(Object value, Locale locale) {
+        return converter.getKey((Data) value);
+      }
+
+      // IAutoCompleteRenderer methods
+      @Override
+      protected void renderChoice(Data object, Response response, String criteria) {
+        // what to render inside the <li>
+        response.write(object != null ? converter.getDisplayValue(object, criteria) : "");
+      }
+
+      @Override
+      protected String getTextValue(Data object) {
+        // what to render inside the text field
+        return object != null ? converter.getKey(object) : "";
+      }
+    }
+
+  }
+
+  /**
+   * Provides the list of available choices based on a partial input string.
+   */
+  public interface IAutoCompleteDataProvider extends Serializable {
+    public Iterable<Data> getChoices(String input);
+  }
+
   private abstract class FieldFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
@@ -322,6 +395,42 @@ public class DataField extends Panel {
 
     public FormComponent getField() {
       return field;
+    }
+  }
+
+  private class AutoCompleteFragment extends FieldFragment {
+
+    public AutoCompleteFragment(String id, final IModel<Data> model, final IAutoCompleteDataProvider itemProvider, final IAutoCompleteDataConverter converter) {
+      super(id, "autoCompleteFragment", DataField.this);
+
+      final IAutoCompleteDataConverter.Adaptor adaptor = new IAutoCompleteDataConverter.Adaptor(converter);
+
+      field = new AutoCompleteTextField<Data>("field", model, adaptor) {
+
+        @Override
+        public boolean isRequired() {
+          return DataField.this.isRequired();
+        }
+
+        public IConverter getConverter(Class<?> type) {
+          return adaptor;
+        }
+
+        @Override
+        protected Iterator<Data> getChoices(String input) {
+          return itemProvider.getChoices(input).iterator();
+        }
+      };
+      add(field);
+      add(new Label("label", new Model<String>() {
+
+        @Override
+        public String getObject() {
+          Data data = model.getObject();
+          return data != null ? converter.getDisplayValue(data, null) : "";
+        }
+
+      }).setEscapeModelStrings(false));
     }
   }
 

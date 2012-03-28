@@ -49,7 +49,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
 
-  private CheckGroup checkGroup;
+  private CheckGroup<IModel<QuestionCategory>> checkGroup;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -85,6 +85,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     return ((Question) getDefaultModelObject()).hasEscapeCategories();
   }
 
+  @SuppressWarnings("unchecked")
   private IModel<Question> getQuestionModel() {
     return (IModel<Question>) getDefaultModel();
   }
@@ -95,14 +96,14 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    */
   @SuppressWarnings("serial")
   private void addRadioGroup(Question question) {
-    final RadioGroup radioGroup = new RadioGroup("categories", new Model()) {
+    final RadioGroup<QuestionCategory> radioGroup = new RadioGroup<QuestionCategory>("categories", new Model<QuestionCategory>()) {
       @Override
       public void updateModel() {
         // ONYX-344: Do nothing -- QuestionCategoryRadioPanel sets the model to a read-only QuestionnaireModel
         // whenever a radio button is selected.
       }
     };
-    radioGroup.add(new AnswerCountValidator(getQuestionModel()));
+    radioGroup.add(new AnswerCountValidator<QuestionCategory>(getQuestionModel()));
     add(radioGroup);
 
     GridView<QuestionCategory> repeater = new AbstractQuestionCategoriesView("category", getQuestionModel(), null, new QuestionCategoryListToGridPermutator(getQuestionModel())) {
@@ -128,8 +129,8 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    */
   @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
-    checkGroup = new CheckGroup<IModel<?>>("categories", new ArrayList<IModel<?>>());
-    checkGroup.add(new AnswerCountValidator(getQuestionModel()));
+    checkGroup = new CheckGroup<IModel<QuestionCategory>>("categories", new ArrayList<IModel<QuestionCategory>>());
+    checkGroup.add(new AnswerCountValidator<Collection<IModel<QuestionCategory>>>(getQuestionModel()));
     add(checkGroup);
 
     GridView<QuestionCategory> repeater = new AbstractQuestionCategoriesView("category", getQuestionModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getQuestionModel())) {
@@ -140,7 +141,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
           item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup.getModel()));
-          item.add(new AttributeModifier("class", true, new Model("obiba-quartz-checkbox-category")));
+          item.add(new AttributeModifier("class", true, new Model<String>("obiba-quartz-checkbox-category")));
         }
       }
 
@@ -155,10 +156,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public
-      void
-      onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, final IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, final IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     // repaint the panel
     target.addComponent(this);
 
@@ -167,7 +165,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     if(checkGroup != null) {
       if(isEscape) {
         // case we are called by an escape category in a multiple choice context
-        ((Collection<IModel<?>>) checkGroup.getModelObject()).clear();
+        checkGroup.getModelObject().clear();
         // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
         checkGroup.visitChildren(CheckBox.class, new Component.IVisitor<CheckBox>() {
 

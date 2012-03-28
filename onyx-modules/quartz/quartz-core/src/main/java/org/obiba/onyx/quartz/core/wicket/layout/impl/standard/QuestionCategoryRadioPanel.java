@@ -47,7 +47,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
   private AbstractOpenAnswerDefinitionPanel openField;
 
-  private RadioGroup radioGroup;
+  private RadioGroup<QuestionCategory> radioGroup;
 
   /**
    * Constructor, using the question of the category and making the category label visible.
@@ -55,8 +55,8 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
    * @param id
    * @param questionCategoryModel
    */
-  public QuestionCategoryRadioPanel(String id, IModel<QuestionCategory> questionCategoryModel, RadioGroup radioGroup) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, radioGroup, true);
+  public QuestionCategoryRadioPanel(String id, IModel<QuestionCategory> questionCategoryModel, RadioGroup<QuestionCategory> radioGroup) {
+    this(id, new QuestionnaireModel<Question>(questionCategoryModel.getObject().getQuestion()), questionCategoryModel, radioGroup, true);
   }
 
   /**
@@ -68,7 +68,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public QuestionCategoryRadioPanel(String id, IModel questionModel, IModel questionCategoryModel, RadioGroup radioGroup, boolean radioLabelVisible) {
+  public QuestionCategoryRadioPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, RadioGroup<QuestionCategory> radioGroup, boolean radioLabelVisible) {
     super(id, questionModel, questionCategoryModel);
     this.radioGroup = radioGroup;
 
@@ -76,7 +76,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
     Question question = (Question) questionModel.getObject();
 
-    Radio radio = new Radio("radio", questionCategoryModel);
+    Radio<QuestionCategory> radio = new Radio<QuestionCategory>("radio", questionCategoryModel);
     radio.setLabel(new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
     // persist selection on change event
     // and make sure there is no active open field previously selected
@@ -87,7 +87,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
         protected void onEvent(AjaxRequestTarget target) {
 
           // make the radio group active for the selection
-          QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getDefaultModel());
+          QuestionCategoryRadioPanel.this.radioGroup.setModel(getQuestionCategoryModel());
 
           // exclusive choice, only one answer per question
           activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
@@ -115,8 +115,8 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
       add(openField);
 
       // make radio associated to open answer optionally visible using css styling
-      radio.add(new AttributeAppender("class", new Model("radio-open"), " "));
-      radioLabel.add(new AttributeModifier("class", new Model("label-open")));
+      radio.add(new AttributeAppender("class", new Model<String>("radio-open"), " "));
+      radioLabel.add(new AttributeModifier("class", new Model<String>("label-open")));
 
     } else {
       // no open answer
@@ -148,9 +148,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   }
 
   @Override
-  public
-      void
-      onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection={}:{}", questionModel.getObject(), questionCategoryModel.getObject());
 
     if(!radioGroup.getModel().equals(questionCategoryModel)) {

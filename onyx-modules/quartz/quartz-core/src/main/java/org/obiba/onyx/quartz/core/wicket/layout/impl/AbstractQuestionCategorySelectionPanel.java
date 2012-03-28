@@ -50,7 +50,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
   protected AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id) {
     AbstractOpenAnswerDefinitionPanel openField;
 
-    if(getQuestionCategory().getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
+    if(getQuestionCategory().getCategory().getOpenAnswerDefinition().hasChildOpenAnswerDefinitions() == false) {
       // case there is a simple open answer
       openField = new DefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel());
     } else {
@@ -65,7 +65,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * Reset (set null data) the open fields not associated to the current question category.
    * @param parentContainer
    */
-  protected void resetOpenAnswerDefinitionPanels(final AjaxRequestTarget target, MarkupContainer parentContainer, final IModel questionCategoryModel) {
+  protected void resetOpenAnswerDefinitionPanels(final AjaxRequestTarget target, MarkupContainer parentContainer, final IModel<QuestionCategory> questionCategoryModel) {
 
     if(AbstractOpenAnswerDefinitionPanel.class.isInstance(parentContainer)) {
       AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) parentContainer;
@@ -73,12 +73,11 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
       target.addComponent(openField);
     }
 
-    parentContainer.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
+    parentContainer.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor<AbstractOpenAnswerDefinitionPanel>() {
 
-      public Object component(Component component) {
-        if(!questionCategoryModel.equals(component.getDefaultModel())) {
-          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getDefaultModelObject());
-          AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+      public Object component(AbstractOpenAnswerDefinitionPanel openField) {
+        if(!questionCategoryModel.equals(openField.getDefaultModel())) {
+          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", openField.getDefaultModelObject());
           openField.resetField();
           target.addComponent(openField);
         }
@@ -94,7 +93,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    */
   public abstract boolean hasOpenField();
 
-  protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), Boolean.valueOf(isSelected) });
     IQuestionCategorySelectionListener listener = findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
