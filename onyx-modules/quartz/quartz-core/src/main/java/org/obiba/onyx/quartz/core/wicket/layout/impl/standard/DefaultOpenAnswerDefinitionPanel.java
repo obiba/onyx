@@ -28,7 +28,6 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
@@ -60,8 +59,11 @@ import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
 public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel {
@@ -319,7 +321,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       @Override
       protected void onValidate(IValidatable<Data> validatable) {
         Data value = validatable.getValue();
-        if(value != null && value.getValue() != null && Iterables.contains(provider.getChoices(""), value) == false) {
+        if(value != null && value.getValue() != null && Iterables.contains(provider.getChoices(value.getValueAsString()), value) == false) {
           error(validatable, "NotASuggestedValue");
         }
       }
@@ -343,11 +345,25 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
     @Override
     public Iterable<Data> getChoices(final String partial) {
-      return Iterables.transform(computeChoices(partial), getFunc());
+      return Iterables.transform(Iterables.limit(computeChoices(partial), Objects.firstNonNull(getSuggestion().getMaxCount(), 10)), getFunc());
     }
 
     protected OpenAnswerDefinitionSuggestion getSuggestion() {
       return new OpenAnswerDefinitionSuggestion(getOpenAnswerDefinition());
+    }
+
+    /**
+     * returns true if all words in {@code partial} are contained in {@code matchable}
+     */
+    protected boolean matches(String partial, String matchable) {
+      if(matchable == null) return false;
+      String lc = matchable.toLowerCase();
+      for(String match : Splitter.on(CharMatcher.WHITESPACE).trimResults().omitEmptyStrings().split(partial)) {
+        if(lc.contains(match.toLowerCase()) == false) {
+          return false;
+        }
+      }
+      return true;
     }
 
     private Function<String, Data> getFunc() {
@@ -375,11 +391,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
         @Override
         public boolean apply(String input) {
-          if(input.toLowerCase().contains(partial.toLowerCase())) {
-            return true;
-          }
-          String localised = localizeChoice(input);
-          return localised != null && localised.toLowerCase().contains(partial.toLowerCase());
+          return matches(partial, input) || matches(partial, localizeChoice(input));
         }
       });
     }
@@ -402,19 +414,15 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
       final VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
 
-      Predicate<ValueSet> matches = new Predicate<ValueSet>() {
+      Predicate<ValueSet> matchesPredicate = new Predicate<ValueSet>() {
 
         @Override
         public boolean apply(ValueSet input) {
-          if(input.getVariableEntity().getIdentifier().toLowerCase().contains(partial.toLowerCase())) {
-            return true;
-          }
-          Value value = vvs.getValue(input);
-          return value.isNull() == false && value.toString().toLowerCase().contains(partial.toLowerCase());
+          return matches(partial, input.getVariableEntity().getIdentifier()) || matches(partial, vvs.getValue(input).toString());
         }
       };
 
-      return Iterables.transform(Iterables.filter(table.getValueSets(), matches), new Function<ValueSet, String>() {
+      return Iterables.transform(Iterables.filter(table.getValueSets(), matchesPredicate), new Function<ValueSet, String>() {
 
         @Override
         public String apply(ValueSet input) {
