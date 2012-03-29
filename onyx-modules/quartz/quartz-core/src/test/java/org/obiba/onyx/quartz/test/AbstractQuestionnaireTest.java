@@ -18,7 +18,7 @@ import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.TestPanelSource;
+import org.apache.wicket.util.tester.ITestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,9 +26,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.DbUnitAwareTestExecutionListener;
-import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.js.MagmaJsExtension;
-import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.engine.Stage;
@@ -120,8 +117,6 @@ public abstract class AbstractQuestionnaireTest {
    */
   @Before
   public void setUp() {
-    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
-
     initContext();
     initWicketTester();
     initQuestionnaireStage();
@@ -134,7 +129,6 @@ public abstract class AbstractQuestionnaireTest {
   public void tearDown() {
     interviewManager.releaseInterview();
     destroyUIFactoryRegistries();
-    MagmaEngine.get().shutdown();
 
   }
 
@@ -456,7 +450,7 @@ public abstract class AbstractQuestionnaireTest {
    */
   public void startQuestionnaire() {
     // Create a QuartzPanel.
-    wicketTester.startPanel(new TestPanelSource() {
+    wicketTester.startPanel(new ITestPanelSource() {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {

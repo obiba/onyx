@@ -16,16 +16,11 @@ import junit.framework.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.Variable;
-import org.obiba.magma.js.MagmaJsExtension;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.TextType;
-import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -43,16 +38,6 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
   private static final String DONT_KNOW = "DONT_KNOW";
 
   private static final String OTHER_SPECIFY = "OTHER_SPECIFY";
-
-  @Before
-  public void before() {
-    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
-  }
-
-  @After
-  public void after() {
-    MagmaEngine.get().shutdown();
-  }
 
   @Test
   public void testQuestionnaireBuilder() {

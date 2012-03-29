@@ -31,7 +31,9 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -426,8 +428,12 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       OpenAnswerDefinitionSuggestion suggestion = getSuggestion();
       String variablePath = suggestion.getVariableValues(activeQuestionnaireAdministrationService.getLanguage());
       ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
-      final VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
-      return vvs.getValue(table.getValueSet(magmaInstanceProvider.newParticipantEntity(key))).toString();
+      VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
+      VariableEntity e = new VariableEntityBean(table.getEntityType(), key);
+      if(table.hasValueSet(e)) {
+        return vvs.getValue(table.getValueSet(e)).toString();
+      }
+      return null;
     }
 
   }

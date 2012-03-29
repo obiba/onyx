@@ -32,6 +32,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -65,6 +66,8 @@ public class DefaultOpenAnswerDefinitionPanelTest {
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
 
+  private MagmaInstanceProvider magmaInstanceProviderMock;
+
   private QuestionnaireBundleManager questionnaireBundleManagerMock;
 
   private EntityQueryService queryServiceMock;
@@ -86,11 +89,13 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     queryServiceMock = createMock(EntityQueryService.class);
     questionnaireBundleMock = createMock(QuestionnaireBundle.class);
     messageSourceMock = createMock(MessageSource.class);
+    magmaInstanceProviderMock = createMock(MagmaInstanceProvider.class);
 
     mockCtx.putBean("activeInterviewService", activeInterviewServiceMock);
     mockCtx.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
     mockCtx.putBean("questionnaireBundleManager", questionnaireBundleManagerMock);
     mockCtx.putBean("queryService", queryServiceMock);
+    mockCtx.putBean("magmaInstanceProviderMock", magmaInstanceProviderMock);
     mockCtx.putBean("moduleRegistry", new ModuleRegistry());
 
     PageLayoutFactoryRegistry pageLayoutFactoryRegistryMock = new PageLayoutFactoryRegistry();

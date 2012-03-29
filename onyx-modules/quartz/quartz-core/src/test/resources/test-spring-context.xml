@@ -60,7 +60,17 @@
 
   <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
   </bean>
-
+ 
+  <bean id="magmaEngine" class="org.obiba.magma.spring.MagmaEngineFactoryBean">
+    <property name="extensions">
+      <set>
+        <bean class="org.obiba.magma.js.MagmaJsExtension"/>
+        <bean class="org.obiba.magma.xstream.MagmaXStreamExtension" />
+      </set>
+    </property>
+  </bean>
+  <bean id="magmaInstanceProvider" class="org.obiba.onyx.magma.DefaultMagmaInstanceProvider" />
+  
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
 
