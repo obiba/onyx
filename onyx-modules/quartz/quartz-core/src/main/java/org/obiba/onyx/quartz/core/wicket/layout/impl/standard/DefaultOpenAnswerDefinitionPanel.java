@@ -10,7 +10,6 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -22,10 +21,18 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.util.upload.FileUploadException;
 import org.apache.wicket.util.value.ValueMap;
+import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.magma.Value;
+import org.obiba.magma.ValueSet;
+import org.obiba.magma.ValueTable;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
@@ -53,7 +60,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel {
@@ -66,6 +72,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean
+  private MagmaInstanceProvider magmaInstanceProvider;
 
   private DataField openField;
 
@@ -264,6 +273,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
   private DataField createAutoCompleteDataField(ValueMap arguments) {
     final OpenAnswerDefinitionSuggestion suggestion = new OpenAnswerDefinitionSuggestion(getOpenAnswerDefinition());
+    final AbstractAutoCompleteDataProvider provider = suggestion.getSuggestionSource() == OpenAnswerDefinitionSuggestion.Source.ITEMS_LIST ? new ItemListDataProvider() : new VariableDataProvider();
     final IAutoCompleteDataConverter converter = new IAutoCompleteDataConverter() {
 
       private static final long serialVersionUID = 1L;
@@ -281,19 +291,38 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       @Override
       public String getDisplayValue(Data data, String partial) {
         String key = getKey(data);
-        String label = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), key).getString();
-        if(StringUtils.isNotBlank(label)) {
-          if(partial != null) {
-            label = label.replace(partial, "<span class='strong'>" + partial + "</span>");
+        String label = provider.localizeChoice(key);
+
+        key = Strings.escapeMarkup(key, true).toString();
+        if(Strings.isEmpty(partial) == false) {
+          key = key.replaceFirst(partial, "<span class='match'>" + Strings.escapeMarkup(partial, true) + "</span>");
+        }
+
+        if(Strings.isEmpty(label) == false) {
+          if(Strings.isEmpty(partial) == false) {
+            label = label.replaceFirst(partial, "<span class='match'>" + Strings.escapeMarkup(partial, true) + "</span>");
           }
           return key + " : " + label;
         }
+
         return key;
       }
 
     };
-    final IAutoCompleteDataProvider provider = suggestion.getSuggestionSource() == OpenAnswerDefinitionSuggestion.Source.ITEMS_LIST ? new ItemListDataProvider() : new VariableDataProvider();
-    return new DataField("open", new PropertyModel<Data>(this, "data"), DataType.TEXT, provider, converter);
+    DataField f = new DataField("open", new PropertyModel<Data>(this, "data"), DataType.TEXT, provider, converter);
+    f.add(new AbstractValidator<Data>() {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onValidate(IValidatable<Data> validatable) {
+        Data value = validatable.getValue();
+        if(value != null && value.getValue() != null && Iterables.contains(provider.getChoices(""), value) == false) {
+          error(validatable, "NotASuggestedValue");
+        }
+      }
+    });
+    return f;
   }
 
   private DataField createDefaultDataField(ValueMap arguments, QuestionnaireStringResourceModel unitLabel) {
@@ -308,14 +337,11 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
   private abstract class AbstractAutoCompleteDataProvider implements IAutoCompleteDataProvider {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public Iterable<Data> getChoices(final String partial) {
-      return Iterables.transform(Iterables.filter(computeChoices(partial), new Predicate<String>() {
-        @Override
-        public boolean apply(String input) {
-          return input.toLowerCase().contains(partial);
-        }
-      }), getFunc());
+      return Iterables.transform(computeChoices(partial), getFunc());
     }
 
     protected OpenAnswerDefinitionSuggestion getSuggestion() {
@@ -333,22 +359,75 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     }
 
     abstract Iterable<String> computeChoices(String partial);
+
+    abstract String localizeChoice(String key);
   }
 
   private class ItemListDataProvider extends AbstractAutoCompleteDataProvider {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
-    Iterable<String> computeChoices(String partial) {
-      return getSuggestion().getSuggestionItems();
+    Iterable<String> computeChoices(final String partial) {
+      return Iterables.filter(getSuggestion().getSuggestionItems(), new Predicate<String>() {
+
+        @Override
+        public boolean apply(String input) {
+          if(input.toLowerCase().contains(partial.toLowerCase())) {
+            return true;
+          }
+          String localised = localizeChoice(input);
+          return localised != null && localised.toLowerCase().contains(partial.toLowerCase());
+        }
+      });
+    }
+
+    @Override
+    String localizeChoice(String key) {
+      return new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), key).getString();
     }
 
   }
 
   private class VariableDataProvider extends AbstractAutoCompleteDataProvider {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
-    Iterable<String> computeChoices(String partial) {
-      return ImmutableList.of();
+    Iterable<String> computeChoices(final String partial) {
+      OpenAnswerDefinitionSuggestion suggestion = getSuggestion();
+      String variablePath = suggestion.getVariableValues(activeQuestionnaireAdministrationService.getLanguage());
+      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
+      final VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
+
+      Predicate<ValueSet> matches = new Predicate<ValueSet>() {
+
+        @Override
+        public boolean apply(ValueSet input) {
+          if(input.getVariableEntity().getIdentifier().toLowerCase().contains(partial.toLowerCase())) {
+            return true;
+          }
+          Value value = vvs.getValue(input);
+          return value.isNull() == false && value.toString().toLowerCase().contains(partial.toLowerCase());
+        }
+      };
+
+      return Iterables.transform(Iterables.filter(table.getValueSets(), matches), new Function<ValueSet, String>() {
+
+        @Override
+        public String apply(ValueSet input) {
+          return input.getVariableEntity().getIdentifier();
+        }
+      });
+    }
+
+    @Override
+    String localizeChoice(String key) {
+      OpenAnswerDefinitionSuggestion suggestion = getSuggestion();
+      String variablePath = suggestion.getVariableValues(activeQuestionnaireAdministrationService.getLanguage());
+      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
+      final VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
+      return vvs.getValue(table.getValueSet(magmaInstanceProvider.newParticipantEntity(key))).toString();
     }
 
   }

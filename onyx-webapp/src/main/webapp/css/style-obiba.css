@@ -439,9 +439,7 @@ text-align:center;
 }
 
 /*************** Wicket Autocomplete ********************/
-
 div.wicket-aa {
-  font-size: 0.8333em;
   background-color: white;
   border-width: 0.0833em;
   border-color: #cccccc;
@@ -451,7 +449,8 @@ div.wicket-aa {
   text-align:left;
 }
 div.wicket-aa ul { list-style:none; padding: 0.1667em; margin:0; }
-div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 0.1667em; margin:0; }
+div.wicket-aa ul li.selected { background-color: lightgray; margin:0; }
+div.wicket-aa ul li .match { font-weight: bold; }
 
 /*************** End Wicket Autocomplete ********************/
 

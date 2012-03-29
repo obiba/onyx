@@ -338,22 +338,11 @@ public class DataField extends Panel {
     /**
      * Adapts an IAutoCompleteDataConverter to IConverter and IAutoCompleteRenderer
      */
-    final class Adaptor extends AbstractAutoCompleteRenderer<Data> implements IConverter {
+    final class Adaptor extends AbstractAutoCompleteRenderer<Data> {
       final IAutoCompleteDataConverter converter;
 
       Adaptor(IAutoCompleteDataConverter converter) {
         this.converter = converter;
-      }
-
-      // IConverter methods
-      @Override
-      public Object convertToObject(String value, Locale locale) {
-        return converter.getModelObject(value);
-      }
-
-      @Override
-      public String convertToString(Object value, Locale locale) {
-        return converter.getKey((Data) value);
       }
 
       // IAutoCompleteRenderer methods
@@ -413,7 +402,7 @@ public class DataField extends Panel {
         }
 
         public IConverter getConverter(Class<?> type) {
-          return adaptor;
+          return new DataConverter(DataType.TEXT, userSessionService);
         }
 
         @Override
