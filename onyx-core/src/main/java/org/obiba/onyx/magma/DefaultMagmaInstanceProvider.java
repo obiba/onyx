@@ -16,17 +16,21 @@ import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.MagmaEngineTableResolver;
 import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Preconditions;
+
 public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
 
-  private MagmaEngine magmaEngine;
+  private final MagmaEngine magmaEngine;
 
   @Autowired
   public DefaultMagmaInstanceProvider(MagmaEngine magmaEngine) {
+    Preconditions.checkArgument(magmaEngine != null);
     this.magmaEngine = magmaEngine;
   }
 
@@ -57,14 +61,17 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
 
   @Override
   public ValueTable resolveTableFromVariablePath(String variablePath) {
-    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
-    return resolver.resolveTable(getParticipantsTable());
+    return MagmaEngineVariableResolver.valueOf(variablePath).resolveTable(getParticipantsTable());
+  }
+
+  @Override
+  public ValueTable resolveTable(String valueTablePath) {
+    return MagmaEngineTableResolver.valueOf(valueTablePath).resolveTable(getParticipantsTable());
   }
 
   @Override
   public VariableValueSource resolveVariablePath(String variablePath) {
-    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
-    return resolver.resolveSource(getParticipantsTable());
+    return MagmaEngineVariableResolver.valueOf(variablePath).resolveSource(getParticipantsTable());
   }
 
   @Override

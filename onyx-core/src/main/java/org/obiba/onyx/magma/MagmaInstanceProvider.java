@@ -80,6 +80,15 @@ public interface MagmaInstanceProvider {
    */
   public ValueTable resolveTableFromVariablePath(String variablePath);
 
+  /**
+   * Resolves a {@code ValueTable} using a {@literal path}. This method is equivalent to
+   * {@code resolveTableFromVariablePath}, except that it does not require a variable name in the path.
+   * 
+   * @param valueTablePath relative or absolute path to the value table
+   * @return
+   */
+  public ValueTable resolveTable(String valueTablePath);
+
   public VariableValueSource resolveVariablePath(String variablePath);
 
   /**

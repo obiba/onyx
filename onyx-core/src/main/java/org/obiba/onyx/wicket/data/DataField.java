@@ -31,6 +31,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AbstractAutoCompleteRenderer;
+import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSettings;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -199,9 +200,9 @@ public class DataField extends Panel {
     addUnitLabel(null);
   }
 
-  public DataField(String id, IModel<Data> model, DataType dataType, IAutoCompleteDataProvider provider, IAutoCompleteDataConverter converter) {
+  public DataField(String id, IModel<Data> model, DataType dataType, IAutoCompleteDataProvider provider, IAutoCompleteDataConverter converter, AutoCompleteSettings settings) {
     super(id, model);
-    add(input = new AutoCompleteFragment("input", model, provider, converter));
+    add(input = new AutoCompleteFragment("input", model, provider, converter, settings));
     addUnitLabel(null);
   }
 
@@ -389,12 +390,12 @@ public class DataField extends Panel {
 
   private class AutoCompleteFragment extends FieldFragment {
 
-    public AutoCompleteFragment(String id, final IModel<Data> model, final IAutoCompleteDataProvider itemProvider, final IAutoCompleteDataConverter converter) {
+    public AutoCompleteFragment(String id, final IModel<Data> model, final IAutoCompleteDataProvider itemProvider, final IAutoCompleteDataConverter converter, AutoCompleteSettings settings) {
       super(id, "autoCompleteFragment", DataField.this);
 
       final IAutoCompleteDataConverter.Adaptor adaptor = new IAutoCompleteDataConverter.Adaptor(converter);
 
-      field = new AutoCompleteTextField<Data>("field", model, adaptor) {
+      field = new AutoCompleteTextField<Data>("field", model, Data.class, adaptor, settings) {
 
         @Override
         public boolean isRequired() {

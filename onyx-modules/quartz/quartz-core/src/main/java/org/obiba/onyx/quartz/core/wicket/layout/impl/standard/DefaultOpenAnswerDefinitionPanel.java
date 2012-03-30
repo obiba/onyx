@@ -9,11 +9,14 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSettings;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
@@ -61,6 +64,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -297,35 +301,46 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         String key = getKey(data);
         String label = provider.localizeChoice(key);
 
-        key = Strings.escapeMarkup(key, true).toString();
-        if(Strings.isEmpty(partial) == false) {
-          key = key.replaceFirst(partial, "<span class='match'>" + Strings.escapeMarkup(partial, true) + "</span>");
-        }
-
+        String display = Strings.escapeMarkup(key, true).toString();
         if(Strings.isEmpty(label) == false) {
-          if(Strings.isEmpty(partial) == false) {
-            label = label.replaceFirst(partial, "<span class='match'>" + Strings.escapeMarkup(partial, true) + "</span>");
-          }
-          return key + " : " + label;
+          display = display + " : " + Strings.escapeMarkup(label);
         }
+        return highlightMatches(partial, display);
+      }
 
-        return key;
+      private String highlightMatches(String partial, String mayContain) {
+        if(mayContain == null) return null;
+        if(Strings.isEmpty(partial)) return mayContain;
+
+        // The pattern we want is "(tylenol|extra|strength)"
+        StringBuilder pattern = new StringBuilder("(");
+        Joiner.on("|").appendTo(pattern, Splitter.on(CharMatcher.WHITESPACE).trimResults().omitEmptyStrings().split(partial));
+        pattern.append(")");
+        Matcher matcher = Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE).matcher(mayContain);
+        StringBuffer sb = new StringBuffer();
+        while(matcher.find()) {
+          matcher.appendReplacement(sb, "<span class='match'>" + Strings.escapeMarkup(matcher.group(0), true) + "</span>");
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
       }
 
     };
-    DataField f = new DataField("open", new PropertyModel<Data>(this, "data"), DataType.TEXT, provider, converter);
-    f.add(new AbstractValidator<Data>() {
+    DataField f = new DataField("open", new PropertyModel<Data>(this, "data"), DataType.TEXT, provider, converter, new AutoCompleteSettings().setAdjustInputWidth(false));
+    if(suggestion.getNewValueAllowed() == false) {
+      f.add(new AbstractValidator<Data>() {
 
-      private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-      @Override
-      protected void onValidate(IValidatable<Data> validatable) {
-        Data value = validatable.getValue();
-        if(value != null && value.getValue() != null && Iterables.contains(provider.getChoices(value.getValueAsString()), value) == false) {
-          error(validatable, "NotASuggestedValue");
+        @Override
+        protected void onValidate(IValidatable<Data> validatable) {
+          Data value = validatable.getValue();
+          if(value != null && value.getValue() != null && Iterables.contains(provider.getChoices(value.getValueAsString()), value) == false) {
+            error(validatable, "NotASuggestedValue");
+          }
         }
-      }
-    });
+      });
+    }
     return f;
   }
 
@@ -391,7 +406,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
         @Override
         public boolean apply(String input) {
-          return matches(partial, input) || matches(partial, localizeChoice(input));
+          return matches(partial, input) || matches(partial, input + " " + localizeChoice(input));
         }
       });
     }
@@ -410,15 +425,24 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     @Override
     Iterable<String> computeChoices(final String partial) {
       OpenAnswerDefinitionSuggestion suggestion = getSuggestion();
+      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(suggestion.getTable());
       String variablePath = suggestion.getVariableValues(activeQuestionnaireAdministrationService.getLanguage());
-      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
-      final VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
+      // variablePath may be null. In which case, we want vvs to be null as well.
+      final VariableValueSource vvs = variablePath == null ? null : magmaInstanceProvider.resolveVariablePath(variablePath);
 
+      // A predicate that returns true if the variable entity identifier matches or the value (if it's available.)
+      // For example, the partial string "tyl extra 1234"
+      // will match entity "123456" with value "Tylenol Extra Strength"
+      // but not entity "45678" with value "Tylenol Extra Strength"
+      // while the partial string "tyl extra" or "456" would match both entities
       Predicate<ValueSet> matchesPredicate = new Predicate<ValueSet>() {
 
         @Override
         public boolean apply(ValueSet input) {
-          return matches(partial, input.getVariableEntity().getIdentifier()) || matches(partial, vvs.getValue(input).toString());
+          String id = input.getVariableEntity().getIdentifier();
+          // Value will never be null
+          String value = Objects.firstNonNull(vvs != null ? vvs.getValue(input).toString() : null, "");
+          return matches(partial, id + " " + value);
         }
       };
 
@@ -435,11 +459,13 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     String localizeChoice(String key) {
       OpenAnswerDefinitionSuggestion suggestion = getSuggestion();
       String variablePath = suggestion.getVariableValues(activeQuestionnaireAdministrationService.getLanguage());
-      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
-      VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
-      VariableEntity e = new VariableEntityBean(table.getEntityType(), key);
-      if(table.hasValueSet(e)) {
-        return vvs.getValue(table.getValueSet(e)).toString();
+      if(variablePath != null) {
+        ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
+        VariableValueSource vvs = magmaInstanceProvider.resolveVariablePath(variablePath);
+        VariableEntity e = new VariableEntityBean(table.getEntityType(), key);
+        if(table.hasValueSet(e)) {
+          return vvs.getValue(table.getValueSet(e)).toString();
+        }
       }
       return null;
     }
