@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.NoSuchMessageException;
 
 /**
- * 
+ *
  */
 public class QuestionnaireStringResourceModelHelper {
 
@@ -34,8 +34,12 @@ public class QuestionnaireStringResourceModelHelper {
 
   private static final int MAX_RESOLVE_STRING_REFERENCE_ATTEMPTS = 10;
 
+  private QuestionnaireStringResourceModelHelper() {
+  }
+
   /**
    * Resolve the property localization for a questionnaire element.
+   *
    * @param bundle
    * @param localizable
    * @param property
@@ -43,7 +47,8 @@ public class QuestionnaireStringResourceModelHelper {
    * @param locale
    * @return
    */
-  public static String getMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable, String property, Object[] stringArgs, Locale locale) {
+  public static String getMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable, String property,
+      Object[] stringArgs, Locale locale) {
     String stringResource = null;
     String propertyKey = bundle.getPropertyKey(localizable, property);
 
@@ -73,32 +78,40 @@ public class QuestionnaireStringResourceModelHelper {
     return stringResource;
   }
 
-  public static String getNonRecursiveResolutionMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable, String property, Object[] stringArgs, Locale locale) {
+  public static String getNonRecursiveResolutionMessage(QuestionnaireBundle bundle, IQuestionnaireElement localizable,
+      String property, Object[] stringArgs, Locale locale) {
     String propertyKey = bundle.getPropertyKey(localizable, property);
     return bundle.getMessageSource().getMessage(propertyKey, stringArgs, locale);
   }
 
   private static String extractKeyFromReference(String stringReference) {
-    return stringReference.substring(StringReferenceCompatibleMessageFormat.STRING_REFERENCE_PREFIX.length(), stringReference.length() - StringReferenceCompatibleMessageFormat.STRING_REFERENCE_SUFFIX.length());
+    return stringReference.substring(StringReferenceCompatibleMessageFormat.STRING_REFERENCE_PREFIX.length(),
+        stringReference.length() - StringReferenceCompatibleMessageFormat.STRING_REFERENCE_SUFFIX.length());
   }
 
   /**
    * Get {@link OpenAnswerDefinition} string resource model.
+   *
    * @param question
    * @param questionCategory
    * @param openAnswerDefinition
    * @return
    */
-  public static IModel<String> getStringResourceModel(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+  public static IModel<String> getStringResourceModel(Question question, QuestionCategory questionCategory,
+      OpenAnswerDefinition openAnswerDefinition) {
     IModel<String> model;
 
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");
-    QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "unitLabel");
-    QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(questionCategory, "label");
+    QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(openAnswerDefinition,
+        "unitLabel");
+    QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(questionCategory,
+        "label");
     QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(question, "label");
 
     if(!questionCategory.getQuestion().getName().equals(question.getName())) {
-      model = new Model<String>(questionLabel.getString() + " / " + getStringResourceModel(questionCategory.getQuestion(), questionCategory, openAnswerDefinition).getObject());
+      model = new Model<String>(
+          questionLabel.getString() + " / " + getStringResourceModel(questionCategory.getQuestion(), questionCategory,
+              openAnswerDefinition).getObject());
     } else if(isValidString(openLabel.getString())) {
       model = openLabel;
     } else if(isValidString(unitLabel.getString())) {
@@ -115,6 +128,7 @@ public class QuestionnaireStringResourceModelHelper {
 
   /**
    * Check if string is not empty and may mean something.
+   *
    * @param str
    * @return
    */

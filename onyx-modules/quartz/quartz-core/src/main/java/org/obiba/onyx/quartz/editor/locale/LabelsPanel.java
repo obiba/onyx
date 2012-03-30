@@ -58,18 +58,28 @@ public class LabelsPanel extends Panel {
 
   private final Map<Locale, ITab> tabByLocale = new HashMap<Locale, ITab>();
 
-  private WebMarkupContainer tabsContainer;
+  private final WebMarkupContainer tabsContainer;
 
   private final Map<String, IModel<String>> tooltips;
 
   public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel,
       FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
-    this(id, model, elementModel, feedbackPanel, feedbackWindow, false, null);
+    this(id, model, elementModel, feedbackPanel, feedbackWindow, null, null);
   }
 
+  /**
+   * @param id
+   * @param model
+   * @param elementModel
+   * @param feedbackPanel
+   * @param feedbackWindow
+   * @param tooltips
+   * @param visibleStates  Map with label element as key and a boolean set to true to show it or false to hide it.
+   *                       Set to null to display all labels.
+   */
   public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel,
-      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField,
-      Map<String, IModel<String>> tooltips) {
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, Map<String, IModel<String>> tooltips,
+      final Map<String, Boolean> visibleStates) {
     super(id, model);
     this.elementModel = elementModel;
     this.tooltips = tooltips;
@@ -86,10 +96,10 @@ public class LabelsPanel extends Panel {
       AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
         @Override
         public Panel getPanel(String panelId) {
-          return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), onlyLabelField);
+          return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), visibleStates);
         }
       };
-      PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
+      ITab panelCachingTab = new PanelCachingTab(tab);
       tabs.add(panelCachingTab);
       tabByLocale.put(locale, panelCachingTab);
     }
@@ -141,10 +151,10 @@ public class LabelsPanel extends Panel {
         AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
           @Override
           public Panel getPanel(String panelId) {
-            return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), false);
+            return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), null);
           }
         };
-        PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
+        ITab panelCachingTab = new PanelCachingTab(tab);
         tabByLocale.put(locale, panelCachingTab);
         tabs.add(panelCachingTab);
         if(tabs.size() == 1) tabbedPanel.setSelectedTab(0);
@@ -156,7 +166,9 @@ public class LabelsPanel extends Panel {
 
   public class InputPanel extends Panel {
 
-    public InputPanel(String id, ListModel<KeyValue> model, final boolean onlyLabelField) {
+    private static final long serialVersionUID = -8514120793621286201L;
+
+    public InputPanel(String id, ListModel<KeyValue> model, final Map<String, Boolean> visibleStates) {
       super(id, model);
 
       add(new ListView<KeyValue>("item", model) {
@@ -173,22 +185,21 @@ public class LabelsPanel extends Panel {
             }
           });
 
-          Component tooltip = null;
-          if(tooltips != null && tooltips.containsKey(label)) {
-            tooltip = new HelpTooltipPanel("tooltip", tooltips.get(label));
-          } else {
-            tooltip = new WebMarkupContainer("tooltip").setVisible(false);
-          }
+          boolean hasTooltip = tooltips != null && tooltips.containsKey(label);
+          Component tooltip = hasTooltip ? new HelpTooltipPanel("tooltip",
+              tooltips.get(label)) : new WebMarkupContainer("tooltip").setVisible(false);
 
           item.add(textArea);
           item.add(textAreaLabel);
           item.add(tooltip);
 
-          if(!"label".equals(label) && onlyLabelField) {
-            textArea.setVisible(false);
-            textAreaLabel.setVisible(false);
-            tooltip.setVisible(false);
+          boolean show = true;
+          if(visibleStates != null && visibleStates.containsKey(label)) {
+            show = visibleStates.get(label);
           }
+          textArea.setVisible(show);
+          textAreaLabel.setVisible(show);
+          tooltip.setVisible(hasTooltip && show);
         }
       });
     }

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswer.autocomplete;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,23 +56,23 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswe
  */
 public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel {
 
+  private static final long serialVersionUID = -5279347826980614034L;
+
 //  private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization") @SpringBean
+      justification = "Need to be be re-initialized upon deserialization")
+  @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
   private final VariableNameBehavior variableNameBehavior;
 
-  private TextField<String> variable;
-
-  private String initialName;
-
+  private final TextField<String> variable;
+  private final String initialName;
   private final FeedbackPanel feedbackPanel;
-
   private final FeedbackWindow feedbackWindow;
-
   private final IModel<Questionnaire> questionnaireModel;
+  private final IModel<LocaleProperties> localePropertiesModel;
 
   public AutoCompleteOpenAnswerPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel,
       IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel,
@@ -79,11 +80,13 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     super(id, model);
 
     this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
+    IModel<Category> categoryModel1 = categoryModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
 
     final Question question = questionModel.getObject();
-    final Category category = categoryModel.getObject();
+    final Category category = categoryModel1.getObject();
     final OpenAnswerDefinition openAnswer = model.getObject();
 
     initialName = openAnswer.getName();
@@ -92,6 +95,9 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
+
+      private static final long serialVersionUID = -5830499780659174132L;
+
       @Override
       protected void onValidate(IValidatable<String> validatable) {
         if(!StringUtils.equals(initialName, validatable.getValue())) {
@@ -123,6 +129,8 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
     if(category == null) {
       variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null) {
+        private static final long serialVersionUID = 690114768067122739L;
+
         @Override
         @SuppressWarnings("hiding")
         protected String generateVariableName(Question parentQuestion, Question question, Category category,
@@ -172,6 +180,8 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     final RadioGroup<Source> radioSource = new RadioGroup<Source>("source", new Model<Source>(source));
     radioSource.setLabel(new ResourceModel("SourceOfSuggestions"));
     radioSource.add(new AjaxFormChoiceComponentUpdatingBehavior() {
+      private static final long serialVersionUID = -2253620826893064297L;
+
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         sourceConfigContainer.addOrReplace(showSuggestionConfig(radioSource.getModelObject(), true));
@@ -191,7 +201,13 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     radioSource.add(new SimpleFormComponentLabel("sourceVariableLabel", sourceVariable));
 
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
-    add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
+    Map<String, Boolean> visibleStates = new HashMap<String, Boolean>();
+    if(openAnswer.isSuggestionAnswer()) {
+      for(String item : new OpenAnswerDefinitionSuggestion(openAnswer).getSuggestionItems()) {
+        visibleStates.put(item, false);
+      }
+    }
+    add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, null, visibleStates));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));
@@ -210,7 +226,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     switch(source) {
       case ITEMS_LIST:
         return new SuggestionItemListPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(),
-            questionnaireModel, feedbackPanel, feedbackWindow);
+            questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
       case VARIABLE_VALUES:
         return new SuggestionVariableValuesPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(),
             questionnaireModel, feedbackPanel, feedbackWindow);

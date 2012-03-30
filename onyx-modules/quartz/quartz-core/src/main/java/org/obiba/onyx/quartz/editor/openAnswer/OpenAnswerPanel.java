@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -78,6 +79,7 @@ import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -150,7 +152,7 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private SimpleFormComponentLabel maximumLabel;
 
-  private OnyxEntityList<ComparingDataSource> validators;
+  private final OnyxEntityList<ComparingDataSource> validators;
 
   private final ModalWindow validatorWindow;
 
@@ -173,17 +175,17 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private final VariableNameBehavior variableNameBehavior;
 
-  private TextField<String> variable;
+  private final TextField<String> variable;
 
-  private String initialName;
+  private final String initialName;
 
-  private TextField<String> patternField;
+  private final TextField<String> patternField;
 
-  private TextField<String> sizeField;
+  private final TextField<String> sizeField;
 
-  private TextField<String> rowsField;
+  private final TextField<String> rowsField;
 
-  public OpenAnswerPanel(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel,
+  public OpenAnswerPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel,
       final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel,
       IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel,
       final FeedbackWindow feedbackWindow) {
@@ -218,9 +220,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
           boolean alreadyContains = false;
           if(category != null) {
             Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
-            alreadyContains = (openAnswerDefinitionsByName
+            alreadyContains = openAnswerDefinitionsByName
                 .containsKey(validatable.getValue()) && openAnswerDefinitionsByName
-                .get(validatable.getValue()) != openAnswer);
+                .get(validatable.getValue()) != openAnswer;
           }
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           questionnaireModel.getObject().setQuestionnaireCache(null);
@@ -251,7 +253,7 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
           if(category != null) {
             return super.generateVariableName(parentQuestion, question, category, name);
           }
-          String variableName = (parentQuestion == null ? "" : parentQuestion.getName() + ".");
+          String variableName = parentQuestion == null ? "" : parentQuestion.getName() + ".";
           if(question != null) {
             variableName += question.getName() + "." + question.getName() + ".";
           }
@@ -309,7 +311,15 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     add(rowsField);
 
     localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswer);
-    add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow));
+
+    Map<String, Boolean> visibleStates = new HashMap<String, Boolean>();
+    if(openAnswer.isSuggestionAnswer()) {
+      for(String item : new OpenAnswerDefinitionSuggestion(openAnswer).getSuggestionItems()) {
+        visibleStates.put(item, false);
+      }
+    }
+    add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, null,
+        visibleStates));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));
@@ -398,13 +408,13 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     String patternStr = onyxSettings.getDateFormat().toPattern();
 
     beforeDate = new TextField<String>("beforeDate", new Model<String>(maxValue), String.class);
-    beforeDate.setLabel(new Model<String>(
-        new StringResourceModel("Before", OpenAnswerPanel.this, null).getObject() + " (" + patternStr + ")"));
+    beforeDate.setLabel(
+        new Model<String>(new StringResourceModel("Before", this, null).getObject() + " (" + patternStr + ")"));
     minMaxContainer.add(beforeDate);
 
     afterDate = new TextField<String>("afterDate", new Model<String>(minValue), String.class);
-    afterDate.setLabel(new Model<String>(
-        new StringResourceModel("After", OpenAnswerPanel.this, null).getObject() + " (" + patternStr + ")"));
+    afterDate.setLabel(
+        new Model<String>(new StringResourceModel("After", this, null).getObject() + " (" + patternStr + ")"));
     minMaxContainer.add(afterDate);
 
     minMaxContainer.add(minimumLabel = new SimpleFormComponentLabel("minimumLabel", minLength));
@@ -415,7 +425,7 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     add(validators = new OnyxEntityList<ComparingDataSource>("validators", new ValidationDataSourcesProvider(),
         new ValidationDataSourcesColumnProvider(), new ResourceModel("Validators")));
 
-    final AjaxLink<Void> addValidator = new AjaxLink<Void>("addValidator") {
+    AjaxLink<Void> addValidator = new AjaxLink<Void>("addValidator") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         if(dataTypeDropDown.getModelObject() == null) {
@@ -427,8 +437,8 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
               new ValidationDataSourceWindow("content", new Model<ComparingDataSource>(), questionModel,
                   questionnaireModel, dataTypeDropDown.getModelObject(), validatorWindow) {
                 @Override
-                protected void onSave(@SuppressWarnings("hiding")
-                AjaxRequestTarget target, ComparingDataSource comparingDataSource) {
+                protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                    ComparingDataSource comparingDataSource) {
                   openAnswer.addValidationDataSource(comparingDataSource);
                   target.addComponent(validators);
                 }
@@ -554,8 +564,7 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     defaultValuesList = new SortableList<Data>("defaultValues", openAnswer.getDefaultValues(), true) {
 
       @Override
-      public Component getItemTitle(@SuppressWarnings("hiding")
-      String id, Data data) {
+      public Component getItemTitle(@SuppressWarnings("hiding") String id, Data data) {
         return new Label(id,
             data.getType() == DataType.DATE ? onyxSettings.getDateFormat().format(data.getValue()) : data
                 .getValueAsString());
@@ -603,8 +612,10 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private class SimpleAddPanel extends Panel {
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public SimpleAddPanel(String id, IModel<String> model) {
+    private static final long serialVersionUID = 6783243062332586965L;
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
       form.setMultiPart(false);
@@ -630,10 +641,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
           openAnswerDefinition.setDataType(dataTypeEnum);
           String strValueOf = String.valueOf(defaultValue.getModelObject());
           addDefaultValue(openAnswerDefinition, strValueOf);
-          localePropertiesUtils
-              .load(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswerDefinition);
-          localePropertiesUtils
-              .updateValue(localePropertiesModel.getObject(), openAnswerDefinition, strValueOf, strValueOf);
+          LocaleProperties localeProperties = localePropertiesModel.getObject();
+          localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), openAnswerDefinition);
+          localeProperties.updateValue(openAnswerDefinition, strValueOf, strValueOf);
           defaultValue.setModelObject(null);
           OpenAnswerPanel.this.addOrReplace(labelsPanel = new LabelsPanel("labels", localePropertiesModel,
               (IModel<OpenAnswerDefinition>) OpenAnswerPanel.this.getDefaultModel(), feedbackPanel, feedbackWindow));
@@ -676,7 +686,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private class BulkAddPanel extends Panel {
 
-    public BulkAddPanel(String id, IModel<String> model) {
+    private static final long serialVersionUID = -5146510588970005742L;
+
+    private BulkAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
       form.setMultiPart(false);
@@ -713,11 +725,11 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
             addDefaultValue(openAnswerDefinition, name);
           }
           defaultValues.setModelObject(null);
-          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(),
-              (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject());
+          LocaleProperties localeProperties = localePropertiesModel.getObject();
+          localePropertiesUtils.load(localeProperties, questionnaireModel.getObject(), openAnswerDefinition);
 
           for(String name : new LinkedHashSet<String>(Arrays.asList(names))) {
-            localePropertiesUtils.updateValue(localePropertiesModel.getObject(), openAnswerDefinition, name, name);
+            localeProperties.updateValue(openAnswerDefinition, name, name);
           }
 
           labelsPanel = new LabelsPanel("labels", localePropertiesModel,
@@ -791,7 +803,7 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
           List<ComparisonOperator> comparisonOperatorAsList = Arrays
               .asList(ComparisonOperator.eq, ComparisonOperator.ne, ComparisonOperator.in);
           if(!comparisonOperatorAsList.contains(cds.getComparisonOperator())) {
-            error(new StringResourceModel("InvalidType", OpenAnswerPanel.this, null).getObject());
+            error(new StringResourceModel("InvalidType", this, null).getObject());
           }
         }
         dataSourceRight.setValueType(name);
@@ -801,7 +813,6 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     // TODO use a specific model instead of use onSave Method
     opa.setInputSize(StringUtils.isBlank(sizeField.getValue()) ? null : Integer.valueOf(sizeField.getValue()));
     opa.setNbRows(StringUtils.isBlank(rowsField.getValue()) ? null : Integer.valueOf(rowsField.getValue()));
-
 
     // TODO use a specific model instead of use onSave Method
     opa.clearDataValidators();
@@ -826,9 +837,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
             opa.addDataValidator(dataValidator);
           }
         } catch(ParseException e) {
-          error(new StringResourceModel("InvalidDate", OpenAnswerPanel.this, null).getObject());
-          OpenAnswerPanel.this.feedbackWindow.setContent(OpenAnswerPanel.this.feedbackPanel);
-          OpenAnswerPanel.this.feedbackWindow.show(target);
+          error(new StringResourceModel("InvalidDate", this, null).getObject());
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.show(target);
           return;
         }
         break;
@@ -944,9 +955,11 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private class ValidationDataSourcesProvider extends SortableDataProvider<ComparingDataSource> {
 
+    private static final long serialVersionUID = -2817548332176807142L;
+
     private final List<ComparingDataSource> dataSources;
 
-    public ValidationDataSourcesProvider() {
+    private ValidationDataSourcesProvider() {
       dataSources = ((OpenAnswerDefinition) getDefaultModelObject()).getValidationDataSources();
     }
 
@@ -969,9 +982,11 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private class ValidationDataSourcesColumnProvider implements IColumnProvider<ComparingDataSource>, Serializable {
 
+    private static final long serialVersionUID = 3352730495898474228L;
+
     private final List<IColumn<ComparingDataSource>> columns = new ArrayList<IColumn<ComparingDataSource>>();
 
-    public ValidationDataSourcesColumnProvider() {
+    private ValidationDataSourcesColumnProvider() {
       columns.add(new AbstractColumn<ComparingDataSource>(new ResourceModel("Operator")) {
         @Override
         public void populateItem(Item<ICellPopulator<ComparingDataSource>> cellItem, String componentId,
@@ -1028,7 +1043,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
 
   private class ValidatorsActionFragment extends Fragment {
 
-    public ValidatorsActionFragment(String id, final IModel<ComparingDataSource> rowModel) {
+    private static final long serialVersionUID = 3539962632471597874L;
+
+    private ValidatorsActionFragment(String id, final IModel<ComparingDataSource> rowModel) {
       super(id, "validatorsAction", OpenAnswerPanel.this, rowModel);
       final ComparingDataSource comparingDataSource = rowModel.getObject();
 
@@ -1039,8 +1056,8 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
               new ValidationDataSourceWindow("content", rowModel, questionModel, questionnaireModel,
                   dataTypeDropDown.getModelObject(), validatorWindow) {
                 @Override
-                protected void onSave(@SuppressWarnings("hiding")
-                AjaxRequestTarget target, ComparingDataSource editedComparingDataSource) {
+                protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                    ComparingDataSource editedComparingDataSource) {
                   OpenAnswerDefinition openAnswer = (OpenAnswerDefinition) OpenAnswerPanel.this.getDefaultModelObject();
                   openAnswer.removeValidationDataSource(comparingDataSource);
                   openAnswer.addValidationDataSource(editedComparingDataSource);

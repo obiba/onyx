@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
@@ -49,9 +50,16 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
+import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
+import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -64,15 +72,25 @@ import static org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 /**
  *
  */
+@SuppressWarnings("serial")
 public class SuggestionItemListPanel extends Panel {
+
+//  private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   private static final int ITEMS_PER_PAGE = 20;
   private static final int ITEM_WINDOW_HEIGHT = 300;
   private static final int ITEM_WINDOW_WIDTH = 850;
 
-  private EntityListTablePanel<String> itemList;
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
+  @SpringBean
+  private LocalePropertiesUtils localePropertiesUtils;
+
+  private final EntityListTablePanel<String> itemList;
 
   private final IModel<Questionnaire> questionnaireModel;
+
+  private final IModel<LocaleProperties> localePropertiesModel;
 
   private final FeedbackPanel feedbackPanel;
 
@@ -80,15 +98,17 @@ public class SuggestionItemListPanel extends Panel {
 
   private final ModalWindow itemWindow;
 
-  private ConfirmationDialog deleteConfirm;
+  private final ConfirmationDialog deleteConfirm;
 
   private final OpenAnswerDefinitionSuggestion openAnswerSuggestion;
 
   public SuggestionItemListPanel(String id, IModel<OpenAnswerDefinition> model,
-      IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+      IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel,
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     this.questionnaireModel = questionnaireModel;
+    this.localePropertiesModel = localePropertiesModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
 
@@ -132,10 +152,11 @@ public class SuggestionItemListPanel extends Panel {
       }
     });
     add(new AjaxTabbedPanel("addTabs", tabs));
-
   }
 
   private class ItemProvider extends SortableDataProvider<String> {
+
+    private static final long serialVersionUID = 4475873209134806160L;
 
     @Override
     public Iterator<String> iterator(int first, int count) {
@@ -155,6 +176,8 @@ public class SuggestionItemListPanel extends Panel {
   }
 
   private class ItemListColumnProvider implements IColumnProvider<String>, Serializable {
+
+    private static final long serialVersionUID = -1220931801272181579L;
 
     private final List<IColumn<String>> columns = new ArrayList<IColumn<String>>();
 
@@ -201,6 +224,8 @@ public class SuggestionItemListPanel extends Panel {
 
   private class LinkFragment extends Fragment {
 
+    private static final long serialVersionUID = -8491892591457029782L;
+
     @SuppressWarnings("rawtypes")
     private LinkFragment(String id, final IModel<String> rowModel) {
       super(id, "linkFragment", SuggestionItemListPanel.this, rowModel);
@@ -209,14 +234,44 @@ public class SuggestionItemListPanel extends Panel {
         @SuppressWarnings("unchecked")
         @Override
         public void onClick(AjaxRequestTarget target) {
-          itemWindow.setContent(new SuggestionItemWindow("content",
-              (IModel<OpenAnswerDefinition>) SuggestionItemListPanel.this.getDefaultModel(), rowModel,
-              questionnaireModel, itemWindow) {
-            @Override
-            public void onSave(AjaxRequestTarget target) {
-              target.addComponent(itemList);
-            }
-          });
+
+          final String item = rowModel.getObject();
+          final OpenAnswerDefinition openAnswer = (OpenAnswerDefinition) SuggestionItemListPanel.this
+              .getDefaultModelObject();
+
+          final ElementClone<OpenAnswerDefinition> copy = QuestionnaireElementCloner
+              .clone(openAnswer, new CloneSettings(true), localePropertiesModel.getObject());
+
+          final LocaleProperties localeProperties = localePropertiesModel.getObject();
+
+          itemWindow.setContent(
+              new SuggestionItemWindow("content", new Model<OpenAnswerDefinition>(copy.getElement()), rowModel,
+                  new Model<LocaleProperties>(copy.getLocaleProperties()), itemWindow) {
+
+                @Override
+                public void onSave(AjaxRequestTarget target, String newItem) {
+                  if(StringUtils.equals(item, newItem)) {
+                    for(Locale locale : localeProperties.getLocales()) {
+                      String label = copy.getLocaleProperties().getLabel(copy.getElement(), locale, item);
+                      localeProperties.addElementLabels(openAnswer, locale, item, label, true);
+                    }
+                  } else {
+                    openAnswerSuggestion.removeSuggestionItem(item);
+                    openAnswerSuggestion.addSuggestionItem(newItem);
+                    for(Locale locale : localeProperties.getLocales()) {
+                      String label = copy.getLocaleProperties().getLabel(copy.getElement(), locale, item);
+                      localeProperties.addElementLabels(openAnswer, locale, newItem, label, true);
+                      localeProperties.removeValue(openAnswer, locale, item);
+                    }
+                  }
+                  target.addComponent(itemList);
+                }
+
+                @Override
+                public void onCancel(AjaxRequestTarget target) {
+                  // do nothing as we were working on a copy
+                }
+              });
           itemWindow.show(target);
         }
       });
@@ -228,17 +283,21 @@ public class SuggestionItemListPanel extends Panel {
             @Override
             public void onYesButtonClicked(AjaxRequestTarget target) {
               openAnswerSuggestion.removeSuggestionItem(rowModel.getObject());
+              LocaleProperties localeProperties = localePropertiesModel.getObject();
+              localeProperties.removeValue((IQuestionnaireElement) SuggestionItemListPanel.this.getDefaultModelObject(),
+                  rowModel.getObject());
               target.addComponent(itemList);
             }
           });
           deleteConfirm.show(target);
         }
       });
-
     }
   }
 
   private class SimpleAddPanel extends Panel {
+
+    private static final long serialVersionUID = -5964912992243289712L;
 
     private SimpleAddPanel(String id) {
       super(id);
@@ -252,10 +311,14 @@ public class SuggestionItemListPanel extends Panel {
       form.add(value);
       form.add(new SimpleFormComponentLabel("label", value));
       AjaxButton simpleAddButton = new AjaxButton("addButton", form) {
+
+        @SuppressWarnings("OverlyStrongTypeCast")
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           if(value.getModelObject() == null) return;
           openAnswerSuggestion.addSuggestionItem(value.getModelObject());
+          localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(),
+              (OpenAnswerDefinition) SuggestionItemListPanel.this.getDefaultModelObject());
           value.setModelObject(null);
           target.addComponent(value);
           target.addComponent(itemList);
@@ -281,6 +344,8 @@ public class SuggestionItemListPanel extends Panel {
 
   private class BulkAddPanel extends Panel {
 
+    private static final long serialVersionUID = 5855873555191430416L;
+
     private BulkAddPanel(String id) {
       super(id);
       IModel<String> model = new Model<String>();
@@ -294,14 +359,15 @@ public class SuggestionItemListPanel extends Panel {
       form.add(new SimpleFormComponentLabel("label", values));
       AjaxSubmitLink bulkAddLink = new AjaxSubmitLink("bulkAddLink") {
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "OverlyStrongTypeCast" })
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form1) {
           String[] items = StringUtils.split(values.getModelObject(), ',');
           if(items == null) return;
-
           for(String item : new LinkedHashSet<String>(Arrays.asList(items))) {
             openAnswerSuggestion.addSuggestionItem(item);
+            localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(),
+                (OpenAnswerDefinition) SuggestionItemListPanel.this.getDefaultModelObject());
           }
           values.setModelObject(null);
           target.addComponent(values);

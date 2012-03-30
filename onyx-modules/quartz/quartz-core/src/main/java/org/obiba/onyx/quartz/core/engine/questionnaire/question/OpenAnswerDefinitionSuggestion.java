@@ -30,14 +30,11 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswe
  */
 public class OpenAnswerDefinitionSuggestion implements Serializable {
 
+  private static final long serialVersionUID = -8790254697570036428L;
+
   private static final String SUGGESTION_MAX_COUNT = "suggest.maxCount";
-
   private static final String SUGGESTION_ITEMS = "suggest.items";
-
-  private static final String SUGGESTION_LABELS = "suggest.labels";
-
   private static final String SUGGESTION_VARIABLE = "suggest.variable";
-
   private static final String SUGGESTION_VARIABLE_SELECT_ENTITY = "suggest.variable.selectEntity";
 
   public enum Source {
@@ -76,32 +73,6 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
   public void removeSuggestionItem(String item) {
     if(StringUtils.isNotBlank(item)) {
       openAnswer.removeUIArgument(SUGGESTION_ITEMS, item);
-
-      // remove suggestion labels for all locales
-      Iterator<String[]> it = openAnswer.getUIArgumentsIterator();
-      if(it != null) {
-        String keyStart = SUGGESTION_LABELS + ":" + item + ":";
-        int keyLen = keyStart.length() + 2;
-        while(it.hasNext()) {
-          String[] strings = it.next();
-          if(strings.length > 0) {
-            String localizedKey = strings[0];
-            if(localizedKey.length() == keyLen && localizedKey.startsWith(keyStart)) {
-              it.remove();
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  public void setSuggestionLabel(Locale locale, String item, String label) {
-    if(locale != null && StringUtils.isNotBlank(item)) {
-      removeSuggestionLabel(locale, item);
-      if(StringUtils.isNotBlank(label)) {
-        openAnswer.addUIArgument(getSuggestionLabelKey(locale, item), label);
-      }
     }
   }
 
@@ -113,25 +84,8 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     return (List<String>) (array == null ? Collections.emptyList() : Arrays.asList(array));
   }
 
-  public String getSuggestionLabel(Locale locale, String item) {
-    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    if(valueMap == null || StringUtils.isBlank(item)) return null;
-    if(locale == null) return item;
-    return valueMap.getString(getSuggestionLabelKey(locale, item));
-  }
-
-  public void removeSuggestionLabel(Locale locale, String item) {
-    if(locale != null && StringUtils.isNotBlank(item)) {
-      openAnswer.removeUIArgument(getSuggestionLabelKey(locale, item));
-    }
-  }
-
   public boolean hasSuggestionItems() {
     return !getSuggestionItems().isEmpty();
-  }
-
-  private static String getSuggestionLabelKey(Locale locale, String item) {
-    return SUGGESTION_LABELS + ":" + item + ":" + locale.getLanguage();
   }
 
   public boolean hasVariableValues() {

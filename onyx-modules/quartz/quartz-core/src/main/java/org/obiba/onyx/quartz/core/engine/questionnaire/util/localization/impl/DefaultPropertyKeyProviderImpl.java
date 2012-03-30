@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -18,6 +18,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -54,15 +55,17 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   private List<String> properties;
 
   public DefaultPropertyKeyProviderImpl() {
-    super();
-    this.questionnaireProperties = new ArrayList<String>(Arrays.asList("label", "description", "labelNext", "labelPrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel", "conclusion"));
-    this.sectionProperties = new ArrayList<String>(Arrays.asList("label"));
-    this.pageProperties = new ArrayList<String>(Arrays.asList("label"));
-    this.questionProperties = new ArrayList<String>(Arrays.asList("label", "instructions", "media", "caption", "help", "specifications", "categoryOrder"));
-    this.categoryProperties = new ArrayList<String>(Arrays.asList("label"));
-    this.openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
-    this.propertyKeyNamingStrategy = new DefaultPropertyKeyNamingStrategy();
-    this.variableProperties = new ArrayList<String>(Arrays.asList("label"));
+    questionnaireProperties = new ArrayList<String>(Arrays
+        .asList("label", "description", "labelNext", "labelPrevious", "labelStart", "labelFinish", "labelInterrupt",
+            "labelResume", "labelCancel", "conclusion"));
+    sectionProperties = new ArrayList<String>(Arrays.asList("label"));
+    pageProperties = new ArrayList<String>(Arrays.asList("label"));
+    questionProperties = new ArrayList<String>(
+        Arrays.asList("label", "instructions", "media", "caption", "help", "specifications", "categoryOrder"));
+    categoryProperties = new ArrayList<String>(Arrays.asList("label"));
+    openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
+    propertyKeyNamingStrategy = new DefaultPropertyKeyNamingStrategy();
+    variableProperties = new ArrayList<String>(Arrays.asList("label"));
   }
 
   @Override
@@ -101,6 +104,10 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
 
   public void setOpenAnswerDefinitionProperties(List<String> openAnswerDefinitionProperties) {
     this.openAnswerDefinitionProperties = openAnswerDefinitionProperties;
+  }
+
+  public void setVariableProperties(List<String> variableProperties) {
+    this.variableProperties = variableProperties;
   }
 
   public List<String> getQuestionnaireProperties() {
@@ -170,16 +177,19 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     for(Data value : openAnswerDefinition.getDefaultValues()) {
       properties.add(value.getValueAsString());
     }
-  }
-
-  public void setPropertyKeyNamingStrategy(IPropertyKeyNamingStrategy propertyKeyNamingStrategy) {
-    this.propertyKeyNamingStrategy = propertyKeyNamingStrategy;
+    if(openAnswerDefinition.isSuggestionAnswer()) {
+      for(String item : new OpenAnswerDefinitionSuggestion(openAnswerDefinition).getSuggestionItems()) {
+        properties.add(item);
+      }
+    }
   }
 
   @Override
   public void visit(Variable variable) {
-    // TODO Auto-generated method stub
+  }
 
+  public void setPropertyKeyNamingStrategy(IPropertyKeyNamingStrategy propertyKeyNamingStrategy) {
+    this.propertyKeyNamingStrategy = propertyKeyNamingStrategy;
   }
 
 }

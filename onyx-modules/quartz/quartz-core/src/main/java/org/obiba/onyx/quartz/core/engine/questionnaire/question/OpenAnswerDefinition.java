@@ -48,7 +48,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
     public static final String UI_ARGUMENT_KEY = "type";
 
-    private String uiArgument;
+    private final String uiArgument;
 
     OpenAnswerType(String uiArgument) {
       this.uiArgument = uiArgument;
@@ -332,6 +332,10 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   public boolean isAudioAnswer() {
     return getOpenAnswerType() == AUDIO_RECORDING;
+  }
+
+  public boolean isSuggestionAnswer() {
+    return getOpenAnswerType() == AUTO_COMPLETE;
   }
 
   Iterator<String[]> getUIArgumentsIterator() {
