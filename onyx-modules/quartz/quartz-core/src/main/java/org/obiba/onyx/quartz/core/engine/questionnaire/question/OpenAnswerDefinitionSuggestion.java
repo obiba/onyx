@@ -34,8 +34,8 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
 
   private static final String SUGGESTION_MAX_COUNT = "suggest.maxCount";
   private static final String SUGGESTION_ITEMS = "suggest.items";
+  private static final String SUGGESTION_TABLE = "suggest.table";
   private static final String SUGGESTION_VARIABLE = "suggest.variable";
-  private static final String SUGGESTION_VARIABLE_SELECT_ENTITY = "suggest.variable.selectEntity";
 
   public enum Source {
     ITEMS_LIST, VARIABLE_VALUES
@@ -88,20 +88,8 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     return !getSuggestionItems().isEmpty();
   }
 
-  public boolean hasVariableValues() {
-    Iterator<String[]> it = openAnswer.getUIArgumentsIterator();
-    if(it != null) {
-      String keyStart = SUGGESTION_VARIABLE + ":";
-      int keyLen = keyStart.length() + 2;
-      while(it.hasNext()) {
-        String[] strings = it.next();
-        if(strings.length > 0) {
-          String localizedKey = strings[0];
-          if(localizedKey.length() == keyLen && localizedKey.startsWith(keyStart)) return true;
-        }
-      }
-    }
-    return false;
+  public boolean hasVariable() {
+    return getTable() != null;
   }
 
   public void setVariableValues(Locale locale, String variableName) {
@@ -128,15 +116,18 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     return valueMap == null || locale == null ? null : valueMap.getString(getVariableKey(locale));
   }
 
-  @SuppressWarnings("UnusedDeclaration")
-  public boolean isVariableSelectEntity() {
+  public String getTable() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    return valueMap != null && valueMap.getBoolean(SUGGESTION_VARIABLE_SELECT_ENTITY);
+    return valueMap == null ? null : valueMap.getString(SUGGESTION_TABLE);
   }
 
   @SuppressWarnings("UnusedDeclaration")
-  public void setVariableSelectEntity(boolean selectEntity) {
-    openAnswer.replaceUIArgument(SUGGESTION_VARIABLE_SELECT_ENTITY, String.valueOf(selectEntity));
+  public void setTable(String table) {
+    if(table == null) {
+      openAnswer.removeUIArgument(SUGGESTION_TABLE);
+    } else {
+      openAnswer.replaceUIArgument(SUGGESTION_TABLE, table);
+    }
   }
 
   @SuppressWarnings("UnusedDeclaration")
@@ -160,8 +151,12 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
 
   public Source getSuggestionSource() {
     if(hasSuggestionItems()) return Source.ITEMS_LIST;
-    if(hasVariableValues()) return Source.VARIABLE_VALUES;
+    if(hasVariable()) return Source.VARIABLE_VALUES;
     return null;
   }
 
+  public String getDatasource() {
+    String table = getTable();
+    return table != null && table.contains(".") ? table.split("\\.")[0] : null;
+  }
 }
