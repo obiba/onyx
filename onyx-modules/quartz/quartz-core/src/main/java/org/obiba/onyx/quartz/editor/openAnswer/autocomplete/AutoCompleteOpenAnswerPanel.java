@@ -54,9 +54,8 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswe
 /**
  *
  */
+@SuppressWarnings("serial")
 public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel {
-
-  private static final long serialVersionUID = -5279347826980614034L;
 
 //  private transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -73,6 +72,9 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
   private final FeedbackWindow feedbackWindow;
   private final IModel<Questionnaire> questionnaireModel;
   private final IModel<LocaleProperties> localePropertiesModel;
+  private final WebMarkupContainer patternContainer;
+  private final TextField<String> pattern;
+  private final WebMarkupContainer patternInput;
 
   public AutoCompleteOpenAnswerPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel,
       IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel,
@@ -81,12 +83,11 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel;
-    IModel<Category> categoryModel1 = categoryModel;
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
 
     final Question question = questionModel.getObject();
-    final Category category = categoryModel1.getObject();
+    final Category category = categoryModel.getObject();
     final OpenAnswerDefinition openAnswer = model.getObject();
 
     initialName = openAnswer.getName();
@@ -95,8 +96,6 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
     name.add(new AbstractValidator<String>() {
-
-      private static final long serialVersionUID = -5830499780659174132L;
 
       @Override
       protected void onValidate(IValidatable<String> validatable) {
@@ -129,7 +128,6 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
     if(category == null) {
       variableNameBehavior = new VariableNameBehavior(name, variable, question.getParentQuestion(), question, null) {
-        private static final long serialVersionUID = 690114768067122739L;
 
         @Override
         @SuppressWarnings("hiding")
@@ -180,8 +178,6 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     final RadioGroup<Source> radioSource = new RadioGroup<Source>("source", new Model<Source>(source));
     radioSource.setLabel(new ResourceModel("SourceOfSuggestions"));
     radioSource.add(new AjaxFormChoiceComponentUpdatingBehavior() {
-      private static final long serialVersionUID = -2253620826893064297L;
-
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         sourceConfigContainer.addOrReplace(showSuggestionConfig(radioSource.getModelObject(), true));
@@ -213,6 +209,42 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));
     add(requiredCheckBox);
     add(new SimpleFormComponentLabel("requiredLabel", requiredCheckBox));
+
+    final RadioGroup<Boolean> newValueGroup = new RadioGroup<Boolean>("newValueGroup",
+        new PropertyModel<Boolean>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "newValueAllowed"));
+    newValueGroup.add(new AjaxFormChoiceComponentUpdatingBehavior() {
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        boolean showPattern = newValueGroup.getModelObject();
+        if(!showPattern) pattern.setModelObject(null);
+        patternInput.setVisible(showPattern);
+        target.addComponent(patternContainer);
+      }
+    });
+    add(newValueGroup);
+
+    Radio<Boolean> newValueNotAllowed = new Radio<Boolean>("newValueNotAllowed", new Model<Boolean>(Boolean.FALSE));
+    newValueNotAllowed.setLabel(new ResourceModel("AllowSuggestedTextOnly"));
+    newValueGroup.add(newValueNotAllowed)
+        .add(new SimpleFormComponentLabel("newValueNotAllowedLabel", newValueNotAllowed));
+
+    Radio<Boolean> newValueAllowed = new Radio<Boolean>("newValueAllowed", new Model<Boolean>(Boolean.TRUE));
+    newValueAllowed.setLabel(new ResourceModel("AllowOpenText"));
+    newValueGroup.add(newValueAllowed).add(new SimpleFormComponentLabel("newValueAllowedLabel", newValueAllowed));
+
+    patternContainer = new WebMarkupContainer("patternContainer");
+    patternContainer.setOutputMarkupId(true);
+    add(patternContainer);
+
+    patternInput = new WebMarkupContainer("patternInput");
+    patternInput.setVisible(newValueGroup.getModelObject());
+    patternContainer.add(patternInput);
+
+    pattern = new TextField<String>("pattern",
+        new PropertyModel<String>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "newValuePattern"));
+    pattern.setLabel(new ResourceModel("Pattern"));
+
+    patternInput.add(pattern).add(new SimpleFormComponentLabel("patternLabel", pattern));
 
   }
 

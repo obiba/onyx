@@ -36,6 +36,8 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
   private static final String SUGGESTION_ITEMS = "suggest.items";
   private static final String SUGGESTION_TABLE = "suggest.table";
   private static final String SUGGESTION_VARIABLE = "suggest.variable";
+  private static final String SUGGESTION_NEW_VALUE_ALLOWED = "suggest.newValue.allowed";
+  private static final String SUGGESTION_NEW_VALUE_PATTERN = "suggest.newValue.pattern";
 
   public enum Source {
     ITEMS_LIST, VARIABLE_VALUES
@@ -158,5 +160,33 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
   public String getDatasource() {
     String table = getTable();
     return table != null && table.contains(".") ? table.split("\\.")[0] : null;
+  }
+
+  public Boolean getNewValueAllowed() {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
+    return valueMap != null && valueMap.getAsBoolean(SUGGESTION_NEW_VALUE_ALLOWED, false);
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  public void setNewValueAllowed(Boolean newValueAllowed) {
+    if(newValueAllowed == null) {
+      openAnswer.removeUIArgument(SUGGESTION_NEW_VALUE_ALLOWED);
+    } else {
+      openAnswer.replaceUIArgument(SUGGESTION_NEW_VALUE_ALLOWED, newValueAllowed.toString());
+    }
+  }
+
+  public String getNewValuePattern() {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
+    return valueMap == null ? null : valueMap.getString(SUGGESTION_NEW_VALUE_PATTERN);
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  public void setNewValuePattern(String newValuePattern) {
+    if(newValuePattern == null) {
+      openAnswer.removeUIArgument(SUGGESTION_NEW_VALUE_PATTERN);
+    } else {
+      openAnswer.replaceUIArgument(SUGGESTION_NEW_VALUE_PATTERN, newValuePattern);
+    }
   }
 }

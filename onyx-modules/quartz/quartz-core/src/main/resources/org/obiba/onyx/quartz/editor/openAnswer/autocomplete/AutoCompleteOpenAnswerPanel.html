@@ -64,8 +64,21 @@
         <td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel"></label></td>
         <td><input wicket:id="required" type="checkbox"/></td>
       </tr>
+      <tr>
+        <td valign="top" class="keyValueTableKey"></td>
+        <td wicket:id="newValueGroup">
+          <input type="radio" wicket:id="newValueNotAllowed"/> <label wicket:id="newValueNotAllowedLabel"></label>
+          <br/>
+          <input type="radio" wicket:id="newValueAllowed"/> <label wicket:id="newValueAllowedLabel"></label>
+        </td>
+      </tr>
+      <wicket:container wicket:id="patternContainer">
+        <tr wicket:id="patternInput">
+          <td valign="top" class="keyValueTableKey"><label wicket:id="patternLabel"></label></td>
+          <td><input wicket:id="pattern" type="text" size="2" autocomplete="off"/></td>
+        </tr>
+      </wicket:container>
     </table>
-
   </fieldset>
 
 
