@@ -1,0 +1,12 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean class="org.obiba.onyx.opal.CsvDatasourceProvider" lazy-init="false">
+    <property name="magmaEngine" ref="magmaEngine" />
+    <property name="file" value="${org.obiba.onyx.config.path}/datasources/medications/Drugs.csv" />
+    <property name="datasourceName" value="medications" />
+    <property name="tableName" value="Drugs" />
+    <property name="entityType" value="Drug" />
+  </bean>
+
+</beans>
