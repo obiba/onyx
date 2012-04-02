@@ -60,6 +60,7 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionT
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUTO_COMPLETE;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
 
 /**
@@ -135,8 +136,10 @@ public abstract class QuestionPanel extends Panel {
 
             case SINGLE_OPEN_ANSWER:
             case SINGLE_AUDIO_RECORDING:
-              typeChoices = new ArrayList<QuestionType>(
-                  Arrays.asList(SINGLE_OPEN_ANSWER, LIST_CHECKBOX, LIST_DROP_DOWN, LIST_RADIO, SINGLE_AUDIO_RECORDING));
+            case SINGLE_AUTO_COMPLETE:
+              typeChoices = new ArrayList<QuestionType>(Arrays
+                  .asList(SINGLE_OPEN_ANSWER, LIST_CHECKBOX, LIST_DROP_DOWN, LIST_RADIO, SINGLE_AUDIO_RECORDING,
+                      SINGLE_AUTO_COMPLETE));
               break;
 
             case LIST_CHECKBOX:
@@ -239,7 +242,7 @@ public abstract class QuestionPanel extends Panel {
     }
     // update category name for single open answer
     if(editedQuestion.getQuestionType() == SINGLE_OPEN_ANSWER || editedQuestion
-        .getQuestionType() == SINGLE_AUDIO_RECORDING) {
+        .getQuestionType() == SINGLE_AUDIO_RECORDING || editedQuestion.getQuestionType() == SINGLE_AUTO_COMPLETE) {
       List<Category> categories = question.getCategories();
       if(!categories.isEmpty() && categories.size() == 1) {
         categories.get(0).setName(question.getName());
