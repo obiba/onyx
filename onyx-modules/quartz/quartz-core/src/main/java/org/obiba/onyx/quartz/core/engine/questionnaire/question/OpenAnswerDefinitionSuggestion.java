@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,7 +87,7 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     if(valueMap == null) return Collections.emptyList();
     String[] array = valueMap.getStringArray(SUGGESTION_ITEMS);
-    return array == null ? Collections.<String> emptyList() : Arrays.asList(array);
+    return array == null ? Collections.<String>emptyList() : Arrays.asList(array);
   }
 
   public boolean hasSuggestionItems() {
@@ -165,7 +166,9 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     return table != null && table.contains(".") ? table.split("\\.")[0] : null;
   }
 
-  public Boolean getNewValueAllowed() {
+  public
+  @Nonnull
+  Boolean getNewValueAllowed() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     return valueMap != null && valueMap.getAsBoolean(SUGGESTION_NEW_VALUE_ALLOWED, false);
   }
@@ -175,6 +178,7 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     setValueMapString(SUGGESTION_NEW_VALUE_ALLOWED, newValueAllowed);
   }
 
+  @SuppressWarnings("UnusedDeclaration")
   public String getNewValuePattern() {
     return getValueMapString(SUGGESTION_NEW_VALUE_PATTERN);
   }
