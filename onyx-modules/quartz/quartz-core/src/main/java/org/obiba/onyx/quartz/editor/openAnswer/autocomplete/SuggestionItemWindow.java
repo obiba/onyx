@@ -1,14 +1,12 @@
-/*
- * ***************************************************************************
- *  Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- *  <p/>
- *  This program and the accompanying materials
- *  are made available under the terms of the GNU Public License v3.0.
- *  <p/>
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  ****************************************************************************
- */
+/*******************************************************************************
+ * Copyright 2012(c) OBiBa. All rights reserved.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswer.autocomplete;
 
 import java.util.HashMap;
@@ -40,10 +38,9 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 @SuppressWarnings("serial")
 public abstract class SuggestionItemWindow extends Panel {
 
-//  private final transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -51,8 +48,7 @@ public abstract class SuggestionItemWindow extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  public SuggestionItemWindow(String id, IModel<OpenAnswerDefinition> model, IModel<String> itemModel,
-      IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public SuggestionItemWindow(String id, IModel<OpenAnswerDefinition> model, IModel<String> itemModel, IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -81,8 +77,7 @@ public abstract class SuggestionItemWindow extends Panel {
       visibleStates.put(item, StringUtils.equals(item, originalItem));
     }
 
-    form.add(
-        new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, null, visibleStates));
+    form.add(new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, null, visibleStates));
 
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override

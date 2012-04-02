@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ * Copyright 2012(c) OBiBa. All rights reserved.
  *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
@@ -35,6 +35,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion.Source;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -49,36 +50,39 @@ import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion.Source;
-
 /**
  *
  */
 @SuppressWarnings("serial")
 public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel {
 
-//  private transient Logger logger = LoggerFactory.getLogger(getClass());
+  // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
-      justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
   private final VariableNameBehavior variableNameBehavior;
 
   private final TextField<String> variable;
+
   private final String initialName;
+
   private final FeedbackPanel feedbackPanel;
+
   private final FeedbackWindow feedbackWindow;
+
   private final IModel<Questionnaire> questionnaireModel;
+
   private final IModel<LocaleProperties> localePropertiesModel;
+
   private final WebMarkupContainer patternContainer;
+
   private final TextField<String> pattern;
+
   private final WebMarkupContainer patternInput;
 
-  public AutoCompleteOpenAnswerPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel,
-      IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel,
-      IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public AutoCompleteOpenAnswerPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel, IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     this.questionnaireModel = questionnaireModel;
@@ -103,14 +107,11 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
           boolean alreadyContains = false;
           if(category != null) {
             Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
-            alreadyContains = openAnswerDefinitionsByName
-                .containsKey(validatable.getValue()) && openAnswerDefinitionsByName
-                .get(validatable.getValue()) != openAnswer;
+            alreadyContains = openAnswerDefinitionsByName.containsKey(validatable.getValue()) && openAnswerDefinitionsByName.get(validatable.getValue()) != openAnswer;
           }
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           questionnaireModel.getObject().setQuestionnaireCache(null);
-          OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder
-              .findOpenAnswerDefinition(validatable.getValue());
+          OpenAnswerDefinition findOpenAnswerDefinition = questionnaireFinder.findOpenAnswerDefinition(validatable.getValue());
           if(alreadyContains || findOpenAnswerDefinition != null && findOpenAnswerDefinition != openAnswer) {
             error(validatable, "OpenAnswerAlreadyExists");
           }
@@ -120,8 +121,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     add(name).add(new SimpleFormComponentLabel("nameLabel", name));
     add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
-    variable = new TextField<String>("variable",
-        new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
+    variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "variableNames"), question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
     add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
     add(new HelpTooltipPanel("variableHelp", new ResourceModel("Variable.Tooltip")));
@@ -131,8 +131,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
         @Override
         @SuppressWarnings("hiding")
-        protected String generateVariableName(Question parentQuestion, Question question, Category category,
-            String name) {
+        protected String generateVariableName(Question parentQuestion, Question question, Category category, String name) {
           if(StringUtils.isBlank(name)) return "";
           if(category != null) {
             return super.generateVariableName(parentQuestion, question, category, name);
@@ -155,16 +154,13 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     add(unit).add(new SimpleFormComponentLabel("unitLabel", unit));
     add(new HelpTooltipPanel("unitHelp", new ResourceModel("Unit.Tooltip")));
 
-    TextField<Integer> sizeField = new TextField<Integer>("size", new PropertyModel<Integer>(model, "inputSize"),
-        Integer.class);
+    TextField<Integer> sizeField = new TextField<Integer>("size", new PropertyModel<Integer>(model, "inputSize"), Integer.class);
     sizeField.setLabel(new ResourceModel("SizeLabel"));
     add(sizeField).add(new SimpleFormComponentLabel("sizeLabel", sizeField));
 
     OpenAnswerDefinitionSuggestion openAnswerSuggestion = new OpenAnswerDefinitionSuggestion(openAnswer);
 
-    TextField<Integer> maxCountField = new TextField<Integer>("maxCount",
-        new PropertyModel<Integer>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "maxCount"),
-        Integer.class);
+    TextField<Integer> maxCountField = new TextField<Integer>("maxCount", new PropertyModel<Integer>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "maxCount"), Integer.class);
     maxCountField.setLabel(new ResourceModel("MaxCount"));
     add(maxCountField).add(new SimpleFormComponentLabel("maxCountLabel", maxCountField));
 
@@ -210,8 +206,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     add(requiredCheckBox);
     add(new SimpleFormComponentLabel("requiredLabel", requiredCheckBox));
 
-    final RadioGroup<Boolean> newValueGroup = new RadioGroup<Boolean>("newValueGroup",
-        new PropertyModel<Boolean>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "newValueAllowed"));
+    final RadioGroup<Boolean> newValueGroup = new RadioGroup<Boolean>("newValueGroup", new PropertyModel<Boolean>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "newValueAllowed"));
     newValueGroup.add(new AjaxFormChoiceComponentUpdatingBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
@@ -225,8 +220,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
 
     Radio<Boolean> newValueNotAllowed = new Radio<Boolean>("newValueNotAllowed", new Model<Boolean>(Boolean.FALSE));
     newValueNotAllowed.setLabel(new ResourceModel("AllowSuggestedTextOnly"));
-    newValueGroup.add(newValueNotAllowed)
-        .add(new SimpleFormComponentLabel("newValueNotAllowedLabel", newValueNotAllowed));
+    newValueGroup.add(newValueNotAllowed).add(new SimpleFormComponentLabel("newValueNotAllowedLabel", newValueNotAllowed));
 
     Radio<Boolean> newValueAllowed = new Radio<Boolean>("newValueAllowed", new Model<Boolean>(Boolean.TRUE));
     newValueAllowed.setLabel(new ResourceModel("AllowOpenText"));
@@ -240,8 +234,7 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
     patternInput.setVisible(newValueGroup.getModelObject());
     patternContainer.add(patternInput);
 
-    pattern = new TextField<String>("pattern",
-        new PropertyModel<String>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "newValuePattern"));
+    pattern = new TextField<String>("pattern", new PropertyModel<String>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "newValuePattern"));
     pattern.setLabel(new ResourceModel("Pattern"));
 
     patternInput.add(pattern).add(new SimpleFormComponentLabel("patternLabel", pattern));
@@ -252,18 +245,15 @@ public class AutoCompleteOpenAnswerPanel extends Panel implements SaveablePanel 
   private Panel showSuggestionConfig(Source source, boolean changeSuggestionType) {
     if(source == null) return new EmptyPanel("sourceConfig");
     if(changeSuggestionType) {
-      new OpenAnswerDefinitionSuggestion((OpenAnswerDefinition) getDefaultModelObject())
-          .resetSuggestionOpenAnswerDefinition();
+      new OpenAnswerDefinitionSuggestion((OpenAnswerDefinition) getDefaultModelObject()).resetSuggestionOpenAnswerDefinition();
     }
     switch(source) {
-      case ITEMS_LIST:
-        return new SuggestionItemListPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(),
-            questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
-      case VARIABLE_VALUES:
-        return new SuggestionVariableValuesPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(),
-            questionnaireModel, feedbackPanel, feedbackWindow);
-      default:
-        return new EmptyPanel("sourceConfig");
+    case ITEMS_LIST:
+      return new SuggestionItemListPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(), questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+    case VARIABLE_VALUES:
+      return new SuggestionVariableValuesPanel("sourceConfig", (IModel<OpenAnswerDefinition>) getDefaultModel(), questionnaireModel, feedbackPanel, feedbackWindow);
+    default:
+      return new EmptyPanel("sourceConfig");
     }
   }
 

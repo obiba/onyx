@@ -1,14 +1,12 @@
-/*
- * ***************************************************************************
- *  Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- *  <p/>
- *  This program and the accompanying materials
- *  are made available under the terms of the GNU Public License v3.0.
- *  <p/>
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  ****************************************************************************
- */
+/*******************************************************************************
+ * Copyright 2012(c) OBiBa. All rights reserved.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
@@ -20,10 +18,9 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.util.Assert;
-
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
 
 /**
  *
@@ -33,10 +30,17 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
   private static final long serialVersionUID = -8790254697570036428L;
 
   private static final String SUGGESTION_MAX_COUNT = "suggest.maxCount";
+
   private static final String SUGGESTION_ITEMS = "suggest.items";
+
   private static final String SUGGESTION_TABLE = "suggest.table";
+
+  private static final String SUGGESTION_ENTITY_TYPE = "suggest.entityType";
+
   private static final String SUGGESTION_VARIABLE = "suggest.variable";
+
   private static final String SUGGESTION_NEW_VALUE_ALLOWED = "suggest.newValue.allowed";
+
   private static final String SUGGESTION_NEW_VALUE_PATTERN = "suggest.newValue.pattern";
 
   public enum Source {
@@ -78,12 +82,11 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public List<String> getSuggestionItems() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     if(valueMap == null) return Collections.emptyList();
     String[] array = valueMap.getStringArray(SUGGESTION_ITEMS);
-    return (List<String>) (array == null ? Collections.emptyList() : Arrays.asList(array));
+    return array == null ? Collections.<String> emptyList() : Arrays.asList(array);
   }
 
   public boolean hasSuggestionItems() {
@@ -107,29 +110,33 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
         String[] strings = it.next();
         if(strings.length > 0) {
           String localizedKey = strings[0];
-          if(localizedKey.length() == keyLen && localizedKey.startsWith(keyStart)) it.remove();
+          if(localizedKey.length() == keyLen && localizedKey.startsWith(keyStart)) {
+            it.remove();
+          }
         }
       }
     }
   }
 
   public String getVariableValues(Locale locale) {
-    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    return valueMap == null || locale == null ? null : valueMap.getString(getVariableKey(locale));
+    return locale == null ? null : getValueMapString(getVariableKey(locale));
   }
 
   public String getTable() {
-    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    return valueMap == null ? null : valueMap.getString(SUGGESTION_TABLE);
+    return getValueMapString(SUGGESTION_TABLE);
   }
 
   @SuppressWarnings("UnusedDeclaration")
   public void setTable(String table) {
-    if(table == null) {
-      openAnswer.removeUIArgument(SUGGESTION_TABLE);
-    } else {
-      openAnswer.replaceUIArgument(SUGGESTION_TABLE, table);
-    }
+    setValueMapString(SUGGESTION_TABLE, table);
+  }
+
+  public void setEntityType(String entityType) {
+    setValueMapString(SUGGESTION_ENTITY_TYPE, entityType);
+  }
+
+  public String getEntityType() {
+    return getValueMapString(SUGGESTION_ENTITY_TYPE);
   }
 
   @SuppressWarnings("UnusedDeclaration")
@@ -140,11 +147,7 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
 
   @SuppressWarnings("UnusedDeclaration")
   public void setMaxCount(Integer maxCount) {
-    if(maxCount == null) {
-      openAnswer.removeUIArgument(SUGGESTION_MAX_COUNT);
-    } else {
-      openAnswer.replaceUIArgument(SUGGESTION_MAX_COUNT, String.valueOf(maxCount));
-    }
+    setValueMapString(SUGGESTION_MAX_COUNT, maxCount);
   }
 
   private static String getVariableKey(Locale locale) {
@@ -169,24 +172,29 @@ public class OpenAnswerDefinitionSuggestion implements Serializable {
 
   @SuppressWarnings("UnusedDeclaration")
   public void setNewValueAllowed(Boolean newValueAllowed) {
-    if(newValueAllowed == null) {
-      openAnswer.removeUIArgument(SUGGESTION_NEW_VALUE_ALLOWED);
-    } else {
-      openAnswer.replaceUIArgument(SUGGESTION_NEW_VALUE_ALLOWED, newValueAllowed.toString());
-    }
+    setValueMapString(SUGGESTION_NEW_VALUE_ALLOWED, newValueAllowed);
   }
 
   public String getNewValuePattern() {
-    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
-    return valueMap == null ? null : valueMap.getString(SUGGESTION_NEW_VALUE_PATTERN);
+    return getValueMapString(SUGGESTION_NEW_VALUE_PATTERN);
   }
 
   @SuppressWarnings("UnusedDeclaration")
   public void setNewValuePattern(String newValuePattern) {
-    if(newValuePattern == null) {
-      openAnswer.removeUIArgument(SUGGESTION_NEW_VALUE_PATTERN);
+    setValueMapString(SUGGESTION_NEW_VALUE_PATTERN, newValuePattern);
+  }
+
+  private String getValueMapString(String key) {
+    ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
+    return valueMap == null ? null : valueMap.getString(key);
+  }
+
+  private void setValueMapString(String key, Object value) {
+    if(value == null) {
+      openAnswer.removeUIArgument(key);
     } else {
-      openAnswer.replaceUIArgument(SUGGESTION_NEW_VALUE_PATTERN, newValuePattern);
+      openAnswer.replaceUIArgument(key, value.toString());
     }
   }
+
 }

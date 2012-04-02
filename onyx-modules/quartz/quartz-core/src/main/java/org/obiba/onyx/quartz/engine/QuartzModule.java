@@ -16,7 +16,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.spring.BeanValueTableFactoryBean;
 import org.obiba.magma.spring.SpringContextScanningDatasource;
 import org.obiba.magma.spring.ValueTableFactoryBean;
@@ -48,7 +47,6 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 public class QuartzModule implements Module, ValueTableFactoryBeanProvider, ApplicationContextAware {
@@ -181,16 +179,6 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
   @Override
   public void delete(Participant participant) {
     questionnaireParticipantService.deleteAllQuestionnairesParticipant(participant);
-  }
-
-  public Set<VariableValueSource> createSources() {
-    ImmutableSet.Builder<VariableValueSource> sources = new ImmutableSet.Builder<VariableValueSource>();
-    for(Stage stage : getStages()) {
-      QuestionnaireBundle bundle = this.questionnaireBundleManager.getBundle(stage.getName());
-      QuestionnaireStageVariableSourceFactory factory = new QuestionnaireStageVariableSourceFactory(stage, bundle);
-      sources.addAll(factory.createSources());
-    }
-    return sources.build();
   }
 
   @Override

@@ -1,14 +1,12 @@
-/*
- * ***************************************************************************
- *  Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- *  <p/>
- *  This program and the accompanying materials
- *  are made available under the terms of the GNU Public License v3.0.
- *  <p/>
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  ****************************************************************************
- */
+/*******************************************************************************
+ * Copyright 2012(c) OBiBa. All rights reserved.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswer.autocomplete;
 
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.magma.Datasource;
+import org.obiba.magma.MagmaRuntimeException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
@@ -55,11 +54,12 @@ public class SuggestionVariableValuesPanel extends Panel {
   private MagmaInstanceProvider magmaInstanceProvider;
 
   private final DropDownChoice<String> datasource;
+
   private final DropDownChoice<String> table;
+
   private final AjaxSubmitTabbedPanel variableTabbedPanel;
 
-  public SuggestionVariableValuesPanel(String id, IModel<OpenAnswerDefinition> model,
-      IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+  public SuggestionVariableValuesPanel(String id, IModel<OpenAnswerDefinition> model, IModel<Questionnaire> questionnaireModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
     super(id, model);
 
     final OpenAnswerDefinitionSuggestion openAnswerSuggestion = new OpenAnswerDefinitionSuggestion(model.getObject());
@@ -70,8 +70,7 @@ public class SuggestionVariableValuesPanel extends Panel {
     }
     Collections.sort(datasources);
 
-    datasource = new DropDownChoice<String>("datasource", new Model<String>(openAnswerSuggestion.getDatasource()),
-        datasources);
+    datasource = new DropDownChoice<String>("datasource", new Model<String>(openAnswerSuggestion.getDatasource()), datasources);
     datasource.setLabel(new ResourceModel("Datasource"));
     datasource.setNullValid(false);
     datasource.setRequired(true);
@@ -103,9 +102,7 @@ public class SuggestionVariableValuesPanel extends Panel {
       }
     };
 
-    table = new DropDownChoice<String>("table",
-        new PropertyModel<String>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "table"),
-        tableChoiceModel, new IChoiceRenderer<String>() {
+    table = new DropDownChoice<String>("table", new PropertyModel<String>(new Model<OpenAnswerDefinitionSuggestion>(openAnswerSuggestion), "table"), tableChoiceModel, new IChoiceRenderer<String>() {
       @Override
       public Object getDisplayValue(String object) {
         return getTableName(object);
@@ -125,6 +122,18 @@ public class SuggestionVariableValuesPanel extends Panel {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         openAnswerSuggestion.clearVariableValues();
+        // Set the entity type from the selected table.
+        String path = table.getDefaultModelObjectAsString();
+        String entityType = null;
+        try {
+          if(path != null) {
+            ValueTable valueTable = magmaInstanceProvider.resolveTable(path);
+            entityType = valueTable.getEntityType();
+          }
+        } catch(MagmaRuntimeException e) {
+          // ignore
+        }
+        openAnswerSuggestion.setEntityType(entityType);
         target.addComponent(table);
         target.addComponent(variableTabbedPanel);
       }
@@ -172,8 +181,7 @@ public class SuggestionVariableValuesPanel extends Panel {
             return Collections.emptyList();
           }
           List<String> variables = new ArrayList<String>();
-          for(Variable variable : magmaInstanceProvider.getDatasource(datasource.getModelObject())
-              .getValueTable(getTableName(table.getModelObject())).getVariables()) {
+          for(Variable variable : magmaInstanceProvider.getDatasource(datasource.getModelObject()).getValueTable(getTableName(table.getModelObject())).getVariables()) {
             variables.add(variable.getName());
           }
           Collections.sort(variables);
@@ -194,6 +202,7 @@ public class SuggestionVariableValuesPanel extends Panel {
     private static final long serialVersionUID = -1062944724137766389L;
 
     private final OpenAnswerDefinitionSuggestion openAnswerSuggestion;
+
     private final Locale locale;
 
     public VariableModel(OpenAnswerDefinitionSuggestion openAnswerSuggestion, Locale locale) {

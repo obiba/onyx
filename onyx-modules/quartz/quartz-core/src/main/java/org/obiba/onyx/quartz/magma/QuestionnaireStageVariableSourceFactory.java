@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.wicket.extensions.validation.validator.RfcCompliantEmailAddressValidator;
+import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
@@ -52,6 +53,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableName
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionAudio;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -611,11 +614,34 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         OnyxAttributeHelper.addValidationAttribute(builder1, validations.toString());
       }
 
+      if(oad.isAudioAnswer()) {
+        visitAudioOpenAnswer(new OpenAnswerDefinitionAudio(oad), builder1);
+      }
+      if(oad.isSuggestionAnswer()) {
+        visitSuggestedOpenAnswer(new OpenAnswerDefinitionSuggestion(oad), builder1);
+      }
+
       // an open answer is implicitly always conditioned by the selection of its parent category.
       OnyxAttributeHelper.addConditionAttribute(builder1, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(), questionCategory.getCategory().getName()).toString());
-
     }
 
+    private void visitAudioOpenAnswer(OpenAnswerDefinitionAudio audio, Builder builder) {
+      builder.mimeType("audio/x-wav");
+    }
+
+    private void visitSuggestedOpenAnswer(OpenAnswerDefinitionSuggestion suggestion, Builder builder) {
+      if(suggestion.hasVariable()) {
+        builder.referencedEntityType(suggestion.getEntityType());
+      } else if(suggestion.hasSuggestionItems()) {
+        for(String item : suggestion.getSuggestionItems()) {
+          String categoryName = item;
+          // Make categories out of default values
+          org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(categoryName);
+          cb.accept(new OadDefaultValueBuilderVisitor(oad, categoryName));
+          builder.addCategory(cb.build());
+        }
+      }
+    }
   }
 
   private class OadDefaultValueBuilderVisitor implements org.obiba.magma.Category.BuilderVisitor {
@@ -632,7 +658,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       for(Locale locale : bundle.getAvailableLanguages()) {
         try {
           String stringResource = QuestionnaireStringResourceModelHelper.getMessage(bundle, oad, defaultValue, null, locale);
-          if(stringResource.trim().length() > 0) {
+          if(Strings.isEmpty(stringResource) == false) {
             String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
             builder1.addAttribute(OnyxAttributeHelper.LABEL, noHTMLString, locale);
           }

@@ -1,25 +1,22 @@
-/*
- * ***************************************************************************
- *  Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- *  <p/>
- *  This program and the accompanying materials
- *  are made available under the terms of the GNU Public License v3.0.
- *  <p/>
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  ****************************************************************************
- */
+/*******************************************************************************
+ * Copyright 2012(c) OBiBa. All rights reserved.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 import org.springframework.util.Assert;
-
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
-import static org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 
 /**
  *
