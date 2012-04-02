@@ -425,7 +425,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     @Override
     Iterable<String> computeChoices(final String partial) {
       OpenAnswerDefinitionSuggestion suggestion = getSuggestion();
-      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(suggestion.getTable());
+      ValueTable table = magmaInstanceProvider.resolveTable(suggestion.getTable());
       String variablePath = suggestion.getVariableValues(activeQuestionnaireAdministrationService.getLanguage());
       // variablePath may be null. In which case, we want vvs to be null as well.
       final VariableValueSource vvs = variablePath == null ? null : magmaInstanceProvider.resolveVariablePath(variablePath);
