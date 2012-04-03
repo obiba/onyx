@@ -202,13 +202,22 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   }
 
   private void overwriteIniFile(String settingsFileName) {
-    File backupSettingsFile = new File(getCardioPath() + "/" + getInitPath(), settingsFileName);
+    File backupDir = new File(getCardioPath(), getInitPath());
+    File backupSettingsFile = new File(backupDir, settingsFileName);
     File currentSettingsFile = new File(getCardioPath(), settingsFileName);
     try {
       if(backupSettingsFile.exists()) {
+        log.info("Restoring backup from {} to {}.", backupSettingsFile.getAbsolutePath(), currentSettingsFile.getAbsolutePath());
         FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
       } else {
-        new File(getCardioPath(), getInitPath()).mkdir();
+        log.info("Backup file {} does not exist.", backupSettingsFile.getAbsolutePath());
+        if(backupDir.exists() == false) {
+          if(backupDir.mkdir() == false) {
+            log.error("Unable to create backup directory {}", backupDir.getAbsolutePath());
+            throw new RuntimeException("unable to create backup directory " + backupDir.getAbsolutePath());
+          }
+        }
+        log.info("Copying {} to {}", currentSettingsFile.getAbsolutePath(), backupSettingsFile.getAbsolutePath());
         FileUtil.copyFile(currentSettingsFile, backupSettingsFile);
       }
     } catch(Exception ex) {
