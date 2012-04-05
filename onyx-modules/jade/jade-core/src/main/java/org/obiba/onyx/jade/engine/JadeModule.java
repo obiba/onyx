@@ -105,6 +105,7 @@ public class JadeModule implements Module, ValueTableFactoryBeanProvider, Applic
     exec.addEdge(inProgress, TransitionEvent.CONTRAINDICATED, contraIndicated);
     exec.addEdge(inProgress, TransitionEvent.INTERRUPT, interrupted);
 
+    exec.addEdge(skipped, TransitionEvent.INVALID, waiting);
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
     exec.addEdge(skipped, TransitionEvent.NOTAPPLICABLE, notApplicable);
 
