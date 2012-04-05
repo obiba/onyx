@@ -1,25 +1,29 @@
 <wicket:panel>
 
- 	<table class="keyValueTable">
-		<tr>
-			<td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
-			<td><input wicket:id="name" type="text" size="40" autocomplete="off" /> <span wicket:id="nameHelp" /></td>
-		</tr>			
-		<tr>
-			<td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
-			<td><input wicket:id="variable" type="text" size="40" autocomplete="off" /> <span wicket:id="variableHelp" /></td>
-		</tr>		
-		<tr wicket:id="typeContainer">
-			<td class="keyValueTableKey"><label wicket:id="typeLabel"></label></td>
-			<td><select wicket:id="type"></select> <span wicket:id="typeHelp" /></td>
-		</tr>					
-	</table>		
-	
-	<br />
-	
-	<fieldset>
-		<legend><wicket:message key="LanguagesProperties" /> <span wicket:id="labelsHelp" /></legend>
-	 	<div wicket:id="labels"></div>
-	</fieldset>	
-		
+  <table class="keyValueTable">
+    <tr>
+      <td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+      <td><input wicket:id="name" type="text" size="40" autocomplete="off"/> <span wicket:id="nameHelp"/></td>
+    </tr>
+    <tr>
+      <td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
+      <td><input wicket:id="variable" type="text" size="40" autocomplete="off"/> <span wicket:id="variableHelp"/></td>
+    </tr>
+    <wicket:enclosure child="type">
+      <tr>
+        <td class="keyValueTableKey"><label wicket:id="typeLabel"></label></td>
+        <td><select wicket:id="type"></select> <span wicket:id="typeHelp"/></td>
+      </tr>
+    </wicket:enclosure>
+  </table>
+
+  <br/>
+
+  <fieldset>
+    <legend>
+      <wicket:message key="LanguagesProperties"/>
+      <span wicket:id="labelsHelp"/></legend>
+    <div wicket:id="labels"></div>
+  </fieldset>
+
 </wicket:panel>

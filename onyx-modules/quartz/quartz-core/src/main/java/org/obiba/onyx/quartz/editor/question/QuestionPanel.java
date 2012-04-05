@@ -24,7 +24,6 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -180,6 +179,7 @@ public abstract class QuestionPanel extends Panel {
       }
     });
     type.setLabel(new ResourceModel("QuestionType"));
+    type.setVisible(useQuestionType);
     type.add(new RequiredFormFieldBehavior());
     // submit the whole form instead of just the questionType component
     type.add(new AjaxFormSubmitBehavior("onchange") {
@@ -195,14 +195,9 @@ public abstract class QuestionPanel extends Panel {
         onSubmit(target);
       }
     });
-
-    WebMarkupContainer typeContainer = new WebMarkupContainer("typeContainer");
-    typeContainer.setVisible(useQuestionType);
-    add(typeContainer);
-
-    typeContainer.add(type);
-    typeContainer.add(new SimpleFormComponentLabel("typeLabel", type));
-    typeContainer.add(new HelpTooltipPanel("typeHelp", new ResourceModel("QuestionType.Tooltip")));
+    add(type);
+    add(new SimpleFormComponentLabel("typeLabel", type));
+    add(new HelpTooltipPanel("typeHelp", new ResourceModel("QuestionType.Tooltip")));
 
     add(new HelpTooltipPanel("labelsHelp", new Model<String>(
         new StringResourceModel("LanguagesProperties.Tooltip", this, null)
@@ -215,8 +210,12 @@ public abstract class QuestionPanel extends Panel {
     }
 
     Map<String, Boolean> visibleStates = new HashMap<String, Boolean>();
-    if(question.getParentQuestion() != null) visibleStates.put("label", false);
-
+    if(question.getParentQuestion() != null) {
+      // hide all labels properties except "label"
+      for(String property : questionnaireModel.getObject().getPropertyKeyProvider().getProperties(question)) {
+        visibleStates.put(property, "label".equals(property));
+      }
+    }
     add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel,
         feedbackWindow, labelsTooltips, visibleStates));
   }
