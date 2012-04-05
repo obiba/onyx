@@ -28,7 +28,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 
+@DirtiesContext
 public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase {
 
   public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";

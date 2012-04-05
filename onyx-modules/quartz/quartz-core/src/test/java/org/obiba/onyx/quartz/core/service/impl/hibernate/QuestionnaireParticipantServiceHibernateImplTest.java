@@ -17,7 +17,9 @@ import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
+@DirtiesContext
 public class QuestionnaireParticipantServiceHibernateImplTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired

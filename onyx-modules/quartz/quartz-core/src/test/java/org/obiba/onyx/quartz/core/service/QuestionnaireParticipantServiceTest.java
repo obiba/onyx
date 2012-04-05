@@ -21,7 +21,9 @@ import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
+@DirtiesContext
 public class QuestionnaireParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired(required = true)

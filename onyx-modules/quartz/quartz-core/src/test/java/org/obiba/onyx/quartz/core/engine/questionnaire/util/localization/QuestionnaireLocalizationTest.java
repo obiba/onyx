@@ -14,12 +14,11 @@ import junit.framework.Assert;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Test;
-import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 
-public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestCase {
+public class QuestionnaireLocalizationTest {
 
   private static final String YES = "YES";
 
