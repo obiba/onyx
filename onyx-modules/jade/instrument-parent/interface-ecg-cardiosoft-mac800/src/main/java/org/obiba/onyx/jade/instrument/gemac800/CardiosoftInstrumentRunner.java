@@ -185,8 +185,10 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
         }
       } else {
         File[] databaseFiles = new File(getCardioPath(), getDatabasePath()).listFiles(filter);
-        for(int i = 0; i < databaseFiles.length; i++) {
-          FileUtil.copyFile(databaseFiles[i], new File(getCardioPath() + "/" + getInitPath(), databaseFiles[i].getName()));
+        if(databaseFiles != null) {
+          for(int i = 0; i < databaseFiles.length; i++) {
+            FileUtil.copyFile(databaseFiles[i], new File(getCardioPath() + "/" + getInitPath(), databaseFiles[i].getName()));
+          }
         }
       }
 
