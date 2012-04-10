@@ -30,6 +30,7 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
+import org.obiba.onyx.webapp.battery.BatteryLevelIndicator;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
@@ -111,6 +112,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
     Label userFullName = new Label("userFullName");
     Label currentTime = new Label("currentTime");
+    Panel battery = new EmptyPanel("battery");
 
     Session session = getSession();
     // Tests the session type for unit testing
@@ -121,10 +123,12 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
         userFullName.setDefaultModel(new Model(OnyxAuthenticatedSession.get().getUser().getFullName() + " - "));
         currentTime.setDefaultModel(DateModelUtils.getDateTimeModel(new Model<DateFormat>(new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss", getLocale())), new Model<Date>(new Date())));
+        battery = new BatteryLevelIndicator("battery");
       }
     }
 
     add(currentTime);
+    add(battery);
     add(img);
     add(userFullName);
     add(headerPanel);
