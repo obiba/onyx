@@ -153,11 +153,10 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   }
 
   public String getXmlFileName() {
+    if(xmlFileName == null) {
+      xmlFileName = instrumentExecutionService.getParticipantID() + ".xml";
+    }
     return xmlFileName;
-  }
-
-  public void setXmlFileName(String xmlFileName) {
-    this.xmlFileName = xmlFileName;
   }
 
   /**

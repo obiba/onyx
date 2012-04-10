@@ -72,7 +72,6 @@ public class CardiosoftInstrumentRunnerTest {
 
     cardiosoftInstrumentRunner.setSettingsFileName("CARDIO.INI");
     cardiosoftInstrumentRunner.setWinSettingsFileName("WIN.INI");
-    cardiosoftInstrumentRunner.setXmlFileName("000000.XML");
     cardiosoftInstrumentRunner.setEcgResourceBundle(ResourceBundle.getBundle("ecg-instrument", Locale.getDefault()));
 
     String resourcesParentDir = new File(getClass().getResource("/initecg/CARDIO.INI").toURI().getPath()).getParent();
@@ -92,7 +91,7 @@ public class CardiosoftInstrumentRunnerTest {
     // Create a mock instrumentExecutionService for testing.
     instrumentExecutionServiceMock = createMock(InstrumentExecutionService.class);
     cardiosoftInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
-
+    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("000000").anyTimes();
   }
 
   @Test
@@ -188,7 +187,7 @@ public class CardiosoftInstrumentRunnerTest {
     (new FileOutputStream(new File(cardiosoftInstrumentRunner.getCardioPath(), cardiosoftInstrumentRunner.getSettingsFileName()))).write((byte) 234432141);
 
     // Copy the results file + PDF file to test directory.
-    FileUtil.copyFile(new File(getClass().getResource("/000000.XML").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getXmlFileName()));
+    FileUtil.copyFile(new File(getClass().getResource("/000000.XML").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), "000000.XML"));
 
   }
 
