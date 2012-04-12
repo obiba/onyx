@@ -80,7 +80,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   public void onTransition(IStageExecution execution, StageState fromState, TransitionEvent event) {
     Boolean var = areDependenciesCompleted();
-    log.debug("stage {} dependency condition is {}", getName(), var);
+    log.debug("stage {} dependency condition is {}", getStage().getName(), var);
 
     StageState currentState = StageState.valueOf(getName());
 
