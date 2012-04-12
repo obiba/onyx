@@ -6,9 +6,13 @@ import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.datasource.csv.CsvDatasource;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.export.EnrollmentIdDatasource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 public class CsvDatasourceProvider implements InitializingBean {
+
+  private static final Logger log = LoggerFactory.getLogger(CsvDatasourceProvider.class);
 
   private ParticipantService participantService;
 
@@ -52,6 +56,7 @@ public class CsvDatasourceProvider implements InitializingBean {
       CsvDatasource ds = new CsvDatasource(datasourceName);
       String table = tableName == null ? file.getName().substring(0, file.getName().lastIndexOf('.')) : tableName;
       ds.addValueTable(table, file, entityType == null ? "Participant" : entityType);
+      log.info("Adding datasource: {}", datasourceName);
       if(participantService != null) {
         magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, ds));
       } else {

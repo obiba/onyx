@@ -6,9 +6,13 @@ import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.export.EnrollmentIdDatasource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 public class FsDatasourceProvider implements InitializingBean {
+
+  private static final Logger log = LoggerFactory.getLogger(FsDatasourceProvider.class);
 
   private ParticipantService participantService;
 
@@ -38,6 +42,7 @@ public class FsDatasourceProvider implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     if(datasourceName != null && datasourceName.isEmpty() == false) {
       FsDatasource ds = new FsDatasource(datasourceName, file);
+      log.info("Adding datasource: {}", datasourceName);
       if(participantService != null) {
         magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, ds));
       } else {
