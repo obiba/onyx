@@ -200,7 +200,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
    */
   @Override
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
-    boolean questionListChanged = false;
     List<QuestionPanel> questionPanels = getQuestionPanels();
     for(QuestionPanel panel : questionPanels) {
       Question question = (Question) panel.getDefaultModelObject();
@@ -208,51 +207,13 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
         // a question is not to be answered any more due to in-page conditions, make sure subsequent conditions will be
         // correctly resolved.
         panel.setActiveAnswers(false);
-        questionListChanged = true;
       }
     }
-    log.debug("questionListChanged={}", questionListChanged);
-
-    if(!questionListChanged) {
-
-      if(getQuestionToBeAnsweredCount() > questionPanels.size()) {
-        questionListChanged = true;
-      }
-    }
-    log.debug("questionListChanged={}", questionListChanged);
 
     // update the whole layout because some questions can (dis)appear.
-    if(questionListChanged) {
-      log.debug("Page update");
-      target.addComponent(this);
-      target.appendJavascript("Resizer.resizeWizard();");
-    }
-
-  }
-
-  /**
-   * Get the count of question to be answered, resolving conditions.
-   * @return
-   */
-  private int getQuestionToBeAnsweredCount() {
-    int count = 0;
-    Page page = (Page) getDefaultModelObject();
-
-    for(Question question : page.getQuestions()) {
-      if(!question.hasDataSource() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
-        count++;
-      }
-
-      if(question.hasSubQuestions()) {
-        for(Question subQuestion : question.getQuestions()) {
-          if(!subQuestion.hasDataSource() && subQuestion.isToBeAnswered(activeQuestionnaireAdministrationService)) {
-            count++;
-          }
-        }
-      }
-    }
-
-    return count;
+    log.debug("Page update");
+    target.addComponent(this);
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
 }
