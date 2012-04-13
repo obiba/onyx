@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
-import java.util.AbstractList;
 import java.util.List;
 import java.util.Vector;
 
@@ -72,7 +71,6 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
     super(id, populators, dataProvider);
 
     this.groups = new Vector<T>();
-    this.groups.setSize(dataProvider.size());
   }
 
   /**
@@ -81,14 +79,6 @@ public abstract class GroupView<T extends FormComponent> extends RowView {
    * @return
    */
   protected abstract T newGroup(final String id, int index);
-
-  public AbstractList<T> getGroups() {
-    return groups;
-  }
-
-  public T getGroup(int index) {
-    return groups.get(index);
-  }
 
   /**
    * @see org.apache.wicket.markup.repeater.RefreshingView#populateItem(org.apache.wicket.markup.repeater.Item)
