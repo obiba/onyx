@@ -1,11 +1,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.gemac800.CardiosoftInstrumentRunner">
-    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="instrumentExecutionService" ref="instrumentExecutionService"/>
     <property name="externalAppHelper" ref="externalAppHelper"/>
     <property name="cardioPath" value="${org.obiba.onyx.jade.instrument.gemac800.workDir}"/>
     <property name="initPath" value="initecg"/>
@@ -14,12 +11,12 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="settingsFileName" value="CARDIO.INI"/>
     <property name="winSettingsFileName" value="WIN.INI"/>
     <property name="executableForParticipantInfo" value="butil.exe -LOAD"/>
-    <property name="locale" ref="locale"/>     
+    <property name="locale" ref="locale"/>
   </bean>
-  
+
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
-    <property name="workDir" value="${org.obiba.onyx.jade.instrument.gemac800.workDir}" />
-    <property name="executable" value="Cardio.exe" />  
+    <property name="workDir" value="${org.obiba.onyx.jade.instrument.gemac800.execDir}"/>
+    <property name="executable" value="Cardio.exe"/>
   </bean>
-  
+
 </beans>
