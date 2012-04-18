@@ -198,7 +198,8 @@ public class OnyxDataExport {
           ExportListener listener = new ExportListener(destination);
 
           // Copy the filtered table to the destination datasource
-          MultithreadedDatasourceCopier.Builder.newCopier().withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
+          boolean copyNulls = destination.getOptions() != null ? destination.getOptions().getCopyNullValues() : false;
+          MultithreadedDatasourceCopier.Builder.newCopier().withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
 
           long exportEndTime = System.currentTimeMillis();
           log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });

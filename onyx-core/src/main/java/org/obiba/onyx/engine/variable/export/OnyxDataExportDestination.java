@@ -128,6 +128,8 @@ public class OnyxDataExportDestination {
 
     private boolean useEnrollmentId;
 
+    private boolean copyNullValues;
+
     private String opalDatasource;
 
     private String characterSet;
@@ -140,6 +142,10 @@ public class OnyxDataExportDestination {
 
     public boolean getUseEnrollmentId() {
       return useEnrollmentId;
+    }
+
+    public boolean getCopyNullValues() {
+      return copyNullValues;
     }
 
     public String getFormat() {
