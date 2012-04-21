@@ -13,6 +13,7 @@ import java.io.Serializable;
 
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.util.data.ComparisonOperator;
 
@@ -24,7 +25,7 @@ public class OpenAnswerValidator implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public static enum Type {
-    QUESTION_CATEGORY, VARIABLE;
+    QUESTION_CATEGORY, VARIABLE, JAVASCRIPT;
   }
 
   private Type type;
@@ -35,7 +36,11 @@ public class OpenAnswerValidator implements Serializable {
 
   private Category category;
 
+  private OpenAnswerDefinition openAnswer;
+
   private Variable variable;
+
+  private String script;
 
   public Type getType() {
     return type;
@@ -61,6 +66,14 @@ public class OpenAnswerValidator implements Serializable {
     this.category = category;
   }
 
+  public OpenAnswerDefinition getOpenAnswer() {
+    return openAnswer;
+  }
+
+  public void setOpenAnswer(OpenAnswerDefinition openAnswer) {
+    this.openAnswer = openAnswer;
+  }
+
   public ComparisonOperator getOperator() {
     return operator;
   }
@@ -75,6 +88,14 @@ public class OpenAnswerValidator implements Serializable {
 
   public void setVariable(Variable variable) {
     this.variable = variable;
+  }
+
+  public String getScript() {
+    return script;
+  }
+
+  public void setScript(String script) {
+    this.script = script;
   }
 
 }

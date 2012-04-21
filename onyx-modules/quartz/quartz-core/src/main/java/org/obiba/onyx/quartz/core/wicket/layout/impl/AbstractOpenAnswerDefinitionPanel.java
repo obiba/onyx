@@ -37,15 +37,15 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   /**
    * The question model (not necessarily the question of the category in the case of shared categories question).
    */
-  private IModel questionModel;
+  private IModel<Question> questionModel;
 
   /**
    * The open answer definition we are dealing with.
    */
-  private IModel openAnswerDefinitionModel;
+  private IModel<OpenAnswerDefinition> openAnswerDefinitionModel;
 
   /**
-   * The data being provisionned.
+   * The data being provisioned.
    */
   private Data data;
 
@@ -56,8 +56,8 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
    * @param questionModel
    * @param questionCategoryModel
    */
-  public AbstractOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
-    this(id, questionModel, questionCategoryModel, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getOpenAnswerDefinition()));
+  public AbstractOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
+    this(id, questionModel, questionCategoryModel, new QuestionnaireModel<OpenAnswerDefinition>(questionCategoryModel.getObject().getOpenAnswerDefinition()));
   }
 
   /**
@@ -68,34 +68,35 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
    * @param questionCategoryModel
    * @param openAnswerDefinitionModel
    */
-  public AbstractOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+  public AbstractOpenAnswerDefinitionPanel(String id, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, IModel<OpenAnswerDefinition> openAnswerDefinitionModel) {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
     this.openAnswerDefinitionModel = openAnswerDefinitionModel;
   }
 
-  public IModel getQuestionModel() {
+  public IModel<Question> getQuestionModel() {
     return questionModel;
   }
 
   public Question getQuestion() {
-    return (Question) getQuestionModel().getObject();
+    return getQuestionModel().getObject();
   }
 
-  public IModel getQuestionCategoryModel() {
-    return getDefaultModel();
+  @SuppressWarnings("unchecked")
+  public IModel<QuestionCategory> getQuestionCategoryModel() {
+    return (IModel<QuestionCategory>) getDefaultModel();
   }
 
   public QuestionCategory getQuestionCategory() {
     return (QuestionCategory) getDefaultModel().getObject();
   }
 
-  public IModel getOpenAnswerDefinitionModel() {
+  public IModel<OpenAnswerDefinition> getOpenAnswerDefinitionModel() {
     return openAnswerDefinitionModel;
   }
 
   public OpenAnswerDefinition getOpenAnswerDefinition() {
-    return (OpenAnswerDefinition) getOpenAnswerDefinitionModel().getObject();
+    return getOpenAnswerDefinitionModel().getObject();
   }
 
   /**
@@ -119,11 +120,11 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
    */
   public abstract void resetField();
 
-  protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), Boolean.valueOf(isSelected) });
+  protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel1, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
+    log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel1.getObject(), questionCategoryModel.getObject(), Boolean.valueOf(isSelected) });
     IQuestionCategorySelectionListener listener = findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
-      listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
+      listener.onQuestionCategorySelection(target, questionModel1, questionCategoryModel, isSelected);
     }
   }
 

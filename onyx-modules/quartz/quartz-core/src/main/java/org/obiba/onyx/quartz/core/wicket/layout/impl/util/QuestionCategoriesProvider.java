@@ -24,7 +24,7 @@ import org.springframework.context.NoSuchMessageException;
 /**
  * Get the question categories, performing ordering, filtering and permutation when applicable.
  */
-public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel> {
+public class QuestionCategoriesProvider extends AbstractDataListProvider<QuestionCategory> {
 
   private static final long serialVersionUID = 1L;
 
@@ -32,19 +32,19 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
 
   private IDataListFilter<QuestionCategory> filter;
 
-  private IModel questionModel;
+  private IModel<Question> questionModel;
 
-  private List<IModel> dataList;
+  private List<IModel<QuestionCategory>> dataList;
 
-  public QuestionCategoriesProvider(IModel questionModel) {
+  public QuestionCategoriesProvider(IModel<Question> questionModel) {
     this(questionModel, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter) {
+  public QuestionCategoriesProvider(IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter) {
     this(questionModel, filter, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+  public QuestionCategoriesProvider(IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel<QuestionCategory>> permutator) {
     super(permutator);
     this.filter = filter;
     this.questionModel = questionModel;
@@ -52,7 +52,7 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
   }
 
   @Override
-  public List<IModel> getDataList() {
+  public List<IModel<QuestionCategory>> getDataList() {
     if(dataList != null) {
       log.debug("QuestionCategoriesProvider.getDataList() CACHED");
       return dataList;
@@ -61,7 +61,7 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
     log.debug("QuestionCategoriesProvider.getDataList() START");
     Question question = (Question) questionModel.getObject();
 
-    List<IModel> categories = new ArrayList<IModel>();
+    List<IModel<QuestionCategory>> categories = new ArrayList<IModel<QuestionCategory>>();
 
     // ordering by locale
     String categoryOrder = null;
@@ -76,7 +76,7 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
         QuestionCategory found = question.findQuestionCategory(categoryName.trim());
         if(found != null) {
           if(accept(found)) {
-            categories.add(new QuestionnaireModel(found));
+            categories.add(new QuestionnaireModel<QuestionCategory>(found));
           }
         }
       }
@@ -84,7 +84,7 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
       if(categories.size() < question.getQuestionCategories().size()) {
         for(QuestionCategory questionCategory : question.getQuestionCategories()) {
           if(accept(questionCategory)) {
-            IModel questionCategoryModel = new QuestionnaireModel(questionCategory);
+            IModel<QuestionCategory> questionCategoryModel = new QuestionnaireModel<QuestionCategory>(questionCategory);
             if(!categories.contains(questionCategoryModel)) {
               categories.add(questionCategoryModel);
             }
@@ -94,13 +94,13 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
     } else {
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
         if(accept(questionCategory)) {
-          categories.add(new QuestionnaireModel(questionCategory));
+          categories.add(new QuestionnaireModel<QuestionCategory>(questionCategory));
         }
       }
     }
 
     // permutation
-    IDataListPermutator<IModel> permutator = getDataListPermutator();
+    IDataListPermutator<IModel<QuestionCategory>> permutator = getDataListPermutator();
     if(permutator != null) {
       dataList = permutator.permute(categories);
     } else {
@@ -129,9 +129,9 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel>
   }
 
   @Override
-  public IModel model(Object object) {
+  public IModel<QuestionCategory> model(QuestionCategory object) {
     if(object != null) {
-      return (QuestionnaireModel) object;
+      return new QuestionnaireModel<QuestionCategory>(object);
     }
     return null;
   }

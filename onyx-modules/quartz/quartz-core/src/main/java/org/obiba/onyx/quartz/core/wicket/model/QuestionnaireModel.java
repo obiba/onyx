@@ -61,7 +61,7 @@ public class QuestionnaireModel<T extends IQuestionnaireElement> extends SpringD
    * @param questionnaire
    * @param element
    */
-  public QuestionnaireModel(Questionnaire questionnaire, IQuestionnaireElement element) {
+  public QuestionnaireModel(Questionnaire questionnaire, T element) {
     this(questionnaire.getName(), element);
   }
 
@@ -70,7 +70,7 @@ public class QuestionnaireModel<T extends IQuestionnaireElement> extends SpringD
    * @param questionnaireName
    * @param element
    */
-  public QuestionnaireModel(String questionnaireName, IQuestionnaireElement element) {
+  public QuestionnaireModel(String questionnaireName, T element) {
     super();
     this.questionnaireName = questionnaireName;
 
@@ -82,14 +82,14 @@ public class QuestionnaireModel<T extends IQuestionnaireElement> extends SpringD
    * @param element
    * @see ActiveQuestionnaireAdministrationService
    */
-  public QuestionnaireModel(IQuestionnaireElement element) {
+  public QuestionnaireModel(T element) {
     super();
     this.questionnaireName = activeQuestionnaireAdministrationService.getQuestionnaire().getName();
 
     initialize(element);
   }
 
-  private void initialize(IQuestionnaireElement element) {
+  private void initialize(T element) {
     if(element.getClass().equals(Category.class)) throw new IllegalArgumentException("Category name is not unique, Use QuestionCategory instead.");
     this.elementClass = element.getClass();
     this.elementName = element.getName();

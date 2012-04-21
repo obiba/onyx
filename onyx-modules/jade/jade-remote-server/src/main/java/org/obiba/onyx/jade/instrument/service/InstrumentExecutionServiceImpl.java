@@ -144,16 +144,24 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
-    if(!instrumentType.isRepeatable()) {
-      for(Map.Entry<String, Data> entry : values.entrySet()) {
-        String paramName = entry.getKey();
-        InstrumentOutputParameter parameter = getInstrumentOutputParameter(paramName);
+    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+
+    // filter out the repeatable parameters
+    // and persist non-repeatable data
+    Map<String, Data> repeatableData = new HashMap<String, Data>();
+    for(Map.Entry<String, Data> entry : values.entrySet()) {
+      InstrumentParameter parameter = getInstrumentOutputParameter(entry.getKey());
+      if(!type.isRepeatable(parameter)) {
         updateParameterValue(parameter, entry.getValue());
+      } else {
+        repeatableData.put(entry.getKey(), entry.getValue());
       }
-    } else {
-      Measure measure = activeInstrumentRunService.addMeasure(values);
-      List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
+    }
+
+    // persist repeatable data if any in a measure
+    if(repeatableData.size() > 0) {
+      Measure measure = activeInstrumentRunService.addMeasure(repeatableData);
+      List<InstrumentOutputParameter> outputParams = type.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
       MeasureStatus status = activeInstrumentRunService.checkIntegrity(outputParams, measure).isEmpty() ? MeasureStatus.VALID : MeasureStatus.INVALID;
       instrumentRunService.updateMeasureStatus(measure, status);
     }
@@ -182,6 +190,10 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   public int getCurrentMeasureCount() {
     return activeInstrumentRunService.getCurrentMeasureCount();
+  }
+
+  public boolean isRepeatableMeasure() {
+    return activeInstrumentRunService.getInstrumentType().isRepeatable();
   }
 
   public int getExpectedMeasureCount() {

@@ -47,7 +47,8 @@ public class PdfPrintingService implements InitializingBean {
    * The implementations of PdfHandler. Each instance can handle printing a PDF file onto a specific DocFlavor. They are
    * ordered is a way that if the PrintService handles PDF directly, the PDF will not be converted by this bean.
    */
-  protected final PdfHandler[] IMPLEMENTED_FLAVORS = { new PdfByteArrayPdfHandler(), new PdfInputStreamPdfHandler(), new PostscriptByteArrayPdfHandler(), new ApplicationByteArrayPdfHandler() };
+  // PDF handlers were removed to force conversion to PS. See ONYX-1619.
+  protected final PdfHandler[] IMPLEMENTED_FLAVORS = {/* new PdfByteArrayPdfHandler(), new PdfInputStreamPdfHandler(), */new PostscriptByteArrayPdfHandler(), new ApplicationByteArrayPdfHandler() };
 
   protected String printerName;
 
@@ -62,7 +63,7 @@ public class PdfPrintingService implements InitializingBean {
       // Lookup all services
       PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
       for(PrintService ps : printServices) {
-        if(ps.getName().equalsIgnoreCase(printerName)) {
+        if(ps != null && printerName.equalsIgnoreCase(ps.getName())) {
           log.info("Using printer '{}'", ps.getName());
           this.printService = ps;
           break;
@@ -128,8 +129,9 @@ public class PdfPrintingService implements InitializingBean {
 
   public static void main(String[] args) throws Exception {
     PdfPrintingService pps = new PdfPrintingService();
+    pps.setPrinterName(args[0]);
     pps.afterPropertiesSet();
-    pps.printPdf(new FileInputStream(args[0]));
+    pps.printPdf(new FileInputStream(args[1]));
   }
 
   private interface PdfHandler {

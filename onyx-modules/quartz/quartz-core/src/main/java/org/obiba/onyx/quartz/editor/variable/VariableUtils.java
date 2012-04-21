@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.variable;
 
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchAttributeException;
 import org.obiba.magma.NoSuchValueTableException;
 import org.obiba.magma.NoSuchVariableException;
@@ -22,9 +21,11 @@ import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
@@ -37,13 +38,13 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class VariableUtils {
 
-  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-  public static final String ONYX_DATASOURCE = "onyx-datasource";
-
   public static final String QUESTION_NAME = "questionName";
 
   public static final String CATEGORY_NAME = "categoryName";
+
+  public static final String OPENANSWER_NAME = "openAnswerName";
+
+  private MagmaInstanceProvider magmaInstanceProvider;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
 
@@ -53,7 +54,7 @@ public class VariableUtils {
     String variableName = variableDataSource.getVariableName();
 
     try {
-      ValueTable valueTable = MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(tableName);
+      ValueTable valueTable = magmaInstanceProvider.getValueTable(tableName);
       variable = valueTable == null ? null : valueTable.getVariable(variableName);
     } catch(NoSuchValueTableException e) {
     } catch(NoSuchVariableException e) {
@@ -99,8 +100,20 @@ public class VariableUtils {
     return null;
   }
 
-  public static Iterable<Variable> findVariable(Questionnaire questionnaire) {
-    return MagmaEngine.get().getDatasource(ONYX_DATASOURCE).getValueTable(questionnaire.getName()).getVariables();
+  public static OpenAnswerDefinition findOpenAnswer(Variable variable, Category category) {
+    try {
+      if(variable.hasAttribute(OPENANSWER_NAME)) {
+        String openAnswerName = variable.getAttributeStringValue(OPENANSWER_NAME);
+        return category.getOpenAnswerDefinitionsByName().get(openAnswerName);
+      }
+    } catch(NoSuchAttributeException e) {
+      return null;
+    }
+    return null;
+  }
+
+  public Iterable<Variable> findVariable(Questionnaire questionnaire) {
+    return magmaInstanceProvider.getValueTable(questionnaire.getName()).getVariables();
   }
 
   public static ValueType convertToValueType(DataType dataType) {
@@ -125,4 +138,8 @@ public class VariableUtils {
     this.questionnaireBundleManager = questionnaireBundleManager;
   }
 
+  @Required
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
+  }
 }

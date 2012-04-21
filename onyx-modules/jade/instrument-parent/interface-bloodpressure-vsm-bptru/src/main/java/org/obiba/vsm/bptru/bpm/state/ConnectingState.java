@@ -84,6 +84,9 @@ public class ConnectingState implements State {
   public void start() {
   }
 
+  public void add() {
+  }
+
   public void stop() {
   }
 

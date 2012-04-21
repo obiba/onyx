@@ -11,37 +11,35 @@ package org.obiba.onyx.wicket.util;
 
 import java.io.File;
 
-import org.apache.wicket.markup.html.WebResource;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 
-public class FileResource extends WebResource {
-  //
-  // Constants
-  //
+public class FileResource extends ContentTypedWebResource {
 
   private static final long serialVersionUID = 1L;
 
-  //
-  // Instance Variables
-  //
-
-  private File file;
-
-  //
-  // Constructors
-  //
+  private final File file;
 
   public FileResource(File file) {
+    this(file, null);
+  }
+
+  public FileResource(File file, String contentType) {
+    super(contentType);
     this.file = file;
   }
 
-  //
-  // WebResource Methods
-  //
-
   @Override
   public IResourceStream getResourceStream() {
-    return new FileResourceStream(file);
+    return new FileResourceStream(file) {
+
+      private static final long serialVersionUID = -6064554737433421700L;
+
+      @Override
+      public String getContentType() {
+        return FileResource.this.getContentType();
+      }
+    };
   }
+
 }

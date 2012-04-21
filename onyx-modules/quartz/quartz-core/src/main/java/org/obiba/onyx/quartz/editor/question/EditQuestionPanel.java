@@ -1,17 +1,13 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question;
-
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +37,9 @@ import org.obiba.onyx.quartz.editor.category.CategoriesArrayPanel;
 import org.obiba.onyx.quartz.editor.category.CategoriesPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.openAnswer.AudioOpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerPanel;
+import org.obiba.onyx.quartz.editor.openAnswer.autocomplete.AutoCompleteOpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.question.array.ArrayRowsPanel;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils;
@@ -49,6 +47,10 @@ import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
+
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
 
 /**
  *
@@ -58,11 +60,13 @@ public abstract class EditQuestionPanel extends Panel {
 
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
@@ -80,13 +84,18 @@ public abstract class EditQuestionPanel extends Panel {
 
   private final SavableHidableTab openAnswerTab;
 
+  private final SavableHidableTab audioRecordingTab;
+
+  private final SavableHidableTab autocompleteTab;
+
   private final HidableTab categoriesTab;
 
   private final HidableTab rowsTab;
 
   private final HidableTab columnsTab;
 
-  public EditQuestionPanel(String id, final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel, final QuestionType... forceAllowedType) {
+  public EditQuestionPanel(String id, final IModel<Question> questionModel,
+      final IModel<Questionnaire> questionnaireModel, final QuestionType... forceAllowedType) {
     super(id);
     this.questionnaireModel = questionnaireModel;
 
@@ -114,7 +123,8 @@ public abstract class EditQuestionPanel extends Panel {
     List<IQuestionnaireElement> listElement = new ArrayList<IQuestionnaireElement>();
     listElement.add(question);
     listElement.addAll(question.getQuestionCategories());
-    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils.load(questionnaireModel.getObject(), listElement.toArray(new IQuestionnaireElement[listElement.size()])));
+    localePropertiesModel = new Model<LocaleProperties>(localePropertiesUtils
+        .load(questionnaireModel.getObject(), listElement.toArray(new IQuestionnaireElement[listElement.size()])));
 
     feedbackPanel = new FeedbackPanel("content");
     feedbackWindow = new FeedbackWindow("feedback");
@@ -143,7 +153,9 @@ public abstract class EditQuestionPanel extends Panel {
             firstCategory = question.getCategories().get(0);
             openAnswerDefinition = firstCategory.getOpenAnswerDefinition();
           }
-          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(firstCategory), questionModel, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow) {
+          panel = new OpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition),
+              new Model<Category>(firstCategory), questionModel, questionnaireModel, localePropertiesModel,
+              feedbackPanel, feedbackWindow) {
             @Override
             public void onSave(AjaxRequestTarget target) {
               super.onSave(target);
@@ -170,13 +182,99 @@ public abstract class EditQuestionPanel extends Panel {
     };
     openAnswerTab.setVisible(false);
 
+    audioRecordingTab = new SavableHidableTab(new ResourceModel("AudioRecording")) {
+
+      private AudioOpenAnswerPanel panel;
+
+      @Override
+      public Panel getPanel(String panelId) {
+        final OpenAnswerDefinition openAnswerDefinition;
+        if(panel == null) {
+          Category firstCategory = null;
+          if(question.getCategories().isEmpty()) {
+            openAnswerDefinition = new OpenAnswerDefinition();
+            openAnswerDefinition.setRequired(true);
+          } else {
+            firstCategory = question.getCategories().get(0);
+            openAnswerDefinition = firstCategory.getOpenAnswerDefinition();
+          }
+          panel = new AudioOpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition),
+              new Model<Category>(firstCategory), questionModel, questionnaireModel) {
+            @Override
+            public void onSave(AjaxRequestTarget target) {
+              super.onSave(target);
+              if(form.hasError()) return;
+              if(question.getCategories().isEmpty()) {
+                Category category = new Category(question.getName());
+                category.setOpenAnswerDefinition(openAnswerDefinition);
+                QuestionCategory questionCategory = new QuestionCategory();
+                questionCategory.setCategory(category);
+                question.addQuestionCategory(questionCategory);
+              }
+            }
+          };
+        }
+        return panel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
+      }
+    };
+    audioRecordingTab.setVisible(false);
+
+    autocompleteTab = new SavableHidableTab(new ResourceModel("AutoComplete")) {
+
+      private AutoCompleteOpenAnswerPanel panel;
+
+      @Override
+      public Panel getPanel(String panelId) {
+        final OpenAnswerDefinition openAnswerDefinition;
+        if(panel == null) {
+          Category firstCategory = null;
+          if(question.getCategories().isEmpty()) {
+            openAnswerDefinition = new OpenAnswerDefinition();
+            openAnswerDefinition.setRequired(true);
+          } else {
+            firstCategory = question.getCategories().get(0);
+            openAnswerDefinition = firstCategory.getOpenAnswerDefinition();
+          }
+          panel = new AutoCompleteOpenAnswerPanel(panelId, new Model<OpenAnswerDefinition>(openAnswerDefinition),
+              new Model<Category>(firstCategory), questionModel, questionnaireModel, localePropertiesModel,
+              feedbackPanel, feedbackWindow) {
+            @Override
+            public void onSave(AjaxRequestTarget target) {
+              super.onSave(target);
+              if(form.hasError()) return;
+              if(question.getCategories().isEmpty()) {
+                Category category = new Category(question.getName());
+                category.setOpenAnswerDefinition(openAnswerDefinition);
+                QuestionCategory questionCategory = new QuestionCategory();
+                questionCategory.setCategory(category);
+                question.addQuestionCategory(questionCategory);
+              }
+            }
+          };
+        }
+        return panel;
+      }
+
+      @Override
+      public void save(AjaxRequestTarget target) {
+        if(panel != null) panel.onSave(target);
+      }
+    };
+    autocompleteTab.setVisible(false);
+
     categoriesTab = new HidableTab(new ResourceModel("Categories")) {
       private CategoriesPanel panel;
 
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+          panel = new CategoriesPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel,
+              feedbackWindow);
         }
         return panel;
       }
@@ -190,7 +288,8 @@ public abstract class EditQuestionPanel extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new ArrayRowsPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+          panel = new ArrayRowsPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel,
+              feedbackWindow);
         }
         return panel;
       }
@@ -203,7 +302,8 @@ public abstract class EditQuestionPanel extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new CategoriesArrayPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+          panel = new CategoriesArrayPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel,
+              feedbackWindow);
         }
         return panel;
       }
@@ -217,7 +317,8 @@ public abstract class EditQuestionPanel extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         if(panel == null) {
-          panel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, true, forceAllowedType) {
+          panel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel,
+              feedbackWindow, true, forceAllowedType) {
             @Override
             public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
               setTabsVisibility(questionType);
@@ -247,6 +348,8 @@ public abstract class EditQuestionPanel extends Panel {
     tabs.add(categoriesTab);
     tabs.add(rowsTab);
     tabs.add(columnsTab);
+    tabs.add(audioRecordingTab);
+    tabs.add(autocompleteTab);
     final SavableHidableTab conditionTab = new SavableHidableTab(new ResourceModel("Conditions")) {
       private ConditionPanel panel;
 
@@ -282,46 +385,76 @@ public abstract class EditQuestionPanel extends Panel {
 
         if(questionType != null) {
           switch(questionType) {
-          case SINGLE_OPEN_ANSWER:
-            openAnswerTab.save(target);
-            if(form.hasError()) return;
-            if(question.getCategories().isEmpty() || question.getCategories().get(0).getOpenAnswerDefinition() == null) {
-              tabbedPanel.setSelectedTab(tabs.indexOf(openAnswerTab));
-              target.addComponent(tabbedPanel);
-              form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null).getObject());
-            }
-            break;
-
-          case LIST_CHECKBOX:
-          case LIST_RADIO:
-          case LIST_DROP_DOWN:
-            question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory().getBeanName() : new DefaultQuestionPanelFactory().getBeanName());
-            question.setMultiple(questionType == LIST_CHECKBOX);
-            if(question.getCategories().size() < 2) {
-              tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));
-              target.addComponent(tabbedPanel);
-              form.error(new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
-            }
-            if(questionType == QuestionType.LIST_RADIO || questionType == QuestionType.LIST_DROP_DOWN) {
-              if(question.getMinCount() != null && (question.getMinCount() != 0 || question.getMinCount() != 1)) {
-                question.setMinCount(1);
+            case SINGLE_OPEN_ANSWER:
+              openAnswerTab.save(target);
+              if(form.hasError()) return;
+              if(question.getCategories().isEmpty() || question.getCategories().get(0)
+                  .getOpenAnswerDefinition() == null) {
+                tabbedPanel.setSelectedTab(tabs.indexOf(openAnswerTab));
+                target.addComponent(tabbedPanel);
+                form.error(new StringResourceModel("Validator.SingleOpenAnswerNotDefined", EditQuestionPanel.this, null)
+                    .getObject());
               }
-              question.setMaxCount(1);
-            }
-            break;
+              break;
 
-          case ARRAY_CHECKBOX:
-          case ARRAY_RADIO:
-            question.setMultiple(questionType == ARRAY_CHECKBOX);
-            if(question.getQuestions().size() < 2 || question.getCategories().size() < 1) {
-              form.error(new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
-              tabbedPanel.setSelectedTab(tabs.indexOf(question.getQuestions().size() < 2 ? rowsTab : columnsTab));
-              target.addComponent(tabbedPanel);
-            }
-            break;
+            case LIST_CHECKBOX:
+            case LIST_RADIO:
+            case LIST_DROP_DOWN:
+              question.setUIFactoryName(questionType == LIST_DROP_DOWN ? new DropDownQuestionPanelFactory()
+                  .getBeanName() : new DefaultQuestionPanelFactory().getBeanName());
+              question.setMultiple(questionType == LIST_CHECKBOX);
+              if(question.getCategories().size() < 1) {
+                tabbedPanel.setSelectedTab(tabs.indexOf(categoriesTab));
+                target.addComponent(tabbedPanel);
+                form.error(
+                    new StringResourceModel("Validator.ListNotDefined", EditQuestionPanel.this, null).getObject());
+              }
+              if(questionType == QuestionType.LIST_RADIO || questionType == QuestionType.LIST_DROP_DOWN) {
+                if(question.getMinCount() != null && (question.getMinCount() != 0 || question.getMinCount() != 1)) {
+                  question.setMinCount(1);
+                }
+                question.setMaxCount(1);
+              }
+              break;
 
-          case BOILER_PLATE:
-            break;
+            case ARRAY_CHECKBOX:
+            case ARRAY_RADIO:
+              question.setMultiple(questionType == ARRAY_CHECKBOX);
+              if(question.getQuestions().size() < 1 || question.getCategories().size() < 1) {
+                form.error(
+                    new StringResourceModel("Validator.ArrayNotDefined", EditQuestionPanel.this, null).getObject());
+                tabbedPanel.setSelectedTab(tabs.indexOf(question.getQuestions().size() < 1 ? rowsTab : columnsTab));
+                target.addComponent(tabbedPanel);
+              }
+              break;
+
+            case BOILER_PLATE:
+              break;
+
+            case SINGLE_AUDIO_RECORDING:
+              audioRecordingTab.save(target);
+              if(form.hasError()) return;
+              if(question.getCategories().isEmpty() || question.getCategories().get(0)
+                  .getOpenAnswerDefinition() == null) {
+                tabbedPanel.setSelectedTab(tabs.indexOf(audioRecordingTab));
+                target.addComponent(tabbedPanel);
+                form.error(new StringResourceModel("Validator.AudioRecordingNotDefined", EditQuestionPanel.this, null)
+                    .getObject());
+              }
+              break;
+
+            case SINGLE_AUTO_COMPLETE:
+              autocompleteTab.save(target);
+              if(form.hasError()) return;
+              if(question.getCategories().isEmpty() || question.getCategories().get(0)
+                  .getOpenAnswerDefinition() == null) {
+                tabbedPanel.setSelectedTab(tabs.indexOf(autocompleteTab));
+                target.addComponent(tabbedPanel);
+                form.error(new StringResourceModel("Validator.AutoCompleteNotDefined", EditQuestionPanel.this, null)
+                    .getObject());
+              }
+              break;
+
           }
         }
 
@@ -354,32 +487,56 @@ public abstract class EditQuestionPanel extends Panel {
   private void setTabsVisibility(QuestionType questionType) {
     if(questionType == null) return;
     switch(questionType) {
-    case SINGLE_OPEN_ANSWER:
-      openAnswerTab.setVisible(true);
-      categoriesTab.setVisible(false);
-      rowsTab.setVisible(false);
-      columnsTab.setVisible(false);
-      break;
+      case SINGLE_OPEN_ANSWER:
+        openAnswerTab.setVisible(true);
+        categoriesTab.setVisible(false);
+        rowsTab.setVisible(false);
+        columnsTab.setVisible(false);
+        audioRecordingTab.setVisible(false);
+        autocompleteTab.setVisible(false);
+        break;
 
-    case LIST_CHECKBOX:
-    case LIST_RADIO:
-    case LIST_DROP_DOWN:
-      categoriesTab.setVisible(true);
-      openAnswerTab.setVisible(false);
-      rowsTab.setVisible(false);
-      columnsTab.setVisible(false);
-      break;
+      case LIST_CHECKBOX:
+      case LIST_RADIO:
+      case LIST_DROP_DOWN:
+        categoriesTab.setVisible(true);
+        openAnswerTab.setVisible(false);
+        rowsTab.setVisible(false);
+        columnsTab.setVisible(false);
+        audioRecordingTab.setVisible(false);
+        autocompleteTab.setVisible(false);
+        break;
 
-    case ARRAY_CHECKBOX:
-    case ARRAY_RADIO:
-      rowsTab.setVisible(true);
-      columnsTab.setVisible(true);
-      openAnswerTab.setVisible(false);
-      categoriesTab.setVisible(false);
-      break;
+      case ARRAY_CHECKBOX:
+      case ARRAY_RADIO:
+        rowsTab.setVisible(true);
+        columnsTab.setVisible(true);
+        openAnswerTab.setVisible(false);
+        categoriesTab.setVisible(false);
+        audioRecordingTab.setVisible(false);
+        autocompleteTab.setVisible(false);
+        break;
 
-    case BOILER_PLATE:
-      break;
+      case BOILER_PLATE:
+        break;
+
+      case SINGLE_AUDIO_RECORDING:
+        audioRecordingTab.setVisible(true);
+        openAnswerTab.setVisible(false);
+        categoriesTab.setVisible(false);
+        rowsTab.setVisible(false);
+        columnsTab.setVisible(false);
+        autocompleteTab.setVisible(false);
+        break;
+
+      case SINGLE_AUTO_COMPLETE:
+        autocompleteTab.setVisible(true);
+        openAnswerTab.setVisible(false);
+        categoriesTab.setVisible(false);
+        rowsTab.setVisible(false);
+        columnsTab.setVisible(false);
+        audioRecordingTab.setVisible(false);
+        break;
     }
   }
 

@@ -10,7 +10,6 @@
 package org.obiba.onyx.webapp.stage.page;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.engine.Stage;
@@ -39,17 +38,7 @@ public class InternalErrorStagePage extends InternalErrorPage {
     menuBar = new StageMenuBar("menuBar", stageModel);
     add(menuBar);
 
-    add(newLink("link", returnPage));
+    replace(newLink("link", returnPage));
   }
 
-  protected Link<?> newLink(String id, final Page returnPage) {
-    return new Link(id) {
-
-      @Override
-      public void onClick() {
-        setResponsePage(returnPage);
-      }
-
-    };
-  }
 }

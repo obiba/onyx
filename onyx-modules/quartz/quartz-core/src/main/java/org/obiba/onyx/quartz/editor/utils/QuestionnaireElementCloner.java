@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
@@ -27,51 +29,57 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.IDataValidator;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-
 public class QuestionnaireElementCloner {
 
   /**
    * Return a clone of given element, clone contains element and his LocaleProperties
+   *
    * @param questionCategory
    * @param settings
    * @param localeProperties
    * @return
    */
-  public static ElementClone<QuestionCategory> clone(QuestionCategory questionCategory, CloneSettings settings, LocaleProperties localeProperties) {
+  public static ElementClone<QuestionCategory> clone(QuestionCategory questionCategory, CloneSettings settings,
+      LocaleProperties localeProperties) {
     return createElementClone(questionCategory, clone(questionCategory, settings), localeProperties);
   }
 
   /**
    * Return a clone of given element, clone contains element and his LocaleProperties
+   *
    * @param openAnswer
    * @param settings
    * @param localeProperties
    * @return
    */
-  public static ElementClone<OpenAnswerDefinition> clone(OpenAnswerDefinition openAnswer, CloneSettings settings, LocaleProperties localeProperties) {
+  public static ElementClone<OpenAnswerDefinition> clone(OpenAnswerDefinition openAnswer, CloneSettings settings,
+      LocaleProperties localeProperties) {
     return createElementClone(openAnswer, clone(openAnswer, settings), localeProperties);
   }
 
   /**
    * Return a clone of given element, clone contains element and his LocaleProperties
+   *
    * @param question
    * @param settings
    * @param localeProperties
    * @return
    */
-  public static ElementClone<Question> clone(Question question, CloneSettings settings, LocaleProperties localeProperties) {
+  public static ElementClone<Question> clone(Question question, CloneSettings settings,
+      LocaleProperties localeProperties) {
     return createElementClone(question, clone(question, settings), localeProperties);
   }
 
   /**
    * Add properties of clone into given localeProperties
+   *
    * @param clone
    * @param localeProperties
    */
-  public static void addProperties(ElementClone<? extends IQuestionnaireElement> clone, LocaleProperties localeProperties) {
-    localeProperties.addElementLabel(clone.getElement(), clone.getLocaleProperties().getElementLabels(clone.getElement()));
+  public static void addProperties(ElementClone<? extends IQuestionnaireElement> clone,
+      LocaleProperties localeProperties) {
+    localeProperties
+        .addElementLabel(clone.getElement(), clone.getLocaleProperties().getElementLabels(clone.getElement()));
   }
 
   private static Question clone(Question question, CloneSettings settings) {
@@ -114,7 +122,8 @@ public class QuestionnaireElementCloner {
     }
   }
 
-  private static <T extends IQuestionnaireElement> ElementClone<T> createElementClone(T element, T elementCloned, LocaleProperties localeProperties) {
+  private static <T extends IQuestionnaireElement> ElementClone<T> createElementClone(T element, T elementCloned,
+      LocaleProperties localeProperties) {
     ListMultimap<Locale, KeyValue> elementLabel = localeProperties.getElementLabels(element);
     ListMultimap<Locale, KeyValue> elementLabelClone = ArrayListMultimap.create();
     if(elementLabel != null) {
@@ -195,7 +204,15 @@ public class QuestionnaireElementCloner {
     ValueMap uiArgumentsValueMap = from.getUIArgumentsValueMap();
     if(uiArgumentsValueMap != null) {
       for(Entry<String, Object> entry : uiArgumentsValueMap.entrySet()) {
-        to.addUIArgument(entry.getKey(), (String) entry.getValue());
+        Object value = entry.getValue();
+        String key = entry.getKey();
+        if(value instanceof String[]) {
+          for(String s : (String[]) value) {
+            to.addUIArgument(key, s);
+          }
+        } else {
+          to.addUIArgument(key, (String) value);
+        }
       }
     }
     for(ComparingDataSource dataSource : from.getValidationDataSources()) {
@@ -213,7 +230,7 @@ public class QuestionnaireElementCloner {
 
   /**
    * Represents an IQuestionnaireElement and his own LocaleProperties
-   * 
+   *
    * @param <T>
    */
   public static class ElementClone<T extends IQuestionnaireElement> implements Serializable {
@@ -277,14 +294,16 @@ public class QuestionnaireElementCloner {
       this.renameOpenAnswer = renameOpenAnswer;
     }
 
-    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer, boolean cloneChildOpenAnswer) {
+    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer,
+        boolean cloneChildOpenAnswer) {
       this.cloneVariableName = cloneVariableName;
       this.cloneChildQuestion = cloneChildQuestion;
       this.renameOpenAnswer = renameOpenAnswer;
       this.cloneChildOpenAnswer = cloneChildOpenAnswer;
     }
 
-    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer, boolean cloneChildOpenAnswer, boolean renameQuestion) {
+    public CloneSettings(boolean cloneVariableName, boolean cloneChildQuestion, boolean renameOpenAnswer,
+        boolean cloneChildOpenAnswer, boolean renameQuestion) {
       this.cloneVariableName = cloneVariableName;
       this.cloneChildQuestion = cloneChildQuestion;
       this.renameOpenAnswer = renameOpenAnswer;

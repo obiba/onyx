@@ -9,23 +9,28 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
-import org.obiba.magma.crypt.KeyProvider;
-import org.obiba.magma.datasource.crypt.DatasourceEncryptionStrategy;
 import org.obiba.magma.datasource.crypt.GeneratedSecretKeyDatasourceEncryptionStrategy;
 import org.obiba.magma.filter.CompositeFilterChain;
 import org.obiba.magma.filter.FilterChain;
+import org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 public class OnyxDataExportDestination {
 
   private String name;
+
+  private Options options;
 
   private EncryptionOptions encrypt;
 
@@ -40,14 +45,12 @@ public class OnyxDataExportDestination {
     this.name = name;
   }
 
-  public DatasourceEncryptionStrategy getEncryptionStrategy(KeyProvider provider) {
-    if(encrypt != null) {
-      GeneratedSecretKeyDatasourceEncryptionStrategy strategy = new GeneratedSecretKeyDatasourceEncryptionStrategy();
-      strategy.setKeyProvider(provider);
-      encrypt.configureStrategy(strategy);
-      return strategy;
-    }
-    return null;
+  public Options getOptions() {
+    return options;
+  }
+
+  public EncryptionOptions getEncryptOptions() {
+    return this.encrypt != null ? this.encrypt : options != null ? options.getEncrypt() : null;
   }
 
   public boolean isEncryptionRequested() {
@@ -106,6 +109,95 @@ public class OnyxDataExportDestination {
     return compositeFilterChain;
   }
 
+  public File createOutputFile(File outputRootDirectory) {
+    String filename = getName() + "-" + getCurrentDateTimeString();
+    if(options == null || options.getFormat() == null || options.getFormat() == XmlDatasourceFactoryProvider.FORMAT) {
+      filename = filename + ".zip";
+    }
+    return new File(outputRootDirectory, filename);
+  }
+
+  private String getCurrentDateTimeString() {
+    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+    return df.format(new Date());
+  }
+
+  public static class Options {
+
+    private String format;
+
+    private boolean useEnrollmentId;
+
+    private boolean copyNullValues;
+
+    private String opalDatasource;
+
+    private String characterSet;
+
+    private String separator;
+
+    private String quote;
+
+    private EncryptionOptions encrypt;
+
+    public boolean getUseEnrollmentId() {
+      return useEnrollmentId;
+    }
+
+    public boolean getCopyNullValues() {
+      return copyNullValues;
+    }
+
+    public String getFormat() {
+      return format;
+    }
+
+    public void setFormat(String format) {
+      this.format = format;
+    }
+
+    public String getOpalDatasource() {
+      return opalDatasource;
+    }
+
+    public void setOpalDatasource(String opalDatasource) {
+      this.opalDatasource = opalDatasource;
+    }
+
+    public String getCharacterSet() {
+      return characterSet;
+    }
+
+    public void setCharacterSet(String characterSet) {
+      this.characterSet = characterSet;
+    }
+
+    public String getSeparator() {
+      return separator;
+    }
+
+    public void setSeparator(String separator) {
+      this.separator = separator;
+    }
+
+    public String getQuote() {
+      return quote;
+    }
+
+    public void setQuote(String quote) {
+      this.quote = quote;
+    }
+
+    public EncryptionOptions getEncrypt() {
+      return encrypt;
+    }
+
+    public void setEncrypt(EncryptionOptions encrypt) {
+      this.encrypt = encrypt;
+    }
+
+  }
+
   public static class EncryptionOptions {
     private String algorithm;
 
@@ -115,7 +207,7 @@ public class OnyxDataExportDestination {
 
     private Integer keySize;
 
-    private void configureStrategy(GeneratedSecretKeyDatasourceEncryptionStrategy strategy) {
+    public void configureStrategy(GeneratedSecretKeyDatasourceEncryptionStrategy strategy) {
       if(algorithm != null) {
         strategy.setAlgorithm(algorithm);
       }

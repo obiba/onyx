@@ -34,6 +34,16 @@ public class ReadyState implements State {
           stateMachine.getSession().clearResults();
           getInstrument().commands().start().send();
           break;
+        case CYCLE:
+          Acks.Cycle cycle = (Acks.Cycle) ack;
+          // Cycling for manual measurement
+          if(cycle.cycleTime() != 0) {
+            stateMachine.getInstrument().commands().cycle().send();
+          } else {
+            stateMachine.getSession().setCycle(cycle.cycleTime());
+            getInstrument().commands().start().send();
+          }
+          break;
         case START:
           Acks.Start start = (Acks.Start) ack;
           stateMachine.getSession().setCycle(start.cycleTime());
@@ -48,6 +58,10 @@ public class ReadyState implements State {
         switch(type) {
         case CLEARED:
           stateMachine.getSession().clearResults();
+          break;
+        case CYCLED:
+          Buttons.Cycle cycle = (Buttons.Cycle) button;
+          stateMachine.getSession().setCycle(cycle.cycleTime());
           break;
         case STARTED:
           Buttons.Start start = (Buttons.Start) button;
@@ -78,6 +92,12 @@ public class ReadyState implements State {
     return States.READY;
   }
 
+  @Override
+  public void add() {
+    // Set cycle to "Manual"
+    stateMachine.getInstrument().commands().cycle().send();
+  }
+
   public void start() {
     // Clear existing measures before starting. Start is send in the CLEAR ack.
     stateMachine.getInstrument().commands().clear().send();
@@ -89,6 +109,10 @@ public class ReadyState implements State {
 
   public BpmMessageHandler getMessageHandler() {
     return handler;
+  }
+
+  protected StateMachine getStateMachine() {
+    return stateMachine;
   }
 
   private void startMeasure() {

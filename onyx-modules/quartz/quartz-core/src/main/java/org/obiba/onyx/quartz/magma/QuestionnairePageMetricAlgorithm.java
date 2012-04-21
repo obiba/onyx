@@ -19,41 +19,45 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
-/**
- *
- */
 public class QuestionnairePageMetricAlgorithm {
 
-  private QuestionnaireMetric pageMetrics;
+  private static final Logger log = LoggerFactory.getLogger(QuestionnairePageMetricAlgorithm.class);
 
-  private QuestionnaireFinder questionnaireFinder;
+  private final QuestionnaireMetric pageMetrics;
 
-  private String sectionName;
+  private final QuestionnaireFinder questionnaireFinder;
 
-  private Set<String> pageQuestions;
+  private final String sectionName;
+
+  private final Set<String> pageQuestions;
 
   public QuestionnairePageMetricAlgorithm(Questionnaire questionnaire, QuestionnaireMetric pageMetrics) {
     this.questionnaireFinder = new QuestionnaireFinder(questionnaire);
     this.pageMetrics = pageMetrics;
 
     Page page = questionnaireFinder.findPage(getPage());
-    // ONYX-1342
     if(page == null) {
-      throw new IllegalStateException("A page has been removed from questionnaire '" + questionnaire.getName() + "' before all interviews were completed and exported: " + getPage());
+      // ONYX-1342
+      log.warn("Page {} no longer exists in questionnaire {}.", getPage(), questionnaire.getName());
+      sectionName = "";
+      pageQuestions = ImmutableSet.of();
+    } else {
+      sectionName = page.getSection().getName();
+      // Build a Set of this Page's question's name
+      pageQuestions = ImmutableSet.copyOf(Iterables.transform(questionnaireFinder.findPage(pageMetrics.getPage()).getQuestions(), new Function<Question, String>() {
+        public String apply(Question q) {
+          return q.getName();
+        }
+      }));
     }
 
-    sectionName = page.getSection().getName();
-    // Build a Set of this Page's question's name
-    pageQuestions = ImmutableSet.copyOf(Iterables.transform(questionnaireFinder.findPage(pageMetrics.getPage()).getQuestions(), new Function<Question, String>() {
-      public String apply(Question q) {
-        return q.getName();
-      }
-    }));
   }
 
   public String getPage() {

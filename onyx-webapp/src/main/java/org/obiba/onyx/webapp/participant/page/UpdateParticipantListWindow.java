@@ -9,10 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.page;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -27,7 +24,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
-import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
+import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.obiba.onyx.webapp.participant.panel.UpdateParticipantListPanel;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -62,7 +59,7 @@ public class UpdateParticipantListWindow extends Dialog {
   private AppointmentManagementService appointmentManagementService;
 
   @SpringBean
-  private AbstractParticipantReader participantReader;
+  private IParticipantReader participantReader;
 
   //
   // Constructors
@@ -98,11 +95,7 @@ public class UpdateParticipantListWindow extends Dialog {
         if(upload != null && upload.getFileUpload() != null) {
           uploadFileForProcessing(upload.getFileUpload());
         } else {
-          try {
-            isUpdateAvailable = (participantReader.getInputDirectory().getFile().listFiles(participantReader.getFilter()).length > 0);
-          } catch(IOException e) {
-            throw new RuntimeException(e);
-          }
+          isUpdateAvailable = (participantReader.isUpdateAvailable());
         }
 
         if(!isUpdateAvailable) {
@@ -209,11 +202,9 @@ public class UpdateParticipantListWindow extends Dialog {
 
   private void uploadFileForProcessing(FileUpload upload) {
     try {
-      SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
-      String fileName = formatter.format(new Date()) + "_" + upload.getClientFileName();
-      File inputFile = new File(participantReader.getInputDirectory().getFile(), fileName);
-      inputFile.createNewFile();
-      upload.writeTo(inputFile);
+      if(participantReader.isFileBased()) {
+        participantReader.addFileForProcessing(upload.getInputStream());
+      }
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
@@ -224,7 +215,7 @@ public class UpdateParticipantListWindow extends Dialog {
     return content;
   }
 
-  public void setParticipantReader(AbstractParticipantReader participantReader) {
+  public void setParticipantReader(IParticipantReader participantReader) {
     this.participantReader = participantReader;
   }
 

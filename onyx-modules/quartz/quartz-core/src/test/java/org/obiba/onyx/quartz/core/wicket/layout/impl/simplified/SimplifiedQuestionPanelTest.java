@@ -130,6 +130,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q1.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q1.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.1.description", locale, "Description one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
@@ -170,6 +171,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q1_MULTIPLE.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1_MULTIPLE.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1_MULTIPLE.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q1_MULTIPLE.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.description", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.imageSelected", locale, "");
@@ -192,6 +194,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2.caption", locale, "question2 caption");
     messageSource.addMessage("Question.Q2.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q2.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q2.1.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.1.imageDeselected", locale, "");
@@ -212,6 +215,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.MULTIPLE_OPEN.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.MULTIPLE_OPEN.caption", locale, "question2 caption");
     messageSource.addMessage("Question.MULTIPLE_OPEN.categoryOrder", locale, "");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.media", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.imageDeselected", locale, "");
@@ -234,6 +238,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.caption", locale, "question2 caption");
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.categoryOrder", locale, "");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.media", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.MULTIPLE_DURATION.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -248,6 +253,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q2_MULTIPLE.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2_MULTIPLE.caption", locale, "question2 caption");
     messageSource.addMessage("Question.Q2_MULTIPLE.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q2_MULTIPLE.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -260,6 +266,7 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q3.instructions", locale, "question3 instructions");
     messageSource.addMessage("Question.Q3.caption", locale, "question3 caption");
     messageSource.addMessage("Question.Q3.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q3.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q3.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q3.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q3.3.label", locale, "Choice three");
@@ -313,6 +320,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
@@ -332,7 +340,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
+      @Override
       public Panel getTestPanel(String panelId) {
 
         return new SimplifiedQuestionPanelMock(panelId, new Model(question));
@@ -407,6 +415,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "clickHere")).andReturn(propertyKeyProvider.getPropertyKey(questionnaire, "clickHere")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
@@ -432,10 +441,10 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
-      @SuppressWarnings("serial")
+      @Override
       public Panel getTestPanel(String panelId) {
 
-        return new SimplifiedQuestionPanelMock(panelId, new Model(question));
+        return new SimplifiedQuestionPanelMock(panelId, new Model<Question>(question));
       }
     });
 
@@ -481,6 +490,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "clickHere")).andReturn(propertyKeyProvider.getPropertyKey(questionnaire, "clickHere")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
@@ -509,6 +519,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
@@ -559,6 +570,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
@@ -582,6 +594,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 
@@ -645,6 +658,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "clearAll")).andReturn(propertyKeyProvider.getPropertyKey(questionnaire, "clearAll")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).anyTimes();
@@ -672,6 +686,7 @@ public class SimplifiedQuestionPanelTest {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
 

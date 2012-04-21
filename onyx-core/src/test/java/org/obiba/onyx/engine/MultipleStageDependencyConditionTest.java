@@ -20,11 +20,11 @@ import org.obiba.onyx.engine.MultipleStageDependencyCondition.Operator;
 
 public class MultipleStageDependencyConditionTest {
 
-  ActiveInterviewService activeInterviewServiceMock;
+  private ActiveInterviewService activeInterviewServiceMock;
 
-  StageDependencyCondition first = EasyMock.createMock(StageDependencyCondition.class);
+  private StageDependencyCondition first = EasyMock.createMock(StageDependencyCondition.class);
 
-  StageDependencyCondition second = EasyMock.createMock(StageDependencyCondition.class);
+  private StageDependencyCondition second = EasyMock.createMock(StageDependencyCondition.class);
 
   @Before
   public void setupMocks() {

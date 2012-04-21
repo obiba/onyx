@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -12,9 +12,11 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.IDataSource;
@@ -25,10 +27,38 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
+import org.springframework.util.Assert;
+
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.AUDIO_RECORDING;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.AUTO_COMPLETE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.NORMAL;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.UI_ARGUMENT_KEY;
 
 public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider {
 
   private static final long serialVersionUID = -7756577128502621726L;
+
+  private static final String INPUT_SIZE_KEY = "size";
+
+  private static final String INPUT_NB_ROWS_KEY = "rows";
+
+  public enum OpenAnswerType {
+
+    NORMAL(null), AUDIO_RECORDING("audio"), AUTO_COMPLETE("suggest");
+
+    public static final String UI_ARGUMENT_KEY = "type";
+
+    private final String uiArgument;
+
+    OpenAnswerType(String uiArgument) {
+      this.uiArgument = uiArgument;
+    }
+
+    public String getUiArgument() {
+      return uiArgument;
+    }
+
+  }
 
   private String name;
 
@@ -133,6 +163,35 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     uIArguments.add(new String[] { key, value });
   }
 
+  public void replaceUIArgument(String key, String value) {
+    removeUIArgument(key);
+    addUIArgument(key, value);
+  }
+
+  public void removeUIArgument(String key, String value) {
+    if(uIArguments != null) {
+      for(Iterator<String[]> it = uIArguments.iterator(); it.hasNext(); ) {
+        String[] strings = it.next();
+        if(strings.length == 2 && StringUtils.equals(strings[0], key) && StringUtils.equals(strings[1], value)) {
+          it.remove();
+          break;
+        }
+      }
+    }
+  }
+
+  public void removeUIArgument(String key) {
+    if(uIArguments != null) {
+      for(Iterator<String[]> it = uIArguments.iterator(); it.hasNext(); ) {
+        String[] strings = it.next();
+        if(strings.length > 0 && StringUtils.equals(strings[0], key)) {
+          it.remove();
+          break;
+        }
+      }
+    }
+  }
+
   public void clearUIArgument() {
     if(uIArguments != null) {
       uIArguments.clear();
@@ -192,7 +251,8 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   public void addDefaultValue(Data data) {
     if(data != null && data.getValue() != null) {
       if(!data.getType().equals(getDataType())) {
-        throw new IllegalArgumentException("Wrong data type for default value: " + getDataType() + " expected, " + data.getType() + " found.");
+        throw new IllegalArgumentException(
+            "Wrong data type for default value: " + getDataType() + " expected, " + data.getType() + " found.");
       }
       getDefaultValues().add(data);
     }
@@ -257,9 +317,57 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
       if(openAnswerDefinition.getName().equals(name1)) {
         return openAnswerDefinition;
       }
-      if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) return findOpenAnswerDefinition(name1);
+      if(openAnswerDefinition.hasChildOpenAnswerDefinitions()) return findOpenAnswerDefinition(name1);
     }
     return null;
+  }
+
+  public OpenAnswerType getOpenAnswerType() {
+    if(getUIArgumentsValueMap() == null) return NORMAL;
+    String type = getUIArgumentsValueMap().getString(UI_ARGUMENT_KEY);
+    if(AUDIO_RECORDING.getUiArgument().equals(type)) return AUDIO_RECORDING;
+    if(AUTO_COMPLETE.getUiArgument().equals(type)) return AUTO_COMPLETE;
+    return NORMAL;
+  }
+
+  public boolean isAudioAnswer() {
+    return getOpenAnswerType() == AUDIO_RECORDING;
+  }
+
+  public boolean isSuggestionAnswer() {
+    return getOpenAnswerType() == AUTO_COMPLETE;
+  }
+
+  Iterator<String[]> getUIArgumentsIterator() {
+    return uIArguments == null ? null : uIArguments.iterator();
+  }
+
+  public Integer getInputSize() {
+    ValueMap valueMap = getUIArgumentsValueMap();
+    return valueMap == null ? null : valueMap.getAsInteger(INPUT_SIZE_KEY);
+  }
+
+  public void setInputSize(Integer inputSize) {
+    if(inputSize == null) {
+      removeUIArgument(INPUT_SIZE_KEY);
+    } else {
+      Assert.isTrue(inputSize > 0, "The size of an OpenAnswer field can not be less than one.");
+      replaceUIArgument(INPUT_SIZE_KEY, String.valueOf(inputSize));
+    }
+  }
+
+  public Integer getInputNbRows() {
+    ValueMap valueMap = getUIArgumentsValueMap();
+    return valueMap == null ? null : valueMap.getAsInteger(INPUT_NB_ROWS_KEY);
+  }
+
+  public void setNbRows(Integer inputNbRows) {
+    if(inputNbRows == null) {
+      removeUIArgument(INPUT_NB_ROWS_KEY);
+    } else {
+      Assert.isTrue(inputNbRows > 0, "The number of rows of an OpenAnswer area can not be less than one.");
+      replaceUIArgument(INPUT_NB_ROWS_KEY, String.valueOf(inputNbRows));
+    }
   }
 
 }

@@ -19,29 +19,24 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
-import org.obiba.magma.ValueSequence;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
-import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.support.MagmaEngineVariableResolver;
-import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.type.DateTimeType;
+import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.print.PdfTemplateEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
@@ -51,14 +46,19 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
 
   private static final Logger log = LoggerFactory.getLogger(PdfTemplateReport.class);
 
-  private static final Pattern onyxPattern = Pattern.compile("^Onyx\\.");
-
   private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-  private ActiveInterviewService activeInterviewService;
+  private MagmaInstanceProvider magmaInstanceProvider;
 
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
-    this.activeInterviewService = activeInterviewService;
+  private MessageSource messageSource;
+
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
+  }
+
+  @Required
+  public void setMessageSource(MessageSource messageSource) {
+    this.messageSource = messageSource;
   }
 
   public InputStream applyTemplate(Locale locale, Map<String, String> fieldToVariableMap, LocalizedResourceLoader reportTemplateLoader, ActiveInterviewService activeInterviewService) {
@@ -85,7 +85,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
       AcroFields form = stamper.getAcroFields();
       Participant participant = activeInterviewService.getParticipant();
 
-      setVariableDataFields(participant, form, fieldToVariableMap);
+      setVariableDataFields(participant, form, fieldToVariableMap, locale);
       setAdditionalDataFields(form);
 
     } catch(Exception ex) {
@@ -119,7 +119,7 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     }
   }
 
-  private void setVariableDataFields(Participant participant, AcroFields form, Map<String, String> fieldToVariableMap) {
+  private void setVariableDataFields(Participant participant, AcroFields form, Map<String, String> fieldToVariableMap, Locale locale) {
 
     HashMap<String, String> fieldList = form.getFields();
 
@@ -140,15 +140,18 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
           String variablePath = fieldToVariableMap.get(variableKey);
 
           if(variablePath != null) {
-            MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(variablePath);
-
-            ValueTable tableForVariable = resolveTable(resolver.getDatasourceName(), resolver.getTableName());
-            ValueSet valueSetInTable = getParticipantValueSet(tableForVariable);
-
-            String valueString = getStringValue(tableForVariable, valueSetInTable, field.getKey(), resolver.getVariableName());
-            if(valueString != null && valueString.length() != 0) {
-              form.setField(field.getKey(), valueString);
-              break;
+            try {
+              ValueTable valueTable = magmaInstanceProvider.resolveTableFromVariablePath(variablePath);
+              VariableValueSource variable = magmaInstanceProvider.resolveVariablePath(variablePath);
+              ValueSet valueSet = valueTable.getValueSet(magmaInstanceProvider.newParticipantEntity(participant));
+              String valueString = getValueAsString(variable.getVariable(), variable.getValue(valueSet), locale);
+              if(valueString != null && valueString.length() != 0) {
+                form.setField(field.getKey(), valueString);
+                break;
+              }
+            } catch(NoSuchVariableException e) {
+              log.error("Invalid PDF template definition. Field '{}' is linked to inexistent variable '{}'.", field.getKey(), variablePath);
+              throw e;
             }
           }
         }
@@ -158,45 +161,24 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     }
   }
 
-  private String getStringValue(ValueTable valueTable, ValueSet valueSet, String fieldName, String variablePath) {
-    try {
-      VariableValueSource variableValueSource = valueTable.getVariableValueSource(stripOnyxPrefix(variablePath));
-      Value value = variableValueSource.getValue(valueSet);
-      return getValueAsString(variableValueSource.getVariable(), value);
-    } catch(NoSuchVariableException e) {
-      log.error("Invalid PDF template definition. Field '{}' is linked to inexistent variable '{}'.", fieldName, variablePath);
-      throw e;
-
-    }
-  }
-
-  private ValueSet getParticipantValueSet(ValueTable valueTable) {
-    VariableEntity entity = new VariableEntityBean("Participant", activeInterviewService.getParticipant().getBarcode());
-    return valueTable.getValueSet(entity);
-  }
-
-  private String stripOnyxPrefix(String variablePath) {
-    Assert.notNull(variablePath, "variablePath must not be null.");
-    Matcher matcher = onyxPattern.matcher(variablePath);
-    return matcher.replaceAll("");
-  }
-
-  private String getValueAsString(org.obiba.magma.Variable variable, Value value) {
-    if(value == null || value.isNull()) return "";
+  private String getValueAsString(org.obiba.magma.Variable variable, Value value, Locale locale) {
+    if(value.isNull()) return "";
 
     String valueString = "";
     if(value.isSequence()) {
-      ValueSequence valueSequence = value.asSequence();
-      for(Value v : valueSequence.getValues()) {
-        valueString += " " + getValueAsString(variable, v);
+      for(Value v : value.asSequence().getValues()) {
+        valueString += " " + getValueAsString(variable, v, locale);
       }
-    }
-    if(value.getValueType() == DateTimeType.get()) {
-      valueString = dateFormat.format(value.getValue());
     } else {
       valueString = value.toString();
-
-      if(variable != null && variable.getUnit() != null) valueString += " " + variable.getUnit();
+      String unit = variable.getUnit();
+      if(value.getValueType() == DateTimeType.get()) {
+        valueString = dateFormat.format(value.getValue());
+      } else if(value.getValueType() == TextType.get() && unit == null) {
+        valueString = messageSource.getMessage(valueString, null, valueString, locale);
+      } else {
+        if(variable != null && unit != null) valueString += " " + unit;
+      }
     }
     return valueString;
   }
@@ -214,22 +196,6 @@ public class DefaultPdfTemplateEngine implements PdfTemplateEngine {
     // If multiple instrument types are used for the same field, they are separated by "-"
     String[] list = variable.split("-");
     return list;
-  }
-
-  private ValueTable resolveTable(String datasourceName, String tableName) {
-    if(tableName != null) {
-      for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-        if(datasourceName == null || datasource.getName().equals(datasourceName)) {
-          for(ValueTable table : datasource.getValueTables()) {
-            if(table.getName().equals(tableName)) {
-              return table;
-            }
-          }
-        }
-      }
-      throw new IllegalStateException("Could not resolve ValueTable (name: " + tableName + ")");
-    }
-    throw new IllegalStateException("Could not resolve ValueTable (tableName is null)");
   }
 
 }

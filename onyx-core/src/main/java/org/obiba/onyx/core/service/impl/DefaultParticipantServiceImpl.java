@@ -49,6 +49,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   private static final String START_ACTION_DEFINITION_CODE = "action.START";
 
+  @Override
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user) {
     participant.setBarcode(barcode);
     getPersistenceManager().save(participant);
@@ -77,6 +78,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   }
 
+  @Override
   public void updateParticipant(Participant participant) {
     getPersistenceManager().save(participant);
   }
@@ -84,6 +86,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   /**
    * Delete all appointments that have not been received
    */
+  @Override
   public void cleanUpAppointment() {
     for(Participant p : getNotReceivedParticipants()) {
       log.debug("removing participant.id={}", p.getId());
@@ -97,10 +100,12 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
    */
   protected abstract List<Participant> getNotReceivedParticipants();
 
+  @Override
   public List<Action> getActions(Participant participant) {
     return getActions(participant, null);
   }
 
+  @Override
   public List<Action> getActions(Participant participant, String stage) {
     Action template = new Action();
     template.setInterview(participant.getInterview());
@@ -108,6 +113,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return getPersistenceManager().match(template);
   }
 
+  @Override
   public Data getConfiguredAttributeValue(Participant participant, String attributeName) {
     ParticipantAttributeValue value = new ParticipantAttributeValue();
     value.setAttributeName(attributeName);
@@ -121,10 +127,12 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return null;
   }
 
+  @Override
   public Participant getParticipant(Participant participant) {
     return getPersistenceManager().matchOne(participant);
   }
 
+  @Override
   public void deleteParticipant(Participant participant) {
 
     Action template = new Action();

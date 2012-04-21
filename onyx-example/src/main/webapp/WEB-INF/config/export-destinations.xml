@@ -2,13 +2,13 @@
 
   <destination>
     <name>DCC</name>
- 
-    <encrypt>
-      <algorithm>DESede</algorithm>
-      <mode>CBC</mode>
-      <padding>PKCS5Padding</padding>
-      <keySize>112</keySize>
-    </encrypt>
+
+    <options>
+      <format>CSV</format>
+      <characterSet>ISO-8859-1</characterSet>
+      <separator>,</separator>
+      <quote>"</quote>
+    </options>
 
     <valueset entityType="Participant" valueTable="Participants">
       <entities>
@@ -323,9 +323,14 @@
 
   <destination>
     <name>Appointment Unit</name>
-  
-    <encrypt />
-         
+
+    <encrypt>
+      <algorithm>DESede</algorithm>
+      <mode>CBC</mode>
+      <padding>PKCS5Padding</padding>
+      <keySize>112</keySize>
+    </encrypt>
+
     <valueset entityType="Participant" valueTable="Participants">
       <entities>
         <excludeAll />

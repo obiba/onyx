@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -59,16 +61,14 @@ import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
 /**
  *
  */
 @SuppressWarnings("serial")
 public class ArrayRowsPanel extends Panel {
 
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD", justification = "Need to be be re-initialized upon deserialization")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   @SpringBean
   private LocalePropertiesUtils localePropertiesUtils;
 
@@ -84,7 +84,9 @@ public class ArrayRowsPanel extends Panel {
 
   private final IModel<LocaleProperties> localePropertiesModel;
 
-  public ArrayRowsPanel(String id, IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
+  public ArrayRowsPanel(String id, IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel,
+      final IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel,
+      FeedbackWindow feedbackWindow) {
     super(id, model);
     this.questionnaireModel = questionnaireModel;
     this.localePropertiesModel = localePropertiesModel;
@@ -134,18 +136,21 @@ public class ArrayRowsPanel extends Panel {
 
       @Override
       public void editItem(final Question question, AjaxRequestTarget target) {
-        final ElementClone<Question> originalQuestion = QuestionnaireElementCloner.clone(question, new CloneSettings(true, false), localePropertiesModel.getObject());
-        questionWindow.setContent(new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel, localePropertiesModel, questionWindow) {
-          @Override
-          protected void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
+        final ElementClone<Question> originalQuestion = QuestionnaireElementCloner
+            .clone(question, new CloneSettings(true, false), localePropertiesModel.getObject());
+        questionWindow.setContent(
+            new QuestionWindow("content", new Model<EditedQuestion>(new EditedQuestion(question)), questionnaireModel,
+                localePropertiesModel, questionWindow) {
+              @Override
+              protected void onSave(AjaxRequestTarget target, EditedQuestion editedQuestion) {
 
-          }
+              }
 
-          @Override
-          protected void onCancel(AjaxRequestTarget target, EditedQuestion editedQuestion) {
-            rollback(questionParent, question, originalQuestion);
-          }
-        });
+              @Override
+              protected void onCancel(AjaxRequestTarget target, EditedQuestion editedQuestion) {
+                rollback(questionParent, question, originalQuestion);
+              }
+            });
         questionWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
           public boolean onCloseButtonClicked(AjaxRequestTarget target) {
@@ -180,7 +185,9 @@ public class ArrayRowsPanel extends Panel {
 
   private class SimpleAddPanel extends Panel {
 
-    public SimpleAddPanel(String id, IModel<String> model) {
+    private static final long serialVersionUID = -2843110732698802109L;
+
+    private SimpleAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
       form.setMultiPart(false);
@@ -219,19 +226,24 @@ public class ArrayRowsPanel extends Panel {
           feedbackWindow.show(target);
         }
       };
-      questionName.add(new AttributeAppender("onkeypress", true, new Model<String>(buildPressEnterScript(simpleAddButton)), " "));
-      simpleAddButton.add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      questionName.add(
+          new AttributeAppender("onkeypress", true, new Model<String>(buildPressEnterScript(simpleAddButton)), " "));
+      simpleAddButton
+          .add(new Image("img", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(simpleAddButton);
     }
   }
 
   private String buildPressEnterScript(AjaxButton addButton) {
-    return "if (event.keyCode == 13) {document.getElementById('" + addButton.getMarkupId() + "').click(); return false;} else {return true;};";
+    return "if (event.keyCode == 13) {document.getElementById('" + addButton
+        .getMarkupId() + "').click(); return false;} else {return true;};";
   }
 
   private class BulkAddPanel extends Panel {
 
-    public BulkAddPanel(String id, IModel<String> model) {
+    private static final long serialVersionUID = -5433283166480250631L;
+
+    private BulkAddPanel(String id, IModel<String> model) {
       super(id, model);
       Form<String> form = new Form<String>("form", model);
       form.setMultiPart(false);
@@ -263,7 +275,8 @@ public class ArrayRowsPanel extends Panel {
         }
       };
 
-      bulkAddLink.add(new Image("bulkAddImg", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
+      bulkAddLink
+          .add(new Image("bulkAddImg", Images.ADD).add(new AttributeModifier("title", true, new ResourceModel("Add"))));
       form.add(bulkAddLink);
     }
   }
@@ -279,15 +292,14 @@ public class ArrayRowsPanel extends Panel {
         return input.getName().equals(name);
       }
     });
-    if(parent.getName().equals(name) || !sameNameQuestions.isEmpty() || questionnaireFinder.findQuestion(name) != null) {
-      return true;
-    }
-    return false;
+
+    return parent.getName().equals(name) || !sameNameQuestions.isEmpty() || questionnaireFinder
+        .findQuestion(name) != null;
   }
 
   private void addQuestion(String name) {
     if(StringUtils.isNotBlank(name) && !checkIfQuestionAlreadyExists(name)) {
-      Question parent = ((EditedQuestion) ArrayRowsPanel.this.getDefaultModelObject()).getElement();
+      Question parent = ((EditedQuestion) getDefaultModelObject()).getElement();
       Question newQuestion = new Question(name);
       if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
         newQuestion.setUIFactoryName(new SimplifiedQuestionPanelFactory().getBeanName());
@@ -305,7 +317,7 @@ public class ArrayRowsPanel extends Panel {
     questionParent.addQuestion(original.getElement(), index);
     Questionnaire questionnaire = questionnaireModel.getObject();
     LocaleProperties localeProperties = localePropertiesModel.getObject();
-    localePropertiesUtils.remove(localeProperties, questionnaire, modified);
+    localeProperties.remove(questionnaire, modified);
     localePropertiesUtils.load(localeProperties, questionnaire, original.getElement());
   }
 }

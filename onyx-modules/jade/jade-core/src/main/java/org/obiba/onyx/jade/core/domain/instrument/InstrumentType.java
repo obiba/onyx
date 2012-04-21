@@ -12,12 +12,15 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.data.TypeConverterDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public class InstrumentType implements Serializable {
 
@@ -34,6 +37,9 @@ public class InstrumentType implements Serializable {
   private List<Contraindication> contraindications;
 
   private boolean allowPartial;
+
+  // Allows overriding values from defaults.properties
+  private Properties properties;
 
   public InstrumentType() {
   }
@@ -65,6 +71,10 @@ public class InstrumentType implements Serializable {
 
   public void setExpectedMeasureCount(IDataSource expectedMeasureCount) {
     this.expectedMeasureCount = expectedMeasureCount;
+  }
+
+  public MessageSourceResolvable getInstructions() {
+    return new DefaultMessageSourceResolvable(new String[] { name + ".instructions" }, "");
   }
 
   /**
@@ -107,13 +117,13 @@ public class InstrumentType implements Serializable {
   }
 
   /**
-   * Returns true if at least one {@link InstrumentParameter} may be captured manually. This indicates that measurements
-   * for this instrument may be captured either manually or automatically.
+   * Returns true if at least one {@link InstrumentOutputParameter} may be captured manually. This indicates that
+   * measurements for this instrument may be captured either manually or automatically.
    * @return True if manual capture is permitted.
    */
-  public boolean isManualCaptureAllowed() {
-    for(InstrumentParameter instrumentParameter : instrumentParameters) {
-      if(instrumentParameter.isManualCaptureAllowed()) return true;
+  public boolean hasManualCaptureOutputParameters() {
+    for(InstrumentOutputParameter parameter : getOutputParameters()) {
+      if(isManualCapture(parameter)) return true;
     }
     return false;
   }
@@ -123,16 +133,26 @@ public class InstrumentType implements Serializable {
    * captured automatically, but if required they may also be captured manually.
    * @return A list of output parameters that permit manual capture.
    */
-  public List<InstrumentOutputParameter> getManualCaptureAllowedOutputParameters() {
+  public List<InstrumentOutputParameter> getManualCaptureOutputParameters() {
     List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
 
     for(InstrumentOutputParameter parameter : getOutputParameters()) {
-      if(parameter.isManualCaptureAllowed()) {
+      if(isManualCapture(parameter)) {
         outputParameters.add(parameter);
       }
     }
 
     return outputParameters;
+  }
+
+  /**
+   * Check if the given parameter is to be captured manually.
+   * @param parameter
+   * @return
+   */
+  private boolean isManualCapture(InstrumentOutputParameter parameter) {
+    return (InstrumentParameterCaptureMethod.AUTOMATIC.equals(parameter.getCaptureMethod()) && parameter.isManualCaptureAllowed()) //
+        || (InstrumentParameterCaptureMethod.MANUAL.equals(parameter.getCaptureMethod()) && isRepeatable(parameter));
   }
 
   /**
@@ -374,12 +394,29 @@ public class InstrumentType implements Serializable {
     return null;
   }
 
+  /**
+   * An instrument is repeatable when the expected measure count datasource is defined.
+   * @return
+   */
   public boolean isRepeatable() {
     return expectedMeasureCount != null;
   }
 
+  /**
+   * Repeatable parameters are not computed output parameters in an instrument type that is repeatable. In addition to
+   * that, this kind of parameters can be specifically specified as not being repeatable.
+   * @param instrumentParameter
+   * @return
+   */
   public boolean isRepeatable(InstrumentParameter instrumentParameter) {
-    return isRepeatable() && instrumentParameter instanceof InstrumentOutputParameter && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED);
+    if(isRepeatable() //
+        && instrumentParameter instanceof InstrumentOutputParameter //
+        && !instrumentParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
+      InstrumentOutputParameter outputParam = (InstrumentOutputParameter) instrumentParameter;
+      Boolean repeatable = outputParam.getRepeatable();
+      return repeatable == null ? true : repeatable;
+    }
+    return false;
   }
 
   @Override
@@ -394,4 +431,10 @@ public class InstrumentType implements Serializable {
   public void setAllowPartial(boolean allowPartial) {
     this.allowPartial = allowPartial;
   }
+
+  // Setter is not defined due to issues with autowiring (several beans of type Properties exist in the context)
+  public Properties getProperties() {
+    return properties;
+  }
+
 }

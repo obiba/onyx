@@ -13,6 +13,7 @@ body {
 
 input, select, textarea {
     border: solid 0.0833em #cccccc;
+    padding: 0.24em 0.2em;
 }
 
 A:link {
@@ -312,7 +313,7 @@ div#feedback {
 }
 
 .page-feedback{
-	width: 25em;
+	margin-right:1.6667em !important;
 	margin-left:1.6667em !important;
 	margin-top:1.6667em !important;
 	background-color: #FFFFFF;
@@ -438,9 +439,7 @@ text-align:center;
 }
 
 /*************** Wicket Autocomplete ********************/
-
 div.wicket-aa {
-  font-size: 0.8333em;
   background-color: white;
   border-width: 0.0833em;
   border-color: #cccccc;
@@ -450,7 +449,8 @@ div.wicket-aa {
   text-align:left;
 }
 div.wicket-aa ul { list-style:none; padding: 0.1667em; margin:0; }
-div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 0.1667em; margin:0; }
+div.wicket-aa ul li.selected { background-color: lightgray; margin:0; }
+div.wicket-aa ul li .match { font-weight: bold; }
 
 /*************** End Wicket Autocomplete ********************/
 
@@ -694,6 +694,7 @@ td.keyValueTableKey {
 	color: #666666;
 	background-color: #FFFFFF;
 	text-align: left;
+	vertical-align: middle;
 }
 
 .wicket-modal td.keyValueTableKey {
@@ -1119,18 +1120,19 @@ div.tab-row a:hover span{ /*onMouseover style*/
 
 .obiba-box-tab {
 	margin-left: 1.6667em;
+	padding-bottom: 0.45em;
 }
 
 .obiba-box-tab > .obiba-button {
 	background-color:#C0C0C0 !important;
-	border-width:0.0833em 0.0833em 0 !important;
+	
 	color:#888888 !important;
 	font-weight:bold;
 	margin-right:0.5833em;
-	padding:0.1667em 0.8333em 0.0833em !important;
 }
 
 .obiba-box-tab > .obiba-button.ui-corner-all {
+	padding: 0.55em 1em !important;
 	-moz-border-radius-bottomleft:0 !important;
 	-moz-border-radius-bottomright:0 !important;
 	-webkit-border-bottom-left-radius:0 !important;
@@ -1226,18 +1228,36 @@ div.tab-row a:hover span{ /*onMouseover style*/
 
 /******************* Buttons *******************************************************/
 
+.obiba-button:hover {
+	background-image: -webkit-gradient(linear,left top,left bottom,from(#F8F8F8),to(#F1F1F1));
+    background-image: -webkit-linear-gradient(top,#F8F8F8,#F1F1F1);
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-color: #F8F8F8;
+    background-image: linear-gradient(top,#F8F8F8,#F1F1F1);
+    background-image: -o-linear-gradient(top,#F8F8F8,#F1F1F1);
+    border: 1px solid #C6C6C6;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
 .obiba-button, 
 A:link.obiba-button,
 A:visited.obiba-button,
 A:active.obiba-button,
 A:hover.obiba-button {
-  background-color: white;
-  border-color: #B8B8B8;
-  border-style: solid;
-  border-width: 0.0833em 0.1667em 0.1667em 0.0833em;
-  color: #000000;
-  font-family: arial, verdana, sans-serif;
-  font-size:1em;
+	background-color: #DDDDDD;
+	background-image: -webkit-linear-gradient(top,#F5F5F5,#DDDDDD);
+    background-image: -moz-linear-gradient(top,#F5F5F5,#DDDDDD);
+    background-image: -ms-linear-gradient(top,#F5F5F5,#DDDDDD);
+    background-image: -o-linear-gradient(top,#F5F5F5,#DDDDDD);
+    background-image: linear-gradient(top,#F5F5F5,#DDDDDD);
+    border: 1px solid #C6C6C6;
+    color: #333333;
+    font-family: arial, verdana, sans-serif;
+    font-size:0.8em;
+    font-weight: bold;
+    height: 2.5em;
+    vertical-align: middle;
 }
 
 .obiba-button.ui-state-disabled, 
@@ -1252,24 +1272,25 @@ A:link.obiba-button,
 A:visited.obiba-button,
 A:active.obiba-button,
 A:hover.obiba-button {
-  padding: 0.1667em 0.4167em 0.1667em 0.4167em;
+  padding: 0.55em 1em;
   text-decoration: none;
   white-space: nowrap;
 }
 
 button.obiba-button,
 input.obiba-button {
-  padding: 0.1667em 0.4167em 0.1667em 0.4167em;
+  padding: 0 8px;
   cursor: pointer;	
 }
 
 img.obiba-button {
-  padding: 0.1667em 0.2500em 0.2500em 0.2500em;	
+  padding: 0 8px 2px;	
 }
 
 .obiba-button.ui-corner-all {
-  -moz-border-radius: 0.5em; 
-  -webkit-border-radius: 0.5em;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
 .obiba-button img {
@@ -1320,7 +1341,7 @@ div .button-vertical-list{
   background-image: url(../icons/loupe_button.png);
   background-repeat: no-repeat;
   background-position: center center;
-  padding: 0.2500em 0.7500em 0.1667em;
+  padding: 0.2500em 2em;
 }
 
 #participantPageSearch #searchByInputField.obiba-button::-moz-focus-inner {
@@ -1671,7 +1692,7 @@ ul#interviewMenuBar li a span {
 }
 
 #interviewPageStages #exitInterview a.obiba-button:link, #interviewPageStages #exitInterview a.obiba-button:visited, #interviewPageStages #exitInterview a.obiba-button:active, #interviewPageStages #exitInterview a.obiba-button:hover {
-  padding:0.2500em 4.1667em 0.1667em;
+  padding:8px 10em;
 }
 
 #commentInstructions, .comment-text {
@@ -1863,6 +1884,12 @@ div.log-comment {
   
 /******************* End Sample Collection *********************************************/
 
+/******************* Jade *********************************************/
+
+div.instrument-instructions {
+	padding-top: 1.667em;
+}
+
 div.measuresListPanel table.entityTable td.count, div.measuresListPanel table.entityTable td.refresh {
   color:#C65F02;
   font-size:0.9167em;
@@ -1886,12 +1913,19 @@ div.wizard-content span.instrument-run-panel-content td.keyValueTableKey {
 }
 
 div.wicket-modal div.onyx div.section {
-  margin-bottom: 0.8333em; margin-left: 1.6667em; margin-right: 1.6667em;
+  margin-bottom: 0.8333em; 
+  margin-left: 1.6667em; 
+  margin-right: 1.6667em;
 }
 
 div.wizard-content #instrumentRunPanelTitle {
-  color: #C65F02; margin-top: 1.6667em; margin-bottom: 0.8333em; font-weight: bold;
+  color: #C65F02; 
+  margin-top: 1.6667em; 
+  margin-bottom: 0.8333em; 
+  font-weight: bold;
 }
+
+/******************* End Jade *********************************************/
 
 div.appointment-update-log-panel-content  {
   white-space:nowrap;

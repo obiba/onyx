@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -31,17 +31,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextAction;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.EvaluatorException;
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
@@ -54,10 +48,12 @@ import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
 import org.obiba.magma.type.TextType;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils;
+import org.obiba.onyx.quartz.editor.utils.JavascriptUtils;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
@@ -71,6 +67,9 @@ public abstract class VariablePanel extends Panel {
   // private transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @SpringBean
+  private MagmaInstanceProvider magmaInstanceProvider;
+
+  @SpringBean
   private VariableValidationUtils variableValidationUtils;
 
   private final FeedbackPanel feedbackPanel;
@@ -79,11 +78,13 @@ public abstract class VariablePanel extends Panel {
 
   private final Form<EditedVariable> form;
 
-  public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel) {
+  public VariablePanel(String id, final IModel<Variable> variableModel,
+      final IModel<Questionnaire> questionnaireModel) {
     this(id, variableModel, questionnaireModel, null);
   }
 
-  public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel, ValueType forcedValueType) {
+  public VariablePanel(String id, final IModel<Variable> variableModel, final IModel<Questionnaire> questionnaireModel,
+      ValueType forcedValueType) {
     super(id);
 
     add(CSSPackageResource.getHeaderContribution(VariablePanel.class, "VariablePanel.css"));
@@ -128,7 +129,8 @@ public abstract class VariablePanel extends Panel {
         }
       }
     });
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name)).add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name))
+        .add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     List<ValueType> types = new ArrayList<ValueType>();
     types.add(IntegerType.get());
@@ -140,19 +142,22 @@ public abstract class VariablePanel extends Panel {
     types.add(LocaleType.get());
     types.add(BinaryType.get());
 
-    DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("type", new PropertyModel<ValueType>(form.getModel(), "valueType"), types, new ValueTypeRenderer());
+    DropDownChoice<ValueType> valueType = new DropDownChoice<ValueType>("type",
+        new PropertyModel<ValueType>(form.getModel(), "valueType"), types, new ValueTypeRenderer());
     valueType.add(new RequiredFormFieldBehavior());
 
     QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
     questionnaireFinder.buildQuestionnaireCache();
-    boolean usedInQuestion = variableValidationUtils.findUsedInQuestion(variable, questionnaireModel.getObject().getQuestionnaireCache()) == null;
+    boolean usedInQuestion = variableValidationUtils
+        .findUsedInQuestion(variable, questionnaireModel.getObject().getQuestionnaireCache()) == null;
     valueType.setEnabled((forcedValueType == null) ? usedInQuestion : false);
 
     form.add(valueType.setLabel(new ResourceModel("Type"))).add(new SimpleFormComponentLabel("typeLabel", valueType));
 
     CheckBox repeatable = new CheckBox("repeatable", new PropertyModel<Boolean>(form.getModel(), "repeatable"));
 
-    form.add(repeatable.setLabel(new ResourceModel("Repeatable"))).add(new SimpleFormComponentLabel("repeatableLabel", repeatable));
+    form.add(repeatable.setLabel(new ResourceModel("Repeatable")))
+        .add(new SimpleFormComponentLabel("repeatableLabel", repeatable));
 
     TextArea<String> script = new TextArea<String>("script", new PropertyModel<String>(form.getModel(), "script"));
     script.add(new RequiredFormFieldBehavior());
@@ -160,44 +165,39 @@ public abstract class VariablePanel extends Panel {
 
       @Override
       public void validate(final IValidatable<String> validatable) {
-        try {
-          ContextFactory.getGlobal().call(new ContextAction() {
-            @Override
-            public Object run(Context cx) {
-              return cx.compileString(validatable.getValue(), name.getConvertedInput(), 1, null);
-            }
-          });
-        } catch(EvaluatorException e) {
-          String errorMsg;
-          if(e.columnNumber() > 0) {
-            errorMsg = new StringResourceModel("BadScript.withColumn", VariablePanel.this, null, new Object[] { e.details(), e.lineNumber(), e.columnNumber() }).getObject();
-          } else {
-            errorMsg = new StringResourceModel("BadScript", VariablePanel.this, null, new Object[] { e.details(), e.lineNumber() }).getObject();
-          }
-          form.error(errorMsg);
-        }
+        JavascriptUtils.compile(validatable.getValue(), name.getConvertedInput(), VariablePanel.this, form);
       }
     });
 
-    form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script)).add(new HelpTooltipPanel("scriptHelp", new ResourceModel("Script.Tooltip")));
+    form.add(script.setLabel(new ResourceModel("Script"))).add(new SimpleFormComponentLabel("scriptLabel", script))
+        .add(new HelpTooltipPanel("scriptHelp", new ResourceModel("Script.Tooltip")));
 
-    Set<ValueTable> valueTables = MagmaEngine.get().getDatasource("onyx-datasource").getValueTables();
+    Set<ValueTable> valueTables = magmaInstanceProvider.getOnyxDatasource().getValueTables();
     List<String> tables = new ArrayList<String>(valueTables.size());
     for(ValueTable valueTable : valueTables) {
-      tables.add(valueTable.getName());
+      if(valueTable.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE)) {
+        tables.add(valueTable.getName());
+      }
     }
     Collections.sort(tables);
-    final DropDownChoice<String> tablesDropDown = new DropDownChoice<String>("tables", new Model<String>(tables.get(0)), tables);
+
+    final DropDownChoice<String> tablesDropDown = new DropDownChoice<String>("tables", new Model<String>(tables.get(0)),
+        tables);
     tablesDropDown.setNullValid(false);
-    form.add(tablesDropDown.setLabel(new ResourceModel("Tables"))).add(new SimpleFormComponentLabel("tablesLabel", tablesDropDown));
+    form.add(tablesDropDown.setLabel(new ResourceModel("Tables")))
+        .add(new SimpleFormComponentLabel("tablesLabel", tablesDropDown));
 
     final List<String> tableVariables = new ArrayList<String>();
     findTableVariables(tablesDropDown, tableVariables);
-    final DropDownChoice<String> tableVariablesDropDown = new DropDownChoice<String>("variables", new Model<String>(tableVariables.get(0)), tableVariables);
+    final DropDownChoice<String> tableVariablesDropDown = new DropDownChoice<String>("variables",
+        new Model<String>(tableVariables.get(0)), tableVariables);
     tableVariablesDropDown.setNullValid(false).setOutputMarkupId(true);
-    form.add(tableVariablesDropDown.setLabel(new ResourceModel("Variables"))).add(new SimpleFormComponentLabel("variablesLabel", tableVariablesDropDown));
+    form.add(tableVariablesDropDown.setLabel(new ResourceModel("Variables")))
+        .add(new SimpleFormComponentLabel("variablesLabel", tableVariablesDropDown));
 
-    final TextField<String> selectedVariable = new TextField<String>("selectedVariable", new Model<String>(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject()));
+    final TextField<String> selectedVariable = new TextField<String>("selectedVariable", new Model<String>(
+        tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown
+            .getModelObject()));
     form.add(selectedVariable.setOutputMarkupId(true));
 
     tablesDropDown.add(new OnChangeAjaxBehavior() {
@@ -205,7 +205,9 @@ public abstract class VariablePanel extends Panel {
       protected void onUpdate(AjaxRequestTarget target) {
         findTableVariables(tablesDropDown, tableVariables);
         tableVariablesDropDown.setModelObject(tableVariables.isEmpty() ? null : tableVariables.get(0));
-        selectedVariable.setDefaultModelObject(tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
+        selectedVariable.setDefaultModelObject(
+            tableVariables.isEmpty() ? "" : tablesDropDown.getModelObject() + ":" + tableVariablesDropDown
+                .getModelObject());
         target.addComponent(tableVariablesDropDown);
         target.addComponent(selectedVariable);
       }
@@ -213,7 +215,8 @@ public abstract class VariablePanel extends Panel {
     tableVariablesDropDown.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        selectedVariable.setDefaultModelObject(tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
+        selectedVariable
+            .setDefaultModelObject(tablesDropDown.getModelObject() + ":" + tableVariablesDropDown.getModelObject());
         target.addComponent(selectedVariable);
       }
     });
@@ -221,7 +224,8 @@ public abstract class VariablePanel extends Panel {
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form1) {
-        Builder builder = Variable.Builder.newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
+        Builder builder = Variable.Builder
+            .newVariable(editedVariable.getName(), editedVariable.getValueType(), "Participant");
         builder.addAttribute("script", editedVariable.getScript());
 
         if(editedVariable.isRepeatable()) builder.repeatable();
@@ -230,14 +234,12 @@ public abstract class VariablePanel extends Panel {
       }
 
       @Override
-      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding")
-      Form<?> form) {
+      protected void onCancel(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         VariablePanel.this.onCancel(target);
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding")
-      Form<?> form) {
+      protected void onError(AjaxRequestTarget target, @SuppressWarnings("hiding") Form<?> form) {
         feedbackWindow.setContent(feedbackPanel);
         feedbackWindow.show(target);
       }
@@ -253,12 +255,11 @@ public abstract class VariablePanel extends Panel {
     tableVariables.clear();
     String selectedTable = tablesDropDown.getModelObject();
     if(selectedTable != null) {
-      ValueTable table = MagmaEngine.get().getDatasource("onyx-datasource").getValueTable(selectedTable);
+      ValueTable table = magmaInstanceProvider.getValueTable(selectedTable);
       for(Variable v : table.getVariables()) {
         tableVariables.add(v.getName());
       }
       Collections.sort(tableVariables);
     }
   }
-
 }

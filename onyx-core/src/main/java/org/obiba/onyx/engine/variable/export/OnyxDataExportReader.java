@@ -17,6 +17,7 @@ import org.obiba.magma.filter.ExcludeAllFilter;
 import org.obiba.magma.filter.JavaScriptFilter;
 import org.obiba.magma.filter.VariableAttributeFilter;
 import org.obiba.magma.filter.VariableNameFilter;
+import org.obiba.magma.filter.VariableValueTypeFilter;
 import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
@@ -37,6 +38,7 @@ public class OnyxDataExportReader {
     xstream.alias("script", JavaScriptFilter.class);
     xstream.alias("variableName", VariableNameFilter.class);
     xstream.alias("variableAttribute", VariableAttributeFilter.class);
+    xstream.alias("variableValueType", VariableValueTypeFilter.class);
     xstream.autodetectAnnotations(true);
   }
 

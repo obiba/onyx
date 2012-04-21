@@ -19,7 +19,6 @@ import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.Variable;
 import org.obiba.magma.js.MagmaJsExtension;
@@ -34,7 +33,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 
-public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
+public class QuestionnaireBuilderTest {
 
   private static final String YES = "YES";
 
@@ -45,12 +44,12 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
   private static final String OTHER_SPECIFY = "OTHER_SPECIFY";
 
   @Before
-  public void before() {
+  public void start() {
     new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
   }
 
   @After
-  public void after() {
+  public void stop() {
     MagmaEngine.get().shutdown();
   }
 

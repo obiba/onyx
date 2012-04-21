@@ -95,13 +95,13 @@ public class ParticipantAttributeReaderTest {
     String oldXmlFileDirectory = ParticipantReaderTest.class.getSimpleName();
     ParticipantAttributeReader attributeReader = new ParticipantAttributeReader();
     attributeReader.setResources(new Resource[] { new ClassPathResource(oldXmlFileDirectory + "/configured-attributes.xml") });
-    List<ParticipantAttribute> participantAttributes = attributeReader.read();
+    List<ParticipantAttribute> participantAttributes1 = attributeReader.read();
 
-    Group defaultGroup = participantAttributes.get(0).getGroup();
+    Group defaultGroup = participantAttributes1.get(0).getGroup();
     int numberOfAttributesInDefaultGroup = defaultGroup.getParticipantAttributes().size();
 
     Assert.assertEquals("Expect all attributes to be part of the default group.", Group.DEFAULT_GROUP_NAME, defaultGroup.getName());
-    Assert.assertEquals(participantAttributes.size(), numberOfAttributesInDefaultGroup);
+    Assert.assertEquals(participantAttributes1.size(), numberOfAttributesInDefaultGroup);
   }
 
   private List<ParticipantAttribute> getParticipantAttributes() throws IOException {

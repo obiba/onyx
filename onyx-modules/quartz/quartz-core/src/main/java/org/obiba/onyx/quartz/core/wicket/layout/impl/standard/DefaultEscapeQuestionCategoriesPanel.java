@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
@@ -61,7 +62,7 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
    * @param parentQuestionCategoryModel
    */
   @SuppressWarnings("serial")
-  public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
+  public DefaultEscapeQuestionCategoriesPanel(String id, IModel<Question> questionModel, IModel parentQuestionCategoryModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
@@ -79,10 +80,10 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getDefaultModel())) {
+    GridView<QuestionCategory> repeater = new AbstractQuestionCategoriesView("category", questionModel, new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(questionModel)) {
 
       @Override
-      protected void populateItem(Item item) {
+      protected void populateItem(Item<QuestionCategory> item) {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {

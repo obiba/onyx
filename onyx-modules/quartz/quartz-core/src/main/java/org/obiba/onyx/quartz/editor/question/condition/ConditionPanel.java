@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.question.condition;
 
+import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.JAVASCRIPT;
 import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.NONE;
 import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.QUESTION_CATEGORY;
 import static org.obiba.onyx.quartz.editor.question.condition.Condition.Type.VARIABLE;
@@ -31,9 +32,11 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -41,8 +44,12 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.BooleanType;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.JavascriptDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -55,6 +62,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuil
 import org.obiba.onyx.quartz.editor.behavior.syntaxHighlighter.SyntaxHighlighterBehavior;
 import org.obiba.onyx.quartz.editor.behavior.tooltip.TooltipBehavior;
 import org.obiba.onyx.quartz.editor.question.condition.Condition.Type;
+import org.obiba.onyx.quartz.editor.utils.JavascriptUtils;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementNameRenderer;
 import org.obiba.onyx.quartz.editor.variable.VariablePanel;
 import org.obiba.onyx.quartz.editor.variable.VariableRenderer;
@@ -69,8 +77,6 @@ import com.google.common.collect.Collections2;
  */
 @SuppressWarnings("serial")
 public class ConditionPanel extends Panel {
-
-  // private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
       justification = "Need to be be re-initialized upon deserialization")
@@ -110,40 +116,48 @@ public class ConditionPanel extends Panel {
     QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaire);
     questionnaireFinder.buildQuestionnaireCache(); // need a fresh cache
 
-    if(question.getCondition() != null) {
-      VariableDataSource variableDataSource = (VariableDataSource) question.getCondition();
-      if(questionnaire.getName().equals(variableDataSource.getTableName())) {
-        try {
-          condition.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
-          condition.setType(Type.VARIABLE);
-        } catch(IllegalArgumentException e) {
-          // not found in this questionnaire
-        }
-      }
-      if(condition.getType() == NONE) { // not found yet
-        Variable variable = variableUtils.findVariable(variableDataSource);
-        // TODO variable always null for newly created question http://jira.obiba.org/jira/browse/ONYX-1437
-        if(variable != null) {
+    final IDataSource initialCondition = question.getCondition();
+    if(initialCondition != null) {
+      if(initialCondition instanceof VariableDataSource) {
+        VariableDataSource variableDataSource = (VariableDataSource) initialCondition;
+        if(questionnaire.getName().equals(variableDataSource.getTableName())) {
           try {
-            condition.setVariable(questionnaire.getVariable(variable.getName()));
+            condition.setVariable(questionnaire.getVariable(variableDataSource.getVariableName()));
             condition.setType(Type.VARIABLE);
           } catch(IllegalArgumentException e) {
-            // not found
-            Question questionCondition = VariableUtils.findQuestion(variable, questionnaireFinder);
-            condition.setType(Type.QUESTION_CATEGORY);
-            condition.setQuestion(questionCondition);
-            condition.setCategory(VariableUtils.findCategory(variable, questionCondition));
+            // not found in this questionnaire
           }
         }
+        if(condition.getType() == NONE) { // not found yet
+          Variable variable = variableUtils.findVariable(variableDataSource);
+          if(variable != null) {
+            try {
+              condition.setVariable(questionnaire.getVariable(variable.getName()));
+              condition.setType(Type.VARIABLE);
+            } catch(IllegalArgumentException e) {
+              // not found
+              Question questionCondition = VariableUtils.findQuestion(variable, questionnaireFinder);
+              condition.setType(Type.QUESTION_CATEGORY);
+              condition.setQuestion(questionCondition);
+              condition.setCategory(VariableUtils.findCategory(variable, questionCondition));
+            }
+          }
+        }
+      } else if(initialCondition instanceof JavascriptDataSource) {
+        condition.setType(JAVASCRIPT);
+        condition.setScript(((JavascriptDataSource) initialCondition).getScript());
       }
     }
 
     Model<Condition> model = new Model<Condition>(condition);
     setDefaultModel(model);
 
+    final Form<Void> form = new Form<Void>("form");
+    add(form);
+
     final RadioGroup<Type> conditionType = new RadioGroup<Type>("conditionType", new PropertyModel<Type>(model, "type"));
     conditionType.setLabel(new ResourceModel("ConditionType")).setRequired(true);
-    add(conditionType);
+    form.add(conditionType);
 
     final Radio<Type> noneType = new Radio<Type>("none", new Model<Type>(NONE));
     noneType.setLabel(new ResourceModel("NoCondition"));
@@ -287,6 +301,23 @@ public class ConditionPanel extends Panel {
       }
     });
 
+    Radio<Type> javascriptType = new Radio<Type>("javascriptType", new Model<Type>(JAVASCRIPT));
+    javascriptType.setLabel(new ResourceModel("JavascriptType"));
+    conditionType.add(javascriptType).add(new SimpleFormComponentLabel("javascriptTypeLabel", javascriptType));
+
+    final TextArea<String> javascriptField = new TextArea<String>("javascriptField", new PropertyModel<String>(condition, "script"));
+    javascriptField.setOutputMarkupPlaceholderTag(true);
+    javascriptField.setVisible(condition.getType() == JAVASCRIPT);
+    conditionType.add(javascriptField);
+
+    javascriptField.add(new IValidator<String>() {
+
+      @Override
+      public void validate(final IValidatable<String> validatable) {
+        JavascriptUtils.compile(validatable.getValue(), question.getName(), ConditionPanel.this, form);
+      }
+    });
+
     conditionType.add(new AjaxFormChoiceComponentUpdatingBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
@@ -296,20 +327,29 @@ public class ConditionPanel extends Panel {
           questionName.setModelObject(null);
           categoryName.setModelObject(null);
           variableDropDown.setModelObject(null);
+          javascriptField.setModelObject(null);
           break;
         case QUESTION_CATEGORY:
           variableDropDown.setModelObject(null);
+          javascriptField.setModelObject(null);
           break;
         case VARIABLE:
           questionName.setModelObject(null);
           categoryName.setModelObject(null);
+          javascriptField.setModelObject(null);
           break;
-
+        case JAVASCRIPT:
+          questionName.setModelObject(null);
+          categoryName.setModelObject(null);
+          variableDropDown.setModelObject(null);
+          break;
         }
         questionConditionContainer.setVisible(type == QUESTION_CATEGORY);
         variableContainer.setVisible(type == VARIABLE);
+        javascriptField.setVisible(type == JAVASCRIPT);
         target.addComponent(questionTypeContainer);
         target.addComponent(variableTypeContainer);
+        target.addComponent(javascriptField);
       }
     });
 
@@ -345,6 +385,10 @@ public class ConditionPanel extends Panel {
       break;
     case VARIABLE:
       questionBuilder.setVariableCondition(questionnaire.getName() + ":" + condition.getVariable().getName());
+      break;
+    case JAVASCRIPT:
+      JavascriptDataSource datasource = new JavascriptDataSource(condition.getScript(), BooleanType.get().getName(), questionnaire.getName());
+      question.setCondition(datasource);
       break;
     }
   }

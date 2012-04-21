@@ -16,6 +16,7 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.util.FileUtil;
 import org.obiba.magma.MagmaEngine;
@@ -110,6 +111,7 @@ public class QuestionnaireBundleManagerImplTest {
   }
 
   @Test
+  @Ignore
   public void testBundles() {
     // Create two versions of two different bundles.
     Questionnaire q1v100 = new Questionnaire("q1", "1.0.0");

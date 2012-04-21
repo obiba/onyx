@@ -86,7 +86,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
    * @param questionCategoryModel
    * @see IQuestionAnswerChangedListener
    */
-  protected void fireQuestionCategorySelected(AjaxRequestTarget target, @SuppressWarnings("hiding") IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
+  protected void fireQuestionCategorySelected(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel) {
     IQuestionCategorySelectionListener parentListener = findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);

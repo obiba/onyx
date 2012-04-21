@@ -30,13 +30,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
-import org.springframework.util.Assert;
 
 /**
  * {@link OpenAnswerDefinition} builder, given a {@link Questionnaire} and a current {@link Category}.
@@ -50,7 +48,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   /**
    * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
    * @param parent
-   * @param condition
+   * @param openAnswerDefinition
    */
   private OpenAnswerDefinitionBuilder(QuestionnaireBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
     super(parent);
@@ -106,13 +104,13 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setSize(int size) {
-    Assert.isTrue(size > 0, "The size of an OpenAnswer field can not be less than one.");
-    return addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY, Integer.toString(size));
+    element.setInputSize(size);
+    return this;
   }
 
   public OpenAnswerDefinitionBuilder setRows(int nbOfRows) {
-    Assert.isTrue(nbOfRows > 0, "The number of an OpenAnswer area can not be less than one.");
-    return addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_NB_ROWS, Integer.toString(nbOfRows));
+    element.setNbRows(nbOfRows);
+    return this;
   }
 
   /**

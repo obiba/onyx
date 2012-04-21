@@ -11,12 +11,12 @@ package org.obiba.onyx.core.etl.participant.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.XStreamException;
  * ItemReader for reading Participant items from an xml file. To use this reader: configure the participant-reader.xml
  * file under the cohort project
  */
-public class XmlParticipantReader extends AbstractParticipantReader {
+public class XmlParticipantReader extends AbstractFileBasedParticipantReader {
 
   /**
    * Maps attribute names to tag names.
@@ -46,13 +46,6 @@ public class XmlParticipantReader extends AbstractParticipantReader {
   private Map<String, String> attributeNameToTagMap;
 
   private Iterator<XmlParticipantInput> iterator;
-
-  //
-  // Constructor
-  //
-  public XmlParticipantReader() {
-    columnNameToAttributeNameMap = new HashMap<String, String>();
-  }
 
   @SuppressWarnings("unchecked")
   @Override
@@ -75,6 +68,7 @@ public class XmlParticipantReader extends AbstractParticipantReader {
 
   }
 
+  @Override
   public Participant read() throws Exception, UnexpectedInputException, ParseException {
     Participant participant = null;
     XmlParticipantInput participantInput = (iterator.hasNext()) ? iterator.next() : null;
@@ -112,11 +106,12 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     xstream.addImplicitCollection(XmlParticipantInput.class, "attributes");
   }
 
+  @SuppressWarnings("unchecked")
   private void setAttributeNameToTagMap() {
-    attributeNameToTagMap = new HashMap<String, String>();
+    attributeNameToTagMap = new CaseInsensitiveMap();
     if(columnNameToAttributeNameMap != null) {
-      for(Entry entry : columnNameToAttributeNameMap.entrySet()) {
-        attributeNameToTagMap.put(entry.getValue().toString().toUpperCase(), entry.getKey().toString());
+      for(Entry<String, String> entry : columnNameToAttributeNameMap.entrySet()) {
+        attributeNameToTagMap.put(entry.getValue(), entry.getKey());
       }
     }
   }
@@ -134,11 +129,11 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     Appointment appointment = new Appointment();
     Data data = null;
 
-    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME)));
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     appointment.setAppointmentCode(enrollmentId);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME, participantInput.getAttributesMap().get(attributeNameToTagMap.get(ParticipantMetadata.APPOINTMENT_TIME_ATTRIBUTE_NAME)));
     Date appointmentTime = (data != null) ? (Date) data.getValue() : null;
     appointment.setDate(appointmentTime);
 
@@ -151,30 +146,31 @@ public class XmlParticipantReader extends AbstractParticipantReader {
     Data data = null;
 
     Map<String, String> attributes = participantInput.getAttributesMap();
-    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())));
+    String attName = attributeNameToTagMap.get(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME);
+    data = getEssentialAttributeValue(ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME, attributes.get(attName));
     String enrollmentId = (String) ((data != null) ? data.getValue() : null);
     participant.setEnrollmentId(enrollmentId);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME)));
     String assessmentCenterId = (String) ((data != null) ? data.getValue() : null);
     participant.setSiteNo(assessmentCenterId);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME)));
     String firstName = (String) ((data != null) ? data.getValue() : null);
     participant.setFirstName(firstName);
 
-    data = getEssentialAttributeValue(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME.toUpperCase())));
+    data = getEssentialAttributeValue(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME)));
     String lastName = (String) ((data != null) ? data.getValue() : null);
     participant.setLastName(lastName);
 
-    if(attributeNameToTagMap.containsKey(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())));
+    if(attributeNameToTagMap.containsKey(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)) {
+      data = getEssentialAttributeValue(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.BIRTH_DATE_ATTRIBUTE_NAME)));
       Date birthDate = (data != null) ? (Date) data.getValue() : null;
       participant.setBirthDate(birthDate);
     }
 
-    if(attributeNameToTagMap.containsKey(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())) {
-      data = getEssentialAttributeValue(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.GENDER_ATTRIBUTE_NAME.toUpperCase())));
+    if(attributeNameToTagMap.containsKey(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)) {
+      data = getEssentialAttributeValue(ParticipantMetadata.GENDER_ATTRIBUTE_NAME, attributes.get(attributeNameToTagMap.get(ParticipantMetadata.GENDER_ATTRIBUTE_NAME)));
       String gender = (data != null) ? data.getValueAsString() : "";
       if(gender.equals("M")) {
         participant.setGender(Gender.MALE);
@@ -188,13 +184,9 @@ public class XmlParticipantReader extends AbstractParticipantReader {
 
   private void setParticipantConfiguredAttributes(Participant participant, XmlParticipantInput participantInput) {
     Map<String, String> attributes = participantInput.getAttributesMap();
-
-    for(Map.Entry<String, String> attr : attributes.entrySet()) {
-    }
-
     for(ParticipantAttribute configuredAttribute : getParticipantMetadata().getConfiguredAttributes()) {
-      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToTagMap.containsKey(configuredAttribute.getName().toUpperCase())) {
-        setConfiguredAttribute(participant, configuredAttribute, attributes.get(attributeNameToTagMap.get(configuredAttribute.getName().toUpperCase())));
+      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToTagMap.containsKey(configuredAttribute.getName())) {
+        setConfiguredAttribute(participant, configuredAttribute, attributes.get(attributeNameToTagMap.get(configuredAttribute.getName())));
       }
     }
   }

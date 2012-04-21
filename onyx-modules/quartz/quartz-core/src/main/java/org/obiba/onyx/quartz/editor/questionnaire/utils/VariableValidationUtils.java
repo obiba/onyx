@@ -56,10 +56,12 @@ public class VariableValidationUtils {
     for(OpenAnswerDefinition openAnswer : questionnaireCache.getOpenAnswerDefinitionCache().values()) {
       if(CollectionUtils.isEmpty(openAnswer.getOpenAnswerDefinitions())) {
         for(ComparingDataSource comparingDataSource : openAnswer.getValidationDataSources()) {
-          VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
-          Variable variableFound = variableUtils.findVariable(variableDataSource);
-          if(variable.equals(variableFound)) {
-            return openAnswer;
+          if(comparingDataSource.getDataSourceRight() instanceof VariableDataSource) {
+            VariableDataSource variableDataSource = (VariableDataSource) comparingDataSource.getDataSourceRight();
+            Variable variableFound = variableUtils.findVariable(variableDataSource);
+            if(variable.equals(variableFound)) {
+              return openAnswer;
+            }
           }
         }
       }

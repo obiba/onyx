@@ -67,7 +67,7 @@ public class InstrumentLaunchPanelTest {
 
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
-    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun());
+    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun()).anyTimes();
 
     replay(activeInstrumentRunServiceMock);
 
@@ -76,7 +76,7 @@ public class InstrumentLaunchPanelTest {
     verify(activeInstrumentRunServiceMock);
 
     // Verify visibility of the "enter values manually" button (this implies the visibility of its parent).
-    AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("manualButtonBlock:manualButton");
+    AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("measures:manualButton");
     assertNotNull(manualButton);
     MarkupContainer parent = manualButton.getParent();
     assertNotNull(parent);
@@ -101,11 +101,8 @@ public class InstrumentLaunchPanelTest {
     // Verify invisibility of the "enter values manually" button. At least one of the following
     // must be true: Either the button is itself invisible or its parent is (effectively making
     // the button invisible).
-    AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("manualButtonBlock:manualButton");
-    assertNotNull(manualButton);
-    MarkupContainer parent = manualButton.getParent();
-    assertNotNull(parent);
-    assertTrue(!manualButton.isVisible() || !parent.isVisible());
+    AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("measures:manualButton");
+    assertTrue(manualButton == null);
   }
 
   @Test
@@ -123,8 +120,8 @@ public class InstrumentLaunchPanelTest {
     verify(activeInstrumentRunServiceMock);
 
     // Verify presence of manual entry dialog.
-    Dialog manualEntryDialog = (Dialog) instrumentLaunchPanel.get("manualEntryDialog");
-    assertNotNull(manualEntryDialog);
+    Dialog manualEntryDialog = (Dialog) instrumentLaunchPanel.get("measures:manualEntryDialog");
+    assertTrue(manualEntryDialog == null);
   }
 
   //
@@ -166,7 +163,7 @@ public class InstrumentLaunchPanelTest {
       }
 
       @Override
-      public boolean isMeasureComplete(InstrumentRun modelObject) {
+      public boolean isMeasureComplete() {
         return false;
       }
 
@@ -187,7 +184,7 @@ public class InstrumentLaunchPanelTest {
       this.manualCaptureAllowed = manualCaptureAllowed;
     }
 
-    public boolean isManualCaptureAllowed() {
+    public boolean hasManualCaptureOutputParameters() {
       return manualCaptureAllowed;
     }
   }

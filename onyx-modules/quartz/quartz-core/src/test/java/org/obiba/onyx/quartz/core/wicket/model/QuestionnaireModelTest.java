@@ -9,11 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.model;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
@@ -27,6 +22,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.wicket.test.MockSpringApplication;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 public class QuestionnaireModelTest {
 
@@ -257,9 +257,7 @@ public class QuestionnaireModelTest {
     // multiple OpenAnswer test
     builder.inSection("S1").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("Date", DataType.DATE).withOpenAnswerDefinition("Year", DataType.INTEGER);
 
-    Questionnaire q = builder.getQuestionnaire();
-
-    return q;
+    return builder.getQuestionnaire();
   }
 
 }

@@ -9,14 +9,25 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
+import java.util.Set;
+
 import org.obiba.magma.Datasource;
+import org.obiba.magma.NoSuchDatasourceException;
+import org.obiba.magma.NoSuchValueTableException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.onyx.core.domain.participant.Participant;
 
 /**
  * Decouples the mechanism of obtaining Magma-related entities from Onyx code.
  */
 public interface MagmaInstanceProvider {
+
+  /**
+   * The entity type for participants
+   */
+  public static final String ONYX_DATASOURCE = "onyx-datasource";
 
   /**
    * The entity type for participants
@@ -27,6 +38,8 @@ public interface MagmaInstanceProvider {
    * The name of the onyx-core value table
    */
   public static final String PARTICIPANTS_TABLE_NAME = "Participants";
+
+  Set<Datasource> getDatasources();
 
   /**
    * Returns the Onyx Magma Datasource.
@@ -51,6 +64,34 @@ public interface MagmaInstanceProvider {
   public ValueTable getValueTable(String name);
 
   /**
+   * Resolves a {@code ValueTable} using a {@code variablePath}. If the variable path does not contain a datasource
+   * name, the path is resolved against the Onyx {@code Datasource} (the one returned by {@code #getOnyxDatasource}.
+   * 
+   * <p/>
+   * For example, the path {@literal Consent:pdfForm} will return the {@code ValueTable} named {@literal Consent} in the
+   * Onyx {@code Datasource}. Which would be equivalent to: <code>getOnyxDatasource().getValueTable("Consent")</code><br/>
+   * The path {@literal baseline.Participants:GENDER} will return the {@code ValueTable} named {@literal Participants}
+   * in the {@code Datasource} named {@literal baseline}.
+   * 
+   * @param variablePath the path to the variable
+   * @return a {@code ValueTable} instance
+   * @throws NoSuchValueTableException when the table does not exist in the datasource
+   * @throws NoSuchDatasourceException when the datasource does not exist
+   */
+  public ValueTable resolveTableFromVariablePath(String variablePath);
+
+  /**
+   * Resolves a {@code ValueTable} using a {@literal path}. This method is equivalent to
+   * {@code resolveTableFromVariablePath}, except that it does not require a variable name in the path.
+   * 
+   * @param valueTablePath relative or absolute path to the value table
+   * @return
+   */
+  public ValueTable resolveTable(String valueTablePath);
+
+  public VariableValueSource resolveVariablePath(String variablePath);
+
+  /**
    * Creates a new {@code VariableEntity} for a participant.
    * 
    * @param identifier the participant's identifier
@@ -58,4 +99,13 @@ public interface MagmaInstanceProvider {
    */
   public VariableEntity newParticipantEntity(String identifier);
 
+  /**
+   * Creates a new {@code VariableEntity} for a participant.
+   * 
+   * @param participant the participant's identifier
+   * @return an instance of {@code VariableEntity}
+   */
+  public VariableEntity newParticipantEntity(Participant participant);
+
+  Datasource getDatasource(String name);
 }

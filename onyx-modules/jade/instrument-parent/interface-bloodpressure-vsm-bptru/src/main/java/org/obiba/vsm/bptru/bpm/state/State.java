@@ -32,11 +32,17 @@ public interface State {
     public boolean canStop() {
       return canStop;
     }
+
+    public boolean isConnected() {
+      return this != CONNECTING;
+    }
   }
 
   public States getName();
 
   public void start();
+
+  public void add();
 
   public BpmMessageHandler getMessageHandler();
 

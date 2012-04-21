@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
@@ -41,15 +42,15 @@ public abstract class QuestionCategoryComponentsView extends Panel {
    * @param questionModel
    */
   @SuppressWarnings("serial")
-  public QuestionCategoryComponentsView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+  public QuestionCategoryComponentsView(String id, IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel<QuestionCategory>> permutator) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
     // escape categories are on the same line by default
-    repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), filter, permutator) {
+    repeater = new AbstractQuestionCategoriesView("category", questionModel, filter, permutator) {
 
       @Override
-      protected void populateItem(Item item) {
+      protected void populateItem(Item<QuestionCategory> item) {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
@@ -77,7 +78,8 @@ public abstract class QuestionCategoryComponentsView extends Panel {
    * @param questionCategoryModel
    * @return
    */
-  protected abstract Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index);
+  protected abstract Component
+      newQuestionCategoryComponent(String id, IModel<QuestionCategory> questionCategoryModel, int index);
 
   /**
    * Set the appropriate css class to custom grid view according to columns count.

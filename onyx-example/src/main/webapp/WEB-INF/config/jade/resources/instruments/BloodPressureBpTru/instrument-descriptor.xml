@@ -60,21 +60,67 @@
         <data type="TEXT">IV_XL</data>
       </allowedValues>  
     </input>
+    
+    <output>
+      <code>FIRST_RES_START_TIME</code>
+      <vendorName>FirstStartTime</vendorName>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_END_TIME</code>
+      <vendorName>FirstEndTime</vendorName>
+      <dataType>DATE</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_SYSTOLIC</code>
+      <vendorName>FirstSystolic</vendorName>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_DIASTOLIC</code>
+      <vendorName>FirstDiastolic</vendorName>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
+
+    <output>
+      <code>FIRST_RES_PULSE</code>
+      <vendorName>FirstPulse</vendorName>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
 
     <output>
       <code>RES_START_TIME</code>
+      <vendorName>StartTime</vendorName>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <code>RES_END_TIME</code>
+      <vendorName>EndTime</vendorName>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <code>RES_SYSTOLIC</code>
+      <vendorName>Systolic</vendorName>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -82,6 +128,7 @@
 
     <output>
       <code>RES_DIASTOLIC</code>
+      <vendorName>Diastolic</vendorName>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -89,33 +136,46 @@
 
     <output>
       <code>RES_PULSE</code>
+      <vendorName>Pulse</vendorName>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
-    
-    <!-- Unsupported: we cannot have some repeated and some non-repeated parameters (unless they're COMPUTED)
+
     <output>
       <code>RES_AVG_SYSTOLIC</code>
+      <vendorName>AvgSystolic</vendorName>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
     </output>
 
     <output>
       <code>RES_AVG_DIASTOLIC</code>
+      <vendorName>AvgDiastolic</vendorName>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
     </output>
 
     <output>
       <code>RES_AVG_PULSE</code>
+      <vendorName>AvgPulse</vendorName>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
     </output>
-     -->
+
+    <output>
+      <code>RES_AVG_COUNT</code>
+      <vendorName>AvgCount</vendorName>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
+    </output>
 
   </instrumentParameters>
 </instrumentType>

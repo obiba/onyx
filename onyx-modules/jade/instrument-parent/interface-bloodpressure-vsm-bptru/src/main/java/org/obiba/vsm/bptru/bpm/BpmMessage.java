@@ -162,7 +162,7 @@ public final class BpmMessage {
     .toString();
   }
 
-  private String encode(byte b) {
+  public static String encode(byte b) {
     String h = Integer.toHexString(b).replaceFirst("ffffff", "");
     if(h.length() == 1) h = "0" + h;
     return "0x" + h;

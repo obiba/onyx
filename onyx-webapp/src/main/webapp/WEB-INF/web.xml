@@ -54,4 +54,9 @@
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
 
+  <mime-mapping>
+    <extension>json</extension>
+    <mime-type>application/json</mime-type>
+  </mime-mapping>
+
 </web-app>

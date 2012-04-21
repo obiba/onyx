@@ -36,6 +36,7 @@ public abstract class TestDataExtractor<T extends TestData<?>> extends XMLDataEx
     T tData = extractDataImpl();
     tData.setType(getName());
     tData.setDate(xpath.evaluate("//Test/TestDate/text()", doc, XPathConstants.STRING).toString());
+    tData.setQualitygrade(xpath.evaluate("//Test/QualityGrade/text()", doc, XPathConstants.STRING).toString());
 
     return tData;
   }
@@ -69,6 +70,11 @@ public abstract class TestDataExtractor<T extends TestData<?>> extends XMLDataEx
 
   protected String getTrialPath(int index) {
     return getTestRoot() + "/Trials/Trial[" + index + "]";
+  }
+
+  protected byte[] extractTrialBinaryValue(int index, String path) throws XPathExpressionException {
+    String value = extractStringValue(getTrialPath(index) + path);
+    return value.getBytes();
   }
 
   protected String extractTrialStringValue(int index, String path) throws XPathExpressionException {

@@ -30,7 +30,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.time.Duration;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -43,10 +42,9 @@ import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
-import org.obiba.onyx.wicket.behavior.AbstractAjaxTimerBehavior;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog;
-import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
+import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -84,11 +82,6 @@ public abstract class MeasuresListPanel extends Panel {
 
   private Dialog invalidMeasureDetailsDialog;
 
-  private AbstractAjaxTimerBehavior autoRefreshBehavior;
-
-  private Duration autoRefreshInterval = Duration.seconds(10);
-
-  @SuppressWarnings("serial")
   public MeasuresListPanel(String id) {
     super(id);
     setOutputMarkupId(true);
@@ -100,41 +93,40 @@ public abstract class MeasuresListPanel extends Panel {
     addRefreshLink();
     addConfirmDeleteMeasureDialog();
     addNoMeasureAvailableMessage();
-    addAutoRefreshBehavior();
 
   }
 
   private void addViewMeasureDetailsDialog() {
-    add(measuresDetailsDialog = new Dialog("measuresDetailsDialog"));
-    measuresDetailsDialog.setHeightUnit("em");
-    measuresDetailsDialog.setWidthUnit("em");
-    measuresDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
-    measuresDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
-    measuresDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
+    add(measuresDetailsDialog = makeDialog("measuresDetailsDialog"));
   }
 
   private void addViewInvalidMeasureDetailsDialog() {
-    add(invalidMeasureDetailsDialog = new Dialog("invalidMeasureDetailsDialog"));
-    measuresDetailsDialog.setHeightUnit("em");
-    measuresDetailsDialog.setWidthUnit("em");
-    invalidMeasureDetailsDialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
-    invalidMeasureDetailsDialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
-    invalidMeasureDetailsDialog.setOptions(Dialog.Option.CLOSE_OPTION);
+    add(invalidMeasureDetailsDialog = makeDialog("invalidMeasureDetailsDialog"));
+  }
+
+  private Dialog makeDialog(String id) {
+    Dialog dialog = new Dialog(id);
+    dialog.setHeightUnit("em");
+    dialog.setWidthUnit("em");
+    dialog.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
+    dialog.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+    dialog.setOptions(Dialog.Option.CLOSE_OPTION);
+    return dialog;
   }
 
   private void addMeasureCounts() {
-    Label expectedMeasureCount = new Label("expectedMeasureCount", new PropertyModel(this, "expectedMeasureCount"));
+    Label expectedMeasureCount = new Label("expectedMeasureCount", new PropertyModel<Integer>(this, "expectedMeasureCount"));
     add(expectedMeasureCount);
   }
 
   @SuppressWarnings("serial")
   private void addMeasuresList() {
-    ListView repeater = new ListView("measure", new PropertyModel(this, "measures")) {
+    ListView<Measure> repeater = new ListView<Measure>("measure", new PropertyModel<List<Measure>>(this, "measures")) {
 
       private void deleteMeasure(final Measure measure, AjaxRequestTarget target, int measureNo) {
         Fragment measureDetailsFragment = new Fragment("content", "measureDetails", MeasuresListPanel.this);
         addMeasureDetails(measureDetailsFragment, measure, measureNo);
-        measureDetailsFragment.add(new AttributeModifier("class", true, new Model("long-confirmation-dialog-content")));
+        measureDetailsFragment.add(new AttributeModifier("class", true, new Model<String>("long-confirmation-dialog-content")));
         confirmationDialog.setContent(measureDetailsFragment);
         confirmationDialog.setYesButtonCallback(new OnYesCallback() {
 
@@ -149,7 +141,7 @@ public abstract class MeasuresListPanel extends Panel {
 
       private void viewMeasure(final Measure measure, AjaxRequestTarget target) {
         InstrumentRunPanel instrumentRunPanel = new InstrumentRunPanel(measuresDetailsDialog.getContentId(), measuresDetailsDialog, measure);
-        instrumentRunPanel.add(new AttributeModifier("class", true, new Model("obiba-content instrument-run-panel-content")));
+        instrumentRunPanel.add(new AttributeModifier("class", true, new Model<String>("obiba-content instrument-run-panel-content")));
         measuresDetailsDialog.setContent(instrumentRunPanel);
         measuresDetailsDialog.show(target);
       }
@@ -158,7 +150,7 @@ public abstract class MeasuresListPanel extends Panel {
         Fragment measureActionsFragment;
         measureActionsFragment = new Fragment("measureActions", "measureActionsFragment", MeasuresListPanel.this);
 
-        measureActionsFragment.add(new AjaxLink("deleteMeasure") {
+        measureActionsFragment.add(new AjaxLink<Void>("deleteMeasure") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
@@ -167,7 +159,7 @@ public abstract class MeasuresListPanel extends Panel {
 
         });
 
-        measureActionsFragment.add(new AjaxLink("view") {
+        measureActionsFragment.add(new AjaxLink<Void>("view") {
 
           @Override
           public void onClick(AjaxRequestTarget target) {
@@ -178,16 +170,17 @@ public abstract class MeasuresListPanel extends Panel {
         return measureActionsFragment;
       }
 
-      private Fragment addInvalidMeasureMessage(final Measure measure, final ListItem item, final int measureNo) {
+      private Fragment
+          addInvalidMeasureMessage(final Measure measure, final ListItem<Measure> item, final int measureNo) {
         Fragment measureActionsFragment;
-        item.add(new AttributeAppender("class", true, new Model("ui-state-error"), " "));
+        item.add(new AttributeAppender("class", true, new Model<String>("ui-state-error"), " "));
         measureActionsFragment = new Fragment("measureActions", "measureInvalidFragment", MeasuresListPanel.this);
         measureActionsFragment.add(getErrorDetailsLink(measure, measureNo));
 
         return measureActionsFragment;
       }
 
-      private AjaxLink getErrorDetailsLink(final Measure measure, final int measureNo) {
+      private AjaxLink<Object> getErrorDetailsLink(final Measure measure, final int measureNo) {
         return new AjaxLink<Object>("errorDetails") {
 
           @Override
@@ -195,11 +188,11 @@ public abstract class MeasuresListPanel extends Panel {
 
             Fragment invalidMeasureDetailsFragment = new Fragment("content", "invalidMeasureDetailsFragment", MeasuresListPanel.this);
 
-            ListView repeater = new ListView("invalidMeasureMessage", new PropertyModel(this, "invalidMeasureMessages")) {
+            ListView<String> repeater = new ListView<String>("invalidMeasureMessage", new PropertyModel<List<String>>(this, "invalidMeasureMessages")) {
 
               @Override
-              protected void populateItem(ListItem item) {
-                String errorMessage = (String) item.getModelObject();
+              protected void populateItem(ListItem<String> item) {
+                String errorMessage = item.getModelObject();
                 item.add(new Label("errorMessage", errorMessage));
               }
 
@@ -214,7 +207,8 @@ public abstract class MeasuresListPanel extends Panel {
           }
 
           @SuppressWarnings("unused")
-          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS", justification = "Referenced by PropertyModel")
+          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
+              justification = "Referenced by PropertyModel")
           public List<String> getInvalidMeasureMessages() {
             List<InstrumentOutputParameter> outputParams = getMeasureOutputParams(measure);
 
@@ -247,13 +241,13 @@ public abstract class MeasuresListPanel extends Panel {
       }
 
       @Override
-      protected void populateItem(final ListItem item) {
-        final Measure measure = (Measure) item.getModelObject();
+      protected void populateItem(final ListItem<Measure> item) {
+        final Measure measure = item.getModelObject();
 
         final int measureNo = item.getIndex() + 1;
         addMeasureDetails(item, measure, measureNo);
 
-        item.add(new AttributeAppender("class", true, new Model(getOddEvenCssClass(measureNo - 1)), " "));
+        item.add(new AttributeAppender("class", true, new Model<String>(getOddEvenCssClass(measureNo - 1)), " "));
 
         boolean measureIsValid = measure.getStatus() == MeasureStatus.VALID ? true : false;
         Fragment measureActionsFragment;
@@ -275,14 +269,12 @@ public abstract class MeasuresListPanel extends Panel {
 
   @SuppressWarnings("serial")
   private void addNoMeasureAvailableMessage() {
-    MarkupContainer noMeasureAvailable = new MarkupContainer("noMeasureAvailable", new PropertyModel(this, "measures")) {
-      @SuppressWarnings("unchecked")
+    MarkupContainer noMeasureAvailable = new MarkupContainer("noMeasureAvailable") {
+
       @Override
       public boolean isVisible() {
-        if(((List<Measure>) getDefaultModelObject()).size() == 0) {
-          return true;
-        }
-        return false;
+        // Only visible when no measures
+        return getMeasures().size() == 0;
       }
 
     };
@@ -292,7 +284,7 @@ public abstract class MeasuresListPanel extends Panel {
 
   @SuppressWarnings("serial")
   private void addRefreshLink() {
-    AjaxLink refreshLink = new AjaxLink("refresh") {
+    AjaxLink<Void> refreshLink = new AjaxLink<Void>("refresh") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -317,40 +309,16 @@ public abstract class MeasuresListPanel extends Panel {
 
     DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
     Date date = measure.getTime();
-    component.add(new Label("measureDate", DateModelUtils.getDateTimeModel(new Model(dateTimeFormat), new Model(date)).getObject().toString()));
+    component.add(new Label("measureDate", DateModelUtils.getDateTimeModel(new Model<DateFormat>(dateTimeFormat), new Model<Date>(date)).getObject().toString()));
 
     component.add(new Label("measureUser", measure.getUser().getFullName()));
     component.add(new Label("measureMethod", new StringResourceModel(measure.getCaptureMethod().toString(), this, null).getString()));
 
   }
 
-  /**
-   * Add a behavior that will refresh the panel at regular time intervals.
-   */
-  @SuppressWarnings("serial")
-  private void addAutoRefreshBehavior() {
-    add(autoRefreshBehavior = new AbstractAjaxTimerBehavior(getAutoRefreshInterval()) {
-
-      @Override
-      protected void onTimer(AjaxRequestTarget target) {
-        refresh(target);
-      }
-
-    });
-  }
-
-  public void enableAutoRefresh(AjaxRequestTarget target) {
-    autoRefreshBehavior.start(target);
-  }
-
-  public void disableAutoRefresh() {
-    autoRefreshBehavior.stop();
-  }
-
   public void refresh(AjaxRequestTarget target) {
     log.debug("Refreshing MeasureListPanel...");
     target.addComponent(MeasuresListPanel.this);
-    if(MeasuresListPanel.this.getParent() instanceof InstrumentLaunchPanel) ((InstrumentLaunchPanel) MeasuresListPanel.this.getParent()).getSkipMeasure().refresh(target);
     onRefresh(target);
   }
 
@@ -374,14 +342,6 @@ public abstract class MeasuresListPanel extends Panel {
 
   private String getOddEvenCssClass(int row) {
     return row % 2 == 1 ? "odd" : "even";
-  }
-
-  public Duration getAutoRefreshInterval() {
-    return autoRefreshInterval;
-  }
-
-  public void setAutoRefreshInterval(Duration autoRefreshInterval) {
-    this.autoRefreshInterval = autoRefreshInterval;
   }
 
 }

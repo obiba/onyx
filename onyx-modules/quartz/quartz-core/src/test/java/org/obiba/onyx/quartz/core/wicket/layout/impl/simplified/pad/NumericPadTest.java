@@ -249,8 +249,8 @@ public class NumericPadTest {
     EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
 
     expect(activeQuestionnaireAdministrationServiceMock.isQuestionnaireDevelopmentMode()).andReturn(false).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
-    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     replay(activeQuestionnaireAdministrationServiceMock);
 

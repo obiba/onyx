@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Copyright (c) 2011 OBiBa. All rights reserved.
+   
+  This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0.
+   
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <instrumentType>
 
   <name>BoneDensityAPEX</name>
@@ -70,6 +79,24 @@
     
     
     <!-- Whole Body -->
+    <output>
+      <vendorName>WB_SCANID</vendorName>
+      <code>RES_WB_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>WB_RFILE_NAME</vendorName>
+      <code>RES_WB_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>WB_RFILE</vendorName>
+      <code>RES_WB_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
     <output>
       <vendorName>WB_WBTOT_AREA</vendorName>
       <code>RES_WB_WBTOT_AREA</code>
@@ -1824,6 +1851,24 @@
              
     <!-- AP Lumbar Spine -->
     <output>
+      <vendorName>SP_SCANID</vendorName>
+      <code>RES_SP_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>SP_RFILE_NAME</vendorName>
+      <code>RES_SP_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>SP_RFILE</vendorName>
+      <code>RES_SP_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
       <vendorName>SP_NO_REGIONS</vendorName>
       <code>RES_SP_NO_REGIONS</code>
       <dataType>INTEGER</dataType>
@@ -2044,6 +2089,24 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+    </output>
+    <output>
+      <vendorName>HIP_SCANID</vendorName>
+      <code>RES_HIP_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>HIP_RFILE_NAME</vendorName>
+      <code>RES_HIP_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>HIP_RFILE</vendorName>
+      <code>RES_HIP_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
     </output>
     <output>
       <vendorName>HIP_TROCH_AREA</vendorName>
@@ -2408,6 +2471,24 @@
     
     <!-- HipSide input was NOT provided: L Hip -->
     <!-- output>
+      <vendorName>L_HIP_SCANID</vendorName>
+      <code>RES_L_HIP_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>L_HIP_RFILE_NAME</vendorName>
+      <code>RES_L_HIP_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>L_HIP_RFILE</vendorName>
+      <code>RES_L_HIP_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
       <vendorName>L_HIP_TROCH_AREA</vendorName>
       <code>RES_L_HIP_TROCH_AREA</code>
       <dataType>DECIMAL</dataType>
@@ -2770,6 +2851,24 @@
     
     <!-- HipSide input was NOT provided: R Hip -->
     <!-- output>
+      <vendorName>R_HIP_SCANID</vendorName>
+      <code>RES_R_HIP_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>R_HIP_RFILE_NAME</vendorName>
+      <code>RES_L_HIP_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>R_HIP_RFILE</vendorName>
+      <code>RES_R_HIP_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
       <vendorName>R_HIP_TROCH_AREA</vendorName>
       <code>RES_R_HIP_TROCH_AREA</code>
       <dataType>DECIMAL</dataType>
@@ -3133,6 +3232,24 @@
              
     <!-- Single Energy Lateral -->
     <!-- output>
+      <vendorName>SEL_SCANID</vendorName>
+      <code>RES_SEL_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>SEL_RFILE_NAME</vendorName>
+      <code>RES_SEL_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>SEL_RFILE</vendorName>
+      <code>RES_SEL_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
       <vendorName>SEL_L1_AREA</vendorName>
       <code>RES_SEL_L1_AREA</code>
       <dataType>DECIMAL</dataType>
@@ -3600,6 +3717,24 @@
 
     <!-- Dual Energy Lateral -->
     <!-- output>
+      <vendorName>DEL_SCANID</vendorName>
+      <code>RES_DEL_SCANID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>DEL_RFILE_NAME</vendorName>
+      <code>RES_DEL_RFILE_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <vendorName>DEL_RFILE</vendorName>
+      <code>RES_DEL_RFILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
       <vendorName>DEL_L1_AREA</vendorName>
       <code>RES_DEL_L1_AREA</code>
       <dataType>DECIMAL</dataType>

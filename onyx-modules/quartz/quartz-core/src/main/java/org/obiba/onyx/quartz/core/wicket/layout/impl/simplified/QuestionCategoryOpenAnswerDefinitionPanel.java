@@ -129,9 +129,6 @@ public class QuestionCategoryOpenAnswerDefinitionPanel extends AbstractQuestionC
 
       // same as cancel
       newPadWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
-        /**
-         * 
-         */
         private static final long serialVersionUID = 1L;
 
         public boolean onCloseButtonClicked(AjaxRequestTarget target) {

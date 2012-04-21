@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -53,6 +54,18 @@ public class OpenAnswer extends AbstractEntity {
   @ManyToOne(optional = false)
   @JoinColumn(name = "category_answer_id")
   private CategoryAnswer categoryAnswer;
+
+  @Lob
+  @Column(length = Integer.MAX_VALUE)
+  private byte[] dataValue;
+
+  public byte[] getDataValue() {
+    return dataValue;
+  }
+
+  public void setDataValue(byte[] dataValue) {
+    this.dataValue = dataValue;
+  }
 
   public CategoryAnswer getCategoryAnswer() {
     return categoryAnswer;
@@ -102,7 +115,6 @@ public class OpenAnswer extends AbstractEntity {
     this.dateValue = dateValue;
   }
 
-  @SuppressWarnings("incomplete-switch")
   public Data getData() {
     Data data = null;
 
@@ -125,12 +137,15 @@ public class OpenAnswer extends AbstractEntity {
     case TEXT:
       data = DataBuilder.buildText(textValue);
       break;
+
+    case DATA:
+      data = DataBuilder.buildBinary(dataValue);
+      break;
     }
 
     return data;
   }
 
-  @SuppressWarnings("incomplete-switch")
   public void setData(Data data) {
 
     if(data != null) {
@@ -151,6 +166,10 @@ public class OpenAnswer extends AbstractEntity {
 
         case TEXT:
           textValue = data.getValue();
+          break;
+
+        case DATA:
+          dataValue = data.getValue();
           break;
         }
       } else {

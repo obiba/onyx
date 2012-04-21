@@ -94,6 +94,7 @@ public class DataBuilder {
     return new Data(DataType.TEXT, text);
   }
 
+  @SuppressWarnings("incomplete-switch")
   public static Data build(DataType type, String value) {
     switch(type) {
     case BOOLEAN:
@@ -108,6 +109,10 @@ public class DataBuilder {
       return buildDate(value);
     }
     return null;
+  }
+
+  public static Data buildBinary(byte[] bytes) {
+    return new Data(DataType.DATA, bytes);
   }
 
   public static Data buildBinary(InputStream inputStream) {
@@ -131,7 +136,7 @@ public class DataBuilder {
       }
     }
 
-    return new Data(DataType.DATA, convertedStream.toByteArray());
+    return buildBinary(convertedStream.toByteArray());
   }
 
   public static Data buildBinary(File file) {
@@ -144,7 +149,6 @@ public class DataBuilder {
       throw new RuntimeException(e);
     }
     return buildBinary(inputStream);
-
   }
 
 }

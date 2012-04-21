@@ -38,6 +38,7 @@ public class DataConverter implements IConverter {
     this.userSessionService = userSessionService;
   }
 
+  @Override
   public Object convertToObject(String value, Locale locale) {
 
     Data data = null;
@@ -81,6 +82,7 @@ public class DataConverter implements IConverter {
     return data;
   }
 
+  @Override
   public String convertToString(Object value, Locale locale) {
     Data data = (Data) value;
     if(data == null || data.getValue() == null) return null;

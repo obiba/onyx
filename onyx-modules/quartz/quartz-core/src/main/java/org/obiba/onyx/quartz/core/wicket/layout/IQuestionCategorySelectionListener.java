@@ -11,6 +11,8 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 /**
  * Listener that want to be warned a question category has been (or not) selected in a Ajax context.
@@ -24,6 +26,6 @@ public interface IQuestionCategorySelectionListener {
    * @param questionCategoryModel
    * @param isSelected
    */
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected);
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected);
 
 }

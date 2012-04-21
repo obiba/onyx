@@ -48,6 +48,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -84,6 +85,8 @@ public class DefaultQuestionPanelTest {
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
 
+  private MagmaInstanceProvider magmaInstanceProviderMock;
+
   private QuestionnaireBundleManager questionnaireBundleManagerMock;
 
   private EntityQueryService queryServiceMock;
@@ -106,12 +109,14 @@ public class DefaultQuestionPanelTest {
     questionnaireBundleManagerMock = createMock(QuestionnaireBundleManager.class);
     queryServiceMock = createMock(EntityQueryService.class);
     questionnaireBundleMock = createMock(QuestionnaireBundle.class);
+    magmaInstanceProviderMock = createMock(MagmaInstanceProvider.class);
     // messageSourceMock = createMock(MessageSource.class);
 
     mockCtx.putBean("activeInterviewService", activeInterviewServiceMock);
     mockCtx.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
     mockCtx.putBean("questionnaireBundleManager", questionnaireBundleManagerMock);
     mockCtx.putBean("queryService", queryServiceMock);
+    mockCtx.putBean("magmaInstanceProviderMock", magmaInstanceProviderMock);
     mockCtx.putBean("moduleRegistry", new ModuleRegistry());
 
     PageLayoutFactoryRegistry pageLayoutFactoryRegistryMock = new PageLayoutFactoryRegistry();
@@ -134,6 +139,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q1.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q1.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
@@ -149,6 +155,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q1_MULTIPLE.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1_MULTIPLE.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1_MULTIPLE.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q1_MULTIPLE.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.label", locale, "Choice three");
@@ -161,6 +168,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2.caption", locale, "question2 caption");
     messageSource.addMessage("Question.Q2.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q2.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -173,6 +181,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.MULTIPLE_OPEN.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.MULTIPLE_OPEN.caption", locale, "question2 caption");
     messageSource.addMessage("Question.MULTIPLE_OPEN.categoryOrder", locale, "");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.media", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -187,6 +196,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.caption", locale, "question2 caption");
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.categoryOrder", locale, "");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.media", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.MULTIPLE_DURATION.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -200,6 +210,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q2_MULTIPLE.specifications", locale, "question2 specifications");
     messageSource.addMessage("Question.Q2_MULTIPLE.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2_MULTIPLE.caption", locale, "question2 caption");
+    messageSource.addMessage("Question.Q2_MULTIPLE.media", locale, "");
     messageSource.addMessage("Question.Q2_MULTIPLE.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.DONT_KNOW.label", locale, "Dont know");
@@ -213,6 +224,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q3.instructions", locale, "question3 instructions");
     messageSource.addMessage("Question.Q3.caption", locale, "question3 caption");
     messageSource.addMessage("Question.Q3.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q3.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q3.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q3.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q3.3.label", locale, "Choice three");
@@ -267,6 +279,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -356,6 +369,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -441,6 +455,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -523,6 +538,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -626,6 +642,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -718,6 +735,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
@@ -815,6 +833,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).anyTimes();
       if(qCategory.getCategory().getOpenAnswerDefinition() != null) {

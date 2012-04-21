@@ -28,10 +28,14 @@ import org.obiba.onyx.webapp.OnyxAuthenticatedSession.AuthenticateErrorCode;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.DialogBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginPanel extends SignInPanel {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(LoginPanel.class);
 
   @SpringBean
   private EntityQueryService queryService;
@@ -87,6 +91,7 @@ public class LoginPanel extends SignInPanel {
     setSessionTimeout();
     setResponsePage(getApplication().getHomePage());
     userSessionService.setWorkstation(((WebRequest) getRequest()).getHttpServletRequest().getRemoteHost());
+    log.info("User {} logged in from workstation {}.", userSessionService.getUser().getLogin(), userSessionService.getWorkstation());
   }
 
   private void setSessionTimeout() {

@@ -34,7 +34,7 @@ public class ParticipantDataExtractor extends XMLDataExtractor<ParticipantData> 
     pData.setLastName(xpath.evaluate("//Patient/LastName/text()", doc, XPathConstants.STRING).toString());
     pData.setFirstName(xpath.evaluate("//Patient/FirstName/text()", doc, XPathConstants.STRING).toString());
     pData.setHeight(extractDoubleValue("//PatientDataAtTestTime/Height/text()"));
-    pData.setWeight(extractLongValue("//PatientDataAtTestTime/Weight/text()"));
+    pData.setWeight(extractDoubleValue("//PatientDataAtTestTime/Weight/text()"));
     pData.setEthnicity(xpath.evaluate("//PatientDataAtTestTime/Ethnicity/text()", doc, XPathConstants.STRING).toString());
     pData.setSmoker(xpath.evaluate("//PatientDataAtTestTime/Smoker/text()", doc, XPathConstants.STRING).toString());
     pData.setAsthma(xpath.evaluate("//PatientDataAtTestTime/Asthma/text()", doc, XPathConstants.STRING).toString());

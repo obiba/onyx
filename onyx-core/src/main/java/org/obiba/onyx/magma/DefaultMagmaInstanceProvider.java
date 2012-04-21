@@ -9,24 +9,44 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
+import java.util.Set;
+
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
+import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.MagmaEngineTableResolver;
+import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.base.Preconditions;
 
 public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
 
-  private MagmaEngine magmaEngine;
+  private final MagmaEngine magmaEngine;
 
   @Autowired
   public DefaultMagmaInstanceProvider(MagmaEngine magmaEngine) {
+    Preconditions.checkArgument(magmaEngine != null);
     this.magmaEngine = magmaEngine;
   }
 
+  @Override
+  public Set<Datasource> getDatasources() {
+    return magmaEngine.getDatasources();
+  }
+
+  @Override
+  public Datasource getDatasource(String name) {
+    return magmaEngine.getDatasource(name);
+  }
+
+  @Override
   public Datasource getOnyxDatasource() {
-    return magmaEngine.getDatasources().iterator().next();
+    return magmaEngine.getDatasource(ONYX_DATASOURCE);
   }
 
   @Override
@@ -34,10 +54,32 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
     return getValueTable(PARTICIPANTS_TABLE_NAME);
   }
 
+  @Override
   public ValueTable getValueTable(String name) {
     return getOnyxDatasource().getValueTable(name);
   }
 
+  @Override
+  public ValueTable resolveTableFromVariablePath(String variablePath) {
+    return MagmaEngineVariableResolver.valueOf(variablePath).resolveTable(getParticipantsTable());
+  }
+
+  @Override
+  public ValueTable resolveTable(String valueTablePath) {
+    return MagmaEngineTableResolver.valueOf(valueTablePath).resolveTable(getParticipantsTable());
+  }
+
+  @Override
+  public VariableValueSource resolveVariablePath(String variablePath) {
+    return MagmaEngineVariableResolver.valueOf(variablePath).resolveSource(getParticipantsTable());
+  }
+
+  @Override
+  public VariableEntity newParticipantEntity(Participant participant) {
+    return newParticipantEntity(participant.getBarcode());
+  }
+
+  @Override
   public VariableEntity newParticipantEntity(String identifier) {
     return new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, identifier);
   }

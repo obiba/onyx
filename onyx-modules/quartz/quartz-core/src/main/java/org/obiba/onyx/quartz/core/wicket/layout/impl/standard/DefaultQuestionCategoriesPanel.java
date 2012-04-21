@@ -49,7 +49,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
 
-  private CheckGroup checkGroup;
+  private CheckGroup<IModel<QuestionCategory>> checkGroup;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -57,31 +57,14 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
   private DefaultEscapeQuestionCategoriesPanel escapeQuestionCategoriesPanel;
 
   /**
-   * Context in which answer are given (case of joined categories question array).
-   */
-  @SuppressWarnings("unused")
-  private IModel parentQuestionCategoryModel;
-
-  /**
-   * Constructor for a stand-alone question.
-   * @param id
-   * @param questionModel
-   */
-  public DefaultQuestionCategoriesPanel(String id, IModel questionModel) {
-    this(id, questionModel, null);
-  }
-
-  /**
    * Constructor for a joined categories question.
    * @param id
    * @param questionModel
    * @param parentQuestionCategoryModel
    */
-  public DefaultQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
+  public DefaultQuestionCategoriesPanel(String id, IModel<Question> questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
-
-    this.parentQuestionCategoryModel = parentQuestionCategoryModel;
 
     Question question = (Question) getDefaultModelObject();
     if(!question.isMultiple()) {
@@ -102,8 +85,9 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     return ((Question) getDefaultModelObject()).hasEscapeCategories();
   }
 
-  private IModel getQuestionModel() {
-    return getDefaultModel();
+  @SuppressWarnings("unchecked")
+  private IModel<Question> getQuestionModel() {
+    return (IModel<Question>) getDefaultModel();
   }
 
   /**
@@ -112,20 +96,20 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    */
   @SuppressWarnings("serial")
   private void addRadioGroup(Question question) {
-    final RadioGroup radioGroup = new RadioGroup("categories", new Model()) {
+    final RadioGroup<QuestionCategory> radioGroup = new RadioGroup<QuestionCategory>("categories", new Model<QuestionCategory>()) {
       @Override
       public void updateModel() {
         // ONYX-344: Do nothing -- QuestionCategoryRadioPanel sets the model to a read-only QuestionnaireModel
         // whenever a radio button is selected.
       }
     };
-    radioGroup.add(new AnswerCountValidator(getQuestionModel()));
+    radioGroup.add(new AnswerCountValidator<QuestionCategory>(getQuestionModel()));
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), null, new QuestionCategoryListToGridPermutator(getDefaultModel())) {
+    GridView<QuestionCategory> repeater = new AbstractQuestionCategoriesView("category", getQuestionModel(), null, new QuestionCategoryListToGridPermutator(getQuestionModel())) {
 
       @Override
-      protected void populateItem(Item item) {
+      protected void populateItem(Item<QuestionCategory> item) {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
@@ -145,19 +129,19 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    */
   @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
-    checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
-    checkGroup.add(new AnswerCountValidator(getQuestionModel()));
+    checkGroup = new CheckGroup<IModel<QuestionCategory>>("categories", new ArrayList<IModel<QuestionCategory>>());
+    checkGroup.add(new AnswerCountValidator<Collection<IModel<QuestionCategory>>>(getQuestionModel()));
     add(checkGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getDefaultModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getDefaultModel())) {
+    GridView<QuestionCategory> repeater = new AbstractQuestionCategoriesView("category", getQuestionModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getQuestionModel())) {
 
       @Override
-      protected void populateItem(Item item) {
+      protected void populateItem(Item<QuestionCategory> item) {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
           item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup.getModel()));
-          item.add(new AttributeModifier("class", true, new Model("obiba-quartz-checkbox-category")));
+          item.add(new AttributeModifier("class", true, new Model<String>("obiba-quartz-checkbox-category")));
         }
       }
 
@@ -171,22 +155,21 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, final IModel questionCategoryModel, boolean isSelected) {
+  @Override
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, final IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     // repaint the panel
     target.addComponent(this);
 
-    boolean isEscape = ((QuestionCategory) questionCategoryModel.getObject()).isEscape();
+    boolean isEscape = questionCategoryModel.getObject().isEscape();
 
     if(checkGroup != null) {
       if(isEscape) {
         // case we are called by an escape category in a multiple choice context
-        ((Collection<IModel>) checkGroup.getModelObject()).clear();
+        checkGroup.getModelObject().clear();
         // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
-        checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+        checkGroup.visitChildren(CheckBox.class, new Component.IVisitor<CheckBox>() {
 
-          public Object component(Component component) {
-            CheckBox cb = (CheckBox) component;
+          public Object component(CheckBox cb) {
             cb.clearInput();
             return null;
           }
@@ -194,10 +177,9 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
         });
 
         // clear the open answers also (but not the one of the selected category!)
-        checkGroup.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
+        checkGroup.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor<AbstractOpenAnswerDefinitionPanel>() {
 
-          public Object component(Component component) {
-            AbstractOpenAnswerDefinitionPanel open = (AbstractOpenAnswerDefinitionPanel) component;
+          public Object component(AbstractOpenAnswerDefinitionPanel open) {
             if(!open.getQuestionCategoryModel().equals(questionCategoryModel)) {
               open.resetField();
             }
@@ -208,7 +190,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
 
       } else if(escapeQuestionCategoriesPanel != null) {
         // exclude escape questions if currently selected is not an escape one in a multiple choice context
-        Question question = (Question) questionModel.getObject();
+        Question question = questionModel.getObject();
         for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {
           QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
           if(questionCategory.getCategory().isEscape()) {

@@ -108,4 +108,9 @@ public interface QuestionnaireBundleManager {
    */
   void deleteBundle(Questionnaire questionnaire);
 
+  /**
+   * @param bundle
+   */
+  void flushBundle(QuestionnaireBundle bundle);
+
 }

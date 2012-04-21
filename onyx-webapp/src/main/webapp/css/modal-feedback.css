@@ -7,11 +7,9 @@ div.wicket-modal div.onyx .feedbackLine {
 }
 
 div.wicket-modal div.onyx .feedback {
-  margin-left:-1.5em;  
-  font-weight:bold;  
-  font-size:1.1667em;
+  margin-left:-1.5em;
   overflow: auto;
-  height: 5.5833em;
+  height: 7em;
 }
 
 .feedbackPanelERROR {

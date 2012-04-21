@@ -22,6 +22,7 @@ import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.DataValueConverter;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +35,6 @@ public class VariableDataSource implements IDataSource {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = LoggerFactory.getLogger(VariableDataSource.class);
-
-  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   private String path;
 
@@ -78,7 +77,7 @@ public class VariableDataSource implements IDataSource {
   }
 
   public Value getValue(Participant participant) {
-    VariableEntity entity = new VariableEntityBean("Participant", participant.getBarcode());
+    VariableEntity entity = new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, participant.getBarcode());
     ValueTable table = resolveTable();
     ValueSet valueSet = table.getValueSet(entity);
 
@@ -97,20 +96,18 @@ public class VariableDataSource implements IDataSource {
 
   private ValueTable resolveTable() {
     extractPathElements();
-
     if(tableName != null) {
-      for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-        if(datasourceName == null || datasource.getName().equals(datasourceName)) {
-          for(ValueTable table : datasource.getValueTables()) {
-            if(table.isForEntityType(PARTICIPANT_ENTITY_TYPE) && table.getName().equals(tableName)) {
-              return table;
-            }
-          }
-        }
+      ValueTable table = resolveDatasource().getValueTable(tableName);
+      if(table.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE)) {
+        return table;
       }
-      throw new IllegalStateException("Could not resolve ValueTable (name: " + tableName + ")");
+      throw new IllegalArgumentException("table " + tableName + " is for entity type " + table.getEntityType() + ". It cannot be used as a datasource.");
     }
     throw new IllegalStateException("Could not resolve ValueTable (path does not contain a table name)");
+  }
+
+  private Datasource resolveDatasource() {
+    return datasourceName == null ? MagmaEngine.get().getDatasource(MagmaInstanceProvider.ONYX_DATASOURCE) : MagmaEngine.get().getDatasource(datasourceName);
   }
 
   private void extractPathElements() {

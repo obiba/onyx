@@ -74,10 +74,10 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     MultipleDataListFilter<QuestionCategory> filter = new MultipleDataListFilter<QuestionCategory>();
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(true));
-    add(new QuestionCategoryComponentsView("openCategories", getDefaultModel(), filter, new QuestionCategoryListToGridPermutator(getDefaultModel(), 1)) {
+    add(new QuestionCategoryComponentsView("openCategories", getQuestionModel(), filter, new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)) {
 
       @Override
-      protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
+      protected Component newQuestionCategoryComponent(String id, IModel<QuestionCategory> questionCategoryModel, int index) {
         return new OpenFragment(id, questionCategoryModel, index);
       }
 
@@ -92,7 +92,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     filter.addFilter(new QuestionCategoryImageFilter(false));
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
-    QuestionCategoryLinksView view = new QuestionCategoryLinksView("regularCategories", getDefaultModel(), filter, new QuestionCategoryListToGridPermutator(getDefaultModel()));
+    QuestionCategoryLinksView view = new QuestionCategoryLinksView("regularCategories", getQuestionModel(), filter, new QuestionCategoryListToGridPermutator(getQuestionModel()));
     add(view);
   }
 
@@ -100,7 +100,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * Regular image categories (i.e., categories represented by images rather than text), in a single row.
    */
   private void addRegularImageCategoriesView() {
-    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", (IModel<Question>) getDefaultModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
+    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", getQuestionModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
     add(view);
   }
 
@@ -112,15 +112,17 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     add(view);
   }
 
-  private IModel getQuestionModel() {
-    return getDefaultModel();
+  @SuppressWarnings("unchecked")
+  private IModel<Question> getQuestionModel() {
+    return (IModel<Question>) getDefaultModel();
   }
 
   private Question getQuestion() {
     return (Question) getDefaultModelObject();
   }
 
-  public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  @Override
+  public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     // optimize by updating only the selection state that have changed
     visitChildren(new Component.IVisitor() {
@@ -145,7 +147,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
 
-    public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+    public QuestionCategoryLinksView(String id, IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel<QuestionCategory>> permutator) {
       super(id, questionModel, filter, permutator);
     }
 
@@ -161,7 +163,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryImageLinksView extends QuestionCategoryComponentsView {
 
-    public QuestionCategoryImageLinksView(String id, IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel> permutator) {
+    public QuestionCategoryImageLinksView(String id, IModel<Question> questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<IModel<QuestionCategory>> permutator) {
       super(id, questionModel, filter, permutator);
     }
 

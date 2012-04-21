@@ -8,13 +8,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/>
     <property name="locale" ref="locale"/>
-    <property name="softwareInstallPath" value="C:\\Program Files\\NoddleTest"/>
-    <property name="resultPath" value="C:\\Program Files\\NoddleTest\\results"/>
+    <property name="softwareInstallPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path}"/>
+    <property name="resultPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path.results}"/>
+    <property name="packagePrefix" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.package.prefix}"/>
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
-    <property name="workDir" value="C:\\Program Files\\NoddleTest" />
-    <property name="executable" value="Noddletest.exe" />  
+    <property name="workDir" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path}" />
+    <property name="executable" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.exe}" />  
   </bean>
   
 </beans>

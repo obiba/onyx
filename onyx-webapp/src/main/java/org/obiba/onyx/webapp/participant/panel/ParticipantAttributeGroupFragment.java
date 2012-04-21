@@ -21,7 +21,7 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
     RepeatingView repeat = new RepeatingView("attributeRepeater");
     add(repeat);
 
-    Participant participant = (Participant) participantModel.getObject();
+    Participant participant = participantModel.getObject();
 
     for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
       if(attributesToDisplay.contains(attribute)) {
@@ -46,6 +46,7 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
     return attributeValue;
   }
 
-  abstract protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant);
+  abstract protected void
+      addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant);
 
 }

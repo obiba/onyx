@@ -21,19 +21,16 @@ import junit.framework.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
-import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.js.MagmaJsExtension;
-import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 
+@DirtiesContext
 public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase {
 
   public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
@@ -47,16 +44,6 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
   private static final String OTHER_SPECIFY = "OTHER_SPECIFY";
 
   private ApplicationContext applicationContextMock;
-
-  @Before
-  public void before() {
-    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
-  }
-
-  @After
-  public void after() {
-    MagmaEngine.get().shutdown();
-  }
 
   @Test
   public void testQuestionnaireStreamer() {

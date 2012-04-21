@@ -27,18 +27,29 @@ public abstract class AbstractChildQuestionProvider extends AbstractQuestionnair
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractChildQuestionProvider.class);
 
+  private List<Question> elementList = null;
+
   public AbstractChildQuestionProvider(IModel<Question> model) {
     super(model);
   }
 
   protected List<Question> getElementList() {
-    List<Question> selectedChilds = new ArrayList<Question>();
-    for(Question question : getProviderElement().getQuestions()) {
-      if(acceptChild(question)) {
-        selectedChilds.add(question);
+    if(elementList == null) {
+      List<Question> selectedChilds = new ArrayList<Question>();
+      for(Question question : getProviderElement().getQuestions()) {
+        if(acceptChild(question)) {
+          selectedChilds.add(question);
+        }
       }
+      elementList = selectedChilds;
     }
-    return selectedChilds;
+    return elementList;
+  }
+
+  @Override
+  public int size() {
+    elementList = null;
+    return super.size();
   }
 
   protected abstract boolean acceptChild(Question question);

@@ -21,10 +21,15 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.util.string.Strings;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.MediaPanel;
+import org.obiba.onyx.quartz.core.wicket.model.InvalidMultipleMediaTypesException;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireWebResourceModel;
 import org.obiba.onyx.wicket.reusable.AddCommentWindow;
 import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
@@ -57,7 +62,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
     // help toggle
     QuestionnaireStringResourceModel helpModel = new QuestionnaireStringResourceModel(question, "help");
-    if(helpModel.getString() != null && !helpModel.getString().trim().equals("")) {
+    if(!isEmptyString(helpModel)) {
       Label helpContent = new Label("help", helpModel);
       // help resource can contain html formatting
       helpContent.setEscapeModelStrings(false);
@@ -74,26 +79,27 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     }
 
     QuestionnaireStringResourceModel stringModel = new QuestionnaireStringResourceModel(question, "instructions");
-    add(new Label("instructions", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel.getString())));
+    add(new Label("instructions", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel)));
+
+    try {
+      QuestionnaireWebResourceModel mediaModel = new QuestionnaireWebResourceModel(question, "media");
+      add(new MediaPanel("media", mediaModel).setVisible(mediaModel.getObject() != null));
+    } catch(InvalidMultipleMediaTypesException e) {
+      add(new Label("media", new ResourceModel("UnsupportedMultipleMediaTypes")));
+    }
 
     stringModel = new QuestionnaireStringResourceModel(question, "caption");
-    add(new Label("caption", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel.getString())));
+    add(new Label("caption", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel)));
 
     stringModel = new QuestionnaireStringResourceModel(question, "specifications");
-    add(new Label("specifications", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel.getString())));
+    add(new Label("specifications", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel)));
 
-    // change the css rendering in case of a boiler plate
-    if(question.isBoilerPlate()) {
-      add(new AttributeModifier("class", new Model<String>(BOILERPLATE_CLASS)));
-      add(new EmptyPanel("content").setVisible(false));
-    } else {
-      setContent("content");
-    }
+    setContent("content");
 
   }
 
-  private boolean isEmptyString(String str) {
-    return str == null || str.trim().equals("");
+  private static boolean isEmptyString(IModel<String> str) {
+    return str == null || Strings.isEmpty(str.getObject());
   }
 
   public void setCommentVisible(boolean visible) {
@@ -151,9 +157,11 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
       // Add comment action link.
       imageLink.add(new AjaxLink("addComment") {
+        @Override
         public void onClick(AjaxRequestTarget target) {
           final QuestionCommentModalPanel contentPanel = new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getDefaultModel()) {
 
+            @Override
             protected void onAddComment(AjaxRequestTarget target1) {
               target1.addComponent(imageLink);
             }
@@ -161,6 +169,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
           };
 
           commentWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
+            @Override
             public boolean onCloseButtonClicked(AjaxRequestTarget target1, Status status) {
 
               if(status.equals(Status.SUCCESS)) {
@@ -191,7 +200,12 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
   protected void setContent(String id) {
     Question question = (Question) getDefaultModelObject();
     Panel content;
-    if(!question.hasSubQuestions()) {
+    // change the css rendering in case of a boiler plate
+    if(question.isBoilerPlate()) {
+      add(new AttributeModifier("class", new Model<String>(BOILERPLATE_CLASS)));
+      content = new EmptyPanel(id);
+      content.setVisible(false);
+    } else if(!question.hasSubQuestions()) {
       content = createCategoriesPanel(id, getModel());
     } else if(!question.hasCategories()) {
       content = createQuetionListPanel(id, getModel());

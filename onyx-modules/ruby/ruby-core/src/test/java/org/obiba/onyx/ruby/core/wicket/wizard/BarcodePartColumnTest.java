@@ -35,7 +35,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 public class BarcodePartColumnTest {
   //
   // Instance Variables
-  //  
+  //
 
   private ExtendedApplicationContextMock applicationContextMock;
 
@@ -95,7 +95,7 @@ public class BarcodePartColumnTest {
   private void initDomainObjects() throws Exception {
     RegularExpressionBarcodePartParser partParser = new RegularExpressionBarcodePartParser();
     partParser.setSize(7);
-    partParser.setExpression(".*");
+    partParser.setExpression("\\d{7,}");
     partParser.setPartTitle(new DefaultMessageSourceResolvable("testPartTitle"));
 
     List<IBarcodePartParser> partParserList = new ArrayList<IBarcodePartParser>();

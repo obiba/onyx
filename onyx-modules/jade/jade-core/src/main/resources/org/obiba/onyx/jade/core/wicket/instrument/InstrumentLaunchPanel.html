@@ -1,32 +1,20 @@
 <wicket:panel>
-	<div class="wizard-title">
-		<span wicket:id="instructions"/>
-	</div>
-	<ul>
-		<li wicket:id="repeat"><span wicket:id="instruction"/></li>
-	</ul>
+  <div wicket:id="instrument-instructions" class="instrument-instructions"></div>
   
-  <table>
-    <tr>
-      <td wicket:id="general">[Click Start button to launch automatic measurement]</td><td><input class="obiba-button ui-corner-all" type="button" wicket:id="start" wicket:message="value:Start" /></td>
-    </tr>
-    <tr wicket:id="manualButtonBlock">
-      <td><wicket:message key="manualButtonDescription">[Click Add button to enter values manually]</wicket:message></td><td><input class="obiba-button ui-corner-all" type="button" wicket:id="manualButton" wicket:message="value:Add" /></td>
-    </tr>
-  </table>
+  <div class="wizard-title">
+    <span wicket:id="instructions"/>
+  </div>
+  <ul>
+    <li wicket:id="repeat"><span wicket:id="instruction"/></li>
+  </ul>
   
-  <br>
+  <div>
+    <span wicket:id="general">[Click Start button to launch automatic measurement]</span>
+    <input class="obiba-button ui-corner-all" type="button" wicket:id="start" wicket:message="value:Start" />
+  </div>
   
-  <div wicket:id="measuresList"/>
+  <br/>
   
-  <div wicket:id="manualEntryDialog" ></div>
-  
-  <span wicket:id="skipMeasure"/>  
-  
-<wicket:fragment wicket:id="skipMeasureFragment">
-	<br><br>
-  <input type="checkbox" wicket:id="skipMeasurements"/><wicket:message key="skipRemainingMeasurements"/><br><br>
-  <textarea cols="83" rows="3" wicket:id="comment" name="comment"></textarea>
-</wicket:fragment>
+  <div wicket:id="measures"/>
 
 </wicket:panel>

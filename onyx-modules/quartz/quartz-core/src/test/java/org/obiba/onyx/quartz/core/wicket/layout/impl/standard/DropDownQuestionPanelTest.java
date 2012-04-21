@@ -108,6 +108,7 @@ public class DropDownQuestionPanelTest {
     messageSource.addMessage("Question.Q1.specifications", locale, "question specifications");
     messageSource.addMessage("Question.Q1.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1.categoryOrder", locale, "");
+    messageSource.addMessage("Question.Q1.media", locale, "");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
@@ -149,6 +150,7 @@ public class DropDownQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "media")).andReturn(propertyKeyProvider.getPropertyKey(question, "media")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }

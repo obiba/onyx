@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.collect.ListMultimap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.Session;
@@ -43,8 +44,6 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties.KeyValue;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-import com.google.common.collect.ListMultimap;
-
 /**
  *
  */
@@ -59,15 +58,28 @@ public class LabelsPanel extends Panel {
 
   private final Map<Locale, ITab> tabByLocale = new HashMap<Locale, ITab>();
 
-  private WebMarkupContainer tabsContainer;
+  private final WebMarkupContainer tabsContainer;
 
   private final Map<String, IModel<String>> tooltips;
 
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
-    this(id, model, elementModel, feedbackPanel, feedbackWindow, false, null);
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel,
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow) {
+    this(id, model, elementModel, feedbackPanel, feedbackWindow, null, null);
   }
 
-  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, final boolean onlyLabelField, Map<String, IModel<String>> tooltips) {
+  /**
+   * @param id
+   * @param model
+   * @param elementModel
+   * @param feedbackPanel
+   * @param feedbackWindow
+   * @param tooltips
+   * @param visibleStates  Map with label element as key and a boolean set to true to show it or false to hide it.
+   *                       Set to null to display all labels.
+   */
+  public LabelsPanel(String id, IModel<LocaleProperties> model, IModel<? extends IQuestionnaireElement> elementModel,
+      FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, Map<String, IModel<String>> tooltips,
+      final Map<String, Boolean> visibleStates) {
     super(id, model);
     this.elementModel = elementModel;
     this.tooltips = tooltips;
@@ -84,10 +96,10 @@ public class LabelsPanel extends Panel {
       AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
         @Override
         public Panel getPanel(String panelId) {
-          return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), onlyLabelField);
+          return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), visibleStates);
         }
       };
-      PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
+      ITab panelCachingTab = new PanelCachingTab(tab);
       tabs.add(panelCachingTab);
       tabByLocale.put(locale, panelCachingTab);
     }
@@ -139,10 +151,10 @@ public class LabelsPanel extends Panel {
         AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
           @Override
           public Panel getPanel(String panelId) {
-            return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), false);
+            return new InputPanel(panelId, new ListModel<KeyValue>(elementLabels.get(locale)), null);
           }
         };
-        PanelCachingTab panelCachingTab = new PanelCachingTab(tab);
+        ITab panelCachingTab = new PanelCachingTab(tab);
         tabByLocale.put(locale, panelCachingTab);
         tabs.add(panelCachingTab);
         if(tabs.size() == 1) tabbedPanel.setSelectedTab(0);
@@ -154,13 +166,16 @@ public class LabelsPanel extends Panel {
 
   public class InputPanel extends Panel {
 
-    public InputPanel(String id, ListModel<KeyValue> model, final boolean onlyLabelField) {
+    private static final long serialVersionUID = -8514120793621286201L;
+
+    public InputPanel(String id, ListModel<KeyValue> model, final Map<String, Boolean> visibleStates) {
       super(id, model);
 
       add(new ListView<KeyValue>("item", model) {
         @Override
         protected void populateItem(ListItem<KeyValue> item) {
-          TextArea<String> textArea = new TextArea<String>("textArea", new PropertyModel<String>(item.getModel(), "value"));
+          TextArea<String> textArea = new TextArea<String>("textArea",
+              new PropertyModel<String>(item.getModel(), "value"));
           String label = item.getModelObject().getKey();
           textArea.setLabel(new Model<String>(label));
           SimpleFormComponentLabel textAreaLabel = new SimpleFormComponentLabel("label", textArea);
@@ -170,22 +185,21 @@ public class LabelsPanel extends Panel {
             }
           });
 
-          Component tooltip = null;
-          if(tooltips != null && tooltips.containsKey(label)) {
-            tooltip = new HelpTooltipPanel("tooltip", tooltips.get(label));
-          } else {
-            tooltip = new WebMarkupContainer("tooltip").setVisible(false);
-          }
+          boolean hasTooltip = tooltips != null && tooltips.containsKey(label);
+          Component tooltip = hasTooltip ? new HelpTooltipPanel("tooltip",
+              tooltips.get(label)) : new WebMarkupContainer("tooltip").setVisible(false);
 
           item.add(textArea);
           item.add(textAreaLabel);
           item.add(tooltip);
 
-          if(!label.equals("label") && onlyLabelField) {
-            textArea.setVisible(false);
-            textAreaLabel.setVisible(false);
-            tooltip.setVisible(false);
+          boolean show = true;
+          if(visibleStates != null && visibleStates.containsKey(label)) {
+            show = visibleStates.get(label);
           }
+          textArea.setVisible(show);
+          textAreaLabel.setVisible(show);
+          tooltip.setVisible(hasTooltip && show);
         }
       });
     }

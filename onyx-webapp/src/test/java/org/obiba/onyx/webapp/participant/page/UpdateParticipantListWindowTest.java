@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateStats;
-import org.obiba.onyx.core.etl.participant.impl.AbstractParticipantReader;
+import org.obiba.onyx.core.etl.participant.impl.AbstractFileBasedParticipantReader;
 import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.obiba.onyx.webapp.participant.panel.UpdateParticipantListPanel;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -123,7 +123,7 @@ public class UpdateParticipantListWindowTest {
     return (Fragment) panel.get("contentFragment");
   }
 
-  private class ParticipantReaderTest extends AbstractParticipantReader {
+  private class ParticipantReaderTest extends AbstractFileBasedParticipantReader {
 
     public ParticipantReaderTest() {
       super();

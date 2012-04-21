@@ -28,6 +28,7 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -56,6 +57,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
@@ -145,7 +147,6 @@ public class ParticipantSearchPage extends BasePage {
 
   private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
 
-  @SuppressWarnings("serial")
   public ParticipantSearchPage() {
     super();
 
@@ -186,7 +187,7 @@ public class ParticipantSearchPage extends BasePage {
 
     add(unlockInterviewWindow);
 
-    Form form = new Form("searchForm");
+    Form<Void> form = new Form<Void>("searchForm");
     add(form);
 
     form.add(new TextField<String>("inputField", new Model<String>(new String())));
@@ -194,13 +195,14 @@ public class ParticipantSearchPage extends BasePage {
     AjaxButton searchByInputField = new AjaxButton("searchByInputField", form) {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+        System.out.println("PATATE!!!!!!!!");
         ParticipantEntityList replacement;
         String inputField = form.get("inputField").getDefaultModelObjectAsString();
 
         if(inputField == null) {
           replacement = getAllParticipantsList();
         } else {
-          replacement = new ParticipantEntityList("participant-list", new ParticipantByInputFieldProvider(inputField), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByInputField", ParticipantSearchPage.this, new Model(new ValueMap("inputField=" + inputField))));
+          replacement = new ParticipantEntityList("participant-list", new ParticipantByInputFieldProvider(inputField), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByInputField", ParticipantSearchPage.this, new Model<ValueMap>(new ValueMap("inputField=" + inputField))));
           replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         }
         replaceParticipantList(target, replacement);
@@ -329,7 +331,6 @@ public class ParticipantSearchPage extends BasePage {
     return participantCaptureAndExportStrategy.isExported(participant.getBarcode());
   }
 
-  @SuppressWarnings("serial")
   private class ParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
     public ParticipantProvider() {
@@ -349,7 +350,6 @@ public class ParticipantSearchPage extends BasePage {
 
   }
 
-  @SuppressWarnings("serial")
   private class ParticipantByInputFieldProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
     private String inputField;
@@ -372,7 +372,6 @@ public class ParticipantSearchPage extends BasePage {
 
   }
 
-  @SuppressWarnings("serial")
   private class AppointedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
     private Date from;
@@ -403,7 +402,6 @@ public class ParticipantSearchPage extends BasePage {
 
   }
 
-  @SuppressWarnings("serial")
   private class InterviewedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
     public InterviewedParticipantProvider() {
@@ -423,47 +421,53 @@ public class ParticipantSearchPage extends BasePage {
 
   }
 
-  private class ParticipantListColumnProvider implements IColumnProvider, Serializable {
+  private class ParticipantListColumnProvider implements IColumnProvider<Participant>, Serializable {
 
     private static final long serialVersionUID = -9121583835357007L;
 
-    private List<IColumn> columns = new ArrayList<IColumn>();
+    private List<IColumn<Participant>> columns = new ArrayList<IColumn<Participant>>();
 
-    private List<IColumn> additional = new ArrayList<IColumn>();
+    private List<IColumn<Participant>> additional = new ArrayList<IColumn<Participant>>();
 
-    @SuppressWarnings("serial")
     public ParticipantListColumnProvider() {
-      if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED)) columns.add(new PropertyColumn(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
-      columns.add(new PropertyColumn(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
-      columns.add(new PropertyColumn(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
-      columns.add(new PropertyColumn(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
-      columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
+      if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED)) {
+        columns.add(new PropertyColumn<Participant>(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
+      }
+      columns.add(new PropertyColumn<Participant>(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
+      columns.add(new PropertyColumn<Participant>(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
+      columns.add(new PropertyColumn<Participant>(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
+      columns.add(new AbstractColumn<Participant>(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel(ParticipantListColumnProvider.this, "dateTimeFormat"), new PropertyModel(rowModel, "appointment.date"))));
+        @Override
+        public void
+            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
+          cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<DateFormat>(ParticipantListColumnProvider.this, "dateTimeFormat"), new PropertyModel<Date>(rowModel, "appointment.date"))));
         }
 
       });
 
-      columns.add(new AbstractColumn(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
+      columns.add(new AbstractColumn<Participant>(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        public void
+            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new InterviewStatusFragment(componentId, rowModel));
         }
 
       });
 
-      columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
+      columns.add(new AbstractColumn<Participant>(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
-        public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
+        public void
+            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new ActionListFragment(componentId, rowModel));
         }
 
       });
 
-      columns.add(new AbstractColumn(new Model<String>("")) {
+      columns.add(new AbstractColumn<Participant>(new Model<String>("")) {
 
-        public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
+        public void
+            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new LockedInterviewFragment(componentId, rowModel));
         }
 
@@ -471,7 +475,7 @@ public class ParticipantSearchPage extends BasePage {
 
     }
 
-    public List<IColumn> getAdditionalColumns() {
+    public List<IColumn<Participant>> getAdditionalColumns() {
       return additional;
     }
 
@@ -479,18 +483,20 @@ public class ParticipantSearchPage extends BasePage {
       return null;
     }
 
-    public List<IColumn> getDefaultColumns() {
+    public List<IColumn<Participant>> getDefaultColumns() {
       return columns;
     }
 
-    public List<IColumn> getRequiredColumns() {
+    public List<IColumn<Participant>> getRequiredColumns() {
       return columns;
     }
 
+    @SuppressWarnings("unused")
     public DateFormat getDateFormat() {
       return userSessionService.getDateFormat();
     }
 
+    @SuppressWarnings("unused")
     public DateFormat getDateTimeFormat() {
       return userSessionService.getDateTimeFormat();
     }
@@ -504,19 +510,18 @@ public class ParticipantSearchPage extends BasePage {
     @SpringBean
     private OnyxDataExport onyxDataExport;
 
-    @SuppressWarnings("serial")
     public ActionFragment(String id) {
       super(id, "actionFragment", ParticipantSearchPage.this);
 
       RepeatingView view = new RepeatingView("link");
 
-      AjaxLink volunteerLink = new AjaxLink(view.newChildId()) {
+      AjaxLink<Void> volunteerLink = new AjaxLink<Void>(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
           Participant volunteer = new Participant();
           volunteer.setRecruitmentType(RecruitmentType.VOLUNTEER);
-          setResponsePage(new ParticipantReceptionPage(new Model(volunteer), ParticipantSearchPage.this));
+          setResponsePage(new ParticipantReceptionPage(new Model<Participant>(volunteer), ParticipantSearchPage.this));
         }
 
         @Override
@@ -527,7 +532,7 @@ public class ParticipantSearchPage extends BasePage {
       volunteerLink.add(new Label("label", new ResourceModel("EnrollVolunteer")));
       view.add(volunteerLink);
 
-      AjaxLink updateParticipantsLink = new AjaxLink(view.newChildId()) {
+      AjaxLink<Void> updateParticipantsLink = new AjaxLink<Void>(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
@@ -624,7 +629,7 @@ public class ParticipantSearchPage extends BasePage {
 
       add(participantRegistryDialog);
 
-      AjaxLink registryLink = new AjaxLink(view.newChildId()) {
+      AjaxLink<Void> registryLink = new AjaxLink<Void>(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
@@ -644,12 +649,12 @@ public class ParticipantSearchPage extends BasePage {
       registryLink.add(new Label("label", new ResourceModel("ParticipantRegistry")));
       view.add(registryLink);
 
-      AjaxLink exportLink = new AjaxLink(view.newChildId()) {
+      AjaxLink<Void> exportLink = new AjaxLink<Void>(view.newChildId()) {
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          MultiLineLabel label = new MultiLineLabel("content", new StringResourceModel("ConfirmExportMessage", new Model(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
+          MultiLineLabel label = new MultiLineLabel("content", new StringResourceModel("ConfirmExportMessage", new Model<ValueMap>(new ValueMap("directory=" + onyxDataExport.getOutputRootDirectory().getAbsolutePath()))));
           label.add(new AttributeModifier("class", true, new Model<String>("long-confirmation-dialog-content")));
 
           ConfirmationDialog confirmationDialog = createExportDialog();
@@ -692,22 +697,25 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
-    private class StatusModel extends PropertyModel {
+    private class StatusModel extends Model<String> {
 
       private static final long serialVersionUID = 1L;
 
+      private final IModel<InterviewStatus> statusModel;
+
       private boolean isExported;
 
-      public StatusModel(Object modelObject, String expression, boolean isExportedParticipant) {
-        super(modelObject, expression);
+      public StatusModel(IModel<Participant> modelObject, String expression, boolean isExportedParticipant) {
+        super();
+        statusModel = new PropertyModel<InterviewStatus>(modelObject, expression);
         isExported = isExportedParticipant;
       }
 
       @Override
-      public Object getObject() {
-        if(super.getObject() != null) {
+      public String getObject() {
+        if(statusModel.getObject() != null) {
           if(!isExported) {
-            return "obiba-state-" + super.getObject().toString().toLowerCase().replace("_", "");
+            return "obiba-state-" + statusModel.getObject().toString().toLowerCase().replace("_", "");
           } else {
             return "obiba-state-exported";
           }
@@ -716,16 +724,15 @@ public class ParticipantSearchPage extends BasePage {
       }
     }
 
-    @SuppressWarnings("serial")
-    public InterviewStatusFragment(String id, IModel participantModel) {
+    public InterviewStatusFragment(String id, IModel<Participant> participantModel) {
       super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
 
       Label statusLabel;
-      boolean isExportedParticipant = isParticipantExported(((Participant) participantModel.getObject()));
+      boolean isExportedParticipant = isParticipantExported(participantModel.getObject());
       if(isExportedParticipant) {
         statusLabel = new Label("status", new StringResourceModel("ExportedInterview", ParticipantSearchPage.this, null));
       } else {
-        statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(participantModel, "interview"), ""));
+        statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel<Interview>(participantModel, "interview"), ""));
       }
       statusLabel.add(new AttributeAppender("class", new StatusModel(participantModel, "interview.status", isExportedParticipant), " "));
       add(statusLabel);
@@ -737,10 +744,10 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
-    public LockedInterviewFragment(String id, IModel participantModel) {
+    public LockedInterviewFragment(String id, IModel<Participant> participantModel) {
       super(id, "lockedInterview", ParticipantSearchPage.this, participantModel);
       setOutputMarkupId(true);
-      ContextImage image = new ContextImage("lock", new Model("icons/locked.png"));
+      ContextImage image = new ContextImage("lock", new Model<String>("icons/locked.png"));
       add(image);
 
       if(interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
@@ -748,7 +755,7 @@ public class ParticipantSearchPage extends BasePage {
       } else {
         // Display tooltip.
         User interviewer = interviewManager.getInterviewer((Participant) participantModel.getObject());
-        StringResourceModel tooltipResource = new StringResourceModel("InterviewerHasLockOnInterview", ParticipantSearchPage.this, new Model(interviewer));
+        StringResourceModel tooltipResource = new StringResourceModel("InterviewerHasLockOnInterview", ParticipantSearchPage.this, new Model<User>(interviewer));
         add(new AttributeAppender("title", true, tooltipResource, " "));
         add(new DisplayTooltipBehaviour(getMarkupId(), "{positionLeft: true, left: -5}"));
       }
@@ -764,27 +771,27 @@ public class ParticipantSearchPage extends BasePage {
    */
   private class ActionListFragment extends Fragment {
 
-    private abstract class ActionLink extends AjaxLink {
+    private abstract class ActionLink extends AjaxLink<Participant> {
 
-      public ActionLink(String id, IModel participantModel) {
+      public ActionLink(String id, IModel<Participant> participantModel) {
         super(id, participantModel);
       }
 
     }
 
-    public ActionListFragment(String id, IModel participantModel) {
+    public ActionListFragment(String id, IModel<Participant> participantModel) {
       super(id, "actionList", ParticipantSearchPage.this, participantModel);
 
       RepeatingView repeater = new RepeatingView("link");
 
       // View
-      AjaxLink link = new ActionLink(repeater.newChildId(), participantModel) {
+      AjaxLink<Participant> link = new ActionLink(repeater.newChildId(), participantModel) {
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {
           ParticipantPanel component = new ParticipantPanel("content", getModel());
-          component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
+          component.add(new AttributeModifier("class", true, new Model<String>("obiba-content participant-panel-content")));
           participantDetailsModalWindow.setContent(component);
           participantDetailsModalWindow.show(target);
         }
@@ -860,7 +867,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           EditParticipantPanel component = new EditParticipantPanel("content", getModel(), ParticipantSearchPage.this, editParticipantDetailsModalWindow);
-          component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
+          component.add(new AttributeModifier("class", true, new Model<String>("obiba-content participant-panel-content")));
           editParticipantDetailsModalWindow.setContent(component);
           editParticipantDetailsModalWindow.show(target);
           target.appendJavascript("$('div.wicket-modal').css('overflow','visible');");
@@ -889,15 +896,15 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
-    public ParticipantEntityList(String id, Class<Participant> type, IColumnProvider columns, IModel title) {
+    public ParticipantEntityList(String id, Class<Participant> type, IColumnProvider<Participant> columns, IModel<String> title) {
       super(id, queryService, type, columns, title);
     }
 
-    public ParticipantEntityList(String id, Participant template, IColumnProvider columns, IModel title) {
+    public ParticipantEntityList(String id, Participant template, IColumnProvider<Participant> columns, IModel<String> title) {
       super(id, queryService, template, columns, title);
     }
 
-    public ParticipantEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
+    public ParticipantEntityList(String id, SortableDataProvider<Participant> dataProvider, IColumnProvider<Participant> columns, IModel<String> title) {
       super(id, dataProvider, columns, title);
     }
 
@@ -909,31 +916,6 @@ public class ParticipantSearchPage extends BasePage {
       }
       super.onPageChanged();
     }
-  }
-
-  private class GenderObject implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private IModel participantModel;
-
-    /**
-     * @param participantModel
-     */
-    public GenderObject(IModel participantModel) {
-      super();
-      this.participantModel = participantModel;
-    }
-
-    public String getGender() {
-      PropertyModel genderModel = new PropertyModel(participantModel, "gender");
-      if(genderModel.getObject() != null) {
-        return genderModel.getObject().toString();
-      } else {
-        return "Null";
-      }
-    }
-
   }
 
   @Override

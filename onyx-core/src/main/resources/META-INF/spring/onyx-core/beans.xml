@@ -133,7 +133,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="pdfTemplateEngine" class="org.obiba.onyx.print.impl.DefaultPdfTemplateEngine" scope="session">
     <property name="dateFormat" value="${org.obiba.onyx.dateFormat}" />
-    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
+    <property name="messageSource" ref="messageSource"/>
   </bean>
 
   <bean id="printableReportsRegistry" class="org.obiba.onyx.print.impl.DefaultPrintableReportsRegistry" scope="session">
@@ -180,6 +181,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="identifierSequenceProvider" class="org.obiba.onyx.spring.identifier.RandomIncrementIdentifierSequenceProviderFactoryBean" init-method="validateArgs">
     <property name="useSequence" value="${org.obiba.onyx.participantId.generated}"/>
     <property name="maxIncrement" value="${org.obiba.onyx.participantId.maxIncrement}"/>
+  </bean>
+
+  <bean id="opalJavaClient" class="org.obiba.onyx.opal.OpalClientFactoryBean">
+    <property name="url" value="${org.obiba.onyx.opal.url}" />
+    <property name="username" value="${org.obiba.onyx.opal.username}" />
+    <property name="password" value="${org.obiba.onyx.opal.password}" />
   </bean>
 
 </beans>

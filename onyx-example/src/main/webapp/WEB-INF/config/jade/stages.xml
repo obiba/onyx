@@ -267,6 +267,15 @@
       <variablePath>accepted</variablePath>
     </stageDependencyCondition>
   </stage>
+  
+  <stage>
+    <name>ECGMAC800</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
 
   <stage>
     <name>AnkleBrachial</name>
@@ -384,6 +393,32 @@
   
   <stage>
     <name>Audiogram</name>
+    <module>jade</module>
+    <stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+      </stages>
+      <script>
+        $('Consent:accepted')
+      </script>
+    </stageDependencyCondition>
+  </stage>
+  
+  <stage>
+    <name>UltrasoundGeVivid</name>
+    <module>jade</module>
+    <!--stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+      </stages>
+      <script>
+        $('Consent:accepted')
+      </script>
+    </stageDependencyCondition-->
+  </stage>
+  
+  <stage>
+    <name>RetinalScan</name>
     <module>jade</module>
     <stageDependencyCondition class="scriptCondition">
       <stages>

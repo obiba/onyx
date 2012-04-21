@@ -44,10 +44,13 @@ public class InstrumentLauncher implements Serializable {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentLauncher.class);
 
-  private String instrumentCodeBase;
+  private final Properties customProperties;
+
+  private final String instrumentCodeBase;
 
   public InstrumentLauncher(InstrumentType instrument, String instrumentCodeBase) {
     super();
+    this.customProperties = instrument.getProperties();
     this.instrumentCodeBase = instrumentCodeBase;
   }
 
@@ -65,6 +68,13 @@ public class InstrumentLauncher implements Serializable {
 
       log.info("Current language is = {} getDisplayLanguage()", Session.get().getLocale().getDisplayLanguage());
       props.setProperty("locale", Session.get().getLocale().getLanguage());
+
+      if(customProperties != null) {
+        for(String key : customProperties.stringPropertyNames()) {
+          props.setProperty(key, customProperties.getProperty(key));
+        }
+        log.info("properties={}", props);
+      }
 
       ResourceReference jnlpReference = new ResourceReference(instrumentCodeBase + "_" + Session.get().getId() + "_" + Session.get().getLocale().getLanguage()) {
 

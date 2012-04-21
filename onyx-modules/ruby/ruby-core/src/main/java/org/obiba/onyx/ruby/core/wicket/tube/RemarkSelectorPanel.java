@@ -72,6 +72,9 @@ public class RemarkSelectorPanel extends Panel {
     listRemarks.setMaxRows(4);
 
     add(listRemarks);
+
+    // Allow no pre-defined remarks
+    setVisible(remarks.size() > 0);
   }
 
   public List<Remark> getSelectedRemark() {
@@ -81,4 +84,5 @@ public class RemarkSelectorPanel extends Panel {
   public void setSelectedRemark(List<Remark> selectedRemark) {
     this.selectedRemark = selectedRemark;
   }
+
 }

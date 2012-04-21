@@ -30,6 +30,8 @@ public class TestData<T extends TrialData> {
 
   private List<T> trials = new ArrayList<T>();
 
+  private String qualityGrade;
+
   public TestData() {
     super();
   }
@@ -46,6 +48,10 @@ public class TestData<T extends TrialData> {
     return date;
   }
 
+  public String getQualityGrade() {
+    return qualityGrade;
+  }
+
   public void setType(String type) {
     this.type = type;
   }
@@ -56,5 +62,9 @@ public class TestData<T extends TrialData> {
     } catch(ParseException e) {
       log.error("Unable to parse trial date: " + date, e);
     }
+  }
+
+  public void setQualitygrade(String qualityGrade) {
+    this.qualityGrade = qualityGrade;
   }
 }

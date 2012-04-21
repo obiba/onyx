@@ -14,7 +14,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
 
-public class InstrumentTypeModel extends SpringDetachableModel {
+public class InstrumentTypeModel extends SpringDetachableModel<InstrumentType> {
   //
   // Constants
   //
@@ -42,9 +42,8 @@ public class InstrumentTypeModel extends SpringDetachableModel {
   // SpringDetachableModel Methods
   //
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected Object load() {
+  protected InstrumentType load() {
     return instrumentService.getInstrumentType(instrumentTypeName);
   }
 

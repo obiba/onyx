@@ -15,7 +15,7 @@ import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
 
-public class InstrumentWizardPanel extends WizardPanel {
+public class InstrumentWizardPanel extends WizardPanel<InstrumentType> {
   //
   // Constants
   //
@@ -32,7 +32,7 @@ public class InstrumentWizardPanel extends WizardPanel {
   // Constructors
   //
 
-  public InstrumentWizardPanel(String id, IModel jadeModel, StageModel stageModel, boolean resuming) {
+  public InstrumentWizardPanel(String id, IModel<InstrumentType> jadeModel, StageModel stageModel, boolean resuming) {
     super(id, jadeModel);
 
     wizardForm.setStageModel(stageModel);
@@ -43,6 +43,7 @@ public class InstrumentWizardPanel extends WizardPanel {
   // WizardPanel Methods
   //
 
+  @SuppressWarnings("unchecked")
   @Override
   public WizardForm createForm(String componentId) {
     wizardForm = new InstrumentWizardForm(componentId, (IModel<InstrumentType>) getDefaultModel());

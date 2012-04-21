@@ -28,7 +28,7 @@ public class MeasuringState implements State {
 
   private Date startTime;
 
-  private int reading = 1;
+  private boolean complete = false;
 
   public MeasuringState(StateMachine machine, BpmInstrument instrument) {
     this.stateMachine = machine;
@@ -36,6 +36,9 @@ public class MeasuringState implements State {
 
       protected BpmCommand onAck(Acks.Type type, Acks.Ack ack) {
         switch(type) {
+        case CLEAR:
+          stateMachine.transition(States.READY);
+          break;
         case STOP:
           endMeasures();
           break;
@@ -63,15 +66,17 @@ public class MeasuringState implements State {
         case BP_RESULT:
           Data.BloodPressure bp = (Data.BloodPressure) datum;
           endReading(bp);
+          if(stateMachine.getSession().getCycle() == 0) {
+            endMeasures();
+          }
           break;
         case BP_AVG:
           stateMachine.getSession().addAverage((Data.AvgPressure) datum);
-          endMeasures();
+          complete = true;
           break;
         case REVIEW:
           Data.Review review = (Data.Review) datum;
-          if(review.isAvg()) {
-            // stateMachine.getSession().addAverage(review);
+          if(complete) {
             endMeasures();
           }
           break;
@@ -97,6 +102,9 @@ public class MeasuringState implements State {
   public void start() {
   }
 
+  public void add() {
+  }
+
   public void stop() {
     stateMachine.getInstrument().commands().stop().send();
   }
@@ -106,19 +114,18 @@ public class MeasuringState implements State {
   }
 
   private void startReading() {
-    stateMachine.getSession().setReading(reading);
     startTime = new Date();
   }
 
   private void endReading(Data.BloodPressure bp) {
     stateMachine.getSession().addResult(startTime, new Date(), bp);
+    stateMachine.getSession().incrementReading();
     startTime = null;
-    reading++;
   }
 
   private void endMeasures() {
     stateMachine.getSession().setCuffPressure(0);
-    stateMachine.transition(States.READY);
+    stateMachine.getInstrument().commands().clear().send();
   }
 
 }

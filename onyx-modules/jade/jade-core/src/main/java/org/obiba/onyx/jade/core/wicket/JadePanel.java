@@ -46,7 +46,7 @@ public class JadePanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private class JadeModel extends AbstractReadOnlyModel {
+  private class JadeModel extends AbstractReadOnlyModel<Object> {
 
     private IModel<InstrumentType> intrumentTypeModel;
 

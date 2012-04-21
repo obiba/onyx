@@ -75,6 +75,7 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>m</measurementUnit>
+      <repeatable>false</repeatable>
     </output>
     <output>
       <vendorName>WeightOut</vendorName>
@@ -82,12 +83,14 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
+      <repeatable>false</repeatable>
     </output>
     <output>
       <vendorName>EthnicityOut</vendorName>
       <code>OUTPUT_ETHNICITY</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
+      <repeatable>false</repeatable>
       <measurementUnit/>
     </output>
     <output>
@@ -96,6 +99,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <repeatable>false</repeatable>
     </output>
     <output>
       <vendorName>SmokerOut</vendorName>
@@ -103,6 +107,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <repeatable>false</repeatable>
     </output>
     <output>
       <vendorName>COPDOut</vendorName>
@@ -110,6 +115,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
+      <repeatable>false</repeatable>
     </output>
         
     <!-- Trial Data -->
@@ -448,6 +454,7 @@
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>L</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
     <output>
       <vendorName>FEV1_PRED</vendorName>
@@ -455,6 +462,7 @@
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>L</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
     <output>
       <vendorName>FEV1_LLNORMAL</vendorName>
@@ -497,6 +505,7 @@
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>L</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
     <output>
       <vendorName>FVC_PRED</vendorName>
@@ -504,6 +513,7 @@
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>L</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
     <output>
       <vendorName>FVC_LLNORMAL</vendorName>
@@ -602,6 +612,7 @@
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
     <output>
       <vendorName>FEV1_FVC_PRED</vendorName>
@@ -609,6 +620,7 @@
       <dataType>DECIMAL</dataType>          
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
     </output>
     <output>
       <vendorName>FEV1_FVC_LLNORMAL</vendorName>
@@ -671,7 +683,8 @@
     <output>
       <vendorName>FLOW_VALUES</vendorName>
       <code>RES_FLOW_VALUES</code>
-      <dataType>TEXT</dataType>
+      <dataType>DATA</dataType>
+      <mimeType>text/plain</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>
@@ -685,7 +698,8 @@
     <output>
       <vendorName>VOLUME_VALUES</vendorName>
       <code>RES_VOLUME_VALUES</code>
-      <dataType>TEXT</dataType>
+      <dataType>DATA</dataType>
+      <mimeType>text/plain</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit/>
     </output>

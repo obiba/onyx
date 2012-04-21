@@ -99,6 +99,8 @@ public class NoddleTestInstrumentRunnerTest {
     noddleTestInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
 
     noddleTestInstrumentRunner.setLocale(Locale.CANADA);
+
+    noddleTestInstrumentRunner.setPackagePrefix("Noddletest");
     noddleTestInstrumentRunner.initializeEndDataCodeMap();
   }
 

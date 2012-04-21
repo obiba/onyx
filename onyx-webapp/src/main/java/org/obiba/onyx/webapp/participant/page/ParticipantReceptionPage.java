@@ -22,10 +22,10 @@ import org.obiba.onyx.webapp.participant.panel.EditParticipantFormPanel;
 @AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantReceptionPage extends BasePage {
 
-  public ParticipantReceptionPage(IModel participantModel, Page sourcePage) {
+  public ParticipantReceptionPage(IModel<Participant> participantModel, Page sourcePage) {
     super();
 
-    Participant participant = (Participant) participantModel.getObject();
+    Participant participant = participantModel.getObject();
 
     switch(participant.getRecruitmentType()) {
     case ENROLLED:

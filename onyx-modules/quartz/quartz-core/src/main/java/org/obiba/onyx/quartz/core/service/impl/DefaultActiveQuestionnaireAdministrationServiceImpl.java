@@ -62,6 +62,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     questionnaireDevelopmentMode = mode;
   }
 
+  @Override
   public Questionnaire getQuestionnaire() {
     return currentQuestionnaire;
   }
@@ -70,10 +71,12 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     this.activeInterviewService = activeInterviewService;
   }
 
+  @Override
   public void setQuestionnaire(Questionnaire questionnaire) {
     this.currentQuestionnaire = questionnaire;
   }
 
+  @Override
   public Locale getLanguage() {
     if(questionnaireDevelopmentMode) return defaultLanguage;
 
@@ -98,6 +101,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     this.navigationStrategy = navigationStrategy;
   }
 
+  @Override
   public QuestionnaireParticipant start(Participant participant, Locale language) {
     currentLanguage = null;
     questionnaireDevelopmentMode = false;
@@ -120,6 +124,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentQuestionnaireParticipant;
   }
 
+  @Override
   public void end() {
     QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
@@ -133,22 +138,27 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     getPersistenceManager().save(currentQuestionnaireParticipant);
   }
 
+  @Override
   public Page getCurrentPage() {
     return currentPage;
   }
 
+  @Override
   public int getCurrentPageNumber() {
     return getQuestionnaire().getPages().indexOf(getCurrentPage()) + 1;
   }
 
+  @Override
   public int getLastPageNumber() {
     return getQuestionnaire().getPages().indexOf(navigationStrategy.getPageOnLast(this)) + 1;
   }
 
+  @Override
   public Page getResumePage() {
     return navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
   }
 
+  @Override
   public Page startPage() {
     currentPage = navigationStrategy.getPageOnStart(this);
 
@@ -157,6 +167,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Override
   public Page lastPage() {
     currentPage = navigationStrategy.getPageOnLast(this);
 
@@ -165,6 +176,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Override
   public Page previousPage() {
     currentPage = navigationStrategy.getPageOnPrevious(this, getCurrentPage());
 
@@ -175,6 +187,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Override
   public Page nextPage() {
     currentPage = navigationStrategy.getPageOnNext(this, getCurrentPage());
 
@@ -188,6 +201,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Override
   public Page beginPage() {
     currentPage = navigationStrategy.getPageOnBegin(this, getCurrentPage());
 
@@ -214,6 +228,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Override
   public Page endPage() {
     currentPage = navigationStrategy.getPageOnEnd(this, getCurrentPage());
 
@@ -227,36 +242,45 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Override
   public Page resumePage() {
     questionnaireDevelopmentMode = false;
     currentPage = navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
     return currentPage;
   }
 
+  @Override
   public boolean isOnStartPage() {
     return (currentPage != null && currentPage.equals(navigationStrategy.getPageOnStart(this)));
   }
 
+  @Override
   public boolean isOnLastPage() {
     return (currentPage != null && navigationStrategy.getPageOnNext(this, currentPage) == null);
   }
 
+  @Override
   public void setDefaultLanguage(Locale language) {
     this.defaultLanguage = language;
   }
 
+  @Override
   public CategoryAnswer answer(QuestionCategory questionCategory) {
     return answer(questionCategory.getQuestion(), questionCategory, null, null);
   }
 
-  public CategoryAnswer answer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
+  @Override
+  public CategoryAnswer
+      answer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
     return answer(questionCategory.getQuestion(), questionCategory, openAnswerDefinition, value);
   }
 
+  @Override
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory) {
     return answer(question, questionCategory, null, null);
   }
 
+  @Override
   public String getComment(Question question) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(getQuestionnaireParticipant());
@@ -271,6 +295,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return comment;
   }
 
+  @Override
   public void setComment(Question question, String comment) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(getQuestionnaireParticipant());
@@ -292,7 +317,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
   }
 
-  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
+  @Override
+  public
+      CategoryAnswer
+      answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
 
     // A "no-answer" category answer is no longer required, since a "real answer" to the question is provided.
     deleteNoAnswerCategoryAnswer(question);
@@ -353,10 +381,12 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return categoryAnswer;
   }
 
+  @Override
   public void deleteAnswer(QuestionCategory questionCategory) {
     deleteAnswer(questionCategory.getQuestion(), questionCategory);
   }
 
+  @Override
   public void deleteAnswer(Question question, QuestionCategory questionCategory) {
     CategoryAnswer categoryAnswer = findAnswer(question, questionCategory);
     if(categoryAnswer != null) {
@@ -368,7 +398,9 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     // TODO deal with category answer parent
   }
 
-  public void deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+  @Override
+  public void
+      deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
     OpenAnswer openAnswer = findOpenAnswer(question, questionCategory.getCategory(), openAnswerDefinition);
     if(openAnswer != null) {
       getPersistenceManager().delete(openAnswer);
@@ -377,6 +409,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     // TODO deal with category answer parent
   }
 
+  @Override
   public void deleteAnswers(Question question) {
     for(CategoryAnswer categoryAnswer : findAnswers(question)) {
       deleteAnswers(categoryAnswer);
@@ -391,6 +424,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
    * Delete the category answer and its open answers.
    * @param categoryAnswer
    */
+  @Override
   public void deleteAnswers(CategoryAnswer categoryAnswer) {
     if(categoryAnswer.getOpenAnswers() != null) {
       for(OpenAnswer openAnswer : categoryAnswer.getOpenAnswers()) {
@@ -402,6 +436,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   protected abstract QuestionAnswer findAnswer(Question question);
 
+  @Override
   public void setActiveAnswers(Question question, boolean active) {
     if(questionnaireDevelopmentMode) return;
     // question answers are made active (and created if none, in the case of boiler plates)
@@ -432,6 +467,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
   }
 
+  @Override
   public QuestionnaireParticipant getQuestionnaireParticipant() {
     // Note: Don't include questionnaire version in the template. This is in case the version
     // of the questionnaire changes between cancelling and re-starting the questionnaire stage.
@@ -442,6 +478,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return getPersistenceManager().matchOne(questionnaireParticipantTemplate);
   }
 
+  @Override
   public void incrementTimeOnPage(int seconds) {
     QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
@@ -489,6 +526,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
   }
 
+  @Override
   public Category getCategory(Question question, CategoryAnswer answer) {
     Category category;
     String categoryName;

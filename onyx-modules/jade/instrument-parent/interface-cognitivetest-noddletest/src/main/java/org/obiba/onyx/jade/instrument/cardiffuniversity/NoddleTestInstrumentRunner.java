@@ -51,6 +51,8 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private String resultPath;
 
+  private String packagePrefix;
+
   private Locale locale;
 
   private ResourceBundleMessageSource resourceBundleMessageSource = new ResourceBundleMessageSource();
@@ -64,7 +66,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private static String CLINIC_NAME = "ONYX";
 
-  private static String RESULT_FILENAME_PREFIX = "Noddletest_" + CLINIC_NAME + "_";
+  private String resultFilenamePrefix;
 
   public void initialize() {
     if(isConfigFileAndResultFileLocked()) {
@@ -110,7 +112,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     List<File> resultFiles = new ArrayList<File>();
 
     for(File file : (new File(getResultPath())).listFiles()) {
-      if(file.getName().contains(RESULT_FILENAME_PREFIX)) resultFiles.add(file);
+      if(file.getName().contains(resultFilenamePrefix)) resultFiles.add(file);
     }
 
     if(resultFiles.size() == 0) {
@@ -300,6 +302,15 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   public String getSoftwareInstallPath() {
     return softwareInstallPath;
+  }
+
+  public String getPackagePrefix() {
+    return packagePrefix;
+  }
+
+  public void setPackagePrefix(String packagePrefix) {
+    this.packagePrefix = packagePrefix + "_";
+    resultFilenamePrefix = this.packagePrefix + CLINIC_NAME + "_";
   }
 
   public Locale getLocale() {

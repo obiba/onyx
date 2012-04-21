@@ -20,6 +20,7 @@ import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireMetric;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 /**
@@ -28,7 +29,7 @@ import com.google.common.collect.Iterables;
 public class QuestionnaireBeanResolver extends AbstractQuartzBeanResolver {
 
   public boolean resolves(Class<?> type) {
-    return QuestionnaireParticipant.class.equals(type) || QuestionAnswer.class.equals(type) || CategoryAnswer.class.equals(type) || OpenAnswer.class.equals(type) || QuestionnairePageMetricAlgorithm.class.equals(type);
+    return QuestionnaireParticipant.class.equals(type) || QuestionAnswer.class.equals(type) || CategoryAnswer.class.equals(type) || OpenAnswer.class.equals(type) || QuestionnairePageMetricAlgorithm.class.equals(type) || QuestionnaireComment.class.equals(type);
   }
 
   public Object resolve(Class<?> type, ValueSet valueSet, final Variable variable) {
@@ -63,11 +64,27 @@ public class QuestionnaireBeanResolver extends AbstractQuartzBeanResolver {
       }
       if(type.equals(QuestionnairePageMetricAlgorithm.class)) {
         return Iterables.transform(qp.getQuestionnaireMetrics(), new Function<QuestionnaireMetric, QuestionnairePageMetricAlgorithm>() {
+          @Override
           public QuestionnairePageMetricAlgorithm apply(QuestionnaireMetric from) {
             return new QuestionnairePageMetricAlgorithm(getQuestionnaire(variable), from);
           };
         });
       }
+      if(type.equals(QuestionnaireComment.class)) {
+        Iterable<QuestionAnswer> answerComments = Iterables.filter(qp.getParticipantAnswers(), new Predicate<QuestionAnswer>() {
+          @Override
+          public boolean apply(QuestionAnswer input) {
+            return input.getComment() != null;
+          }
+        });
+        return Iterables.transform(answerComments, new Function<QuestionAnswer, QuestionnaireComment>() {
+          @Override
+          public QuestionnaireComment apply(QuestionAnswer from) {
+            return new QuestionnaireComment(getQuestionnaire(variable), from);
+          }
+        });
+      }
+
     } catch(NoSuchElementException e) {
       // Ignore: it only means that the participant did not answer a particular question or category or open answer
       return null;

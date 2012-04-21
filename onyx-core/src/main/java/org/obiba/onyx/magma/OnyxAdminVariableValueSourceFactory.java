@@ -9,16 +9,16 @@
  ******************************************************************************/
 package org.obiba.onyx.magma;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
+import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VariableValueSourceFactory;
-import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.VectorSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.js.JavascriptVariableBuilder;
@@ -52,7 +52,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
 
   public static final String ONYX_VERSION = "onyxVersion";
 
-  public static final String PARTICIPANT = "Participant";
+  public static final String PARTICIPANT = MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE;
 
   public static final String INTERVIEW = "Interview";
 
@@ -85,7 +85,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   //
 
   public Set<VariableValueSource> createSources() {
-    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+    Set<VariableValueSource> sources = new LinkedHashSet<VariableValueSource>();
 
     sources.add(createVersionSource());
     sources.addAll(createParticipantCaptureDateSources());
@@ -114,7 +114,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     this.version = version;
   }
 
-  public void setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
+  public void
+      setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
     this.participantCaptureAndExportStrategy = participantCaptureAndExportStrategy;
   }
 
@@ -149,7 +150,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   }
 
   private Set<VariableValueSource> createParticipantCaptureDateSources() {
-    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+    Set<VariableValueSource> sources = new LinkedHashSet<VariableValueSource>();
 
     // Create captureStartDate source.
     sources.add(new VariableValueSource() {
@@ -222,7 +223,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
   }
 
   private Set<VariableValueSource> createInterviewSources() {
-    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+    Set<VariableValueSource> sources = new LinkedHashSet<VariableValueSource>();
 
     BeanVariableValueSourceFactory<Interview> interviewFactory = new BeanVariableValueSourceFactory<Interview>(PARTICIPANT, Interview.class);
     interviewFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + INTERVIEW);

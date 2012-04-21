@@ -1,21 +1,13 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
-
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
-import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +20,16 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUTO_COMPLETE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
 
 public class Question implements IHasQuestion {
 
@@ -107,7 +109,8 @@ public class Question implements IHasQuestion {
   }
 
   public boolean isBoilerPlate() {
-    return (!hasCategories() && subQuestionsAreBoilerPlate() && (getParentQuestion() == null || !getParentQuestion().hasCategories()));
+    return !hasCategories() && subQuestionsAreBoilerPlate() && (getParentQuestion() == null || !getParentQuestion()
+        .hasCategories());
   }
 
   public boolean subQuestionsAreBoilerPlate() {
@@ -126,21 +129,16 @@ public class Question implements IHasQuestion {
   }
 
   public boolean isArrayOfSharedCategories() {
-    if(hasSubQuestions() && hasCategories()) {
-      return !hasSubQuestionsCategories();
-    }
-    return false;
+    return hasSubQuestions() && hasCategories() && !hasSubQuestionsCategories();
   }
 
   public boolean isArrayOfJoinedCategories() {
-    if(hasSubQuestions() && hasCategories()) {
-      return hasSubQuestionsCategories();
-    }
-    return false;
+    return hasSubQuestions() && hasCategories() && hasSubQuestionsCategories();
   }
 
   /**
    * Check if any of the sub questions has categories defined.
+   *
    * @return
    */
   private boolean hasSubQuestionsCategories() {
@@ -161,8 +159,23 @@ public class Question implements IHasQuestion {
     if(isArrayOfJoinedCategories()) {
       throw new RuntimeException("Unsupported question type [Array of joined categories] for question " + getName());
     }
+
     int nbCategories = getQuestionCategories().size();
-    if(nbCategories == 1) return SINGLE_OPEN_ANSWER;
+    if(nbCategories == 1) {
+      Category cat = getCategories().get(0);
+      OpenAnswerDefinition open = cat.getOpenAnswerDefinition();
+      if(open != null && !open.hasChildOpenAnswerDefinitions()) {
+        switch(open.getOpenAnswerType()) {
+          case AUDIO_RECORDING:
+            return SINGLE_AUDIO_RECORDING;
+          case AUTO_COMPLETE:
+            return SINGLE_AUTO_COMPLETE;
+          default:
+            return SINGLE_OPEN_ANSWER;
+        }
+      }
+      return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
+    }
     if(nbCategories > 1) {
       if(isMultiple()) return LIST_CHECKBOX;
       return "quartz.DropDownQuestionPanelFactory".equals(getUIFactoryName()) ? LIST_DROP_DOWN : LIST_RADIO;
@@ -223,6 +236,7 @@ public class Question implements IHasQuestion {
 
   /**
    * Get the underlying {@link Category} list.
+   *
    * @return
    */
   public List<Category> getCategories() {
@@ -235,16 +249,17 @@ public class Question implements IHasQuestion {
 
   /**
    * Get the underlying Missing {@link Category} list.
+   *
    * @return
    */
   public List<QuestionCategory> getMissingQuestionCategories() {
-    List<QuestionCategory> questionCategories = new ArrayList<QuestionCategory>();
+    List<QuestionCategory> missingQuestionCategories = new ArrayList<QuestionCategory>();
     for(QuestionCategory questionCategory : getQuestionCategories()) {
       if(questionCategory.getCategory().isEscape()) {
-        questionCategories.add(questionCategory);
+        missingQuestionCategories.add(questionCategory);
       }
     }
-    return questionCategories;
+    return missingQuestionCategories;
   }
 
   public Map<String, Category> getCategoriesByName() {
@@ -278,6 +293,7 @@ public class Question implements IHasQuestion {
 
   /**
    * Does the question has an escape category.
+   *
    * @return
    */
   public boolean hasEscapeCategories() {
@@ -442,9 +458,6 @@ public class Question implements IHasQuestion {
   }
 
   public boolean hasNoAnswerCategory() {
-    if(getNoAnswerCategory() != null) {
-      return true;
-    }
-    return false;
+    return getNoAnswerCategory() != null;
   }
 }

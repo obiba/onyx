@@ -9,8 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
-import java.io.IOException;
-
+import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
@@ -25,10 +24,10 @@ public class DeleteUnreceivedParticipantsTasklet implements Tasklet {
 
   private ParticipantService participantService;
 
-  private AbstractParticipantReader participantReader;
+  private IParticipantReader participantReader;
 
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) throws Exception {
-    if(isUpdateAvailable()) {
+    if(participantReader.isUpdateAvailable()) {
       participantService.cleanUpAppointment();
       stepContribution.setExitStatus(new ExitStatus("UPDATE"));
     } else {
@@ -41,11 +40,8 @@ public class DeleteUnreceivedParticipantsTasklet implements Tasklet {
     this.participantService = participantService;
   }
 
-  public void setParticipantReader(AbstractParticipantReader participantReader) {
+  public void setParticipantReader(IParticipantReader participantReader) {
     this.participantReader = participantReader;
   }
 
-  private boolean isUpdateAvailable() throws IOException {
-    return (participantReader.getInputDirectory().getFile().listFiles(participantReader.getFilter()).length > 0);
-  }
 }

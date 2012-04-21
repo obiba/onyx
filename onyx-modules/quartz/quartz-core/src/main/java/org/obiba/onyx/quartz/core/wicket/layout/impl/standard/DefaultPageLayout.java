@@ -27,6 +27,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
@@ -197,8 +198,8 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
    * Called when an answer is given to a question and then requires to update the resolution of in-page conditions.
    * In-page conditions on sub-questions is not supported yet.
    */
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    boolean questionListChanged = false;
+  @Override
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel<Question> questionModel, IModel<QuestionCategory> questionCategoryModel, boolean isSelected) {
     List<QuestionPanel> questionPanels = getQuestionPanels();
     for(QuestionPanel panel : questionPanels) {
       Question question = (Question) panel.getDefaultModelObject();
@@ -206,51 +207,13 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
         // a question is not to be answered any more due to in-page conditions, make sure subsequent conditions will be
         // correctly resolved.
         panel.setActiveAnswers(false);
-        questionListChanged = true;
       }
     }
-    log.debug("questionListChanged={}", questionListChanged);
-
-    if(!questionListChanged) {
-
-      if(getQuestionToBeAnsweredCount() > questionPanels.size()) {
-        questionListChanged = true;
-      }
-    }
-    log.debug("questionListChanged={}", questionListChanged);
 
     // update the whole layout because some questions can (dis)appear.
-    if(questionListChanged) {
-      log.debug("Page update");
-      target.addComponent(this);
-      target.appendJavascript("Resizer.resizeWizard();");
-    }
-
-  }
-
-  /**
-   * Get the count of question to be answered, resolving conditions.
-   * @return
-   */
-  private int getQuestionToBeAnsweredCount() {
-    int count = 0;
-    Page page = (Page) getDefaultModelObject();
-
-    for(Question question : page.getQuestions()) {
-      if(!question.hasDataSource() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
-        count++;
-      }
-
-      if(question.hasSubQuestions()) {
-        for(Question subQuestion : question.getQuestions()) {
-          if(!subQuestion.hasDataSource() && subQuestion.isToBeAnswered(activeQuestionnaireAdministrationService)) {
-            count++;
-          }
-        }
-      }
-    }
-
-    return count;
+    log.debug("Page update");
+    target.addComponent(this);
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
 }

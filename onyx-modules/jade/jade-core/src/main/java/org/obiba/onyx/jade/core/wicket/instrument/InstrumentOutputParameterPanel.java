@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -30,6 +31,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -43,6 +45,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.model.MagmaStringResourceModel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -67,12 +70,33 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   private List<IModel<InstrumentRunValue>> inputRunValueModels = new ArrayList<IModel<InstrumentRunValue>>();
 
+  private MeasuresPanel measures;
+
   @SuppressWarnings("serial")
   public InstrumentOutputParameterPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    final InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+
+    // instrument instructions
+    add(new Label("instrument-instructions", new MagmaStringResourceModel(new MessageSourceResolvableStringModel(instrumentType.getInstructions())) {
+
+      @Override
+      protected String getTableContext() {
+        return instrumentType.getName();
+      }
+
+      @Override
+      protected Participant getParticipant() {
+        return activeInstrumentRunService.getParticipant();
+      }
+
+      @Override
+      protected Locale getLocale() {
+        return InstrumentOutputParameterPanel.this.getLocale();
+      }
+    }).setEscapeModelStrings(false));
 
     if(getOutputParametersOriginallyMarkedForManualCapture().size() == 0) {
       add(new EmptyPanel("outputs"));
@@ -85,6 +109,13 @@ public class InstrumentOutputParameterPanel extends Panel {
     } else {
       add(new InputFragment("inputs"));
     }
+
+    if(instrumentType.isRepeatable()) {
+      add(measures = new MeasuresPanel("measures"));
+    } else {
+      add(new EmptyPanel("measures"));
+    }
+
   }
 
   private List<InstrumentOutputParameter> getOutputParametersOriginallyMarkedForManualCapture() {
@@ -106,6 +137,13 @@ public class InstrumentOutputParameterPanel extends Panel {
     }
   }
 
+  public boolean isSkipMeasurement() {
+    if(measures != null) {
+      return measures.isSkipMeasurement();
+    }
+    return false;
+  }
+
   @SuppressWarnings("serial")
   private class OutputFragment extends Fragment {
 
@@ -121,65 +159,76 @@ public class InstrumentOutputParameterPanel extends Panel {
       add(repeat);
 
       for(InstrumentOutputParameter param : getOutputParametersOriginallyMarkedForManualCapture()) {
-        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-        repeat.add(item);
+        if(!activeInstrumentRunService.getInstrumentType().isRepeatable(param)) {
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
-        final String paramCode = param.getCode();
-        final IModel<InstrumentRunValue> runValueModel = new DetachableEntityModel<InstrumentRunValue>(queryService, runValue);
-        outputRunValueModels.add(runValueModel);
+          WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+          repeat.add(item);
 
-        List<Data> choices = null;
-        if(param.getDataSource() == null) {
-          choices = param.getAllowedValues();
+          InstrumentRunValue runValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(param);
+
+          IModel<InstrumentRunValue> runValueModel = new DetachableEntityModel<InstrumentRunValue>(queryService, runValue);
+          outputRunValueModels.add(runValueModel);
+
+          DataField field = makeDataField(param, runValueModel);
+          item.add(field);
+
+          FormComponentLabel label = new FormComponentLabel("label", field.getField());
+          item.add(label);
+
+          Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(param.getLabel()));
+          label.add(labelText);
         }
-
-        DataField field;
-        if(choices != null && choices.size() > 0) {
-          field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), choices, new IChoiceRenderer() {
-
-            public Object getDisplayValue(Object object) {
-              Data data = (Data) object;
-              return new SpringStringResourceModel(data.getValueAsString()).getString();
-            }
-
-            public String getIdValue(Object object, int index) {
-              Data data = (Data) object;
-              return data.getValueAsString();
-            }
-
-          }, param.getMeasurementUnit());
-          field.setRequired(true);
-
-        } else {
-          field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit()) {
-            @Override
-            public boolean isRequired() {
-              return activeInstrumentRunService.getInstrumentType().getInstrumentParameter(paramCode).isRequired(activeInstrumentRunService.getParticipant());
-            }
-          };
-
-          if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
-            field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
-          }
-        }
-
-        field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
-        field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
-          protected void onUpdate(AjaxRequestTarget target) {
-            activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
-          }
-        });
-
-        IntegrityCheckValidator.addChecks(param, field);
-        item.add(field);
-
-        FormComponentLabel label = new FormComponentLabel("label", field.getField());
-        item.add(label);
-
-        Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(param.getLabel()));
-        label.add(labelText);
       }
+    }
+
+    private DataField makeDataField(InstrumentOutputParameter param, final IModel<InstrumentRunValue> runValueModel) {
+      List<Data> choices = null;
+      if(param.getDataSource() == null) {
+        choices = param.getAllowedValues();
+      }
+
+      DataField field;
+
+      if(choices != null && choices.size() > 0) {
+        field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), choices, new IChoiceRenderer() {
+
+          public Object getDisplayValue(Object object) {
+            Data data = (Data) object;
+            return new SpringStringResourceModel(data.getValueAsString()).getString();
+          }
+
+          public String getIdValue(Object object, int index) {
+            Data data = (Data) object;
+            return data.getValueAsString();
+          }
+
+        }, param.getMeasurementUnit());
+        field.setRequired(true);
+
+      } else {
+        final String paramCode = param.getCode();
+        field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit()) {
+          @Override
+          public boolean isRequired() {
+            return activeInstrumentRunService.getInstrumentType().getInstrumentParameter(paramCode).isRequired(activeInstrumentRunService.getParticipant());
+          }
+        };
+
+        if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
+        }
+      }
+
+      field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
+      field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
+        protected void onUpdate(AjaxRequestTarget target) {
+          activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+        }
+      });
+
+      IntegrityCheckValidator.addChecks(param, field);
+
+      return field;
     }
   }
 

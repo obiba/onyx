@@ -29,6 +29,8 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttributeReader;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
+import org.springframework.batch.item.ParseException;
+import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -37,13 +39,16 @@ import org.springframework.core.io.Resource;
  * Unit tests for <code>DefaultParticipantExcelReader</code>.
  */
 public class XmlParticipantReaderTest {
+
+  //private Logger logger = LoggerFactory.getLogger(getClass());
+
   //
   // Constants
   //
 
   private static final String TEST_RESOURCES_DIR = XmlParticipantReaderTest.class.getSimpleName();
 
-  private static final String APPOINTMENTS_RESOURCES_DIR = "appointments";
+  // private static final String APPOINTMENTS_RESOURCES_DIR = "appointments";
 
   //
   // Instance Variables
@@ -97,25 +102,21 @@ public class XmlParticipantReaderTest {
 
   /**
    * Tests processing of an appointment list that contains no configured attributes (i.e., essential attributes only).
-   * 
-   * @throws IOException if the appointment list could not be read
+   * @throws Exception
+   * @throws ParseException
+   * @throws UnexpectedInputException
    */
   @Test
-  public void testProcessWithNoConfiguredAttributes() throws IOException {
+  public void testProcessWithNoConfiguredAttributes() throws UnexpectedInputException, ParseException, Exception {
     XmlParticipantReaderForTest reader = createXmlParticipantReaderForTest(false, TEST_RESOURCES_DIR + "/appointmentList_noConfiguredAttributes.xml");
     reader.setColumnNameToAttributeNameMap(columnNameToAttributeNameMap);
     reader.setParticipantMetadata(participantMetadata);
-
     reader.open(context);
-    List<Participant> participants = new ArrayList<Participant>();
 
-    try {
-      while(reader.getIterator().hasNext()) {
-        Participant participant = reader.read();
-        if(participant != null) participants.add(participant);
-      }
-    } catch(Exception e) {
-      throw new RuntimeException(e);
+    List<Participant> participants = new ArrayList<Participant>();
+    while(reader.getIterator().hasNext()) {
+      Participant participant = reader.read();
+      if(participant != null) participants.add(participant);
     }
 
     Assert.assertEquals(3, participants.size());
@@ -273,7 +274,7 @@ public class XmlParticipantReaderTest {
       }
     } catch(Exception e) {
       String errorMessage = e.getMessage();
-      Assert.assertEquals("Duplicate tag for field: NOM", errorMessage);
+      Assert.assertEquals("Duplicate tag for field: Nom", errorMessage);
       return;
     }
 
@@ -281,7 +282,7 @@ public class XmlParticipantReaderTest {
   }
 
   @Test
-  public void testProcessWithConfiguredAttributes() throws IOException {
+  public void testProcessWithConfiguredAttributes() {
     Calendar cal = Calendar.getInstance();
 
     cal.clear();
@@ -327,7 +328,7 @@ public class XmlParticipantReaderTest {
   }
 
   @Test
-  public void testProcessWithRowContainingWhitespaceOnly() throws IOException {
+  public void testProcessWithRowContainingWhitespaceOnly() {
     XmlParticipantReaderForTest reader = createXmlParticipantReaderForTest(false, TEST_RESOURCES_DIR + "/appointmentList_rowContainingWhitespaceOnly.xml");
     reader.setColumnNameToAttributeNameMap(columnNameToAttributeNameMap);
     reader.setParticipantMetadata(participantMetadata);
@@ -383,18 +384,18 @@ public class XmlParticipantReaderTest {
   //
   // Helper Methods
   //
-  private XmlParticipantReader createXmlParticipantReader(boolean includeConfiguredAttributes, String resourcePath) {
-    if(!includeConfiguredAttributes) {
-      participantMetadata.setConfiguredAttributes(null);
-    }
-
-    XmlParticipantReader reader = new XmlParticipantReader();
-    reader.setParticipantMetadata(participantMetadata);
-    Resource[] resources = new Resource[] { new ClassPathResource(resourcePath) };
-    reader.setInputDirectory(resources[0]);
-
-    return reader;
-  }
+  // private XmlParticipantReader createXmlParticipantReader(boolean includeConfiguredAttributes, String resourcePath) {
+  // if(!includeConfiguredAttributes) {
+  // participantMetadata.setConfiguredAttributes(null);
+  // }
+  //
+  // XmlParticipantReader reader = new XmlParticipantReader();
+  // reader.setParticipantMetadata(participantMetadata);
+  // Resource[] resources = new Resource[] { new ClassPathResource(resourcePath) };
+  // reader.setInputDirectory(resources[0]);
+  //
+  // return reader;
+  // }
 
   private void initParticipantMetadata() throws IOException {
     participantMetadata = new ParticipantMetadata();
@@ -419,18 +420,18 @@ public class XmlParticipantReaderTest {
     }
 
     @Override
-    public void open(ExecutionContext context) throws ItemStreamException {
+    public void open(ExecutionContext executionContext) throws ItemStreamException {
       try {
         setFileInputStream(new FileInputStream(resource.getFile()));
       } catch(IOException e) {
 
       }
-
-      super.open(context);
+      super.open(executionContext);
     }
   }
 
-  private XmlParticipantReaderForTest createXmlParticipantReaderForTest(boolean includeConfiguredAttributes, String resourcePath) {
+  private XmlParticipantReaderForTest
+      createXmlParticipantReaderForTest(boolean includeConfiguredAttributes, String resourcePath) {
     if(!includeConfiguredAttributes) {
       participantMetadata.setConfiguredAttributes(null);
     }

@@ -1,10 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
- <html  
-      xmlns="http://www.w3.org/1999/xhtml"  
-      xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"  
-      xml:lang="en"  
-      lang="en">
+<!DOCTYPE html> 
+ <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <title>Onyx</title>
@@ -14,6 +9,7 @@
     <link href="css/adxmenu.css" type="text/css" rel="stylesheet" />
     <link href="css/modal.css" type="text/css" rel="stylesheet" />    
     <link href="css/modal-feedback.css" type="text/css" rel="stylesheet" /> 
+    <link rel="shortcut icon" href="images/favicon.ico" /> 
   </head>
 
   <body>
@@ -39,7 +35,8 @@
         	<wicket:child/>
       	</div>
       	<div id="pageFooter">
-            <div id="currentUser"><span wicket:id="userFullName" /><span wicket:id="currentTime" /></div>    	
+            <div id="currentUser"><span wicket:id="userFullName" /><span wicket:id="currentTime" /></div>
+            <div wicket:id="battery" style="float:left"></div>
         	<div id="currentVersion">OBiBa / <span wicket:id="version" />&copy;</div>
       	</div>
       </div> 

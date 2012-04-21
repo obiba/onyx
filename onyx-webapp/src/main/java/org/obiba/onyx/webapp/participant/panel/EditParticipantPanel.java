@@ -59,26 +59,21 @@ import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
 import org.obiba.onyx.wicket.reusable.Dialog.Status;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 public class EditParticipantPanel extends Panel {
-
-  private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(EditParticipantPanel.class);
 
   // constant for fixed attributes
   private static String BARCODE = "barcode";
-
-  private static String FIRST_NAME = "firstName";
-
-  private static String LAST_NAME = "lastName";
 
   private static final int TEXTFIELD_SIZE = 40;
 
@@ -116,7 +111,7 @@ public class EditParticipantPanel extends Panel {
     this.participantModel = participantModel;
     initMode();
 
-    createEditParticipantPanel(sourcePage);
+    createEditParticipantPanel();
 
     feedbackWindow = new FeedbackWindow("feedback");
     feedbackWindow.setOutputMarkupId(true);
@@ -131,9 +126,9 @@ public class EditParticipantPanel extends Panel {
    * @param sourcePage
    * @param editParticipantForm
    */
-  public EditParticipantPanel(String id, IModel<Participant> participantModel, Page sourcePage, Form editParticipantForm) {
+  public EditParticipantPanel(String id, IModel<Participant> participantModel, Page sourcePage, Form<?> editParticipantForm) {
     this(id, participantModel, sourcePage);
-    addActionButtons(null, editParticipantForm);
+    addActionButtons(editParticipantForm);
   }
 
   /**
@@ -147,38 +142,36 @@ public class EditParticipantPanel extends Panel {
   public EditParticipantPanel(String id, final IModel<Participant> participantModel, final Page sourcePage, final Dialog modalWindow) {
     this(id, participantModel, sourcePage);
     this.modalWindow = modalWindow;
-    addDialogActionButtons(modalWindow, participantModel);
+    addDialogActionButtons();
   }
 
-  private void addActionButtons(final Dialog modalWindow, final Form editParticipantForm) {
+  @SuppressWarnings("rawtypes")
+  private void addActionButtons(final Form<?> editParticipantForm) {
 
-    @SuppressWarnings("serial")
-    AjaxSubmitLink submitLink = new AjaxSubmitLink("saveAction") {
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+    editParticipantForm.add(new AjaxSubmitLink("saveAction") {
+      @Override
+      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
         updateParticipant(target);
       }
 
-      protected void onError(AjaxRequestTarget target, Form form) {
+      @Override
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
         displayFeedback(target);
       }
-    };
-    editParticipantForm.add(submitLink);
+    });
 
-    @SuppressWarnings("serial")
-    AjaxLink cancelLink = new AjaxLink("cancelAction") {
+    editParticipantForm.add(new AjaxLink("cancelAction") {
       @Override
       public void onClick(AjaxRequestTarget target) {
         cancelEditParticipant(target);
       }
-    };
-    editParticipantForm.add(cancelLink);
-
+    });
   }
 
-  @SuppressWarnings("serial")
-  private void addDialogActionButtons(final Dialog modalWindow, final IModel<Participant> participantModel) {
+  private void addDialogActionButtons() {
     modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
+      @Override
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
         if(status == null) return true;
         switch(status) {
@@ -219,7 +212,7 @@ public class EditParticipantPanel extends Panel {
   }
 
   private void updateParticipant(AjaxRequestTarget target) {
-    Participant participant = (Participant) participantModel.getObject();
+    Participant participant = participantModel.getObject();
     participantService.updateParticipant(participant);
 
     // submitting child form if it's visible
@@ -239,8 +232,8 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  private void createEditParticipantPanel(final Page sourcePage) {
-    Participant participant = (Participant) participantModel.getObject();
+  private void createEditParticipantPanel() {
+    Participant participant = participantModel.getObject();
 
     // set recruitmentType for participant to volunteer if it is null
     if(participant.getRecruitmentType() == null) {
@@ -250,7 +243,7 @@ public class EditParticipantPanel extends Panel {
     if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
       add(new EmptyPanel("enrollmentId"));
     } else
-      add(new RowFragment("enrollmentId", getDefaultModel(), "EnrollmentId", "enrollmentId"));
+      add(new RowFragment("enrollmentId", participantModel, "EnrollmentId", "enrollmentId"));
 
     if(participant.getAppointment() == null) {
       participant.setAppointment(new Appointment(participant, new Date()));
@@ -263,13 +256,13 @@ public class EditParticipantPanel extends Panel {
     }
 
     if(mode == PanelMode.EDIT) {
-      add(new RowFragment(BARCODE, getDefaultModel(), "ParticipantCode", BARCODE));
+      add(new RowFragment(BARCODE, participantModel, "ParticipantCode", BARCODE));
     } else {
       add(new EmptyPanel(BARCODE));
     }
 
-    add(new EditParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", getDefaultModel(), getEssentialAttributesToDisplay(participant), participantMetadata, EditParticipantPanel.this));
-    add(new EditParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", getDefaultModel(), participantMetadata.getConfiguredAttributes(), participantMetadata, EditParticipantPanel.this));
+    add(new EditParticipantPanelAttributeGroupsFragment("essentialAttributeGroup", participantModel, getEssentialAttributesToDisplay(), participantMetadata, EditParticipantPanel.this));
+    add(new EditParticipantPanelAttributeGroupsFragment("configuredAttributeGroups", participantModel, participantMetadata.getConfiguredAttributes(), participantMetadata, EditParticipantPanel.this));
 
     add(assignCodePanel = new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
 
@@ -302,11 +295,11 @@ public class EditParticipantPanel extends Panel {
   private class RowFragment extends Fragment {
     private static final long serialVersionUID = 1L;
 
-    public RowFragment(String id, IModel participantModel, String label, String field) {
+    public RowFragment(String id, IModel<Participant> participantModel, String label, String field) {
       super(id, "rowFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
 
-      IModel valueModel = new PropertyModel(participantModel, field);
+      IModel<?> valueModel = new PropertyModel<Serializable>(participantModel, field);
 
       // Date handling. If the field value is a date, format it using the configured
       // date format. Note: Since we cannot tell from the participant meta-data whether
@@ -314,12 +307,10 @@ public class EditParticipantPanel extends Panel {
       // and formatting accordingly.
       if(valueModel.getObject() != null && valueModel.getObject() instanceof Date) {
         final Date date = (Date) valueModel.getObject();
-
-        valueModel = new Model() {
-          private static final long serialVersionUID = 1L;
+        valueModel = new Model<String>() {
 
           @Override
-          public Serializable getObject() {
+          public String getObject() {
             return userSessionService.getDateFormat().format(date);
           }
         };
@@ -329,19 +320,7 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  private class TextFieldFragment extends Fragment {
-    private static final long serialVersionUID = 1L;
-
-    public TextFieldFragment(String id, IModel participantModel, String label, FormComponent component) {
-      super(id, "textFieldFragment", EditParticipantPanel.this);
-      add(new Label("label", new ResourceModel(label)));
-      add(component);
-
-      addNoFocusCssClassInReceptionMode(component);
-    }
-  }
-
-  public List<ParticipantAttribute> getEssentialAttributesToDisplay(Participant participant) {
+  public List<ParticipantAttribute> getEssentialAttributesToDisplay() {
     List<ParticipantAttribute> attributesToDisplay = new ArrayList<ParticipantAttribute>();
     attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.LAST_NAME_ATTRIBUTE_NAME));
     attributesToDisplay.add(participantMetadata.getEssentialAttribute(ParticipantMetadata.FIRST_NAME_ATTRIBUTE_NAME));
@@ -354,12 +333,13 @@ public class EditParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    protected EditParticipantPanelAttributeGroupsFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
+    protected EditParticipantPanelAttributeGroupsFragment(String id, IModel<Participant> participantModel, List<ParticipantAttribute> attributes, ParticipantMetadata participantMetadata, Panel parentPanel) {
       super(id, participantModel, attributes, participantMetadata, parentPanel);
     }
 
     @Override
-    protected ParticipantAttributeGroupFragment addAttributeGroupFragment(String id, IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
+    protected ParticipantAttributeGroupFragment addAttributeGroupFragment(String id, @SuppressWarnings("hiding")
+    IModel<Participant> participantModel, Group group, Panel parentPanel, List<ParticipantAttribute> attributes) {
       return new EditParticipantPanelAttributeGroupFragment(id, participantModel, group, parentPanel, attributes);
     }
 
@@ -373,13 +353,14 @@ public class EditParticipantPanel extends Panel {
       super(id, participantModel, group, parentPanel, attributes);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void addParticipantAttribute(ParticipantAttribute attribute, RepeatingView repeat, Participant participant) {
 
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
 
-      Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name")));
+      Label label = new Label("label", new SpringStringResourceModel(new PropertyModel<String>(attribute, "name")));
       item.add(label);
 
       if(attribute.isMandatoryAtReception()) {
@@ -388,13 +369,13 @@ public class EditParticipantPanel extends Panel {
         item.add(new Label("mandatory", ""));
       }
 
-      IModel attributeValueModel;
+      IModel<Data> attributeValueModel;
       String essentialAttributeFieldName = participant.getEssentialAttributeDataFieldName(attribute.getName());
       if(essentialAttributeFieldName != null) {
         if(participant.getId() != null) {
-          attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, participant), essentialAttributeFieldName);
+          attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, participant), essentialAttributeFieldName);
         } else {
-          attributeValueModel = new PropertyModel(participant, essentialAttributeFieldName);
+          attributeValueModel = new PropertyModel<Data>(participant, essentialAttributeFieldName);
         }
       } else if(getConfiguredAttributeValue(attribute, participant) == null) {
         participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
@@ -402,13 +383,13 @@ public class EditParticipantPanel extends Panel {
         // ONYX-186
         if(participant.getId() != null) {
           participantService.updateParticipant(participant);
-          attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
+          attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
         } else {
-          attributeValueModel = new PropertyModel(getConfiguredAttributeValue(attribute, participant), "data");
+          attributeValueModel = new PropertyModel<Data>(getConfiguredAttributeValue(attribute, participant), "data");
         }
 
       } else {
-        attributeValueModel = new PropertyModel(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
+        attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
       }
 
       // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
@@ -428,23 +409,21 @@ public class EditParticipantPanel extends Panel {
             allowedValues.add(new Data(attribute.getType(), value));
           }
 
-          field = new DataField("field", attributeValueModel, attribute.getType(), allowedValues, new IChoiceRenderer() {
+          field = new DataField("field", attributeValueModel, attribute.getType(), allowedValues, new IChoiceRenderer<Data>() {
 
-            private static final long serialVersionUID = 1L;
-
-            public Object getDisplayValue(Object object) {
-              Data data = (Data) object;
+            @Override
+            public Object getDisplayValue(Data data) {
               return (new SpringStringResourceModel(data.getValueAsString())).getString();
             }
 
-            public String getIdValue(Object object, int index) {
-              Data data = (Data) object;
+            @Override
+            public String getIdValue(Data data, int index) {
               return data.getValueAsString();
             }
 
           }, null);
 
-          if(!attribute.isMandatoryAtReception()) ((DropDownChoice) field.getField()).setNullValid(true);
+          if(!attribute.isMandatoryAtReception()) ((DropDownChoice<Data>) field.getField()).setNullValid(true);
         } else {
           field = new DataField("field", attributeValueModel, attribute.getType());
 
@@ -462,20 +441,20 @@ public class EditParticipantPanel extends Panel {
               field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
             }
 
-            field.getField().add(new AttributeModifier("size", true, new Model(TEXTFIELD_SIZE)));
+            field.getField().add(new AttributeModifier("size", true, new Model<Integer>(TEXTFIELD_SIZE)));
           }
         }
 
         if(attribute.isMandatoryAtReception()) field.setRequired(true);
-        field.setLabel(new SpringStringResourceModel(new PropertyModel(attribute, "name")));
-        field.getField().add(new AttributeAppender("class", true, new Model("nofocus"), " "));
+        field.setLabel(new SpringStringResourceModel(new PropertyModel<String>(attribute, "name")));
+        field.getField().add(new AttributeAppender("class", true, new Model<String>("nofocus"), " "));
 
         addNoFocusCssClassInReceptionMode(field.getField());
 
         item.add(field);
       } else {
         String value = getAttributeValueAsString(participant, attribute.getName());
-        item.add(new Label("field", new Model(value)));
+        item.add(new Label("field", new Model<String>(value)));
       }
 
     }
@@ -498,9 +477,9 @@ public class EditParticipantPanel extends Panel {
    * 
    * @param component form component
    */
-  private void addNoFocusCssClassInReceptionMode(FormComponent component) {
+  private void addNoFocusCssClassInReceptionMode(FormComponent<?> component) {
     if(mode == PanelMode.RECEPTION) {
-      component.add(new AttributeAppender("class", true, new Model("nofocus"), " "));
+      component.add(new AttributeAppender("class", true, new Model<String>("nofocus"), " "));
     }
   }
 

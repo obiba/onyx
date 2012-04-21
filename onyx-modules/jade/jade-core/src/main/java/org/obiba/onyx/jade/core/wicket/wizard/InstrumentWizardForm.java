@@ -212,6 +212,12 @@ public class InstrumentWizardForm extends WizardForm {
         onInterrupt(target);
       }
 
+      @Override
+      public boolean isVisible() {
+        IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+        return exec.getActionDefinition(ActionType.INTERRUPT) != null;
+      }
+
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", InstrumentWizardForm.this, null)));
 

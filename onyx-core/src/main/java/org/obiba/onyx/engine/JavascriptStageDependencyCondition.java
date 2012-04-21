@@ -55,7 +55,7 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
     ValueTable valueTable = magmaInstanceProvider.getValueTable(stage.getName());
 
     // Get the currently interviewed participant's ValueSet.
-    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant().getBarcode());
+    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant());
     ValueSet valueSet = valueTable.getValueSet(entity);
 
     Value value = getSource().getValue(valueSet);

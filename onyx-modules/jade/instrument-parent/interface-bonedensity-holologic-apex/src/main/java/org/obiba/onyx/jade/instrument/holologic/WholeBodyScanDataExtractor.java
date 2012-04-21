@@ -13,6 +13,8 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.dcm4che2.tool.dcmrcv.DicomServer;
+import org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner.Side;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,13 +24,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
 
-  protected WholeBodyScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey) {
-    super(patScanDb, scanDataDir, participantKey);
+  protected WholeBodyScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
   }
 
   @Override
   public String getName() {
     return "WB";
+  }
+
+  @Override
+  public String getDicomBodyPartName() {
+    return null;
   }
 
   @Override
@@ -294,6 +301,11 @@ public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
       }
       return super.getVariableName(name);
     }
+  }
+
+  @Override
+  public Side getSide() {
+    return null;
   }
 
 }

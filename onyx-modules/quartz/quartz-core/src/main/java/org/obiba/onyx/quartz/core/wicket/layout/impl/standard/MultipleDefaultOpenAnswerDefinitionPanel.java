@@ -31,7 +31,6 @@ public class MultipleDefaultOpenAnswerDefinitionPanel extends AbstractMultipleOp
     super(id, questionModel, questionCategoryModel);
   }
 
-  @SuppressWarnings("serial")
   @Override
   protected AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
     return new DefaultOpenAnswerDefinitionPanel(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);

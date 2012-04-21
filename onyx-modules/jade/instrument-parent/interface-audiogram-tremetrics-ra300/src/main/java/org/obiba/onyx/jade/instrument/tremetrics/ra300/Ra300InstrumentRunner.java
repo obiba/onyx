@@ -74,6 +74,7 @@ public class Ra300InstrumentRunner implements InstrumentRunner {
           testToSave = test;
         }
       }).get();
+      app.setCommSettings(getComPort(), getBaudRate());
     } catch(InterruptedException e) {
       throw new RuntimeException(e);
     } catch(ExecutionException e) {

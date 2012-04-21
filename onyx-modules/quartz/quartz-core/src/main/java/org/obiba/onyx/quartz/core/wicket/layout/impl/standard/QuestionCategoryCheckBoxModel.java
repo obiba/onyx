@@ -22,15 +22,15 @@ public class QuestionCategoryCheckBoxModel extends AbstractCheckBoxModel {
 
   private static final long serialVersionUID = 1L;
 
-  private IModel questionCategoryModel;
+  private IModel<QuestionCategory> questionCategoryModel;
 
-  private IModel selectionsModel;
+  private IModel<Collection<IModel<QuestionCategory>>> selectionsModel;
 
-  public QuestionCategoryCheckBoxModel(IModel selectionsModel, QuestionCategory questionCategory) {
-    this(selectionsModel, new QuestionnaireModel(questionCategory));
+  public QuestionCategoryCheckBoxModel(IModel<Collection<IModel<QuestionCategory>>> selectionsModel, QuestionCategory questionCategory) {
+    this(selectionsModel, new QuestionnaireModel<QuestionCategory>(questionCategory));
   }
 
-  public QuestionCategoryCheckBoxModel(IModel selectionsModel, IModel questionCategoryModel) {
+  public QuestionCategoryCheckBoxModel(IModel<Collection<IModel<QuestionCategory>>> selectionsModel, IModel<QuestionCategory> questionCategoryModel) {
     this.selectionsModel = selectionsModel;
     this.questionCategoryModel = questionCategoryModel;
   }
@@ -40,8 +40,8 @@ public class QuestionCategoryCheckBoxModel extends AbstractCheckBoxModel {
   }
 
   @SuppressWarnings("unchecked")
-  public Collection<IModel> getSelections() {
-    return (Collection<IModel>) selectionsModel.getObject();
+  public Collection<IModel<QuestionCategory>> getSelections() {
+    return selectionsModel.getObject();
   }
 
   @Override

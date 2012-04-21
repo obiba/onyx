@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -37,6 +37,8 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionAudio;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionSuggestion;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -46,6 +48,7 @@ import org.obiba.onyx.quartz.editor.behavior.tooltip.HelpTooltipPanel;
 import org.obiba.onyx.quartz.editor.locale.LabelsPanel;
 import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
+import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils;
 import org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerWindow;
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
@@ -72,24 +75,17 @@ public abstract class CategoryWindow extends Panel {
 
   private final Form<QuestionCategory> form;
 
-  private final SortableList<OpenAnswerDefinition> openAnswerDefinitionList;
-
   private final ModalWindow openAnswerWindow;
 
   private final VariableNameBehavior variableNameBehavior;
 
-  private final IModel<Questionnaire> questionnaireModel;
+  private final List<String> otherCategoryNames = new ArrayList<String>();
 
-  private final IModel<LocaleProperties> localePropertiesModel;
-
-  private final String initialName;
-
-  private List<String> otherCategoryNames = new ArrayList<String>();
-
-  public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public CategoryWindow(String id, IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel,
+      final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
-    this.questionnaireModel = questionnaireModel;
-    this.localePropertiesModel = localePropertiesModel;
+    IModel<Questionnaire> questionnaireModel1 = questionnaireModel;
+    IModel<LocaleProperties> localePropertiesModel1 = localePropertiesModel;
 
     add(form = new Form<QuestionCategory>("form", model));
     form.setMultiPart(false);
@@ -111,7 +107,8 @@ public abstract class CategoryWindow extends Panel {
     openAnswerWindow.setResizable(true);
     openAnswerWindow.setTitle(new ResourceModel("OpenAnswerDefinition"));
     add(openAnswerWindow);
-    initialName = model.getObject().getCategory().getName();
+
+    String initialName = questionCategory.getCategory().getName();
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "category.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
@@ -140,7 +137,9 @@ public abstract class CategoryWindow extends Panel {
     form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
     form.add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
-    final TextField<String> variable = new TextField<String>("variable", new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"), question.getName()));
+    final TextField<String> variable = new TextField<String>("variable",
+        new MapModel<String>(new PropertyModel<Map<String, String>>(model, "category.variableNames"),
+            question.getName()));
     variable.setLabel(new ResourceModel("Variable"));
     form.add(variable).add(new SimpleFormComponentLabel("variableLabel", variable));
     form.add(new HelpTooltipPanel("variableHelp", new ResourceModel("Variable.Tooltip")));
@@ -171,7 +170,8 @@ public abstract class CategoryWindow extends Panel {
       }
     };
 
-    openAnswerDefinitionList = new SortableList<OpenAnswerDefinition>("openAnswerDefinitionList", openAnswerModel) {
+    SortableList<OpenAnswerDefinition> openAnswerDefinitionList = new SortableList<OpenAnswerDefinition>(
+        "openAnswerDefinitionList", openAnswerModel) {
 
       @Override
       public Component getItemTitle(@SuppressWarnings("hiding") String id, OpenAnswerDefinition openAnswer) {
@@ -180,21 +180,31 @@ public abstract class CategoryWindow extends Panel {
 
       @Override
       public void editItem(final OpenAnswerDefinition openAnswer, AjaxRequestTarget target) {
-        final ElementClone<OpenAnswerDefinition> original = QuestionnaireElementCloner.clone(openAnswer, new CloneSettings(true), localePropertiesModel.getObject());
-        openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
-          @Override
-          protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
-          }
+        final ElementClone<OpenAnswerDefinition> original = QuestionnaireElementCloner
+            .clone(openAnswer, new CloneSettings(true), localePropertiesModel.getObject());
+        openAnswerWindow.setContent(
+            new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswer), new Model<Category>(category),
+                new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
+              @Override
+              protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                  @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
+              }
 
-          @Override
-          protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
-            rollback(openAnswer, original);
-          }
-        });
+              @Override
+              protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                  @SuppressWarnings("hiding") OpenAnswerDefinition openAnswer) {
+                OpenAnswerUtils
+                    .rollback(openAnswer, original, localePropertiesModel.getObject(), questionnaireModel.getObject(),
+                        category);
+              }
+            });
+
         openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {
           @Override
-          public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
-            rollback(openAnswer, original);
+          public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+            OpenAnswerUtils
+                .rollback(openAnswer, original, localePropertiesModel.getObject(), questionnaireModel.getObject(),
+                    category);
             return true;
           }
         });
@@ -220,45 +230,51 @@ public abstract class CategoryWindow extends Panel {
         } else {
           category.setOpenAnswerDefinition(null);
         }
-        localePropertiesUtils.remove(localePropertiesModel.getObject(), questionnaireModel.getObject(), openAnswerToRemove);
+        localePropertiesModel.getObject().remove(questionnaireModel.getObject(), openAnswerToRemove);
         refreshList(target);
       }
 
       @Override
       @SuppressWarnings({ "rawtypes", "unchecked" })
       public SortableList<OpenAnswerDefinition>.Button[] getButtons() {
-        SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(new ResourceModel("AddOpenAnswerDefinition"), Images.ADD) {
+        SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(
+            new ResourceModel("AddOpenAnswerDefinition"), Images.ADD) {
 
           @Override
           public void callback(AjaxRequestTarget target) {
             OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition();
             openAnswerDefinition.setRequired(true);
-            openAnswerWindow.setContent(new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition), new Model<Category>(category), new Model<Question>(question), questionnaireModel, localePropertiesModel, openAnswerWindow) {
-              @Override
-              protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
-                OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
-                if(currentOpenAnswer == null) {
-                  category.setOpenAnswerDefinition(openAnswer);
-                } else {
-                  if(!CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
-                    currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
-                  } else {
-                    OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
-                    // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
-                    newOpenAnswer.setName(category.getName() + System.currentTimeMillis());
-                    newOpenAnswer.setRequired(true);
-                    newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
-                    newOpenAnswer.addOpenAnswerDefinition(openAnswer);
-                    category.setOpenAnswerDefinition(newOpenAnswer);
+            openAnswerWindow.setContent(
+                new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition),
+                    new Model<Category>(category), new Model<Question>(question), questionnaireModel,
+                    localePropertiesModel, openAnswerWindow) {
+                  @Override
+                  protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                      OpenAnswerDefinition openAnswer) {
+                    OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
+                    if(currentOpenAnswer == null) {
+                      category.setOpenAnswerDefinition(openAnswer);
+                    } else {
+                      if(!CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
+                        currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
+                      } else {
+                        OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
+                        // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
+                        newOpenAnswer.setName(category.getName() + System.currentTimeMillis());
+                        newOpenAnswer.setRequired(true);
+                        newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
+                        newOpenAnswer.addOpenAnswerDefinition(openAnswer);
+                        category.setOpenAnswerDefinition(newOpenAnswer);
+                      }
+                    }
                   }
-                }
-              }
 
-              @Override
-              protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target, OpenAnswerDefinition openAnswer) {
-                // no special rollback to do for add
-              }
-            });
+                  @Override
+                  protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                      OpenAnswerDefinition openAnswer) {
+                    // no special rollback to do for add
+                  }
+                });
             openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {
               @Override
               public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
@@ -275,7 +291,121 @@ public abstract class CategoryWindow extends Panel {
             openAnswerWindow.show(target);
           }
         };
-        return new SortableList.Button[] { addButton };
+
+        SortableList<OpenAnswerDefinition>.Button addAutoCompleteButton = new SortableList.Button(
+            new ResourceModel("AddAutoComplete"), Images.ADD) {
+
+          @Override
+          public void callback(AjaxRequestTarget target) {
+
+            OpenAnswerDefinition openAnswerDefinition = OpenAnswerDefinitionSuggestion.createNewSuggestionOpenAnswer()
+                .getOpenAnswerDefinition();
+            openAnswerDefinition.setRequired(true);
+            openAnswerWindow.setContent(
+                new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition),
+                    new Model<Category>(category), new Model<Question>(question), questionnaireModel,
+                    localePropertiesModel, openAnswerWindow) {
+                  @Override
+                  protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                      OpenAnswerDefinition openAnswer) {
+                    OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
+                    if(currentOpenAnswer == null) {
+                      category.setOpenAnswerDefinition(openAnswer);
+                    } else {
+                      if(!CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
+                        currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
+                      } else {
+                        OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
+                        // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
+                        newOpenAnswer.setName(category.getName() + System.currentTimeMillis());
+                        newOpenAnswer.setRequired(true);
+                        newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
+                        newOpenAnswer.addOpenAnswerDefinition(openAnswer);
+                        category.setOpenAnswerDefinition(newOpenAnswer);
+                      }
+                    }
+                  }
+
+                  @Override
+                  protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                      OpenAnswerDefinition openAnswer) {
+                    // no special rollback to do for add
+                  }
+                });
+            openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {
+              @Override
+              public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+                // no special rollback to do for add
+                return true;
+              }
+            });
+            openAnswerWindow.setWindowClosedCallback(new WindowClosedCallback() {
+              @Override
+              public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+                refreshList(target);
+              }
+            });
+            openAnswerWindow.show(target);
+          }
+        };
+
+        SortableList<OpenAnswerDefinition>.Button addAudioButton = new SortableList.Button(
+            new ResourceModel("AddAudioRecording"), Images.ADD) {
+
+          @Override
+          public void callback(AjaxRequestTarget target) {
+            OpenAnswerDefinition openAnswerDefinition = OpenAnswerDefinitionAudio.createOpenAnswerDefinitionAudio()
+                .getOpenAnswer();
+            openAnswerDefinition.setRequired(true);
+            openAnswerWindow.setContent(
+                new OpenAnswerWindow("content", new Model<OpenAnswerDefinition>(openAnswerDefinition),
+                    new Model<Category>(category), new Model<Question>(question), questionnaireModel,
+                    localePropertiesModel, openAnswerWindow) {
+                  @Override
+                  protected void onSave(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                      OpenAnswerDefinition openAnswer) {
+                    OpenAnswerDefinition currentOpenAnswer = category.getOpenAnswerDefinition();
+                    if(currentOpenAnswer == null) {
+                      category.setOpenAnswerDefinition(openAnswer);
+                    } else {
+                      if(!CollectionUtils.isEmpty(currentOpenAnswer.getOpenAnswerDefinitions())) {
+                        currentOpenAnswer.addOpenAnswerDefinition(openAnswer);
+                      } else {
+                        OpenAnswerDefinition newOpenAnswer = new OpenAnswerDefinition();
+                        // TODO System.currentTimeMillis() to ensure unique name (other solution ?)
+                        newOpenAnswer.setName(category.getName() + System.currentTimeMillis());
+                        newOpenAnswer.setRequired(true);
+                        newOpenAnswer.addOpenAnswerDefinition(currentOpenAnswer);
+                        newOpenAnswer.addOpenAnswerDefinition(openAnswer);
+                        category.setOpenAnswerDefinition(newOpenAnswer);
+                      }
+                    }
+                  }
+
+                  @Override
+                  protected void onCancel(@SuppressWarnings("hiding") AjaxRequestTarget target,
+                      OpenAnswerDefinition openAnswer) {
+                    // no special rollback to do for add
+                  }
+                });
+            openAnswerWindow.setCloseButtonCallback(new CloseButtonCallback() {
+              @Override
+              public boolean onCloseButtonClicked(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+                // no special rollback to do for add
+                return true;
+              }
+            });
+            openAnswerWindow.setWindowClosedCallback(new WindowClosedCallback() {
+              @Override
+              public void onClose(@SuppressWarnings("hiding") AjaxRequestTarget target) {
+                refreshList(target);
+              }
+            });
+            openAnswerWindow.show(target);
+          }
+        };
+
+        return new SortableList.Button[] { addButton, addAutoCompleteButton, addAudioButton };
       }
     };
 
@@ -306,26 +436,8 @@ public abstract class CategoryWindow extends Panel {
 
   }
 
-  private synchronized void rollback(OpenAnswerDefinition modified, ElementClone<OpenAnswerDefinition> original) {
-    Category category = ((QuestionCategory) getDefaultModelObject()).getCategory();
-    if(category.getOpenAnswerDefinition() == modified) { // parent open answer
-      category.setOpenAnswerDefinition(original.getElement());
-      for(OpenAnswerDefinition child : modified.getOpenAnswerDefinitions()) {
-        original.getElement().addOpenAnswerDefinition(child);
-      }
-    } else {
-      int index = category.getOpenAnswerDefinition().getOpenAnswerDefinitions().indexOf(modified);
-      category.getOpenAnswerDefinition().removeOpenAnswerDefinition(modified);
-      category.getOpenAnswerDefinition().addOpenAnswerDefinition(original.getElement(), index);
-    }
-    Questionnaire questionnaire = questionnaireModel.getObject();
-    LocaleProperties localeProperties = localePropertiesModel.getObject();
-    localePropertiesUtils.remove(localeProperties, questionnaire, modified);
-    QuestionnaireElementCloner.addProperties(original, localePropertiesModel.getObject());
-  }
+  public abstract void onSave(AjaxRequestTarget target, QuestionCategory questionCategory);
 
-  public abstract void onSave(AjaxRequestTarget target, final QuestionCategory questionCategory);
-
-  public abstract void onCancel(AjaxRequestTarget target, final QuestionCategory questionCategory);
+  public abstract void onCancel(AjaxRequestTarget target, QuestionCategory questionCategory);
 
 }

@@ -53,6 +53,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   private Set<String> outVendorNames;
 
+  private boolean retrieveDeviceDataError = false;
+
   public EasyWareProInstrumentRunner() {
     super();
   }
@@ -146,11 +148,15 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       if(backupDbFile.exists()) {
         FileUtil.copyFile(backupDbFile, currentDbFile);
         backupDbFile.delete();
-        deleteFile(getInFile());
-        deleteFile(getOutFile());
+        if(!retrieveDeviceDataError) {
+          deleteFile(getInFile());
+          deleteFile(getOutFile());
+        }
       } else {
         // init
         FileUtil.copyFile(currentDbFile, backupDbFile);
+        deleteFile(getInFile());
+        deleteFile(getOutFile());
       }
     } catch(Exception ex) {
       log.error(ex.getMessage(), ex);
@@ -165,27 +171,33 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
   }
 
   private List<Map<String, Data>> retrieveDeviceData() {
-
+    retrieveDeviceDataError = false;
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
     File outFile = getOutFile();
     try {
       EMRXMLParser<FVCData> parser = new EMRXMLParser<FVCData>();
       parser.parse(new FileInputStream(outFile), new FVCDataExtractor());
+      Map<String, Data> data = new HashMap<String, Data>();
 
+      // participant data
       ParticipantData pData = parser.getParticipantData();
+      addOutput(data, "HeightOut", DataBuilder.buildDecimal(pData.getHeight()));
+      addOutput(data, "WeightOut", DataBuilder.buildDecimal(pData.getWeight()));
+      addOutput(data, "EthnicityOut", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
+      addOutput(data, "AsthmaOut", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
+      addOutput(data, "SmokerOut", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
+      addOutput(data, "COPDOut", DataBuilder.buildText(pData.getCopd().toUpperCase()));
+      dataList.add(data);
+
+      // trial data
       FVCData tData = parser.getTestData();
 
-      for(FVCTrialData trialData : tData.getTrials()) {
-        Map<String, Data> data = new HashMap<String, Data>();
-        // participant data
-        addOutput(data, "HeightOut", DataBuilder.buildDecimal(pData.getHeight()));
-        addOutput(data, "WeightOut", DataBuilder.buildInteger(pData.getWeight()));
-        addOutput(data, "EthnicityOut", DataBuilder.buildText(pData.getEthnicity().toUpperCase()));
-        addOutput(data, "AsthmaOut", DataBuilder.buildText(pData.getAsthma().toUpperCase()));
-        addOutput(data, "SmokerOut", DataBuilder.buildText(pData.getSmoker().toUpperCase()));
-        addOutput(data, "COPDOut", DataBuilder.buildText(pData.getCopd().toUpperCase()));
+      // Quality Grade data
+      addOutput(data, "QUALITY_GRADE", DataBuilder.buildText(tData.getQualityGrade()));
 
+      for(FVCTrialData trialData : tData.getTrials()) {
+        data = new HashMap<String, Data>();
         // trial date
         addOutput(data, "TRIAL_DATE", DataBuilder.buildDate(trialData.getDate()));
         addOutput(data, "TRIAL_RANK", DataBuilder.buildInteger(trialData.getRank()));
@@ -197,15 +209,16 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
         // curves
         addOutput(data, "FLOW_INTERVAL", DataBuilder.buildDecimal(trialData.getFlowInterval()));
-        addOutput(data, "FLOW_VALUES", DataBuilder.buildText(trialData.getFlowValues()));
+        addOutput(data, "FLOW_VALUES", DataBuilder.buildBinary(trialData.getFlowValues()));
         addOutput(data, "VOLUME_INTERVAL", DataBuilder.buildDecimal(trialData.getVolumeInterval()));
-        addOutput(data, "VOLUME_VALUES", DataBuilder.buildText(trialData.getVolumeValues()));
+        addOutput(data, "VOLUME_VALUES", DataBuilder.buildBinary(trialData.getVolumeValues()));
 
         dataList.add(data);
       }
 
     } catch(Exception e) {
       log.error("Unable to parse data from: " + outFile.getAbsolutePath(), e);
+      retrieveDeviceDataError = true;
       instrumentExecutionService.instrumentRunnerError(e);
     }
 

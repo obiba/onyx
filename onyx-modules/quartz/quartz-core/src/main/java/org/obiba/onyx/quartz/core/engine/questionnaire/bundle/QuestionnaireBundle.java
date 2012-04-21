@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia.MediaType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
@@ -42,8 +43,18 @@ public interface QuestionnaireBundle {
    * 
    * @param imageId image id
    * @return image resource (or <code>null</code> if no such image exists in the bundle)
+   * @deprecated use Resource getResource(String mediaId, MediaType mediaType)
    */
+  @Deprecated
   public Resource getImageResource(String imageId);
+
+  /**
+   * Returns the specified media resource.
+   * 
+   * @param imageId image id
+   * @return image resource (or <code>null</code> if no such image exists in the bundle)
+   */
+  public Resource getResource(String mediaId, MediaType mediaType);
 
   /**
    * Specifies the language in which the questionnaire will be administered in the given locale.

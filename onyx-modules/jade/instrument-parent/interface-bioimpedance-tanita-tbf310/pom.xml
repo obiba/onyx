@@ -29,7 +29,7 @@
       <classifier>win32</classifier>
     </dependency>
   </dependencies>
-
+  
   <build>
     <plugins>
       <plugin>
@@ -38,16 +38,6 @@
         <executions>
           <execution>
             <id>make-jnlp</id>
-            <configuration>
-              <jnlp>
-                <!-- 
-                  Overriden to hardcode a nativelib resource node. 
-                  Maven Webstart plugin does not support nativelibs. 
-                  See: http://jira.codehaus.org/browse/MWEBSTART-8 
-                -->
-                <inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath>
-              </jnlp>
-            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp
-    spec="$jnlpspec"
+    spec="1.6+"
     codebase="${codebaseUrl}">
   <information>
     <title>$project.name</title>
@@ -17,9 +17,10 @@
 #end
   <resources>
     <j2se version="$j2seVersion"/>
-     $dependencies
+    <extension href="../bootstrap/launch.jnlp"/>
+     $dependencies.replaceAll("<jar .* main=\"true\"/>", "").replaceAll("<jar href=\"(.*-win32.jar)\"", "<nativelib href=\"$1\"")
   </resources>
-  <application-desc main-class="${mainClass}">
+  <application-desc main-class="org.obiba.onyx.jade.client.JnlpClient">
     <argument><![CDATA[__config__]]></argument>
   </application-desc>
 

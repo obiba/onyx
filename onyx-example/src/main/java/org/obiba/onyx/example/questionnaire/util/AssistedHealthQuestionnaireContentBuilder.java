@@ -59,7 +59,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").withSharedCategory(PNA, "88").setEscape(true);
     builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").withSharedCategory(DNK, "99").setEscape(true);
     builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").setCondition("HealthQuestionnaireSelfAdministered", "COUNTRY_BIRTH", "ELSEWHERE");
-    // Pour les parents? Pays de résidence?
+    // Pour les parents? Pays de rÃ©sidence?
 
     builder.withSection("C_LIFE_HABITS").withSection("JOB_RELATED_PA").withSection("PART1").withPage("2").withQuestion("CURRENTLY_WORK", "2").withSharedCategory(N, "0");
     builder.inQuestion("CURRENTLY_WORK").withSharedCategory(Y, "1");

@@ -50,10 +50,9 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   private ParticipantMetadata participantMetadata;
 
-  private String participantId;
-
+  @Override
   public Participant process(Participant participantItem) throws Exception {
-    setParticipantId(participantItem.getEnrollmentId());
+    String participantId = participantItem.getEnrollmentId();
 
     // check enrollment id is unique in submitted participants list
     if(!checkUniqueEnrollmentId(participantItem)) {
@@ -64,18 +63,20 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     // validation loop for essential attributes
     for(ParticipantAttribute attribute : participantMetadata.getEssentialAttributes()) {
       Data dataToValidate = participantItem.getEssentialAttributeValue(attribute.getName());
-      if(!validateData(attribute, dataToValidate)) return null;
+      if(!validateData(participantId, attribute, dataToValidate)) return null;
     }
 
     // validation loop for configurable attributes
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-      if(!validateData(attribute, participantItem.getConfiguredAttributeValue(attribute.getName()))) return null;
+      if(!validateData(participantId, attribute, participantItem.getConfiguredAttributeValue(attribute.getName()))) return null;
     }
 
     return validateParticipant(participantItem);
   }
 
   private Participant validateParticipant(Participant participantItem) {
+    String participantId = participantItem.getEnrollmentId();
+
     Participant participant = null;
 
     // Validate site code
@@ -129,8 +130,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     return participant;
   }
 
-  private boolean validateData(ParticipantAttribute attribute, Data data) {
-
+  private boolean validateData(String participantId, ParticipantAttribute attribute, Data data) {
     // check if the attribute is mandatory and not null
     if(!checkMandatoryCondition(attribute, data)) {
       log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId, "No value for mandatory field " + attribute.getName() + "."));
@@ -225,10 +225,6 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     this.participantMetadata = participantMetadata;
   }
 
-  public void setParticipantId(String participantId) {
-    this.participantId = participantId;
-  }
-
   public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
     this.applicationConfigurationService = applicationConfigurationService;
   }
@@ -237,6 +233,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     this.participantService = participantService;
   }
 
+  @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
     for(AppointmentUpdateLog appointmentUpdateLog : log) {
       AppointmentUpdateLog.addErrorLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
@@ -244,8 +241,8 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     return null;
   }
 
+  @Override
   public void beforeStep(StepExecution stepExecution) {
-    // TODO Auto-generated method stub
   }
 
 }

@@ -9,194 +9,135 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
+import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
-import org.obiba.onyx.jade.instrument.holologic.HipScanDataExtractor.Side;
-import org.obiba.onyx.jade.instrument.holologic.LateralScanDataExtractor.Energy;
+import org.obiba.onyx.jade.instrument.holologic.IVAImagingScanDataExtractor.Energy;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
-import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.util.FileSystemUtils;
 
 public class APEXInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(APEXInstrumentRunner.class);
 
-  // Injected by spring.
   protected InstrumentExecutionService instrumentExecutionService;
-
-  protected ExternalAppLauncherHelper externalAppHelper;
 
   private JdbcTemplate patScanDb;
 
-  private String patScanDbPath;
-
   private File scanDataDir;
 
-  // participant data
-  private String participantID;
+  private DicomSettings dicomSettings;
+
+  private DicomServer server;
+
+  private File dcmDir;
 
   private List<String> participantFiles = new ArrayList<String>();
 
   private Set<String> outVendorNames;
 
-  public InstrumentExecutionService getInstrumentExecutionService() {
-    return instrumentExecutionService;
-  }
+  private Locale locale;
 
-  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
-    this.instrumentExecutionService = instrumentExecutionService;
-  }
+  private List<String> sentVariables = new ArrayList<String>();
 
-  public ExternalAppLauncherHelper getExternalAppHelper() {
-    return externalAppHelper;
-  }
+  private ApexReceiver apexReceiver = new ApexReceiver();
 
-  public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
-    this.externalAppHelper = externalAppHelper;
-  }
+  private String participantKey;
 
-  public JdbcTemplate getPatScanDb() {
-    return patScanDb;
-  }
+  private String participantID;
 
-  public void setPatScanDb(JdbcTemplate patScanDb) {
-    this.patScanDb = patScanDb;
-  }
-
-  public String getPatScanDbPath() {
-    return patScanDbPath;
-  }
-
-  public void setPatScanDbPath(String patScanDbPath) {
-    this.patScanDbPath = patScanDbPath;
-    this.scanDataDir = new File(patScanDbPath).getParentFile();
-  }
-
-  /**
-   * Retrieve participant data from the database and write them in the patient scan database
-   * @throws Exception
-   */
-  public void initParticipantData() {
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-    participantID = "ONYX-" + formatter.format(new Date());
-    final Double weight = instrumentExecutionService.getInputParameterValue("Weight").getValue();
-    final Double height = instrumentExecutionService.getInputParameterValue("Height").getValue();
-
-    patScanDb.update("insert into PATIENT ( PATIENT_KEY, IDENTIFIER1, WEIGHT, HEIGHT ) values( ?, ?, ?, ? )", new PreparedStatementSetter() {
-      public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, participantID);
-        ps.setString(2, participantID);
-        ps.setDouble(3, weight);
-        ps.setDouble(4, height);
-      }
-    });
-
-    if(instrumentExecutionService.hasInputParameter("Gender")) {
-      final String gender = instrumentExecutionService.getInputParameterValue("Gender").getValue();
-      patScanDb.update("update PATIENT set SEX = ? where PATIENT_KEY = ?", new PreparedStatementSetter() {
-        public void setValues(PreparedStatement ps) throws SQLException {
-          if(gender.toUpperCase().startsWith("M")) {
-            ps.setString(1, "M");
-          } else {
-            ps.setString(1, "F");
-          }
-          ps.setString(2, participantID);
-        }
-      });
-    }
-
-    if(instrumentExecutionService.hasInputParameter("DateOfBirth")) {
-      Date dob = instrumentExecutionService.getInputParameterValue("DateOfBirth").getValue();
-      final java.sql.Date sqlDob = new java.sql.Date(dob.getTime());
-      patScanDb.update("update PATIENT set BIRTHDATE = ? where PATIENT_KEY = ?", new PreparedStatementSetter() {
-        public void setValues(PreparedStatement ps) throws SQLException {
-          ps.setDate(1, sqlDob);
-          ps.setString(2, participantID);
-        }
-      });
-    }
-  }
-
-  /**
-   * Initialise or restore instrument data (database and scan files).
-   * @throws Exception
-   */
-  protected void resetDeviceData() {
-    File backupDbFile = new File(getPatScanDbPath() + ".orig");
-    File currentDbFile = new File(getPatScanDbPath());
-    scanDataDir = currentDbFile.getParentFile();
-
-    try {
-      if(backupDbFile.exists()) {
-        FileUtil.copyFile(backupDbFile, currentDbFile);
-        backupDbFile.delete();
-        // delete scan files
-        for(String fileName : participantFiles) {
-          File file = new File(scanDataDir, fileName);
-          if(file.exists()) {
-            file.delete();
-          }
-        }
-      } else {
-        // init
-        FileUtil.copyFile(currentDbFile, backupDbFile);
-      }
-    } catch(Exception ex) {
-      log.error(ex.getMessage(), ex);
-      throw new RuntimeException("Error while reseting device data: " + ex.getMessage(), ex);
-    }
-  }
+  private boolean isRepeatable;
 
   private List<Map<String, Data>> retrieveDeviceData() {
 
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
+    participantKey = patScanDb.queryForObject("select p.PATIENT_KEY from PATIENT p where p.IDENTIFIER1=?", String.class, participantID);
     if(instrumentExecutionService.hasInputParameter("HipSide")) {
       String hipSide = instrumentExecutionService.getInputParameterValue("HipSide").getValue();
       if(hipSide != null) {
         if(hipSide.toUpperCase().startsWith("L")) {
-          extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT) {
+          extractLeftHip(dataList);
+        } else if(hipSide.toUpperCase().startsWith("R")) {
+          extractRightHip(dataList);
+        } else if(hipSide.toUpperCase().startsWith("B")) {
+          if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
+            extractLeftHip(dataList);
+            extractRightHip(dataList);
+          } else {
+            extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
+            extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
+          }
+        }
+      }
+    } else if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
+      extractLeftHip(dataList);
+      extractRightHip(dataList);
+    } else {
+      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
+      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
+    }
+    if(instrumentExecutionService.hasInputParameter("ForearmSide")) {
+      String forearmSide = instrumentExecutionService.getInputParameterValue("ForearmSide").getValue();
+      if(forearmSide != null) {
+        if(forearmSide.toUpperCase().startsWith("L")) {
+          extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
             @Override
             public String getName() {
-              return "HIP";
+              return "FA";
             }
           });
-        } else if(hipSide.toUpperCase().startsWith("R")) {
-          extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT) {
+        } else if(forearmSide.toUpperCase().startsWith("R")) {
+          extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
             @Override
             public String getName() {
-              return "HIP";
+              return "FA";
             }
           });
         }
       }
     } else {
-      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.LEFT));
-      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantID, Side.RIGHT));
+      extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
+      extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
     }
-    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantID));
-    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.SINGLE));
-    extractScanData(dataList, new LateralScanDataExtractor(patScanDb, scanDataDir, participantID, Energy.DUAL));
-    extractScanData(dataList, new SpineScanDataExtractor(patScanDb, scanDataDir, participantID));
+    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantKey, server, apexReceiver));
+    extractScanData(dataList, new IVAImagingScanDataExtractor(patScanDb, scanDataDir, participantKey, Energy.CLSA_DXA, server, apexReceiver));
 
     return dataList;
 
+  }
+
+  private void extractRightHip(List<Map<String, Data>> dataList) {
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
+      @Override
+      public String getName() {
+        return "HIP";
+      }
+    });
+  }
+
+  private void extractLeftHip(List<Map<String, Data>> dataList) {
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
+      @Override
+      public String getName() {
+        return "HIP";
+      }
+    });
   }
 
   private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
@@ -222,37 +163,144 @@ public class APEXInstrumentRunner implements InstrumentRunner {
    * input file to be read by the external application
    */
   public void initialize() {
-    log.info("Backup local database");
-    resetDeviceData();
-
-    log.info("Setting participant data");
-    initParticipantData();
-
+    participantID = instrumentExecutionService.getParticipantID();
+    isRepeatable = instrumentExecutionService.isRepeatableMeasure();
+    initApexReceiverStatus();
     outVendorNames = instrumentExecutionService.getExpectedOutputParameterVendorNames();
+
+    try {
+      File tmpDir = File.createTempFile("dcm", "");
+      if(tmpDir.delete() == false || tmpDir.mkdir() == false) {
+        throw new RuntimeException("Cannot create temp directory");
+      }
+      this.dcmDir = tmpDir;
+      log.info("DICOM files stored to {}", dcmDir.getAbsolutePath());
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    this.server = new DicomServer(dcmDir, dicomSettings);
   }
 
   /**
    * Implements parent method run from InstrumentRunner Launch the external application, retrieve and send the data
    */
   public void run() {
-    log.info("Launching APEX software");
-    externalAppHelper.launch();
+    log.info("Start Dicom server");
+    try {
+      server.start();
+    } catch(IOException e) {
+      log.error("Error start server");
+    }
+    apexReceiver.waitForExit();
+  }
 
+  private void retrieveMeasurements() {
     log.info("Retrieving measurements");
     List<Map<String, Data>> dataList = retrieveDeviceData();
 
     log.info("Sending data to server");
+    sentVariables.clear();
     for(Map<String, Data> dataMap : dataList) {
-      sendDataToServer(dataMap);
+      for(Map.Entry<String, Data> entry : dataMap.entrySet()) {
+        sentVariables.add(entry.getKey());
+      }
+      // send only if measure is complete (all variable assigned)
+      // because repeatable measure accept partial variable set
+      if(isRepeatable) {
+        if(outVendorNames.equals(dataMap.keySet())) {
+          sendDataToServer(dataMap);
+        }
+      } else {
+        sendDataToServer(dataMap);
+      }
     }
   }
 
-  /**
-   * Implements parent method shutdown from InstrumentRunner Delete results from current measurement
-   */
   public void shutdown() {
-    log.info("Restoring local database and cleaning scan files");
-    resetDeviceData();
+    log.info("Shutdown Dicom server");
+    server.stop();
+    deleteTemporaryDicomFiles();
+  }
+
+  /**
+   * Return true if you sent all required variable, false otherwise
+   * @return
+   */
+  private boolean isCompleteVariable() {
+    List<String> missing = new ArrayList<String>();
+    List<String> sentVariablesCopy = new ArrayList<String>(sentVariables);
+    boolean retValue = true;
+
+    // if repeatable measure check if all variables in measure has been sent
+    for(int i = 0; i < instrumentExecutionService.getExpectedMeasureCount(); i++) {
+      for(String out : outVendorNames) {
+        if(sentVariablesCopy.contains(out) == false) {
+          missing.add(out);
+          retValue = false;
+        } else {
+          sentVariablesCopy.remove(out);
+        }
+      }
+    }
+    log.info("Missing variables: " + missing);
+    return retValue;
+  }
+
+  private void deleteTemporaryDicomFiles() {
+    log.info("Delete temporary dicom files");
+    FileSystemUtils.deleteRecursively(dcmDir);
+  }
+
+  public void initApexReceiverStatus() {
+    apexReceiver.setParticipantId(participantID);
+    apexReceiver.setCheckActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        retrieveMeasurements();
+        if(isCompleteVariable()) {
+          if(isRepeatable) {
+            apexReceiver.setVariableStatusOKButCheck();
+          } else {
+            apexReceiver.setVariableStatusOK();
+          }
+          if(apexReceiver.isCompleteRawInDicom()) {
+            apexReceiver.setDicomStatusOK();
+            apexReceiver.setSaveEnable();
+          } else {
+            apexReceiver.setDicomStatusNotOK();
+          }
+        } else {
+          apexReceiver.setVariableStatusNotOK();
+          apexReceiver.setDicomStatusNotReady();
+        }
+        apexReceiver.validate();
+        apexReceiver.repaint();
+      }
+    });
+    apexReceiver.setVisible(true);
+  }
+
+  public enum Side {
+    LEFT, RIGHT
+  }
+
+  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
+    this.instrumentExecutionService = instrumentExecutionService;
+  }
+
+  public void setPatScanDb(JdbcTemplate patScanDb) {
+    this.patScanDb = patScanDb;
+  }
+
+  public void setDicomSettings(DicomSettings dicomSettings) {
+    this.dicomSettings = dicomSettings;
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 
 }

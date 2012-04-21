@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
@@ -201,7 +200,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
     Map<String, String> map = new HashMap<String, String>();
 
     map.put("p1-STREET", "299, Avenue des Pins Ouest");
-    map.put("p1-CITY", "Montréal");
+    map.put("p1-CITY", "MontrÃ©al");
     map.put("p1-PROVINCE", "QC");
     map.put("p1-COUNTRY", "Canada");
     map.put("p1-POSTAL CODE", "H1T2M4");

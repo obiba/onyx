@@ -1,12 +1,27 @@
 <wicket:panel>
-	<span wicket:id="input"/><span wicket:id="unit"/>
+	<span wicket:id="input" /><span wicket:id="unit" />
 </wicket:panel>
+
 <wicket:fragment wicket:id="textAreaFragment">
 	<textarea wicket:id="field"></textarea>
 </wicket:fragment>
-<wicket:fragment wicket:id="inputFragment">
-	<input wicket:id="field" type="text"/>
+
+<wicket:fragment wicket:id="autoCompleteFragment">
+	<input wicket:id="field" type="text" /><span wicket:id="label"></span>
 </wicket:fragment>
+
+<wicket:fragment wicket:id="inputFragment">
+	<input wicket:id="field" type="text" />
+</wicket:fragment>
+
+<wicket:fragment wicket:id="checkboxFragment">
+	<input wicket:id="field" type="checkbox" />
+</wicket:fragment>
+
 <wicket:fragment wicket:id="selectFragment">
 	<select wicket:id="select" />
+</wicket:fragment>
+
+<wicket:fragment wicket:id="audioRecorderFragment">
+	<object wicket:id="nanoGong">[nanoGong]</object>
 </wicket:fragment>

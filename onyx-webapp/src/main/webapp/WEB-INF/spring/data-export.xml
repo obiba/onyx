@@ -5,15 +5,29 @@
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
     <property name="exportDestinations" ref="onyxDataExportDestinations" />
     <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
+    <property name="exportDatasourceProviders">
+      <list>
+        <bean class="org.obiba.onyx.engine.variable.export.format.CsvDatasourceFactoryProvider"/>
+        <bean class="org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider"/>
+        <bean class="org.obiba.onyx.engine.variable.export.format.OpalDatasourceFactoryProvider">
+          <property name="opalJavaClient" ref="&amp;opalJavaClient"/>
+        </bean>
+      </list>
+    </property>
+    <property name="participantService" ref="participantService" />
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
         <property name="targetBeanName" value="userSessionService" />
       </bean>
     </property>
+    <property name="threadFactory">
+      <bean class="org.obiba.onyx.spring.TransactionalThreadFactory"/>
+    </property>
     <property name="exportLogService" ref="exportLogService" />
     <property name="captureAndExportStrategyMap" ref="captureAndExportStrategyMap" />
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="publicKeyFactory" ref="onyxKeyStore" />
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
   </bean>
 
 </beans>

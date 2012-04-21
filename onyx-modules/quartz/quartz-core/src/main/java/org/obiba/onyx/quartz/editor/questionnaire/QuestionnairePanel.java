@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Session;
@@ -62,9 +64,6 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
 @SuppressWarnings("serial")
 public abstract class QuestionnairePanel extends Panel {
 
@@ -91,8 +90,6 @@ public abstract class QuestionnairePanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private final Form<Questionnaire> form;
-
   public QuestionnairePanel(String id, final IModel<Questionnaire> model, boolean newQuestionnaire) {
     super(id, model);
     final Questionnaire questionnaire = model.getObject();
@@ -104,7 +101,8 @@ public abstract class QuestionnairePanel extends Panel {
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
-    add(form = new Form<Questionnaire>("form", model));
+    Form<Questionnaire> form = new Form<Questionnaire>("form", model);
+    add(form);
 
     TextField<String> name = new TextField<String>("name", new PropertyModel<String>(form.getModel(), "name"));
     name.setLabel(new ResourceModel("Name"));
@@ -125,7 +123,8 @@ public abstract class QuestionnairePanel extends Panel {
         }
       }
     });
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name)).add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
+    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name))
+        .add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
     TextField<String> version = new TextField<String>("version", new PropertyModel<String>(form.getModel(), "version"));
     version.setLabel(new ResourceModel("Version"));
@@ -168,8 +167,11 @@ public abstract class QuestionnairePanel extends Panel {
     labelsTooltips.put("labelResume", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
     labelsTooltips.put("labelCancel", new ResourceModel("Questionnaire.Tooltip.otherNavigation"));
 
-    localePropertiesModel = new Model<LocaleProperties>(newQuestionnaire ? localePropertiesUtils.loadForNewQuestionnaire(questionnaire) : localePropertiesUtils.load(questionnaire, questionnaire));
-    final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, false, labelsTooltips);
+    localePropertiesModel = new Model<LocaleProperties>(
+        newQuestionnaire ? LocaleProperties.createForNewQuestionnaire(questionnaire) : localePropertiesUtils
+            .load(questionnaire, questionnaire));
+    final LabelsPanel labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel,
+        feedbackWindow, labelsTooltips, null);
     form.add(labelsPanel);
 
     final Locale userLocale = Session.get().getLocale();
@@ -202,7 +204,8 @@ public abstract class QuestionnairePanel extends Panel {
       }
     };
 
-    final Palette<Locale> localesPalette = new Palette<Locale>("languages", new PropertyModel<List<Locale>>(model.getObject(), "locales"), localeChoices, renderer, 5, false) {
+    Palette<Locale> localesPalette = new Palette<Locale>("languages",
+        new PropertyModel<List<Locale>>(model.getObject(), "locales"), localeChoices, renderer, 5, false) {
 
       @Override
       protected Recorder<Locale> newRecorderComponent() {
@@ -215,7 +218,8 @@ public abstract class QuestionnairePanel extends Panel {
             LocaleProperties localeProperties = localePropertiesModel.getObject();
             Collection<Locale> selectedLocales = getModelCollection();
             @SuppressWarnings("unchecked")
-            Collection<Locale> removedLocales = CollectionUtils.subtract(localeProperties.getLocales(), selectedLocales);
+            Collection<Locale> removedLocales = CollectionUtils
+                .subtract(localeProperties.getLocales(), selectedLocales);
             for(Locale locale : removedLocales) {
               localeProperties.removeLocale(questionnaire, locale);
             }

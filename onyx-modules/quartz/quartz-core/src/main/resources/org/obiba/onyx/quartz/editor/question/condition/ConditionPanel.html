@@ -4,40 +4,46 @@
 	
 	<span wicket:id="explain" />
 	
-	<div wicket:id="conditionType">
+	<form wicket:id="form">	
 	
-		<input wicket:id="none" type="radio" /> <label wicket:id="noneLabel"></label>
-		<br />
-
-		<input wicket:id="questionType" type="radio" /> <label wicket:id="questionTypeLabel"></label>
-		<span wicket:id="questionTypeContainer">
-			<table class="keyValueTable radioContent" wicket:id="questionConditionContainer">
-				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="questionLabel"></label></td>
-					<td><select wicket:id="question"></select></td>
-				</tr>				
-				<tr>
-					<td class="keyValueTableKey" valign="top"><label wicket:id="categoryLabel"></label></td>
-					<td><select wicket:id="category"></select></td>
-				</tr>				
-			</table>
-			<br />	
-		</span>
+		<div wicket:id="conditionType">
 		
-		<input wicket:id="variableType" type="radio" /> <label wicket:id="variableTypeLabel"></label>
-		<span wicket:id="variableTypeContainer">
-			<div class="radioContent" wicket:id="variableContainer">
-				<select wicket:id="variable"></select>
-				<a wicket:id="newVariable"><img wicket:id="newVariableImg" /></a>
-				<span wicket:id="previewVariableVisibility">
-					<img wicket:id="previewVariable" class="preview" />
-					<pre wicket:id="previewScript" />
-				</span>
-			</div> 
+			<input wicket:id="none" type="radio" /> <label wicket:id="noneLabel"></label>
 			<br />
-		</span>
 	
-	</div>
+			<input wicket:id="questionType" type="radio" /> <label wicket:id="questionTypeLabel"></label>
+			<span wicket:id="questionTypeContainer">
+				<table class="keyValueTable radioContent" wicket:id="questionConditionContainer">
+					<tr>
+						<td class="keyValueTableKey" valign="top"><label wicket:id="questionLabel"></label></td>
+						<td><select wicket:id="question"></select></td>
+					</tr>				
+					<tr>
+						<td class="keyValueTableKey" valign="top"><label wicket:id="categoryLabel"></label></td>
+						<td><select wicket:id="category"></select></td>
+					</tr>				
+				</table>
+				<br />	
+			</span>
+			
+			<input wicket:id="variableType" type="radio" /> <label wicket:id="variableTypeLabel"></label>
+			<span wicket:id="variableTypeContainer">
+				<div class="radioContent" wicket:id="variableContainer">
+					<select wicket:id="variable"></select>
+					<a wicket:id="newVariable"><img wicket:id="newVariableImg" /></a>
+					<span wicket:id="previewVariableVisibility">
+						<img wicket:id="previewVariable" class="preview" />
+						<pre wicket:id="previewScript" />
+					</span>
+				</div> 
+				<br />
+			</span>
+			
+			<input wicket:id="javascriptType" type="radio" /> <label wicket:id="javascriptTypeLabel"></label>
+			<div class="radioContent">
+				<textarea wicket:id="javascriptField" cols="50" rows="7"></textarea>
+			</div>
+		</div>
 	
-	
+	</form>
 </wicket:panel>

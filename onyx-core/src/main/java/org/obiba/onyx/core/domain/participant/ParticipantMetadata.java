@@ -30,6 +30,8 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private static final long serialVersionUID = 1L;
 
+  // private static final Logger logger = LoggerFactory.getLogger(ParticipantMetadata.class);
+
   private static final Boolean updateAppointmentListEnabledDefault = Boolean.TRUE;
 
   private static final Boolean participantRegistryEnabledDefault = Boolean.FALSE;
@@ -93,6 +95,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   // ResourceLoaderAware Methods
   //
 
+  @Override
   public void setResourceLoader(ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
   }
@@ -101,6 +104,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   // InitializingBean Methods
   //
 
+  @Override
   public void afterPropertiesSet() throws Exception {
     initConfig();
 
@@ -132,7 +136,6 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
    */
   public void setEssentialAttributes(List<ParticipantAttribute> attributes) {
     this.essentialAttributes.clear();
-
     if(attributes != null) {
       this.essentialAttributes.addAll(attributes);
     }
@@ -159,7 +162,6 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
         return attribute;
       }
     }
-
     return null;
   }
 
@@ -233,9 +235,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     if(resources != null && resources.length > 0) {
       ParticipantAttributeReader reader = new ParticipantAttributeReader();
       reader.setResources(resources);
-      List<ParticipantAttribute> attributes = reader.read();
-
-      setEssentialAttributes(attributes);
+      setEssentialAttributes(reader.read());
     }
   }
 
@@ -251,11 +251,11 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   public boolean hasEditableAfterReceptionAttribute() {
     for(ParticipantAttribute attribute : essentialAttributes) {
-      if(attribute.isEditableAfterReception() == true) return true;
+      if(attribute.isEditableAfterReception()) return true;
     }
 
     for(ParticipantAttribute attribute : configuredAttributes) {
-      if(attribute.isEditableAfterReception() == true) return true;
+      if(attribute.isEditableAfterReception()) return true;
     }
 
     return false;

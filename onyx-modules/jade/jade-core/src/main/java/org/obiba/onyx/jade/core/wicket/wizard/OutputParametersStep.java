@@ -15,7 +15,9 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLaunchPanel;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -49,7 +51,8 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getNextLink().setVisible(true);
+
+    form.getNextLink().setVisible(isEnableNextLink(form));
 
     // Disable previous button when not needed.
     WizardStepPanel previousStep = this.getPreviousStep();
@@ -64,6 +67,23 @@ public class OutputParametersStep extends WizardStepPanel {
       target.addComponent(form.getNextLink());
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getFinishLink());
+    }
+  }
+
+  private boolean isEnableNextLink(WizardForm form) {
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    if(instrumentType.isRepeatable()) {
+      // minimum is having the expected count of repeatable measures
+      int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
+      int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
+      boolean skipped = ((InstrumentOutputParameterPanel) get(getContentId())).isSkipMeasurement();
+      if(currentCount < expectedCount && !skipped) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
     }
   }
 

@@ -67,7 +67,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     } else if(type.equals(InstrumentRunValue.class)) {
       String firstToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
       if(firstToken != null) {
-        if(firstToken.equals("MEASURE")) {
+        if(firstToken.equals(InstrumentRunVariableValueSourceFactory.MEASURE)) {
           return resolveInstrumentRunValues(valueSet, variable);
         } else {
           return resolveInstrumentRunValue(valueSet, variable);
@@ -78,7 +78,7 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
     } else if(type.equals(Data.class)) {
       String firstToken = StringUtil.splitAndReturnTokenAt(variable.getName(), "\\.", 0);
       if(firstToken != null) {
-        if(firstToken.equals("MEASURE")) {
+        if(firstToken.equals(InstrumentRunVariableValueSourceFactory.MEASURE)) {
           return resolveDatas(valueSet, variable);
         } else {
           return resolveData(valueSet, variable);

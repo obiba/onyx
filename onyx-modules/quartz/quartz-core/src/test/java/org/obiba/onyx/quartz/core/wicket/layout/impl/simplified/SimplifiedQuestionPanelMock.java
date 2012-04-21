@@ -16,7 +16,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.FormMock;
 @SuppressWarnings("serial")
 public class SimplifiedQuestionPanelMock extends FormMock {
 
-  public SimplifiedQuestionPanelMock(String id, IModel model) {
+  public SimplifiedQuestionPanelMock(String id, IModel<?> model) {
     super(id, model);
   }
 

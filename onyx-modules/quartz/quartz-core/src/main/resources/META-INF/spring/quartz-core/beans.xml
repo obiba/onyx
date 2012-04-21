@@ -1,116 +1,130 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-	<tx:annotation-driven transaction-manager="transactionManager" />
-	
-	<bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
-		<property name="activeInterviewService" ref="activeInterviewService" />
-		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+
+  <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
+    <property name="activeInterviewService" ref="activeInterviewService"/>
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager"/>
     <property name="stageManager">
       <bean class="org.obiba.onyx.engine.StageManagerImpl">
-        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml" />
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml"/>
       </bean>
     </property>
-		<property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
-		<property name="beanResolver" ref="questionnaireBeanResolver" />
-		<property name="variableEntityProvider">
-			<bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
-				<constructor-arg index="0" value="Participant" />
-				<constructor-arg index="1" value="participant.barcode" />
-				<property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview" />
-			</bean>
-		</property>
-		<property name="customVariablesRegistry" ref="customVariablesRegistry" />
-	</bean>
+    <property name="questionnaireParticipantService" ref="questionnaireParticipantService"/>
+    <property name="beanResolver" ref="questionnaireBeanResolver"/>
+    <property name="variableEntityProvider">
+      <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
+        <constructor-arg index="0" value="Participant"/>
+        <constructor-arg index="1" value="participant.barcode"/>
+        <property name="entityClass" value="org.obiba.onyx.core.domain.participant.Interview"/>
+      </bean>
+    </property>
+    <property name="customVariablesRegistry" ref="customVariablesRegistry"/>
+  </bean>
 
-	<bean id="questionnaireBundleManager" class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
-		<constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires" />
-	</bean>
+  <bean id="questionnaireBundleManager"
+        class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
+    <constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires"/>
+  </bean>
 
-	<bean id="quartzWaitingState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzWaitingState"
-		scope="prototype" />
+  <bean id="quartzWaitingState" parent="baseQuartzStageState"
+        class="org.obiba.onyx.quartz.engine.state.QuartzWaitingState"
+        scope="prototype"/>
 
-	<bean id="quartzReadyState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzReadyState"
-		scope="prototype" />
+  <bean id="quartzReadyState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzReadyState"
+        scope="prototype"/>
 
-	<bean id="quartzNotApplicableState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzNotApplicableState"
-		scope="prototype" />
+  <bean id="quartzNotApplicableState" parent="baseQuartzStageState"
+        class="org.obiba.onyx.quartz.engine.state.QuartzNotApplicableState"
+        scope="prototype"/>
 
-	<bean id="quartzInProgressState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzInProgressState"
-		scope="prototype">
-		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
-	</bean>
+  <bean id="quartzInProgressState" parent="baseQuartzStageState"
+        class="org.obiba.onyx.quartz.engine.state.QuartzInProgressState"
+        scope="prototype">
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager"/>
+  </bean>
 
-	<bean id="quartzSkippedState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzSkippedState"
-		scope="prototype" />
+  <bean id="quartzSkippedState" parent="baseQuartzStageState"
+        class="org.obiba.onyx.quartz.engine.state.QuartzSkippedState"
+        scope="prototype"/>
 
-	<bean id="quartzCompletedState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzCompletedState"
-		scope="prototype" />
+  <bean id="quartzCompletedState" parent="baseQuartzStageState"
+        class="org.obiba.onyx.quartz.engine.state.QuartzCompletedState"
+        scope="prototype"/>
 
-	<bean id="quartzInterruptedState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzInterruptedState"
-		scope="prototype" />
+  <bean id="quartzInterruptedState" parent="baseQuartzStageState"
+        class="org.obiba.onyx.quartz.engine.state.QuartzInterruptedState"
+        scope="prototype"/>
 
-	<bean id="baseQuartzStageState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.AbstractQuartzStageState"
-		abstract="true">
-		<property name="activeInterviewService" ref="activeInterviewService" />
-		<property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
-	</bean>
+  <bean id="baseQuartzStageState" parent="baseStageState"
+        class="org.obiba.onyx.quartz.engine.state.AbstractQuartzStageState"
+        abstract="true">
+    <property name="activeInterviewService" ref="activeInterviewService"/>
+    <property name="questionnaireParticipantService" ref="questionnaireParticipantService"/>
+  </bean>
 
-	<bean id="navigationStrategy" class="org.obiba.onyx.quartz.core.service.impl.DefaultNavigationStrategyImpl" />
+  <bean id="navigationStrategy" class="org.obiba.onyx.quartz.core.service.impl.DefaultNavigationStrategyImpl"/>
 
-	<!-- Questionnaire UI factories -->
-	<bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory" />
+  <!-- Questionnaire UI factories -->
+  <bean id="quartz.DefaultPageLayoutFactory"
+        class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory"/>
 
-	<bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory" />
+  <bean id="quartz.DefaultQuestionPanelFactory"
+        class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory"/>
 
-	<bean id="quartz.DropDownQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory" />
+  <bean id="quartz.DropDownQuestionPanelFactory"
+        class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory"/>
 
-	<bean id="quartz.SimplifiedPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory" />
+  <bean id="quartz.SimplifiedPageLayoutFactory"
+        class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory"/>
 
-	<bean id="quartz.SimplifiedQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory" />
-	<bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry" />
+  <bean id="quartz.SimplifiedQuestionPanelFactory"
+        class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory"/>
+  <bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry"/>
 
-	<bean id="questionPanelFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry" />
+  <bean id="questionPanelFactoryRegistry"
+        class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry"/>
 
-	<bean id="questionnaireUIFactoryRegistrationListener" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionnaireUIFactoryRegistrationListener">
-		<property name="pageLayoutFactoryRegistry" ref="pageLayoutFactoryRegistry" />
-		<property name="questionPanelFactoryRegistry" ref="questionPanelFactoryRegistry" />
-	</bean>
+  <bean id="questionnaireUIFactoryRegistrationListener"
+        class="org.obiba.onyx.quartz.core.wicket.layout.QuestionnaireUIFactoryRegistrationListener">
+    <property name="pageLayoutFactoryRegistry" ref="pageLayoutFactoryRegistry"/>
+    <property name="questionPanelFactoryRegistry" ref="questionPanelFactoryRegistry"/>
+  </bean>
 
-	<bean id="questionnaireBeanResolver" class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver" />
+  <bean id="questionnaireBeanResolver" class="org.obiba.onyx.quartz.magma.QuestionnaireBeanResolver"/>
 
-	<bean id="questionnairePersistenceUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils">
-		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
-		<property name="localePropertiesUtils" ref="localePropertiesUtils" />
-    	<property name="questionnaireRegister" ref="questionnaireRegister" />
-	</bean>
-	
-	<bean id="questionnaireRegister" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireRegister">
-		<property name="moduleRegistry" ref="moduleRegistry" />
-	</bean>
+  <bean id="questionnairePersistenceUtils"
+        class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistenceUtils">
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager"/>
+    <property name="questionnaireRegister" ref="questionnaireRegister"/>
+  </bean>
 
-	<bean id="localePropertiesUtils" class="org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils">
- 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
- 	</bean>
+  <bean id="questionnaireRegister" class="org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnaireRegister">
+    <property name="moduleRegistry" ref="moduleRegistry"/>
+  </bean>
 
-	<bean id="variableUtils" class="org.obiba.onyx.quartz.editor.variable.VariableUtils">
- 		<property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
- 	</bean>
- 	
- 	<bean id="variableValidationUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils">
- 		<property name="variableUtils" ref="variableUtils" />
- 	</bean>
+  <bean id="localePropertiesUtils" class="org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils">
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager"/>
+  </bean>
 
-	<bean id="onyxSettings" class=" org.obiba.onyx.quartz.editor.OnyxSettings">
- 		<property name="dateFormatStr" value="${org.obiba.onyx.dateFormat}" />
- 	</bean>
+  <bean id="variableUtils" class="org.obiba.onyx.quartz.editor.variable.VariableUtils">
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager"/>
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
+  </bean>
 
-	<bean id="openAnswerUtils" class=" org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils">
- 		<property name="onyxSettings" ref="onyxSettings" />
- 	</bean>
+  <bean id="variableValidationUtils" class="org.obiba.onyx.quartz.editor.questionnaire.utils.VariableValidationUtils">
+    <property name="variableUtils" ref="variableUtils"/>
+  </bean>
+
+  <bean id="onyxSettings" class=" org.obiba.onyx.quartz.editor.OnyxSettings">
+    <property name="dateFormatStr" value="${org.obiba.onyx.dateFormat}"/>
+  </bean>
+
+  <bean id="openAnswerUtils" class=" org.obiba.onyx.quartz.editor.openAnswer.OpenAnswerUtils">
+    <property name="onyxSettings" ref="onyxSettings"/>
+  </bean>
 
 </beans>

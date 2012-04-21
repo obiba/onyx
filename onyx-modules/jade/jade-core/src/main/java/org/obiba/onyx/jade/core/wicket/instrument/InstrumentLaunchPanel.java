@@ -10,34 +10,23 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.io.Serializable;
+import java.util.Locale;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.ValueMap;
-import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -46,13 +35,8 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.behavior.ButtonDisableBehavior;
+import org.obiba.onyx.wicket.model.MagmaStringResourceModel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.onyx.wicket.reusable.Dialog;
-import org.obiba.onyx.wicket.reusable.DialogBuilder;
-import org.obiba.onyx.wicket.reusable.Dialog.CloseButtonCallback;
-import org.obiba.onyx.wicket.reusable.Dialog.Status;
-import org.obiba.onyx.wicket.wizard.WizardForm;
-import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +52,6 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   private static final long serialVersionUID = 8250439838157103589L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstrumentLaunchPanel.class);
 
   @SpringBean
@@ -77,56 +60,83 @@ public abstract class InstrumentLaunchPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  private MeasuresListPanel measuresList;
+  private MeasuresPanel measures;
 
-  private SkipMeasureFragment skipMeasure;
-
-  private boolean skipMeasurement = false;
+  private Link<Object> startButton;
 
   @SuppressWarnings("serial")
   public InstrumentLaunchPanel(String id) {
     super(id);
     InstrumentRun currentRun = activeInstrumentRunService.getInstrumentRun();
     setDefaultModel(new Model<InstrumentRun>(currentRun));
-    setSkipMeasurement(currentRun.getSkipComment() != null);
+
     setOutputMarkupId(true);
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    final InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     String codebase = instrumentService.getInstrumentInstallPath(instrumentType);
+
+    // instrument instructions
+    add(new Label("instrument-instructions", new MagmaStringResourceModel(new MessageSourceResolvableStringModel(instrumentType.getInstructions())) {
+
+      @Override
+      protected String getTableContext() {
+        return instrumentType.getName();
+      }
+
+      @Override
+      protected Participant getParticipant() {
+        return activeInstrumentRunService.getParticipant();
+      }
+
+      @Override
+      protected Locale getLocale() {
+        return InstrumentLaunchPanel.this.getLocale();
+      }
+    }).setEscapeModelStrings(false));
 
     // general instructions and launcher
     add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model<ValueMap>(new ValueMap("name=" + instrumentType.getName())))));
 
     final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase);
 
-    // measure list panel initiated before buttons
-    add(measuresList = new MeasuresListPanel("measuresList") {
+    if(instrumentType.hasManualCaptureOutputParameters() || instrumentType.isRepeatable()) {
+      add(measures = new MeasuresPanel("measures") {
+        @Override
+        public void onAddClick(AjaxRequestTarget target) {
+          // Note that "Manual" instrument has been launched.
+          InstrumentLaunchPanel.this.onInstrumentLaunch();
+        }
 
-      @Override
-      public void onRefresh(AjaxRequestTarget target) {
-        WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
-        WizardStepPanel step = (WizardStepPanel) form.get("step");
-        step.handleWizardState(form, target);
-      }
+        @Override
+        public void onRefresh(AjaxRequestTarget target) {
+          startButton.setEnabled(!isSkipMeasurement() && measures.getMeasureCount() < measures.getExpectedMeasureCount());
+          target.addComponent(startButton);
+        }
 
-    });
-    measuresList.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable());
+        @Override
+        public void onSkipUpdate(AjaxRequestTarget target) {
+          startButton.setEnabled(!isSkipMeasurement() && measures.getMeasureCount() < measures.getExpectedMeasureCount());
+          target.addComponent(startButton);
+        }
 
-    if(activeInstrumentRunService.getInstrumentType().isRepeatable()) {
+      });
+    } else {
+      add(new EmptyPanel("measures"));
+    }
+
+    if(instrumentType.isRepeatable()) {
       add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
 
         protected void onTimer(AjaxRequestTarget target) {
-          if(!skipMeasurement) {
-            measuresList.refresh(target);
+          if(!measures.isSkipMeasurement() && !isMeasureComplete()) {
+            measures.refresh(target);
           }
         }
 
       });
     }
 
-    IBehavior buttonDisableBehavior = new ButtonDisableBehavior();
-
-    Link startLink = new Link("start") {
+    startButton = new Link<Object>("start") {
 
       @Override
       public void onClick() {
@@ -135,63 +145,10 @@ public abstract class InstrumentLaunchPanel extends Panel {
       }
 
     };
-    startLink.add(buttonDisableBehavior);
-    startLink.setOutputMarkupId(true);
-    setComponentEnabledOnSkip(startLink, false, null);
-    startLink.setEnabled(!isMeasureComplete(currentRun));
-    add(startLink);
-
-    final InstrumentManualOutputParameterPanel instrumentManualOutputParameterPanel = new InstrumentManualOutputParameterPanel("content", 340);
-    final Dialog manualEntryDialog = DialogBuilder.buildDialog("manualEntryDialog", new ResourceModel("manualEntry"), instrumentManualOutputParameterPanel).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
-    manualEntryDialog.setHeightUnit("em");
-    manualEntryDialog.setWidthUnit("em");
-    manualEntryDialog.setInitialHeight(26);
-    manualEntryDialog.setInitialWidth(34);
-    add(manualEntryDialog);
-    WebMarkupContainer manualButtonBlock = new WebMarkupContainer("manualButtonBlock");
-    add(manualButtonBlock);
-
-    AjaxLink manualButtonLink = new AjaxLink("manualButton") {
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        manualEntryDialog.setCloseButtonCallback(new CloseButtonCallback() {
-          private static final long serialVersionUID = 1L;
-
-          public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
-            if(status == null || status != null && status.equals(Status.WINDOW_CLOSED) || status != null && status.equals(Status.CANCELLED)) {
-              manualEntryDialog.getForm().clearInput();
-              manualEntryDialog.getForm().setEnabled(false);
-              return true;
-            } else if(status.equals(Status.SUCCESS)) {
-              manualEntryDialog.resetStatus();
-              instrumentManualOutputParameterPanel.saveOutputInstrumentRunValues();
-              measuresList.refresh(target);
-              return true;
-            } else if(status.equals(Status.ERROR)) {
-              FeedbackPanel feedbackPanel = new FeedbackPanel("content");
-              instrumentManualOutputParameterPanel.getFeedbackWindow().setContent(feedbackPanel);
-              instrumentManualOutputParameterPanel.getFeedbackWindow().show(target);
-              return false;
-            }
-            return true;
-          }
-        });
-        manualEntryDialog.getForm().setEnabled(true);
-
-        clearPreviouslyPersistedNonRepeatableOutputParameters();
-        manualEntryDialog.show(target);
-        // Note that "Manual" instrument has been launched.
-        InstrumentLaunchPanel.this.onInstrumentLaunch();
-      }
-
-    };
-    manualButtonBlock.setVisible(instrumentType.isManualCaptureAllowed());
-    manualButtonLink.setOutputMarkupId(true);
-    manualButtonLink.add(buttonDisableBehavior);
-    setComponentEnabledOnSkip(manualButtonLink, false, null);
-    manualButtonLink.setEnabled(!isMeasureComplete(currentRun));
-    manualButtonBlock.add(manualButtonLink);
+    startButton.add(new ButtonDisableBehavior());
+    startButton.setOutputMarkupId(true);
+    startButton.setEnabled(!isMeasureComplete());
+    add(startButton);
 
     String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
     if(errMessage != null) error(errMessage);
@@ -238,118 +195,6 @@ public abstract class InstrumentLaunchPanel extends Panel {
     Label instructions = new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null));
     instructions.setVisible(manualCaptureRequired);
     add(instructions);
-
-    skipMeasure = new SkipMeasureFragment("skipMeasure");
-    skipMeasure.setVisible(activeInstrumentRunService.getInstrumentType().isRepeatable() && activeInstrumentRunService.getInstrumentType().isAllowPartial());
-    skipMeasure.setOutputMarkupId(true);
-    add(skipMeasure);
-
-  }
-
-  private void setComponentEnabledOnSkip(Component component, boolean enabled, AjaxRequestTarget target) {
-    InstrumentRun currentRun = (InstrumentRun) InstrumentLaunchPanel.this.getDefaultModelObject();
-    if(currentRun != null && getSkipMeasurement()) {
-      component.setEnabled(enabled);
-
-      // Disable measures list autorefresh when "skip remaining measure" is selected.
-      if(measuresList != null) measuresList.disableAutoRefresh();
-    } else {
-      component.setEnabled(!enabled);
-
-      // Reactivate measures list autorefresh when "skip remaining measure" is deselected.
-      if(target != null && measuresList != null) {
-        measuresList.enableAutoRefresh(target);
-      }
-    }
-    if(target != null) target.addComponent(component);
-  }
-
-  public class SkipMeasureFragment extends Fragment {
-    private static final long serialVersionUID = 1L;
-
-    public SkipMeasureFragment(String id) {
-      super(id, "skipMeasureFragment", InstrumentLaunchPanel.this);
-      Object modelObject = InstrumentLaunchPanel.this.getDefaultModelObject();
-
-      CheckBox box = new CheckBox("skipMeasurements", new PropertyModel(InstrumentLaunchPanel.this, "skipMeasurement"));
-      box.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void onUpdate(AjaxRequestTarget target) {
-          setComponentEnabledOnSkip(get("comment"), true, target);
-          if(!get("comment").isEnabled()) {
-            get("comment").setDefaultModelObject(null);
-            activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
-          }
-
-          WizardForm form = (WizardForm) InstrumentLaunchPanel.this.findParent(WizardForm.class);
-          WizardStepPanel step = (WizardStepPanel) form.get("step");
-          step.handleWizardState(form, target);
-
-          setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("start"), false, target);
-          setComponentEnabledOnSkip(InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton"), false, target);
-        }
-
-        @Override
-        protected IAjaxCallDecorator getAjaxCallDecorator() {
-          return new AjaxCallDecorator() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public CharSequence decorateScript(CharSequence script) {
-              return "window.clearTimeout(timeout);" + script;
-            }
-
-          };
-        }
-      });
-      box.setEnabled(((InstrumentRun) modelObject).getValidMeasureCount() > 0 && !isMeasureComplete((InstrumentRun) modelObject));
-      add(box);
-
-      final TextArea comment = new TextArea("comment", new PropertyModel(modelObject, "skipComment"));
-      comment.add(new StringValidator.MaximumLengthValidator(2000));
-      comment.setRequired(true);
-      comment.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void onUpdate(AjaxRequestTarget target) {
-          if(comment.getModelObject() != null) {
-            activeInstrumentRunService.setSkipRemainingMeasuresCommentFromInstrumentRun(comment.getModelObject().toString());
-          } else {
-            activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
-          }
-        }
-
-      });
-      setComponentEnabledOnSkip(comment, true, null);
-      add(comment);
-      comment.setOutputMarkupId(true);
-    }
-
-    // refresh the skipMeasurement fragment and the action buttons
-    public void refresh(AjaxRequestTarget target) {
-      MeasuresListPanel measuresList = InstrumentLaunchPanel.this.measuresList;
-
-      Component startButton = InstrumentLaunchPanel.this.get("start");
-      startButton.setEnabled(measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
-      target.addComponent(startButton);
-
-      Component addButton = InstrumentLaunchPanel.this.get("manualButtonBlock:manualButton");
-      addButton.setEnabled(measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
-      target.addComponent(addButton);
-
-      Component skipCheckbox = get("skipMeasurements");
-      skipCheckbox.setEnabled(measuresList.getMeasureCount() > 0 && measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
-      if(!skipCheckbox.isEnabled()) {
-        skipCheckbox.setDefaultModelObject(false);
-        get("comment").setDefaultModelObject(null);
-        activeInstrumentRunService.removeSkipRemainingMeasuresCommentFromInstrumentRun();
-      }
-      get("comment").setEnabled(getSkipMeasurement() == true && skipCheckbox.isEnabled());
-      target.addComponent(SkipMeasureFragment.this);
-    }
   }
 
   /**
@@ -357,39 +202,18 @@ public abstract class InstrumentLaunchPanel extends Panel {
    */
   public abstract void onInstrumentLaunch();
 
-  public boolean getSkipMeasurement() {
-    return skipMeasurement;
-  }
-
-  public void setSkipMeasurement(boolean skipMeasurement) {
-    this.skipMeasurement = skipMeasurement;
-  }
-
-  public SkipMeasureFragment getSkipMeasure() {
-    return skipMeasure;
-  }
-
-  public boolean isMeasureComplete(InstrumentRun modelObject) {
-    if(measuresList != null) {
-      return (modelObject.getValidMeasureCount() == measuresList.getExpectedMeasureCount());
+  public boolean isSkipMeasurement() {
+    if(measures != null) {
+      return measures.isSkipMeasurement();
     }
     return false;
   }
 
-  /**
-   * Used to clear out previously persisted non repeatable output parameters whenever the manual entry "add" button is
-   * clicked. This is important because some parameters are not required. If a 'not required' parameter were provide in
-   * a previous measure but not in a following measure then the original value would not be overridden and the result
-   * would be a mix of the two measures. To avoid this we clear out the values before taking each non repeatable
-   * measure.
-   */
-  private void clearPreviouslyPersistedNonRepeatableOutputParameters() {
-    for(InstrumentOutputParameter param : activeInstrumentRunService.getInstrumentType().getOutputParameters()) {
-      for(InstrumentRunValue outputParameterValue : activeInstrumentRunService.getInstrumentRunValues(param.getCode())) {
-        if(outputParameterValue != null && outputParameterValue.getMeasure() == null) {
-          activeInstrumentRunService.deleteInstrumentRunValue(outputParameterValue);
-        }
-      }
+  public boolean isMeasureComplete() {
+    if(measures != null) {
+      return measures.isMeasureComplete();
     }
+    return false;
   }
+
 }

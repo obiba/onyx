@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -16,13 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -37,6 +38,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -49,8 +52,15 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.BOILER_PLATE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_CHECKBOX;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_DROP_DOWN;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.LIST_RADIO;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUDIO_RECORDING;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUTO_COMPLETE;
+import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
 
 /**
  *
@@ -58,16 +68,16 @@ import com.google.common.collect.Collections2;
 @SuppressWarnings("serial")
 public abstract class QuestionPanel extends Panel {
 
-  // private transient Logger logger = LoggerFactory.getLogger(getClass());
-
   private final VariableNameBehavior variableNameBehavior;
 
   private final String initialName;
 
-  public QuestionPanel(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow, boolean useQuestionType, QuestionType... forceAllowedType) {
+  public QuestionPanel(String id, IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel,
+      IModel<LocaleProperties> localePropertiesModel, FeedbackPanel feedbackPanel, FeedbackWindow feedbackWindow,
+      boolean useQuestionType, QuestionType... forceAllowedType) {
     super(id, model);
 
-    final TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
+    TextField<String> name = new TextField<String>("name", new PropertyModel<String>(model, "element.name"));
     name.setLabel(new ResourceModel("Name"));
     name.add(new RequiredFormFieldBehavior());
     name.add(new PatternValidator(QuartzEditorPanel.ELEMENT_NAME_PATTERN));
@@ -81,13 +91,14 @@ public abstract class QuestionPanel extends Panel {
           QuestionnaireFinder questionnaireFinder = QuestionnaireFinder.getInstance(questionnaireModel.getObject());
           questionnaireModel.getObject().setQuestionnaireCache(null);
           Question findQuestion = questionnaireFinder.findQuestion(validatable.getValue());
-          Collection<Question> sameNameQuestions = Collections2.filter(question.getQuestions(), new Predicate<Question>() {
+          Collection<Question> sameNameQuestions = Collections2
+              .filter(question.getQuestions(), new Predicate<Question>() {
 
-            @Override
-            public boolean apply(Question input) {
-              return input.getName().equals(validatable.getValue());
-            }
-          });
+                @Override
+                public boolean apply(Question input) {
+                  return input.getName().equals(validatable.getValue());
+                }
+              });
           if(findQuestion != null && findQuestion != question || !sameNameQuestions.isEmpty()) {
             error(validatable, "QuestionAlreadyExists");
           }
@@ -98,7 +109,8 @@ public abstract class QuestionPanel extends Panel {
     add(new SimpleFormComponentLabel("nameLabel", name));
     add(new HelpTooltipPanel("nameHelp", new ResourceModel("Name.Tooltip")));
 
-    final TextField<String> variable = new TextField<String>("variable", new PropertyModel<String>(model, "element.variableName"));
+    TextField<String> variable = new TextField<String>("variable",
+        new PropertyModel<String>(model, "element.variableName"));
     variable.setLabel(new ResourceModel("Variable"));
     add(variable);
     add(new SimpleFormComponentLabel("variableLabel", variable));
@@ -110,32 +122,52 @@ public abstract class QuestionPanel extends Panel {
     List<QuestionType> typeChoices = null;
     if(useQuestionType) {
       if(forceAllowedType.length == 0) {
+
         QuestionType questionType = model.getObject().getQuestionType();
         if(questionType == null) {
           typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.values()));
         } else {
-          if(questionType == QuestionType.BOILER_PLATE) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.BOILER_PLATE));
-          } else if(questionType == QuestionType.SINGLE_OPEN_ANSWER) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.SINGLE_OPEN_ANSWER, QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO));
-          } else if(questionType == QuestionType.LIST_CHECKBOX || questionType == QuestionType.LIST_DROP_DOWN || questionType == QuestionType.LIST_RADIO) {
-            List<QuestionType> asList = null;
-            if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
-              asList = Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_RADIO);
-            } else {
-              asList = Arrays.asList(QuestionType.LIST_CHECKBOX, QuestionType.LIST_DROP_DOWN, QuestionType.LIST_RADIO);
-            }
-            typeChoices = new ArrayList<QuestionType>(asList);
-          } else if(questionType == QuestionType.ARRAY_CHECKBOX || questionType == QuestionType.ARRAY_RADIO) {
-            typeChoices = new ArrayList<QuestionType>(Arrays.asList(QuestionType.ARRAY_CHECKBOX, QuestionType.ARRAY_RADIO));
+          switch(questionType) {
+
+            case BOILER_PLATE:
+              typeChoices = new ArrayList<QuestionType>(Arrays.asList(BOILER_PLATE));
+              break;
+
+            case SINGLE_OPEN_ANSWER:
+            case SINGLE_AUDIO_RECORDING:
+            case SINGLE_AUTO_COMPLETE:
+              typeChoices = new ArrayList<QuestionType>(Arrays
+                  .asList(SINGLE_OPEN_ANSWER, LIST_CHECKBOX, LIST_DROP_DOWN, LIST_RADIO, SINGLE_AUDIO_RECORDING,
+                      SINGLE_AUTO_COMPLETE));
+              break;
+
+            case LIST_CHECKBOX:
+            case LIST_DROP_DOWN:
+            case LIST_RADIO:
+              List<QuestionType> asList;
+              if(Questionnaire.SIMPLIFIED_UI.equals(questionnaireModel.getObject().getUiType())) {
+                asList = Arrays.asList(LIST_CHECKBOX, LIST_RADIO);
+              } else {
+                asList = Arrays.asList(LIST_CHECKBOX, LIST_DROP_DOWN, LIST_RADIO);
+              }
+              typeChoices = new ArrayList<QuestionType>(asList);
+              break;
+
+            case ARRAY_CHECKBOX:
+            case ARRAY_RADIO:
+              typeChoices = new ArrayList<QuestionType>(Arrays.asList(ARRAY_CHECKBOX, ARRAY_RADIO));
+              break;
+
           }
         }
+
       } else {
         typeChoices = new ArrayList<QuestionType>(Arrays.asList(forceAllowedType));
       }
     }
 
-    final DropDownChoice<QuestionType> type = new DropDownChoice<QuestionType>("type", new PropertyModel<QuestionType>(model, "questionType"), typeChoices, new IChoiceRenderer<QuestionType>() {
+    final DropDownChoice<QuestionType> type = new DropDownChoice<QuestionType>("type",
+        new PropertyModel<QuestionType>(model, "questionType"), typeChoices, new IChoiceRenderer<QuestionType>() {
       @Override
       public Object getDisplayValue(QuestionType type1) {
         return new StringResourceModel("QuestionType." + type1, QuestionPanel.this, null).getString();
@@ -147,6 +179,7 @@ public abstract class QuestionPanel extends Panel {
       }
     });
     type.setLabel(new ResourceModel("QuestionType"));
+    type.setVisible(useQuestionType);
     type.add(new RequiredFormFieldBehavior());
     // submit the whole form instead of just the questionType component
     type.add(new AjaxFormSubmitBehavior("onchange") {
@@ -162,62 +195,71 @@ public abstract class QuestionPanel extends Panel {
         onSubmit(target);
       }
     });
+    add(type);
+    add(new SimpleFormComponentLabel("typeLabel", type));
+    add(new HelpTooltipPanel("typeHelp", new ResourceModel("QuestionType.Tooltip")));
 
-    WebMarkupContainer typeContainer = new WebMarkupContainer("typeContainer");
-    typeContainer.setVisible(useQuestionType);
-    add(typeContainer);
-
-    typeContainer.add(type);
-    typeContainer.add(new SimpleFormComponentLabel("typeLabel", type));
-    typeContainer.add(new HelpTooltipPanel("typeHelp", new ResourceModel("QuestionType.Tooltip")));
-
-    add(new HelpTooltipPanel("labelsHelp", new Model<String>(new StringResourceModel("LanguagesProperties.Tooltip", this, null).getString() + "<br /><img align=\"center\" src=\"" + RequestCycle.get().urlFor(new ResourceReference(QuestionPanel.class, "labels-with-help.png")) + "\" />")));
+    add(new HelpTooltipPanel("labelsHelp", new Model<String>(
+        new StringResourceModel("LanguagesProperties.Tooltip", this, null)
+            .getString() + "<br /><img align=\"center\" src=\"" + RequestCycle.get()
+            .urlFor(new ResourceReference(QuestionPanel.class, "labels-with-help.png")) + "\" />")));
 
     Map<String, IModel<String>> labelsTooltips = new HashMap<String, IModel<String>>();
-    labelsTooltips.put("label", new ResourceModel("Question.Tooltip.label"));
-    labelsTooltips.put("instructions", new ResourceModel("Question.Tooltip.instructions"));
-    labelsTooltips.put("caption", new ResourceModel("Question.Tooltip.caption"));
-    labelsTooltips.put("help", new ResourceModel("Question.Tooltip.help"));
-    labelsTooltips.put("specifications", new ResourceModel("Question.Tooltip.specifications"));
-    labelsTooltips.put("categoryOrder", new ResourceModel("Question.Tooltip.categoryOrder"));
+    for(String key : questionnaireModel.getObject().getPropertyKeyProvider().getProperties(new Question())) {
+      labelsTooltips.put(key, new ResourceModel("Question.Tooltip." + key));
+    }
 
-    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel, feedbackWindow, question.getParentQuestion() != null, labelsTooltips));
+    Map<String, Boolean> visibleStates = new HashMap<String, Boolean>();
+    if(question.getParentQuestion() != null) {
+      // hide all labels properties except "label"
+      for(String property : questionnaireModel.getObject().getPropertyKeyProvider().getProperties(question)) {
+        visibleStates.put(property, "label".equals(property));
+      }
+    }
+    add(new LabelsPanel("labels", localePropertiesModel, new PropertyModel<Question>(model, "element"), feedbackPanel,
+        feedbackWindow, labelsTooltips, visibleStates));
   }
 
   /**
-   * 
    * @param target
    */
   public void onSave(AjaxRequestTarget target) {
-    Question question = ((EditedQuestion) getDefaultModelObject()).getElement();
+    EditedQuestion editedQuestion = (EditedQuestion) getDefaultModelObject();
+    Question question = editedQuestion.getElement();
     if(!variableNameBehavior.isVariableNameDefined()) {
       question.setVariableName(null);
     }
-    // TODO test before commit
-    // if(!question.getName().equals(initialName)) {
-    // for(Category category : question.getCategories()) {
-    // updateVariableNameKeys(category.getVariableNames(), question.getName());
-    // Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
-    // for(OpenAnswerDefinition oad : openAnswerDefinitionsByName.values()) {
-    // updateVariableNameKeys(oad.getVariableNames(), question.getName());
-    // }
-    // }
-    // }
+    // update keys of variables names
+    if(!question.getName().equals(initialName)) {
+      for(Category category : question.getCategories()) {
+        updateVariableNameKeys(category.getVariableNames(), question.getName());
+        Map<String, OpenAnswerDefinition> openAnswerDefinitionsByName = category.getOpenAnswerDefinitionsByName();
+        for(OpenAnswerDefinition oad : openAnswerDefinitionsByName.values()) {
+          updateVariableNameKeys(oad.getVariableNames(), question.getName());
+        }
+      }
+    }
+    // update category name for single open answer
+    if(editedQuestion.getQuestionType() == SINGLE_OPEN_ANSWER || editedQuestion
+        .getQuestionType() == SINGLE_AUDIO_RECORDING || editedQuestion.getQuestionType() == SINGLE_AUTO_COMPLETE) {
+      List<Category> categories = question.getCategories();
+      if(!categories.isEmpty() && categories.size() == 1) {
+        categories.get(0).setName(question.getName());
+      }
+    }
   }
 
-  // TODO test before commit
-  // private void updateVariableNameKeys(Map<String, String> variableNames, String newKey) {
-  // if(variableNames.containsKey(initialName)) {
-  // String value = variableNames.get(initialName);
-  // if(StringUtils.isNotBlank(value)) {
-  // variableNames.put(newKey, value);
-  // variableNames.remove(initialName);
-  // }
-  // }
-  // }
+  private void updateVariableNameKeys(Map<String, String> variableNames, String newKey) {
+    if(variableNames.containsKey(initialName)) {
+      String value = variableNames.get(initialName);
+      if(StringUtils.isNotBlank(value)) {
+        variableNames.put(newKey, value);
+        variableNames.remove(initialName);
+      }
+    }
+  }
 
   /**
-   * 
    * @param target
    * @param questionType
    */

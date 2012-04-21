@@ -38,6 +38,7 @@ public class Page implements IHasQuestion {
     this.section = section;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -81,6 +82,7 @@ public class Page implements IHasQuestion {
     }
   }
 
+  @Override
   public void accept(IVisitor visitor) {
     visitor.visit(this);
   }

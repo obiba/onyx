@@ -14,12 +14,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.filter.FilteredValueTable;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +35,12 @@ public class OnyxDataPurge {
 
   private ParticipantService participantService;
 
+  private MagmaInstanceProvider magmaInstanceProvider;
+
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
+  }
+
   public void setPurgeConfiguration(List<OnyxDataExportDestination> purgeConfiguration) {
     this.purgeConfiguration = purgeConfiguration;
   }
@@ -49,18 +55,17 @@ public class OnyxDataPurge {
     long purgeListStartTime = new Date().getTime();
     log.info("Starting to determine which Participants need to be purged.");
 
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      for(OnyxDataExportDestination purge : purgeConfiguration) {
-        for(ValueTable table : datasource.getValueTables()) {
-          if(table.getEntityType().equalsIgnoreCase("Participant") && purge.wantsTable(table)) {
-            ValueTable filteredCollection = new FilteredValueTable(table, purge.getVariableFilterChainForTable(table), purge.getEntityFilterChainForTable(table));
-            for(ValueSet valueSet : filteredCollection.getValueSets()) {
-              Participant template = new Participant();
-              template.setBarcode(valueSet.getVariableEntity().getIdentifier());
-              Participant participant = participantService.getParticipant(template);
-              if(participant != null) {
-                result.add(participant);
-              }
+    Datasource datasource = magmaInstanceProvider.getOnyxDatasource();
+    for(OnyxDataExportDestination purge : purgeConfiguration) {
+      for(ValueTable table : datasource.getValueTables()) {
+        if(table.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE) && purge.wantsTable(table)) {
+          ValueTable filteredCollection = new FilteredValueTable(table, purge.getVariableFilterChainForTable(table), purge.getEntityFilterChainForTable(table));
+          for(ValueSet valueSet : filteredCollection.getValueSets()) {
+            Participant template = new Participant();
+            template.setBarcode(valueSet.getVariableEntity().getIdentifier());
+            Participant participant = participantService.getParticipant(template);
+            if(participant != null) {
+              result.add(participant);
             }
           }
         }

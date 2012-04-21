@@ -122,6 +122,10 @@ public class Data {
       return code().hasError();
     }
 
+    public NIBPCode.SystemError systemError() {
+      return code().systemError();
+    }
+
     public NIBPCode.Error sbpError() {
       return code().sbpError(message().data1());
     }
@@ -168,7 +172,21 @@ public class Data {
   public static class NIBPCode {
 
     public enum Error {
-      INDETERMINATE, UNDER_RANGE, OVER_RANGE, ARITHMETIC_ERROR
+      INDETERMINATE, UNDER_RANGE, OVER_RANGE, ARITHMETIC_ERROR, UNKNOWN
+    }
+
+    public enum SystemError {
+      ToFewPulses(0x0), TooManyMotionArtifacts(0x01), Overpressure(0x02), InflationTooSlow(0x03), InflationTooFast(0x04), DeflationTooSlow(0x05), DeflationTooFast(0x06), SoftwareFault(0x07), PulseAmplitudeTooLow(0x08), PressureBelowMinus10(0x09), PressureTooHighForTooLong(0x0A), PressureNotLowEnoughForTooLong(0x0B), STAM_LTAM_Violation(0x0C), ResetByMeansOtherThanPowerUp(0x0D), ResetByMeansOtherThanPowerUpRecoveryDataCorrupted(0x0E), BatteryTooLow(0x0F), Unkown(0xFF);
+
+      private final byte value;
+
+      private SystemError(int value) {
+        this.value = (byte) value;
+      }
+
+      public byte value() {
+        return value;
+      }
     }
 
     final byte code;
@@ -182,11 +200,20 @@ public class Data {
     }
 
     public boolean hasSystemError() {
-      return (code & 1 << 7) == 1;
+      return (code & 0x80) == 0x80;
     }
 
     public boolean hasSbpError() {
-      return (code & 1 << 6) == 1;
+      return (code & 0x40) == 0x40;
+    }
+
+    public SystemError systemError() {
+      byte errorCode = (byte) (code & ((byte) 0x0F));
+      for(SystemError err : SystemError.values()) {
+        if(err.value() == errorCode) return err;
+      }
+      System.out.println("Unknown system error code " + BpmMessage.encode(errorCode));
+      return SystemError.Unkown;
     }
 
     public Error sbpError(byte code) {
@@ -199,12 +226,14 @@ public class Data {
         return Error.OVER_RANGE;
       case 0x21:
         return Error.ARITHMETIC_ERROR;
+      default:
+        System.out.println("unknown sbp error code: " + BpmMessage.encode(code));
+        return Error.UNKNOWN;
       }
-      throw new IllegalArgumentException("unknown error code " + code);
     }
 
     public boolean hasDbpError() {
-      return (code & 1 << 5) == 1;
+      return (code & 0x20) == 0x20;
     }
 
     public Error dbpError(byte code) {
@@ -217,12 +246,14 @@ public class Data {
         return Error.OVER_RANGE;
       case 0x21:
         return Error.ARITHMETIC_ERROR;
+      default:
+        System.out.println("unknown dbp error code: " + BpmMessage.encode(code));
+        return Error.UNKNOWN;
       }
-      throw new IllegalArgumentException("unknown error code " + code);
     }
 
     public boolean hasPulseError() {
-      return (code & 1 << 4) == 1;
+      return (code & 0x10) == 0x10;
     }
 
     public Error pulseError(byte code) {
@@ -231,8 +262,10 @@ public class Data {
         return Error.INDETERMINATE;
       case 0x21:
         return Error.ARITHMETIC_ERROR;
+      default:
+        System.out.println("unknown pulse error code: " + BpmMessage.encode(code));
+        return Error.UNKNOWN;
       }
-      throw new IllegalArgumentException("unknown error code " + code);
     }
 
     public byte systemErrorCode() {

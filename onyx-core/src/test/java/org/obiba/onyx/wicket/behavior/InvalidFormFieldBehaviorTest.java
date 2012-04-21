@@ -49,7 +49,7 @@ public class InvalidFormFieldBehaviorTest {
 
           @Override
           public Component populateContent(String id) {
-            DataField panel = new DataField(id, new Model(DataBuilder.buildInteger(10)), DataType.INTEGER);
+            DataField panel = new DataField(id, new Model<Data>(DataBuilder.buildInteger(10)), DataType.INTEGER);
             panel.add(new RangeValidator(0l, 2l) {
 
               @Override

@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -51,8 +50,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   public InstrumentLaunchStep(String id) {
     super(id);
     setOutputMarkupId(true);
-
-    add(new Label("title", new StringResourceModel("InstrumentApplicationLaunch", this, null)));
+    add(new EmptyPanel(getTitleId()).setVisible(false));
   }
 
   @Override
@@ -74,7 +72,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
       // minimum is having the expected count of repeatable measures
       int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
       int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
-      boolean skipped = ((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement();
+      boolean skipped = ((InstrumentLaunchPanel) get(getContentId())).isSkipMeasurement();
       if(currentCount < expectedCount && !skipped) {
         return false;
       } else {
@@ -118,10 +116,10 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
         List<InstrumentParameter> missingValueParams = new ArrayList<InstrumentParameter>();
 
-        if(!instrumentType.isRepeatable()) {
+        if(instrumentType.isRepeatable() == false) {
 
           if(isOutputParamCapturedManually()) {
-            for(InstrumentOutputParameter param : instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+            for(InstrumentOutputParameter param : instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
               if(param.isManualCaptureAllowed()) {
                 InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
                 if(param.isRequired(activeInstrumentRunService.getParticipant()) && runValue == null) {
@@ -166,7 +164,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           }
         } else {
           int currentCount = activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
-          if(!((InstrumentLaunchPanel) get(getContentId())).getSkipMeasurement() || currentCount == 0) {
+          if(((InstrumentLaunchPanel) get(getContentId())).isSkipMeasurement() == false || currentCount == 0) {
 
             // minimum is having the expected count of repeatable measures
             int expectedCount = instrumentType.getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
@@ -187,7 +185,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
   private boolean isOutputParamCapturedManually() {
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
-    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL);
+    List<InstrumentOutputParameter> outputParams = instrumentType.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
     for(InstrumentOutputParameter param : outputParams) {
       InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param.getCode());
       if(param.isManualCaptureAllowed() && runValue != null && runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {

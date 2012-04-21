@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>UltrasoundGeVivid</name>
+
+  <instrumentParameters>
+    <output>
+      <code>STRUCTURED_REPORTING</code>
+      <vendorName>SR</vendorName>
+      <dataType>DATA</dataType>
+      <mimeType>application/dicom</mimeType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    <output>
+      <code>ULTRASOUND_IMAGE</code>
+      <vendorName>US</vendorName>
+      <dataType>DATA</dataType>
+      <mimeType>application/dicom</mimeType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+  </instrumentParameters>
+
+</instrumentType>

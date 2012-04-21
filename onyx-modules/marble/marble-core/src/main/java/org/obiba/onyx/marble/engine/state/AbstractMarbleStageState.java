@@ -20,4 +20,9 @@ public abstract class AbstractMarbleStageState extends AbstractStageState {
     this.consentService = consentService;
   }
 
+  @Override
+  public Boolean areDependenciesCompleted() {
+    return super.areDependenciesCompleted();
+  }
+
 }

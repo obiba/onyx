@@ -13,7 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Locale;
 
-import org.obiba.magma.Datasource;
 import org.obiba.magma.NoSuchValueTableException;
 import org.obiba.magma.NoSuchVariableException;
 import org.obiba.magma.Value;
@@ -21,7 +20,6 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
-import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,15 +38,12 @@ public class PdfVariableReport extends PdfReport {
   @Override
   protected InputStream getReport(Locale locale) {
 
-    MagmaEngineVariableResolver resolver = MagmaEngineVariableResolver.valueOf(pdfVariablePath);
-    Datasource datasource = magmaInstanceProvider.getOnyxDatasource();
-
     try {
-      ValueTable table = datasource.getValueTable(resolver.getTableName());
-      VariableValueSource variableValueSource = table.getVariableValueSource(resolver.getVariableName());
+      ValueTable table = magmaInstanceProvider.resolveTableFromVariablePath(pdfVariablePath);
+      VariableValueSource variableValueSource = magmaInstanceProvider.resolveVariablePath(pdfVariablePath);
 
       // Get the currently interviewed participant's ValueSet.
-      VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant().getBarcode());
+      VariableEntity entity = magmaInstanceProvider.newParticipantEntity(activeInterviewService.getParticipant());
       ValueSet valueSet = table.getValueSet(entity);
 
       // Get the PDF data.

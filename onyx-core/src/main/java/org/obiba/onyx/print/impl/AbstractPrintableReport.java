@@ -143,6 +143,7 @@ abstract public class AbstractPrintableReport implements IPrintableReport, Appli
     xstream.useAttributeFor("dataType", DataType.class);
     xstream.alias("computingDataSource", ComputingDataSource.class);
     xstream.alias("scriptDataSource", JavascriptDataSource.class);
+    xstream.useAttributeFor(JavascriptDataSource.class, "valueTable");
     xstream.useAttributeFor(JavascriptDataSource.class, "valueType");
     xstream.useAttributeFor(JavascriptDataSource.class, "unit");
     xstream.useAttributeFor(JavascriptDataSource.class, "sequence");

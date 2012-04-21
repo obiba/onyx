@@ -13,6 +13,8 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.dcm4che2.tool.dcmrcv.DicomServer;
+import org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner.Side;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.springframework.dao.DataAccessException;
@@ -28,9 +30,10 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
   /**
    * @param patScanDb
    * @param participantKey
+   * @param server
    */
-  protected HipScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Side side) {
-    super(patScanDb, scanDataDir, participantKey);
+  protected HipScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Side side, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
     this.side = side;
   }
 
@@ -42,6 +45,11 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
     default:
       return "R_HIP";
     }
+  }
+
+  @Override
+  public String getDicomBodyPartName() {
+    return "HIP";
   }
 
   @Override
@@ -135,8 +143,8 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
     }
   }
 
-  public enum Side {
-    LEFT, RIGHT
+  public Side getSide() {
+    return side;
   }
 
 }
