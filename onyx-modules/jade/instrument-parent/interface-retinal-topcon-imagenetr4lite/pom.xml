@@ -34,6 +34,7 @@
       <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>jtds-ntlmauth</artifactId>
       <version>${project.version}</version>
+      <classifier>win32</classifier>
     </dependency>
   </dependencies>
 
