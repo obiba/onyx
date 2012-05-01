@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2011 OBiBa. All rights reserved.
- *  
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -67,9 +67,14 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
-    participantKey = patScanDb.queryForObject("select p.PATIENT_KEY from PATIENT p where p.IDENTIFIER1=?", String.class, participantID);
+    log.info("participantId: " + participantID);
+    participantKey = patScanDb
+        .queryForObject("select p.PATIENT_KEY from PATIENT p where p.IDENTIFIER1=?", String.class, participantID);
+    log.info("participantKey: " + participantKey);
     if(instrumentExecutionService.hasInputParameter("HipSide")) {
       String hipSide = instrumentExecutionService.getInputParameterValue("HipSide").getValue();
+      log.info("hipSide: " + hipSide);
+      log.info("expected: " + instrumentExecutionService.getExpectedMeasureCount());
       if(hipSide != null) {
         if(hipSide.toUpperCase().startsWith("L")) {
           extractLeftHip(dataList);
@@ -80,8 +85,10 @@ public class APEXInstrumentRunner implements InstrumentRunner {
             extractLeftHip(dataList);
             extractRightHip(dataList);
           } else {
-            extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
-            extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
+            extractScanData(dataList,
+                new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
+            extractScanData(dataList,
+                new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
           }
         }
       }
@@ -89,66 +96,80 @@ public class APEXInstrumentRunner implements InstrumentRunner {
       extractLeftHip(dataList);
       extractRightHip(dataList);
     } else {
-      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
-      extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
+      extractScanData(dataList,
+          new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
+      extractScanData(dataList,
+          new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
     }
     if(instrumentExecutionService.hasInputParameter("ForearmSide")) {
       String forearmSide = instrumentExecutionService.getInputParameterValue("ForearmSide").getValue();
       if(forearmSide != null) {
         if(forearmSide.toUpperCase().startsWith("L")) {
-          extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
-            @Override
-            public String getName() {
-              return "FA";
-            }
-          });
+          extractScanData(dataList,
+              new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
+                @Override
+                public String getName() {
+                  return "FA";
+                }
+              });
         } else if(forearmSide.toUpperCase().startsWith("R")) {
-          extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
-            @Override
-            public String getName() {
-              return "FA";
-            }
-          });
+          extractScanData(dataList,
+              new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
+                @Override
+                public String getName() {
+                  return "FA";
+                }
+              });
         }
       }
     } else {
-      extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
-      extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
+      extractScanData(dataList,
+          new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
+      extractScanData(dataList,
+          new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
     }
-    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantKey, server, apexReceiver));
-    extractScanData(dataList, new IVAImagingScanDataExtractor(patScanDb, scanDataDir, participantKey, Energy.CLSA_DXA, server, apexReceiver));
+    extractScanData(dataList,
+        new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantKey, server, apexReceiver));
+    extractScanData(dataList,
+        new IVAImagingScanDataExtractor(patScanDb, scanDataDir, participantKey, Energy.CLSA_DXA, server, apexReceiver));
 
     return dataList;
 
   }
 
   private void extractRightHip(List<Map<String, Data>> dataList) {
-    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
-      @Override
-      public String getName() {
-        return "HIP";
-      }
-    });
+    extractScanData(dataList,
+        new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
+          @Override
+          public String getName() {
+            return "HIP";
+          }
+        });
   }
 
   private void extractLeftHip(List<Map<String, Data>> dataList) {
-    extractScanData(dataList, new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
-      @Override
-      public String getName() {
-        return "HIP";
-      }
-    });
+    extractScanData(dataList,
+        new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
+          @Override
+          public String getName() {
+            return "HIP";
+          }
+        });
   }
 
   private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
+    log.info("extractScanData");
     // filter the values to output
     Map<String, Data> extractedData = extractor.extractData();
     Map<String, Data> outputData = new HashMap<String, Data>();
+
     for(Entry<String, Data> entry : extractedData.entrySet()) {
       if(outVendorNames.contains(entry.getKey())) {
         outputData.put(entry.getKey(), entry.getValue());
       }
     }
+    log.info(extractedData + "");
+    log.info(outputData + "");
     dataList.add(outputData);
 
     participantFiles.addAll(extractor.getFileNames());
@@ -224,6 +245,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   /**
    * Return true if you sent all required variable, false otherwise
+   *
    * @return
    */
   private boolean isCompleteVariable() {
