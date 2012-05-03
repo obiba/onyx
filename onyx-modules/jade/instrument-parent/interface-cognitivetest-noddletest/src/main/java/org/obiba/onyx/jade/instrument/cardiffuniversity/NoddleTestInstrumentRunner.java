@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.instrument.cardiffuniversity;
 
+import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -132,6 +133,15 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
         warningPopup("noTestKey");
         log.warn("No test data was found in the Noddle test result file. Perhaps Noddle was shutdown before the first test completed.");
       } else {
+
+        EventQueue.invokeLater(new Runnable() {
+          public void run() {
+            String msg = resourceBundleMessageSource.getMessage("uploading", null, getLocale());
+            String title = resourceBundleMessageSource.getMessage("uploadingTitle", null, getLocale());
+            JOptionPane.showMessageDialog(null, msg, title, JOptionPane.INFORMATION_MESSAGE);
+          }
+        });
+
         Data binaryData = DataBuilder.buildBinary(resultFiles.get(0));
         sendDataToServer(binaryData);
 
