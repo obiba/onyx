@@ -4,6 +4,7 @@
   <bean id="onyxDataPurge" class="org.obiba.onyx.engine.variable.export.OnyxDataPurge">
     <property name="purgeConfiguration" ref="onyxDataPurgeConfiguration" />
     <property name="participantService" ref="participantService" />
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
   </bean>
 
 </beans>

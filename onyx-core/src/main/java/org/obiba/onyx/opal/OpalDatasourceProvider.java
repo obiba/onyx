@@ -19,9 +19,9 @@ public class OpalDatasourceProvider implements InitializingBean {
 
   private OpalJavaClient opalJavaClient;
 
-  private String datasourceName;
+  private String onyxDatasourceName;
 
-  private String[] datasourceNames;
+  private String opalDatasourceName;
 
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
@@ -35,31 +35,21 @@ public class OpalDatasourceProvider implements InitializingBean {
     this.opalJavaClient = opalJavaClient;
   }
 
-  public void setDatasourceName(String datasourceName) {
-    this.datasourceName = datasourceName;
+  public void setOnyxDatasourceName(String onyxDatasourceName) {
+    this.onyxDatasourceName = onyxDatasourceName;
   }
 
-  public void setDatasourceNames(String[] datasourceNames) {
-    this.datasourceNames = datasourceNames;
+  public void setOpalDatasourceName(String opalDatasourceName) {
+    this.opalDatasourceName = opalDatasourceName;
   }
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    if(datasourceName != null) {
-      addDatasource(datasourceName);
-    }
-
-    if(datasourceNames != null) {
-      for(String dsName : datasourceNames) {
-        addDatasource(dsName);
-      }
+    if(opalDatasourceName != null && opalDatasourceName.isEmpty() == false) {
+      String localDatasourceName = onyxDatasourceName != null ? onyxDatasourceName : opalDatasourceName;
+      log.info("Adding datasource: {} -> {}", localDatasourceName, opalDatasourceName);
+      magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, new RestDatasource(localDatasourceName, opalJavaClient, opalDatasourceName)));
     }
   }
 
-  private void addDatasource(String dsName) {
-    if(dsName.isEmpty() == false) {
-      log.info("Adding datasource: {}", dsName);
-      magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, new RestDatasource(dsName, opalJavaClient, dsName)));
-    }
-  }
 }
