@@ -57,12 +57,17 @@ public class ExperimentalConditionServiceTest extends BaseDefaultSpringContextTe
     experimentalCondition.setWorkstation("testWorkstation");
   }
 
+  public void testSaveExperimentalCondition() throws Exception {
+
+    testSaveExperimentalConditionWithZeroValues();
+    testSaveExperimentalConditionwithOneValue();
+  }
+
   @Test
   public void testSaveExperimentalConditionWithZeroValues() {
-
     experimentalConditionService.save(experimentalCondition);
 
-    ExperimentalCondition retrievedExperimentalCondition = persistenceManager.get(ExperimentalCondition.class, 1L);
+    ExperimentalCondition retrievedExperimentalCondition = persistenceManager.get(ExperimentalCondition.class, experimentalCondition.getId());
 
     assertThat(experimentalCondition, is(retrievedExperimentalCondition));
 
@@ -83,7 +88,7 @@ public class ExperimentalConditionServiceTest extends BaseDefaultSpringContextTe
 
     experimentalCondition.setExperimentalConditionValues(values);
     experimentalConditionService.save(experimentalCondition);
-    ExperimentalCondition retrievedExperimentalCondition = persistenceManager.get(ExperimentalCondition.class, 2L);
+    ExperimentalCondition retrievedExperimentalCondition = persistenceManager.get(ExperimentalCondition.class, experimentalCondition.getId());
     getExperimentalConditionValue(retrievedExperimentalCondition, "TEST_VALUE_ONE");
     assertThat(getExperimentalConditionValue(retrievedExperimentalCondition, "TEST_VALUE_ONE"), is(value));
 
