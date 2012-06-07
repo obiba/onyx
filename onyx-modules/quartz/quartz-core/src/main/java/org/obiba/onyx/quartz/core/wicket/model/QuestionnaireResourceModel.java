@@ -41,7 +41,7 @@ public abstract class QuestionnaireResourceModel<T> extends SpringDetachableMode
    * @param localizableModel
    * @param property
    */
-  public QuestionnaireResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, Object... stringArgs) {
+  public QuestionnaireResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, String... stringArgs) {
     this.localizableModel = localizableModel;
     initialize(property, stringArgs);
   }
@@ -51,14 +51,14 @@ public abstract class QuestionnaireResourceModel<T> extends SpringDetachableMode
    * @param localizable
    * @param property
    */
-  public QuestionnaireResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
+  public QuestionnaireResourceModel(IQuestionnaireElement localizable, String property, String... stringArgs) {
     Assert.notNull(localizable, "Localizable element cannot be null.");
     this.localizableModel = new QuestionnaireModel<IQuestionnaireElement>(localizable);
     initialize(property, stringArgs);
   }
 
   @SuppressWarnings("hiding")
-  private void initialize(String property, Object... stringArgs) {
+  private void initialize(String property, String... stringArgs) {
     this.property = property;
 
     // Make a copy of the string arguments.

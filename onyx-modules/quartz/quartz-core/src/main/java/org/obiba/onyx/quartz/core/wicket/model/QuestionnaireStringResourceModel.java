@@ -51,11 +51,11 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
    * @param property
    * @param stringArgs
    */
-  public QuestionnaireStringResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, Object... stringArgs) {
+  public QuestionnaireStringResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, String... stringArgs) {
     super(localizableModel, property, stringArgs);
   }
 
-  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
+  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, String... stringArgs) {
     this(localizable, property, true, stringArgs);
   }
 
@@ -65,7 +65,7 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
    * @param property
    * @param stringArgs
    */
-  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, boolean asQuartzAnswerFormat, Object... stringArgs) {
+  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, boolean asQuartzAnswerFormat, String... stringArgs) {
     super(localizable, property, stringArgs);
     this.asQuartzAnswerFormat = asQuartzAnswerFormat;
   }

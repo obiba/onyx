@@ -43,7 +43,7 @@ public class QuestionnaireWebResourceModel extends QuestionnaireResourceModel<Li
    * @param property
    * @param stringArgs
    */
-  public QuestionnaireWebResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, Object... stringArgs) {
+  public QuestionnaireWebResourceModel(IModel<? extends IQuestionnaireElement> localizableModel, String property, String... stringArgs) {
     super(localizableModel, property, stringArgs);
   }
 
@@ -52,7 +52,7 @@ public class QuestionnaireWebResourceModel extends QuestionnaireResourceModel<Li
    * @param property
    * @param stringArgs
    */
-  public QuestionnaireWebResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
+  public QuestionnaireWebResourceModel(IQuestionnaireElement localizable, String property, String... stringArgs) {
     super(localizable, property, stringArgs);
   }
 
