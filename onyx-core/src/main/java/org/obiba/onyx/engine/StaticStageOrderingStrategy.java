@@ -41,7 +41,7 @@ public class StaticStageOrderingStrategy implements Comparator<Stage> {
     return leftIndex - rightIndex;
   }
 
-  public void setStageOrdering(List<String> stageOrdering) {
+  private void setStageOrdering(List<String> stageOrdering) {
     this.stageOrdering = stageOrdering;
   }
 
