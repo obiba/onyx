@@ -347,6 +347,9 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       log.info("Files in export path: " + exportDir.list());
     }
 
+    log.info("cardioSoftXmlOutput.getAbsoluteFile().exists(): " + cardioSoftXmlOutput.getAbsoluteFile().exists());
+    log.info("cardioSoftXmlOutput.exists(): " + cardioSoftXmlOutput.exists());
+
     // Get data from external app
     log.info("Expected XML file path: {}", cardioSoftXmlOutput.getAbsolutePath());
     if(cardioSoftXmlOutput.exists()) {
