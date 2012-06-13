@@ -340,6 +340,13 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     FileInputStream resultInputStream = null;
     File cardioSoftXmlOutput = new File(getExportPath(), getXmlFileName());
 
+    //log exportPath and then files
+    File exportDir = new File(getExportPath());
+    log.info("export dir exists: " + exportDir.exists());
+    if(exportDir.exists()) {
+      log.info("Files in export path: " + exportDir.list());
+    }
+
     // Get data from external app
     log.info("Expected XML file path: {}", cardioSoftXmlOutput.getAbsolutePath());
     if(cardioSoftXmlOutput.exists()) {
