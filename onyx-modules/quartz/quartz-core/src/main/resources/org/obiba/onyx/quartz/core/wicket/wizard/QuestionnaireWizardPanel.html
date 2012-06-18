@@ -4,28 +4,28 @@
 	</div>
 	<form wicket:id="form" class="wizard" autocomplete="off">
 		<div id="wizardContent" class="form-data obiba-quartz-form-data">
-			<span wicket:id="step" />	
+			<span wicket:id="step" />
 		</div>
 		<div class="form-button" id="wizardFooter">
 			<span class="obiba-nav-right">
 			    <input type="button" class="obiba-button obiba-quartz-nav-admin" wicket:id="adminLink"/>
 				<input id="previousButton" type="button" class="obiba-button obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
 				<input id="nextButton" type="button" class="obiba-button obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
-				<input type="submit" class="obiba-button obiba-nav-finish" wicket:id="finish"/>
+				<input type="button" class="obiba-button obiba-nav-finish" wicket:id="finish"/>
 			</span>
 			<span style="display: none;">
 			    <input type="button" wicket:id="beginLink" />
-				<input type="submit" wicket:id="endLink" />
+				<input type="button" wicket:id="endLink" />
 				<input type="button" class="obiba-button obiba-nav-interrupt" wicket:id="interrupt"/>
 				<input type="button" class="obiba-button obiba-nav-cancel" wicket:id="cancelLink"/>
 			</span>
 			<div wicket:id="progressBar"/>
 		</div>
 		<div wicket:id="adminWindow" ></div>
-	</form>	
-	<script language="JavaScript">	    
+	</form>
+	<script language="JavaScript">
         addOnyxWizardBehavior();
-	</script>	
+	</script>
 </wicket:panel>
 
   
