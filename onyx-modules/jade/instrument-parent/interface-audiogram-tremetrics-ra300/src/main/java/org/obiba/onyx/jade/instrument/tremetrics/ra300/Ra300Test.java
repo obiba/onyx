@@ -49,6 +49,10 @@ public class Ra300Test {
   public Date getTestDatetime() {
     String date = readString(35, 50);
     try {
+      // We've seen this in the wild. Not sure why that is: 06/21/12A3:45:23
+      if(date.contains("A")) {
+        date = date.replace('A', '1');
+      }
       return new SimpleDateFormat("MM/dd/yyHH:mm:ss").parse(date);
     } catch(ParseException e) {
       throw new RuntimeException(e);
@@ -193,6 +197,14 @@ public class Ra300Test {
         if(code.isCode(value(freq))) return true;
       }
       return false;
+    }
+
+    public String getError(Frequency freq) {
+      EnumSet<HtlCode> errors = EnumSet.range(HtlCode.CONTRALATERAL_RECORDED, HtlCode.EQUIPMENT_ERROR);
+      for(HtlCode code : errors) {
+        if(code.isCode(value(freq))) return code.toString();
+      }
+      return "";
     }
 
     public int getLevel(Frequency freq) {
