@@ -117,6 +117,8 @@ public class Ra300InstrumentRunner implements InstrumentRunner {
     for(Frequency freq : Frequency.values()) {
       if(htl.hasValue(freq)) {
         onyxData.put(rightOrLeft + freq.toString(), DataBuilder.buildInteger(htl.getLevel(freq)));
+      } else if(htl.hasError(freq)) {
+        onyxData.put(rightOrLeft + freq.toString() + "_ERR", DataBuilder.buildText(htl.getError(freq)));
       }
     }
   }
