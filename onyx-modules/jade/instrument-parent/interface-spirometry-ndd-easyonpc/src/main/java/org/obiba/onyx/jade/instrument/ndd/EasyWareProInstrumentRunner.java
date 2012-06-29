@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2011 OBiBa. All rights reserved.
- *  
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   /**
    * PerformTest command sent with participant data.
+   *
    * @throws Exception
    */
   private void initParticipantData() {
@@ -71,7 +73,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       String patientID = "ONYX";// "RANDOM-" + new Random().nextInt(1000000);
 
       writer.print("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
-      writer.print("<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
+      writer.print(
+          "<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
       writer.print("  <Command Type=\"PerformTest\">");
       writer.print("    <Parameter Name=\"OrderID\">1</Parameter>");
       writer.print("    <Parameter Name=\"TestType\">FVC</Parameter>");
@@ -138,6 +141,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   /**
    * Initialise or restore instrument data (database and scan files).
+   *
    * @throws Exception
    */
   protected void resetDeviceData() {
@@ -175,6 +179,8 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
 
     File outFile = getOutFile();
+    log.info("last modified date: {}", new Date(outFile.lastModified()));
+
     try {
       EMRXMLParser<FVCData> parser = new EMRXMLParser<FVCData>();
       parser.parse(new FileInputStream(outFile), new FVCDataExtractor());
@@ -258,6 +264,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
     // wait for the output xml file to be written
     try {
+      log.info("close app date {}", new Date().toString());
       Thread.sleep(2000);
     } catch(InterruptedException e) {
     }
