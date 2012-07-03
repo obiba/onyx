@@ -130,6 +130,8 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
     userService.createOrUpdateUser(newUser);
     Assert.assertEquals("Tremblay", userService.getUserWithLogin("mtremblay").getLastName());
     Assert.assertEquals(Long.valueOf("4"), userService.getUserWithLogin("mtremblay").getId());
+    // do clean up manually
+    userService.deleteUser(newUser);
   }
 
 }

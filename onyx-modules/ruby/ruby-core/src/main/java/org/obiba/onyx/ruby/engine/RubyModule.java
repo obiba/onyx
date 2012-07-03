@@ -98,12 +98,14 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
   // Module Methods
   //
   @Required
-  public void setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap) {
+  public void
+      setTubeRegistrationConfigurationMap(Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap) {
     this.tubeRegistrationConfigurationMap = tubeRegistrationConfigurationMap;
   }
 
   @Required
-  public void setParticipantTubeRegistrationService(ParticipantTubeRegistrationService participantTubeRegistrationService) {
+  public void
+      setParticipantTubeRegistrationService(ParticipantTubeRegistrationService participantTubeRegistrationService) {
     this.participantTubeRegistrationService = participantTubeRegistrationService;
   }
 
@@ -251,6 +253,9 @@ public class RubyModule implements Module, ValueTableFactoryBeanProvider, Applic
 
     AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
     exec.addEdge(inProgress, TransitionEvent.NOTAPPLICABLE, notApplicable);
+
+    AbstractStageState waiting = states.get(WAITING_STATE_BEAN);
+    exec.addEdge(interrupted, TransitionEvent.INVALID, waiting);
   }
 
   private void initTransitionsFromInterrupted(StageExecutionContext exec, Map<String, AbstractStageState> states) {

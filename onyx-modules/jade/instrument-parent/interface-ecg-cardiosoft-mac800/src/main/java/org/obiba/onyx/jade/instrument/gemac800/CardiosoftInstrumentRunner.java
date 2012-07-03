@@ -9,18 +9,27 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.gemac800;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -36,7 +45,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Specified instrument runner for the ECG
- *
+ * 
  * @author acarey
  */
 
@@ -154,7 +163,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
   /**
    * Replace the instrument configuration file if needed Delete the result database and files
-   *
+   * 
    * @throws Exception
    */
   protected void deleteDeviceData() {
@@ -181,15 +190,13 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       File[] backupDatabaseFiles = new File(getCardioPath(), getInitPath()).listFiles(filter);
       if(backupDatabaseFiles.length > 0) {
         for(int i = 0; i < backupDatabaseFiles.length; i++) {
-          FileUtil.copyFile(backupDatabaseFiles[i],
-              new File(getCardioPath() + "/" + getDatabasePath(), backupDatabaseFiles[i].getName()));
+          FileUtil.copyFile(backupDatabaseFiles[i], new File(getCardioPath() + "/" + getDatabasePath(), backupDatabaseFiles[i].getName()));
         }
       } else {
         File[] databaseFiles = new File(getCardioPath(), getDatabasePath()).listFiles(filter);
         if(databaseFiles != null) {
           for(int i = 0; i < databaseFiles.length; i++) {
-            FileUtil.copyFile(databaseFiles[i],
-                new File(getCardioPath() + "/" + getInitPath(), databaseFiles[i].getName()));
+            FileUtil.copyFile(databaseFiles[i], new File(getCardioPath() + "/" + getInitPath(), databaseFiles[i].getName()));
           }
         }
       }
@@ -211,8 +218,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     File currentSettingsFile = new File(getCardioPath(), settingsFileName);
     try {
       if(backupSettingsFile.exists()) {
-        log.info("Restoring backup from {} to {}.", backupSettingsFile.getAbsolutePath(),
-            currentSettingsFile.getAbsolutePath());
+        log.info("Restoring backup from {} to {}.", backupSettingsFile.getAbsolutePath(), currentSettingsFile.getAbsolutePath());
         FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
       } else {
         log.info("Backup file {} does not exist.", backupSettingsFile.getAbsolutePath());
@@ -232,7 +238,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
 
   /**
    * Place the results and xml file into a map object to send them to the server for persistence
-   *
+   * 
    * @param resultParser
    * @throws Exception
    */
@@ -240,8 +246,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     Map<String, Data> outputToSend = new HashMap<String, Data>();
 
     try {
-      for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class)
-          .getPropertyDescriptors()) {
+      for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
         if(instrumentExecutionService.hasOutputParameter(pd.getName())) {
           Object value = pd.getReadMethod().invoke(resultParser);
           if(value != null) {
@@ -340,6 +345,16 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
     FileInputStream resultInputStream = null;
     File cardioSoftXmlOutput = new File(getExportPath(), getXmlFileName());
 
+    // log exportPath and then files
+    File exportDir = new File(getExportPath());
+    log.info("export dir exists: " + exportDir.exists());
+    if(exportDir.exists()) {
+      log.info("Files in export path: {}", Arrays.toString(exportDir.list()));
+    }
+
+    log.info("cardioSoftXmlOutput.getAbsoluteFile().exists(): " + cardioSoftXmlOutput.getAbsoluteFile().exists());
+    log.info("cardioSoftXmlOutput.exists(): " + cardioSoftXmlOutput.exists());
+
     // Get data from external app
     log.info("Expected XML file path: {}", cardioSoftXmlOutput.getAbsolutePath());
     if(cardioSoftXmlOutput.exists()) {
@@ -360,8 +375,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
       }
 
     } else {
-      log.error(
-          "Cardiosoft output data file not found.  This usually happens if the application is closed before completing the ECG measurement.");
+      log.error("Cardiosoft output data file not found.  This usually happens if the application is closed before completing the ECG measurement.");
     }
 
   }

@@ -130,6 +130,7 @@ public class QuartzModule implements Module, ValueTableFactoryBeanProvider, Appl
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
     exec.addEdge(inProgress, TransitionEvent.INTERRUPT, interrupted);
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
+    exec.addEdge(inProgress, TransitionEvent.INVALID, waiting);
 
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);

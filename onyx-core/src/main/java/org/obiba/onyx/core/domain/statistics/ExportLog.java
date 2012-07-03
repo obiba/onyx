@@ -151,11 +151,11 @@ public class ExportLog extends AbstractEntity {
       }
 
       if(captureStartDate != null && captureEndDate != null) {
-        Assert.isTrue(!captureStartDate.after(captureEndDate), "captureStartDate must be equal to or before captureEndDate");
+        Assert.isTrue(!captureStartDate.after(captureEndDate), String.format("captureStartDate (%d) must be equal to or before captureEndDate (%d)", captureStartDate.getTime(), captureEndDate.getTime()));
       }
 
       if(captureEndDate != null && exportDate != null) {
-        Assert.isTrue(!captureEndDate.after(exportDate), "captureEndDate must be equal to or before exportDate");
+        Assert.isTrue(!captureEndDate.after(exportDate), String.format("captureEndDate (%d) must be equal to or before exportDate (%d)", captureEndDate.getTime(), exportDate.getTime()));
       }
 
       return new ExportLog(type, identifier, destination, captureStartDate, captureEndDate, exportDate, user);

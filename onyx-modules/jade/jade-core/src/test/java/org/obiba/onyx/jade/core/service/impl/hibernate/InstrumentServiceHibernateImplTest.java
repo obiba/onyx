@@ -138,6 +138,8 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
     List<Instrument> instruments = instrumentServiceHibernateImpl.getWorkstationInstruments("onyx001-127.0.32.6", new PagingClause(0, 10), new SortingClause("barcode", true));
     Assert.assertEquals(4, instruments.size());
     Assert.assertEquals("99999", instruments.get(0).getBarcode());
+    // do clean up manually
+    instrumentServiceHibernateImpl.deleteInstrument(instrument);
   }
 
   @Test
@@ -151,5 +153,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
     Instrument persistedInstrument = instrumentServiceHibernateImpl.getInstrumentByBarcode("sta01");
     Assert.assertEquals(3l, persistedInstrument.getId());
     Assert.assertEquals("newModel STA", persistedInstrument.getModel());
+    // do clean up manually
+    instrumentServiceHibernateImpl.deleteInstrument(persistedInstrument);
   }
 }

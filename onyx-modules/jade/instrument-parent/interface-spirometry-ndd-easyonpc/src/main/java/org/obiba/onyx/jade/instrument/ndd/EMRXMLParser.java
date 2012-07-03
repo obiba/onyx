@@ -11,10 +11,18 @@ package org.obiba.onyx.jade.instrument.ndd;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -55,13 +63,24 @@ public class EMRXMLParser<T extends TestData<?>> {
     XPathFactory factory = XPathFactory.newInstance();
     xpath = factory.newXPath();
 
-    ParticipantDataExtractor pExtractor = new ParticipantDataExtractor(xpath, doc);
-    participantData = pExtractor.extractData();
-    testExtractor.init(xpath, doc);
-    testData = testExtractor.extractData();
+    try {
+      ParticipantDataExtractor pExtractor = new ParticipantDataExtractor(xpath, doc);
+      participantData = pExtractor.extractData();
+      testExtractor.init(xpath, doc);
+      testData = testExtractor.extractData();
+    } catch(RuntimeException e) {
+      try {
+        String debug = debugXmlFile();
+        log.info("Error processing XML file: {}\n{}", e.getMessage(), debug);
+      } catch(Throwable t) {
+        // ignore
+      }
+      throw e;
+    }
 
     in.close();
   }
+
 
   public ParticipantData getParticipantData() {
     return participantData;
@@ -71,4 +90,12 @@ public class EMRXMLParser<T extends TestData<?>> {
     return testData;
   }
 
+  private String debugXmlFile() throws TransformerException {
+    TransformerFactory transFactory = TransformerFactory.newInstance();
+    Transformer transformer = transFactory.newTransformer();
+    StringWriter buffer = new StringWriter();
+    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    transformer.transform(new DOMSource(doc), new StreamResult(buffer));
+    return buffer.toString();
+  }
 }

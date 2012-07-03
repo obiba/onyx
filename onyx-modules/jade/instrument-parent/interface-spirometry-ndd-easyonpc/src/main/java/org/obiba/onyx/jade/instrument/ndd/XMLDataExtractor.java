@@ -37,11 +37,20 @@ public abstract class XMLDataExtractor<T> {
   public abstract T extractData() throws XPathExpressionException;
 
   protected String extractAttributeValue(String path, String attr) throws XPathExpressionException {
-    return extractAttributeValue((Node) xpath.evaluate(path, doc, XPathConstants.NODE), attr);
+    Node node = (Node) xpath.evaluate(path, doc, XPathConstants.NODE);
+    if(node == null) {
+      throw new IllegalStateException(String.format("node %s not found. Cannot extract %s attribute.", path, attr));
+    }
+    return extractAttributeValue(node, attr);
   }
 
   protected String extractAttributeValue(Node node, String attr) throws XPathExpressionException {
-    return node.getAttributes().getNamedItem(attr).getTextContent();
+    if(node == null) throw new IllegalArgumentException();
+    Node attrNode = node.getAttributes().getNamedItem(attr);
+    if(attrNode == null) {
+      throw new IllegalStateException(String.format("Node %s has no attribute %s", node.getNodeName(), attr));
+    }
+    return attrNode.getTextContent();
   }
 
   protected String extractStringValue(String path) throws XPathExpressionException {

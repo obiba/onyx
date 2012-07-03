@@ -74,7 +74,7 @@ public class JnlpClient {
         }
       }
     } catch(Exception ex) {
-      log.error("Unexpected error while initializing runner {}", ex);
+      log.error("Unexpected error while initializing runner", ex);
       instrumentExecutionService.instrumentRunnerError(ex);
     } finally {
       // Make sure application context is destroyed.

@@ -199,7 +199,7 @@ public class OnyxDataExport {
 
           // Copy the filtered table to the destination datasource
           boolean copyNulls = destination.getOptions() != null ? destination.getOptions().getCopyNullValues() : false;
-          MultithreadedDatasourceCopier.Builder.newCopier().withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
+          MultithreadedDatasourceCopier.Builder.newCopier().withQueueSize(10).withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
 
           long exportEndTime = System.currentTimeMillis();
           log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
@@ -221,7 +221,9 @@ public class OnyxDataExport {
     }
   }
 
-  private DatasourceFactory getDatasourceFactory(KeyProvider pkProvider, final OnyxDataExportDestination destination, Iterable<ValueTable> tables, File outputFile) {
+  private
+      DatasourceFactory
+      getDatasourceFactory(KeyProvider pkProvider, final OnyxDataExportDestination destination, Iterable<ValueTable> tables, File outputFile) {
 
     // Default export format
     String format = XmlDatasourceFactoryProvider.FORMAT;
