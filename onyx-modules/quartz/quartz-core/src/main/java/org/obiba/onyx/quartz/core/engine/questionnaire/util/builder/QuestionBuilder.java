@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import java.util.Locale;
+
+import com.google.common.collect.Multimap;
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.onyx.core.data.ComparingDataSource;
@@ -28,8 +31,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
-
-import com.google.common.collect.Multimap;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
@@ -257,6 +258,11 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder addUIArgument(String key, String value) {
     element.addUIArgument(key, value);
 
+    return this;
+  }
+
+  public QuestionBuilder addAttribute(String namespace, String name, String value, Locale locale) {
+    element.addAttribute(namespace, name, value, locale);
     return this;
   }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.context.ApplicationContext;
@@ -53,18 +54,30 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P1").withQuestion("Q1").withSharedCategories(YES, NO, DONT_KNOW);
     builder.inPage("P1").withQuestion("Q2").withCategories("1", "2").withSharedCategory(DONT_KNOW).setExportName("888");
 
-    builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withCategory("1").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
+    builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withCategory("1").withSharedCategory(YES).withSharedCategories(
+        NO, DONT_KNOW);
 
     builder.inSection("S1").withSection("S1_2").withPage("P3");
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(40, 70), DataType.INTEGER));
-    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(
+        new DataValidator(new RangeValidator(40, 70), DataType.INTEGER));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData(
+        "Left", "Right").setUnit("kg").addValidator(
+        new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
-    builder.inPage("P4").withQuestion("Q6").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
-    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(1, 12), DataType.INTEGER));
-    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new RangeValidator(1, 31), DataType.INTEGER));
+    builder.inPage("P4").withQuestion("Q6").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition(
+        "YEAR", DataType.INTEGER).addValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(
+        new DataValidator(new RangeValidator(1, 12), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(
+        new DataValidator(new RangeValidator(1, 31), DataType.INTEGER));
+
+    //Attributes
+    QuestionBuilder questionBuilder = builder.inPage("P4").withQuestion("Q7");
+    questionBuilder.addAttribute("ns1", "key1", "value1", new Locale("en"));
+    questionBuilder.addAttribute(null, "key2", "value2", new Locale("fr"));
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 

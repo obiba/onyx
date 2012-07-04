@@ -12,9 +12,11 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.magma.Attribute;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -60,6 +62,8 @@ public class Question implements IHasQuestion {
   private List<Question> questions;
 
   private String variableName;
+
+  private List<Attribute> attributes;
 
   public Question() {
   }
@@ -227,7 +231,7 @@ public class Question implements IHasQuestion {
     if(uIArguments == null) {
       uIArguments = new ArrayList<String[]>();
     }
-    uIArguments.add(new String[] { key, value });
+    uIArguments.add(new String[] {key, value});
   }
 
   public List<QuestionCategory> getQuestionCategories() {
@@ -460,4 +464,30 @@ public class Question implements IHasQuestion {
   public boolean hasNoAnswerCategory() {
     return getNoAnswerCategory() != null;
   }
+
+  public List<Attribute> getAttributes() {
+    return attributes;
+  }
+
+  public void addAttribute(String namespace, String name, String value, Locale locale) {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
+    Attributes.addAttribute(attributes, namespace, name, value, locale);
+  }
+
+  public boolean containsAttribute(Attribute attribute) {
+    return Attributes.containsAttribute(attributes, attribute);
+  }
+
+  public Attribute getAttribute(String namespace, String name, Locale locale) {
+    return Attributes.getAttribute(attributes, namespace, name, locale);
+
+  }
+
+  public void updateAttribute(Attribute attribute, String namespace, String name,
+      String value, Locale locale) {
+    Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
+  }
+
 }

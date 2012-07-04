@@ -10,9 +10,13 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import org.obiba.magma.Attribute;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
@@ -29,6 +33,8 @@ public class Category implements Serializable, IQuestionnaireElement {
   private Map<String, String> variableNames;
 
   private boolean noAnswer;
+
+  private List<Attribute> attributes;
 
   public boolean isNoAnswer() {
     return noAnswer;
@@ -122,5 +128,31 @@ public class Category implements Serializable, IQuestionnaireElement {
   public void clearVariableNames() {
     if(variableNames != null) variableNames.clear();
   }
+
+  public List<Attribute> getAttributes() {
+    return attributes;
+  }
+
+  public void addAttribute(String namespace, String name, String value, Locale locale) {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
+    Attributes.addAttribute(attributes, namespace, name, value, locale);
+  }
+
+  public boolean containsAttribute(Attribute attribute) {
+    return Attributes.containsAttribute(attributes, attribute);
+  }
+
+  public Attribute getAttribute(String namespace, String name, Locale locale) {
+    return Attributes.getAttribute(attributes, namespace, name, locale);
+
+  }
+
+  public void updateAttribute(Attribute attribute, String namespace, String name,
+      String value, Locale locale) {
+    Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
+  }
+
 
 }
