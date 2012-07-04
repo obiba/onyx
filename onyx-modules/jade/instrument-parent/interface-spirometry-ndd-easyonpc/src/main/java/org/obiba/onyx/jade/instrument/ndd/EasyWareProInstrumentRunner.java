@@ -62,7 +62,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   /**
    * PerformTest command sent with participant data.
-   *
+   * 
    * @throws Exception
    */
   private void initParticipantData() {
@@ -73,8 +73,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
       String patientID = "ONYX";// "RANDOM-" + new Random().nextInt(1000000);
 
       writer.print("<?xml version=\"1.0\" encoding=\"utf-16\"?>");
-      writer.print(
-          "<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
+      writer.print("<ndd xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Version=\"ndd.EasyWarePro.V1\">");
       writer.print("  <Command Type=\"PerformTest\">");
       writer.print("    <Parameter Name=\"OrderID\">1</Parameter>");
       writer.print("    <Parameter Name=\"TestType\">FVC</Parameter>");
@@ -141,7 +140,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   /**
    * Initialise or restore instrument data (database and scan files).
-   *
+   * 
    * @throws Exception
    */
   protected void resetDeviceData() {
@@ -170,7 +169,9 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
 
   private void deleteFile(File f) {
     if(f.exists()) {
-      f.delete();
+      if(f.delete() == false) {
+        log.warn("failed to delete file {}", f.getAbsolutePath());
+      }
     }
   }
 
