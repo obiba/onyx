@@ -1,6 +1,5 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
