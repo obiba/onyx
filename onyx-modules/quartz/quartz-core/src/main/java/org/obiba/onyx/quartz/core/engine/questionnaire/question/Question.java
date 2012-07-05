@@ -315,6 +315,10 @@ public class Question implements IHasQuestion {
     this.condition = condition;
   }
 
+  public boolean hasParentQuestion() {
+    return parentQuestion != null;
+  }
+
   public Question getParentQuestion() {
     return parentQuestion;
   }
@@ -465,6 +469,10 @@ public class Question implements IHasQuestion {
     return getNoAnswerCategory() != null;
   }
 
+  public boolean hasAttributes() {
+    return attributes != null;
+  }
+
   public List<Attribute> getAttributes() {
     return attributes;
   }
@@ -482,7 +490,6 @@ public class Question implements IHasQuestion {
 
   public Attribute getAttribute(String namespace, String name, Locale locale) {
     return Attributes.getAttribute(attributes, namespace, name, locale);
-
   }
 
   public void updateAttribute(Attribute attribute, String namespace, String name,

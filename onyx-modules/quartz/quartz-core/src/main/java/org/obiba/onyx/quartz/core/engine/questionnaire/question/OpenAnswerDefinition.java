@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.magma.Attribute;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
@@ -41,6 +43,8 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   private static final String INPUT_SIZE_KEY = "size";
 
   private static final String INPUT_NB_ROWS_KEY = "rows";
+
+  private List<Attribute> attributes;
 
   public enum OpenAnswerType {
 
@@ -160,7 +164,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     if(uIArguments == null) {
       uIArguments = new ArrayList<String[]>();
     }
-    uIArguments.add(new String[] { key, value });
+    uIArguments.add(new String[] {key, value});
   }
 
   public void replaceUIArgument(String key, String value) {
@@ -368,6 +372,35 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
       Assert.isTrue(inputNbRows > 0, "The number of rows of an OpenAnswer area can not be less than one.");
       replaceUIArgument(INPUT_NB_ROWS_KEY, String.valueOf(inputNbRows));
     }
+  }
+
+  public boolean hasAttributes() {
+    return attributes != null;
+  }
+
+  public List<Attribute> getAttributes() {
+    return attributes;
+  }
+
+  public void addAttribute(String namespace, String name, String value, Locale locale) {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
+    Attributes.addAttribute(attributes, namespace, name, value, locale);
+  }
+
+  public boolean containsAttribute(Attribute attribute) {
+    return Attributes.containsAttribute(attributes, attribute);
+  }
+
+  public Attribute getAttribute(String namespace, String name, Locale locale) {
+    return Attributes.getAttribute(attributes, namespace, name, locale);
+
+  }
+
+  public void updateAttribute(Attribute attribute, String namespace, String name,
+      String value, Locale locale) {
+    Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
   }
 
 }

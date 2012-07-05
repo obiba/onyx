@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import org.apache.wicket.extensions.validation.validator.RfcCompliantEmailAddressValidator;
 import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.validation.IValidator;
@@ -71,11 +75,6 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.springframework.context.NoSuchMessageException;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 /**
  * Builds the {@code VariableValueSource} instances for a specific {@code Questionnaire}
@@ -182,26 +181,31 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   }
 
   protected void buildQuestionnaireRun() {
-    BeanVariableValueSourceFactory<QuestionnaireParticipant> factory = new BeanVariableValueSourceFactory<QuestionnaireParticipant>(PARTICIPANT, QuestionnaireParticipant.class);
+    BeanVariableValueSourceFactory<QuestionnaireParticipant> factory = new BeanVariableValueSourceFactory<QuestionnaireParticipant>(
+        PARTICIPANT, QuestionnaireParticipant.class);
     factory.setPrefix("QuestionnaireRun");
     factory.setProperties(ImmutableSet.of("questionnaireVersion", "locale", "timeStart", "timeEnd", "user.login"));
     factory.setPropertyNameToVariableName(ImmutableMap.of("questionnaireVersion", "version", "user.login", "user"));
-    factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new LocalizableBuilderVisitor(questionnaire)));
+    factory.setVariableBuilderVisitors(
+        ImmutableSet.of(new BaseQuartzBuilderVisitor(), new LocalizableBuilderVisitor(questionnaire)));
     vvsSetBuilder.addAll(factory.createSources());
   }
 
   protected void buildQuestionnaireMetric() {
-    BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm> factory = new BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm>(PARTICIPANT, QuestionnairePageMetricAlgorithm.class);
+    BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm> factory = new BeanVariableValueSourceFactory<QuestionnairePageMetricAlgorithm>(
+        PARTICIPANT, QuestionnairePageMetricAlgorithm.class);
     factory.setPrefix("QuestionnaireMetric");
     factory.setProperties(ImmutableSet.of("section", "page", "duration", "questionCount", "missingCount"));
-    factory.setVariableBuilderVisitors(ImmutableSet.of(new BaseQuartzBuilderVisitor(), new VariableUnitBuilderVisitor(ImmutableMap.of("duration", "s"))));
+    factory.setVariableBuilderVisitors(ImmutableSet
+        .of(new BaseQuartzBuilderVisitor(), new VariableUnitBuilderVisitor(ImmutableMap.of("duration", "s"))));
     factory.setOccurrenceGroup("QuestionnaireMetric");
     vvsSetBuilder.addAll(factory.createSources());
   }
 
   protected void buildQuestionnaireComment() {
     if(questionnaire.isCommentable()) {
-      BeanVariableValueSourceFactory<QuestionnaireComment> factory = new BeanVariableValueSourceFactory<QuestionnaireComment>(PARTICIPANT, QuestionnaireComment.class);
+      BeanVariableValueSourceFactory<QuestionnaireComment> factory = new BeanVariableValueSourceFactory<QuestionnaireComment>(
+          PARTICIPANT, QuestionnaireComment.class);
       factory.setPrefix("QuestionnaireComment");
       factory.setProperties(ImmutableSet.of("variable", "comment"));
       factory.setPropertyNameToVariableName(ImmutableMap.of("variable", "question"));
@@ -213,6 +217,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   /**
    * Returns the name of a Question variable: QuestionnaireName.QuestionName
+   *
    * @param question
    * @return
    */
@@ -222,6 +227,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   /**
    * Returns the name of QuestionCategory varaible: ${questionVarName}.CategoryName
+   *
    * @param questionCategory
    * @return
    */
@@ -231,6 +237,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   /**
    * Returns the name of an OpenAnswerDefinition variable: ${categoryVarName}.OpenAnswerDefinitionName
+   *
    * @param questionCategory
    * @param oad
    * @return
@@ -255,11 +262,15 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
     /**
      * Copy the variable explicitly to make sure the value type is not corrupted.
+     *
      * @param variable
      * @return
      */
     public Variable.Builder sameAs(Variable variable) {
-      Variable.Builder b = Variable.Builder.newVariable(variable.getName(), ValueType.Factory.forName(variable.getValueType().getName()), variable.getEntityType()).unit(variable.getUnit()).mimeType(variable.getMimeType()).referencedEntityType(variable.getReferencedEntityType());
+      Variable.Builder b = Variable.Builder
+          .newVariable(variable.getName(), ValueType.Factory.forName(variable.getValueType().getName()),
+              variable.getEntityType()).unit(variable.getUnit()).mimeType(variable.getMimeType())
+          .referencedEntityType(variable.getReferencedEntityType());
       if(variable.isRepeatable()) {
         b.repeatable().occurrenceGroup(variable.getOccurrenceGroup());
       }
@@ -302,32 +313,39 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     private void buildParentPlaceholderVariable() {
-      Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), BooleanType.get(), PARTICIPANT);
-      questionVariable.accept(new QuestionAttributesBuilderVisitor(question, true, false)).accept(new QuestionBuilderVisitor(question));
+      Variable.Builder questionVariable = Variable.Builder
+          .newVariable(variableName(question), BooleanType.get(), PARTICIPANT);
+      questionVariable.accept(new QuestionAttributesBuilderVisitor(question, true, false))
+          .accept(new QuestionBuilderVisitor(question));
       vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
     }
 
     private void buildCategoricalVariable() {
-      Variable.Builder questionVariable = Variable.Builder.newVariable(variableName(question), TextType.get(), PARTICIPANT);
+      Variable.Builder questionVariable = Variable.Builder
+          .newVariable(variableName(question), TextType.get(), PARTICIPANT);
       if(question.isMultiple()) {
         // Build a repeatable variable for the list of CategoryAnswers
         questionVariable.repeatable();
       }
 
-      questionVariable.accept(new QuestionAttributesBuilderVisitor(question, false, question.isBoilerPlate())).accept(new QuestionBuilderVisitor(question));
+      questionVariable.accept(new QuestionAttributesBuilderVisitor(question, false, question.isBoilerPlate()))
+          .accept(new QuestionBuilderVisitor(question));
 
       for(QuestionCategory c : categories) {
         org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
         cb.accept(new LocalizableBuilderVisitor(c)).withCode(c.getExportName()).missing(c.isEscape());
+        addAttributesHierarchy(cb, c);
         questionVariable.addCategory(cb.build());
       }
 
       // The resolver is expected to return a single CategoryAnswer when the variable is not repeatable and a
       // List<CategoryAnswer> when the variable is repeatable.
       if(question.isBoilerPlate() == false) {
-        vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
+        vvsSetBuilder
+            .add(new BeanPropertyVariableValueSource(questionVariable.build(), CategoryAnswer.class, "categoryName"));
       } else {
-        vvsSetBuilder.add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
+        vvsSetBuilder
+            .add(new BeanPropertyVariableValueSource(questionVariable.build(), QuestionAnswer.class, "active"));
       }
 
       for(QuestionCategory questionCategory : categories) {
@@ -338,15 +356,21 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     private void buildCategoryVariable(final QuestionCategory questionCategory) {
       // Build a derived variable from the Question variable using javascript
       // The script test whether the Question variable has this category amongst its answers
-      Variable.Builder categoryVariable = Variable.Builder.newVariable(variableName(question, questionCategory), BooleanType.get(), PARTICIPANT).extend(JavascriptVariableBuilder.class).setScript(String.format("$('%s').isNull().value() ? null : $('%s').any('%s')", variableName(question), variableName(question), questionCategory.getCategory().getName()));
-      categoryVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new QuestionCategoryBuilderVisitor(questionCategory));
+      Variable.Builder categoryVariable = Variable.Builder
+          .newVariable(variableName(question, questionCategory), BooleanType.get(), PARTICIPANT)
+          .extend(JavascriptVariableBuilder.class).setScript(String
+              .format("$('%s').isNull().value() ? null : $('%s').any('%s')", variableName(question),
+                  variableName(question), questionCategory.getCategory().getName()));
+      categoryVariable.accept(new QuestionAttributesBuilderVisitor(question))
+          .accept(new QuestionCategoryBuilderVisitor(questionCategory));
       vvsSetBuilder.add(new JavascriptVariableValueSource(categoryVariable.build()));
 
       // Build variable(s) from the open answer(s) of this category
       if(questionCategory.hasOpenAnswerDefinition()) {
         OpenAnswerDefinition parent = questionCategory.getOpenAnswerDefinition();
         // Make an iterable on its children. If no child present, make an iterable with a single value.
-        Iterable<OpenAnswerDefinition> oads = parent.hasChildOpenAnswerDefinitions() ? parent.getOpenAnswerDefinitions() : ImmutableSet.of(parent);
+        Iterable<OpenAnswerDefinition> oads = parent.hasChildOpenAnswerDefinitions() ? parent
+            .getOpenAnswerDefinitions() : ImmutableSet.of(parent);
         for(OpenAnswerDefinition oad : oads) {
           buildOpenAnswerVariable(questionCategory, oad);
         }
@@ -358,9 +382,12 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       // Onyx will only capture the date part (no time). Thus, the valid ValueType is DateType instead of DateTimeType.
       ValueType type = oad.getDataType() == DataType.DATE ? DateType.get() : DataTypes.valueTypeFor(oad.getDataType());
 
-      Variable.Builder openAnswerVariable = Variable.Builder.newVariable(variableName(question, questionCategory, oad), type, PARTICIPANT);
-      openAnswerVariable.accept(new QuestionAttributesBuilderVisitor(question)).accept(new OpenAnswerVisitor(questionCategory, oad));
-      BeanPropertyVariableValueSource valueSource = new BeanPropertyVariableValueSource(openAnswerVariable.build(), OpenAnswer.class, "data.value");
+      Variable.Builder openAnswerVariable = Variable.Builder
+          .newVariable(variableName(question, questionCategory, oad), type, PARTICIPANT);
+      openAnswerVariable.accept(new QuestionAttributesBuilderVisitor(question))
+          .accept(new OpenAnswerVisitor(questionCategory, oad));
+      BeanPropertyVariableValueSource valueSource = new BeanPropertyVariableValueSource(openAnswerVariable.build(),
+          OpenAnswer.class, "data.value");
       vvsSetBuilder.add(valueSource);
     }
   }
@@ -431,12 +458,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       }
 
       if(parentPlaceholder) {
-        Attribute parentQuestionAttribute = Attribute.Builder.newAttribute("parentQuestion").withValue(BooleanType.get().trueValue()).build();
+        Attribute parentQuestionAttribute = Attribute.Builder.newAttribute("parentQuestion")
+            .withValue(BooleanType.get().trueValue()).build();
         builder1.addAttribute(parentQuestionAttribute);
       }
 
       if(boilerplate) {
-        Attribute boilerplateAttribute = Attribute.Builder.newAttribute("boilerplate").withValue(BooleanType.get().trueValue()).build();
+        Attribute boilerplateAttribute = Attribute.Builder.newAttribute("boilerplate")
+            .withValue(BooleanType.get().trueValue()).build();
         builder1.addAttribute(boilerplateAttribute);
       }
     }
@@ -467,7 +496,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       for(Locale locale : bundle.getAvailableLanguages()) {
         for(String property : getProperties()) {
           try {
-            String stringResource = QuestionnaireStringResourceModelHelper.getMessage(bundle, element, property, null, locale);
+            String stringResource = QuestionnaireStringResourceModelHelper
+                .getMessage(bundle, element, property, null, locale);
             if(stringResource.trim().length() > 0) {
               String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
               builder1.addAttribute(property, noHTMLString, locale);
@@ -478,7 +508,6 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         }
       }
     }
-
   }
 
   private class QuestionBuilderVisitor extends LocalizableBuilderVisitor {
@@ -515,6 +544,13 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       if(maxCount != null) {
         OnyxAttributeHelper.addMaxCountAttribute(builder1, maxCount);
       }
+
+      if(question.hasParentQuestion() && question.getParentQuestion().hasAttributes()) {
+        builder1.addAttributes(question.getParentQuestion().getAttributes());
+      }
+      if(question.hasAttributes()) {
+        builder1.addAttributes(question.getAttributes());
+      }
     }
   }
 
@@ -533,11 +569,30 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       builder1.addAttribute("categoryName", questionCategory.getCategory().getName());
       if(this.questionCategory.getQuestion().isMultiple() == false) {
         // Add a marker indicating that this is single-choice category variable
-        builder1.addAttribute(Attribute.Builder.newAttribute("exclusiveChoiceCategoryVariable").withValue(BooleanType.get().valueOf(true)).build());
+        builder1.addAttribute(
+            Attribute.Builder.newAttribute("exclusiveChoiceCategoryVariable").withValue(BooleanType.get().valueOf(true))
+                .build());
       }
 
       // a category variable is implicitly always conditioned by it's parent question
-      OnyxAttributeHelper.addConditionAttribute(builder1, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
+      OnyxAttributeHelper.addConditionAttribute(builder1,
+          new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
+
+      addAttributesHierarchy(builder1, questionCategory);
+    }
+  }
+
+  private void addAttributesHierarchy(AttributeAwareBuilder<?> builder1, QuestionCategory questionCategory) {
+    Category category = questionCategory.getCategory();
+    Question question = questionCategory.getQuestion();
+    if(category.hasAttributes()) {
+      builder1.addAttributes(category.getAttributes());
+    }
+    if(question.hasAttributes()) {
+      builder1.addAttributes(question.getAttributes());
+    }
+    if(question.hasParentQuestion() && question.getParentQuestion().hasAttributes()) {
+      builder1.addAttributes(question.getParentQuestion().getAttributes());
     }
   }
 
@@ -587,8 +642,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
       // Provide the category name to the resolver
       builder1.addAttribute("categoryName", questionCategory.getCategory().getName())
-      // Provide the openAnswer name to the resolver
-      .addAttribute("openAnswerName", oad.getName());
+          // Provide the openAnswer name to the resolver
+          .addAttribute("openAnswerName", oad.getName());
 
       if(oad.getDataSource() != null) {
         OnyxAttributeHelper.addSourceAttribute(builder1, oad.getDataSource());
@@ -622,7 +677,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       }
 
       // an open answer is implicitly always conditioned by the selection of its parent category.
-      OnyxAttributeHelper.addConditionAttribute(builder1, new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(), questionCategory.getCategory().getName()).toString());
+      OnyxAttributeHelper.addConditionAttribute(builder1,
+          new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(),
+              questionCategory.getCategory().getName()).toString());
+
+      if(oad.hasAttributes()) {
+        builder1.addAttributes(oad.getAttributes());
+      }
+      addAttributesHierarchy(builder1, questionCategory);
     }
 
     private void visitAudioOpenAnswer(OpenAnswerDefinitionAudio audio, Builder builder) {
@@ -657,7 +719,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     public void visit(org.obiba.magma.Category.Builder builder1) {
       for(Locale locale : bundle.getAvailableLanguages()) {
         try {
-          String stringResource = QuestionnaireStringResourceModelHelper.getMessage(bundle, oad, defaultValue, null, locale);
+          String stringResource = QuestionnaireStringResourceModelHelper
+              .getMessage(bundle, oad, defaultValue, null, locale);
           if(Strings.isEmpty(stringResource) == false) {
             String noHTMLString = stringResource.replaceAll("\\<.*?\\>", "");
             builder1.addAttribute(OnyxAttributeHelper.LABEL, noHTMLString, locale);
@@ -671,6 +734,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
 
   /**
    * Turns a IValidator into a String.
+   *
    * @param validator
    * @return null if validator not identified.
    */
@@ -684,12 +748,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     } else if(validator instanceof MinimumValidator) {
       return "Number.Minimum[" + ((MinimumValidator<?>) validator).getMinimum() + "]";
     } else if(validator instanceof RangeValidator) {
-      return "Number.Range[" + ((RangeValidator<?>) validator).getMinimum() + ", " + ((RangeValidator<?>) validator).getMaximum() + "]";
+      return "Number.Range[" + ((RangeValidator<?>) validator).getMinimum() + ", " + ((RangeValidator<?>) validator)
+          .getMaximum() + "]";
     } else if(validator instanceof StringValidator) {
       if(validator instanceof StringValidator.ExactLengthValidator) {
         return "String.ExactLength[" + ((StringValidator.ExactLengthValidator) validator).getLength() + "]";
       } else if(validator instanceof StringValidator.LengthBetweenValidator) {
-        return "String.LengthBetween[" + ((StringValidator.LengthBetweenValidator) validator).getMinimum() + ", " + ((StringValidator.LengthBetweenValidator) validator).getMaximum() + "]";
+        return "String.LengthBetween[" + ((StringValidator.LengthBetweenValidator) validator)
+            .getMinimum() + ", " + ((StringValidator.LengthBetweenValidator) validator).getMaximum() + "]";
       } else if(validator instanceof StringValidator.MaximumLengthValidator) {
         return "String.MaximumLength[" + ((StringValidator.MaximumLengthValidator) validator).getMaximum() + "]";
       } else if(validator instanceof StringValidator.MinimumLengthValidator) {
