@@ -147,9 +147,13 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
     File backupDbFile = new File(getDbPath() + ".orig");
     File currentDbFile = new File(getDbPath());
 
+    log.info("backup db file {} exists {}", backupDbFile.getAbsolutePath(), backupDbFile.exists());
+    log.info("current db file {} exists {}", currentDbFile.getAbsolutePath(), currentDbFile.exists());
+
     try {
       if(backupDbFile.exists()) {
         FileUtil.copyFile(backupDbFile, currentDbFile);
+        log.info("overwriting {} with {}", currentDbFile.getAbsolutePath(), backupDbFile.getAbsolutePath());
         backupDbFile.delete();
         if(!retrieveDeviceDataError) {
           deleteFile(getInFile());
@@ -157,6 +161,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
         }
       } else {
         // init
+        log.info("copying {} to {}", currentDbFile.getAbsolutePath(), backupDbFile.getAbsolutePath());
         FileUtil.copyFile(currentDbFile, backupDbFile);
         deleteFile(getInFile());
         deleteFile(getOutFile());
@@ -168,6 +173,7 @@ public class EasyWareProInstrumentRunner implements InstrumentRunner {
   }
 
   private void deleteFile(File f) {
+    log.info("deleting {}", f.getAbsolutePath());
     if(f.exists()) {
       if(f.delete() == false) {
         log.warn("failed to delete file {}", f.getAbsolutePath());
