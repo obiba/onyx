@@ -69,9 +69,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
       mv.put(variable.getName(), variable);
       for(Category category : variable.getCategories()) {
         mc.put(variable.getName() + "." + category.getName(), category);
-        System.out.println("cat: " + category.getName());
       }
-      System.out.println("var: " + variable.getName());
     }
 
     //Variable
