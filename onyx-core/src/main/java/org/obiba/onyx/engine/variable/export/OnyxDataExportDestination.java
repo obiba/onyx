@@ -140,6 +140,8 @@ public class OnyxDataExportDestination {
 
     private EncryptionOptions encrypt;
 
+    private Integer bufferSize;
+
     public boolean getUseEnrollmentId() {
       return useEnrollmentId;
     }
@@ -194,6 +196,14 @@ public class OnyxDataExportDestination {
 
     public void setEncrypt(EncryptionOptions encrypt) {
       this.encrypt = encrypt;
+    }
+
+    public Integer getBufferSize() {
+      return bufferSize;
+    }
+
+    public void setBufferSize(Integer bufferSize) {
+      this.bufferSize = bufferSize;
     }
 
   }

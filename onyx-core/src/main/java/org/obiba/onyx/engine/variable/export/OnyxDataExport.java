@@ -38,6 +38,7 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.crypt.IPublicKeyFactory;
 import org.obiba.onyx.engine.variable.CaptureAndExportStrategy;
+import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination.Options;
 import org.obiba.onyx.engine.variable.export.format.DatasourceFactoryProvider;
 import org.obiba.onyx.engine.variable.export.format.XmlDatasourceFactoryProvider;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
@@ -47,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
@@ -197,9 +199,13 @@ public class OnyxDataExport {
 
           ExportListener listener = new ExportListener(destination);
 
+          Options options = destination.getOptions();
+
+          boolean copyNulls = options != null ? options.getCopyNullValues() : false;
+          int bufferSize = options != null ? Objects.firstNonNull(options.getBufferSize(), 50) : 50;
+
           // Copy the filtered table to the destination datasource
-          boolean copyNulls = destination.getOptions() != null ? destination.getOptions().getCopyNullValues() : false;
-          MultithreadedDatasourceCopier.Builder.newCopier().withQueueSize(10).withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
+          MultithreadedDatasourceCopier.Builder.newCopier().withQueueSize(bufferSize).withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
 
           long exportEndTime = System.currentTimeMillis();
           log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
