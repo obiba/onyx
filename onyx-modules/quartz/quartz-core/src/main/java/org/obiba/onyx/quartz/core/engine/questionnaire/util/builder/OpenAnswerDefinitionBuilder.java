@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
@@ -38,8 +39,8 @@ import org.obiba.onyx.wicket.data.IDataValidator;
 
 /**
  * {@link OpenAnswerDefinition} builder, given a {@link Questionnaire} and a current {@link Category}.
+ *
  * @author Yannick Marcon
- * 
  */
 public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBuilder<OpenAnswerDefinition> {
 
@@ -47,6 +48,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
+   *
    * @param parent
    * @param openAnswerDefinition
    */
@@ -57,6 +59,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Constructor using {@link CategoryBuilder} to get the {@link Category} it is applied to.
+   *
    * @param parent
    * @param name
    * @param dataType
@@ -74,12 +77,14 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Set the {@link OpenAnswerDefinition} to the current category.
+   *
    * @param name
    * @param dataType
    * @return
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  public static OpenAnswerDefinitionBuilder createOpenAnswerDefinition(CategoryBuilder parent, String name, DataType dataType) {
+  public static OpenAnswerDefinitionBuilder createOpenAnswerDefinition(CategoryBuilder parent, String name,
+      DataType dataType) {
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -88,18 +93,24 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add argument that will be interpreted by specific open answer UI.
+   *
    * @param key
    * @param value
    * @return
    */
   public OpenAnswerDefinitionBuilder addUIArgument(String key, String value) {
     element.addUIArgument(key, value);
+    return this;
+  }
 
+  public OpenAnswerDefinitionBuilder addAttribute(String namespace, String name, String value, Locale locale) {
+    element.addAttribute(namespace, name, value, locale);
     return this;
   }
 
   /**
    * Set the size of the open input field.
+   *
    * @param size
    * @return
    */
@@ -115,6 +126,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add a {@link IValidator} to the current {@link OpenAnswerDefinition}.
+   *
    * @param validator
    * @param dataType
    * @return
@@ -126,6 +138,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add a {@link IValidator} to the current {@link OpenAnswerDefinition}.
+   *
    * @param validator
    * @return
    */
@@ -148,19 +161,23 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add a {@link IValidator} based on a {@link QuestionnaireDataSource} to the current {@link OpenAnswerDefinition}.
+   *
    * @param comparisonOperator
    * @param questionName
    * @param categoryName
    * @param openAnswerDefinitionName
    * @return
    */
-  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, getValidVariableDataSource(questionName, categoryName, openAnswerDefinitionName)));
+  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionName,
+      String categoryName, String openAnswerDefinitionName) {
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator,
+        getValidVariableDataSource(questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
   /**
    * Add a {@link IValidator} based on a {@link QuestionnaireDataSource} to the current {@link OpenAnswerDefinition}.
+   *
    * @param comparisonOperator
    * @param questionnaireName
    * @param questionName
@@ -170,24 +187,29 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @deprecated use {@link #addValidator(ComparisonOperator, String)} instead
    */
   @Deprecated
-  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName)));
+  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionnaireName,
+      String questionName, String categoryName, String openAnswerDefinitionName) {
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator,
+        new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
   /**
    * Add a {@link IValidator} based on a {@link CurrentDateSource} to the current {@link OpenAnswerDefinition}.
+   *
    * @param comparisonOperator
    * @return
    */
   @Deprecated
   public OpenAnswerDefinitionBuilder addCurrentYearValidator(ComparisonOperator comparisonOperator) {
-    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new CurrentDateSource(Calendar.YEAR)));
+    element.addValidationDataSource(
+        new ComparingDataSource(null, comparisonOperator, new CurrentDateSource(Calendar.YEAR)));
     return this;
   }
 
   /**
    * Add a {@link IValidator} based on a {@link FixedDataSource} to the current {@link OpenAnswerDefinition}.
+   *
    * @param comparisonOperator
    * @param data
    * @return
@@ -200,6 +222,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add a {@link IValidator} based on a {@link IDataSource} to the current {@link OpenAnswerDefinition}.
+   *
    * @param comparisonOperator
    * @param dataSource
    * @return
@@ -214,17 +237,20 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add a {@link IValidator} based on a {@link VariableDataSource} to the current {@link OpenAnswerDefinition}.
+   *
    * @param comparisonOperator
    * @param variablePath
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String variablePath) {
-    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, checkVariablePath(new VariableDataSource(variablePath))));
+    element.addValidationDataSource(
+        new ComparingDataSource(null, comparisonOperator, checkVariablePath(new VariableDataSource(variablePath))));
     return this;
   }
 
   /**
    * Set the required to the current {@link OpenAnswerDefinition}.
+   *
    * @param required
    * @return
    */
@@ -235,6 +261,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Set the unit to the current {@link OpenAnswerDefinition}.
+   *
    * @param unit
    * @return
    */
@@ -245,6 +272,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Set the default data to the current {@link OpenAnswerDefinition}.
+   *
    * @param data
    * @return
    */
@@ -257,6 +285,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Set the default data to the current {@link OpenAnswerDefinition}.
+   *
    * @param data
    * @return
    */
@@ -270,6 +299,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * All purpose data source.
+   *
    * @param dataSource
    * @return
    */
@@ -280,6 +310,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Set a {@link CurrentDateSource} as to be the {@link IDataSource} for the current {@link OpenAnswerDefinition}.
+   *
    * @return
    */
   public OpenAnswerDefinitionBuilder setTimestampSource() {
@@ -290,33 +321,40 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   /**
    * Set a {@link QuestionnaireDataSource} as to be the {@link IDataSource} for the current {@link OpenAnswerDefinition}
    * .
+   *
    * @param questionName
    * @param categoryName
    * @param openAnswerDefinitionName
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerSource(String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.setDataSource(new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerDefinitionName));
+  public OpenAnswerDefinitionBuilder setOpenAnswerSource(String questionName, String categoryName,
+      String openAnswerDefinitionName) {
+    element.setDataSource(new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName,
+        openAnswerDefinitionName));
     return this;
   }
 
   /**
    * Set a {@link QuestionnaireDataSource} as to be the {@link IDataSource} for the current {@link OpenAnswerDefinition}
    * .
+   *
    * @param questionnaireName
    * @param questionName
    * @param categoryName
    * @param openAnswerDefinitionName
    * @return
    */
-  public OpenAnswerDefinitionBuilder setExternalOpenAnswerSource(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.setDataSource(new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName));
+  public OpenAnswerDefinitionBuilder setExternalOpenAnswerSource(String questionnaireName, String questionName,
+      String categoryName, String openAnswerDefinitionName) {
+    element.setDataSource(
+        new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName));
     return this;
   }
 
   /**
    * Set a {@link ParticipantPropertyDataSource} as to be the {@link IDataSource} for the current
    * {@link OpenAnswerDefinition}.
+   *
    * @param property
    * @return
    */
@@ -327,6 +365,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Check open answer definition name unicity.
+   *
    * @param name
    * @return
    */
@@ -336,6 +375,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Add the {@link OpenAnswerDefinition} to the current openAnswerDefinition and set it as the current one.
+   *
    * @param name
    * @param dataType
    * @return
@@ -382,7 +422,9 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
             return this;
           }
         }
-        throw new IllegalArgumentException(oadName + " is not an open answer definition attached to question " + questionName + " via parent question " + question.getParentQuestion().getName());
+        throw new IllegalArgumentException(
+            oadName + " is not an open answer definition attached to question " + questionName + " via parent question " + question
+                .getParentQuestion().getName());
       } else {
         throw new IllegalArgumentException("Question " + questionName + " does not have any categories.");
       }
@@ -395,7 +437,8 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder setVariableName(String variableName) {
     if(categoryBuilder == null) {
-      throw new IllegalArgumentException("The open answer variable name '" + variableName + "' cannot be set as it is not possible to determine which question it will apply to.");
+      throw new IllegalArgumentException(
+          "The open answer variable name '" + variableName + "' cannot be set as it is not possible to determine which question it will apply to.");
     }
     if(!checkNamePattern(variableName)) throw invalidNamePatternException(variableName);
     element.addVariableName(categoryBuilder.getQuestionName(), variableName);
@@ -404,11 +447,13 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
 
   /**
    * Set the given {@link OpenAnswerDefinition} as the current one.
+   *
    * @param questionnaire
    * @param condition
    * @return
    */
-  public static OpenAnswerDefinitionBuilder inOpenAnswerDefinition(QuestionnaireBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
+  public static OpenAnswerDefinitionBuilder inOpenAnswerDefinition(QuestionnaireBuilder parent,
+      OpenAnswerDefinition openAnswerDefinition) {
     return new OpenAnswerDefinitionBuilder(parent, openAnswerDefinition);
   }
 

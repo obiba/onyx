@@ -28,7 +28,6 @@ public class QuestionAttributesTest {
   public void testEmptyQuestionAttributes() {
     Question q1 = new Question();
     Assert.assertNull(q1.getAttributes());
-
   }
 
   @Test

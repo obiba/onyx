@@ -585,14 +585,14 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
   private void addAttributesHierarchy(AttributeAwareBuilder<?> builder1, QuestionCategory questionCategory) {
     Category category = questionCategory.getCategory();
     Question question = questionCategory.getQuestion();
-    if(category.hasAttributes()) {
-      builder1.addAttributes(category.getAttributes());
+    if(question.hasParentQuestion() && question.getParentQuestion().hasAttributes()) {
+      builder1.addAttributes(question.getParentQuestion().getAttributes());
     }
     if(question.hasAttributes()) {
       builder1.addAttributes(question.getAttributes());
     }
-    if(question.hasParentQuestion() && question.getParentQuestion().hasAttributes()) {
-      builder1.addAttributes(question.getParentQuestion().getAttributes());
+    if(category.hasAttributes()) {
+      builder1.addAttributes(category.getAttributes());
     }
   }
 
@@ -681,10 +681,10 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
           new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(),
               questionCategory.getCategory().getName()).toString());
 
+      addAttributesHierarchy(builder1, questionCategory);
       if(oad.hasAttributes()) {
         builder1.addAttributes(oad.getAttributes());
       }
-      addAttributesHierarchy(builder1, questionCategory);
     }
 
     private void visitAudioOpenAnswer(OpenAnswerDefinitionAudio audio, Builder builder) {

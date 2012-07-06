@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -34,19 +34,21 @@ import org.obiba.onyx.util.data.DataType;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
+ *
  * @author Yannick Marcon
- * 
  */
 public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Question> {
 
   /**
    * Constructor using {@link PageBuilder} to get the {@link Page} it is applied to.
+   *
    * @param parent
    * @param name
    * @param multiple
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private QuestionBuilder(PageBuilder parent, String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+  private QuestionBuilder(PageBuilder parent, String name, String number, boolean multiple,
+      Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     super(parent);
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
@@ -69,6 +71,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Constructor.
+   *
    * @param questionnaire
    * @param question
    */
@@ -79,6 +82,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Create a {@link Question} in the given {@link Page}.
+   *
    * @param parent
    * @param name
    * @param multiple
@@ -91,18 +95,21 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Create a {@link Question} in the given {@link Page}.
+   *
    * @param parent
    * @param name
    * @param multiple
    * @return
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  public static QuestionBuilder createQuestion(PageBuilder parent, String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+  public static QuestionBuilder createQuestion(PageBuilder parent, String name, String number, boolean multiple,
+      Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     return new QuestionBuilder(parent, name, number, multiple, uiFactoryClass);
   }
 
   /**
    * Set the given {@link Question} as the current one.
+   *
    * @param questionnaire
    * @param question
    * @return
@@ -113,6 +120,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
+   *
    * @param name
    * @return
    */
@@ -123,6 +131,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Add a required, non multiple, with number {@link Question} to current {@link Question} and make it current
    * {@link Question}.
+   *
    * @param name
    * @return
    */
@@ -132,6 +141,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
+   *
    * @param name
    * @param uiFactoryClass
    * @return
@@ -142,16 +152,19 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
+   *
    * @param name
    * @param uiFactoryClass
    * @return
    */
-  public QuestionBuilder withQuestion(String name, String number, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+  public QuestionBuilder withQuestion(String name, String number,
+      Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     return withQuestion(name, number, false, uiFactoryClass);
   }
 
   /**
    * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
+   *
    * @param name
    * @param multiple
    * @return
@@ -163,6 +176,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
+   *
    * @param name
    * @param multiple
    * @return
@@ -174,13 +188,15 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
+   *
    * @param name
    * @param multiple
    * @param uiFactoryClass
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+  public QuestionBuilder withQuestion(String name, String number, boolean multiple,
+      Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -216,6 +232,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Set the range of answer count for current {@link Question}.
+   *
    * @param minCount no limit if null
    * @param maxCount no limit if null
    * @return
@@ -229,6 +246,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Make the current {@link Question} optional.
+   *
    * @return The QuestionBuilder.
    */
   public QuestionBuilder optional() {
@@ -239,6 +257,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Set the exact answer count (min and max count are equals).
+   *
    * @param count
    * @return
    */
@@ -251,6 +270,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add argument that will be interpreted by specific question UI.
+   *
    * @param key
    * @param value
    * @return
@@ -268,6 +288,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Question categories are displayed in a grid (multiple row and columns), the count of rows can be specified.
+   *
    * @param count
    * @return
    */
@@ -277,6 +298,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a {@link Category} to current {@link Question}, make it the current category.
+   *
    * @param name
    * @return
    */
@@ -286,6 +308,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a {@link Category} to current {@link Question}, make it the current category.
+   *
    * @param name
    * @param exportName
    * @return
@@ -298,6 +321,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a set of {@link Category} to current {@link Question}.
+   *
    * @param names
    * @return
    */
@@ -314,6 +338,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Look for the {@link Category} with the given name in the current {@link Questionnaire}, add it (create it if
    * necessary) to the current {@link Question}, make it the current category.
+   *
    * @param name
    * @return
    */
@@ -331,6 +356,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Look for the {@link Category} with the given name in the current {@link Questionnaire}, add it (create it if
    * necessary) to the current {@link Question}, make it the current category.
+   *
    * @param name
    * @param exportName
    * @return
@@ -343,6 +369,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a set of shared {@link Category} to current {@link Question}.
+   *
    * @param names
    * @return
    */
@@ -358,6 +385,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Add a set of shared {@link Category} to current {@link Question}, with escape attribute.
+   *
    * @param escape
    * @param names
    * @return
@@ -375,12 +403,14 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Set the condition based on a provided derived variable that will be added to the questionnaire. Check that a
    * variable with same name does not already exist and that the variable value type is boolean.
+   *
    * @param variable
    * @return
    */
   public QuestionBuilder setQuestionnaireVariableCondition(Variable variable) {
     if(!variable.getValueType().equals(BooleanType.get())) {
-      throw new IllegalArgumentException("Boolean type is expected for questionnaire variable used as a question condition: " + variable.getName());
+      throw new IllegalArgumentException(
+          "Boolean type is expected for questionnaire variable used as a question condition: " + variable.getName());
     }
     addVariable(variable);
     getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variable.getName()));
@@ -390,12 +420,14 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Set the condition based on a newly created derived variable that is added in the questionnaire. Check that a
    * variable with same name does not already exist and set the boolean value type.
+   *
    * @param variableName
    * @param script
    * @return
    */
   public QuestionBuilder setQuestionnaireVariableCondition(String variableName, String script) {
-    addVariable(new Variable.Builder(variableName, BooleanType.get(), "Participant").addAttribute("script", script).build());
+    addVariable(
+        new Variable.Builder(variableName, BooleanType.get(), "Participant").addAttribute("script", script).build());
     getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variableName));
     return this;
   }
@@ -403,14 +435,17 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Set the condition based on the derived variable name defined in the questionnaire. Check is made that the variable
    * exists in the questionnaire and the value type is boolean.
+   *
    * @param variableName
    * @return
    */
   public QuestionBuilder setQuestionnaireVariableCondition(String variableName) {
     Variable var = QuestionnaireFinder.getInstance(questionnaire).findVariable(variableName);
-    if(var == null) throw new IllegalArgumentException("No such variable in the questionnaire with name: " + variableName);
+    if(var == null)
+      throw new IllegalArgumentException("No such variable in the questionnaire with name: " + variableName);
     if(!var.getValueType().equals(BooleanType.get())) {
-      throw new IllegalArgumentException("Boolean type is expected for questionnaire variable used as a question condition: " + variableName);
+      throw new IllegalArgumentException(
+          "Boolean type is expected for questionnaire variable used as a question condition: " + variableName);
     }
     getElement().setCondition(new VariableDataSource(questionnaire.getName() + ":" + variableName));
     return this;
@@ -420,6 +455,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * Set the condition based on the value of a variable identified by the provided path. No check is made on whether the
    * variable with given path exists or if the variable value type is boolean or if the variable entity type is
    * Participant.
+   *
    * @param variablePath
    * @return
    */
@@ -430,6 +466,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Set the condition based on a variable condition. No check is made on whether the variable with given path exists or
    * if the variable value type is boolean or if the variable entity type is Participant.
+   *
    * @param ds
    * @return
    * @see QuestionnaireBuilder#newDataSource(String) and {@link QuestionnaireBuilder#newDataSource(String, String)}
@@ -441,6 +478,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Condition on any category is chosen in the given question in current questionnaire.
+   *
    * @param question
    * @return
    */
@@ -451,6 +489,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Condition on a category choice in current questionnaire.
+   *
    * @param question
    * @param category
    * @return
@@ -462,20 +501,23 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Condition on question answering and/or category choice in another questionnaire.
+   *
    * @param questionnaireName
    * @param question
-   * @param category can be null
+   * @param category          can be null
    * @return
    * @deprecated use {@link #setVariableCondition(String)} instead
    */
   @Deprecated
   public QuestionBuilder setCondition(String questionnaire, String question, String category) {
-    getElement().setCondition(ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, null).getElement());
+    getElement().setCondition(
+        ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, null).getElement());
     return this;
   }
 
   /**
    * Add the data source condition (must be of boolean type).
+   *
    * @param dataSource
    * @return
    * @deprecated use {@link #setVariableCondition(String)} instead
@@ -488,6 +530,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Set a {@link ComparingDataSource} condition.
+   *
    * @param dataSource1
    * @param operator
    * @param dataSource2
@@ -502,6 +545,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Set a {@link ComparingDataSource} condition over gender participant property.
+   *
    * @param operator
    * @param gender
    * @return
@@ -509,12 +553,14 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    */
   @Deprecated
   public QuestionBuilder setCondition(ComparisonOperator operator, Gender gender) {
-    getElement().setCondition(new ComparingDataSource(new ParticipantPropertyDataSource("gender"), operator, new FixedDataSource(gender.toString())));
+    getElement().setCondition(new ComparingDataSource(new ParticipantPropertyDataSource("gender"), operator,
+        new FixedDataSource(gender.toString())));
     return this;
   }
 
   /**
    * Add a {@link ComputingDataSource} as a condition.
+   *
    * @param expression
    * @param dataSources
    * @return
@@ -528,6 +574,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Get the question variable path.
+   *
    * @param name
    * @return
    */
@@ -537,6 +584,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Get the question variable name.
+   *
    * @return
    */
   public String getVariableName() {
@@ -545,6 +593,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Check question name unicity.
+   *
    * @param name
    * @return
    */
@@ -554,6 +603,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Check shared category name unicity.
+   *
    * @param name
    * @return
    */
@@ -563,11 +613,14 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   /**
    * Check question panel factory is operational.
+   *
    * @param uiFactoryClass
    * @param e
    * @return
    */
-  private IllegalArgumentException invalidQuestionPanelFactoryException(Class<? extends IQuestionPanelFactory> uiFactoryClass, Exception e) {
-    return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
+  private IllegalArgumentException invalidQuestionPanelFactoryException(
+      Class<? extends IQuestionPanelFactory> uiFactoryClass, Exception e) {
+    return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(),
+        e);
   }
 }

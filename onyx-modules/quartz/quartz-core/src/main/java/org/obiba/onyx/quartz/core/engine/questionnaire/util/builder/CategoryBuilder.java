@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import java.util.Locale;
+
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -223,6 +225,11 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
 
     // This category is necessarily a missing category: escape property is to be true.
     category.setEscape(true);
+    return this;
+  }
+
+  public CategoryBuilder addAttribute(String namespace, String name, String value, Locale locale) {
+    element.addAttribute(namespace, name, value, locale);
     return this;
   }
 
