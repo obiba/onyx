@@ -832,7 +832,7 @@
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 
-    <wicket.version>1.4.17</wicket.version>
+    <wicket.version>1.4.20</wicket.version>
     <spring.version>3.0.5.RELEASE</spring.version>
     <spring-batch.version>2.0.3.RELEASE</spring-batch.version>
     <opensymphony-quartz.version>1.6.1</opensymphony-quartz.version>
@@ -843,7 +843,7 @@
     <hsqldb.version>1.8.0.7</hsqldb.version>
     <dbunit.version>2.2.2</dbunit.version>
     <junit.version>4.7</junit.version>
-    <easymock.version>2.5</easymock.version>
+    <easymock.version>3.1</easymock.version>
     <mysql-connector-java.version>5.1.6</mysql-connector-java.version>
     <commons-collections.version>3.1</commons-collections.version>
     <commons-dbcp.version>1.3</commons-dbcp.version>
