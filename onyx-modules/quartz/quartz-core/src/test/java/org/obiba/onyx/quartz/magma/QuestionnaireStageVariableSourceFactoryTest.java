@@ -76,9 +76,10 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     // QLISTRADIO assertion
     assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO").getAttribute("attrQuestionKey")));
     assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C1").getAttribute("attrQuestionKey")));
-
-    assertEquals("attrOAValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("attrOAKey")));
+    assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("attrQuestionKey")));
     assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C2").getAttribute("attrQuestionKey")));
+    assertEquals("attrOAValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("attrOAKey")));
+    assertEquals("attrCategoryValue", value(mv.get("QLISTRADIO.C2").getAttribute("attrCategoryKey")));
 
     //QARRAY assertion
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY").getAttribute("attrParentQuestionKey")));
@@ -86,7 +87,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2").getAttribute("attrParentQuestionKey")));
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q1.CAT3").getAttribute("attrParentQuestionKey")));
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q1.CAT4").getAttribute("attrParentQuestionKey")));
-    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT4").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT3").getAttribute("attrParentQuestionKey")));
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT4").getAttribute("attrParentQuestionKey")));
 
     //Categories
