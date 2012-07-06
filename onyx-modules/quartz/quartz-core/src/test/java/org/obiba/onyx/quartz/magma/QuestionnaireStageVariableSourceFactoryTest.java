@@ -9,6 +9,8 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.magma.Attribute;
+import org.obiba.magma.Category;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableValueSource;
@@ -46,7 +48,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
         .addAttribute("", "attrOAKey", "attrOAValue", null);
     questionBuilder.withCategory("C2").addAttribute("", "attrCategoryKey", "attrCategoryValue", null);
 
-    QuestionBuilder aqb = qrb.inPage("P1").withQuestion("QARRAY");
+    qrb.inPage("P1").withQuestion("QARRAY");
     qrb.inQuestion("QARRAY").withQuestion("Q1");
     qrb.inQuestion("QARRAY").withQuestion("Q2");
     qrb.inQuestion("QARRAY").withCategories("CAT3", "CAT4");
@@ -60,33 +62,48 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     QuestionnaireStageVariableSourceFactory qsvs = new QuestionnaireStageVariableSourceFactory(stageMock,
         questionnaireBundleMock);
 
-    Map<String, Variable> map = new HashMap<String, Variable>();
+    Map<String, Variable> mv = new HashMap<String, Variable>();
+    Map<String, Category> mc = new HashMap<String, Category>();
     for(VariableValueSource vvs : qsvs.createSources()) {
-      map.put(vvs.getVariable().getName(), vvs.getVariable());
-      System.out.println(vvs.getVariable().getName());
+      Variable variable = vvs.getVariable();
+      mv.put(variable.getName(), variable);
+      for(Category category : variable.getCategories()) {
+        mc.put(variable.getName() + "." + category.getName(), category);
+        System.out.println("cat: " + category.getName());
+      }
+      System.out.println("var: " + variable.getName());
     }
 
+    //Variable
     // QLISTRADIO assertion
-    assertEquals("attrQuestionValue", map.get("QLISTRADIO").getAttribute("attrQuestionKey").getValue().getValue());
-    assertEquals("attrQuestionValue", map.get("QLISTRADIO.C1").getAttribute("attrQuestionKey").getValue().getValue());
-    assertEquals("attrOAValue", map.get("QLISTRADIO.C1.OAD1").getAttribute("attrOAKey").getValue().getValue());
-    assertEquals("attrQuestionValue", map.get("QLISTRADIO.C2").getAttribute("attrQuestionKey").getValue().getValue());
+    assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO").getAttribute("attrQuestionKey")));
+    assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C1").getAttribute("attrQuestionKey")));
+
+    assertEquals("attrOAValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("attrOAKey")));
+    assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C2").getAttribute("attrQuestionKey")));
 
     //QARRAY assertion
-    assertEquals("attrParentQuestionValue",
-        map.get("QARRAY").getAttribute("attrParentQuestionKey").getValue().getValue());
-    assertEquals("attrParentQuestionValue", map.get("QARRAY.Q1").getAttribute("attrParentQuestionKey").getValue()
-        .getValue());
-    assertEquals("attrParentQuestionValue", map.get("QARRAY.Q2").getAttribute("attrParentQuestionKey")
-        .getValue().getValue());
-    assertEquals("attrParentQuestionValue", map.get("QARRAY.Q1.CAT3").getAttribute("attrParentQuestionKey")
-        .getValue().getValue());
-    assertEquals("attrParentQuestionValue", map.get("QARRAY.Q1.CAT3").getAttribute("attrParentQuestionKey")
-        .getValue().getValue());
-    assertEquals("attrParentQuestionValue", map.get("QARRAY.Q1.CAT4").getAttribute("attrParentQuestionKey")
-        .getValue().getValue());
-    assertEquals("attrParentQuestionValue", map.get("QARRAY.Q1.CAT4").getAttribute("attrParentQuestionKey")
-        .getValue().getValue());
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q1").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q1.CAT3").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q1.CAT4").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT4").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT4").getAttribute("attrParentQuestionKey")));
 
+    //Categories
+    assertEquals("attrQuestionValue", value(mc.get("QLISTRADIO.C1").getAttribute("attrQuestionKey")));
+    assertEquals("attrQuestionValue", value(mc.get("QLISTRADIO.C2").getAttribute("attrQuestionKey")));
+    assertEquals("attrCategoryValue", value(mc.get("QLISTRADIO.C2").getAttribute("attrCategoryKey")));
+
+    assertEquals("attrParentQuestionValue", value(mc.get("QARRAY.Q1.CAT3").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mc.get("QARRAY.Q1.CAT4").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mc.get("QARRAY.Q2.CAT3").getAttribute("attrParentQuestionKey")));
+    assertEquals("attrParentQuestionValue", value(mc.get("QARRAY.Q2.CAT3").getAttribute("attrParentQuestionKey")));
+
+  }
+
+  private Object value(Attribute attribute) {
+    return attribute.getValue().getValue();
   }
 }
