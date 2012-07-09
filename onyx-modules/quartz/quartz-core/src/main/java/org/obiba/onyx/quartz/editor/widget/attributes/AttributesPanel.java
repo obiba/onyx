@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package org.obiba.onyx.quartz.editor.widget.attributes;
 
 import java.io.Serializable;
@@ -8,6 +17,7 @@ import java.util.List;
 import com.google.common.base.Strings;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
@@ -25,7 +35,6 @@ import org.obiba.magma.Attribute;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
-import org.obiba.onyx.wicket.reusable.Dialog;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 
 public class AttributesPanel extends Panel {
@@ -34,23 +43,31 @@ public class AttributesPanel extends Panel {
 
   private IModel<Question> questionModel;
 
-  private Dialog attributeEdition;
+  private ModalWindow modalWindow;
 
   public AttributesPanel(String id, IModel<Question> questionModel) {
     super(id);
     this.questionModel = questionModel;
+
+    modalWindow = new ModalWindow("modalWindow");
+    modalWindow.setCssClassName("onyx");
+    modalWindow.setInitialWidth(500);
+    modalWindow.setInitialHeight(500);
+    modalWindow.setResizable(true);
+    modalWindow.setContent(new AttributesEditPanel("content",modalWindow));
     AjaxLink<Serializable> ajaxAddLink = new AjaxLink<Serializable>("addAttribute", new Model<Serializable>()) {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        System.out.println("add click");
+        modalWindow.show(target);
       }
     };
     attributes = new OnyxEntityList<Attribute>("attributes", new AttributesDataProvider(),
-        new AttributeColumnProvider(), new Model<String>("Attribute"));
+        new AttributeColumnProvider(), new Model<String>("Attributes"));
 
     ajaxAddLink.add(new Image("addImage", Images.ADD));
     add(ajaxAddLink);
     add(attributes);
+    add(modalWindow);
   }
 
   private class AttributesDataProvider extends SortableDataProvider<Attribute> {

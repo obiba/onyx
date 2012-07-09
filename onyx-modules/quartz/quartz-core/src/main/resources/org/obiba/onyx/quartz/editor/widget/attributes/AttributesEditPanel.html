@@ -1,0 +1,18 @@
+<wicket:panel>
+
+  <form wicket:id="form" autocomplete="off">
+
+    <table class="keyValueTable">
+      <tr>
+        <td valign="top" class="keyValueTableKey"><label wicket:id="namespaceLabel"></label></td>
+        <td><input wicket:id="namespace" type="text" size="40" autocomplete="off"/></td>
+      </tr>
+      <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+      <td><input wicket:id="name" type="text" size="40" autocomplete="off" /></td>
+      </tr>
+    </table>
+
+    <div wicket:id="saveCancel" class="modal-footer"></div>
+  </form>
+</wicket:panel>
