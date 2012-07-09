@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -46,6 +47,7 @@ import org.obiba.onyx.quartz.editor.questionnaire.utils.QuestionnairePersistence
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.HidableTab;
+import org.obiba.onyx.quartz.editor.widget.attributes.AttributesPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.ARRAY_CHECKBOX;
@@ -350,6 +352,13 @@ public abstract class EditQuestionPanel extends Panel {
     tabs.add(columnsTab);
     tabs.add(audioRecordingTab);
     tabs.add(autocompleteTab);
+    tabs.add(new AbstractTab(new ResourceModel("Attributes")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        return new AttributesPanel(panelId, questionModel);
+      }
+    });
+
     final SavableHidableTab conditionTab = new SavableHidableTab(new ResourceModel("Conditions")) {
       private ConditionPanel panel;
 
