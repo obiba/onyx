@@ -22,6 +22,7 @@ import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.DatasourceFactory;
+import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.crypt.KeyProvider;
@@ -205,7 +206,11 @@ public class OnyxDataExport {
           int bufferSize = options != null ? Objects.firstNonNull(options.getBufferSize(), 50) : 50;
 
           // Copy the filtered table to the destination datasource
-          MultithreadedDatasourceCopier.Builder.newCopier().withQueueSize(bufferSize).withThreads(threadFactory).withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
+          MultithreadedDatasourceCopier.Builder.newCopier()//
+          .withQueueSize(bufferSize)//
+          .withThreads(threadFactory)//
+          .withReaderListener(new HibernateCacheReaderListener())//
+          .withCopier(DatasourceCopier.Builder.newCopier().copyNullValues(copyNulls).withLoggingListener().withListener(listener)).from(table).to(outputDatasource).build().copy();
 
           long exportEndTime = System.currentTimeMillis();
           log.info("Exported [{}] entities of type [{}] in [{}ms] to destination [{}.{}].", new Object[] { listener.getValueSetCount(), table.getEntityType(), exportEndTime - exportStartTime, destination.getName(), table.getName() });
@@ -288,6 +293,31 @@ public class OnyxDataExport {
     // Write an entry in ExportLog to flag the set of entities as exported.
     ExportLog exportLog = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
     exportLogService.save(exportLog);
+  }
+
+  /**
+   * This class is required because the reading happens on other threads. They each need to get their first-level cache
+   * cleared. Note that {@code getCurrentSession} will return a different session in each thread. It is also safe to
+   * clear the session since these threads are only reading from the database (never writing).
+   */
+  private class HibernateCacheReaderListener implements MultithreadedDatasourceCopier.ReaderListener {
+
+    @Override
+    public void onRead(ValueSet valueSet, Value[] values) {
+      // Clear the session: this empties the first-level cache which is currently filled with the entity's data.
+      // Clearing the session also clears any pending write operations (INSERT or UPDATE). This is safe because
+      // the copy operation is read-only.
+      // We clear the session before we create the export log. It helps the flush call below (in onValueSetCopied)
+      // run faster since the session will only contain the new export log.
+      try {
+        sessionFactory.getCurrentSession().clear();
+      } catch(RuntimeException e) {
+        log.error("Error clearing hibernate session during read.", e);
+        throw e;
+      }
+
+    }
+
   }
 
   private class ExportListener implements DatasourceCopyValueSetEventListener {
