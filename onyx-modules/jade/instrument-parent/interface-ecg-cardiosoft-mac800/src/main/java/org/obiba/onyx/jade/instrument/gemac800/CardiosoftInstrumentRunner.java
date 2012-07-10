@@ -396,7 +396,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
    */
   public void shutdown() {
     deleteDeviceData();
-
   }
 
   public Locale getLocale() {
