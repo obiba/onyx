@@ -33,7 +33,7 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionT
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_AUTO_COMPLETE;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionType.SINGLE_OPEN_ANSWER;
 
-public class Question implements IHasQuestion {
+public class Question implements IHasQuestion, Attributable {
 
   private static final long serialVersionUID = -7795909448581432466L;
 
@@ -469,14 +469,17 @@ public class Question implements IHasQuestion {
     return getNoAnswerCategory() != null;
   }
 
+  @Override
   public boolean hasAttributes() {
     return attributes != null;
   }
 
+  @Override
   public List<Attribute> getAttributes() {
     return attributes;
   }
 
+  @Override
   public void addAttribute(String namespace, String name, String value, Locale locale) {
     if(attributes == null) {
       attributes = new ArrayList<Attribute>();
@@ -488,13 +491,23 @@ public class Question implements IHasQuestion {
     return Attributes.containsAttribute(attributes, attribute);
   }
 
+  @Override
   public Attribute getAttribute(String namespace, String name, Locale locale) {
     return Attributes.getAttribute(attributes, namespace, name, locale);
   }
 
+  @Override
   public void updateAttribute(Attribute attribute, String namespace, String name,
       String value, Locale locale) {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
     Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
+  }
+
+  @Override
+  public void removeAttribute(Attribute attribute) {
+    Attributes.removeAttribute(attributes, attribute);
   }
 
 }

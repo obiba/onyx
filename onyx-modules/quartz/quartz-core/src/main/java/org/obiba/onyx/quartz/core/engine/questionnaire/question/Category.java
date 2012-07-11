@@ -20,7 +20,7 @@ import org.obiba.magma.Attribute;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-public class Category implements Serializable, IQuestionnaireElement {
+public class Category implements Serializable, IQuestionnaireElement, Attributable {
 
   private static final long serialVersionUID = -1722883141794376906L;
 
@@ -129,14 +129,17 @@ public class Category implements Serializable, IQuestionnaireElement {
     if(variableNames != null) variableNames.clear();
   }
 
+  @Override
   public boolean hasAttributes() {
     return attributes != null;
   }
 
+  @Override
   public List<Attribute> getAttributes() {
     return attributes;
   }
 
+  @Override
   public void addAttribute(String namespace, String name, String value, Locale locale) {
     if(attributes == null) {
       attributes = new ArrayList<Attribute>();
@@ -148,14 +151,22 @@ public class Category implements Serializable, IQuestionnaireElement {
     return Attributes.containsAttribute(attributes, attribute);
   }
 
+  @Override
   public Attribute getAttribute(String namespace, String name, Locale locale) {
     return Attributes.getAttribute(attributes, namespace, name, locale);
-
   }
 
+  @Override
   public void updateAttribute(Attribute attribute, String namespace, String name,
       String value, Locale locale) {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
     Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
   }
 
+  @Override
+  public void removeAttribute(Attribute attribute) {
+    Attributes.removeAttribute(attributes, attribute);
+  }
 }

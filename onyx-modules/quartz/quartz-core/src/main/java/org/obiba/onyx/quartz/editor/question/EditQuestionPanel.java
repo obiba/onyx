@@ -355,7 +355,7 @@ public abstract class EditQuestionPanel extends Panel {
     tabs.add(new AbstractTab(new ResourceModel("Attributes")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new AttributesPanel(panelId, questionModel);
+        return new AttributesPanel(panelId, questionModel, feedbackPanel, feedbackWindow);
       }
     });
 

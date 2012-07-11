@@ -36,7 +36,7 @@ import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswe
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.NORMAL;
 import static org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType.UI_ARGUMENT_KEY;
 
-public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider {
+public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider, Attributable {
 
   private static final long serialVersionUID = -7756577128502621726L;
 
@@ -374,14 +374,17 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     }
   }
 
+  @Override
   public boolean hasAttributes() {
     return attributes != null;
   }
 
+  @Override
   public List<Attribute> getAttributes() {
     return attributes;
   }
 
+  @Override
   public void addAttribute(String namespace, String name, String value, Locale locale) {
     if(attributes == null) {
       attributes = new ArrayList<Attribute>();
@@ -393,14 +396,23 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     return Attributes.containsAttribute(attributes, attribute);
   }
 
+  @Override
   public Attribute getAttribute(String namespace, String name, Locale locale) {
     return Attributes.getAttribute(attributes, namespace, name, locale);
-
   }
 
+  @Override
   public void updateAttribute(Attribute attribute, String namespace, String name,
       String value, Locale locale) {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
     Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
+  }
+
+  @Override
+  public void removeAttribute(Attribute attribute) {
+    Attributes.removeAttribute(attributes, attribute);
   }
 
 }

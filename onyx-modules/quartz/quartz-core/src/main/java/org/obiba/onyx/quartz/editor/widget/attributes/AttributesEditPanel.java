@@ -10,54 +10,65 @@
 package org.obiba.onyx.quartz.editor.widget.attributes;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.obiba.magma.Attribute;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributable;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
+import org.obiba.onyx.wicket.reusable.Dialog;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 public class AttributesEditPanel extends Panel {
 
-  private Attribute attribute;
+  private TextField<String> namespaceField;
 
-  public AttributesEditPanel(String id, Attribute attribute, final ModalWindow modalWindow) {
+  private TextField<String> nameField;
+
+  public AttributesEditPanel(String id, final IModel<? extends Attributable> attributable,
+      final IModel<Attribute> attribute, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id);
-    this.attribute = attribute;
+
     Form<Attribute> form = new Form<Attribute>("form");
 
-    TextField<String> namespace = new TextField<String>("namespace");
-    TextField<String> name = new TextField<String>("name");
+    namespaceField = new TextField<String>("namespace", new Model<String>(attribute.getObject().getNamespace()));
+    nameField = new TextField<String>("name", new Model<String>(attribute.getObject().getName()));
+    nameField.setRequired(true);
 
-    namespace.setLabel(new ResourceModel("Namespace"));
-    name.setLabel(new ResourceModel("Name"));
+    namespaceField.setLabel(new ResourceModel("Namespace"));
+    nameField.setLabel(new ResourceModel("Name"));
 
-    form.add(namespace).add(new SimpleFormComponentLabel("namespaceLabel", namespace));
-    form.add(name).add(new SimpleFormComponentLabel("nameLabel", name));
+    form.add(namespaceField).add(new SimpleFormComponentLabel("namespaceLabel", namespaceField));
+    form.add(nameField).add(new SimpleFormComponentLabel("nameLabel", nameField));
 
     add(form);
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form) {
-
+        attributable.getObject().updateAttribute(
+            attribute.getObject(),
+            namespaceField.getValue(),
+            nameField.getValue(),
+            null,
+            null);
+        Dialog.closeCurrent(target);
       }
 
       @Override
       protected void onCancel(AjaxRequestTarget target, Form<?> form) {
-        modalWindow.close(target);
+        Dialog.closeCurrent(target);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form<?> form) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        feedbackWindow.setContent(feedbackPanel);
+        feedbackWindow.show(target);
       }
     });
-
-  }
-
-  public AttributesEditPanel(String id, final ModalWindow modalWindow) {
-    this(id, null, modalWindow);
   }
 }

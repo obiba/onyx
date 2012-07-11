@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterators;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -25,6 +26,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -32,32 +34,54 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.obiba.magma.Attribute;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributable;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
+import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 
 public class AttributesPanel extends Panel {
 
+  private final FeedbackPanel feedbackPanel;
+
+  private final FeedbackWindow feedbackWindow;
+
   private OnyxEntityList<Attribute> attributes;
 
-  private IModel<Question> questionModel;
+  private IModel<? extends Attributable> attributable;
 
   private ModalWindow modalWindow;
 
-  public AttributesPanel(String id, IModel<Question> questionModel) {
+  public AttributesPanel(String id, final IModel<? extends Attributable> attributable,
+      final FeedbackPanel feedbackPanel,
+      final FeedbackWindow feedbackWindow) {
     super(id);
-    this.questionModel = questionModel;
-
+    this.feedbackPanel = feedbackPanel;
+    this.feedbackWindow = feedbackWindow;
+    this.attributable = attributable;
     modalWindow = new ModalWindow("modalWindow");
     modalWindow.setCssClassName("onyx");
     modalWindow.setInitialWidth(500);
     modalWindow.setInitialHeight(500);
     modalWindow.setResizable(true);
-    modalWindow.setContent(new AttributesEditPanel("content",modalWindow));
+    modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+      @Override
+      public void onClose(AjaxRequestTarget target) {
+        target.addComponent(attributes);
+      }
+    });
+
     AjaxLink<Serializable> ajaxAddLink = new AjaxLink<Serializable>("addAttribute", new Model<Serializable>()) {
       @Override
       public void onClick(AjaxRequestTarget target) {
+        AttributesEditPanel content = new AttributesEditPanel("content", attributable,
+            new LoadableDetachableModel<Attribute>() {
+              @Override
+              protected Attribute load() {
+                return Attribute.Builder.newAttribute().build();
+              }
+            }, feedbackPanel, feedbackWindow);
+        modalWindow.setContent(content);
         modalWindow.show(target);
       }
     };
@@ -74,12 +98,22 @@ public class AttributesPanel extends Panel {
 
     @Override
     public Iterator<? extends Attribute> iterator(int first, int count) {
-      return questionModel.getObject().getAttributes().iterator();
+      Attributable attributableObject = attributable.getObject();
+      if(attributableObject.hasAttributes()) {
+        return attributableObject.getAttributes().iterator();
+      } else {
+        return Iterators.emptyIterator();
+      }
     }
 
     @Override
     public int size() {
-      return questionModel.getObject().getAttributes().size();
+      Attributable attributableObject = attributable.getObject();
+      if(attributableObject.hasAttributes()) {
+        return attributableObject.getAttributes().size();
+      } else {
+        return 0;
+      }
     }
 
     @Override
@@ -107,8 +141,7 @@ public class AttributesPanel extends Panel {
           if(Strings.isNullOrEmpty(attribute.getNamespace()) == false) {
             formattedNS = "{" + attribute.getNamespace() + "}";
           }
-          cellItem.add(
-              new Label(componentId, formattedNS + " " + attribute.getName()));
+          cellItem.add(new Label(componentId, formattedNS + " " + attribute.getName()));
         }
       });
 
@@ -118,11 +151,10 @@ public class AttributesPanel extends Panel {
             IModel<Attribute> rowModel) {
           Attribute attribute = rowModel.getObject();
           String formattedLocale = "";
-          if(Strings.isNullOrEmpty(attribute.getNamespace()) == false) {
+          if(attribute.getLocale() != null) {
             formattedLocale = "{" + attribute.getLocale().toString() + "}";
           }
-          cellItem.add(
-              new Label(componentId, formattedLocale + " " + attribute.getValue().getValue()));
+          cellItem.add(new Label(componentId, formattedLocale + " " + attribute.getValue().getValue()));
         }
       });
 
@@ -158,12 +190,15 @@ public class AttributesPanel extends Panel {
 
   private class LinkFragment extends Fragment {
 
-    public LinkFragment(String id, IModel<Attribute> model) {
+    public LinkFragment(String id, final IModel<Attribute> model) {
       super(id, "linkFragment", AttributesPanel.this, model);
       AjaxLink<Attribute> ajaxEditLink = new AjaxLink<Attribute>("editAttribute", model) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          System.out.println("click edit");
+          AttributesEditPanel content = new AttributesEditPanel("content", attributable, model, feedbackPanel,
+              feedbackWindow);
+          modalWindow.setContent(content);
+          modalWindow.show(target);
         }
       };
       ajaxEditLink.add(new Image("editImage", Images.EDIT));
@@ -171,7 +206,8 @@ public class AttributesPanel extends Panel {
       AjaxLink<Attribute> ajaxDeleteLink = new AjaxLink<Attribute>("deleteAttribute", model) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          System.out.println("click delete");
+          attributable.getObject().removeAttribute(model.getObject());
+          target.addComponent(attributes);
         }
       };
       ajaxDeleteLink.add(new Image("deleteImage", Images.DELETE));

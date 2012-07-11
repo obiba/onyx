@@ -2,12 +2,18 @@
 
   <div wicket:id="modalWindow"/>
 
+  <table>
+    <tr>
+      <td>
+        <a class="obiba-button" wicket:id="addAttribute">
+          <img wicket:id="addImage" class="add"/>
+          <wicket:message key="AddAttribute"/>
+        </a>
+      </td>
+    </tr>
+  </table>
   <span wicket:id="attributes"/>
 
-  <a class="obiba-button" wicket:id="addAttribute">
-    <img wicket:id="addImage" class="add"/>
-    <wicket:message key="AddAttribute"/>
-  </a>
 
   <wicket:fragment wicket:id="linkFragment">
     <a wicket:id="editAttribute"><img wicket:id="editImage"/></a>
