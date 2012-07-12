@@ -14,8 +14,11 @@ import java.util.Locale;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.obiba.magma.Attribute;
+import org.obiba.onyx.quartz.editor.widget.attributes.FactorizedAttributeModel;
 
 public class Attributes {
   /**
@@ -73,6 +76,16 @@ public class Attributes {
    * @param attributes
    * @param namespace
    * @param name
+   * @return
+   */
+  public static boolean containsAttribute(List<Attribute> attributes, String namespace, String name) {
+    return Iterables.any(attributes, predicate(namespace, name));
+  }
+
+  /**
+   * @param attributes
+   * @param namespace
+   * @param name
    * @param locale
    * @return
    */
@@ -82,29 +95,24 @@ public class Attributes {
 
   /**
    * @param attributes
-   * @param attribute
    * @param namespace
    * @param name
-   * @param value
-   * @param locale
    */
-  public static void updateAttribute(List<Attribute> attributes, Attribute attribute, String namespace, String name,
-      String value, Locale locale) {
-    if(attributes.contains(attribute)) {
-      int index = attributes.indexOf(attribute);
-      attributes.remove(attribute);
-      addAttribute(attributes, index, namespace, name, value, locale);
-    } else {
-      addAttribute(attributes, namespace, name, value, locale);
-    }
+  public static void removeAttributes(final List<Attribute> attributes, final String namespace, final String name) {
+    Iterables.removeIf(attributes, predicate(namespace, name));
   }
 
-  /**
-   * @param attributes
-   * @param attribute
-   */
-  public static void removeAttribute(List<Attribute> attributes, Attribute attribute) {
-    attributes.remove(attribute);
+  public static Predicate<Attribute> predicate(final String namespace, final String name) {
+    final String nullIfEmptyNamespace = Strings.emptyToNull(namespace);
+    return new Predicate<Attribute>() {
+      @Override
+      public boolean apply(Attribute input) {
+        return input.getName().equals(name)
+            && (input.getNamespace() == null
+            ? nullIfEmptyNamespace == null
+            : input.getNamespace().equals(nullIfEmptyNamespace));
+      }
+    };
   }
 
   /**
@@ -129,5 +137,30 @@ public class Attributes {
                 : input.getLocale().equals(locale));
       }
     };
+  }
+
+  /**
+   * @param attributes
+   * @return
+   */
+  public static List<FactorizedAttributeModel> factorize(List<Attribute> attributes, List<Locale> locales) {
+    if(attributes == null) {
+      return null;
+    }
+    List<FactorizedAttributeModel> list = Lists.newArrayList();
+    HashMultimap<String, Attribute> multi = HashMultimap.create();
+    for(Attribute attribute : attributes) {
+      multi.put(attribute.getNamespace() + ":" + attribute.getName(), attribute);
+    }
+    for(String uniqueKey : multi.keySet()) {
+      FactorizedAttributeModel factorizedAttributeModel = new FactorizedAttributeModel(locales);
+      list.add(factorizedAttributeModel);
+      for(Attribute attribute : multi.get(uniqueKey)) {
+        factorizedAttributeModel.setNamespace(attribute.getNamespace());
+        factorizedAttributeModel.setName(attribute.getName());
+        factorizedAttributeModel.setValue(attribute.getLocale(), (String) attribute.getValue().getValue());
+      }
+    }
+    return list;
   }
 }

@@ -1,7 +1,6 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.util.Locale;
-import java.util.NoSuchElementException;
 
 import junit.framework.Assert;
 import org.junit.After;
@@ -69,38 +68,18 @@ public class QuestionAttributesTest {
   }
 
   @Test
-  public void testQuestionMergeKeyAttributes() {
+  public void testQuestionRemoveKeyAttributes() {
     Question q1 = new Question();
     q1.addAttribute(null, "attrKey", "value", null);
-    Attribute attribute = q1.getAttribute(null, "attrKey", null);
-    q1.updateAttribute(attribute, null, "newAttrKey", "newValue", null);
-    Assert.assertEquals(1, q1.getAttributes().size());
-    Assert.assertEquals("newValue", q1.getAttribute(null, "newAttrKey", null).getValue().getValue());
+    q1.removeAttributes(null, "attrKey");
+    Assert.assertEquals(0, q1.getAttributes().size());
   }
 
   @Test
-  public void testQuestionMergeNSKeyValueLocaleAttributes() {
+  public void testQuestionRemoveNSKeyValueLocaleAttributes() {
     Question q1 = new Question();
     q1.addAttribute("ns", "attrKey", "value", new Locale("en"));
-    Attribute attribute = q1.getAttribute("ns", "attrKey", new Locale("en"));
-    q1.updateAttribute(attribute, "ns", "attrKey", "newValue", new Locale("en"));
-    Assert.assertEquals(1, q1.getAttributes().size());
-    Assert.assertEquals("newValue", q1.getAttribute("ns", "attrKey", new Locale("en")).getValue().getValue());
-  }
-
-  @Test
-  public void testQuestionInvalidKeyAttributes() {
-    Question q1 = new Question();
-    q1.addAttribute(null, "attrKey", null, null);
-    Attribute attribute = q1.getAttribute(null, "attrKey", null);
-    q1.updateAttribute(attribute, null, "newAttrKey", null, null);
-    Assert.assertEquals(1, q1.getAttributes().size());
-    Assert.assertFalse(q1.containsAttribute(attribute));
-    try {
-      Assert.assertNull(q1.getAttribute(null, "invalidKey", null).getValue().getValue());
-      Assert.fail("must throw NoSuchElementException");
-    } catch(NoSuchElementException e) {
-
-    }
+    q1.removeAttributes("ns", "attrKey");
+    Assert.assertEquals(0, q1.getAttributes().size());
   }
 }

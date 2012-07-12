@@ -96,6 +96,7 @@ public abstract class CategoryWindow extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         return new AttributesPanel(panelId, new Model(model.getObject().getCategory()),
+            questionnaireModel.getObject().getLocales(),
             feedbackPanel,
             feedbackWindow);
       }

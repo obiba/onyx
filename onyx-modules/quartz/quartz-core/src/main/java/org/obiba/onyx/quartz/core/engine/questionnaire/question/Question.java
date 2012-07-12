@@ -487,8 +487,9 @@ public class Question implements IHasQuestion, Attributable {
     Attributes.addAttribute(attributes, namespace, name, value, locale);
   }
 
-  public boolean containsAttribute(Attribute attribute) {
-    return Attributes.containsAttribute(attributes, attribute);
+  @Override
+  public boolean containsAttribute(String namespace, String name) {
+    return Attributes.containsAttribute(attributes, namespace, name);
   }
 
   @Override
@@ -497,17 +498,8 @@ public class Question implements IHasQuestion, Attributable {
   }
 
   @Override
-  public void updateAttribute(Attribute attribute, String namespace, String name,
-      String value, Locale locale) {
-    if(attributes == null) {
-      attributes = new ArrayList<Attribute>();
-    }
-    Attributes.updateAttribute(attributes, attribute, namespace, name, value, locale);
-  }
-
-  @Override
-  public void removeAttribute(Attribute attribute) {
-    Attributes.removeAttribute(attributes, attribute);
+  public void removeAttributes(String namespace, String name) {
+    Attributes.removeAttributes(attributes, namespace, name);
   }
 
 }

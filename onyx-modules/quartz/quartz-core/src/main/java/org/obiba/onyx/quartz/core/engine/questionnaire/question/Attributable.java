@@ -16,18 +16,16 @@ import org.obiba.magma.Attribute;
 
 public interface Attributable {
 
-  public boolean hasAttributes();
+  boolean hasAttributes();
 
-  public List<Attribute> getAttributes();
+  List<Attribute> getAttributes();
 
-  public void addAttribute(String namespace, String name, String value, Locale locale);
+  void addAttribute(String namespace, String name, String value, Locale locale);
 
-  public boolean containsAttribute(Attribute attribute);
+  boolean containsAttribute(String namespace, String name);
 
-  public Attribute getAttribute(String namespace, String name, Locale locale);
+  Attribute getAttribute(String namespace, String name, Locale locale);
 
-  public void updateAttribute(Attribute attribute, String namespace, String name,
-      String value, Locale locale);
+  void removeAttributes(String namespace, String name);
 
-  public void removeAttribute(Attribute attribute);
 }
