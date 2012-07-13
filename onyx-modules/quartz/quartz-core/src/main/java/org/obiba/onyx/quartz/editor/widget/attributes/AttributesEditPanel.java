@@ -52,18 +52,18 @@ public class AttributesEditPanel extends Panel {
   private final String initialName;
 
   public AttributesEditPanel(String id, final IModel<? extends Attributable> attributable,
-      final IModel<FactorizedAttributeModel> fam, List<Locale> locales,
+      final IModel<FactorizedAttribute> fam, List<Locale> locales,
       final FeedbackPanel feedbackPanel,
       final FeedbackWindow feedbackWindow) {
     super(id);
 
     Form<Attribute> form = new Form<Attribute>("form");
 
-    final FactorizedAttributeModel famo = fam.getObject();
+    final FactorizedAttribute fao = fam.getObject();
     final Attributable ao = attributable.getObject();
 
-    initialNamespace = famo.getNamespace() == null ? "" : famo.getNamespace();
-    initialName = famo.getName() == null ? "" : famo.getName();
+    initialNamespace = fao.getNamespace() == null ? "" : fao.getNamespace();
+    initialName = fao.getName() == null ? "" : fao.getName();
 
     namespaceField = new TextField<String>("namespace", new PropertyModel<String>(fam, "namespace"));
     nameField = new TextField<String>("name", new PropertyModel<String>(fam, "name"));
@@ -81,7 +81,7 @@ public class AttributesEditPanel extends Panel {
     AbstractTab nlTab = new AbstractTab(new ResourceModel("NoLocale")) {
       @Override
       public Panel getPanel(String panelId) {
-        return new InputPanel(panelId, famo.getValues().get(null));
+        return new InputPanel(panelId, fao.getValues().get(null));
       }
     };
     tabs.add(new PanelCachingTab(nlTab));
@@ -90,7 +90,7 @@ public class AttributesEditPanel extends Panel {
       AbstractTab tab = new AbstractTab(new Model<String>(locale.getDisplayLanguage(userLocale))) {
         @Override
         public Panel getPanel(String panelId) {
-          return new InputPanel(panelId, famo.getValues().get(locale));
+          return new InputPanel(panelId, fao.getValues().get(locale));
         }
       };
       tabs.add(new PanelCachingTab(tab));
@@ -102,12 +102,12 @@ public class AttributesEditPanel extends Panel {
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
       protected void onSave(AjaxRequestTarget target, Form<?> form) {
-        validate(form, ao, famo);
+        validate(form, ao, fao);
         if(form.hasError()) return;
         ao.removeAttributes(initialNamespace, initialName);
-        for(Map.Entry<Locale, IModel<String>> entry : famo.getValues().entrySet()) {
+        for(Map.Entry<Locale, IModel<String>> entry : fao.getValues().entrySet()) {
           if(Strings.isNullOrEmpty(entry.getValue().getObject()) == false) {
-            ao.addAttribute(famo.getNamespace(), famo.getName(), entry.getValue().getObject(), entry.getKey());
+            ao.addAttribute(fao.getNamespace(), fao.getName(), entry.getValue().getObject(), entry.getKey());
           }
         }
         Dialog.closeCurrent(target);
@@ -126,7 +126,7 @@ public class AttributesEditPanel extends Panel {
     });
   }
 
-  private void validate(Form<?> form, Attributable ao, FactorizedAttributeModel famo) {
+  private void validate(Form<?> form, Attributable ao, FactorizedAttribute famo) {
     if(Strings.isNullOrEmpty(nameField.getValue())) {
       form.error(new StringResourceModel("FieldNameRequired", this, null).getObject());
     }

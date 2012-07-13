@@ -19,9 +19,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.CloseButtonCallback;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -58,7 +55,6 @@ import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
-import org.obiba.onyx.quartz.editor.widget.attributes.AttributesPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -85,37 +81,11 @@ public abstract class CategoryWindow extends Panel {
 
   private final List<String> otherCategoryNames = new ArrayList<String>();
 
-  private AjaxTabbedPanel tabbedPanel;
-
-  public CategoryWindow(String id, final IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel,
+  public CategoryWindow(String id, IModel<QuestionCategory> model, final IModel<Questionnaire> questionnaireModel,
       final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
-    List<ITab> tabs = new ArrayList<ITab>();
-    ITab tab = new AbstractTab(new ResourceModel("Attributes")) {
-      @Override
-      public Panel getPanel(String panelId) {
-        return new AttributesPanel(panelId, new Model(model.getObject().getCategory()),
-            questionnaireModel.getObject().getLocales(),
-            feedbackPanel,
-            feedbackWindow);
-      }
-    };
-    tabs.add(tab);
-
-    form = new Form<QuestionCategory>("form", model);
-    new AbstractTab(new ResourceModel("Category")) {
-      @Override
-      public Panel getPanel(String panelId) {
-        Panel panel = new Panel(panelId);
-        return panel;
-      }
-    };
-
-    tabbedPanel = new AjaxTabbedPanel("categoryTabs", tabs);
-    add(tabbedPanel);
-    add(form);
-
+    add(form = new Form<QuestionCategory>("form", model));
     form.setMultiPart(false);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -263,7 +233,7 @@ public abstract class CategoryWindow extends Panel {
       }
 
       @Override
-      @SuppressWarnings({"rawtypes", "unchecked"})
+      @SuppressWarnings({ "rawtypes", "unchecked" })
       public SortableList<OpenAnswerDefinition>.Button[] getButtons() {
         SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(
             new ResourceModel("AddOpenAnswerDefinition"), Images.ADD) {
@@ -433,7 +403,7 @@ public abstract class CategoryWindow extends Panel {
           }
         };
 
-        return new SortableList.Button[] {addButton, addAutoCompleteButton, addAudioButton};
+        return new SortableList.Button[] { addButton, addAutoCompleteButton, addAudioButton };
       }
     };
 

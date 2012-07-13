@@ -12,7 +12,7 @@ import org.apache.wicket.model.Model;
 /**
  * represents attributes factorize by the pair namespace/name
  */
-public class FactorizedAttributeModel implements Serializable {
+public class FactorizedAttribute implements Serializable {
 
   private String namespace;
 
@@ -20,7 +20,7 @@ public class FactorizedAttributeModel implements Serializable {
 
   private Map<Locale, IModel<String>> values;
 
-  public FactorizedAttributeModel(List<Locale> locales) {
+  public FactorizedAttribute(List<Locale> locales) {
     values = new HashMap<Locale, IModel<String>>();
     values.put(null, new Model<String>());
     for(Locale locale : locales) {

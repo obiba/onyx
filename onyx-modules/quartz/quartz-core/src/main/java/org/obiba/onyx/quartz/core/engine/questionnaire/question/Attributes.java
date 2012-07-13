@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,7 +20,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.obiba.magma.Attribute;
-import org.obiba.onyx.quartz.editor.widget.attributes.FactorizedAttributeModel;
+import org.obiba.onyx.quartz.editor.widget.attributes.FactorizedAttribute;
 
 public class Attributes {
   /**
@@ -143,24 +145,33 @@ public class Attributes {
    * @param attributes
    * @return
    */
-  public static List<FactorizedAttributeModel> factorize(List<Attribute> attributes, List<Locale> locales) {
+  public static List<FactorizedAttribute> factorize(List<Attribute> attributes, List<Locale> locales) {
     if(attributes == null) {
       return null;
     }
-    List<FactorizedAttributeModel> list = Lists.newArrayList();
+    List<FactorizedAttribute> list = Lists.newArrayList();
     HashMultimap<String, Attribute> multi = HashMultimap.create();
     for(Attribute attribute : attributes) {
+      //TODO find a way to group pair of namespace/name instead of concatenation
       multi.put(attribute.getNamespace() + ":" + attribute.getName(), attribute);
     }
     for(String uniqueKey : multi.keySet()) {
-      FactorizedAttributeModel factorizedAttributeModel = new FactorizedAttributeModel(locales);
-      list.add(factorizedAttributeModel);
+      FactorizedAttribute factorizedAttribute = new FactorizedAttribute(locales);
+      list.add(factorizedAttribute);
       for(Attribute attribute : multi.get(uniqueKey)) {
-        factorizedAttributeModel.setNamespace(attribute.getNamespace());
-        factorizedAttributeModel.setName(attribute.getName());
-        factorizedAttributeModel.setValue(attribute.getLocale(), (String) attribute.getValue().getValue());
+        factorizedAttribute.setNamespace(attribute.getNamespace());
+        factorizedAttribute.setName(attribute.getName());
+        factorizedAttribute.setValue(attribute.getLocale(), (String) attribute.getValue().getValue());
       }
     }
+    Collections.sort(list, new Comparator<FactorizedAttribute>() {
+      @Override
+      public int compare(FactorizedAttribute o1, FactorizedAttribute o2) {
+        String key = o1.getNamespace() + " " + o1.getName();
+        String key2 = o2.getNamespace() + " " + o2.getName();
+        return key.compareTo(key2);
+      }
+    });
     return list;
   }
 }

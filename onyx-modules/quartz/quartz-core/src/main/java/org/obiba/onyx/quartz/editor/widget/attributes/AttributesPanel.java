@@ -11,6 +11,8 @@ package org.obiba.onyx.quartz.editor.widget.attributes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +37,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.obiba.magma.Attribute;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributes;
 import org.obiba.onyx.wicket.Images;
@@ -48,7 +51,7 @@ public class AttributesPanel extends Panel {
 
   private final FeedbackWindow feedbackWindow;
 
-  private OnyxEntityList<FactorizedAttributeModel> attributes;
+  private OnyxEntityList<FactorizedAttribute> attributes;
 
   private IModel<? extends Attributable> attributable;
 
@@ -81,13 +84,13 @@ public class AttributesPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         AttributesEditPanel content = new AttributesEditPanel("content", attributable,
-            new Model<FactorizedAttributeModel>(new FactorizedAttributeModel(locales)), locales, feedbackPanel,
+            new Model<FactorizedAttribute>(new FactorizedAttribute(locales)), locales, feedbackPanel,
             feedbackWindow);
         modalWindow.setContent(content);
         modalWindow.show(target);
       }
     };
-    attributes = new OnyxEntityList<FactorizedAttributeModel>("attributes", new AttributesDataProvider(),
+    attributes = new OnyxEntityList<FactorizedAttribute>("attributes", new AttributesDataProvider(),
         new AttributeColumnProvider(), new ResourceModel("Attributes"));
 
     ajaxAddLink.add(new Image("addImage", Images.ADD));
@@ -96,10 +99,10 @@ public class AttributesPanel extends Panel {
     add(modalWindow);
   }
 
-  private class AttributesDataProvider extends SortableDataProvider<FactorizedAttributeModel> {
+  private class AttributesDataProvider extends SortableDataProvider<FactorizedAttribute> {
 
     @Override
-    public Iterator<FactorizedAttributeModel> iterator(int first, int count) {
+    public Iterator<FactorizedAttribute> iterator(int first, int count) {
       Attributable attributableObject = attributable.getObject();
       if(attributableObject.hasAttributes()) {
         return Attributes.factorize(attributableObject.getAttributes(), locales).iterator();
@@ -119,21 +122,21 @@ public class AttributesPanel extends Panel {
     }
 
     @Override
-    public IModel<FactorizedAttributeModel> model(final FactorizedAttributeModel object) {
-      return new Model<FactorizedAttributeModel>(object);
+    public IModel<FactorizedAttribute> model(final FactorizedAttribute object) {
+      return new Model<FactorizedAttribute>(object);
     }
   }
 
-  private class AttributeColumnProvider implements IColumnProvider<FactorizedAttributeModel>, Serializable {
+  private class AttributeColumnProvider implements IColumnProvider<FactorizedAttribute>, Serializable {
 
-    private final List<IColumn<FactorizedAttributeModel>> columns = new ArrayList<IColumn<FactorizedAttributeModel>>();
+    private final List<IColumn<FactorizedAttribute>> columns = new ArrayList<IColumn<FactorizedAttribute>>();
 
     public AttributeColumnProvider() {
-      columns.add(new AbstractColumn<FactorizedAttributeModel>(new Model<String>("Name")) {
+      columns.add(new AbstractColumn<FactorizedAttribute>(new Model<String>("Name")) {
         @Override
-        public void populateItem(Item<ICellPopulator<FactorizedAttributeModel>> cellItem, String componentId,
-            IModel<FactorizedAttributeModel> rowModel) {
-          FactorizedAttributeModel attribute = rowModel.getObject();
+        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
+            IModel<FactorizedAttribute> rowModel) {
+          FactorizedAttribute attribute = rowModel.getObject();
           String formattedNS = "";
           if(Strings.isNullOrEmpty(attribute.getNamespace()) == false) {
             formattedNS = "{" + attribute.getNamespace() + "}";
@@ -142,13 +145,13 @@ public class AttributesPanel extends Panel {
         }
       });
 
-      columns.add(new AbstractColumn<FactorizedAttributeModel>(new Model<String>("Value")) {
+      columns.add(new AbstractColumn<FactorizedAttribute>(new Model<String>("Value")) {
         @Override
-        public void populateItem(Item<ICellPopulator<FactorizedAttributeModel>> cellItem, String componentId,
-            IModel<FactorizedAttributeModel> rowModel) {
-          FactorizedAttributeModel factorizedAttributeModel = rowModel.getObject();
+        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
+            IModel<FactorizedAttribute> rowModel) {
+          FactorizedAttribute factorizedAttribute = rowModel.getObject();
           String formattedValue = "";
-          for(Map.Entry<Locale, IModel<String>> entry : factorizedAttributeModel.getValues().entrySet()) {
+          for(Map.Entry<Locale, IModel<String>> entry : factorizedAttribute.getValues().entrySet()) {
             String value = entry.getValue().getObject();
             if(Strings.isNullOrEmpty(value) == false) {
               String formattedLocale = entry.getKey() == null ? "" : " {" + entry.getKey() + "} ";
@@ -159,10 +162,10 @@ public class AttributesPanel extends Panel {
         }
       });
 
-      columns.add(new HeaderlessColumn<FactorizedAttributeModel>() {
+      columns.add(new HeaderlessColumn<FactorizedAttribute>() {
         @Override
-        public void populateItem(Item<ICellPopulator<FactorizedAttributeModel>> cellItem, String componentId,
-            IModel<FactorizedAttributeModel> rowModel) {
+        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
+            IModel<FactorizedAttribute> rowModel) {
           cellItem.add(new LinkFragment(componentId, rowModel));
         }
       });
@@ -174,26 +177,26 @@ public class AttributesPanel extends Panel {
     }
 
     @Override
-    public List<IColumn<FactorizedAttributeModel>> getRequiredColumns() {
+    public List<IColumn<FactorizedAttribute>> getRequiredColumns() {
       return columns;
     }
 
     @Override
-    public List<IColumn<FactorizedAttributeModel>> getDefaultColumns() {
+    public List<IColumn<FactorizedAttribute>> getDefaultColumns() {
       return columns;
     }
 
     @Override
-    public List<IColumn<FactorizedAttributeModel>> getAdditionalColumns() {
+    public List<IColumn<FactorizedAttribute>> getAdditionalColumns() {
       return null;
     }
   }
 
   private class LinkFragment extends Fragment {
 
-    public LinkFragment(String id, final IModel<FactorizedAttributeModel> factorizedAttributeModel) {
+    public LinkFragment(String id, final IModel<FactorizedAttribute> factorizedAttributeModel) {
       super(id, "linkFragment", AttributesPanel.this, factorizedAttributeModel);
-      AjaxLink<FactorizedAttributeModel> ajaxEditLink = new AjaxLink<FactorizedAttributeModel>("editAttribute",
+      AjaxLink<FactorizedAttribute> ajaxEditLink = new AjaxLink<FactorizedAttribute>("editAttribute",
           factorizedAttributeModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
@@ -206,11 +209,11 @@ public class AttributesPanel extends Panel {
       };
       ajaxEditLink.add(new Image("editImage", Images.EDIT));
       add(ajaxEditLink);
-      AjaxLink<FactorizedAttributeModel> ajaxDeleteLink = new AjaxLink<FactorizedAttributeModel>("deleteAttribute",
+      AjaxLink<FactorizedAttribute> ajaxDeleteLink = new AjaxLink<FactorizedAttribute>("deleteAttribute",
           factorizedAttributeModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          FactorizedAttributeModel faObject = factorizedAttributeModel.getObject();
+          FactorizedAttribute faObject = factorizedAttributeModel.getObject();
           attributable.getObject().removeAttributes(faObject.getNamespace(), faObject.getName());
           target.addComponent(attributes);
         }
