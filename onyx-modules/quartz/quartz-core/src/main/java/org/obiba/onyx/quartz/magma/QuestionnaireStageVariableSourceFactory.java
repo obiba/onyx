@@ -55,6 +55,7 @@ import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.QuestionnaireVariableNameResolver;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributes;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinitionAudio;
@@ -334,7 +335,15 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       for(QuestionCategory c : categories) {
         org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
         cb.accept(new LocalizableBuilderVisitor(c)).withCode(c.getExportName()).missing(c.isEscape());
-        addAttributesHierarchy(cb, c);
+
+        Question question = c.getQuestion();
+        Category category = c.getCategory();
+        List<Attribute> attributes = Attributes.overrideAttributes(
+            question.hasParentQuestion() ? question.getParentQuestion().getAttributes() : null,
+            question.getAttributes(),
+            category.getAttributes());
+        cb.addAttributes(attributes);
+
         questionVariable.addCategory(cb.build());
       }
 
@@ -545,12 +554,11 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         OnyxAttributeHelper.addMaxCountAttribute(builder1, maxCount);
       }
 
-      if(question.hasParentQuestion() && question.getParentQuestion().hasAttributes()) {
-        builder1.addAttributes(question.getParentQuestion().getAttributes());
-      }
-      if(question.hasAttributes()) {
-        builder1.addAttributes(question.getAttributes());
-      }
+      List<Attribute> attributes = Attributes.overrideAttributes(
+          question.hasParentQuestion() ? question.getParentQuestion().getAttributes() : null,
+          question.getAttributes());
+
+      builder1.addAttributes(attributes);
     }
   }
 
@@ -578,21 +586,13 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
       OnyxAttributeHelper.addConditionAttribute(builder1,
           new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName()));
 
-      addAttributesHierarchy(builder1, questionCategory);
-    }
-  }
-
-  private void addAttributesHierarchy(AttributeAwareBuilder<?> builder1, QuestionCategory questionCategory) {
-    Category category = questionCategory.getCategory();
-    Question question = questionCategory.getQuestion();
-    if(question.hasParentQuestion() && question.getParentQuestion().hasAttributes()) {
-      builder1.addAttributes(question.getParentQuestion().getAttributes());
-    }
-    if(question.hasAttributes()) {
-      builder1.addAttributes(question.getAttributes());
-    }
-    if(category.hasAttributes()) {
-      builder1.addAttributes(category.getAttributes());
+      Question question = questionCategory.getQuestion();
+      Category category = questionCategory.getCategory();
+      List<Attribute> attributes = Attributes.overrideAttributes(
+          question.hasParentQuestion() ? question.getParentQuestion().getAttributes() : null,
+          question.getAttributes(),
+          category.getAttributes());
+      builder1.addAttributes(attributes);
     }
   }
 
@@ -681,10 +681,15 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
           new QuestionnaireDataSource(bundle.getQuestionnaire().getName(), questionCategory.getQuestion().getName(),
               questionCategory.getCategory().getName()).toString());
 
-      addAttributesHierarchy(builder1, questionCategory);
-      if(oad.hasAttributes()) {
-        builder1.addAttributes(oad.getAttributes());
-      }
+      Question question = questionCategory.getQuestion();
+      Category category = questionCategory.getCategory();
+      List<Attribute> attributes = Attributes.overrideAttributes(
+          question.hasParentQuestion() ? question.getParentQuestion().getAttributes() : null,
+          question.getAttributes(),
+          category.getAttributes(),
+          oad.getAttributes());
+
+      builder1.addAttributes(attributes);
     }
 
     private void visitAudioOpenAnswer(OpenAnswerDefinitionAudio audio, Builder builder) {

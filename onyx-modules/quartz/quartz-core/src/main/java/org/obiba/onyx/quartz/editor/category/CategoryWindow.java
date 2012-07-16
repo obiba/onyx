@@ -55,6 +55,7 @@ import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.CloneSettings;
 import org.obiba.onyx.quartz.editor.utils.QuestionnaireElementCloner.ElementClone;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
+import org.obiba.onyx.quartz.editor.widget.attributes.AttributesPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -233,7 +234,7 @@ public abstract class CategoryWindow extends Panel {
       }
 
       @Override
-      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @SuppressWarnings({"rawtypes", "unchecked"})
       public SortableList<OpenAnswerDefinition>.Button[] getButtons() {
         SortableList<OpenAnswerDefinition>.Button addButton = new SortableList.Button(
             new ResourceModel("AddOpenAnswerDefinition"), Images.ADD) {
@@ -403,11 +404,15 @@ public abstract class CategoryWindow extends Panel {
           }
         };
 
-        return new SortableList.Button[] { addButton, addAutoCompleteButton, addAudioButton };
+        return new SortableList.Button[] {addButton, addAutoCompleteButton, addAudioButton};
       }
     };
 
     form.add(openAnswerDefinitionList);
+
+    form.add(
+        new AttributesPanel("attributes", new Model<Category>(category), questionnaireModel.getObject().getLocales(),
+            feedbackPanel, feedbackWindow));
 
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override

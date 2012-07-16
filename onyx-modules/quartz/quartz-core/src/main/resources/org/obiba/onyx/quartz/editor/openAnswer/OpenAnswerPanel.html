@@ -1,99 +1,116 @@
 <wicket:panel>
 
-	<div wicket:id="validatorWindow" />
+  <div wicket:id="validatorWindow"/>
 
-	<table class="keyValueTable">
-		<tr>
-			<td valign="top" class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
-			<td><input wicket:id="name" type="text" size="40" autocomplete="off" /> <span wicket:id="nameHelp" /></td>
-		</tr>
-		<tr>
-			<td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
-			<td><input wicket:id="variable" type="text" size="40" autocomplete="off" /> <span wicket:id="variableHelp" /></td>
-		</tr>					
-		<tr>
-			<td valign="top" class="keyValueTableKey"><label wicket:id="dataTypeLabel"></label></td>
-			<td><select wicket:id="dataType" /></td>
-		</tr>
-		<tr>
-			<td valign="top" class="keyValueTableKey"><label wicket:id="unitLabel"></label></td>
-			<td><input wicket:id="unit" type="text" size="40" autocomplete="off" /> <span wicket:id="unitHelp" /></td>
-		</tr>
-		<tr>
-			<td valign="top" class="keyValueTableKey"><label wicket:id="sizeLabel"></label></td>
-			<td><input wicket:id="size" type="text" size="2" autocomplete="off" /></td>
-		</tr>
-		<tr>
-			<td valign="top" class="keyValueTableKey"><label wicket:id="rowsLabel"></label></td>
-			<td><input wicket:id="rows" type="text" size="2" autocomplete="off" /></td>
-		</tr>		
-	</table>
-	
-	<br/>
-	
-	<fieldset>
-		<legend><wicket:message key="DefaultValues" /> <span wicket:id="defaultValuesHelp" /></legend>
-		<div wicket:id="addTabs" />
-		<div wicket:id="defaultValues" />
-	</fieldset>
-	
-	<br />
-		
-	<fieldset>
-		<legend><wicket:message key="LanguagesProperties" /></legend>
-	 	<div wicket:id="labels"></div>
-	</fieldset>
-	
-	<br />		
-	
-	<fieldset>
-		<legend><wicket:message key="Validation" /></legend>
-	
-		<table class="keyValueTable">
-			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel"></label></td>
-				<td><input wicket:id="required" type="checkbox" /></td>
-			</tr>
-			<tr>
-				<td valign="top" class="keyValueTableKey"><label wicket:id="patternLabel"></label></td>
-				<td><input wicket:id="patternValidator" type="text" /></td>			
-			</tr>
-		</table>
-		
-		<table class="keyValueTable" wicket:id="minMaxContainer">
-			<tr>
-				<td class="keyValueTableKey"><label wicket:id="minimumLabel"></label></td>
-				<td>
-					<input wicket:id="minLength" type="text" size="2" autocomplete="off" />
-					<input wicket:id="minNumeric" type="text" size="2" autocomplete="off" />
-					<input wicket:id="minDecimal" type="text" size="2" autocomplete="off" />					
-					<input wicket:id="afterDate" type="text" size="10" autocomplete="off" />
-				</td>
-			</tr>
-			<tr>
-				<td class="keyValueTableKey"><label wicket:id="maximumLabel"></label></td>
-				<td>
-					<input wicket:id="maxLength" type="text" size="2" autocomplete="off" />
-					<input wicket:id="maxNumeric" type="text" size="2" autocomplete="off" />
-					<input wicket:id="maxDecimal" type="text" size="2" autocomplete="off" />
-					<input wicket:id="beforeDate" type="text" size="10" autocomplete="off" />								
-				</td>
-			</tr>
-		</table>		
-		
-		<br />
-		
-		<div wicket:id="validators" />
-		
-	  <br />
-	  
-	  <a class="obiba-button" wicket:id="addValidator"><img wicket:id="img" /> <wicket:message key="Validator.add" /></a>    
-		
-	</fieldset>
-	
-	<wicket:fragment wicket:id="validatorsAction">
-		<a wicket:id="editLink"><img wicket:id="editImg" /></a>
-		<a wicket:id="deleteLink"><img wicket:id="deleteImg" /></a>
-	</wicket:fragment>	
+  <table class="keyValueTable">
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+      <td><input wicket:id="name" type="text" size="40" autocomplete="off"/> <span wicket:id="nameHelp"/></td>
+    </tr>
+    <tr>
+      <td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
+      <td><input wicket:id="variable" type="text" size="40" autocomplete="off"/> <span wicket:id="variableHelp"/></td>
+    </tr>
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="dataTypeLabel"></label></td>
+      <td><select wicket:id="dataType"/></td>
+    </tr>
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="unitLabel"></label></td>
+      <td><input wicket:id="unit" type="text" size="40" autocomplete="off"/> <span wicket:id="unitHelp"/></td>
+    </tr>
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="sizeLabel"></label></td>
+      <td><input wicket:id="size" type="text" size="2" autocomplete="off"/></td>
+    </tr>
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="rowsLabel"></label></td>
+      <td><input wicket:id="rows" type="text" size="2" autocomplete="off"/></td>
+    </tr>
+  </table>
+
+  <br/>
+
+  <fieldset>
+    <legend>
+      <wicket:message key="DefaultValues"/>
+      <span wicket:id="defaultValuesHelp"/></legend>
+    <div wicket:id="addTabs"/>
+    <div wicket:id="defaultValues"/>
+  </fieldset>
+
+  <br/>
+
+  <fieldset>
+    <legend>
+      <wicket:message key="LanguagesProperties"/>
+    </legend>
+    <div wicket:id="labels"></div>
+  </fieldset>
+
+  <br/>
+
+  <fieldset>
+    <legend>
+      <wicket:message key="Attributes"/>
+    </legend>
+    <div wicket:id="attributes"></div>
+  </fieldset>
+
+  <br/>
+
+  <fieldset>
+    <legend>
+      <wicket:message key="Validation"/>
+    </legend>
+
+    <table class="keyValueTable">
+      <tr>
+        <td valign="top" class="keyValueTableKey"><label wicket:id="requiredLabel"></label></td>
+        <td><input wicket:id="required" type="checkbox"/></td>
+      </tr>
+      <tr>
+        <td valign="top" class="keyValueTableKey"><label wicket:id="patternLabel"></label></td>
+        <td><input wicket:id="patternValidator" type="text"/></td>
+      </tr>
+    </table>
+
+    <table class="keyValueTable" wicket:id="minMaxContainer">
+      <tr>
+        <td class="keyValueTableKey"><label wicket:id="minimumLabel"></label></td>
+        <td>
+          <input wicket:id="minLength" type="text" size="2" autocomplete="off"/>
+          <input wicket:id="minNumeric" type="text" size="2" autocomplete="off"/>
+          <input wicket:id="minDecimal" type="text" size="2" autocomplete="off"/>
+          <input wicket:id="afterDate" type="text" size="10" autocomplete="off"/>
+        </td>
+      </tr>
+      <tr>
+        <td class="keyValueTableKey"><label wicket:id="maximumLabel"></label></td>
+        <td>
+          <input wicket:id="maxLength" type="text" size="2" autocomplete="off"/>
+          <input wicket:id="maxNumeric" type="text" size="2" autocomplete="off"/>
+          <input wicket:id="maxDecimal" type="text" size="2" autocomplete="off"/>
+          <input wicket:id="beforeDate" type="text" size="10" autocomplete="off"/>
+        </td>
+      </tr>
+    </table>
+
+    <br/>
+
+    <div wicket:id="validators"/>
+
+    <br/>
+
+    <a class="obiba-button" wicket:id="addValidator"><img wicket:id="img"/>
+      <wicket:message key="Validator.add"/>
+    </a>
+
+  </fieldset>
+
+  <wicket:fragment wicket:id="validatorsAction">
+    <a wicket:id="editLink"><img wicket:id="editImg"/></a>
+    <a wicket:id="deleteLink"><img wicket:id="deleteImg"/></a>
+  </wicket:fragment>
 
 </wicket:panel>

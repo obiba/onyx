@@ -16,8 +16,6 @@ import org.obiba.magma.Attribute;
 
 public interface Attributable {
 
-  boolean hasAttributes();
-
   List<Attribute> getAttributes();
 
   void addAttribute(String namespace, String name, String value, Locale locale);

@@ -82,7 +82,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C2").getAttribute("attrQuestionKey")));
     assertEquals("attrOAValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("attrOAKey")));
     assertEquals("attrCategoryValue", value(mv.get("QLISTRADIO.C2").getAttribute("attrCategoryKey")));
-    // assertEquals("mustBeOverrideValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("mustBeOverrideKey")));
+    assertEquals("overrideValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("mustBeOverrideKey")));
 
     //QARRAY assertion
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY").getAttribute("attrParentQuestionKey")));

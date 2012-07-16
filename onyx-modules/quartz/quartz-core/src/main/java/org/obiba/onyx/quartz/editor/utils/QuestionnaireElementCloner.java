@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributes;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -120,6 +121,8 @@ public class QuestionnaireElementCloner {
         to.addUIArgument(entry.getKey(), (String) entry.getValue());
       }
     }
+
+    to.setAttributes(Attributes.copy(from.getAttributes()));
   }
 
   private static <T extends IQuestionnaireElement> ElementClone<T> createElementClone(T element, T elementCloned,
@@ -179,6 +182,8 @@ public class QuestionnaireElementCloner {
     } else {
       to.setOpenAnswerDefinition(openAnswer);
     }
+
+    to.setAttributes(Attributes.copy(from.getAttributes()));
   }
 
   private static OpenAnswerDefinition clone(OpenAnswerDefinition openAnswer, CloneSettings settings) {
@@ -226,6 +231,7 @@ public class QuestionnaireElementCloner {
         to.addVariableName(entry.getKey(), entry.getValue());
       }
     }
+    to.setAttributes(Attributes.copy(from.getAttributes()));
   }
 
   /**

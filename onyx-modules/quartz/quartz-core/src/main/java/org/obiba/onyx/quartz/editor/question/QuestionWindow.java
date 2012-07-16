@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -30,6 +31,7 @@ import org.obiba.onyx.quartz.editor.locale.LocalePropertiesUtils;
 import org.obiba.onyx.quartz.editor.question.condition.ConditionPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
+import org.obiba.onyx.quartz.editor.widget.attributes.AttributesPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -53,7 +55,8 @@ public abstract class QuestionWindow extends Panel {
 
   private SavableHidableTab questionTab;
 
-  public QuestionWindow(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel, final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public QuestionWindow(String id, final IModel<EditedQuestion> model, final IModel<Questionnaire> questionnaireModel,
+      final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -67,7 +70,8 @@ public abstract class QuestionWindow extends Panel {
       @Override
       public Panel getPanel(String panelId) {
         if(questionPanel == null) {
-          questionPanel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow, false) {
+          questionPanel = new QuestionPanel(panelId, model, questionnaireModel, localePropertiesModel, feedbackPanel,
+              feedbackWindow, false) {
             @Override
             public void onQuestionTypeChange(AjaxRequestTarget target, QuestionType questionType) {
             }
@@ -109,15 +113,27 @@ public abstract class QuestionWindow extends Panel {
       }
     };
 
+    AbstractTab attributeTab = new AbstractTab(new ResourceModel("Attributes")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        return new AttributesPanel(panelId, new Model<Question>(model.getObject().getElement()),
+            questionnaireModel.getObject().getLocales(),
+            feedbackPanel, feedbackWindow);
+      }
+    };
+
     form = new Form<EditedQuestion>("form", model);
     form.setMultiPart(false);
-    localePropertiesUtils.load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject().getElement());
+    localePropertiesUtils
+        .load(localePropertiesModel.getObject(), questionnaireModel.getObject(), model.getObject().getElement());
 
     List<ITab> tabs = new ArrayList<ITab>();
     tabs.add(questionTab);
+    tabs.add(attributeTab);
     tabs.add(conditionTab);
 
-    AjaxSubmitTabbedPanel ajaxSubmitTabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow, tabs);
+    AjaxSubmitTabbedPanel ajaxSubmitTabbedPanel = new AjaxSubmitTabbedPanel("tabs", feedbackPanel, feedbackWindow,
+        tabs);
     add(ajaxSubmitTabbedPanel);
     form.add(ajaxSubmitTabbedPanel);
     add(form);

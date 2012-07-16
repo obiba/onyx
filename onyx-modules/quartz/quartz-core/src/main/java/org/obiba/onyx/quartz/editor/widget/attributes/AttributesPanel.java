@@ -11,15 +11,12 @@ package org.obiba.onyx.quartz.editor.widget.attributes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterators;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -37,7 +34,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.obiba.magma.Attribute;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Attributes;
 import org.obiba.onyx.wicket.Images;
@@ -69,6 +65,7 @@ public class AttributesPanel extends Panel {
     this.locales = locales;
 
     modalWindow = new ModalWindow("modalWindow");
+    modalWindow.setTitle(new ResourceModel("Attribute"));
     modalWindow.setCssClassName("onyx");
     modalWindow.setInitialWidth(500);
     modalWindow.setInitialHeight(250);
@@ -104,21 +101,13 @@ public class AttributesPanel extends Panel {
     @Override
     public Iterator<FactorizedAttribute> iterator(int first, int count) {
       Attributable attributableObject = attributable.getObject();
-      if(attributableObject.hasAttributes()) {
-        return Attributes.factorize(attributableObject.getAttributes(), locales).iterator();
-      } else {
-        return Iterators.emptyIterator();
-      }
+      return Attributes.factorize(attributableObject.getAttributes(), locales).iterator();
     }
 
     @Override
     public int size() {
       Attributable attributableObject = attributable.getObject();
-      if(attributableObject.hasAttributes()) {
-        return Attributes.factorize(attributableObject.getAttributes(), locales).size();
-      } else {
-        return 0;
-      }
+      return Attributes.factorize(attributableObject.getAttributes(), locales).size();
     }
 
     @Override
@@ -145,6 +134,7 @@ public class AttributesPanel extends Panel {
         }
       });
 
+      //https://issues.apache.org/jira/browse/WICKET-4224
       columns.add(new AbstractColumn<FactorizedAttribute>(new Model<String>("Value")) {
         @Override
         public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,

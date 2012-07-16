@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   private static final String INPUT_NB_ROWS_KEY = "rows";
 
+  @Nullable
   private List<Attribute> attributes;
 
   public enum OpenAnswerType {
@@ -375,36 +377,35 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   }
 
   @Override
-  public boolean hasAttributes() {
-    return attributes != null;
+  public List<Attribute> getAttributes() {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
+    return attributes;
   }
 
-  @Override
-  public List<Attribute> getAttributes() {
-    return attributes;
+  public void setAttributes(List<Attribute> attributes) {
+    this.attributes = attributes;
   }
 
   @Override
   public void addAttribute(String namespace, String name, String value, Locale locale) {
-    if(attributes == null) {
-      attributes = new ArrayList<Attribute>();
-    }
-    Attributes.addAttribute(attributes, namespace, name, value, locale);
+    Attributes.addAttribute(getAttributes(), namespace, name, value, locale);
   }
 
   @Override
   public boolean containsAttribute(String namespace, String name) {
-    return Attributes.containsAttribute(attributes, namespace, name);
+    return Attributes.containsAttribute(getAttributes(), namespace, name);
   }
 
   @Override
   public Attribute getAttribute(String namespace, String name, Locale locale) {
-    return Attributes.getAttribute(attributes, namespace, name, locale);
+    return Attributes.getAttribute(getAttributes(), namespace, name, locale);
   }
 
   @Override
   public void removeAttributes(String namespace, String name) {
-    Attributes.removeAttributes(attributes, namespace, name);
+    Attributes.removeAttributes(getAttributes(), namespace, name);
   }
 
 }

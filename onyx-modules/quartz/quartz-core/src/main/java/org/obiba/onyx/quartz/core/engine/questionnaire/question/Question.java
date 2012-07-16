@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +64,7 @@ public class Question implements IHasQuestion, Attributable {
 
   private String variableName;
 
+  @Nullable
   private List<Attribute> attributes;
 
   public Question() {
@@ -470,36 +472,35 @@ public class Question implements IHasQuestion, Attributable {
   }
 
   @Override
-  public boolean hasAttributes() {
-    return attributes != null;
+  public List<Attribute> getAttributes() {
+    if(attributes == null) {
+      attributes = new ArrayList<Attribute>();
+    }
+    return attributes;
   }
 
-  @Override
-  public List<Attribute> getAttributes() {
-    return attributes;
+  public void setAttributes(List<Attribute> attributes) {
+    this.attributes = attributes;
   }
 
   @Override
   public void addAttribute(String namespace, String name, String value, Locale locale) {
-    if(attributes == null) {
-      attributes = new ArrayList<Attribute>();
-    }
-    Attributes.addAttribute(attributes, namespace, name, value, locale);
+    Attributes.addAttribute(getAttributes(), namespace, name, value, locale);
   }
 
   @Override
   public boolean containsAttribute(String namespace, String name) {
-    return Attributes.containsAttribute(attributes, namespace, name);
+    return Attributes.containsAttribute(getAttributes(), namespace, name);
   }
 
   @Override
   public Attribute getAttribute(String namespace, String name, Locale locale) {
-    return Attributes.getAttribute(attributes, namespace, name, locale);
+    return Attributes.getAttribute(getAttributes(), namespace, name, locale);
   }
 
   @Override
   public void removeAttributes(String namespace, String name) {
-    Attributes.removeAttributes(attributes, namespace, name);
+    Attributes.removeAttributes(getAttributes(), namespace, name);
   }
 
 }

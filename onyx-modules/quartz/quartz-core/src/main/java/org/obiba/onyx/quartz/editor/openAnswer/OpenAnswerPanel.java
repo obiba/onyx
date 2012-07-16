@@ -95,6 +95,7 @@ import org.obiba.onyx.quartz.editor.openAnswer.validation.ValidationDataSourceWi
 import org.obiba.onyx.quartz.editor.utils.MapModel;
 import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
 import org.obiba.onyx.quartz.editor.variable.VariableUtils;
+import org.obiba.onyx.quartz.editor.widget.attributes.AttributesPanel;
 import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
@@ -320,6 +321,9 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     }
     add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, null,
         visibleStates));
+
+    add(new AttributesPanel("attributes", new Model<OpenAnswerDefinition>(openAnswer),
+        questionnaireModel.getObject().getLocales(), feedbackPanel, feedbackWindow));
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));
