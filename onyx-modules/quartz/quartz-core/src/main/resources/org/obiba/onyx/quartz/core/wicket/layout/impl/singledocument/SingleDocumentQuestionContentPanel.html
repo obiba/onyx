@@ -1,36 +1,57 @@
 <wicket:panel>
-	<span wicket:id="conditionFragmentContent" />
-  	<span wicket:id="categoryFragmentContent" />
+  <span wicket:id="attributesFragmentContent"/>
+  <span wicket:id="conditionFragmentContent"/>
+  <span wicket:id="categoryFragmentContent"/>
 </wicket:panel>
 
+
+<wicket:fragment wicket:id="attributesFragment">
+  <div class="details-content-label">
+    <wicket:message key="Attributes"></wicket:message>
+    <span wicket:id="attributes"><div wicket:id="attribute"/></span>
+  </div>
+</wicket:fragment>
+
 <wicket:fragment wicket:id="conditionFragment">
-	<div class="details-content-label"><wicket:message key="Condition">[- Condition:]</wicket:message>&nbsp<pre wicket:id="condition"></pre></div>
+  <div class="details-content-label">
+    <wicket:message key="Condition">[- Condition:]</wicket:message>
+    &nbsp
+    <pre wicket:id="condition"></pre>
+  </div>
 </wicket:fragment>
 
 <wicket:fragment wicket:id="categoryFragment">
   <div class="details-content-label">
-    <wicket:message key="Categories">[- Categories:]</wicket:message>&nbsp<span wicket:id="categories"><span wicket:id="name"/></span>
+    <wicket:message key="Categories">[- Categories:]</wicket:message>
+    &nbsp<span wicket:id="categories"><span wicket:id="name"/></span>
   </div>
-  
+
   <wicket:container wicket:id="questionCategories">
-      <div class="title" wicket:id="category"><span wicket:id="label"></span>&nbsp;<span class="type" wicket:id="type"></span></div>
-	  <div class="validation" wicket:id="opens">
-		<div class="title"><span wicket:id="label"></span>&nbsp;<span class="type" wicket:id="type"></span></div>
-	  	<div class="details-content-label"><span wicket:id="validation"></span></div>
- 	  </div>
+    <div class="title" wicket:id="category">
+      <span wicket:id="label"></span>&nbsp;
+      <span class="type" wicket:id="type"></span>
+    </div>
+    <div class="validation" wicket:id="opens">
+      <div class="title">
+        <span wicket:id="label"></span>&nbsp;
+        <span class="type" wicket:id="type"></span>
+      </div>
+      <div wicket:id="attributesFragmentContent"></div>
+      <div class="details-content-label"><span wicket:id="validation"></span></div>
+    </div>
   </wicket:container>
 </wicket:fragment>
 
 <wicket:fragment wicket:id="questionFragment">
-	<wicket:container wicket:id="subQuestions">
-		<span wicket:id="subQuestion"></span>
-	</wicket:container>
+  <wicket:container wicket:id="subQuestions">
+    <span wicket:id="subQuestion"></span>
+  </wicket:container>
 </wicket:fragment>
 
 <wicket:fragment wicket:id="sharedCategoryFragment">
-  
+
   <wicket:container wicket:id="subQuestions">
-	<span wicket:id="subQuestion"></span>
+    <span wicket:id="subQuestion"></span>
   </wicket:container>
 
 </wicket:fragment>

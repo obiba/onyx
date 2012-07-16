@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import com.google.common.base.Strings;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -125,29 +123,18 @@ public class AttributesPanel extends Panel {
         @Override
         public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
             IModel<FactorizedAttribute> rowModel) {
-          FactorizedAttribute attribute = rowModel.getObject();
-          String formattedNS = "";
-          if(Strings.isNullOrEmpty(attribute.getNamespace()) == false) {
-            formattedNS = "{" + attribute.getNamespace() + "}";
-          }
-          cellItem.add(new Label(componentId, formattedNS + " " + attribute.getName()));
+          FactorizedAttribute factorizedAttribute = rowModel.getObject();
+          String formattedKey = Attributes.formatName(factorizedAttribute);
+          cellItem.add(new Label(componentId, formattedKey));
         }
       });
 
-      //https://issues.apache.org/jira/browse/WICKET-4224
       columns.add(new AbstractColumn<FactorizedAttribute>(new Model<String>("Value")) {
         @Override
         public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
             IModel<FactorizedAttribute> rowModel) {
           FactorizedAttribute factorizedAttribute = rowModel.getObject();
-          String formattedValue = "";
-          for(Map.Entry<Locale, IModel<String>> entry : factorizedAttribute.getValues().entrySet()) {
-            String value = entry.getValue().getObject();
-            if(Strings.isNullOrEmpty(value) == false) {
-              String formattedLocale = entry.getKey() == null ? "" : " {" + entry.getKey() + "} ";
-              formattedValue += (formattedLocale + value);
-            }
-          }
+          String formattedValue = Attributes.formatValue(factorizedAttribute);
           cellItem.add(new Label(componentId, formattedValue));
         }
       });

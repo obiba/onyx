@@ -14,12 +14,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.apache.wicket.model.IModel;
 import org.obiba.magma.Attribute;
 import org.obiba.onyx.quartz.editor.widget.attributes.FactorizedAttribute;
 
@@ -141,6 +143,7 @@ public class Attributes {
 
   /**
    * @param attributes
+   * @param locales
    * @return
    */
   public static List<FactorizedAttribute> factorize(List<Attribute> attributes, List<Locale> locales) {
@@ -152,6 +155,7 @@ public class Attributes {
     }
     for(String uniqueKey : multi.keySet()) {
       FactorizedAttribute factorizedAttribute = new FactorizedAttribute(locales);
+
       list.add(factorizedAttribute);
       for(Attribute attribute : multi.get(uniqueKey)) {
         factorizedAttribute.setNamespace(attribute.getNamespace());
@@ -205,6 +209,55 @@ public class Attributes {
       copy.add(builder.build());
     }
     return copy;
+  }
+
+  /**
+   * @param attribute
+   * @return
+   */
+  public static String formatAttribute(Attribute attribute) {
+    String formatted = "";
+    if(Strings.isNullOrEmpty(attribute.getNamespace()) == false) {
+      formatted = attribute.getNamespace() + "::";
+    }
+    formatted += attribute.getName();
+
+    if(attribute.getLocale() != null) {
+      formatted += (":" + attribute.getLocale().getLanguage());
+    }
+    formatted += ("=" + attribute.getValue());
+    return formatted;
+  }
+
+  /**
+   * @param factorizedAttribute
+   * @return
+   */
+  public static String formatName(FactorizedAttribute factorizedAttribute) {
+    String formattedNS = "";
+    if(Strings.isNullOrEmpty(factorizedAttribute.getNamespace()) == false) {
+      formattedNS = factorizedAttribute.getNamespace() + "::";
+    }
+    return formattedNS + factorizedAttribute.getName();
+  }
+
+  /**
+   * @param factorizedAttribute
+   * @return
+   */
+  public static String formatValue(FactorizedAttribute factorizedAttribute) {
+    String formattedValue = "";
+    for(Map.Entry<Locale, IModel<String>> entry : factorizedAttribute.getValues().entrySet()) {
+      String value = entry.getValue().getObject();
+      if(Strings.isNullOrEmpty(value) == false) {
+        if(Strings.isNullOrEmpty(formattedValue) == false) {
+          formattedValue += ", ";
+        }
+        String formattedLocale = entry.getKey() == null ? "" : " [" + entry.getKey() + "] ";
+        formattedValue += (formattedLocale + value);
+      }
+    }
+    return formattedValue;
   }
 
 }
