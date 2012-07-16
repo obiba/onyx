@@ -24,12 +24,6 @@ public class QuestionAttributesTest {
   }
 
   @Test
-  public void testEmptyQuestionAttributes() {
-    Question q1 = new Question();
-    Assert.assertNull(q1.getAttributes());
-  }
-
-  @Test
   public void testQuestionKeyAttributes() {
     Question q1 = new Question();
     q1.addAttribute(null, "attrKey", null, null);
