@@ -1,0 +1,29 @@
+<wicket:panel>
+
+  <table class="keyValueTable">
+    <tr>
+      <td class="keyValueTableKey"><label wicket:id="nameLabel"></label></td>
+      <td><input wicket:id="name" type="text" size="40" autocomplete="off"/> <span wicket:id="nameHelp"></span></td>
+    </tr>
+    <tr>
+      <td class="keyValueTableKey"><label wicket:id="variableLabel"></label></td>
+      <td><input wicket:id="variable" type="text" size="40" autocomplete="off"/> <span
+          wicket:id="variableHelp"></span></td>
+    </tr>
+    <tr>
+      <td valign="top" class="keyValueTableKey"><label wicket:id="escapeLabel"></label></td>
+      <td><input wicket:id="escape" type="checkbox"/> <span wicket:id="escapeHelp"></span></td>
+    </tr>
+
+  </table>
+
+  <br/>
+
+  <fieldset>
+    <legend>
+      <wicket:message key="LanguagesProperties"/>
+    </legend>
+    <div wicket:id="labels"></div>
+  </fieldset>
+
+</wicket:panel>

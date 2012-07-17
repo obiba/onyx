@@ -322,8 +322,7 @@ public class OpenAnswerPanel extends Panel implements SaveablePanel {
     add(labelsPanel = new LabelsPanel("labels", localePropertiesModel, model, feedbackPanel, feedbackWindow, null,
         visibleStates));
 
-    add(new AttributesPanel("attributes", new Model<OpenAnswerDefinition>(openAnswer),
-        questionnaireModel.getObject().getLocales(), feedbackPanel, feedbackWindow));
+
 
     CheckBox requiredCheckBox = new CheckBox("required", new PropertyModel<Boolean>(model, "required"));
     requiredCheckBox.setLabel(new ResourceModel("AnswerRequired"));

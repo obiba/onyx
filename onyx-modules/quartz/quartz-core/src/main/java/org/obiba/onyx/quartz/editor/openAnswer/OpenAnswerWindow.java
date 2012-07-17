@@ -9,12 +9,20 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.openAnswer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.extensions.markup.html.tabs.PanelCachingTab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -23,6 +31,8 @@ import org.obiba.onyx.quartz.editor.locale.LocaleProperties;
 import org.obiba.onyx.quartz.editor.openAnswer.autocomplete.AutoCompleteOpenAnswerPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveCancelPanel;
 import org.obiba.onyx.quartz.editor.utils.SaveablePanel;
+import org.obiba.onyx.quartz.editor.utils.tab.AjaxSubmitTabbedPanel;
+import org.obiba.onyx.quartz.editor.widget.attributes.AttributesPanel;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
 /**
@@ -41,9 +51,9 @@ public abstract class OpenAnswerWindow extends Panel {
 
   private Panel openAnswerPanel;
 
-  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, IModel<Category> categoryModel,
-      final IModel<Question> questionModel, IModel<Questionnaire> questionnaireModel,
-      IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
+  public OpenAnswerWindow(String id, final IModel<OpenAnswerDefinition> model, final IModel<Category> categoryModel,
+      final IModel<Question> questionModel, final IModel<Questionnaire> questionnaireModel,
+      final IModel<LocaleProperties> localePropertiesModel, final ModalWindow modalWindow) {
     super(id, model);
 
     feedbackPanel = new FeedbackPanel("content");
@@ -54,21 +64,38 @@ public abstract class OpenAnswerWindow extends Panel {
     add(form = new Form<OpenAnswerDefinition>("form", model));
     form.setMultiPart(false);
 
-    switch(model.getObject().getOpenAnswerType()) {
-      case AUDIO_RECORDING:
-        openAnswerPanel = new AudioOpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel,
-            questionnaireModel);
-        break;
-      case AUTO_COMPLETE:
-        openAnswerPanel = new AutoCompleteOpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel,
-            questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
-        break;
-      default:
-        openAnswerPanel = new OpenAnswerPanel("openAnswerPanel", model, categoryModel, questionModel,
-            questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
-    }
+    List<ITab> tabs = new ArrayList<ITab>();
+    AjaxSubmitTabbedPanel ajaxSubmitTabbedPanel = new AjaxSubmitTabbedPanel("openAnswerTabs", feedbackPanel,
+        feedbackWindow, tabs);
+    tabs.add(new PanelCachingTab(new AbstractTab(new ResourceModel("OpenAnswerDefinition")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        switch(model.getObject().getOpenAnswerType()) {
+          case AUDIO_RECORDING:
+            openAnswerPanel = new AudioOpenAnswerPanel(panelId, model, categoryModel, questionModel,
+                questionnaireModel);
+            break;
+          case AUTO_COMPLETE:
+            openAnswerPanel = new AutoCompleteOpenAnswerPanel(panelId, model, categoryModel, questionModel,
+                questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+            break;
+          default:
+            openAnswerPanel = new OpenAnswerPanel(panelId, model, categoryModel, questionModel,
+                questionnaireModel, localePropertiesModel, feedbackPanel, feedbackWindow);
+        }
+        return openAnswerPanel;
+      }
+    }));
 
-    form.add(openAnswerPanel);
+    tabs.add(new PanelCachingTab(new AbstractTab(new ResourceModel("Attributes")) {
+      @Override
+      public Panel getPanel(String panelId) {
+        return new AttributesPanel(panelId, new Model<OpenAnswerDefinition>(model.getObject()),
+            questionnaireModel.getObject().getLocales(), feedbackPanel, feedbackWindow);
+      }
+    }));
+
+    form.add(ajaxSubmitTabbedPanel);
 
     form.add(new SaveCancelPanel("saveCancel", form) {
       @Override
