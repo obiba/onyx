@@ -139,6 +139,7 @@ public class Category implements Serializable, IQuestionnaireElement, Attributab
     return attributes;
   }
 
+  @Override
   public void setAttributes(List<Attribute> attributes) {
     this.attributes = attributes;
   }
@@ -151,11 +152,6 @@ public class Category implements Serializable, IQuestionnaireElement, Attributab
   @Override
   public boolean containsAttribute(String namespace, String name) {
     return Attributes.containsAttribute(getAttributes(), namespace, name);
-  }
-
-  @Override
-  public Attribute getAttribute(String namespace, String name, Locale locale) {
-    return Attributes.getAttribute(getAttributes(), namespace, name, locale);
   }
 
   @Override

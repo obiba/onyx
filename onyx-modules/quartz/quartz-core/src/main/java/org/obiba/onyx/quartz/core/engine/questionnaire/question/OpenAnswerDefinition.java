@@ -384,6 +384,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     return attributes;
   }
 
+  @Override
   public void setAttributes(List<Attribute> attributes) {
     this.attributes = attributes;
   }
@@ -396,11 +397,6 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   @Override
   public boolean containsAttribute(String namespace, String name) {
     return Attributes.containsAttribute(getAttributes(), namespace, name);
-  }
-
-  @Override
-  public Attribute getAttribute(String namespace, String name, Locale locale) {
-    return Attributes.getAttribute(getAttributes(), namespace, name, locale);
   }
 
   @Override

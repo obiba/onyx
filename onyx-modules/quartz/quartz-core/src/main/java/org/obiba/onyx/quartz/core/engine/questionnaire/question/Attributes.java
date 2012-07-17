@@ -74,17 +74,6 @@ public class Attributes {
    * @param attributes
    * @param namespace
    * @param name
-   * @param locale
-   * @return
-   */
-  public static Attribute getAttribute(List<Attribute> attributes, String namespace, String name, Locale locale) {
-    return Iterables.find(attributes, predicate(namespace, name, locale));
-  }
-
-  /**
-   * @param attributes
-   * @param namespace
-   * @param name
    */
   public static void removeAttributes(List<Attribute> attributes, String namespace, String name) {
     Iterables.removeIf(attributes, predicate(namespace, name));

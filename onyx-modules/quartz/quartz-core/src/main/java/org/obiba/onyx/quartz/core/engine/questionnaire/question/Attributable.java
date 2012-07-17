@@ -18,11 +18,11 @@ public interface Attributable {
 
   List<Attribute> getAttributes();
 
+  void setAttributes(List<Attribute> attributes);
+
   void addAttribute(String namespace, String name, String value, Locale locale);
 
   boolean containsAttribute(String namespace, String name);
-
-  Attribute getAttribute(String namespace, String name, Locale locale);
 
   void removeAttributes(String namespace, String name);
 

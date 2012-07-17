@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +63,6 @@ public class Question implements IHasQuestion, Attributable {
 
   private String variableName;
 
-  @Nullable
   private List<Attribute> attributes;
 
   public Question() {
@@ -144,8 +142,6 @@ public class Question implements IHasQuestion, Attributable {
 
   /**
    * Check if any of the sub questions has categories defined.
-   *
-   * @return
    */
   private boolean hasSubQuestionsCategories() {
     for(Question child : getQuestions()) {
@@ -242,8 +238,6 @@ public class Question implements IHasQuestion, Attributable {
 
   /**
    * Get the underlying {@link Category} list.
-   *
-   * @return
    */
   public List<Category> getCategories() {
     List<Category> categories = new ArrayList<Category>();
@@ -255,8 +249,6 @@ public class Question implements IHasQuestion, Attributable {
 
   /**
    * Get the underlying Missing {@link Category} list.
-   *
-   * @return
    */
   public List<QuestionCategory> getMissingQuestionCategories() {
     List<QuestionCategory> missingQuestionCategories = new ArrayList<QuestionCategory>();
@@ -299,8 +291,6 @@ public class Question implements IHasQuestion, Attributable {
 
   /**
    * Does the question has an escape category.
-   *
-   * @return
    */
   public boolean hasEscapeCategories() {
     for(Category category : getCategories()) {
@@ -479,6 +469,7 @@ public class Question implements IHasQuestion, Attributable {
     return attributes;
   }
 
+  @Override
   public void setAttributes(List<Attribute> attributes) {
     this.attributes = attributes;
   }
@@ -493,10 +484,6 @@ public class Question implements IHasQuestion, Attributable {
     return Attributes.containsAttribute(getAttributes(), namespace, name);
   }
 
-  @Override
-  public Attribute getAttribute(String namespace, String name, Locale locale) {
-    return Attributes.getAttribute(getAttributes(), namespace, name, locale);
-  }
 
   @Override
   public void removeAttributes(String namespace, String name) {
