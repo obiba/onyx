@@ -484,7 +484,6 @@ public class Question implements IHasQuestion, Attributable {
     return Attributes.containsAttribute(getAttributes(), namespace, name);
   }
 
-
   @Override
   public void removeAttributes(String namespace, String name) {
     Attributes.removeAttributes(getAttributes(), namespace, name);
