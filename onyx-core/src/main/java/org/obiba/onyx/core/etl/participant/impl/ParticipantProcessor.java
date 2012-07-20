@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Strings;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
 import org.obiba.onyx.core.domain.participant.Appointment;
@@ -27,6 +28,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.batch.core.ExitStatus;
@@ -50,13 +52,16 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   private ParticipantMetadata participantMetadata;
 
+  private PurgeParticipantDataService purgeParticipantDataService;
+
   @Override
   public Participant process(Participant participantItem) throws Exception {
     String participantId = participantItem.getEnrollmentId();
 
     // check enrollment id is unique in submitted participants list
     if(!checkUniqueEnrollmentId(participantItem)) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Duplicate " + ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME + " " + participantId));
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
+          "Duplicate " + ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME + " " + participantId));
       return null;
     }
 
@@ -68,7 +73,8 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // validation loop for configurable attributes
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-      if(!validateData(participantId, attribute, participantItem.getConfiguredAttributeValue(attribute.getName()))) return null;
+      if(!validateData(participantId, attribute, participantItem.getConfiguredAttributeValue(attribute.getName())))
+        return null;
     }
 
     return validateParticipant(participantItem);
@@ -81,7 +87,8 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // Validate site code
     if(!applicationConfigurationService.getApplicationConfiguration().getSiteNo().equals(participantItem.getSiteNo())) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Ignoring participant for site " + participantItem.getSiteNo() + "."));
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+          "Ignoring participant for site " + participantItem.getSiteNo() + "."));
     } else {
       participant = new Participant();
       participant.setEnrollmentId(participantItem.getEnrollmentId());
@@ -93,7 +100,17 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
         // log a warning for appointments scheduled in the past but add them to the system anyway
         if(!isNewAppointmentDateValid(participant)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => adding appointment anyway."));
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+              "Appointment date/time is in the past => adding appointment anyway."));
+        }
+
+        // Validate purge option and participant already purged
+        if(purgeParticipantDataService.isMultipleInterview() == false
+            && Strings.isNullOrEmpty(participant.getEnrollmentId()) == false
+            && participantService.isParticipantPurged(participant)) {
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+              "Multiple Interviews are not allowed for participants"));
+          return null;
         }
 
         // Participant exists already in database
@@ -101,14 +118,17 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         Interview interview = participant.getInterview();
 
         // Validate interview status
-        if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview.getStatus() == InterviewStatus.CANCELLED)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Interview " + interview.getStatus().toString().toLowerCase() + " => participant update ignored."));
+        if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview
+            .getStatus() == InterviewStatus.CANCELLED)) {
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+              "Interview " + interview.getStatus().toString().toLowerCase() + " => participant update ignored."));
           return null;
         }
 
         // Validate appointment date
         if(!isNewAppointmentDateValid(participantItem)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date/time is in the past => participant update ignored."));
+          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+              "Appointment date/time is in the past => participant update ignored."));
           return null;
         }
 
@@ -119,7 +139,9 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         } else {
           // appointment in database exists
           if(participantItem.getAppointment().getDate().equals(participant.getAppointment().getDate())) {
-            log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId, "Appointment date for participant " + participantItem.getAppointment().getDate() + " same in database => participant update ignored."));
+            log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+                "Appointment date for participant " + participantItem.getAppointment()
+                    .getDate() + " same in database => participant update ignored."));
             return null;
           }
           participant.getAppointment().setDate(participantItem.getAppointment().getDate());
@@ -133,7 +155,8 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
   private boolean validateData(String participantId, ParticipantAttribute attribute, Data data) {
     // check if the attribute is mandatory and not null
     if(!checkMandatoryCondition(attribute, data)) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId, "No value for mandatory field " + attribute.getName() + "."));
+      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId,
+          "No value for mandatory field " + attribute.getName() + "."));
       return false;
     }
 
@@ -141,7 +164,8 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     // is within that list.
     if(attribute.getType().equals(DataType.TEXT) && data != null) {
       if(!checkValueAllowed(attribute, data)) {
-        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId, "Value not allowed for field " + attribute.getName() + ": " + data.getValueAsString() + "."));
+        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId,
+            "Value not allowed for field " + attribute.getName() + ": " + data.getValueAsString() + "."));
         return false;
       }
     }
@@ -231,6 +255,10 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
+  }
+
+  public void setPurgeParticipantDataService(PurgeParticipantDataService purgeParticipantDataService) {
+    this.purgeParticipantDataService = purgeParticipantDataService;
   }
 
   @Override

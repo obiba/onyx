@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.core.domain.statistics;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Date;
 
 import org.obiba.core.domain.AbstractEntity;
 
@@ -25,6 +24,10 @@ public class InterviewDeletionLog extends AbstractEntity {
 
   @Column(nullable = false)
   String participantBarcode;
+
+  //TODO write code to create this field during upgrade process, see AbstractUpgradeStep
+  @Column
+  String enrollmentId;
 
   @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
@@ -77,6 +80,14 @@ public class InterviewDeletionLog extends AbstractEntity {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  public String getEnrollmentId() {
+    return enrollmentId;
+  }
+
+  public void setEnrollmentId(String enrollmentId) {
+    this.enrollmentId = enrollmentId;
   }
 
 }

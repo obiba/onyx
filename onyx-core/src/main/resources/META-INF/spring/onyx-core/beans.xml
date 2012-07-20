@@ -168,6 +168,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="purgeParticipantDataService" class="org.obiba.onyx.core.service.impl.PurgeParticipantDataServiceImpl">
     <property name="purgeDataOlderThanInDays" value="${org.obiba.onyx.participant.purge}" />
+    <property name="multipleInterview" value="${org.obiba.onyx.participant.purge.multipleInterview}" />
   </bean>
 
   <bean id="exportLogService" class="org.obiba.onyx.core.service.impl.DefaultExportLogServiceImpl">

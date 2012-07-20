@@ -133,6 +133,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   @Override
+  public boolean isParticipantPurged(Participant participant) {
+    InterviewDeletionLog deletionLog = new InterviewDeletionLog();
+    deletionLog.setEnrollmentId(participant.getEnrollmentId());
+    return getPersistenceManager().match(deletionLog).isEmpty() == false;
+  }
+
+  @Override
   public void deleteParticipant(Participant participant) {
 
     Action template = new Action();
@@ -162,6 +169,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     deletionLog.setDate(new Date());
     // deletionLog.setExportDate(participant.getExportDate());
     deletionLog.setParticipantBarcode(participant.getBarcode());
+    deletionLog.setEnrollmentId(participant.getEnrollmentId());
     deletionLog.setStatus(participant.getInterview().getStatus().toString());
     deletionLog.setUser(userSessionService.getUser().getLogin() + " - " + userSessionService.getUser().getFullName());
     getPersistenceManager().save(deletionLog);

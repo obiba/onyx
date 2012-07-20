@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -36,6 +36,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttributeReader;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -49,13 +50,13 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 /**
- * 
+ *
  */
 public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
 
   private static final String TEST_RESOURCES_DIR = ParticipantReaderTest.class.getSimpleName();
 
-  private ParticipantReaderTest participantReaderTest = new ParticipantReaderTest();;
+  private ParticipantReaderTest participantReaderTest = new ParticipantReaderTest();
 
   private ParticipantProcessor processor = new ParticipantProcessor();
 
@@ -64,6 +65,8 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
   private ApplicationConfigurationService applicationConfigurationServiceMock;
 
   private ParticipantService participantServiceMock;
+
+  private PurgeParticipantDataService purgeParticipantDataServiceMock;
 
   @Autowired(required = true)
   private ParticipantMetadata participantMetadata;
@@ -77,23 +80,30 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
   public void setUp() throws Exception {
     applicationConfigurationServiceMock = createMock(ApplicationConfigurationService.class);
     participantServiceMock = createMock(ParticipantService.class);
+    purgeParticipantDataServiceMock = createMock(PurgeParticipantDataService.class);
+
     config = new ApplicationConfiguration();
     config.setSiteNo("cag001");
 
     processor.setParticipantMetadata(initParticipantMetadata());
     processor.setApplicationConfigurationService(applicationConfigurationServiceMock);
     processor.setParticipantService(participantServiceMock);
-
+    processor.setPurgeParticipantDataService(purgeParticipantDataServiceMock);
     participantAttributesMap = getParticipantAttributes();
+
   }
 
   /**
    * Tests processing of an appointment list that contains no configured attributes (i.e., essential attributes only).
-   * 
+   *
    * @throws IOException if the appointment list could not be read
    */
   @Test
   public void testProcessWithNoConfiguredAttributes() throws IOException {
+
+    expect(participantServiceMock.isParticipantPurged(EasyMock.anyObject(Participant.class))).andStubReturn(false);
+    expect(purgeParticipantDataServiceMock.isMultipleInterview()).andStubReturn(false);
+
     ParticipantProcessor.initProcessor();
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(3);
@@ -101,11 +111,13 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null);
     expectLastCall().times(3);
 
-    List<Participant> participants = participantReaderTest.getParticipantList(false, TEST_RESOURCES_DIR + "/appointmentList_noConfiguredAttributes.xls");
+    List<Participant> participants = participantReaderTest
+        .getParticipantList(false, TEST_RESOURCES_DIR + "/appointmentList_noConfiguredAttributes.xls");
     List<Participant> processedParticipants = new ArrayList<Participant>();
 
     replay(applicationConfigurationServiceMock);
     replay(participantServiceMock);
+    replay(purgeParticipantDataServiceMock);
 
     try {
       for(Participant participantItem : participants) {
@@ -127,25 +139,30 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
   /**
    * Tests processing of an appointment list where a mandatory attribute (Enrollment ID, at line 4) has not been
    * assigned a value. The processor should not return this participant
-   * 
+   *
    * @throws IOException if the appointment list could not be read
    */
   @Test
   public void testProcessWithMissingMandatoryAttributeValue() throws IOException {
     ParticipantProcessor.initProcessor();
+    expect(participantServiceMock.isParticipantPurged(EasyMock.anyObject(Participant.class))).andStubReturn(false);
+    expect(purgeParticipantDataServiceMock.isMultipleInterview()).andStubReturn(false);
+
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(2);
 
     expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null);
     expectLastCall().times(2);
 
-    List<Participant> participants = participantReaderTest.getParticipantList(false, TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeValue.xls");
+    List<Participant> participants = participantReaderTest
+        .getParticipantList(false, TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeValue.xls");
     List<Participant> processedParticipants = new ArrayList<Participant>();
 
     replay(applicationConfigurationServiceMock);
     replay(participantServiceMock);
+    replay(purgeParticipantDataServiceMock);
 
-    try {
+        try {
       for(Participant participantItem : participants) {
         Participant participant = processor.process(participantItem);
         if(participant != null) processedParticipants.add(participant);
@@ -167,23 +184,27 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
   /**
    * Tests processing of an appointment list where an attribute (Gender, line 3) has been assigned value that is not
    * allowed (i.e., is not with the attribute's "allowed value" list). The processor should not return this participant
-   * 
+   *
    * @throws IOException if the appointment list could not be read
    */
   @Test
   public void testProcessWithNotAllowedAttributeValue() throws IOException {
     ParticipantProcessor.initProcessor();
+    expect(participantServiceMock.isParticipantPurged(EasyMock.anyObject(Participant.class))).andStubReturn(false);
+    expect(purgeParticipantDataServiceMock.isMultipleInterview()).andStubReturn(false);
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(2);
 
     expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null);
     expectLastCall().times(2);
 
-    List<Participant> participants = participantReaderTest.getParticipantList(false, TEST_RESOURCES_DIR + "/appointmentList_notAllowedAttributeValue.xls");
+    List<Participant> participants = participantReaderTest
+        .getParticipantList(false, TEST_RESOURCES_DIR + "/appointmentList_notAllowedAttributeValue.xls");
     List<Participant> processedParticipants = new ArrayList<Participant>();
 
     replay(applicationConfigurationServiceMock);
     replay(participantServiceMock);
+    replay(purgeParticipantDataServiceMock);
 
     try {
       for(Participant participantItem : participants) {
@@ -218,17 +239,22 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
 
     ParticipantProcessor.initProcessor();
 
+    expect(participantServiceMock.isParticipantPurged(EasyMock.anyObject(Participant.class))).andStubReturn(false);
+    expect(purgeParticipantDataServiceMock.isMultipleInterview()).andStubReturn(false);
+
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(1);
 
     expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null);
     expectLastCall().times(1);
 
-    List<Participant> participants = participantReaderTest.getParticipantList(true, TEST_RESOURCES_DIR + "/appointmentList_includesConfiguredAttributes.xls");
+    List<Participant> participants = participantReaderTest
+        .getParticipantList(true, TEST_RESOURCES_DIR + "/appointmentList_includesConfiguredAttributes.xls");
     List<Participant> processedParticipants = new ArrayList<Participant>();
 
     replay(applicationConfigurationServiceMock);
     replay(participantServiceMock);
+    replay(purgeParticipantDataServiceMock);
 
     try {
       for(Participant participantItem : participants) {
@@ -252,7 +278,8 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(expectedBirthDate, participants.get(0).getBirthDate());
 
     // Verify that the participant's configured attributes have been assigned the correct values.
-    Assert.assertEquals("299, Avenue des Pins Ouest", participants.get(0).getConfiguredAttributeValue("Street").getValue());
+    Assert.assertEquals("299, Avenue des Pins Ouest",
+        participants.get(0).getConfiguredAttributeValue("Street").getValue());
     Assert.assertEquals("Montr\u00e9al", participants.get(0).getConfiguredAttributeValue("City").getValue());
     Assert.assertEquals("QC", participants.get(0).getConfiguredAttributeValue("Province").getValue());
     Assert.assertEquals("Canada", participants.get(0).getConfiguredAttributeValue("Country").getValue());
@@ -263,23 +290,28 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
   /**
    * Tests processing of an appointment list containing a duplicate enrollment id. The processor should not return this
    * participant
-   * 
+   *
    * @throws IOException if the appointment list could not be read
    */
   @Test
   public void testProcessWithDuplicateDuplicateEnrollmentId() throws IOException {
     ParticipantProcessor.initProcessor();
+    expect(participantServiceMock.isParticipantPurged(EasyMock.anyObject(Participant.class))).andStubReturn(false);
+    expect(purgeParticipantDataServiceMock.isMultipleInterview()).andStubReturn(false);
+
     expect(applicationConfigurationServiceMock.getApplicationConfiguration()).andReturn(config);
     expectLastCall().times(2);
 
     expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null);
     expectLastCall().times(2);
 
-    List<Participant> participants = participantReaderTest.getParticipantList(true, TEST_RESOURCES_DIR + "/appointmentList_duplicateEnrollmentId.xls");
+    List<Participant> participants = participantReaderTest
+        .getParticipantList(true, TEST_RESOURCES_DIR + "/appointmentList_duplicateEnrollmentId.xls");
     List<Participant> processedParticipants = new ArrayList<Participant>();
 
     replay(applicationConfigurationServiceMock);
     replay(participantServiceMock);
+    replay(purgeParticipantDataServiceMock);
 
     try {
       for(Participant participantItem : participants) {
@@ -311,7 +343,8 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     String lastName = participantWithInProgressInterview.getLastName();
     Gender gender = participantWithInProgressInterview.getGender();
     Date birthDate = participantWithInProgressInterview.getBirthDate();
-    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(participantWithInProgressInterview).atLeastOnce();
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject()))
+        .andReturn(participantWithInProgressInterview).atLeastOnce();
 
     replay(applicationConfigurationServiceMock, participantServiceMock);
 
@@ -324,7 +357,8 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
     verify(applicationConfigurationServiceMock, participantServiceMock);
 
     // Verify state (participant should be unchanged, except for appointment date).
-    assertEquals(participantFromAppointmentList.getAppointment().getDate(), participantWithInProgressInterview.getAppointment().getDate());
+    assertEquals(participantFromAppointmentList.getAppointment().getDate(),
+        participantWithInProgressInterview.getAppointment().getDate());
     assertEquals(firstName, participantWithInProgressInterview.getFirstName()); // unchanged
     assertEquals(lastName, participantWithInProgressInterview.getLastName()); // unchanged
     assertEquals(gender, participantWithInProgressInterview.getGender()); // unchanged
@@ -339,11 +373,13 @@ public class ParticipantProcessorTest extends BaseDefaultSpringContextTestCase {
 
     ParticipantAttributeReader attributeReader = new ParticipantAttributeReader();
 
-    attributeReader.setResources(new Resource[] { new ClassPathResource(TEST_RESOURCES_DIR + "/essential-attributes.xml") });
+    attributeReader
+        .setResources(new Resource[] {new ClassPathResource(TEST_RESOURCES_DIR + "/essential-attributes.xml")});
     List<ParticipantAttribute> essentialAttributes = attributeReader.read();
     participantMetadata.setEssentialAttributes(essentialAttributes);
 
-    attributeReader.setResources(new Resource[] { new ClassPathResource(TEST_RESOURCES_DIR + "/configured-attributes.xml") });
+    attributeReader
+        .setResources(new Resource[] {new ClassPathResource(TEST_RESOURCES_DIR + "/configured-attributes.xml")});
     List<ParticipantAttribute> configuredAttributes = attributeReader.read();
     participantMetadata.setConfiguredAttributes(configuredAttributes);
 
