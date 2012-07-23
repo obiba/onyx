@@ -84,20 +84,21 @@ public class AssignCodeToParticipantPanel extends Panel {
     public AssignCodeToParticipantForm(String id, final IModel participantModel, ParticipantMetadata participantMetadata) {
       super(id, participantModel);
 
-      TextField participantCode = new TextField("participantCode", new PropertyModel(getModel(), "barcode"));
+      TextField<String> participantCode = new TextField<String>("participantCode", new PropertyModel<String>(getModel(), "barcode"));
       participantCode.setOutputMarkupId(true);
       participantCode.add(new RequiredFormFieldBehavior());
       participantCode.add(new StringValidator.MaximumLengthValidator(250));
-      participantCode.add(new IValidator() {
+      participantCode.add(new IValidator<String>() {
 
-        public void validate(final IValidatable validatable) {
+        public void validate(final IValidatable<String> validatable) {
           Participant participant = (Participant) getModel().getObject();
           if(participant.getId() != null && participant.getBarcode() != null) {
             validatable.error(new ParticipantAlreadyReceivedError());
           } else {
             Participant template = new Participant();
             template.setBarcode((String) validatable.getValue());
-            if(queryService.count(template) > 0) {
+            // check if in the list or was already purged
+            if(queryService.count(template) > 0 || participantService.isInterviewPurged(template)) {
               validatable.error(new BarCodeAlreadyUsedError((String) validatable.getValue()));
             }
           }

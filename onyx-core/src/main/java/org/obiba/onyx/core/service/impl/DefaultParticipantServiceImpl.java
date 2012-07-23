@@ -140,6 +140,14 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   @Override
+  public boolean isInterviewPurged(Participant participant) {
+    log.debug("Checking if interview {} was purged", participant.getBarcode());
+    InterviewDeletionLog deletionLog = new InterviewDeletionLog();
+    deletionLog.setParticipantBarcode(participant.getBarcode());
+    return getPersistenceManager().match(deletionLog).isEmpty() == false;
+  }
+
+  @Override
   public void deleteParticipant(Participant participant) {
 
     Action template = new Action();
