@@ -1,5 +1,7 @@
 package org.obiba.onyx.quartz.magma;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -22,13 +24,16 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
 import org.obiba.onyx.util.data.DataType;
 
-import static junit.framework.Assert.assertEquals;
-
 public class QuestionnaireStageVariableSourceFactoryTest {
 
   @Before
   public void start() {
-    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    try {
+      new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    } catch(IllegalStateException e) {
+      MagmaEngine.get().shutdown();
+      new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    }
   }
 
   @After
@@ -45,9 +50,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     QuestionBuilder questionBuilder = qrb.withSection("S1").withPage("P1").withQuestion("QLISTRADIO");
     questionBuilder.addAttribute("", "attrQuestionKey", "attrQuestionValue", null);
     questionBuilder.addAttribute("", "mustBeOverrideKey", "mustBeOverrideValue", null);
-    questionBuilder.withCategory("C1").withOpenAnswerDefinition("OAD1", DataType.TEXT)
-        .addAttribute("", "attrOAKey", "attrOAValue", null).addAttribute("", "mustBeOverrideKey", "overrideValue",
-        null);
+    questionBuilder.withCategory("C1").withOpenAnswerDefinition("OAD1", DataType.TEXT).addAttribute("", "attrOAKey", "attrOAValue", null).addAttribute("", "mustBeOverrideKey", "overrideValue", null);
     questionBuilder.withCategory("C2").addAttribute("", "attrCategoryKey", "attrCategoryValue", null);
 
     qrb.inPage("P1").withQuestion("QARRAY");
@@ -61,8 +64,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     EasyMock.expect(questionnaireBundleMock.getQuestionnaire()).andStubReturn(qrb.getQuestionnaire());
     EasyMock.replay(stageMock, questionnaireBundleMock);
 
-    QuestionnaireStageVariableSourceFactory qsvs = new QuestionnaireStageVariableSourceFactory(stageMock,
-        questionnaireBundleMock);
+    QuestionnaireStageVariableSourceFactory qsvs = new QuestionnaireStageVariableSourceFactory(stageMock, questionnaireBundleMock);
 
     Map<String, Variable> mv = new HashMap<String, Variable>();
     Map<String, Category> mc = new HashMap<String, Category>();
@@ -74,7 +76,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
       }
     }
 
-    //Variable
+    // Variable
     // QLISTRADIO assertion
     assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO").getAttribute("attrQuestionKey")));
     assertEquals("attrQuestionValue", value(mv.get("QLISTRADIO.C1").getAttribute("attrQuestionKey")));
@@ -84,7 +86,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     assertEquals("attrCategoryValue", value(mv.get("QLISTRADIO.C2").getAttribute("attrCategoryKey")));
     assertEquals("overrideValue", value(mv.get("QLISTRADIO.C1.OAD1").getAttribute("mustBeOverrideKey")));
 
-    //QARRAY assertion
+    // QARRAY assertion
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY").getAttribute("attrParentQuestionKey")));
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q1").getAttribute("attrParentQuestionKey")));
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2").getAttribute("attrParentQuestionKey")));
@@ -93,7 +95,7 @@ public class QuestionnaireStageVariableSourceFactoryTest {
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT3").getAttribute("attrParentQuestionKey")));
     assertEquals("attrParentQuestionValue", value(mv.get("QARRAY.Q2.CAT4").getAttribute("attrParentQuestionKey")));
 
-    //Categories
+    // Categories
     assertEquals("attrQuestionValue", value(mc.get("QLISTRADIO.C1").getAttribute("attrQuestionKey")));
     assertEquals("attrQuestionValue", value(mc.get("QLISTRADIO.C2").getAttribute("attrQuestionKey")));
     assertEquals("attrCategoryValue", value(mc.get("QLISTRADIO.C2").getAttribute("attrCategoryKey")));
