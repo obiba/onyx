@@ -72,6 +72,9 @@
         </bean>
         <bean parent="updateOnyxSchema">
           <property name="appliesTo" value="1.8.5" />
+        </bean>
+        <bean parent="updateOnyxSchema">
+          <property name="appliesTo" value="1.9.0" />
         </bean>        
       </list>
     </property>
