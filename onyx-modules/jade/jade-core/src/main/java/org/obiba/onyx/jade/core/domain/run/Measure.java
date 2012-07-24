@@ -25,7 +25,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 
 /**
@@ -43,9 +42,7 @@ public class Measure extends AbstractEntity {
   @OneToMany(mappedBy = "measure", cascade = CascadeType.ALL)
   private List<InstrumentRunValue> instrumentRunValues;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "user_id")
-  private User user;
+  private String userName;
 
   @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
@@ -73,12 +70,12 @@ public class Measure extends AbstractEntity {
     return instrumentRunValues != null ? instrumentRunValues : (instrumentRunValues = new ArrayList<InstrumentRunValue>());
   }
 
-  public User getUser() {
-    return user;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public Date getTime() {

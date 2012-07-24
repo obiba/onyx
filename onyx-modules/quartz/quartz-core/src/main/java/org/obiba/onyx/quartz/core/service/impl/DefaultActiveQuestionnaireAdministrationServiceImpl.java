@@ -115,7 +115,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
 
     currentQuestionnaireParticipant.setQuestionnaireVersion(currentQuestionnaire.getVersion());
-    currentQuestionnaireParticipant.setUser(activeInterviewService.getOperator());
+    currentQuestionnaireParticipant.setUserName(activeInterviewService.getOperator());
     currentQuestionnaireParticipant.setLocale(language);
     currentQuestionnaireParticipant.setTimeStart(new Date());
 
@@ -270,8 +270,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   @Override
-  public CategoryAnswer
-      answer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
+  public CategoryAnswer answer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
     return answer(questionCategory.getQuestion(), questionCategory, openAnswerDefinition, value);
   }
 
@@ -318,9 +317,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   @Override
-  public
-      CategoryAnswer
-      answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
 
     // A "no-answer" category answer is no longer required, since a "real answer" to the question is provided.
     deleteNoAnswerCategoryAnswer(question);
@@ -399,8 +396,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   @Override
-  public void
-      deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+  public void deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
     OpenAnswer openAnswer = findOpenAnswer(question, questionCategory.getCategory(), openAnswerDefinition);
     if(openAnswer != null) {
       getPersistenceManager().delete(openAnswer);

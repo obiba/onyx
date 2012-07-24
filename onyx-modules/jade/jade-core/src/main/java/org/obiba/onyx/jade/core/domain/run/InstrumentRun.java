@@ -58,9 +58,7 @@ public class InstrumentRun extends AbstractEntity {
   @JoinColumn(name = "instrument_id", nullable = false)
   private Instrument instrument;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  private String userName;
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
@@ -181,12 +179,12 @@ public class InstrumentRun extends AbstractEntity {
     this.timeEnd = timeEnd;
   }
 
-  public User getUser() {
-    return user;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public String getContraindication() {

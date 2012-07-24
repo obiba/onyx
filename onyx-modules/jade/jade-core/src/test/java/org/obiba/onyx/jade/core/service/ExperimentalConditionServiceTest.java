@@ -48,12 +48,13 @@ public class ExperimentalConditionServiceTest extends BaseDefaultSpringContextTe
     user.setStatus(Status.ACTIVE);
     user.setDeleted(false);
     user.setLogin("test");
+    user.setLogin("foo");
     persistenceManager.save(user);
 
     experimentalCondition = new ExperimentalCondition();
     experimentalCondition.setName("testCondition");
     experimentalCondition.setTime(new Date());
-    experimentalCondition.setUser(user);
+    experimentalCondition.setUserName(user.getLogin());
     experimentalCondition.setWorkstation("testWorkstation");
   }
 

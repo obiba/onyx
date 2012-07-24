@@ -36,7 +36,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -235,8 +234,8 @@ public abstract class CommentsModalPanel extends Panel {
       }
       kvPanel.addRow(new StringResourceModel("Action", this, null), actionModel);
 
-      User currentUser = comment.getUser();
-      kvPanel.addRow(new StringResourceModel("WrittenBy", this, null), new Label(KeyValueDataPanel.getRowValueId(), currentUser.getFirstName() + " " + currentUser.getLastName()));
+      String currentUser = comment.getUserName();
+      kvPanel.addRow(new StringResourceModel("WrittenBy", this, null), new Label(KeyValueDataPanel.getRowValueId(), currentUser));
       if(comment.getEventReason() != null) {
         kvPanel.addRow(new StringResourceModel("Reason", this, null), new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(comment.getEventReason())));
       }

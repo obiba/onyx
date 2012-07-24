@@ -81,7 +81,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun.setInstrumentType(instrumentType.getName());
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
-    currentRun.setUser(userSessionService.getUser());
+    currentRun.setUserName(userSessionService.getUserName());
     currentRun.setWorkstation(userSessionService.getWorkstation());
     getPersistenceManager().save(currentRun);
     currentRunId = currentRun.getId();
@@ -330,7 +330,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   private Measure addMeasure(Map<String, Data> repeatableData, InstrumentParameterCaptureMethod captureMethod) {
     InstrumentRun instrumentRun = getInstrumentRun();
     Measure measure = new Measure();
-    measure.setUser(userSessionService.getUser());
+    measure.setUserName(userSessionService.getUserName());
     measure.setTime(new Date());
     measure.setInstrumentBarcode(instrumentRun.getInstrument().getBarcode());
     measure.setInstrumentRun(instrumentRun);
@@ -355,7 +355,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     }
     getPersistenceManager().save(measure);
-    // The relationship is driven by Measure.instrumentRun. This should make the InstrumentRun instance reflect the change
+    // The relationship is driven by Measure.instrumentRun. This should make the InstrumentRun instance reflect the
+    // change
     getPersistenceManager().refresh(instrumentRun);
 
     return measure;

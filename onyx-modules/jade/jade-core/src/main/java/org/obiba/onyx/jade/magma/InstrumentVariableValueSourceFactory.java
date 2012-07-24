@@ -22,9 +22,9 @@ import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
-import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.Variable.Builder;
 import org.obiba.magma.Variable.BuilderVisitor;
+import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VectorSource;
 import org.obiba.magma.beans.BeanPropertyVariableValueSource;
 import org.obiba.magma.beans.BeanVariableValueSourceFactory;
@@ -221,8 +221,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
         // Create sources for calibration time, workstation and user.
         BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>("Instrument", ExperimentalCondition.class);
         factory.setPrefix(instrumentCalibration.getName());
-        factory.setProperties(ImmutableSet.of("time", "workstation", "user.login"));
-        factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+        factory.setProperties(ImmutableSet.of("time", "workstation", "userName"));
+        factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
         factory.setOccurrenceGroup(instrumentCalibration.getName());
 
         sources.addAll(factory.createSources());

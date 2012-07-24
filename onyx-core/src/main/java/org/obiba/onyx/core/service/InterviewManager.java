@@ -13,7 +13,6 @@ import java.util.Map;
 
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 
 /**
@@ -56,7 +55,7 @@ public interface InterviewManager {
    * @return the {@code User} instance holding the interview lock or null if no lock is currently held for the specified
    * participant.
    */
-  public User getInterviewer(Participant participant);
+  public String getInterviewer(Participant participant);
 
   /**
    * Locks the specified interview and binds it to the current user's session.

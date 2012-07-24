@@ -12,12 +12,11 @@ package org.obiba.onyx.core.domain.stage;
 import java.util.Date;
 
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.state.StageState;
 
 /**
- * A <code>StageInstance</code> is a summary of a single "run" of a <code>Stage</code>, where a "run" is a sequence
- * of transition events beginning from the READY state.
+ * A <code>StageInstance</code> is a summary of a single "run" of a <code>Stage</code>, where a "run" is a sequence of
+ * transition events beginning from the READY state.
  */
 public class StageInstance implements Comparable<StageInstance> {
   //
@@ -28,7 +27,7 @@ public class StageInstance implements Comparable<StageInstance> {
 
   private Interview interview;
 
-  private User user;
+  private String userName;
 
   private Date startTime;
 
@@ -70,12 +69,12 @@ public class StageInstance implements Comparable<StageInstance> {
     this.interview = interview;
   }
 
-  public User getUser() {
-    return user;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserName(String name) {
+    this.userName = name;
   }
 
   public Date getStartTime() {

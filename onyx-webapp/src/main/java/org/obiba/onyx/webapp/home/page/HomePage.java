@@ -159,7 +159,7 @@ public class HomePage extends BasePage {
             unlockInterviewWindow.setContent(content);
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
 
-            if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+            if(userSessionService.getRoles().contains(Role.PARTICIPANT_MANAGER)) {
               unlockInterviewWindow.show(target);
             } else {
               error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());

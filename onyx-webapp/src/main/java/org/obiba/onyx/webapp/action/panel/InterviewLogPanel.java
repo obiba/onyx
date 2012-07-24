@@ -174,14 +174,14 @@ public class InterviewLogPanel extends Panel {
     webMarkupContainer.add(new Label("dateTime", DateModelUtils.getDateTimeModel(new PropertyModel<Date>(action, "dateTime"))));
     webMarkupContainer.add(new Label("stage", getStageModel(action)));
     webMarkupContainer.add(new Label("action", getActionModel(action)));
-    webMarkupContainer.add(new Label("author", action.getUser().getFullName()));
+    webMarkupContainer.add(new Label("author", action.getUserName()));
     webMarkupContainer.add(new Label("reason", getReasonModel(action)));
     return webMarkupContainer;
   }
 
-  private IModel getStageModel(Action action) {
+  private IModel<String> getStageModel(Action action) {
     if(action.getStage() != null) {
-      IModel stageModel = new PropertyModel(new StageModel(moduleRegistry, action.getStage()), "description");
+      IModel<String> stageModel = new PropertyModel(new StageModel(moduleRegistry, action.getStage()), "description");
       if(stageModel.getObject() != null) {
         return new MessageSourceResolvableStringModel(stageModel);
       }
@@ -189,8 +189,8 @@ public class InterviewLogPanel extends Panel {
     return new ResourceModel("GeneralComment");
   }
 
-  private IModel getActionModel(Action action) {
-    IModel actionModel;
+  private IModel<String> getActionModel(Action action) {
+    IModel<String> actionModel;
     if(action.getActionType() != null) {
       ActionDefinition actionDefinition = actionDefinitionConfiguration.getActionDefinition(action.getActionType(), action.getActionDefinitionCode());
       actionModel = (actionDefinition != null) ? new MessageSourceResolvableStringModel(actionDefinition.getLabel()) : new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getActionDefinitionCode()));
@@ -200,8 +200,8 @@ public class InterviewLogPanel extends Panel {
     return actionModel;
   }
 
-  private IModel getReasonModel(Action action) {
-    IModel reasonModel;
+  private IModel<String> getReasonModel(Action action) {
+    IModel<String> reasonModel;
     if(action.getEventReason() != null && !action.getEventReason().equals("")) {
       reasonModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(action.getEventReason()));
     } else {

@@ -170,8 +170,7 @@ public abstract class MeasuresListPanel extends Panel {
         return measureActionsFragment;
       }
 
-      private Fragment
-          addInvalidMeasureMessage(final Measure measure, final ListItem<Measure> item, final int measureNo) {
+      private Fragment addInvalidMeasureMessage(final Measure measure, final ListItem<Measure> item, final int measureNo) {
         Fragment measureActionsFragment;
         item.add(new AttributeAppender("class", true, new Model<String>("ui-state-error"), " "));
         measureActionsFragment = new Fragment("measureActions", "measureInvalidFragment", MeasuresListPanel.this);
@@ -207,8 +206,7 @@ public abstract class MeasuresListPanel extends Panel {
           }
 
           @SuppressWarnings("unused")
-          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
-              justification = "Referenced by PropertyModel")
+          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS", justification = "Referenced by PropertyModel")
           public List<String> getInvalidMeasureMessages() {
             List<InstrumentOutputParameter> outputParams = getMeasureOutputParams(measure);
 
@@ -311,7 +309,7 @@ public abstract class MeasuresListPanel extends Panel {
     Date date = measure.getTime();
     component.add(new Label("measureDate", DateModelUtils.getDateTimeModel(new Model<DateFormat>(dateTimeFormat), new Model<Date>(date)).getObject().toString()));
 
-    component.add(new Label("measureUser", measure.getUser().getFullName()));
+    component.add(new Label("measureUser", measure.getUserName()));
     component.add(new Label("measureMethod", new StringResourceModel(measure.getCaptureMethod().toString(), this, null).getString()));
 
   }

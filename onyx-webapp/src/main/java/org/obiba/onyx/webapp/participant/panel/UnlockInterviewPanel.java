@@ -16,7 +16,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.InterviewManager;
 
 /**
@@ -42,7 +41,7 @@ public class UnlockInterviewPanel extends Panel {
     return (Participant) getDefaultModelObject();
   }
 
-  public User getInterviewer() {
+  public String getInterviewer() {
     return interviewManager.getInterviewer(getParticipant());
   }
 

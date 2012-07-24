@@ -22,7 +22,6 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -77,8 +76,8 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return getParticipant().getInterview();
   }
 
-  public User getOperator() {
-    return userSessionService.getUser();
+  public String getOperator() {
+    return userSessionService.getUserName();
   }
 
   public IStageExecution getStageExecution(Stage stage) {
@@ -159,7 +158,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       action.setStage(stage.getName());
     }
     action.setDateTime(new Date());
-    action.setUser(userSessionService.getUser());
+    action.setUserName(userSessionService.getUserName());
     getPersistenceManager().save(action);
 
     if(stage != null) {

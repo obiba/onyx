@@ -63,7 +63,6 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.Role;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
@@ -439,8 +438,7 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
 
         @Override
-        public void
-            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
+        public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel<DateFormat>(ParticipantListColumnProvider.this, "dateTimeFormat"), new PropertyModel<Date>(rowModel, "appointment.date"))));
         }
 
@@ -448,8 +446,7 @@ public class ParticipantSearchPage extends BasePage {
 
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
 
-        public void
-            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
+        public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new InterviewStatusFragment(componentId, rowModel));
         }
 
@@ -457,8 +454,7 @@ public class ParticipantSearchPage extends BasePage {
 
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
-        public void
-            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
+        public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new ActionListFragment(componentId, rowModel));
         }
 
@@ -466,8 +462,7 @@ public class ParticipantSearchPage extends BasePage {
 
       columns.add(new AbstractColumn<Participant>(new Model<String>("")) {
 
-        public void
-            populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
+        public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new LockedInterviewFragment(componentId, rowModel));
         }
 
@@ -754,8 +749,8 @@ public class ParticipantSearchPage extends BasePage {
         image.setVisible(false);
       } else {
         // Display tooltip.
-        User interviewer = interviewManager.getInterviewer((Participant) participantModel.getObject());
-        StringResourceModel tooltipResource = new StringResourceModel("InterviewerHasLockOnInterview", ParticipantSearchPage.this, new Model<User>(interviewer));
+        String interviewer = interviewManager.getInterviewer((Participant) participantModel.getObject());
+        StringResourceModel tooltipResource = new StringResourceModel("InterviewerHasLockOnInterview", ParticipantSearchPage.this, new Model<String>(interviewer), interviewer);
         add(new AttributeAppender("title", true, tooltipResource, " "));
         add(new DisplayTooltipBehaviour(getMarkupId(), "{positionLeft: true, left: -5}"));
       }
@@ -813,7 +808,7 @@ public class ParticipantSearchPage extends BasePage {
             unlockInterviewWindow.setContent(content);
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
 
-            if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+            if(userSessionService.getRoles().contains(Role.PARTICIPANT_MANAGER)) {
               unlockInterviewWindow.show(target);
             } else {
               error((new StringResourceModel("InterviewLocked", this, ActionListFragment.this.getDefaultModel())).getString());

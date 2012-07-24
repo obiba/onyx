@@ -93,7 +93,8 @@ public abstract class ChangePasswordPanel extends Panel {
 
           String password = model.getPassword();
 
-          User user = userSessionService.getUser();
+          String userName = userSessionService.getUserName();
+          User user = userService.getUserWithLogin(userName);
           if(userService.isNewPassword(user, User.digest(password))) {
             try {
               userService.updatePassword(user, User.digest(password));

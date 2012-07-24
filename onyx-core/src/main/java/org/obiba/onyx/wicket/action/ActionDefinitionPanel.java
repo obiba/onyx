@@ -66,7 +66,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
 
-    add(new Label("operator", userSessionService.getUser().getFullName()));
+    add(new Label("operator", userSessionService.getUserName()));
 
     // password field
     User operatorTemplate = new User();
@@ -75,7 +75,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     password.add(new IValidator<String>() {
 
       public void validate(IValidatable<String> validatable) {
-        if(!User.digest(validatable.getValue()).equals(userSessionService.getUser().getPassword())) {
+        if(userSessionService.authenticate(validatable.getValue()) == false) {
           validatable.error(new UserValidationError());
         }
       }

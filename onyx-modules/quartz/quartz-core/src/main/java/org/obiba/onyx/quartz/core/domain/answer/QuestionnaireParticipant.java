@@ -27,7 +27,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.user.User;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "participant_id", "questionnaireName" }) })
@@ -50,9 +49,7 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   private String resumePage;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "user_id")
-  private User user;
+  private String userName;
 
   @Column(nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
@@ -107,12 +104,12 @@ public class QuestionnaireParticipant extends AbstractEntity {
     return resumePage;
   }
 
-  public User getUser() {
-    return user;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public Date getTimeStart() {

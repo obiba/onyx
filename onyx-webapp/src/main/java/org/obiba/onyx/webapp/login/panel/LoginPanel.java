@@ -91,7 +91,7 @@ public class LoginPanel extends SignInPanel {
     setSessionTimeout();
     setResponsePage(getApplication().getHomePage());
     userSessionService.setWorkstation(((WebRequest) getRequest()).getHttpServletRequest().getRemoteHost());
-    log.info("User {} logged in from workstation {}.", userSessionService.getUser().getLogin(), userSessionService.getWorkstation());
+    log.info("User {} logged in from workstation {}.", userSessionService.getUserName(), userSessionService.getWorkstation());
   }
 
   private void setSessionTimeout() {

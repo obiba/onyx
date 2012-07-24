@@ -16,7 +16,6 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.exception.NonUniqueParticipantException;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Module;
@@ -86,9 +85,9 @@ public interface ParticipantService {
    * @param participant
    * @param barcode
    * @param receptionComment
-   * @param user
+   * @param userName
    */
-  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user);
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, String userName);
 
   /**
    * Save the participant, its appointment and metadata.

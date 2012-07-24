@@ -46,7 +46,7 @@ public class DefaultStageInstanceAlgorithm implements IStageInstanceAlgorithm {
         }
 
         // Update the stage instance's user to the user who started the stage.
-        stageInstance.setUser(stageTransition.getAction().getUser());
+        stageInstance.setUserName(stageTransition.getAction().getUserName());
       }
 
       // When leaving the IN_PROGRESS state, increment the StageInstance's duration by
@@ -79,7 +79,7 @@ public class DefaultStageInstanceAlgorithm implements IStageInstanceAlgorithm {
 
     stageInstance.setInterview(stageTransition.getInterview());
     stageInstance.setStage(stageTransition.getStage());
-    stageInstance.setUser(stageTransition.getAction().getUser());
+    stageInstance.setUserName(stageTransition.getAction().getUserName());
     stageInstance.setStartTime(stageTransition.getAction().getDateTime());
     stageInstance.setLastTime(stageTransition.getAction().getDateTime());
     stageInstance.setDuration(0);

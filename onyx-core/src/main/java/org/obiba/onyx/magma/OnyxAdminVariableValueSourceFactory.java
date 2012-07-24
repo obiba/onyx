@@ -114,8 +114,7 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     this.version = version;
   }
 
-  public void
-      setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
+  public void setParticipantCaptureAndExportStrategy(ParticipantCaptureAndExportStrategy participantCaptureAndExportStrategy) {
     this.participantCaptureAndExportStrategy = participantCaptureAndExportStrategy;
   }
 
@@ -252,8 +251,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     BeanVariableValueSourceFactory<Action> delegateFactory = new BeanVariableValueSourceFactory<Action>(PARTICIPANT, Action.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + ACTION);
     delegateFactory.setOccurrenceGroup(ACTION);
-    delegateFactory.setProperties(ImmutableSet.of("user.login", "stage", "fromState", "toState", "actionType", "dateTime", "comment", "eventReason"));
-    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+    delegateFactory.setProperties(ImmutableSet.of("userName", "stage", "fromState", "toState", "actionType", "dateTime", "comment", "eventReason"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
 
     return delegateFactory.createSources();
   }
@@ -262,8 +261,8 @@ public class OnyxAdminVariableValueSourceFactory implements VariableValueSourceF
     BeanVariableValueSourceFactory<StageInstance> delegateFactory = new BeanVariableValueSourceFactory<StageInstance>(PARTICIPANT, StageInstance.class);
     delegateFactory.setPrefix(ONYX_ADMIN_PREFIX + '.' + STAGE_INSTANCE);
     delegateFactory.setOccurrenceGroup(STAGE_INSTANCE);
-    delegateFactory.setProperties(ImmutableSet.of("stage", "startTime", "lastTime", "lastState", "duration", "interruptionCount", "user.login", "last"));
-    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+    delegateFactory.setProperties(ImmutableSet.of("stage", "startTime", "lastTime", "lastState", "duration", "interruptionCount", "userName", "last"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
 
     return delegateFactory.createSources();
   }

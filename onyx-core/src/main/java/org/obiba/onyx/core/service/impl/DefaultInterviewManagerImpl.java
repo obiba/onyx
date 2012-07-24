@@ -71,10 +71,10 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     throw new NoSuchInterviewException("No current interview");
   }
 
-  synchronized public User getInterviewer(Participant participant) {
+  synchronized public String getInterviewer(Participant participant) {
     InterviewLock lock = findLock(participant);
     if(lock != null) {
-      return lock.getOperator();
+      return lock.getOperatorId();
     }
     return null;
   }
@@ -122,7 +122,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
   protected void unlockInterview(InterviewLock lock) {
     if(lock != null) {
-      log.info("User {} has locked interview during {}s for participant id={}.", new Object[] { lock.getOperator().getLogin(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getId() });
+      log.info("User {} has locked interview during {}s for participant id={}.", new Object[] { lock.getOperatorId(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getId() });
       this.interviewLocks.remove(lock);
 
       Interview interview = lock.getParticipant().getInterview();
@@ -135,7 +135,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
   protected InterviewLock lockInterview(Participant participant) {
     InterviewLock lock = new InterviewLock(participant);
     interviewLocks.add(lock);
-    log.info("User {} has locked interview for participant id={}.", userSessionService.getUser().getLogin(), participant.getId());
+    log.info("User {} has locked interview for participant id={}.", userSessionService.getUserName(), participant.getId());
     return lock;
   }
 
@@ -170,14 +170,14 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
     private String operatorSessionId;
 
-    private Serializable operatorId;
+    private String operatorId;
 
     private long timeLock;
 
     InterviewLock(Participant participant) {
       this.participantId = participant.getId();
       this.operatorSessionId = userSessionService.getSessionId();
-      this.operatorId = userSessionService.getUser().getId();
+      this.operatorId = userSessionService.getUserName();
       this.timeLock = System.currentTimeMillis();
     }
 
@@ -201,8 +201,8 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
       return operatorSessionId.equals(sessionId);
     }
 
-    public User getOperator() {
-      return getPersistenceManager().get(User.class, operatorId);
+    public String getOperatorId() {
+      return operatorId;
     }
 
     public boolean isForOperator(User operator) {
@@ -210,7 +210,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     }
 
     public String toString() {
-      return new StringBuilder().append(getOperator().getLogin()).append("(").append(getSessionId()).append(")->").append(getParticipant().getBarcode()).toString();
+      return new StringBuilder().append(getOperatorId()).append("(").append(getSessionId()).append(")->").append(getParticipant().getBarcode()).toString();
     }
 
   }

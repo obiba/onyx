@@ -16,14 +16,11 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.user.User;
 
 @Entity
 public class ExperimentalCondition extends AbstractEntity {
@@ -37,9 +34,7 @@ public class ExperimentalCondition extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "user_id")
-  private User user;
+  private String userName;
 
   @Column(length = 2000, nullable = false)
   private String workstation;
@@ -70,20 +65,20 @@ public class ExperimentalCondition extends AbstractEntity {
     this.name = name;
   }
 
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
   public Date getTime() {
     return time;
   }
 
   public void setTime(Date time) {
     this.time = time;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 
   public String getWorkstation() {

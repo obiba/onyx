@@ -20,7 +20,6 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.statistics.InterviewDeletionLog;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -50,7 +49,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   private static final String START_ACTION_DEFINITION_CODE = "action.START";
 
   @Override
-  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user) {
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, String userName) {
     participant.setBarcode(barcode);
     getPersistenceManager().save(participant);
 
@@ -72,7 +71,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     receptionAction.setActionDefinitionCode(START_ACTION_DEFINITION_CODE);
     receptionAction.setDateTime(new Date());
     if(receptionComment != null && receptionComment.trim().length() != 0) receptionAction.setComment(receptionComment);
-    receptionAction.setUser(user);
+    receptionAction.setUserName(userName);
     receptionAction.setInterview(interview);
     getPersistenceManager().save(receptionAction);
 
@@ -179,7 +178,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     deletionLog.setParticipantBarcode(participant.getBarcode());
     deletionLog.setEnrollmentId(participant.getEnrollmentId());
     deletionLog.setStatus(participant.getInterview().getStatus().toString());
-    deletionLog.setUser(userSessionService.getUser().getLogin() + " - " + userSessionService.getUser().getFullName());
+    deletionLog.setUser(userSessionService.getUserName());
     getPersistenceManager().save(deletionLog);
 
   }

@@ -132,7 +132,7 @@ public class ExperimentalConditionForm extends Panel {
 
     experimentalCondition = new ExperimentalCondition();
     experimentalCondition.setName(selectedExperimentalConditionLog != null ? selectedExperimentalConditionLog.getName() : "");
-    experimentalCondition.setUser(userSessionService.getUser());
+    experimentalCondition.setUserName(userSessionService.getUserName());
     experimentalCondition.setWorkstation(userSessionService.getWorkstation());
 
     final List<InstructionModel> instructionModels = getInstructionModels(selectedExperimentalConditionLog);

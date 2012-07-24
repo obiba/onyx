@@ -31,8 +31,8 @@
     gender="FEMALE"
     birth_date="1948-10-01 00:00:00" />    
 
-  <questionnaire_participant id="1" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="1" locale="fr" time_start="2009-10-01 10:00:00" user_id="1" />
-  <questionnaire_participant id="2" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="2" locale="fr" time_start="2009-10-02 10:00:00" user_id="1" />
+  <questionnaire_participant id="1" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="1" locale="fr" time_start="2009-10-01 10:00:00" user_name="administrator" />
+  <questionnaire_participant id="2" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="2" locale="fr" time_start="2009-10-02 10:00:00" user_name="administrator" />
   <!-- Participant id 3 has no questionnaire_participant entry -->
 
   <question_answer id="1" questionnaire_participant_id="1" question_name="q1" active="true" />

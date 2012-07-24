@@ -57,13 +57,14 @@ public class UnlockInterviewPanelTest {
 
     u.setFirstName("FirstName");
     u.setLastName("LastName");
+    u.setLogin(u.getFirstName());
   }
 
   // @Test
   // This test is commented due to the fact that the panel redirects to the InterviewPage. It is a difficult page to
   // render because it has so many dependencies...
   public void testUnlock() {
-    expect(interviewManager.getInterviewer(p)).andReturn(u).once();
+    expect(interviewManager.getInterviewer(p)).andReturn(u.getLogin()).once();
     expect(interviewManager.overrideInterview(p)).andReturn(null).once();
     EasyMock.replay(interviewManager);
 
@@ -84,7 +85,7 @@ public class UnlockInterviewPanelTest {
   @Test
   public void testCancelUnlock() {
     // We expect the updateParticipant method to be called once
-    expect(interviewManager.getInterviewer(p)).andReturn(u).once();
+    expect(interviewManager.getInterviewer(p)).andReturn(u.getLogin()).once();
     EasyMock.replay(interviewManager);
 
     tester.startPanel(new TestPanelSource() {

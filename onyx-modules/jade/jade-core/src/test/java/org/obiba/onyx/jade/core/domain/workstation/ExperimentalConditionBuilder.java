@@ -50,6 +50,7 @@ public class ExperimentalConditionBuilder {
     User user = new User();
     user.setFirstName(firstName);
     user.setLastName(lastName);
+    user.setLogin(firstName);
     this.user = user;
     return this;
   }
@@ -77,7 +78,7 @@ public class ExperimentalConditionBuilder {
     ExperimentalCondition ec = new ExperimentalCondition();
     ec.setName(name);
     ec.setTime(time);
-    ec.setUser(user);
+    ec.setUserName(user.getLogin());
     ec.setWorkstation(workstation);
     ec.setExported(exported);
     ec.setExperimentalConditionValues(experimentalConditionValues);

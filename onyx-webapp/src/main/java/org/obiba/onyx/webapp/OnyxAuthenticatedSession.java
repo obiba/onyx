@@ -76,6 +76,10 @@ public final class OnyxAuthenticatedSession extends WebSession {
     return (userModel != null) ? null : AuthenticateErrorCode.SIGNIN_ERROR;
   }
 
+  public final boolean authenticate(final String password) {
+    return getUser().getPassword().equals(User.digest(password));
+  }
+
   /**
    * @return true if user is signed in
    */

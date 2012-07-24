@@ -114,8 +114,8 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
   private Set<VariableValueSource> createTimeAndContraindication(String prefix, InstrumentType instrumentType) {
     BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
     delegateFactory.setPrefix(prefix);
-    delegateFactory.setProperties(ImmutableSet.of("user.login", "timeStart", "timeEnd", "otherContraindication"));
-    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+    delegateFactory.setProperties(ImmutableSet.of("userName", "timeStart", "timeEnd", "otherContraindication"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources();
@@ -187,8 +187,8 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
     BeanVariableValueSourceFactory<Measure> delegateFactory = new BeanVariableValueSourceFactory<Measure>("Participant", Measure.class);
     delegateFactory.setPrefix(measurePrefix);
     delegateFactory.setOccurrenceGroup(MEASURE);
-    delegateFactory.setProperties(ImmutableSet.of("user.login", "time", "instrumentBarcode"));
-    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+    delegateFactory.setProperties(ImmutableSet.of("userName", "time", "instrumentBarcode"));
+    delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 
     return delegateFactory.createSources();

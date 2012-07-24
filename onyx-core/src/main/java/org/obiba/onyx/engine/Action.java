@@ -27,7 +27,6 @@ import javax.persistence.TemporalType;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageTransition;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.state.StageState;
 
 /**
@@ -42,9 +41,7 @@ public class Action extends AbstractEntity {
 
   private static final long serialVersionUID = -943609521870150739L;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "user_id")
-  private User user;
+  private String userName;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "interview_id")
@@ -84,12 +81,12 @@ public class Action extends AbstractEntity {
     this.actionDefinitionCode = code;
   }
 
-  public final User getUser() {
-    return user;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
-  public final void setUser(User user) {
-    this.user = user;
+  public String getUserName() {
+    return userName;
   }
 
   public final Interview getInterview() {
@@ -130,8 +127,8 @@ public class Action extends AbstractEntity {
   /**
    * Returns the action's "from" state.
    * 
-   * This is a <em>derived</em> attribute. The action's "from" state is that of the associated stage transition with
-   * the same stage as the action.
+   * This is a <em>derived</em> attribute. The action's "from" state is that of the associated stage transition with the
+   * same stage as the action.
    * 
    * @return action's "from" state
    * @see {@link org.obiba.onyx.core.domain.stage.StageTransition StageTransition}

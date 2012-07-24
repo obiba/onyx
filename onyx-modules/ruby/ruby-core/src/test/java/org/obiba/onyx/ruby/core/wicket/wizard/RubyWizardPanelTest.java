@@ -235,7 +235,7 @@ public class RubyWizardPanelTest {
     user.setId(id);
     user.setFirstName(firstName);
     user.setLastName(lastName);
-
+    user.setLogin(user.getFirstName());
     return user;
   }
 
@@ -297,7 +297,7 @@ public class RubyWizardPanelTest {
   private void recordAndReplayCommonExpectations(boolean hasObservedContraindications, boolean hasAskedContraindications) {
     expect(userSessionServiceMock.getLocale()).andReturn(enLocale).anyTimes();
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
-    expect(activeInterviewServiceMock.getOperator()).andReturn(user).anyTimes();
+    expect(activeInterviewServiceMock.getOperator()).andReturn(user.getLogin()).anyTimes();
     expect(activeInterviewServiceMock.getInterview()).andReturn(interview).anyTimes();
     expect(activeTubeRegistrationServiceMock.getRegisteredTubeCount()).andReturn(0).anyTimes();
     expect(activeTubeRegistrationServiceMock.getExpectedTubeCount()).andReturn(0).anyTimes();

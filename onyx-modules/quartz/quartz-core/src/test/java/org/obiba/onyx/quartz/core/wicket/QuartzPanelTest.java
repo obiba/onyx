@@ -101,7 +101,7 @@ public class QuartzPanelTest {
     final Questionnaire questionnaire = createQuestionnaire();
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant()).times(2);
     expect(activeInterviewServiceMock.getInterview()).andReturn(newTestInterview()).anyTimes();
-    expect(activeInterviewServiceMock.getOperator()).andReturn(newTestUser()).anyTimes();
+    expect(activeInterviewServiceMock.getOperator()).andReturn(newTestUser().getLogin()).anyTimes();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     // calls for the label and description properties in LanguageSelectorPanel
@@ -180,6 +180,7 @@ public class QuartzPanelTest {
     u.setId(1);
     u.setLastName("Administrator");
     u.setFirstName("Onyx");
+    u.setLogin(u.getFirstName());
     return u;
   }
 

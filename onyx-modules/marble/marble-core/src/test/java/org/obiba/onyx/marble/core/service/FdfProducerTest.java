@@ -26,8 +26,8 @@ import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.springframework.core.io.ClassPathResource;
 
-import com.lowagie.text.pdf.FdfReader;
 import com.lowagie.text.pdf.AcroFields.Item;
+import com.lowagie.text.pdf.FdfReader;
 
 /**
  * 
@@ -67,7 +67,7 @@ public class FdfProducerTest {
   public void something() throws IOException {
     EasyMock.expect(consentService.getConsent()).andReturn(consent);
     EasyMock.expect(interviewService.getInterview()).andReturn(interview);
-    EasyMock.expect(interviewService.getOperator()).andReturn(user);
+    EasyMock.expect(interviewService.getOperator()).andReturn(user.getLogin());
     EasyMock.expect(interviewService.getParticipant()).andReturn(participant);
     EasyMock.replay(consentService, interviewService);
 

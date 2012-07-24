@@ -129,7 +129,7 @@ public class AssignCodeToParticipantPanel extends Panel {
     }
 
     public void onSubmit(Participant participant) {
-      participantService.assignCodeToParticipant(participant, participant.getBarcode(), (String) receptionCommentModel.getObject(), userSessionService.getUser());
+      participantService.assignCodeToParticipant(participant, participant.getBarcode(), (String) receptionCommentModel.getObject(), userSessionService.getUserName());
     }
 
     private void addGenerateIdButton(final TextField participantCode) {

@@ -197,8 +197,8 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
       // Create sources for ExperimentalCondition time and user.
       BeanVariableValueSourceFactory<ExperimentalCondition> factory = new BeanVariableValueSourceFactory<ExperimentalCondition>(WORKSTATION, ExperimentalCondition.class);
       factory.setPrefix(experimentalConditionLog.getName());
-      factory.setProperties(ImmutableSet.of("time", "user.login"));
-      factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("user.login", "user").build());
+      factory.setProperties(ImmutableSet.of("time", "userName"));
+      factory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
       factory.setOccurrenceGroup(experimentalConditionLog.getName());
 
       sources.addAll(factory.createSources());

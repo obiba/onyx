@@ -22,8 +22,8 @@
    participant_id="1" 
    start_date="2009-09-30 13:59:59"/>
    
-  <action id="1" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
-  <action id="2" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_id="1"/>
+  <action id="1" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_name="administrator"/>
+  <action id="2" action_definition_code="test" type="COMMENT" date_time="2008-09-01 09:00:00" interview_id="1" user_name="administrator"/>
   
   <stage_transition id="1" event="test" from_state="Ready" to_state="InProgress" stage="stage" action_id="1" interview_id="1" />
   <stage_transition id="2" event="test" from_state="Ready" to_state="InProgress" stage="stage" action_id="1" interview_id="1" />

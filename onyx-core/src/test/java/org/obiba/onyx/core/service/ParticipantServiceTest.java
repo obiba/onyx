@@ -104,7 +104,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     User user = persistenceManager.get(User.class, userId);
     Assert.assertNotNull(user);
 
-    participantService.assignCodeToParticipant(participant, barcode, null, user);
+    participantService.assignCodeToParticipant(participant, barcode, null, user.getLogin());
 
     // Verify that the barcode was persisted.
     participant = persistenceManager.get(Participant.class, 4l);
@@ -113,7 +113,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     // Verify that the action was persisted.
     Action template = new Action();
     template.setActionType(ActionType.START);
-    template.setUser(user);
+    template.setUserName(user.getLogin());
     template.setInterview(participant.getInterview());
     List<Action> actions = persistenceManager.match(template, new PagingClause(0));
     Assert.assertTrue(actions.size() == 1);
@@ -134,7 +134,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     User user = persistenceManager.get(User.class, userId);
     Assert.assertNotNull(user);
 
-    participantService.assignCodeToParticipant(participant, barcode, receptionComment, user);
+    participantService.assignCodeToParticipant(participant, barcode, receptionComment, user.getLogin());
 
     // Verify that the barcode was persisted.
     participant = persistenceManager.get(Participant.class, participantId);
@@ -144,7 +144,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     Action commentTemplate = new Action();
     commentTemplate.setActionType(ActionType.START);
     commentTemplate.setComment(receptionComment);
-    commentTemplate.setUser(user);
+    commentTemplate.setUserName(user.getLogin());
     commentTemplate.setInterview(participant.getInterview());
     List<Action> comments = persistenceManager.match(commentTemplate, new PagingClause(0));
     Assert.assertTrue(comments.size() == 1);
@@ -262,7 +262,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     user.setLastName("lastName");
     user.setLogin("login");
 
-    EasyMock.expect(mockUserSessionService.getUser()).andReturn(user).times(2);
+    EasyMock.expect(mockUserSessionService.getUserName()).andReturn(user.getLogin()).times(1);
     EasyMock.replay(mockUserSessionService);
 
     // Delete the participant and his data

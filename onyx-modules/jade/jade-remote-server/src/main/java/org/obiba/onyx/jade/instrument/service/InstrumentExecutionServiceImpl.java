@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,16 +51,8 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return activeInstrumentRunService.getInstrumentRun();
   }
 
-  public String getInstrumentOperator() {
-    return getInstrumentRun().getUser().getFullName();
-  }
-
   public String getInstrumentOperatorUsername() {
-    return getInstrumentRun().getUser().getLogin();
-  }
-
-  public Locale getInstrumentOperatorLocale() {
-    return getInstrumentRun().getUser().getLanguage();
+    return getInstrumentRun().getUserName();
   }
 
   public String getParticipantFirstName() {

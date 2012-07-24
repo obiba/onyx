@@ -57,7 +57,7 @@ public interface UserService {
 
   /**
    * Update the language of the specified user
-   * @param template
+   * @param user
    * @param language
    */
   public void updateUserLanguage(User user, Locale language);

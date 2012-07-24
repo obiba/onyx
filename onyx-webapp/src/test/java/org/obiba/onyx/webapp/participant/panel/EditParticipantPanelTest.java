@@ -40,7 +40,6 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.identifier.NullIdentifierSequenceProvider;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -98,7 +97,7 @@ public class EditParticipantPanelTest implements Serializable {
     // We expect the updateParticipant method to be called once
     expect(mockUserSessionService.getDateFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd")).anyTimes();
     expect(mockUserSessionService.getDatePattern()).andReturn("yyyy-MM-dd").atLeastOnce();
-    expect(mockUserSessionService.getUser()).andReturn(new User()).anyTimes();
+    expect(mockUserSessionService.getUserName()).andReturn("user").anyTimes();
     mockParticipantService.updateParticipant(p);
     expect(mockQueryService.matchOne((ApplicationConfiguration) EasyMock.anyObject())).andReturn(new ApplicationConfiguration());
 

@@ -50,7 +50,7 @@ public class ProfilePage extends BasePage {
       protected void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
         if(language == null) return;
         userSessionService.setLocale(language);
-        userService.updateUserLanguage(userSessionService.getUser(), language);
+        userService.updateUserLanguage(userService.getUserWithLogin(userSessionService.getUserName()), language);
         setResponsePage(getPage());
       }
 

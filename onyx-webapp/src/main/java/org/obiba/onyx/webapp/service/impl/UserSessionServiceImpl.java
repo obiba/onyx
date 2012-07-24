@@ -12,7 +12,9 @@ package org.obiba.onyx.webapp.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Set;
 
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.UserService;
@@ -95,8 +97,23 @@ public class UserSessionServiceImpl implements UserSessionService {
     this.locale = locale;
   }
 
+  @Override
+  public boolean authenticate(String password) {
+    return OnyxAuthenticatedSession.get().authenticate(password);
+  }
+
   public User getUser() {
     return userService.getUserWithLogin(userLogin);
+  }
+
+  @Override
+  public String getUserName() {
+    return userLogin;
+  }
+
+  @Override
+  public Set<Role> getRoles() {
+    return getUser().getRoles();
   }
 
   public String getSessionId() {

@@ -57,9 +57,11 @@ public class DefaultInterviewManagerImplTest {
 
     firstUser = new User();
     firstUser.setId(new Long(1));
+    firstUser.setLogin("firstUser");
 
     secondUser = new User();
     secondUser.setId(new Long(2));
+    secondUser.setLogin("secondUser");
   }
 
   @Test
@@ -91,7 +93,6 @@ public class DefaultInterviewManagerImplTest {
 
     expectObtainInterview(firstUser, firstParticipant);
 
-    EasyMock.expect(mockPersistenceManager.get(User.class, new Long(1))).andReturn(firstUser);
     EasyMock.expect(mockPersistenceManager.get(Participant.class, new Long(1))).andReturn(firstParticipant).anyTimes();
     EasyMock.expect(mockPersistenceManager.save((Interview) EasyMock.anyObject())).andStubReturn(new Interview());
     EasyMock.replay(mockUserSessionService, mockPersistenceManager);
@@ -151,18 +152,16 @@ public class DefaultInterviewManagerImplTest {
     Assert.assertTrue(interviewManagerImpl.isInterviewAvailable(firstParticipant));
 
     expectObtainInterview(firstUser, firstParticipant);
-
-    EasyMock.expect(mockPersistenceManager.get(User.class, new Long(1))).andReturn(firstUser);
     EasyMock.replay(mockUserSessionService, mockPersistenceManager);
 
     Interview interview = interviewManagerImpl.obtainInterview(firstParticipant);
     Assert.assertNotNull(interview);
 
-    User interviewer = interviewManagerImpl.getInterviewer(firstParticipant);
+    String interviewer = interviewManagerImpl.getInterviewer(firstParticipant);
     Assert.assertNotNull(interviewer);
-    Assert.assertEquals(firstUser, interviewer);
+    Assert.assertEquals(firstUser.getLogin(), interviewer);
 
-    EasyMock.verify(mockUserSessionService, mockPersistenceManager);
+    EasyMock.verify(mockUserSessionService);
   }
 
   @Test
@@ -177,7 +176,7 @@ public class DefaultInterviewManagerImplTest {
 
     // Record expected behaviour.
     EasyMock.expect(mockUserSessionService.getSessionId()).andReturn("firstSession").anyTimes();
-    EasyMock.expect(mockUserSessionService.getUser()).andReturn(firstUser).anyTimes();
+    EasyMock.expect(mockUserSessionService.getUserName()).andReturn(firstUser.getLogin()).anyTimes();
     EasyMock.expect(mockPersistenceManager.get(User.class, 1l)).andReturn(firstUser).anyTimes();
     EasyMock.expect(mockPersistenceManager.get(Participant.class, 1l)).andReturn(firstParticipant).anyTimes();
     EasyMock.expect(mockPersistenceManager.save(firstInterview)).andReturn(firstInterview);
@@ -212,7 +211,7 @@ public class DefaultInterviewManagerImplTest {
 
     // Record expected behaviour.
     EasyMock.expect(mockUserSessionService.getSessionId()).andReturn("firstSession").anyTimes();
-    EasyMock.expect(mockUserSessionService.getUser()).andReturn(firstUser).anyTimes();
+    EasyMock.expect(mockUserSessionService.getUserName()).andReturn(firstUser.getLogin()).anyTimes();
     EasyMock.expect(mockPersistenceManager.get(User.class, 1l)).andReturn(firstUser).anyTimes();
     EasyMock.expect(mockPersistenceManager.get(Participant.class, 1l)).andReturn(firstParticipant).anyTimes();
     EasyMock.replay(mockUserSessionService, mockPersistenceManager);
@@ -237,7 +236,7 @@ public class DefaultInterviewManagerImplTest {
    */
   private Capture<Interview> expectObtainInterview(User user, final Participant participant) {
     EasyMock.expect(mockUserSessionService.getSessionId()).andReturn("firstSession").anyTimes();
-    EasyMock.expect(mockUserSessionService.getUser()).andReturn(user).anyTimes();
+    EasyMock.expect(mockUserSessionService.getUserName()).andReturn(user.getLogin()).anyTimes();
 
     final Capture<Interview> interviewCapture = new Capture<Interview>();
 

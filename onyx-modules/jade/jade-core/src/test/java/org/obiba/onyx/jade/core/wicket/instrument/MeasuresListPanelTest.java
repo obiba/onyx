@@ -120,7 +120,8 @@ public class MeasuresListPanelTest implements Serializable {
     User user = new User();
     user.setFirstName("test");
     user.setLastName("test");
-    measure.setUser(user);
+    user.setLogin("test");
+    measure.setUserName(user.getLogin());
     measure.setStatus(MeasureStatus.VALID);
     instrumentRun.getMeasures().add(measure);
   }

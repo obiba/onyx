@@ -234,7 +234,7 @@ public class CommentsModalPanelTest implements Serializable {
     Action commentAction = new Action();
 
     commentAction.setActionType(ActionType.COMMENT);
-    commentAction.setUser(user);
+    commentAction.setUserName(user.getLogin());
     commentAction.setInterview(interview);
     commentAction.setDateTime(date);
     commentAction.setComment(comment);
@@ -246,7 +246,7 @@ public class CommentsModalPanelTest implements Serializable {
     Action commentAction = new Action();
 
     commentAction.setActionType(type);
-    commentAction.setUser(user);
+    commentAction.setUserName(user.getLogin());
     commentAction.setInterview(interview);
     commentAction.setStage(stage.getName());
     commentAction.setDateTime(date);

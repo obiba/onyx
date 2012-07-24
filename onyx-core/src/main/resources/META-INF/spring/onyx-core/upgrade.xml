@@ -75,7 +75,17 @@
         </bean>
         <bean parent="updateOnyxSchema">
           <property name="appliesTo" value="1.9.0" />
-        </bean>        
+        </bean>
+        <bean class="org.obiba.onyx.runtime.upgrade.Upgrade_1_9_0">
+          <property name="description" value="Replace user foreign keys by user name." />
+          <property name="appliesTo" value="1.9.0" />
+          <property name="dataSource" ref="dataSource" />
+        </bean>
+        <bean class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_9_0">
+          <property name="description" value="Remove user foreign keys." />
+          <property name="appliesTo" value="1.9.0" />
+          <property name="dataSource" ref="dataSource" />
+        </bean>
       </list>
     </property>
     <property name="stepListeners">

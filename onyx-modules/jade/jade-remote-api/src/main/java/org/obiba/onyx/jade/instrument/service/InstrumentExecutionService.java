@@ -11,7 +11,6 @@ package org.obiba.onyx.jade.instrument.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,11 +29,7 @@ public interface InstrumentExecutionService {
    * 
    * @return the instrument's operator name.
    */
-  public String getInstrumentOperator();
-
   public String getInstrumentOperatorUsername();
-
-  public Locale getInstrumentOperatorLocale();
 
   public String getParticipantID();
 

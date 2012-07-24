@@ -118,7 +118,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     // TODO: Check the instrumentRun's instrumentType name.
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     Assert.assertNotNull(instrumentRun);
-    Assert.assertEquals(user.getId(), instrumentRun.getUser().getId());
+    Assert.assertEquals(user.getLogin(), instrumentRun.getUserName());
     Assert.assertEquals(participant.getId(), activeInstrumentRunService.getParticipant().getId());
     Assert.assertEquals(InstrumentRunStatus.IN_PROGRESS, instrumentRun.getStatus());
     Assert.assertNotNull(instrumentRun.getTimeStart());
@@ -629,7 +629,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
   private InstrumentRun startInstrumentRun(Participant participant, InstrumentType instrumentType) {
     // Record mock expectations.
-    expect(userSessionService.getUser()).andReturn(user);
+    expect(userSessionService.getUserName()).andReturn(user.getLogin());
     expect(userSessionService.getWorkstation()).andReturn(WORKSTATION);
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
 

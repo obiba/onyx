@@ -11,8 +11,9 @@ package org.obiba.onyx.core.service;
 
 import java.text.DateFormat;
 import java.util.Locale;
+import java.util.Set;
 
-import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.domain.user.Role;
 
 public interface UserSessionService {
   //
@@ -29,11 +30,15 @@ public interface UserSessionService {
   // Methods
   //
 
+  public boolean authenticate(String password);
+
   public Locale getLocale();
 
   public void setLocale(Locale locale);
 
-  public User getUser();
+  public String getUserName();
+
+  public Set<Role> getRoles();
 
   public String getSessionId();
 

@@ -14,7 +14,6 @@ import java.util.List;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -37,10 +36,10 @@ public interface ActiveInterviewService {
   public Interview getInterview();
 
   /**
-   * Returns the {@code User} that is administrating this interview.
-   * @return the {@code User} administrating this interview.
+   * Returns the user name that is administrating this interview.
+   * @return the user name administrating this interview.
    */
-  public User getOperator();
+  public String getOperator();
 
   /**
    * Get the stage execution object for given stage, in the interview of current participant.

@@ -232,9 +232,7 @@ public class OnyxDataExport {
     }
   }
 
-  private
-      DatasourceFactory
-      getDatasourceFactory(KeyProvider pkProvider, final OnyxDataExportDestination destination, Iterable<ValueTable> tables, File outputFile) {
+  private DatasourceFactory getDatasourceFactory(KeyProvider pkProvider, final OnyxDataExportDestination destination, Iterable<ValueTable> tables, File outputFile) {
 
     // Default export format
     String format = XmlDatasourceFactoryProvider.FORMAT;
@@ -291,7 +289,7 @@ public class OnyxDataExport {
     captureEndDate = (captureEndDate != null) ? captureEndDate : exportDate;
 
     // Write an entry in ExportLog to flag the set of entities as exported.
-    ExportLog exportLog = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUser().getLogin()).build();
+    ExportLog exportLog = ExportLog.Builder.newLog().type(valueSet.getVariableEntity().getType()).identifier(valueSet.getVariableEntity().getIdentifier()).start(captureStartDate).end(captureEndDate).destination(destination.getName() + '.' + destinationTableName).exportDate(exportDate).user(userSessionService.getUserName()).build();
     exportLogService.save(exportLog);
   }
 

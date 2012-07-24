@@ -44,7 +44,7 @@ public class ExperimentalConditionSorter {
       ecMap.put(EXPERIMENTAL_CONDITION_KEY, ec);
       ecMap.put("name", ec.getName());
       ecMap.put("time", ec.getTime());
-      ecMap.put("user", ec.getUser().getFullName());
+      ecMap.put("user", ec.getUserName());
       ecMap.put("workstation", ec.getWorkstation());
       ecMap.put("exported", ec.getExported());
       for(ExperimentalConditionValue ecv : ec.getExperimentalConditionValues()) {
