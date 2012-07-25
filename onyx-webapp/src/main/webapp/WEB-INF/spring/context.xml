@@ -15,6 +15,9 @@
 
   <!-- Import Hibernate's context -->
   <import resource="hibernate.xml" />
+  
+  <!-- Import Shiro's context -->
+  <import resource="shiro.xml" />
 
   <!-- Import Onyx's context -->
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />

@@ -53,7 +53,7 @@ public class UserSessionServiceImpl implements UserSessionService {
   public void initialize() {
     OnyxAuthenticatedSession session = OnyxAuthenticatedSession.get();
 
-    userLogin = session.getUser().getLogin();
+    userLogin = session.getUserName();
     sessionId = session.getId();
     locale = session.getLocale();
   }

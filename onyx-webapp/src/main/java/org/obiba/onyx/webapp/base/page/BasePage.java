@@ -121,7 +121,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
         headerPanel = new HeaderPanel("header");
         menuBar = new MenuBar("menuBar");
 
-        userFullName.setDefaultModel(new Model(OnyxAuthenticatedSession.get().getUser().getFullName() + " - "));
+        userFullName.setDefaultModel(new Model(OnyxAuthenticatedSession.get().getUserName()));
         currentTime.setDefaultModel(DateModelUtils.getDateTimeModel(new Model<DateFormat>(new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss", getLocale())), new Model<Date>(new Date())));
         battery = new BatteryLevelIndicator("battery");
       }

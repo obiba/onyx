@@ -1,0 +1,20 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <property name="securityManager" ref="securityManager"/>
+  </bean>
+  
+  <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    <!-- Single realm app. If you have multiple realms, use the 'realms' property instead. -->
+    <property name="realm" ref="onyxRealm"/>
+  </bean>
+  <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+  
+  <!-- Define the Shiro Realm implementation -->
+  <bean id="onyxRealm" class="org.obiba.onyx.webapp.authentication.OnyxRealm">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="queryService" ref="persistenceManager"/>
+  </bean>
+
+</beans>

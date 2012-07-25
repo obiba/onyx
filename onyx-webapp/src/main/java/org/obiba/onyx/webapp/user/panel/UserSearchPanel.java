@@ -179,10 +179,9 @@ public class UserSearchPanel extends Panel {
 
           }, new StringResourceModel("Status." + getUser(rowModel).getStatus(), UserSearchPanel.this, null));
 
-          User currentUser = OnyxAuthenticatedSession.get().getUser();
           // If this line is the current user, display a label instead of a toggle link
-          if(currentUser.getLogin().equals(getUser(rowModel).getLogin())) {
-            cellItem.add(new Label(componentId, new StringResourceModel("Status." + currentUser.getStatus(), UserSearchPanel.this, null)));
+          if(OnyxAuthenticatedSession.get().getUserName().equals(getUser(rowModel).getLogin())) {
+            cellItem.add(new Label(componentId, new StringResourceModel("Status.ACTIVE", UserSearchPanel.this, null)));
           } else {
             cellItem.add(statusLink);
           }
@@ -208,7 +207,7 @@ public class UserSearchPanel extends Panel {
               userService.deleteUser(getUser(rowModel));
             }
           };
-          if(OnyxAuthenticatedSession.get().getUser().getLogin().equals(getUser(rowModel).getLogin())) deleteLink.setVisible(false);
+          if(OnyxAuthenticatedSession.get().getUserName().equals(getUser(rowModel).getLogin())) deleteLink.setVisible(false);
           cellItem.add(deleteLink);
         }
       });

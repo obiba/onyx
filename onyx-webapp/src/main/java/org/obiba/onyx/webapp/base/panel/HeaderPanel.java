@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.administration.page.AdministrationPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
@@ -39,7 +38,7 @@ public class HeaderPanel extends Panel {
 
       @Override
       public void onClick() {
-        OnyxAuthenticatedSession.get().getUser();
+        // OnyxAuthenticatedSession.get().getUser();
         setResponsePage(new ProfilePage(getPage().getPageMapEntry().getNumericId()));
       }
     });
@@ -68,9 +67,9 @@ public class HeaderPanel extends Panel {
 
   private class HeaderPanelModel implements Serializable {
 
-    public User getUserLoggedIn() {
-      return OnyxAuthenticatedSession.get().getUser();
-    }
+    // public User getUserLoggedIn() {
+    // return OnyxAuthenticatedSession.get().getUser();
+    // }
 
     public ApplicationConfiguration getConfig() {
       ApplicationConfiguration template = new ApplicationConfiguration();
@@ -93,7 +92,7 @@ public class HeaderPanel extends Panel {
 
     @Override
     public void onClick() {
-      OnyxAuthenticatedSession.get().getUser();
+      // OnyxAuthenticatedSession.get().getUser();
       setResponsePage(AdministrationPage.class);
     }
 
