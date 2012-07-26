@@ -14,7 +14,6 @@
   <!-- Define the Shiro Realm implementation -->
   <bean id="onyxRealm" class="org.obiba.onyx.webapp.authentication.OnyxRealm">
     <property name="dataSource" ref="dataSource"/>
-    <property name="queryService" ref="persistenceManager"/>
   </bean>
 
 </beans>
