@@ -2,18 +2,21 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-    <property name="securityManager" ref="securityManager"/>
+    <property name="securityManager" ref="securityManagerFactory"/>
   </bean>
   
-  <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-    <!-- Single realm app. If you have multiple realms, use the 'realms' property instead. -->
-    <property name="realm" ref="onyxRealm"/>
-  </bean>
   <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
   
-  <!-- Define the Shiro Realm implementation -->
+  <!-- Shiro realms will be auto wired -->
+  <bean id="securityManagerFactory" class="org.obiba.onyx.webapp.authentication.OnyxSecurityManagerFactory" autowire="byType">
+    <property name="iniPath" value="${org.obiba.onyx.authentication.shiro.ini}" />
+    <property name="rolesMap" value="${org.obiba.onyx.authentication.rolesMap}" />
+  </bean>
+  
+  <!-- Define the Onyx Realm implementation -->
   <bean id="onyxRealm" class="org.obiba.onyx.webapp.authentication.OnyxRealm">
     <property name="dataSource" ref="dataSource"/>
+    <property name="passwordHashAlgorithm" value="${org.obiba.onyx.password.hash.algorithm}"/>
   </bean>
 
 </beans>
