@@ -13,14 +13,17 @@ import java.util.HashMap;
 
 import javax.sql.DataSource;
 
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.runtime.Version;
 import org.obiba.runtime.upgrade.AbstractUpgradeStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.google.common.collect.ImmutableMap;
+
 /**
- * Add the QUESTIONNAIRE_EDITOR role if it doesn't exist.
+ * Add the PARTICIPANT_RECEPTIONIST role if it doesn't exist and add user names.
  */
 public class Upgrade_1_9_0 extends AbstractUpgradeStep {
 
@@ -30,6 +33,10 @@ public class Upgrade_1_9_0 extends AbstractUpgradeStep {
 
   private static final String[] TABLES = { "action", "questionnaire_participant", "instrument_run", "measure", "experimental_condition" };
 
+  private static final String ROLE_EXISTS = "SELECT count(*) FROM role WHERE name = :role";
+
+  private static final String INSERT_ROLE = "INSERT INTO role(name) VALUES(:role)";
+
   private NamedParameterJdbcTemplate jdbcTemplate;
 
   public void execute(Version currentVersion) {
@@ -38,6 +45,15 @@ public class Upgrade_1_9_0 extends AbstractUpgradeStep {
       String sql = UPDATE_USER_NAME.replace(":table", table);
       log.debug("{}", sql);
       jdbcTemplate.update(sql, new HashMap<String, String>());
+    }
+
+    log.info("Creating role {} if it doesn't exist.", Role.PARTICIPANT_RECEPTIONIST.getName());
+    int roles = jdbcTemplate.queryForInt(ROLE_EXISTS, ImmutableMap.of("role", Role.PARTICIPANT_RECEPTIONIST.getName()));
+    if(roles < 1) {
+      log.info("Inserting {} role", Role.PARTICIPANT_RECEPTIONIST.getName());
+      jdbcTemplate.update(INSERT_ROLE, ImmutableMap.of("role", Role.PARTICIPANT_RECEPTIONIST.getName()));
+    } else {
+      log.info("Role {} exists.", Role.PARTICIPANT_RECEPTIONIST.getName());
     }
   }
 

@@ -96,7 +96,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
-@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "PARTICIPANT_RECEPTIONIST", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
@@ -497,7 +497,7 @@ public class ParticipantSearchPage extends BasePage {
     }
   }
 
-  @AuthorizeActions(actions = { @AuthorizeAction(action = Action.RENDER, roles = "PARTICIPANT_MANAGER") })
+  @AuthorizeActions(actions = { @AuthorizeAction(action = Action.RENDER, roles = { "PARTICIPANT_MANAGER", "PARTICIPANT_RECEPTIONIST" }) })
   private class ActionFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
@@ -673,6 +673,7 @@ public class ParticipantSearchPage extends BasePage {
 
       };
       exportLink.add(new Label("label", new ResourceModel("Export")));
+      MetaDataRoleAuthorizationStrategy.authorize(exportLink, RENDER, "PARTICIPANT_MANAGER");
       view.add(exportLink);
 
       add(new EmptyPanel("dialog").setOutputMarkupId(true));
@@ -828,6 +829,7 @@ public class ParticipantSearchPage extends BasePage {
         }
       };
       link.add(new Label("label", new ResourceModel("Interview")));
+      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER,DATA_COLLECTION_OPERATOR");
 
       // Locked interviews can only be unlocked by a participant manager (ONYX-463)
       if(interviewIsLocked) {
@@ -852,7 +854,7 @@ public class ParticipantSearchPage extends BasePage {
         }
       };
       link.add(new Label("label", new ResourceModel("Receive")));
-      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
+      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER,PARTICIPANT_RECEPTIONIST");
       repeater.add(link);
 
       // Edit
@@ -876,7 +878,7 @@ public class ParticipantSearchPage extends BasePage {
         }
       };
       link.add(new Label("label", new ResourceModel("Edit")));
-      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
+      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER,PARTICIPANT_RECEPTIONIST");
       repeater.add(link);
 
       add(repeater);

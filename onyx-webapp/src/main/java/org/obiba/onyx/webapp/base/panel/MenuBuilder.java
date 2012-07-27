@@ -17,6 +17,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.Session;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.behavior.AbstractBehavior;
@@ -66,8 +67,9 @@ public class MenuBuilder {
     if(OnyxAuthenticatedSession.get().isSignedIn()) {
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
       menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
-      if(hasWorkstationWidget(WorkstationPage.WORKSTATION_CONTENT)) {
-        menuItems.add(new MenuItem(WorkstationPage.class, "Workstation"));
+      if(hasWorkstationWidget(WorkstationPage.WORKSTATION_CONTENT) && Session.get().getAuthorizationStrategy().isInstantiationAuthorized(WorkstationPage.class)) {
+        MenuItem item = new MenuItem(WorkstationPage.class, "Workstation");
+        menuItems.add(item);
       }
     }
 
@@ -168,7 +170,8 @@ public class MenuBuilder {
     initialiseModuleRegistry(moduleRegistry);
   }
 
-  private static void initialiseModuleRegistry(@SuppressWarnings("hiding") ModuleRegistry moduleRegistry) {
+  private static void initialiseModuleRegistry(@SuppressWarnings("hiding")
+  ModuleRegistry moduleRegistry) {
     MenuBuilder.moduleRegistry = moduleRegistry;
   }
 }

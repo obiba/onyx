@@ -19,7 +19,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantFormPanel;
 
-@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
+@AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "PARTICIPANT_RECEPTIONIST", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantReceptionPage extends BasePage {
 
   public ParticipantReceptionPage(IModel<Participant> participantModel, Page sourcePage) {
