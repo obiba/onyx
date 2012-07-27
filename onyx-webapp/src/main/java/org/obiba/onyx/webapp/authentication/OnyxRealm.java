@@ -21,6 +21,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.realm.jdbc.JdbcRealm;
 import org.apache.shiro.util.JdbcUtils;
 import org.obiba.onyx.core.domain.user.Status;
@@ -37,6 +38,7 @@ public class OnyxRealm extends JdbcRealm {
     super();
     setAuthenticationQuery("select password from user where login = ? and deleted = 0");
     setUserRolesQuery("select r.name from user_roles as ur, user as u, role as r where u.login = ? and u.id = ur.user_id and ur.role_id = r.id");
+    setCacheManager(new MemoryConstrainedCacheManager());
   }
 
   public void setPasswordHashAlgorithm(String algo) {
