@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
+import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.administration.page.AdministrationPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
@@ -27,6 +28,9 @@ public class HeaderPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private UserService userService;
 
   HeaderPanelModel model = new HeaderPanelModel();
 
@@ -41,18 +45,14 @@ public class HeaderPanel extends Panel {
         // OnyxAuthenticatedSession.get().getUser();
         setResponsePage(new ProfilePage(getPage().getPageMapEntry().getNumericId()));
       }
+
+      @Override
+      public boolean isEnabled() {
+        return userService.getUserWithLogin(OnyxAuthenticatedSession.get().getUserName()) != null;
+      }
     });
 
     add(new AdminLink("admin"));
-
-    Link<?> helpLink = new Link("help") {
-
-      @Override
-      public void onClick() {
-      }
-    };
-    helpLink.setEnabled(false);
-    add(helpLink);
 
     add(new Link("quit") {
 
@@ -67,10 +67,6 @@ public class HeaderPanel extends Panel {
 
   private class HeaderPanelModel implements Serializable {
 
-    // public User getUserLoggedIn() {
-    // return OnyxAuthenticatedSession.get().getUser();
-    // }
-
     public ApplicationConfiguration getConfig() {
       ApplicationConfiguration template = new ApplicationConfiguration();
       // TODO not supposed to happen, but test environment was broken
@@ -78,7 +74,6 @@ public class HeaderPanel extends Panel {
         return conf;
       }
       return null;
-      // return ( queryService.matchOne( template ) );
     }
 
   }
@@ -92,7 +87,6 @@ public class HeaderPanel extends Panel {
 
     @Override
     public void onClick() {
-      // OnyxAuthenticatedSession.get().getUser();
       setResponsePage(AdministrationPage.class);
     }
 
