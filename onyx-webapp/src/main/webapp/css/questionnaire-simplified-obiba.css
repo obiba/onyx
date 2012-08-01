@@ -480,8 +480,15 @@ div.form-button {
 
 .obiba-quartz-nav-admin {
 	position: fixed;
-	top: 10px;
+	top: 4px;
 	right: 15px;
+}
+
+.obiba-quartz-questionnaire-name {
+  font-size: 14px;
+  position: fixed;
+  right: 160px;
+  top: 15px;
 }
 
 .form-button input.obiba-nav-prev {

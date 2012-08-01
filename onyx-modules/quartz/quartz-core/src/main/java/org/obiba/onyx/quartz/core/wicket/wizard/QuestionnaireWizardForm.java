@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -89,7 +89,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   // Constructors
   //
 
-  public QuestionnaireWizardForm(String id, IModel questionnaireModel) {
+  public QuestionnaireWizardForm(String id, IModel<Questionnaire> questionnaireModel) {
     super(id, questionnaireModel);
 
     // Add Interrupt button.
@@ -106,6 +106,9 @@ public class QuestionnaireWizardForm extends WizardForm {
     add(progressBar);
 
     createModalAdministrationPanel();
+
+    Questionnaire questionnaire = questionnaireModel.getObject();
+    add(new Label("questionnaireInfo", questionnaire.getName() + " " + questionnaire.getVersion()));
 
     // admin button
     AjaxLink link = new AjaxLink("adminLink") {
@@ -184,7 +187,9 @@ public class QuestionnaireWizardForm extends WizardForm {
 
           public void onYesButtonClicked(AjaxRequestTarget target1) {
             adminWindow.setStatus(Status.CLOSED);
-            if(adminWindow.getCloseButtonCallback() == null || (adminWindow.getCloseButtonCallback() != null && adminWindow.getCloseButtonCallback().onCloseButtonClicked(target1, adminWindow.getStatus()))) adminWindow.close(target1);
+            if(adminWindow.getCloseButtonCallback() == null || (adminWindow
+                .getCloseButtonCallback() != null && adminWindow.getCloseButtonCallback()
+                .onCloseButtonClicked(target1, adminWindow.getStatus()))) adminWindow.close(target1);
           }
 
         });
@@ -207,20 +212,20 @@ public class QuestionnaireWizardForm extends WizardForm {
       @SuppressWarnings("incomplete-switch")
       public void onClose(AjaxRequestTarget target, Status status) {
         switch(status) {
-        case OTHER:
-          onInterrupt(target);
-          break;
-        case OTHER2: // begin
-          onBegin(target);
-          break;
-        case OTHER3: // end
-          onEnd(target);
-          break;
-        case ERROR:
-          onError(target, QuestionnaireWizardForm.this);
-          break;
-        case CLOSED:
-          onCancelClick(target);
+          case OTHER:
+            onInterrupt(target);
+            break;
+          case OTHER2: // begin
+            onBegin(target);
+            break;
+          case OTHER3: // end
+            onEnd(target);
+            break;
+          case ERROR:
+            onError(target, QuestionnaireWizardForm.this);
+            break;
+          case CLOSED:
+            onCancelClick(target);
         }
       }
     });
@@ -306,7 +311,8 @@ public class QuestionnaireWizardForm extends WizardForm {
       }
 
     };
-    link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", QuestionnaireWizardForm.this, null)));
+    link.add(
+        new AttributeModifier("value", true, new StringResourceModel("Interrupt", QuestionnaireWizardForm.this, null)));
 
     return link;
   }
@@ -316,7 +322,8 @@ public class QuestionnaireWizardForm extends WizardForm {
     if(showLanguageSelectionStep()) {
       startStep = languageSelectionStep;
     } else {
-      activeQuestionnaireAdministrationService.start(activeInterviewService.getParticipant(), activeQuestionnaireAdministrationService.getLanguage());
+      activeQuestionnaireAdministrationService
+          .start(activeInterviewService.getParticipant(), activeQuestionnaireAdministrationService.getLanguage());
       startStep = getFirstPageStep();
     }
     return startStep;
@@ -353,7 +360,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   /**
    * Returns the first page step.
-   * 
+   *
    * @return first page step (or <code>null</code> if the questionnaire has no pages)
    */
   public WizardStepPanel getFirstPageStep() {
@@ -365,7 +372,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   /**
    * Returns the last page step.
-   * 
+   *
    * @return last page step (or <code>null</code> if the questionnaire has no pages)
    */
   public WizardStepPanel getLastPageStep() {
@@ -379,10 +386,10 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   /**
    * Returns the previous step.
-   * 
+   * <p/>
    * If the current page step is the first page step, returns the language selection step. Otherwise, the previous page
    * step is returned.
-   * 
+   *
    * @return previous step
    */
   public WizardStepPanel getPreviousStep() {
@@ -401,10 +408,10 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   /**
    * Returns the next step.
-   * 
+   * <p/>
    * If the current page step is the last page step, returns the conclusion step. Otherwise, the next page step is
    * returned.
-   * 
+   *
    * @return next step
    */
   public WizardStepPanel getNextStep() {
@@ -466,7 +473,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   /**
    * Updates the progress bar to display the percentage completed for this Questionnaire Wizard.
-   * 
+   *
    * @param form
    */
   public void updateProgressBar(WizardForm form) {
@@ -481,7 +488,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   /**
    * Calculates the percentage completed for this Questionnaire Wizard.
-   * 
+   *
    * @return The percentage completed.
    */
   private int calculatePercentageCompleted() {

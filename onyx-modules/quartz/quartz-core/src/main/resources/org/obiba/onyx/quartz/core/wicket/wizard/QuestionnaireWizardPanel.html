@@ -7,14 +7,17 @@
 			<span wicket:id="step" />
 		</div>
 		<div class="form-button" id="wizardFooter">
+      <span class="obiba-nav-left">
+        <span wicket:id="questionnaireInfo" class="obiba-quartz-questionnaire-name" />
+      </span>
 			<span class="obiba-nav-right">
-			    <input type="button" class="obiba-button obiba-quartz-nav-admin" wicket:id="adminLink"/>
+			  <input type="button" class="obiba-button obiba-quartz-nav-admin" wicket:id="adminLink"/>
 				<input id="previousButton" type="button" class="obiba-button obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
 				<input id="nextButton" type="button" class="obiba-button obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
 				<input type="button" class="obiba-button obiba-nav-finish" wicket:id="finish"/>
 			</span>
 			<span style="display: none;">
-			    <input type="button" wicket:id="beginLink" />
+			  <input type="button" wicket:id="beginLink" />
 				<input type="button" wicket:id="endLink" />
 				<input type="button" class="obiba-button obiba-nav-interrupt" wicket:id="interrupt"/>
 				<input type="button" class="obiba-button obiba-nav-cancel" wicket:id="cancelLink"/>
