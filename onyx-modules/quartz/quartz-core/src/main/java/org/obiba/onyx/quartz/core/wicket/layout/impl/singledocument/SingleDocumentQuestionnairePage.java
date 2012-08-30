@@ -1,8 +1,8 @@
 /***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  **********************************************************************************************************************/
@@ -17,7 +17,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
@@ -33,9 +32,11 @@ public class SingleDocumentQuestionnairePage extends WebPage {
   public SingleDocumentQuestionnairePage(IModel<Questionnaire> model) {
     super(model);
 
-    add(new Label("title", new PropertyModel<String>(model, "name")));
+    String label = model.getObject().getName() + " " + model.getObject().getVersion();
 
-    add(new Label("questionnaire", new PropertyModel<String>(model, "name")));
+    add(new Label("title", label));
+
+    add(new Label("questionnaire", label));
 
     add(new DataView<Section>("sections", new AllSectionsProvider(model)) {
       @Override
@@ -55,10 +56,11 @@ public class SingleDocumentQuestionnairePage extends WebPage {
 
   private class VariablesProvider implements IDataProvider<Variable> {
 
+    private static final long serialVersionUID = -1757316578083924986L;
+
     private IModel<Questionnaire> model;
 
-    public VariablesProvider(IModel<Questionnaire> model) {
-      super();
+    private VariablesProvider(IModel<Questionnaire> model) {
       this.model = model;
     }
 
@@ -68,7 +70,7 @@ public class SingleDocumentQuestionnairePage extends WebPage {
     }
 
     @Override
-    public IModel<Variable> model(final Variable object) {
+    public IModel<Variable> model(Variable object) {
       return new VariableModel(object);
     }
 
@@ -92,10 +94,11 @@ public class SingleDocumentQuestionnairePage extends WebPage {
 
   private class VariableModel implements IModel<Variable> {
 
+    private static final long serialVersionUID = -1757316578083924986L;
+
     private Variable object;
 
-    public VariableModel(Variable object) {
-      super();
+    private VariableModel(Variable object) {
       this.object = object;
     }
 

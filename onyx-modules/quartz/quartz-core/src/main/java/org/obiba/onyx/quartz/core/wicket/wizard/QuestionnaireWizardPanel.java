@@ -56,7 +56,7 @@ public class QuestionnaireWizardPanel extends WizardPanel<Questionnaire> {
 
   @Override
   public WizardForm createForm(String componentId) {
-    return new QuestionnaireWizardForm(componentId, getDefaultModel()) {
+    return new QuestionnaireWizardForm(componentId, (IModel<Questionnaire>) getDefaultModel()) {
       private static final long serialVersionUID = 1L;
 
       @Override

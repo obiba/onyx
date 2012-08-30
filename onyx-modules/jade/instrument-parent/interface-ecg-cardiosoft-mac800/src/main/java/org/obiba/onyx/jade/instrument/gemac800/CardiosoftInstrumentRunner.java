@@ -351,7 +351,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
    * Implements parent method run from InstrumentRunner Launch the external application, retrieve and send the data
    */
   public void run() {
-    externalAppHelper.launch();
+    externalAppHelper.launchExternalSoftware();
     FileInputStream resultInputStream = null;
     File cardioSoftXmlOutput = new File(getExportPath(), getXmlFileName());
 

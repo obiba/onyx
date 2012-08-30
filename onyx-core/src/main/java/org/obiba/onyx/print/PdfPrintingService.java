@@ -117,7 +117,25 @@ public class PdfPrintingService implements InitializingBean {
   }
 
   public void printPdf(InputStream pdf) throws PrintException {
-    supportedHandler.printPdf(pdf);
+    if(printService == null) {
+      log.info("No printer available. Looking for printer.");
+      try {
+        afterPropertiesSet();
+        if(printService == null) {
+          log.error("Still no printer available. Cannot print requested report.");
+          throw new PrintException("no printer available");
+        }
+      } catch(Exception e) {
+        throw new PrintException(e);
+      }
+    }
+
+    if(supportedHandler == null) {
+      log.error("No printer available or printer doesn't support PDF or PS printing.");
+      throw new PrintException("no printer available");
+    } else {
+      supportedHandler.printPdf(pdf);
+    }
   }
 
   protected void print(Object source, DocFlavor flavor) throws PrintException {
