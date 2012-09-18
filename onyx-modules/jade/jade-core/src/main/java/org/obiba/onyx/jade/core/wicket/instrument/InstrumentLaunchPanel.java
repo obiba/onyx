@@ -128,9 +128,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
       add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
 
         protected void onTimer(AjaxRequestTarget target) {
-          if(!measures.isSkipMeasurement() && !isMeasureComplete()) {
-            measures.refresh(target);
-          }
+          measures.refresh(target);
         }
 
       });
