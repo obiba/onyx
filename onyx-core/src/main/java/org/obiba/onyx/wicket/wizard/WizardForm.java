@@ -12,6 +12,7 @@ package org.obiba.onyx.wicket.wizard;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -23,6 +24,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.mozilla.javascript.EcmaError;
+import org.obiba.magma.MagmaRuntimeException;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.action.ActionWindowProvider;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
@@ -97,12 +100,42 @@ public abstract class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        onNextSubmit(target, form);
+        try {
+          onNextSubmit(target, form);
+        } catch(Exception e) {
+          Session.get().cleanupFeedbackMessages();
+          Session.get().error(extractMessage(e));
+          Session.get().info(WizardForm.this.getString("RetryOrInterrupt"));
+          Session.get().dirty();
+
+          onNextError(target, form);
+        }
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         onNextError(target, form);
+      }
+
+      private String extractMessage(Exception e) {
+        Throwable t = e;
+        String message = e.getMessage();
+
+        while(true) {
+          if(t instanceof MagmaRuntimeException || t instanceof EcmaError) {
+            message = t.getMessage();
+            break;
+          }
+
+          if(t.getCause() != null) {
+            t = t.getCause();
+            message = t.getMessage();
+          } else {
+            break;
+          }
+        }
+
+        return (message != null && message.equals("null") == false) ? message : WizardForm.this.getString("UnexpectedError");
       }
 
     };
