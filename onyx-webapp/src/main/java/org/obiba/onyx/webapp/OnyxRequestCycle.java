@@ -23,7 +23,6 @@ import org.obiba.onyx.core.service.impl.NoSuchInterviewException;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.home.page.InternalErrorPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
-import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.stage.page.InternalErrorStagePage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.slf4j.Logger;
@@ -83,7 +82,7 @@ class OnyxRequestCycle extends WebRequestCycle {
 
     Page rpage;
     if(page instanceof StagePage) {
-      rpage = new InternalErrorStagePage(new InterviewPage(), (IModel<Stage>) page.getDefaultModel());
+      rpage = new InternalErrorStagePage((StagePage) page, (IModel<Stage>) page.getDefaultModel());
     } else {
       rpage = new InternalErrorPage();
     }
