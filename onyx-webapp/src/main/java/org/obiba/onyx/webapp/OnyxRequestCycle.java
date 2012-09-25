@@ -19,6 +19,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.mozilla.javascript.EcmaError;
 import org.obiba.magma.MagmaRuntimeException;
+import org.obiba.onyx.core.exception.ExceptionUtils;
 import org.obiba.onyx.core.service.impl.NoSuchInterviewException;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.home.page.InternalErrorPage;
@@ -75,7 +76,7 @@ class OnyxRequestCycle extends WebRequestCycle {
     Session.get().cleanupFeedbackMessages();
     for(String msg : messages) {
       if(msg != null) {
-        Session.get().error(msg);
+        Session.get().error(ExceptionUtils.cleanMessage(msg));
       }
     }
     Session.get().dirty();
