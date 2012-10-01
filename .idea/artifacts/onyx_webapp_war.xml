@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="onyx-webapp:war">
+    <output-path>$PROJECT_DIR$/onyx-webapp/target</output-path>
+    <root id="archive" name="onyx-webapp-1.9-SNAPSHOT.war">
+      <element id="artifact" artifact-name="onyx-webapp:war exploded" />
+    </root>
+  </artifact>
+</component>

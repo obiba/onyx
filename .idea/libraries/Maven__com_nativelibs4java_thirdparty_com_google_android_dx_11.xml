@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.nativelibs4java.thirdparty.com.google.android:dx:11">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/nativelibs4java/thirdparty/com/google/android/dx/11/dx-11.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/nativelibs4java/thirdparty/com/google/android/dx/11/dx-11-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/nativelibs4java/thirdparty/com/google/android/dx/11/dx-11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

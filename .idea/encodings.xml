@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-core" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-deploy-parent" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-example" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-bootstrap" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-anklebrachial-summitdoppler-vantageabi" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-arterialstiffness-sphygmocor" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-audiogram-tremetrics-ra300" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-bioimpedance-tanita-bc418" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-bioimpedance-tanita-tbf310" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-bloodpressure-vsm-bptru" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-bonedensity-achillesexpress" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-bonedensity-holologic-apex" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-cognitivetest-noddletest" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-ecg-cardiosoft" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-ecg-cardiosoft-mac800" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-gripstrength-jtech" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-retinal-topcon-imagenetr4lite" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-spirometry-minispir" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-spirometry-ndd-easyonpc" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-tonometer-reichert-ora" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-ultrasound-ge-vivid" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/interface-weight-ricelake-140-10" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-parent/jtds-ntlmauth" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/jade-core" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/jade-remote-api" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/jade/jade-remote-server" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/marble" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/marble/marble-core" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/quartz" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/quartz/quartz-core" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/ruby" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-modules/ruby/ruby-core" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-util" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-webapp" charset="ISO-8859-1" />
+  </component>
+</project>
+

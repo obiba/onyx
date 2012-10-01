@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.rxtx:rxtx-lib:win32:2.1.7-r2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/rxtx/rxtx-lib/2.1.7-r2/rxtx-lib-2.1.7-r2-win32.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/rxtx/rxtx-lib/2.1.7-r2/rxtx-lib-2.1.7-r2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/rxtx/rxtx-lib/2.1.7-r2/rxtx-lib-2.1.7-r2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
