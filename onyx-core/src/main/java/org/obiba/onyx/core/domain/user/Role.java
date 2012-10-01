@@ -32,7 +32,7 @@ public class Role extends AbstractEntity implements Comparable<Role> {
 
   public static final Role DATA_COLLECTION_OPERATOR = new Role("DATA_COLLECTION_OPERATOR");
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String name = null;
 
   public Role() {

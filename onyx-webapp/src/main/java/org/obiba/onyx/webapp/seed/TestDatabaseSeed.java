@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.thoughtworks.xstream.XStream;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -28,9 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.thoughtworks.xstream.XStream;
-
 public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
+
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   @Autowired
@@ -58,8 +58,8 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
 
       for(User user : config.users) {
         String encryptedPassword = User.digest(user.getPassword());
-        log.info("Password: " + user.getPassword());
-        log.info("Encypted Password: " + encryptedPassword);
+        log.info("Password: {}", user.getPassword());
+        log.info("Encypted Password: {}", encryptedPassword);
         user.setPassword(encryptedPassword);
 
         User template = new User();
