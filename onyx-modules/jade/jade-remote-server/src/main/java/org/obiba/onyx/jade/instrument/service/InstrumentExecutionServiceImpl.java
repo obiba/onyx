@@ -91,16 +91,16 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public Map<String, Data> getInputParametersValue(String... parameters) {
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
     for(String parameterCode : parameters) {
-      InstrumentParameter inputParameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
+      InstrumentParameter inputParameter = getInstrumentType().getInstrumentParameter(parameterCode);
       if(inputParameter != null) {
         InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInstrumentRunValue(parameterCode);
         if(inputParameterValue != null) {
           inputParametersValue.put(parameterCode, inputParameterValue.getData(inputParameter.getDataType()));
         } else {
-          log.warn("Run value for input parameter with code {} in {} is null.", parameterCode, activeInstrumentRunService.getInstrumentType());
+          log.warn("Run value for input parameter with code {} in {} is null.", parameterCode, getInstrumentType());
         }
       } else {
-        log.warn("Parameter with code {} unknown in {}.", parameterCode, activeInstrumentRunService.getInstrumentType());
+        log.warn("Parameter with code {} unknown in {}.", parameterCode, getInstrumentType());
       }
     }
     log.info("getInputParametersValue({})={}", parameters, inputParametersValue);
@@ -109,20 +109,20 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   @Override
   public boolean hasInputParameter(String parameterCode) {
-    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+    InstrumentType type = getInstrumentType();
     return type.getInstrumentParameter(InstrumentInputParameter.class, parameterCode) != null;
   }
 
   @Override
   public boolean hasOutputParameter(String parameterCode) {
-    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+    InstrumentType type = getInstrumentType();
     return type.getInstrumentParameter(InstrumentOutputParameter.class, parameterCode) != null;
   }
 
   public Map<String, String> getInputParametersVendorNames(String... parameters) {
     Map<String, String> inputParametersVendorName = new HashMap<String, String>();
     for(String parameterCode : parameters) {
-      InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
+      InstrumentParameter parameter = getInstrumentType().getInstrumentParameter(parameterCode);
       inputParametersVendorName.put(parameterCode, parameter.getVendorName());
     }
     log.info("getInputParametersVendorNames({})={}", parameters, inputParametersVendorName);
@@ -130,21 +130,21 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public Data getInputParameterValue(String parameterCode) {
-    InstrumentParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(parameterCode);
+    InstrumentParameter parameter = getInstrumentType().getInstrumentParameter(parameterCode);
     return activeInstrumentRunService.getInstrumentRunValue(parameterCode).getData(parameter.getDataType());
   }
 
   @Override
   public Set<String> getExpectedOutputParameterVendorNames() {
     Set<String> names = new LinkedHashSet<String>();
-    for(InstrumentParameter ip : activeInstrumentRunService.getInstrumentType().getOutputParameters(true)) {
+    for(InstrumentParameter ip : getInstrumentType().getOutputParameters(true)) {
       names.add(ip.getVendorName());
     }
     return names;
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {
-    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+    InstrumentType type = getInstrumentType();
 
     // filter out the repeatable parameters
     // and persist non-repeatable data
@@ -174,14 +174,25 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   private InstrumentOutputParameter getInstrumentOutputParameter(String name) {
-    InstrumentOutputParameter parameter = activeInstrumentRunService.getInstrumentType().getInstrumentParameter(InstrumentOutputParameter.class, name);
+    InstrumentType type = getInstrumentType();
+    InstrumentOutputParameter parameter = type.getInstrumentParameter(InstrumentOutputParameter.class, name);
 
     // Test if no parameter found for the given name
     if(parameter == null) {
-      throw new IllegalArgumentException("No output parameter with name: " + name);
+      throw new IllegalArgumentException("No output parameter with name '" + name + "' for instrument type '" + type.getName() + "'");
     }
 
     return parameter;
+  }
+
+  private InstrumentType getInstrumentType() {
+    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+
+    if(type == null) {
+      throw new IllegalStateException("No instrument type associated to the active instrument run service.");
+    }
+
+    return type;
   }
 
   public void instrumentRunnerError(Exception error) {
@@ -193,11 +204,11 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public boolean isRepeatableMeasure() {
-    return activeInstrumentRunService.getInstrumentType().isRepeatable();
+    return getInstrumentType().isRepeatable();
   }
 
   public int getExpectedMeasureCount() {
-    return activeInstrumentRunService.getInstrumentType().getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
+    return getInstrumentType().getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
   }
 
   public InstrumentRunService getInstrumentRunService() {

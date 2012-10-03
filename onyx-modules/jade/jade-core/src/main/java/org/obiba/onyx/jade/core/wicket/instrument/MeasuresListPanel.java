@@ -36,6 +36,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
@@ -170,8 +171,7 @@ public abstract class MeasuresListPanel extends Panel {
         return measureActionsFragment;
       }
 
-      private Fragment
-          addInvalidMeasureMessage(final Measure measure, final ListItem<Measure> item, final int measureNo) {
+      private Fragment addInvalidMeasureMessage(final Measure measure, final ListItem<Measure> item, final int measureNo) {
         Fragment measureActionsFragment;
         item.add(new AttributeAppender("class", true, new Model<String>("ui-state-error"), " "));
         measureActionsFragment = new Fragment("measureActions", "measureInvalidFragment", MeasuresListPanel.this);
@@ -207,8 +207,7 @@ public abstract class MeasuresListPanel extends Panel {
           }
 
           @SuppressWarnings("unused")
-          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
-              justification = "Referenced by PropertyModel")
+          @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS", justification = "Referenced by PropertyModel")
           public List<String> getInvalidMeasureMessages() {
             List<InstrumentOutputParameter> outputParams = getMeasureOutputParams(measure);
 
@@ -325,15 +324,25 @@ public abstract class MeasuresListPanel extends Panel {
   public abstract void onRefresh(AjaxRequestTarget target);
 
   public List<Measure> getMeasures() {
-    return activeInstrumentRunService.getInstrumentRun().getMeasures();
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run != null) {
+      return run.getMeasures();
+    } else {
+      return new ArrayList<Measure>();
+    }
   }
 
   public int getRemainingMeasureCount() {
-    return getExpectedMeasureCount() - activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
+    return getExpectedMeasureCount() - getMeasureCount();
   }
 
   public int getMeasureCount() {
-    return activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run != null) {
+      return run.getValidMeasureCount();
+    } else {
+      return 0;
+    }
   }
 
   public int getExpectedMeasureCount() {

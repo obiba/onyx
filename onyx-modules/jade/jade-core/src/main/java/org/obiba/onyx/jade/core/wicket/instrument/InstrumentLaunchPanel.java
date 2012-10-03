@@ -12,7 +12,6 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import java.io.Serializable;
 import java.util.Locale;
 
-import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -23,7 +22,6 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
@@ -124,15 +122,15 @@ public abstract class InstrumentLaunchPanel extends Panel {
       add(new EmptyPanel("measures"));
     }
 
-    if(instrumentType.isRepeatable()) {
-      add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
-
-        protected void onTimer(AjaxRequestTarget target) {
-          measures.refresh(target);
-        }
-
-      });
-    }
+    // if(instrumentType.isRepeatable()) {
+    // add(new AbstractAjaxTimerBehavior(Duration.seconds(10)) {
+    //
+    // protected void onTimer(AjaxRequestTarget target) {
+    // measures.refresh(target);
+    // }
+    //
+    // });
+    // }
 
     startButton = new Link<Object>("start") {
 
