@@ -69,7 +69,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   // ActiveInstrumentRunService Methods
   //
 
-  public InstrumentRun start(Participant participant, Instrument instrument, InstrumentType instrumentType) {
+  public synchronized InstrumentRun start(Participant participant, Instrument instrument, InstrumentType instrumentType) {
     if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
     if(instrument == null) throw new IllegalArgumentException("Instrument cannot be null.");
     if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
@@ -94,7 +94,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRunId = null;
   }
 
-  public void end() {
+  public synchronized void end() {
     if(currentRunId == null) return;
 
     InstrumentRun currentRun = getInstrumentRun();
@@ -116,7 +116,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return instrumentService.getInstrumentType(instrumentTypeName);
   }
 
-  public void setInstrument(Instrument instrument) {
+  public synchronized void setInstrument(Instrument instrument) {
     getInstrumentRun().setInstrument(instrument);
   }
 
@@ -166,7 +166,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return paramsWithWarnings;
   }
 
-  public void setInstrumentRun(InstrumentRun instrumentRun) {
+  public synchronized void setInstrumentRun(InstrumentRun instrumentRun) {
     if(instrumentRun != null) {
       currentRunId = instrumentRun.getId();
     }
@@ -183,14 +183,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getPersistenceManager().get(InstrumentRun.class, currentRunId);
   }
 
-  public void setInstrumentRunStatus(InstrumentRunStatus status) {
+  public synchronized void setInstrumentRunStatus(InstrumentRunStatus status) {
     InstrumentRun currentRun = getInstrumentRun();
 
     currentRun.setStatus(status);
     getPersistenceManager().save(currentRun);
   }
 
-  public void update(InstrumentRunValue currentRunValue) {
+  public synchronized void update(InstrumentRunValue currentRunValue) {
     if(currentRunId == null) return;
     if(currentRunValue.getInstrumentRun() == null) throw new IllegalArgumentException("Current instrument run cannot be null");
     if(!currentRunId.equals(currentRunValue.getInstrumentRun().getId())) throw new IllegalArgumentException("Unexpected given current instrument run");
@@ -198,7 +198,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRunValue);
   }
 
-  public void computeOutputParameters() {
+  public synchronized void computeOutputParameters() {
     if(currentRunId == null) return;
 
     InstrumentRun currentRun = getInstrumentRun();
@@ -319,7 +319,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return runValues;
   }
 
-  public Measure addMeasure(Map<String, Data> repeatableData) {
+  public synchronized Measure addMeasure(Map<String, Data> repeatableData) {
     return addMeasure(repeatableData, null);
   }
 
@@ -355,14 +355,15 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     }
     getPersistenceManager().save(measure);
-    // The relationship is driven by Measure.instrumentRun. This should make the InstrumentRun instance reflect the change
+    // The relationship is driven by Measure.instrumentRun. This should make the InstrumentRun instance reflect the
+    // change
     getPersistenceManager().refresh(instrumentRun);
 
     return measure;
 
   }
 
-  public String updateReadOnlyInputParameterRunValue() {
+  public synchronized String updateReadOnlyInputParameterRunValue() {
     InstrumentType instrumentType = getInstrumentType();
 
     List<InstrumentInputParameter> inputParametersWithDataSource = instrumentType.getInstrumentParameters(InstrumentInputParameter.class, true);
@@ -423,11 +424,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRun().getContraindication() != null;
   }
 
-  public void setContraindication(Contraindication contraindication) {
+  public synchronized void setContraindication(Contraindication contraindication) {
     getInstrumentRun().setContraindication(contraindication);
   }
 
-  public void setOtherContraindication(String other) {
+  public synchronized void setOtherContraindication(String other) {
     getInstrumentRun().setOtherContraindication(other);
   }
 
@@ -439,15 +440,15 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   // Methods
   //
 
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+  public synchronized void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
   }
 
-  public void setInstrumentService(InstrumentService instrumentService) {
+  public synchronized void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
   }
 
-  public void setUserSessionService(UserSessionService userSessionService) {
+  public synchronized void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
   }
 
@@ -516,11 +517,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
   }
 
-  public void addOutputParameterValues(Map<String, Data> values) {
+  public synchronized void addOutputParameterValues(Map<String, Data> values) {
     addOutputParameterValues(values, null);
   }
 
-  public void addManuallyCapturedOutputParameterValues(Map<String, Data> values) {
+  public synchronized void addManuallyCapturedOutputParameterValues(Map<String, Data> values) {
     addOutputParameterValues(values, InstrumentParameterCaptureMethod.MANUAL);
   }
 
@@ -594,11 +595,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     update(outputParameterValue);
   }
 
-  public void deleteMeasure(Measure measure) {
+  public synchronized void deleteMeasure(Measure measure) {
     getPersistenceManager().delete(measure);
   }
 
-  public void setSkipRemainingMeasuresCommentFromInstrumentRun(String comment) {
+  public synchronized void setSkipRemainingMeasuresCommentFromInstrumentRun(String comment) {
     if(comment == null) throw new IllegalArgumentException("Cannot add a null comment on the instrumentRun");
 
     InstrumentRun currentRun = getInstrumentRun();
@@ -606,7 +607,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRun);
   }
 
-  public void removeSkipRemainingMeasuresCommentFromInstrumentRun() {
+  public synchronized void removeSkipRemainingMeasuresCommentFromInstrumentRun() {
     InstrumentRun currentRun = getInstrumentRun();
     currentRun.setSkipComment(null);
     getPersistenceManager().save(currentRun);
@@ -656,7 +657,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return failedChecks;
   }
 
-  public void removeInvalidMeasuresFromInstrumentRun() {
+  public synchronized void removeInvalidMeasuresFromInstrumentRun() {
     log.info("removing invalid measures");
     List<Measure> invalidMeasures = getInstrumentRun().getMeasures(MeasureStatus.INVALID);
     for(Measure measure : invalidMeasures) {
@@ -664,7 +665,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
   }
 
-  public void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue) {
+  public synchronized void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue) {
     getPersistenceManager().delete(instrumentRunValue);
   }
 }
