@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -116,7 +117,7 @@
       <type>zip</type>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>interface-ecg-cardiosoft-mac800</artifactId>
@@ -195,6 +196,11 @@
       <version>${project.version}</version>
       <type>zip</type>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba</groupId>
+      <artifactId>obiba-security</artifactId>
     </dependency>
 
   </dependencies>
@@ -373,7 +379,8 @@
             <configuration>
               <tasks>
                 <signjar alias="jade" keystore="${basedir}/exampleKeystore.jks" lazy="true" storepass="onyxadmin">
-                  <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />
+                  <fileset dir="${project.build.directory}/${project.build.finalName}/instruments"
+                      includes="**/*.jar" />
                 </signjar>
               </tasks>
             </configuration>

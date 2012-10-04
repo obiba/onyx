@@ -1,6 +1,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:util="http://www.springframework.org/schema/util"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
   <import resource="classpath:META-INF/spring/ruby-core/context.xml" />
 
@@ -9,7 +10,8 @@
     <entry key="UrineSamplesCollection" value-ref="urineTubeRegistrationConfiguration" />
   </util:map>
 
-  <bean id="bloodUrineTubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+  <bean id="bloodUrineTubeRegistrationConfiguration"
+      class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
     <property name="infoMessagesFile" value="info-messages.bloodUrine.xml" />
